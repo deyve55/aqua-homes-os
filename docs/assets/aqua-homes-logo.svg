@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 150" role="img" aria-labelledby="title desc">
+  <title id="title">Aqua Homes Design Group</title>
+  <desc id="desc">Premium Aqua Homes Design Group wordmark with gold accent and blue glow.</desc>
+  <defs>
+    <linearGradient id="letters" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.48" stop-color="#eef6ff"/>
+      <stop offset="1" stop-color="#b9d7ff"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a96619"/>
+      <stop offset="0.42" stop-color="#ffb73b"/>
+      <stop offset="0.62" stop-color="#ffd36d"/>
+      <stop offset="1" stop-color="#c8781c"/>
+    </linearGradient>
+    <radialGradient id="blueGlow" cx="82%" cy="50%" r="58%">
+      <stop offset="0" stop-color="#43c7ff" stop-opacity="0.66"/>
+      <stop offset="0.38" stop-color="#126eff" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#06111f" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softGlow" x="-18%" y="-45%" width="136%" height="190%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#1688ff" flood-opacity="0.48"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#f3a72d" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="720" height="150" fill="none"/>
+  <ellipse cx="600" cy="72" rx="190" ry="58" fill="url(#blueGlow)"/>
+  <path d="M34 103 C114 72 177 72 250 101 S383 126 470 88 S596 47 686 72" fill="none" stroke="url(#gold)" stroke-width="7" stroke-linecap="round" opacity="0.92"/>
+  <path d="M54 113 C130 92 194 94 261 116 S386 135 486 98" fill="none" stroke="#2da8ff" stroke-width="2.5" stroke-linecap="round" opacity="0.62"/>
+  <g filter="url(#softGlow)">
+    <text x="30" y="79" fill="url(#letters)" font-family="Inter, Montserrat, Arial, sans-serif" font-size="54" font-weight="800" letter-spacing="3.2">AQUA HOMES</text>
+    <text x="34" y="119" fill="url(#gold)" font-family="Inter, Montserrat, Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="9.8">DESIGN GROUP</text>
+  </g>
+</svg>
