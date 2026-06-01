@@ -18,6 +18,12 @@ const MAINTENANCE_DISPATCH_STATUSES = [
   "Office Reconciliation Hold",
 ];
 const ACTIVE_MAINTENANCE_STATUSES = ["Dispatched", "En Route", "On Site"];
+const WALKTHROUGH_READINESS_STATUSES = [
+  "Draft Capture",
+  "Needs Office Review",
+  "Ready for Estimate",
+  "Sent to Proposal",
+];
 
 const modules = [
   {
@@ -131,6 +137,17 @@ const demoDefaults = {
       status: "Available",
     },
   ],
+  fieldWalkthrough: [
+    {
+      projectProperty: "Canal House Retrofit",
+      customerNotes: "Owner wants the dock repair priced with a kitchen punch-list alternate.",
+      voiceNoteSummary: "Captured demo summary from field conversation; live voice capture remains locked.",
+      measurementNotes: "Verify railing length, cabinet opening, and sink supply-line clearance.",
+      scopeDraft: "Draft repair scope for office review before estimate preparation.",
+      photoProofPlaceholder: "Placeholder for before photos, progress proof, and completion signoff notes.",
+      readinessStatus: "Needs Office Review",
+    },
+  ],
   bugCapture: [
     {
       title: "Tighten mobile spacing on project card",
@@ -161,6 +178,11 @@ const dashboardSummaryItems = [
     label: "Inventory / Tools",
     storageKey: "inventoryTools",
     helper: "Tracked items",
+  },
+  {
+    label: "Field Captures",
+    storageKey: "fieldWalkthrough",
+    helper: "Walkthrough records",
   },
   {
     label: "Bug Reports",
@@ -245,6 +267,26 @@ const demoModules = {
     format: (item) => ({
       title: getMaintenanceTitle(item),
       meta: `${getMaintenancePriority(item)} priority · ${getMaintenanceTrade(item)} · ${getMaintenanceStatus(item)} · ${formatCurrency(item.estimatedCost)}`,
+    }),
+  },
+
+  "field-walkthrough": {
+    storageKey: "fieldWalkthrough",
+    eyebrow: "Field Walkthrough / Jobsite Capture",
+    submitLabel: "Save Walkthrough",
+    fields: [
+      { name: "projectProperty", label: "Project / property", placeholder: "Canal House Retrofit", required: true },
+      { name: "customerNotes", label: "Customer notes", placeholder: "Owner priorities, access notes, and requested alternates", multiline: true },
+      { name: "voiceNoteSummary", label: "Voice note summary", placeholder: "Typed demo summary of field voice notes", multiline: true },
+      { name: "measurementNotes", label: "Measurement notes", placeholder: "Measurements, dimensions, and verification reminders", multiline: true },
+      { name: "scopeDraft", label: "Scope draft", placeholder: "Initial field scope to review with the office", multiline: true },
+      { name: "photoProofPlaceholder", label: "Photo / proof placeholder text", placeholder: "Before, progress, and completion proof placeholders", multiline: true },
+      { name: "readinessStatus", label: "Estimate readiness status", options: WALKTHROUGH_READINESS_STATUSES, required: true },
+    ],
+    empty: "No demo walkthrough captures yet.",
+    format: (item) => ({
+      title: getWalkthroughProject(item),
+      meta: `${getWalkthroughStatus(item)} · ${item.scopeDraft || item.customerNotes || "Capture notes pending"}`,
     }),
   },
   inventoryTools: {
@@ -378,6 +420,18 @@ function normalizeInventoryToolItem(item) {
   };
 }
 
+function normalizeFieldWalkthroughRecord(record) {
+  return {
+    projectProperty: getWalkthroughProject(record),
+    customerNotes: String(record?.customerNotes ?? record?.customerNote ?? "").trim(),
+    voiceNoteSummary: String(record?.voiceNoteSummary ?? record?.voiceSummary ?? "").trim(),
+    measurementNotes: String(record?.measurementNotes ?? record?.measurements ?? "").trim(),
+    scopeDraft: String(record?.scopeDraft ?? record?.scope ?? "").trim(),
+    photoProofPlaceholder: String(record?.photoProofPlaceholder ?? record?.proof ?? "").trim(),
+    readinessStatus: getWalkthroughStatus(record),
+  };
+}
+
 function normalizeDemoData(value) {
   const source = value?.demoData && typeof value.demoData === "object" ? value.demoData : value;
   const defaults = cloneDemoDefaults();
@@ -396,6 +450,10 @@ function normalizeDemoData(value) {
 
       if (key === "inventoryTools") {
         return [key, items.map(normalizeInventoryToolItem)];
+      }
+
+      if (key === "fieldWalkthrough") {
+        return [key, items.map(normalizeFieldWalkthroughRecord)];
       }
 
       return [key, items];
@@ -471,6 +529,16 @@ function getInventoryToolStatus(item) {
   return INVENTORY_TOOL_STATUSES.includes(status) ? status : INVENTORY_TOOL_STATUSES[0];
 }
 
+function getWalkthroughProject(record) {
+  return String(record?.projectProperty ?? record?.propertyProject ?? record?.project ?? "Jobsite capture").trim() || "Jobsite capture";
+}
+
+function getWalkthroughStatus(record) {
+  const status = String(record?.readinessStatus ?? record?.status ?? "").trim();
+
+  return WALKTHROUGH_READINESS_STATUSES.includes(status) ? status : WALKTHROUGH_READINESS_STATUSES[0];
+}
+
 function getLaborCost(record) {
   return (Number(record?.hours) || 0) * (Number(record?.rate) || 0);
 }
@@ -540,6 +608,16 @@ function getInventoryToolSummary(items = demoData.inventoryTools ?? []) {
     checkedOut: items.filter((item) => getInventoryToolStatus(item) === "Checked Out").length,
     assignedToJob: items.filter((item) => getInventoryToolStatus(item) === "Assigned to Job").length,
     lostDamaged: items.filter((item) => getInventoryToolStatus(item) === "Lost / Damaged").length,
+  };
+}
+
+function getWalkthroughSummary(records = demoData.fieldWalkthrough ?? []) {
+  return {
+    total: records.length,
+    draftCapture: records.filter((record) => getWalkthroughStatus(record) === "Draft Capture").length,
+    officeReview: records.filter((record) => getWalkthroughStatus(record) === "Needs Office Review").length,
+    readyForEstimate: records.filter((record) => getWalkthroughStatus(record) === "Ready for Estimate").length,
+    sentToProposal: records.filter((record) => getWalkthroughStatus(record) === "Sent to Proposal").length,
   };
 }
 
@@ -656,6 +734,22 @@ function addInventoryToolStatusActivity(item, previousStatus, nextStatus) {
   renderRecentActivity();
 }
 
+function addWalkthroughStatusActivity(record, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-walkthrough-status`,
+      module: "Field Walkthrough",
+      title: getWalkthroughProject(record),
+      meta: `Estimate readiness changed from ${previousStatus} to ${nextStatus} · ${record.scopeDraft || "Scope draft pending"}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
 function clearRecentActivity() {
   recentActivity = [];
   saveRecentActivity();
@@ -762,6 +856,8 @@ function getInsightMessage(summaryItem) {
       return `${count} maintenance/HVAC ${count === 1 ? "request is" : "requests are"} saved for follow-up.`;
     case "inventoryTools":
       return `${count} inventory/tool ${count === 1 ? "record is" : "records are"} being tracked.`;
+    case "fieldWalkthrough":
+      return `${count} field walkthrough ${count === 1 ? "capture is" : "captures are"} saved for estimate readiness review.`;
     case "bugCapture":
       return `${count} bug ${count === 1 ? "report is" : "reports are"} captured for the structured starter.`;
     default:
@@ -1168,6 +1264,104 @@ function updateInventoryToolStatus(index, nextStatus) {
   renderDemoModule("inventory-tools");
 }
 
+function renderWalkthroughCapturePanel(records) {
+  const summary = getWalkthroughSummary(records);
+  const summaryGrid = `
+    <div class="walkthrough-summary-grid" aria-label="Field walkthrough estimate readiness summary">
+      <article><strong>${summary.total}</strong><span>Total captures</span></article>
+      <article><strong>${summary.draftCapture}</strong><span>Draft capture</span></article>
+      <article><strong>${summary.officeReview}</strong><span>Needs office review</span></article>
+      <article><strong>${summary.readyForEstimate}</strong><span>Ready for estimate</span></article>
+      <article><strong>${summary.sentToProposal}</strong><span>Sent to proposal</span></article>
+    </div>
+  `;
+
+  const lockedNote = "Live camera, voice capture, AI measurements, and backend estimate generation are locked until backend/security gates are complete.";
+
+  if (!records.length) {
+    return `
+      <section class="walkthrough-capture-panel" aria-label="Field Walkthrough panel">
+        <div class="walkthrough-capture-header">
+          <div>
+            <p class="eyebrow">Field Walkthrough</p>
+            <h4>Jobsite Capture</h4>
+          </div>
+          <span class="walkthrough-capture-status">Local demo capture</span>
+        </div>
+        <p class="walkthrough-lock-note">${lockedNote}</p>
+        ${summaryGrid}
+        <p class="walkthrough-capture-empty">No saved field walkthrough demo records yet.</p>
+      </section>
+    `;
+  }
+
+  const recordRows = records
+    .map((record, index) => {
+      const currentStatus = getWalkthroughStatus(record);
+      const statusOptions = WALKTHROUGH_READINESS_STATUSES
+        .map(
+          (status) =>
+            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+        )
+        .join("");
+
+      return `
+        <article class="walkthrough-capture-card">
+          <div>
+            <strong>${escapeHtml(getWalkthroughProject(record))}</strong>
+            <span>Customer notes: ${escapeHtml(record.customerNotes || "Pending")}</span>
+            <span>Voice summary: ${escapeHtml(record.voiceNoteSummary || "Typed demo summary pending")}</span>
+            <span>Measurements: ${escapeHtml(record.measurementNotes || "Measurement notes pending")}</span>
+            <span>Scope draft: ${escapeHtml(record.scopeDraft || "Scope draft pending")}</span>
+            <span>Photo / proof: ${escapeHtml(record.photoProofPlaceholder || "Placeholder text pending")}</span>
+          </div>
+          <label>
+            <span>Estimate readiness</span>
+            <select data-walkthrough-status-index="${index}" aria-label="Estimate readiness status for ${escapeHtml(getWalkthroughProject(record))}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="walkthrough-capture-panel" aria-label="Field Walkthrough panel">
+      <div class="walkthrough-capture-header">
+        <div>
+          <p class="eyebrow">Field Walkthrough</p>
+          <h4>Jobsite Capture</h4>
+        </div>
+        <span class="walkthrough-capture-status">Local demo capture</span>
+      </div>
+      <p class="walkthrough-lock-note">${lockedNote}</p>
+      ${summaryGrid}
+      <div class="walkthrough-capture-list">${recordRows}</div>
+    </section>
+  `;
+}
+
+function updateWalkthroughStatus(index, nextStatus) {
+  const record = demoData.fieldWalkthrough?.[index];
+
+  if (!record || !WALKTHROUGH_READINESS_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getWalkthroughStatus(record);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  record.readinessStatus = nextStatus;
+  saveDemoData();
+  addWalkthroughStatusActivity(record, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("field-walkthrough");
+}
+
 function renderPayrollPrepPanel(records) {
   const summary = getPayrollPrepSummary(records);
   const summaryGrid = `
@@ -1268,6 +1462,7 @@ function renderDemoList(moduleId) {
   const payrollPrepSlot = detailDemo.querySelector("[data-payroll-prep]");
   const maintenanceDispatchSlot = detailDemo.querySelector("[data-maintenance-dispatch]");
   const inventoryCheckoutSlot = detailDemo.querySelector("[data-inventory-checkout]");
+  const walkthroughCaptureSlot = detailDemo.querySelector("[data-walkthrough-capture]");
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
@@ -1285,6 +1480,9 @@ function renderDemoList(moduleId) {
     }
     if (inventoryCheckoutSlot) {
       inventoryCheckoutSlot.innerHTML = renderInventoryToolCheckoutPanel(items);
+    }
+    if (walkthroughCaptureSlot) {
+      walkthroughCaptureSlot.innerHTML = renderWalkthroughCapturePanel(items);
     }
     return;
   }
@@ -1358,6 +1556,15 @@ function renderDemoList(moduleId) {
       );
     });
   }
+
+  if (walkthroughCaptureSlot) {
+    walkthroughCaptureSlot.innerHTML = renderWalkthroughCapturePanel(items);
+    walkthroughCaptureSlot.querySelectorAll("[data-walkthrough-status-index]").forEach((select) => {
+      select.addEventListener("change", () =>
+        updateWalkthroughStatus(Number(select.dataset.walkthroughStatusIndex), select.value),
+      );
+    });
+  }
 }
 
 function renderDemoModule(moduleId) {
@@ -1384,6 +1591,20 @@ function renderDemoModule(moduleId) {
             <select name="${field.name}" ${requiredAttribute}>
               ${options}
             </select>
+          </label>
+        `;
+      }
+
+      if (field.multiline) {
+        return `
+          <label class="demo-form-wide">
+            <span>${field.label}</span>
+            <textarea
+              name="${field.name}"
+              placeholder="${field.placeholder}"
+              rows="3"
+              ${requiredAttribute}
+            ></textarea>
           </label>
         `;
       }
@@ -1423,6 +1644,7 @@ function renderDemoModule(moduleId) {
     ${moduleId === "payroll-prep" ? '<div data-payroll-prep></div>' : ""}
     ${moduleId === "maintenance-plus-hvac" ? '<div data-maintenance-dispatch></div>' : ""}
     ${moduleId === "inventory-tools" ? '<div data-inventory-checkout></div>' : ""}
+    ${moduleId === "field-walkthrough" ? '<div data-walkthrough-capture></div>' : ""}
   `;
 
   detailDemo.querySelector("[data-demo-form]").addEventListener("submit", (event) => {
