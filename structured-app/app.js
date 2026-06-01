@@ -1949,6 +1949,10 @@ function getInsightMessage(summaryItem) {
       return `${count} ${count === 1 ? "receipt needs" : "receipts need"} review before office handoff.`;
     case "maintenancePlusHvac":
       return `${count} maintenance/HVAC ${count === 1 ? "request is" : "requests are"} saved for follow-up.`;
+    case "scheduleTasks": {
+      const summary = getScheduleSummary(demoData.scheduleTasks ?? []);
+      return `${summary.total} schedule ${summary.total === 1 ? "task is" : "tasks are"} saved: ${summary.urgent} urgent, ${summary.inProgress} in progress, ${summary.waiting} waiting, and ${summary.completed} complete.`;
+    }
     case "inventoryTools":
       return `${count} inventory/tool ${count === 1 ? "record is" : "records are"} being tracked.`;
     case "fieldWalkthrough":
@@ -2423,7 +2427,7 @@ function renderScheduleTasksPanel(tasks) {
         <div class="schedule-tasks-header">
           <div>
             <p class="eyebrow">Schedule Summary</p>
-            <h4>Schedule / Tasks panel</h4>
+            <h4>Schedule / Tasks Panel</h4>
           </div>
           <span class="schedule-task-status">Local demo schedule</span>
         </div>
@@ -2465,7 +2469,7 @@ function renderScheduleTasksPanel(tasks) {
       <div class="schedule-tasks-header">
         <div>
           <p class="eyebrow">Schedule Summary</p>
-          <h4>Schedule / Tasks panel</h4>
+          <h4>Schedule / Tasks Panel</h4>
         </div>
         <span class="schedule-task-status">Local demo schedule</span>
       </div>
