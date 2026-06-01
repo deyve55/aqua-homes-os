@@ -1,0 +1,11 @@
+{
+  "name": "Aqua Homes AI Construction OS",
+  "short_name": "Aqua Homes OS",
+  "description": "Local structured prototype shell for Aqua Homes OS phone trial readiness.",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#02050b",
+  "theme_color": "#06111f",
+  "orientation": "portrait-primary"
+}
