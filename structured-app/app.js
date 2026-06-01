@@ -5,6 +5,18 @@ const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
 const MAX_RECENT_ACTIVITY = 10;
 const RECEIPT_REVIEW_STATUSES = ["Needs Review", "Coded", "Accounting Hold"];
 const PAYROLL_PREP_STATUSES = ["Draft", "Office Review", "Approved Hold"];
+const MAINTENANCE_PRIORITIES = ["Low", "Normal", "Urgent"];
+const MAINTENANCE_TRADES = ["Maintenance", "HVAC", "Plumbing", "Electrical", "Carpentry"];
+const MAINTENANCE_DISPATCH_STATUSES = [
+  "New Request",
+  "Approved",
+  "Dispatched",
+  "En Route",
+  "On Site",
+  "Complete",
+  "Office Reconciliation Hold",
+];
+const ACTIVE_MAINTENANCE_STATUSES = ["Dispatched", "En Route", "On Site"];
 
 const modules = [
   {
@@ -84,9 +96,22 @@ const demoDefaults = {
   ],
   maintenancePlusHvac: [
     {
-      request: "Replace upstairs return filter",
-      priority: "Medium",
-      status: "Queued",
+      title: "Replace upstairs return filter",
+      propertyProject: "Canal House Retrofit",
+      priority: "Normal",
+      tradeType: "HVAC",
+      assignedTechnician: "Jordan Lee",
+      status: "New Request",
+      estimatedCost: "185",
+    },
+    {
+      title: "Kitchen sink supply-line check",
+      propertyProject: "Canal House Retrofit",
+      priority: "Urgent",
+      tradeType: "Plumbing",
+      assignedTechnician: "Mia Rivera",
+      status: "Dispatched",
+      estimatedCost: "420",
     },
   ],
   inventoryTools: [
@@ -186,19 +211,31 @@ const demoModules = {
       meta: `${item.project} · ${Number(item.hours) || 0} hrs × ${formatCurrency(item.rate)} · ${formatCurrency(getLaborCost(item))} · ${getPayrollStatus(item)}`,
     }),
   },
-  maintenancePlusHvac: {
+  "maintenance-plus-hvac": {
     storageKey: "maintenancePlusHvac",
-    eyebrow: "Demo service board",
-    submitLabel: "Save Service Request",
+    eyebrow: "Demo dispatch board",
+    submitLabel: "Save Dispatch Request",
     fields: [
-      { name: "request", label: "Service request", placeholder: "Inspect air handler", required: true },
-      { name: "priority", label: "Priority", placeholder: "High", required: true },
-      { name: "status", label: "Dispatch status", placeholder: "Dispatched", required: true },
+      { name: "title", label: "Request title", placeholder: "Inspect air handler", required: true },
+      { name: "propertyProject", label: "Property / project", placeholder: "Canal House Retrofit", required: true },
+      { name: "priority", label: "Priority", options: MAINTENANCE_PRIORITIES, required: true },
+      { name: "tradeType", label: "Trade type", options: MAINTENANCE_TRADES, required: true },
+      { name: "assignedTechnician", label: "Assigned technician", placeholder: "Jordan Lee", required: true },
+      { name: "status", label: "Dispatch status", options: MAINTENANCE_DISPATCH_STATUSES, required: true },
+      {
+        name: "estimatedCost",
+        label: "Estimated repair cost",
+        placeholder: "250",
+        type: "number",
+        step: "0.01",
+        min: "0",
+        required: true,
+      },
     ],
-    empty: "No demo service requests yet.",
+    empty: "No demo maintenance/HVAC dispatch requests yet.",
     format: (item) => ({
-      title: item.request,
-      meta: `${item.priority} priority · ${item.status}`,
+      title: getMaintenanceTitle(item),
+      meta: `${getMaintenancePriority(item)} priority · ${getMaintenanceTrade(item)} · ${getMaintenanceStatus(item)} · ${formatCurrency(item.estimatedCost)}`,
     }),
   },
   inventoryTools: {
@@ -308,6 +345,19 @@ function cloneDemoDefaults() {
   return JSON.parse(JSON.stringify(demoDefaults));
 }
 
+
+function normalizeMaintenanceRequest(request) {
+  return {
+    title: getMaintenanceTitle(request),
+    propertyProject: String(request?.propertyProject ?? request?.project ?? "").trim(),
+    priority: getMaintenancePriority(request),
+    tradeType: getMaintenanceTrade(request),
+    assignedTechnician: String(request?.assignedTechnician ?? request?.technician ?? "").trim(),
+    status: getMaintenanceStatus(request),
+    estimatedCost: String(request?.estimatedCost ?? request?.cost ?? "0").trim(),
+  };
+}
+
 function normalizeDemoData(value) {
   const source = value?.demoData && typeof value.demoData === "object" ? value.demoData : value;
   const defaults = cloneDemoDefaults();
@@ -317,7 +367,11 @@ function normalizeDemoData(value) {
   }
 
   return Object.fromEntries(
-    Object.keys(defaults).map((key) => [key, Array.isArray(source[key]) ? source[key] : defaults[key]]),
+    Object.keys(defaults).map((key) => {
+      const items = Array.isArray(source[key]) ? source[key] : defaults[key];
+
+      return [key, key === "maintenancePlusHvac" ? items.map(normalizeMaintenanceRequest) : items];
+    }),
   );
 }
 
@@ -385,6 +439,46 @@ function getPayrollStatus(record) {
 
 function getLaborCost(record) {
   return (Number(record?.hours) || 0) * (Number(record?.rate) || 0);
+}
+
+function getMaintenanceTitle(request) {
+  return String(request?.title ?? request?.request ?? "Maintenance request").trim() || "Maintenance request";
+}
+
+function getMaintenancePriority(request) {
+  const priority = String(request?.priority ?? "").trim();
+
+  if (priority === "Medium") {
+    return "Normal";
+  }
+
+  return MAINTENANCE_PRIORITIES.includes(priority) ? priority : "Normal";
+}
+
+function getMaintenanceTrade(request) {
+  const trade = String(request?.tradeType ?? request?.trade ?? "").trim();
+
+  return MAINTENANCE_TRADES.includes(trade) ? trade : "Maintenance";
+}
+
+function getMaintenanceStatus(request) {
+  const status = String(request?.status ?? "").trim();
+
+  if (["Queued", "Open", "Pending"].includes(status)) {
+    return "New Request";
+  }
+
+  return MAINTENANCE_DISPATCH_STATUSES.includes(status) ? status : "New Request";
+}
+
+function getMaintenanceSummary(requests = demoData.maintenancePlusHvac ?? []) {
+  return {
+    total: requests.length,
+    urgent: requests.filter((request) => getMaintenancePriority(request) === "Urgent").length,
+    active: requests.filter((request) => ACTIVE_MAINTENANCE_STATUSES.includes(getMaintenanceStatus(request))).length,
+    complete: requests.filter((request) => getMaintenanceStatus(request) === "Complete").length,
+    totalEstimatedCost: requests.reduce((total, request) => total + (Number(request.estimatedCost) || 0), 0),
+  };
 }
 
 function getPayrollPrepSummary(records = demoData.payrollPrep ?? []) {
@@ -460,6 +554,23 @@ function addPayrollStatusActivity(record, previousStatus, nextStatus) {
       module: "Payroll Prep",
       title: record.workerName || "Labor status",
       meta: `Status changed from ${previousStatus} to ${nextStatus} · ${record.project || "Unassigned project"} · ${formatCurrency(getLaborCost(record))} labor hold`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+
+function addMaintenanceStatusActivity(request, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-maintenance-status`,
+      module: "Maintenance + HVAC",
+      title: getMaintenanceTitle(request),
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${request.propertyProject || "Unassigned property/project"} · ${getMaintenanceTrade(request)} · ${formatCurrency(request.estimatedCost)}`,
       createdAt: new Date().toISOString(),
     },
     ...recentActivity,
@@ -809,6 +920,100 @@ function updateReceiptStatus(index, nextStatus) {
 }
 
 
+function renderMaintenanceDispatchPanel(requests) {
+  const summary = getMaintenanceSummary(requests);
+  const summaryGrid = `
+    <div class="maintenance-summary-grid" aria-label="Maintenance and HVAC summary">
+      <article><strong>${summary.total}</strong><span>Total requests</span></article>
+      <article><strong>${summary.urgent}</strong><span>Urgent requests</span></article>
+      <article><strong>${summary.active}</strong><span>Dispatched / active</span></article>
+      <article><strong>${summary.complete}</strong><span>Completed requests</span></article>
+      <article><strong>${escapeHtml(formatCurrency(summary.totalEstimatedCost))}</strong><span>Total estimated repair cost</span></article>
+    </div>
+  `;
+
+  if (!requests.length) {
+    return `
+      <section class="maintenance-dispatch-panel" aria-label="Maintenance and HVAC dispatch panel">
+        <div class="maintenance-dispatch-header">
+          <div>
+            <p class="eyebrow">Dispatch Panel</p>
+            <h4>Maintenance + HVAC Summary</h4>
+          </div>
+          <span class="maintenance-dispatch-status">Local demo dispatch</span>
+        </div>
+        <p class="maintenance-dispatch-note">Live dispatch, GPS, tenant-sensitive storage, and billing are locked until backend/security gates are complete.</p>
+        ${summaryGrid}
+        <p class="maintenance-dispatch-empty">No saved maintenance/HVAC dispatch demo records yet.</p>
+      </section>
+    `;
+  }
+
+  const requestRows = requests
+    .map((request, index) => {
+      const currentStatus = getMaintenanceStatus(request);
+      const statusOptions = MAINTENANCE_DISPATCH_STATUSES
+        .map(
+          (status) =>
+            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+        )
+        .join("");
+
+      return `
+        <article class="maintenance-dispatch-card">
+          <div>
+            <strong>${escapeHtml(getMaintenanceTitle(request))}</strong>
+            <span>${escapeHtml(request.propertyProject || "Unassigned property/project")}</span>
+            <span>${escapeHtml(getMaintenancePriority(request))} priority · ${escapeHtml(getMaintenanceTrade(request))} · ${escapeHtml(request.assignedTechnician || "Unassigned technician")}</span>
+            <span>${escapeHtml(formatCurrency(request.estimatedCost))} estimated repair cost</span>
+          </div>
+          <label>
+            <span>Dispatch status</span>
+            <select data-maintenance-status-index="${index}" aria-label="Dispatch status for ${escapeHtml(getMaintenanceTitle(request))}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="maintenance-dispatch-panel" aria-label="Maintenance and HVAC dispatch panel">
+      <div class="maintenance-dispatch-header">
+        <div>
+          <p class="eyebrow">Dispatch Panel</p>
+          <h4>Maintenance + HVAC Summary</h4>
+        </div>
+        <span class="maintenance-dispatch-status">Local demo dispatch</span>
+      </div>
+      <p class="maintenance-dispatch-note">Live dispatch, GPS, tenant-sensitive storage, and billing are locked until backend/security gates are complete.</p>
+      ${summaryGrid}
+      <div class="maintenance-dispatch-list">${requestRows}</div>
+    </section>
+  `;
+}
+
+function updateMaintenanceStatus(index, nextStatus) {
+  const request = demoData.maintenancePlusHvac?.[index];
+
+  if (!request || !MAINTENANCE_DISPATCH_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getMaintenanceStatus(request);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  request.status = nextStatus;
+  saveDemoData();
+  addMaintenanceStatusActivity(request, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("maintenance-plus-hvac");
+}
+
 function renderPayrollPrepPanel(records) {
   const summary = getPayrollPrepSummary(records);
   const summaryGrid = `
@@ -907,6 +1112,7 @@ function renderDemoList(moduleId) {
   const projectFolderSlot = detailDemo.querySelector("[data-project-folder]");
   const receiptReviewSlot = detailDemo.querySelector("[data-receipt-review]");
   const payrollPrepSlot = detailDemo.querySelector("[data-payroll-prep]");
+  const maintenanceDispatchSlot = detailDemo.querySelector("[data-maintenance-dispatch]");
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
@@ -918,6 +1124,9 @@ function renderDemoList(moduleId) {
     }
     if (payrollPrepSlot) {
       payrollPrepSlot.innerHTML = renderPayrollPrepPanel(items);
+    }
+    if (maintenanceDispatchSlot) {
+      maintenanceDispatchSlot.innerHTML = renderMaintenanceDispatchPanel(items);
     }
     return;
   }
@@ -971,6 +1180,15 @@ function renderDemoList(moduleId) {
     payrollPrepSlot.innerHTML = renderPayrollPrepPanel(items);
     payrollPrepSlot.querySelectorAll("[data-payroll-status-index]").forEach((select) => {
       select.addEventListener("change", () => updatePayrollStatus(Number(select.dataset.payrollStatusIndex), select.value));
+    });
+  }
+
+  if (maintenanceDispatchSlot) {
+    maintenanceDispatchSlot.innerHTML = renderMaintenanceDispatchPanel(items);
+    maintenanceDispatchSlot.querySelectorAll("[data-maintenance-status-index]").forEach((select) => {
+      select.addEventListener("change", () =>
+        updateMaintenanceStatus(Number(select.dataset.maintenanceStatusIndex), select.value),
+      );
     });
   }
 }
@@ -1036,6 +1254,7 @@ function renderDemoModule(moduleId) {
     ${moduleId === "projects" ? '<div data-project-folder></div>' : ""}
     ${moduleId === "receipts" ? '<div data-receipt-review></div>' : ""}
     ${moduleId === "payroll-prep" ? '<div data-payroll-prep></div>' : ""}
+    ${moduleId === "maintenance-plus-hvac" ? '<div data-maintenance-dispatch></div>' : ""}
   `;
 
   detailDemo.querySelector("[data-demo-form]").addEventListener("submit", (event) => {
