@@ -2717,3 +2717,467 @@ h1 {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
+
+/* v51 visual correction pass: premium Aqua Homes dark mobile command shell. */
+:root {
+  --panel: rgba(6, 17, 29, 0.9);
+  --panel-border: rgba(51, 114, 221, 0.28);
+  --gold: #ffca4d;
+  --gold-deep: #f3a72d;
+  --gold-soft: rgba(255, 202, 77, 0.2);
+  --electric-blue: #0d6dff;
+  --electric-blue-soft: rgba(13, 109, 255, 0.32);
+  --cyan-glow: rgba(26, 163, 255, 0.2);
+  --muted: #b6c0d4;
+}
+
+body {
+  background:
+    radial-gradient(900px 420px at 84% 24%, rgba(17, 104, 255, 0.32), transparent 48%),
+    radial-gradient(620px 260px at 8% 22%, rgba(255, 169, 38, 0.17), transparent 42%),
+    radial-gradient(820px 520px at 50% 100%, rgba(0, 80, 220, 0.16), transparent 45%),
+    linear-gradient(180deg, #03060b 0%, #04101d 56%, #02060d 100%);
+}
+
+.app-shell {
+  position: relative;
+  width: min(100%, 470px);
+  padding: 14px 14px 104px;
+}
+
+.app-shell::before,
+.app-shell::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.app-shell::before {
+  width: 520px;
+  height: 520px;
+  left: max(-300px, calc(50% - 700px));
+  top: 28%;
+  border: 2px solid rgba(245, 160, 42, 0.22);
+  border-right: 0;
+  border-bottom: 0;
+  box-shadow: 0 0 80px rgba(245, 160, 42, 0.14);
+  transform: rotate(-10deg);
+}
+
+.app-shell::after {
+  width: 650px;
+  height: 650px;
+  right: max(-330px, calc(50% - 760px));
+  top: 20%;
+  border: 2px solid rgba(36, 112, 255, 0.3);
+  border-left: 0;
+  border-top: 0;
+  box-shadow: 0 0 120px rgba(37, 112, 255, 0.2);
+  transform: rotate(18deg);
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 12px 12px 14px;
+  border-color: rgba(255, 173, 58, 0.16);
+  border-radius: 22px;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.96) 0%, rgba(1, 4, 8, 0.96) 34%, rgba(5, 16, 34, 0.94) 62%, rgba(7, 29, 70, 0.76) 100%),
+    radial-gradient(380px 150px at 90% 22%, rgba(19, 108, 255, 0.28), transparent 62%),
+    radial-gradient(260px 120px at 0% 0%, rgba(247, 169, 52, 0.09), transparent 58%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 22px 68px rgba(0, 0, 0, 0.46),
+    0 0 0 7px rgba(255, 255, 255, 0.025);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -18% -24% 8% 48%;
+  background: radial-gradient(360px 160px at 75% 42%, rgba(13, 109, 255, 0.34), rgba(10, 28, 68, 0.14) 56%, transparent 78%);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  bottom: 20px;
+  width: 126px;
+  height: 126px;
+  border: 1px solid rgba(72, 176, 255, 0.24);
+  border-radius: 50%;
+  box-shadow:
+    0 0 24px rgba(13, 120, 255, 0.18),
+    inset 0 0 16px rgba(72, 176, 255, 0.08);
+  opacity: 0.78;
+  pointer-events: none;
+}
+
+.brand-lockup,
+.hero-command,
+.hero-status-row {
+  position: relative;
+  z-index: 1;
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding-bottom: 11px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(223, 157, 52, 0.22);
+}
+
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(240, 164, 51, 0.42);
+  border-radius: 50%;
+  color: var(--gold);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 170, 67, 0.11), rgba(6, 10, 16, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 0 18px rgba(31, 121, 255, 0.14);
+  font-size: 0.82rem;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.brand-copy,
+.brand-name,
+.brand-subtitle {
+  display: block;
+}
+
+.brand-name {
+  font-size: 1.08rem;
+  font-weight: 950;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.brand-subtitle {
+  margin-top: 2px;
+  color: #e8eef8;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  opacity: 0.9;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  color: var(--gold-deep);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.hero h1 {
+  max-width: none;
+  margin: 2px 0 7px;
+  font-size: clamp(2rem, 12vw, 3.05rem);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+  text-transform: none;
+}
+
+.hero-copy {
+  max-width: 330px;
+  color: #e8effa;
+  font-size: 0.82rem;
+  line-height: 1.42;
+  text-shadow: 0 0 12px rgba(38, 120, 255, 0.18);
+}
+
+.hero-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.hero-kicker {
+  border: 1px solid rgba(13, 109, 255, 0.42);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: #dbe8ff;
+  background: rgba(13, 109, 255, 0.12);
+  box-shadow: 0 0 18px rgba(13, 109, 255, 0.12);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.hero-kicker-gold {
+  border-color: rgba(255, 202, 77, 0.44);
+  color: var(--gold);
+  background: rgba(255, 202, 77, 0.08);
+}
+
+.approved-gold-bar {
+  height: 10px;
+  margin: 18px 4px 24px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(2, 5, 11, 0.62) 8%,
+    rgba(13, 109, 255, 0.38) 20%,
+    var(--gold-deep) 36%,
+    var(--gold) 47%,
+    var(--gold) 53%,
+    var(--gold-deep) 64%,
+    rgba(13, 109, 255, 0.38) 80%,
+    rgba(2, 5, 11, 0.62) 92%,
+    transparent 100%
+  );
+  box-shadow: 0 0 30px rgba(255, 202, 77, 0.2);
+}
+
+main {
+  position: relative;
+}
+
+.dashboard-header h2,
+.quick-access-header h2,
+.ai-insights-header h2,
+.activity-header h2,
+.admin-settings-header h2,
+.launch-control-header h2,
+.phone-trial-header h2,
+.safety-gates h2 {
+  letter-spacing: -0.035em;
+}
+
+.dashboard-header {
+  padding: 0 2px;
+}
+
+.status-pill,
+.last-opened-module,
+.lock-badge,
+.project-folder-status,
+.accounting-review-status-pill,
+.payroll-lock-status,
+.receipt-feed-status,
+.maintenance-dispatch-status,
+.schedule-task-status,
+.inventory-checkout-status,
+.walkthrough-capture-status,
+.customer-portal-status,
+.launch-control-status,
+.phone-trial-status {
+  border-color: rgba(255, 202, 77, 0.38);
+  color: var(--gold);
+  background: rgba(255, 202, 77, 0.075);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.quick-access-panel,
+.ai-insights-panel,
+.activity-panel,
+.admin-settings-panel,
+.launch-control-panel,
+.phone-trial-panel,
+.safety-gates,
+.module-detail,
+.backup-panel,
+.project-folder,
+.project-folder-empty,
+.accounting-review-panel,
+.payroll-prep-panel,
+.receipt-review-panel,
+.maintenance-dispatch-panel,
+.schedule-tasks-panel,
+.inventory-checkout-panel,
+.walkthrough-capture-panel,
+.customer-portal-panel {
+  border-color: rgba(51, 114, 221, 0.26);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 22%),
+    radial-gradient(420px 130px at 92% 0%, rgba(13, 109, 255, 0.12), transparent 62%),
+    linear-gradient(160deg, rgba(6, 17, 29, 0.92), rgba(2, 5, 11, 0.76));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 16px 44px rgba(0, 0, 0, 0.2);
+}
+
+.summary-card,
+.brain-card,
+.risk-control-card,
+.demo-list li,
+.project-folder-card,
+.accounting-review-summary-grid article,
+.payroll-summary-grid article,
+.accounting-summary-grid article,
+.maintenance-summary-grid article,
+.schedule-summary-grid article,
+.inventory-summary-grid article,
+.walkthrough-summary-grid article,
+.customer-summary-grid article,
+.launch-readiness-card,
+.admin-module-card,
+.ai-insights-list li,
+.activity-list li {
+  border-color: rgba(51, 114, 221, 0.2);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 28%),
+    linear-gradient(160deg, rgba(9, 25, 43, 0.82), rgba(2, 5, 11, 0.58));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 10px 26px rgba(0, 0, 0, 0.16);
+}
+
+.quick-access-button,
+.demo-form button,
+.module-detail button,
+.accounting-review-actions button,
+.backup-actions .ghost-button,
+.admin-settings-panel .ghost-button,
+.ai-insights-panel .ghost-button,
+.activity-panel .ghost-button {
+  border-color: rgba(13, 109, 255, 0.42);
+  color: #eef6ff;
+  background: linear-gradient(180deg, rgba(13, 109, 255, 0.3), rgba(13, 109, 255, 0.13));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 0 18px rgba(13, 109, 255, 0.1);
+}
+
+.quick-access-button:hover,
+.quick-access-button:focus-visible,
+.quick-access-button.active,
+.demo-form button:hover,
+.module-detail button:hover,
+.accounting-review-actions button:hover,
+.backup-actions .ghost-button:hover,
+.admin-settings-panel .ghost-button:hover,
+.ai-insights-panel .ghost-button:hover,
+.activity-panel .ghost-button:hover {
+  border-color: rgba(255, 202, 77, 0.58);
+  color: #02050b;
+  background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+}
+
+.brain-card {
+  min-height: 156px;
+  padding: 17px;
+  border-radius: 20px;
+}
+
+.card-icon {
+  width: 38px;
+  height: 38px;
+  margin-bottom: 22px;
+  color: #04101d;
+  background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+  box-shadow: 0 0 24px rgba(255, 202, 77, 0.16);
+}
+
+.card-title {
+  font-size: 1.02rem;
+}
+
+.card-copy {
+  font-size: 0.9rem;
+  line-height: 1.48;
+}
+
+.brain-card:hover,
+.brain-card:focus-visible,
+.brain-card.active {
+  border-color: rgba(255, 202, 77, 0.52);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 18px 48px rgba(0, 0, 0, 0.3),
+    0 0 24px rgba(13, 109, 255, 0.12),
+    0 0 22px rgba(255, 202, 77, 0.08);
+}
+
+.demo-form input,
+.demo-form select,
+.demo-form textarea,
+.accounting-review-form select,
+.accounting-review-form textarea,
+.backup-json {
+  border-color: rgba(51, 114, 221, 0.28);
+  background: rgba(2, 5, 11, 0.58);
+}
+
+.bottom-nav {
+  border-color: rgba(51, 114, 221, 0.28);
+  background: rgba(2, 5, 11, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 54px rgba(0, 0, 0, 0.34),
+    0 0 30px rgba(13, 109, 255, 0.09);
+}
+
+.bottom-nav button.active,
+.bottom-nav button:hover {
+  color: #02050b;
+  background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+}
+
+@media (min-width: 900px) {
+  .app-shell {
+    width: min(100%, 1040px);
+    padding-top: 24px;
+  }
+
+  .hero,
+  .dashboard-header,
+  .quick-access-panel,
+  .ai-insights-panel,
+  .activity-panel,
+  .admin-settings-panel,
+  .launch-control-panel,
+  .phone-trial-panel,
+  .safety-gates,
+  .module-detail {
+    max-width: 940px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .hero {
+    min-height: 228px;
+    padding: 16px 18px 18px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .hero-copy {
+    max-width: 520px;
+    font-size: 0.92rem;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  }
+
+  .brain-card {
+    min-height: 176px;
+  }
+}
+
+@media (min-width: 1180px) {
+  .app-shell {
+    width: min(100%, 1120px);
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
