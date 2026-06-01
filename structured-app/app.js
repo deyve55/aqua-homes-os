@@ -196,6 +196,11 @@ const detailTitle = document.querySelector("[data-module-title]");
 const detailDescription = document.querySelector("[data-module-description]");
 const detailClose = document.querySelector("[data-module-close]");
 const detailDemo = document.querySelector("[data-module-demo]");
+const backupJson = document.querySelector("[data-backup-json]");
+const backupStatus = document.querySelector("[data-backup-status]");
+const exportDemoData = document.querySelector("[data-export-demo]");
+const importDemoData = document.querySelector("[data-import-demo]");
+const backupResetDemoData = document.querySelector("[data-backup-reset]");
 const resetDemoData = document.querySelector("[data-reset-demo]");
 
 let demoData = loadDemoData();
@@ -251,6 +256,56 @@ function cloneDemoDefaults() {
   return JSON.parse(JSON.stringify(demoDefaults));
 }
 
+function normalizeDemoData(value) {
+  const source = value?.demoData && typeof value.demoData === "object" ? value.demoData : value;
+  const defaults = cloneDemoDefaults();
+
+  if (!source || typeof source !== "object" || Array.isArray(source)) {
+    return null;
+  }
+
+  return Object.fromEntries(
+    Object.keys(defaults).map((key) => [key, Array.isArray(source[key]) ? source[key] : defaults[key]]),
+  );
+}
+
+function setBackupStatus(message) {
+  backupStatus.textContent = message;
+}
+
+function refreshDemoViews() {
+  renderModules();
+
+  if (activeModule) {
+    renderDemoModule(getModuleId(activeModule.name));
+  }
+}
+
+function exportDemoDataAsJson() {
+  backupJson.value = JSON.stringify(demoData, null, 2);
+  backupJson.focus();
+  backupJson.select();
+  setBackupStatus("Demo data exported as JSON.");
+}
+
+function importDemoDataFromJson() {
+  try {
+    const importedData = normalizeDemoData(JSON.parse(backupJson.value));
+
+    if (!importedData) {
+      setBackupStatus("Import needs a JSON object from the demo data export.");
+      return;
+    }
+
+    demoData = importedData;
+    saveDemoData();
+    refreshDemoViews();
+    setBackupStatus("Demo data imported from pasted JSON.");
+  } catch (error) {
+    setBackupStatus("Import failed. Check that the pasted demo data is valid JSON.");
+  }
+}
+
 function loadDemoData() {
   const storedData = readLocalStorage(DEMO_DATA_KEY);
 
@@ -259,10 +314,7 @@ function loadDemoData() {
   }
 
   try {
-    return {
-      ...cloneDemoDefaults(),
-      ...JSON.parse(storedData),
-    };
+    return normalizeDemoData(JSON.parse(storedData)) ?? cloneDemoDefaults();
   } catch (error) {
     return cloneDemoDefaults();
   }
@@ -454,11 +506,8 @@ const renderModules = () => {
 function resetAllDemoData() {
   demoData = cloneDemoDefaults();
   saveDemoData();
-  renderModules();
-
-  if (activeModule) {
-    renderDemoModule(getModuleId(activeModule.name));
-  }
+  refreshDemoViews();
+  setBackupStatus("Demo data reset to starter defaults.");
 }
 
 navButtons.forEach((button) => {
@@ -469,6 +518,9 @@ navButtons.forEach((button) => {
 });
 
 detailClose.addEventListener("click", closeModuleDetail);
+exportDemoData.addEventListener("click", exportDemoDataAsJson);
+importDemoData.addEventListener("click", importDemoDataFromJson);
+backupResetDemoData.addEventListener("click", resetAllDemoData);
 resetDemoData.addEventListener("click", resetAllDemoData);
 
 window.addEventListener("storage", (event) => {
@@ -477,11 +529,8 @@ window.addEventListener("storage", (event) => {
   }
 
   demoData = loadDemoData();
-  renderModules();
-
-  if (activeModule) {
-    renderDemoModule(getModuleId(activeModule.name));
-  }
+  refreshDemoViews();
+  setBackupStatus("Demo data updated in another tab.");
 });
 
 renderModules();

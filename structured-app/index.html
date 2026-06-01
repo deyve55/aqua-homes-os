@@ -36,6 +36,29 @@
             <p class="eyebrow">Module Detail</p>
             <h3 data-module-title>Projects</h3>
             <p data-module-description>Track active builds, milestones, and next actions.</p>
+            <section class="backup-panel" aria-label="Demo data backup controls">
+              <div class="backup-panel-header">
+                <div>
+                  <p class="eyebrow">Demo data backup</p>
+                  <h4>Export / Import</h4>
+                </div>
+                <p class="backup-status" data-backup-status aria-live="polite">Ready for demo data backups.</p>
+              </div>
+              <label class="backup-json-label" for="demo-backup-json">Pasted or exported JSON</label>
+              <textarea
+                id="demo-backup-json"
+                class="backup-json"
+                data-backup-json
+                rows="5"
+                spellcheck="false"
+                placeholder="Export fills this box. Paste JSON here to import demo data."
+              ></textarea>
+              <div class="backup-actions">
+                <button type="button" class="ghost-button" data-export-demo>Export JSON</button>
+                <button type="button" class="ghost-button" data-import-demo>Import JSON</button>
+                <button type="button" class="ghost-button" data-backup-reset>Reset demo data</button>
+              </div>
+            </section>
             <div class="module-demo" data-module-demo hidden></div>
           </div>
           <div class="module-actions">
