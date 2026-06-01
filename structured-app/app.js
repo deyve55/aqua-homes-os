@@ -79,6 +79,36 @@ const demoDefaults = {
   ],
 };
 
+const dashboardSummaryItems = [
+  {
+    label: "Active Projects",
+    storageKey: "projects",
+    helper: "Projects marked active",
+    getCount: (items) => items.filter((item) => item.status?.toLowerCase() === "active").length,
+  },
+  {
+    label: "Receipts Review",
+    storageKey: "receipts",
+    helper: "Receipts needing review",
+    getCount: (items) => items.filter((item) => item.status?.toLowerCase().includes("review")).length,
+  },
+  {
+    label: "Maintenance / HVAC",
+    storageKey: "maintenancePlusHvac",
+    helper: "Open service requests",
+  },
+  {
+    label: "Inventory / Tools",
+    storageKey: "inventoryTools",
+    helper: "Tracked items",
+  },
+  {
+    label: "Bug Reports",
+    storageKey: "bugCapture",
+    helper: "Captured product notes",
+  },
+];
+
 const demoModules = {
   projects: {
     storageKey: "projects",
@@ -159,6 +189,7 @@ const demoModules = {
 };
 
 const navButtons = document.querySelectorAll(".bottom-nav button");
+const dashboardSummary = document.querySelector("[data-dashboard-summary]");
 const cardGrid = document.querySelector("[data-module-grid]");
 const detailPanel = document.querySelector("[data-module-detail]");
 const detailTitle = document.querySelector("[data-module-title]");
@@ -261,6 +292,29 @@ function getDemoCount(moduleId) {
   }
 
   return demoData[demoModule.storageKey]?.length ?? 0;
+}
+
+function getSummaryCount(summaryItem) {
+  const items = demoData[summaryItem.storageKey] ?? [];
+
+  return summaryItem.getCount ? summaryItem.getCount(items) : items.length;
+}
+
+function renderDashboardSummary() {
+  const fragment = document.createDocumentFragment();
+
+  dashboardSummaryItems.forEach((summaryItem) => {
+    const card = document.createElement("article");
+    card.className = "summary-card";
+    card.innerHTML = `
+      <span class="summary-count">${getSummaryCount(summaryItem)}</span>
+      <span class="summary-label">${summaryItem.label}</span>
+      <span class="summary-helper">${summaryItem.helper}</span>
+    `;
+    fragment.appendChild(card);
+  });
+
+  dashboardSummary.replaceChildren(fragment);
 }
 
 function renderDemoList(moduleId) {
@@ -368,6 +422,8 @@ const closeModuleDetail = () => {
 };
 
 const renderModules = () => {
+  renderDashboardSummary();
+
   const fragment = document.createDocumentFragment();
 
   modules.forEach((module, index) => {
@@ -414,6 +470,19 @@ navButtons.forEach((button) => {
 
 detailClose.addEventListener("click", closeModuleDetail);
 resetDemoData.addEventListener("click", resetAllDemoData);
+
+window.addEventListener("storage", (event) => {
+  if (event.key !== DEMO_DATA_KEY) {
+    return;
+  }
+
+  demoData = loadDemoData();
+  renderModules();
+
+  if (activeModule) {
+    renderDemoModule(getModuleId(activeModule.name));
+  }
+});
 
 renderModules();
 
