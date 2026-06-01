@@ -31,6 +31,61 @@
 
         <section class="card-grid" data-module-grid aria-label="Main Brain dashboard cards"></section>
 
+        <section class="safety-gates" aria-labelledby="safety-gates-title">
+          <div class="safety-gates-header">
+            <div>
+              <p class="eyebrow">Safety Gates</p>
+              <h2 id="safety-gates-title">Live Risk Controls</h2>
+            </div>
+            <span class="status-pill safety-status">Locked for Launch</span>
+          </div>
+          <p class="safety-intro">
+            High-risk operational features are visible for planning, but stay locked until Aqua Homes
+            approves the required live controls.
+          </p>
+          <div class="risk-control-grid" aria-label="Locked live risk controls">
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Payments</h3>
+              <p>Disabled until payment provider review, approval, and secure settlement workflows are in place.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Payroll processing</h3>
+              <p>Locked until payroll authorization, tax handling, and verified role permissions are complete.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Banking / ACH / wire / card processing</h3>
+              <p>Requires banking partner approval, transaction controls, and reconciliation before activation.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>GPS tracking</h3>
+              <p>Off until location consent, access rules, retention limits, and field policies are approved.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Accounting sync</h3>
+              <p>Held until chart mapping, review queues, and sync error protections are validated.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Tenant-sensitive storage</h3>
+              <p>Unavailable until encryption, access logging, retention, and privacy review are complete.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Ledger / P&amp;L posting</h3>
+              <p>Blocked until owner-approved posting rules and office reconciliation checks are active.</p>
+            </article>
+          </div>
+          <p class="owner-admin-note">
+            Owner/Admin note: live activation requires backend security, auth/MFA, encryption, audit logs,
+            provider approval, office reconciliation, and owner approval.
+          </p>
+        </section>
+
         <aside class="module-detail" data-module-detail aria-live="polite" hidden>
           <div class="module-copy">
             <p class="eyebrow">Module Detail</p>
