@@ -4858,3 +4858,9 @@ const lastOpenedModule = modules.find(
 if (lastOpenedModule && getModuleStatus(getModuleId(lastOpenedModule.name)) === "active") {
   openModuleDetail(lastOpenedModule);
 }
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js");
+  });
+}
