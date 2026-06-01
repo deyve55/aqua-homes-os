@@ -4,6 +4,7 @@ const RECENT_ACTIVITY_KEY = "aquaHomes.structuredRecentActivity";
 const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
 const MAX_RECENT_ACTIVITY = 10;
 const RECEIPT_REVIEW_STATUSES = ["Needs Review", "Coded", "Accounting Hold"];
+const PAYROLL_PREP_STATUSES = ["Draft", "Office Review", "Approved Hold"];
 
 const modules = [
   {
@@ -63,6 +64,22 @@ const demoDefaults = {
       project: "Canal House Retrofit",
       amount: "742.18",
       status: "Needs Review",
+    },
+  ],
+  payrollPrep: [
+    {
+      workerName: "Mia Rivera",
+      project: "Canal House Retrofit",
+      hours: "6.5",
+      rate: "38",
+      status: "Draft",
+    },
+    {
+      workerName: "Jordan Lee",
+      project: "Canal House Retrofit",
+      hours: "8",
+      rate: "42",
+      status: "Office Review",
     },
   ],
   maintenancePlusHvac: [
@@ -150,6 +167,23 @@ const demoModules = {
     format: (item) => ({
       title: item.vendor,
       meta: `${item.project} · ${formatCurrency(item.amount)} · ${item.status}`,
+    }),
+  },
+  "payroll-prep": {
+    storageKey: "payrollPrep",
+    eyebrow: "Demo payroll prep",
+    submitLabel: "Save Labor Record",
+    fields: [
+      { name: "workerName", label: "Worker name", placeholder: "Mia Rivera", required: true },
+      { name: "project", label: "Project", placeholder: "Canal House Retrofit", required: true },
+      { name: "hours", label: "Hours", placeholder: "8", type: "number", step: "0.25", min: "0", required: true },
+      { name: "rate", label: "Rate", placeholder: "42", type: "number", step: "0.01", min: "0", required: true },
+      { name: "status", label: "Status", options: PAYROLL_PREP_STATUSES, required: true },
+    ],
+    empty: "No demo payroll/labor records yet.",
+    format: (item) => ({
+      title: item.workerName,
+      meta: `${item.project} · ${Number(item.hours) || 0} hrs × ${formatCurrency(item.rate)} · ${formatCurrency(getLaborCost(item))} · ${getPayrollStatus(item)}`,
     }),
   },
   maintenancePlusHvac: {
@@ -343,6 +377,25 @@ function getReceiptStatus(receipt) {
   return RECEIPT_REVIEW_STATUSES.includes(status) ? status : RECEIPT_REVIEW_STATUSES[0];
 }
 
+function getPayrollStatus(record) {
+  const status = String(record?.status ?? "").trim();
+
+  return PAYROLL_PREP_STATUSES.includes(status) ? status : PAYROLL_PREP_STATUSES[0];
+}
+
+function getLaborCost(record) {
+  return (Number(record?.hours) || 0) * (Number(record?.rate) || 0);
+}
+
+function getPayrollPrepSummary(records = demoData.payrollPrep ?? []) {
+  return {
+    totalLaborCost: records.reduce((total, record) => total + getLaborCost(record), 0),
+    draft: records.filter((record) => getPayrollStatus(record) === "Draft").length,
+    officeReview: records.filter((record) => getPayrollStatus(record) === "Office Review").length,
+    approvedHold: records.filter((record) => getPayrollStatus(record) === "Approved Hold").length,
+  };
+}
+
 function getReceiptAccountingSummary(receipts = demoData.receipts ?? []) {
   return {
     totalAmount: receipts.reduce((total, receipt) => total + (Number(receipt.amount) || 0), 0),
@@ -391,6 +444,22 @@ function addRecentActivity(moduleId, item) {
       module: module?.name ?? demoModule.eyebrow,
       title: formattedItem.title,
       meta: `Saved ${demoModule.submitLabel.replace(/^Save\s+/i, "").toLowerCase()} · ${formattedItem.meta}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function addPayrollStatusActivity(record, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-payroll-status`,
+      module: "Payroll Prep",
+      title: record.workerName || "Labor status",
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${record.project || "Unassigned project"} · ${formatCurrency(getLaborCost(record))} labor hold`,
       createdAt: new Date().toISOString(),
     },
     ...recentActivity,
@@ -739,12 +808,105 @@ function updateReceiptStatus(index, nextStatus) {
   renderDemoModule("receipts");
 }
 
+
+function renderPayrollPrepPanel(records) {
+  const summary = getPayrollPrepSummary(records);
+  const summaryGrid = `
+    <div class="payroll-summary-grid" aria-label="Payroll prep summary">
+      <article><strong>${escapeHtml(formatCurrency(summary.totalLaborCost))}</strong><span>Total labor cost</span></article>
+      <article><strong>${summary.draft}</strong><span>Draft records</span></article>
+      <article><strong>${summary.officeReview}</strong><span>Office review records</span></article>
+      <article><strong>${summary.approvedHold}</strong><span>Approved hold records</span></article>
+    </div>
+  `;
+
+  if (!records.length) {
+    return `
+      <section class="payroll-prep-panel" aria-label="Payroll prep labor hold panel">
+        <div class="payroll-prep-header">
+          <div>
+            <p class="eyebrow">Labor Hold</p>
+            <h4>Payroll Prep Summary</h4>
+          </div>
+          <span class="payroll-lock-status">Prep only</span>
+        </div>
+        <p class="payroll-lock-note">Payroll processing is locked. This is prep/review data only.</p>
+        ${summaryGrid}
+        <p class="payroll-prep-empty">No saved payroll/labor demo records yet.</p>
+      </section>
+    `;
+  }
+
+  const recordRows = records
+    .map((record, index) => {
+      const currentStatus = getPayrollStatus(record);
+      const statusOptions = PAYROLL_PREP_STATUSES
+        .map(
+          (status) =>
+            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+        )
+        .join("");
+
+      return `
+        <article class="payroll-prep-card">
+          <div>
+            <strong>${escapeHtml(record.workerName || "Worker")}</strong>
+            <span>${escapeHtml(record.project || "Unassigned project")} · ${Number(record.hours) || 0} hrs × ${escapeHtml(formatCurrency(record.rate))} · ${escapeHtml(formatCurrency(getLaborCost(record)))}</span>
+          </div>
+          <label>
+            <span>Status</span>
+            <select data-payroll-status-index="${index}" aria-label="Payroll prep status for ${escapeHtml(record.workerName || "worker")}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="payroll-prep-panel" aria-label="Payroll prep labor hold panel">
+      <div class="payroll-prep-header">
+        <div>
+          <p class="eyebrow">Labor Hold</p>
+          <h4>Payroll Prep Summary</h4>
+        </div>
+        <span class="payroll-lock-status">Prep only</span>
+      </div>
+      <p class="payroll-lock-note">Payroll processing is locked. This is prep/review data only.</p>
+      ${summaryGrid}
+      <div class="payroll-prep-list">${recordRows}</div>
+    </section>
+  `;
+}
+
+function updatePayrollStatus(index, nextStatus) {
+  const record = demoData.payrollPrep?.[index];
+
+  if (!record || !PAYROLL_PREP_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getPayrollStatus(record);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  record.status = nextStatus;
+  saveDemoData();
+  addPayrollStatusActivity(record, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("payroll-prep");
+}
+
 function renderDemoList(moduleId) {
   const demoModule = demoModules[moduleId];
   const items = demoData[demoModule.storageKey] ?? [];
   const list = detailDemo.querySelector("[data-demo-list]");
   const projectFolderSlot = detailDemo.querySelector("[data-project-folder]");
   const receiptReviewSlot = detailDemo.querySelector("[data-receipt-review]");
+  const payrollPrepSlot = detailDemo.querySelector("[data-payroll-prep]");
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
@@ -753,6 +915,9 @@ function renderDemoList(moduleId) {
     }
     if (receiptReviewSlot) {
       receiptReviewSlot.innerHTML = renderReceiptReviewPanel(items);
+    }
+    if (payrollPrepSlot) {
+      payrollPrepSlot.innerHTML = renderPayrollPrepPanel(items);
     }
     return;
   }
@@ -801,6 +966,13 @@ function renderDemoList(moduleId) {
       select.addEventListener("change", () => updateReceiptStatus(Number(select.dataset.receiptStatusIndex), select.value));
     });
   }
+
+  if (payrollPrepSlot) {
+    payrollPrepSlot.innerHTML = renderPayrollPrepPanel(items);
+    payrollPrepSlot.querySelectorAll("[data-payroll-status-index]").forEach((select) => {
+      select.addEventListener("change", () => updatePayrollStatus(Number(select.dataset.payrollStatusIndex), select.value));
+    });
+  }
 }
 
 function renderDemoModule(moduleId) {
@@ -813,19 +985,38 @@ function renderDemoModule(moduleId) {
   }
 
   const fields = demoModule.fields
-    .map(
-      (field) => `
+    .map((field) => {
+      const requiredAttribute = field.required ? "required" : "";
+
+      if (field.options?.length) {
+        const options = field.options
+          .map((option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`)
+          .join("");
+
+        return `
+          <label>
+            <span>${field.label}</span>
+            <select name="${field.name}" ${requiredAttribute}>
+              ${options}
+            </select>
+          </label>
+        `;
+      }
+
+      return `
         <label>
           <span>${field.label}</span>
           <input
             name="${field.name}"
             type="${field.type ?? "text"}"
             placeholder="${field.placeholder}"
-            ${field.required ? "required" : ""}
+            ${field.step ? `step="${field.step}"` : ""}
+            ${field.min ? `min="${field.min}"` : ""}
+            ${requiredAttribute}
           />
         </label>
-      `,
-    )
+      `;
+    })
     .join("");
 
   detailDemo.hidden = false;
@@ -844,6 +1035,7 @@ function renderDemoModule(moduleId) {
     <ul class="demo-list" data-demo-list></ul>
     ${moduleId === "projects" ? '<div data-project-folder></div>' : ""}
     ${moduleId === "receipts" ? '<div data-receipt-review></div>' : ""}
+    ${moduleId === "payroll-prep" ? '<div data-payroll-prep></div>' : ""}
   `;
 
   detailDemo.querySelector("[data-demo-form]").addEventListener("submit", (event) => {
