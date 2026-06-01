@@ -1855,3 +1855,151 @@ h1 {
     margin-top: 10px;
   }
 }
+
+.owner-approvals-panel {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(247, 200, 67, 0.22);
+  border-radius: 20px;
+  background: rgba(2, 5, 11, 0.26);
+}
+
+.owner-approvals-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.owner-approvals-header h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.owner-approvals-status {
+  flex: none;
+  padding: 7px 10px;
+  border: 1px solid rgba(247, 200, 67, 0.34);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(247, 200, 67, 0.08);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.owner-approvals-lock-note {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(247, 200, 67, 0.22);
+  border-radius: 16px;
+  color: var(--gold);
+  background: rgba(247, 200, 67, 0.06);
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.owner-approval-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.owner-approval-summary-grid article {
+  min-height: 92px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.owner-approval-summary-grid strong,
+.owner-approval-summary-grid span,
+.owner-approval-card strong,
+.owner-approval-card span,
+.owner-approval-card label span {
+  display: block;
+}
+
+.owner-approval-summary-grid strong {
+  margin-bottom: 8px;
+  color: var(--gold);
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.owner-approval-summary-grid span,
+.owner-approval-card span,
+.owner-approval-empty {
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.owner-approval-list {
+  display: grid;
+  gap: 10px;
+}
+
+.owner-approval-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.owner-approval-card strong {
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+
+.owner-approval-card label {
+  flex: 0 0 180px;
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.owner-approval-card select {
+  width: 100%;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: var(--text);
+  background: rgba(2, 5, 11, 0.72);
+  font: inherit;
+}
+
+.owner-approval-card select:focus-visible {
+  border-color: rgba(247, 200, 67, 0.7);
+  outline: 2px solid rgba(247, 200, 67, 0.34);
+  outline-offset: 2px;
+}
+
+.owner-approval-empty {
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .owner-approvals-header,
+  .owner-approval-summary-grid,
+  .owner-approval-card {
+    display: block;
+  }
+
+  .owner-approvals-status,
+  .owner-approval-card label,
+  .owner-approval-summary-grid article + article {
+    margin-top: 10px;
+  }
+}
