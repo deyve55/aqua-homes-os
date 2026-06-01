@@ -30,12 +30,16 @@
         <section class="card-grid" data-module-grid aria-label="Main Brain dashboard cards"></section>
 
         <aside class="module-detail" data-module-detail aria-live="polite" hidden>
-          <div>
+          <div class="module-copy">
             <p class="eyebrow">Module Detail</p>
             <h3 data-module-title>Projects</h3>
             <p data-module-description>Track active builds, milestones, and next actions.</p>
+            <div class="module-demo" data-module-demo hidden></div>
           </div>
-          <button type="button" data-module-close aria-label="Close module detail">Close</button>
+          <div class="module-actions">
+            <button type="button" class="ghost-button" data-reset-demo>Reset demo data</button>
+            <button type="button" data-module-close aria-label="Close module detail">Close</button>
+          </div>
         </aside>
       </main>
 
