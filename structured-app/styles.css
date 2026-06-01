@@ -983,6 +983,7 @@ h1 {
   }
 }
 
+.accounting-review-panel,
 .payroll-prep-panel,
 .receipt-review-panel,
 .maintenance-dispatch-panel,
@@ -996,6 +997,7 @@ h1 {
   background: rgba(2, 5, 11, 0.26);
 }
 
+.accounting-review-header,
 .payroll-prep-header,
 .receipt-review-header,
 .maintenance-dispatch-header,
@@ -1009,6 +1011,7 @@ h1 {
   margin-bottom: 14px;
 }
 
+.accounting-review-header h4,
 .payroll-prep-header h4,
 .receipt-review-header h4,
 .maintenance-dispatch-header h4,
@@ -1019,6 +1022,7 @@ h1 {
   font-size: 1rem;
 }
 
+.accounting-review-status-pill,
 .payroll-lock-status,
 .receipt-feed-status,
 .maintenance-dispatch-status,
@@ -1035,6 +1039,7 @@ h1 {
   font-weight: 900;
 }
 
+.accounting-review-summary-grid,
 .payroll-summary-grid,
 .accounting-summary-grid,
 .maintenance-summary-grid,
@@ -1051,12 +1056,80 @@ h1 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
+.accounting-review-summary-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.accounting-review-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.accounting-review-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.accounting-review-form select,
+.accounting-review-form textarea {
+  width: 100%;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: var(--text);
+  background: rgba(2, 5, 11, 0.72);
+  font: inherit;
+}
+
+.accounting-review-form textarea {
+  resize: vertical;
+  min-height: 104px;
+}
+
+.accounting-review-form select:focus-visible,
+.accounting-review-form textarea:focus-visible {
+  border-color: rgba(247, 200, 67, 0.7);
+  outline: 2px solid rgba(247, 200, 67, 0.34);
+  outline-offset: 2px;
+}
+
+.accounting-review-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.accounting-review-actions button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: #04101f;
+  background: var(--gold);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.accounting-review-actions span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .inventory-summary-grid,
 .walkthrough-summary-grid,
 .customer-summary-grid {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
+.accounting-review-summary-grid article,
 .payroll-summary-grid article,
 .accounting-summary-grid article,
 .maintenance-summary-grid article,
@@ -1070,6 +1143,8 @@ h1 {
   background: rgba(255, 255, 255, 0.04);
 }
 
+.accounting-review-summary-grid strong,
+.accounting-review-summary-grid span,
 .payroll-summary-grid strong,
 .payroll-summary-grid span,
 .accounting-summary-grid strong,
@@ -1103,6 +1178,7 @@ h1 {
   display: block;
 }
 
+.accounting-review-summary-grid strong,
 .payroll-summary-grid strong,
 .accounting-summary-grid strong,
 .maintenance-summary-grid strong,
@@ -1115,6 +1191,7 @@ h1 {
   line-height: 1;
 }
 
+.accounting-review-summary-grid span,
 .payroll-summary-grid span,
 .accounting-summary-grid span,
 .maintenance-summary-grid span,
@@ -1229,6 +1306,7 @@ h1 {
   margin: 0;
 }
 
+.accounting-review-lock-note,
 .payroll-lock-note,
 .maintenance-dispatch-note,
 .inventory-lock-note,
@@ -1246,12 +1324,14 @@ h1 {
 }
 
 @media (max-width: 720px) {
+  .accounting-review-header,
   .payroll-prep-header,
   .receipt-review-header,
   .maintenance-dispatch-header,
   .inventory-checkout-header,
   .walkthrough-capture-header,
   .customer-portal-header,
+  .accounting-review-summary-grid,
   .payroll-summary-grid,
   .accounting-summary-grid,
   .maintenance-summary-grid,
@@ -1267,6 +1347,7 @@ h1 {
     display: block;
   }
 
+  .accounting-review-status-pill,
   .payroll-lock-status,
   .receipt-feed-status,
   .maintenance-dispatch-status,
@@ -1279,6 +1360,7 @@ h1 {
   .inventory-checkout-card label,
   .walkthrough-capture-card label,
   .customer-portal-card label,
+  .accounting-review-summary-grid article + article,
   .payroll-summary-grid article + article,
   .accounting-summary-grid article + article,
   .maintenance-summary-grid article + article,

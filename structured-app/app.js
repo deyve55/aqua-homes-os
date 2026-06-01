@@ -3,6 +3,7 @@ const DEMO_DATA_KEY = "aquaHomes.structuredDemoData";
 const RECENT_ACTIVITY_KEY = "aquaHomes.structuredRecentActivity";
 const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
 const INVESTOR_VISIBILITY_KEY = "aquaHomes.aquabonaInvestorVisibility";
+const ACCOUNTING_REVIEW_KEY = "aquaHomes.accountingReview";
 const MAX_RECENT_ACTIVITY = 10;
 const RECEIPT_REVIEW_STATUSES = ["Needs Review", "Coded", "Accounting Hold"];
 const PAYROLL_PREP_STATUSES = ["Draft", "Office Review", "Approved Hold"];
@@ -65,6 +66,15 @@ const ESTIMATE_STATUSES = [
 ];
 const ESTIMATE_LOCK_NOTE =
   "Live e-signature, deposits, payment collection, and accounting impact are locked until backend/security gates are complete.";
+const ACCOUNTING_REVIEW_STATUSES = [
+  "Draft Review",
+  "Needs Receipts",
+  "Office Review",
+  "Owner Approval Hold",
+  "Ready for Accountant",
+];
+const ACCOUNTING_REVIEW_LOCK_NOTE =
+  "Live accounting sync, ledger posting, tax filing, and P&L posting are locked until backend/security/provider gates are complete.";
 const INVESTOR_VISIBILITY_CATEGORIES = [
   "Scope of Work",
   "Project status",
@@ -760,6 +770,7 @@ const resetDemoData = document.querySelector("[data-reset-demo]");
 let demoData = loadDemoData();
 let recentActivity = loadRecentActivity();
 let investorVisibility = loadInvestorVisibility();
+let accountingReview = loadAccountingReview();
 let activeModule = null;
 let selectedProjectName = readLocalStorage(SELECTED_PROJECT_KEY);
 
@@ -1201,6 +1212,14 @@ function getEstimateStatus(record) {
   return ESTIMATE_STATUSES.includes(status) ? status : ESTIMATE_STATUSES[0];
 }
 
+function getAccountingReviewStatus(value) {
+  const status = String(value?.status ?? value ?? "").trim();
+
+  return ACCOUNTING_REVIEW_STATUSES.includes(status)
+    ? status
+    : ACCOUNTING_REVIEW_STATUSES[0];
+}
+
 function getLaborCost(record) {
   return (Number(record?.hours) || 0) * (Number(record?.rate) || 0);
 }
@@ -1354,6 +1373,13 @@ function getEstimateSummary(records = demoData.estimatesProposals ?? []) {
       (total, record) => total + (Number(record.amount) || 0),
       0,
     ),
+    approvedAmount: records.reduce(
+      (total, record) =>
+        getEstimateStatus(record) === "Approved"
+          ? total + (Number(record.amount) || 0)
+          : total,
+      0,
+    ),
     draft: records.filter((record) => getEstimateStatus(record) === "Draft")
       .length,
     officeReview: records.filter(
@@ -1369,6 +1395,58 @@ function getEstimateSummary(records = demoData.estimatesProposals ?? []) {
       (record) => getEstimateStatus(record) === "Change Order",
     ).length,
   };
+}
+
+function getDailyAccountingSummary() {
+  const estimateSummary = getEstimateSummary(demoData.estimatesProposals ?? []);
+  const receiptSummary = getReceiptAccountingSummary(demoData.receipts ?? []);
+  const payrollSummary = getPayrollPrepSummary(demoData.payrollPrep ?? []);
+  const maintenanceSummary = getMaintenanceSummary(
+    demoData.maintenancePlusHvac ?? [],
+  );
+  const demoGrossPreview =
+    estimateSummary.approvedAmount -
+    receiptSummary.totalAmount -
+    payrollSummary.totalLaborCost -
+    maintenanceSummary.totalEstimatedCost;
+
+  return {
+    approvedEstimateAmount: estimateSummary.approvedAmount,
+    totalReceiptCost: receiptSummary.totalAmount,
+    totalPayrollPrepCost: payrollSummary.totalLaborCost,
+    totalMaintenanceEstimatedRepairCost: maintenanceSummary.totalEstimatedCost,
+    demoGrossPreview,
+  };
+}
+
+function normalizeAccountingReview(value) {
+  const source =
+    value && typeof value === "object" && !Array.isArray(value) ? value : {};
+
+  return {
+    status: getAccountingReviewStatus(source.status),
+    notes: String(source.notes ?? "").trim(),
+    updatedAt: String(source.updatedAt ?? "").trim(),
+  };
+}
+
+function loadAccountingReview() {
+  const storedReview = readLocalStorage(ACCOUNTING_REVIEW_KEY);
+
+  if (!storedReview) {
+    return normalizeAccountingReview();
+  }
+
+  try {
+    return normalizeAccountingReview(JSON.parse(storedReview));
+  } catch (error) {
+    return normalizeAccountingReview();
+  }
+}
+
+function saveAccountingReview() {
+  accountingReview.updatedAt = new Date().toISOString();
+  writeLocalStorage(ACCOUNTING_REVIEW_KEY, JSON.stringify(accountingReview));
 }
 
 function renderRecentActivity() {
@@ -1541,6 +1619,24 @@ function addEstimateStatusActivity(record, previousStatus, nextStatus) {
       module: "Estimates / Proposals / Change Orders",
       title: getEstimateTitle(record),
       meta: `Status changed from ${previousStatus} to ${nextStatus} · ${getEstimateProject(record)} · ${getEstimateCustomerInvestor(record)} · ${formatCurrency(record.amount)}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function addAccountingReviewStatusActivity(previousStatus, nextStatus) {
+  const summary = getDailyAccountingSummary();
+
+  recentActivity = [
+    {
+      id: `${Date.now()}-accounting-review-status`,
+      module: "Accounting Review",
+      title: "Daily P&L / Accounting Review",
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · demo gross preview ${formatCurrency(summary.demoGrossPreview)}`,
       createdAt: new Date().toISOString(),
     },
     ...recentActivity,
@@ -2490,6 +2586,108 @@ function updateEstimateStatus(index, nextStatus) {
   renderDemoModule("estimates-proposals-change-orders");
 }
 
+function renderAccountingReviewPanel() {
+  const summary = getDailyAccountingSummary();
+  const currentStatus = getAccountingReviewStatus(accountingReview);
+  const statusOptions = ACCOUNTING_REVIEW_STATUSES.map(
+    (status) =>
+      `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+  ).join("");
+  const lastSaved = accountingReview.updatedAt
+    ? `Last saved ${formatActivityTime(accountingReview.updatedAt)}`
+    : "Local review not saved yet";
+
+  return `
+    <section class="accounting-review-panel" aria-label="Daily P&L / Accounting Review panel">
+      <div class="accounting-review-header">
+        <div>
+          <p class="eyebrow">Daily P&amp;L / Accounting Review</p>
+          <h4>Local Demo Gross Preview</h4>
+        </div>
+        <span class="accounting-review-status-pill">Review only</span>
+      </div>
+      <p class="accounting-review-lock-note">${ACCOUNTING_REVIEW_LOCK_NOTE}</p>
+      <div class="accounting-review-summary-grid" aria-label="Daily P&L demo totals">
+        <article><strong>${escapeHtml(formatCurrency(summary.approvedEstimateAmount))}</strong><span>Total approved estimate amount</span></article>
+        <article><strong>${escapeHtml(formatCurrency(summary.totalReceiptCost))}</strong><span>Total receipt cost</span></article>
+        <article><strong>${escapeHtml(formatCurrency(summary.totalPayrollPrepCost))}</strong><span>Total payroll prep cost</span></article>
+        <article><strong>${escapeHtml(formatCurrency(summary.totalMaintenanceEstimatedRepairCost))}</strong><span>Total maintenance estimated repair cost</span></article>
+        <article><strong>${escapeHtml(formatCurrency(summary.demoGrossPreview))}</strong><span>Demo gross preview</span></article>
+      </div>
+      <form class="accounting-review-form" data-accounting-review-form>
+        <label>
+          <span>Accounting review status</span>
+          <select data-accounting-review-status aria-label="Accounting review status">
+            ${statusOptions}
+          </select>
+        </label>
+        <label class="accounting-review-notes-label">
+          <span>Review notes</span>
+          <textarea
+            data-accounting-review-notes
+            rows="4"
+            placeholder="Add receipt gaps, office review items, owner approval notes, or accountant handoff reminders."
+          >${escapeHtml(accountingReview.notes)}</textarea>
+        </label>
+        <div class="accounting-review-actions">
+          <button type="submit">Save accounting review</button>
+          <span data-accounting-review-saved>${escapeHtml(lastSaved)}</span>
+        </div>
+      </form>
+    </section>
+  `;
+}
+
+function updateAccountingReviewStatus(nextStatus) {
+  if (!ACCOUNTING_REVIEW_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getAccountingReviewStatus(accountingReview);
+
+  if (previousStatus === nextStatus) {
+    accountingReview.status = nextStatus;
+    saveAccountingReview();
+    return;
+  }
+
+  accountingReview.status = nextStatus;
+  saveAccountingReview();
+  addAccountingReviewStatusActivity(previousStatus, nextStatus);
+  renderModules();
+}
+
+function saveAccountingReviewNotes(notes) {
+  accountingReview.notes = String(notes ?? "").trim();
+  saveAccountingReview();
+}
+
+function bindAccountingReviewPanel() {
+  const statusSelect = detailDemo.querySelector("[data-accounting-review-status]");
+  const notesInput = detailDemo.querySelector("[data-accounting-review-notes]");
+  const form = detailDemo.querySelector("[data-accounting-review-form]");
+  const savedText = detailDemo.querySelector("[data-accounting-review-saved]");
+
+  if (statusSelect) {
+    statusSelect.addEventListener("change", () => {
+      updateAccountingReviewStatus(statusSelect.value);
+      if (savedText) {
+        savedText.textContent = `Saved ${formatActivityTime(accountingReview.updatedAt)}`;
+      }
+    });
+  }
+
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      saveAccountingReviewNotes(notesInput?.value ?? "");
+      if (savedText) {
+        savedText.textContent = `Saved ${formatActivityTime(accountingReview.updatedAt)}`;
+      }
+    });
+  }
+}
+
 function renderPayrollPrepPanel(records) {
   const summary = getPayrollPrepSummary(records);
   const summaryGrid = `
@@ -2787,6 +2985,13 @@ function renderDemoModule(moduleId) {
     return;
   }
 
+  if (moduleId === "accounting-review") {
+    detailDemo.hidden = false;
+    detailDemo.innerHTML = renderAccountingReviewPanel();
+    bindAccountingReviewPanel();
+    return;
+  }
+
   if (!demoModule) {
     detailDemo.hidden = true;
     detailDemo.replaceChildren();
@@ -3004,6 +3209,13 @@ window.addEventListener("storage", (event) => {
     demoData = loadDemoData();
     refreshDemoViews();
     setBackupStatus("Demo data updated in another tab.");
+  }
+
+  if (event.key === ACCOUNTING_REVIEW_KEY) {
+    accountingReview = loadAccountingReview();
+    if (activeModule && getModuleId(activeModule.name) === "accounting-review") {
+      renderDemoModule("accounting-review");
+    }
   }
 
   if (event.key === INVESTOR_VISIBILITY_KEY) {
