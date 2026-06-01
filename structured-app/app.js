@@ -3,6 +3,7 @@ const DEMO_DATA_KEY = "aquaHomes.structuredDemoData";
 const RECENT_ACTIVITY_KEY = "aquaHomes.structuredRecentActivity";
 const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
 const MAX_RECENT_ACTIVITY = 10;
+const RECEIPT_REVIEW_STATUSES = ["Needs Review", "Coded", "Accounting Hold"];
 
 const modules = [
   {
@@ -98,7 +99,7 @@ const dashboardSummaryItems = [
     label: "Receipts Review",
     storageKey: "receipts",
     helper: "Receipts needing review",
-    getCount: (items) => items.filter((item) => item.status?.toLowerCase().includes("review")).length,
+    getCount: (items) => items.filter((item) => getReceiptStatus(item) === "Needs Review").length,
   },
   {
     label: "Maintenance / HVAC",
@@ -336,6 +337,21 @@ function formatActivityTime(createdAt) {
   }).format(date);
 }
 
+function getReceiptStatus(receipt) {
+  const status = String(receipt?.status ?? "").trim();
+
+  return RECEIPT_REVIEW_STATUSES.includes(status) ? status : RECEIPT_REVIEW_STATUSES[0];
+}
+
+function getReceiptAccountingSummary(receipts = demoData.receipts ?? []) {
+  return {
+    totalAmount: receipts.reduce((total, receipt) => total + (Number(receipt.amount) || 0), 0),
+    needsReview: receipts.filter((receipt) => getReceiptStatus(receipt) === "Needs Review").length,
+    coded: receipts.filter((receipt) => getReceiptStatus(receipt) === "Coded").length,
+    accountingHold: receipts.filter((receipt) => getReceiptStatus(receipt) === "Accounting Hold").length,
+  };
+}
+
 function renderRecentActivity() {
   clearActivity.disabled = recentActivity.length === 0;
 
@@ -375,6 +391,22 @@ function addRecentActivity(moduleId, item) {
       module: module?.name ?? demoModule.eyebrow,
       title: formattedItem.title,
       meta: `Saved ${demoModule.submitLabel.replace(/^Save\s+/i, "").toLowerCase()} · ${formattedItem.meta}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function addReceiptStatusActivity(receipt, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-receipt-status`,
+      module: "Receipts",
+      title: receipt.vendor || "Receipt status",
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${receipt.project || "Unassigned project"} · ${formatCurrency(receipt.amount)}`,
       createdAt: new Date().toISOString(),
     },
     ...recentActivity,
@@ -616,16 +648,111 @@ function renderProjectFolder(project) {
   `;
 }
 
+function renderReceiptReviewPanel(receipts) {
+  const summary = getReceiptAccountingSummary(receipts);
+
+  if (!receipts.length) {
+    return `
+      <section class="receipt-review-panel" aria-label="Receipts review and accounting feed">
+        <div class="receipt-review-header">
+          <div>
+            <p class="eyebrow">Accounting Feed</p>
+            <h4>Receipts Review</h4>
+          </div>
+          <span class="receipt-feed-status">Local demo feed</span>
+        </div>
+        <div class="accounting-summary-grid" aria-label="Accounting summary">
+          <article><strong>${escapeHtml(formatCurrency(summary.totalAmount))}</strong><span>Total receipt amount</span></article>
+          <article><strong>${summary.needsReview}</strong><span>Needs review</span></article>
+          <article><strong>${summary.coded}</strong><span>Coded</span></article>
+          <article><strong>${summary.accountingHold}</strong><span>Accounting hold</span></article>
+        </div>
+        <p class="receipt-review-empty">No saved receipt demo records yet.</p>
+      </section>
+    `;
+  }
+
+  const receiptRows = receipts
+    .map((receipt, index) => {
+      const currentStatus = getReceiptStatus(receipt);
+      const statusOptions = RECEIPT_REVIEW_STATUSES
+        .map(
+          (status) =>
+            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+        )
+        .join("");
+
+      return `
+        <article class="receipt-review-card">
+          <div>
+            <strong>${escapeHtml(receipt.vendor || "Receipt")}</strong>
+            <span>${escapeHtml(receipt.project || "Unassigned project")} · ${escapeHtml(formatCurrency(receipt.amount))}</span>
+          </div>
+          <label>
+            <span>Status</span>
+            <select data-receipt-status-index="${index}" aria-label="Receipt status for ${escapeHtml(receipt.vendor || "receipt")}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="receipt-review-panel" aria-label="Receipts review and accounting feed">
+      <div class="receipt-review-header">
+        <div>
+          <p class="eyebrow">Accounting Feed</p>
+          <h4>Receipts Review</h4>
+        </div>
+        <span class="receipt-feed-status">Local demo feed</span>
+      </div>
+      <div class="accounting-summary-grid" aria-label="Accounting summary">
+        <article><strong>${escapeHtml(formatCurrency(summary.totalAmount))}</strong><span>Total receipt amount</span></article>
+        <article><strong>${summary.needsReview}</strong><span>Needs review</span></article>
+        <article><strong>${summary.coded}</strong><span>Coded</span></article>
+        <article><strong>${summary.accountingHold}</strong><span>Accounting hold</span></article>
+      </div>
+      <div class="receipt-review-list">${receiptRows}</div>
+    </section>
+  `;
+}
+
+function updateReceiptStatus(index, nextStatus) {
+  const receipt = demoData.receipts?.[index];
+
+  if (!receipt || !RECEIPT_REVIEW_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getReceiptStatus(receipt);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  receipt.status = nextStatus;
+  saveDemoData();
+  addReceiptStatusActivity(receipt, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("receipts");
+}
+
 function renderDemoList(moduleId) {
   const demoModule = demoModules[moduleId];
   const items = demoData[demoModule.storageKey] ?? [];
   const list = detailDemo.querySelector("[data-demo-list]");
   const projectFolderSlot = detailDemo.querySelector("[data-project-folder]");
+  const receiptReviewSlot = detailDemo.querySelector("[data-receipt-review]");
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
     if (projectFolderSlot) {
       projectFolderSlot.innerHTML = renderProjectFolder(null);
+    }
+    if (receiptReviewSlot) {
+      receiptReviewSlot.innerHTML = renderReceiptReviewPanel(items);
     }
     return;
   }
@@ -666,6 +793,13 @@ function renderDemoList(moduleId) {
 
   if (projectFolderSlot) {
     projectFolderSlot.innerHTML = renderProjectFolder(getSelectedProject(items));
+  }
+
+  if (receiptReviewSlot) {
+    receiptReviewSlot.innerHTML = renderReceiptReviewPanel(items);
+    receiptReviewSlot.querySelectorAll("[data-receipt-status-index]").forEach((select) => {
+      select.addEventListener("change", () => updateReceiptStatus(Number(select.dataset.receiptStatusIndex), select.value));
+    });
   }
 }
 
@@ -709,6 +843,7 @@ function renderDemoModule(moduleId) {
     </form>
     <ul class="demo-list" data-demo-list></ul>
     ${moduleId === "projects" ? '<div data-project-folder></div>' : ""}
+    ${moduleId === "receipts" ? '<div data-receipt-review></div>' : ""}
   `;
 
   detailDemo.querySelector("[data-demo-form]").addEventListener("submit", (event) => {
