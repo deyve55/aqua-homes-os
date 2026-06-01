@@ -2,12 +2,25 @@ const LAST_OPENED_MODULE_KEY = "aquaHomes.lastOpenedModule";
 const DEMO_DATA_KEY = "aquaHomes.structuredDemoData";
 const RECENT_ACTIVITY_KEY = "aquaHomes.structuredRecentActivity";
 const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
+const INVESTOR_VISIBILITY_KEY = "aquaHomes.aquabonaInvestorVisibility";
 const MAX_RECENT_ACTIVITY = 10;
 const RECEIPT_REVIEW_STATUSES = ["Needs Review", "Coded", "Accounting Hold"];
 const PAYROLL_PREP_STATUSES = ["Draft", "Office Review", "Approved Hold"];
-const INVENTORY_TOOL_STATUSES = ["Available", "Checked Out", "Assigned to Job", "Lost / Damaged", "Needs Review"];
+const INVENTORY_TOOL_STATUSES = [
+  "Available",
+  "Checked Out",
+  "Assigned to Job",
+  "Lost / Damaged",
+  "Needs Review",
+];
 const MAINTENANCE_PRIORITIES = ["Low", "Normal", "Urgent"];
-const MAINTENANCE_TRADES = ["Maintenance", "HVAC", "Plumbing", "Electrical", "Carpentry"];
+const MAINTENANCE_TRADES = [
+  "Maintenance",
+  "HVAC",
+  "Plumbing",
+  "Electrical",
+  "Carpentry",
+];
 const MAINTENANCE_DISPATCH_STATUSES = [
   "New Request",
   "Approved",
@@ -24,43 +37,63 @@ const WALKTHROUGH_READINESS_STATUSES = [
   "Ready for Estimate",
   "Sent to Proposal",
 ];
+const INVESTOR_VISIBILITY_CATEGORIES = [
+  "Scope of Work",
+  "Project status",
+  "Photos / Proof",
+  "Receipts",
+  "Permits / Inspections",
+  "Insurance documents",
+  "Inventory proof",
+  "Change orders",
+  "Closeout",
+];
 
 const modules = [
   {
     name: "Projects",
-    description: "Track active builds, milestones, and next actions across Aqua Homes projects.",
+    description:
+      "Track active builds, milestones, and next actions across Aqua Homes projects.",
   },
   {
     name: "Receipts",
-    description: "Collect job receipts and keep spend details ready for review.",
+    description:
+      "Collect job receipts and keep spend details ready for review.",
   },
   {
     name: "Payroll Prep",
-    description: "Stage crew hours, notes, and payroll handoff items before processing.",
+    description:
+      "Stage crew hours, notes, and payroll handoff items before processing.",
   },
   {
     name: "Accounting Review",
-    description: "Review financial checkpoints, reconciliations, and open accounting questions.",
+    description:
+      "Review financial checkpoints, reconciliations, and open accounting questions.",
   },
   {
     name: "Maintenance + HVAC",
-    description: "Monitor service items, HVAC follow-ups, and recurring maintenance needs.",
+    description:
+      "Monitor service items, HVAC follow-ups, and recurring maintenance needs.",
   },
   {
     name: "Inventory / Tools",
-    description: "Keep lightweight visibility into tools, supplies, and inventory requests.",
+    description:
+      "Keep lightweight visibility into tools, supplies, and inventory requests.",
   },
   {
     name: "Field Walkthrough",
-    description: "Capture walkthrough notes, punch items, and jobsite observations.",
+    description:
+      "Capture walkthrough notes, punch items, and jobsite observations.",
   },
   {
     name: "Aquabona Investor Portal",
-    description: "Open a simple hub for investor updates, documents, and AquaBona context.",
+    description:
+      "Open a simple hub for investor updates, documents, and AquaBona context.",
   },
   {
     name: "Bug Capture",
-    description: "Log product issues, UI notes, and starter shell improvement ideas.",
+    description:
+      "Log product issues, UI notes, and starter shell improvement ideas.",
   },
 ];
 
@@ -70,11 +103,16 @@ const demoDefaults = {
       name: "Canal House Retrofit",
       status: "Active",
       budget: "185000",
-      scope: "Kitchen refresh, dock repairs, punch list closeout, and final owner walkthrough.",
+      scope:
+        "Kitchen refresh, dock repairs, punch list closeout, and final owner walkthrough.",
       nextTask: "Confirm material delivery window and crew start time.",
       proof: "Before photos saved in demo notes; completion photos pending.",
       permit: "Permit check placeholder for city inspection follow-up.",
-      notes: "Keep owner updates lightweight until backend document storage is approved.",
+      notes:
+        "Keep owner updates lightweight until backend document storage is approved.",
+      tags: "Aquabona, investor-visible",
+      aquabona: true,
+      investorVisible: true,
     },
   ],
   receipts: [
@@ -140,11 +178,16 @@ const demoDefaults = {
   fieldWalkthrough: [
     {
       projectProperty: "Canal House Retrofit",
-      customerNotes: "Owner wants the dock repair priced with a kitchen punch-list alternate.",
-      voiceNoteSummary: "Captured demo summary from field conversation; live voice capture remains locked.",
-      measurementNotes: "Verify railing length, cabinet opening, and sink supply-line clearance.",
-      scopeDraft: "Draft repair scope for office review before estimate preparation.",
-      photoProofPlaceholder: "Placeholder for before photos, progress proof, and completion signoff notes.",
+      customerNotes:
+        "Owner wants the dock repair priced with a kitchen punch-list alternate.",
+      voiceNoteSummary:
+        "Captured demo summary from field conversation; live voice capture remains locked.",
+      measurementNotes:
+        "Verify railing length, cabinet opening, and sink supply-line clearance.",
+      scopeDraft:
+        "Draft repair scope for office review before estimate preparation.",
+      photoProofPlaceholder:
+        "Placeholder for before photos, progress proof, and completion signoff notes.",
       readinessStatus: "Needs Office Review",
     },
   ],
@@ -161,13 +204,15 @@ const dashboardSummaryItems = [
     label: "Active Projects",
     storageKey: "projects",
     helper: "Projects marked active",
-    getCount: (items) => items.filter((item) => item.status?.toLowerCase() === "active").length,
+    getCount: (items) =>
+      items.filter((item) => item.status?.toLowerCase() === "active").length,
   },
   {
     label: "Receipts Review",
     storageKey: "receipts",
     helper: "Receipts needing review",
-    getCount: (items) => items.filter((item) => getReceiptStatus(item) === "Needs Review").length,
+    getCount: (items) =>
+      items.filter((item) => getReceiptStatus(item) === "Needs Review").length,
   },
   {
     label: "Maintenance / HVAC",
@@ -197,16 +242,50 @@ const demoModules = {
     eyebrow: "Demo project log",
     submitLabel: "Save Project",
     fields: [
-      { name: "name", label: "Project name", placeholder: "Poolside Residence", required: true },
-      { name: "status", label: "Status", placeholder: "Active", required: true },
-      { name: "budget", label: "Budget", placeholder: "250000", type: "number", required: true },
-      { name: "scope", label: "Scope note", placeholder: "Interior punch list and exterior repairs" },
-      { name: "nextTask", label: "Next task", placeholder: "Schedule inspection walkthrough" },
+      {
+        name: "name",
+        label: "Project name",
+        placeholder: "Poolside Residence",
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Status",
+        placeholder: "Active",
+        required: true,
+      },
+      {
+        name: "budget",
+        label: "Budget",
+        placeholder: "250000",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "scope",
+        label: "Scope note",
+        placeholder: "Interior punch list and exterior repairs",
+      },
+      {
+        name: "nextTask",
+        label: "Next task",
+        placeholder: "Schedule inspection walkthrough",
+      },
+      {
+        name: "investorVisible",
+        label: "Investor visible",
+        options: ["No", "Yes"],
+      },
+      {
+        name: "tags",
+        label: "Tags",
+        placeholder: "Aquabona, investor-visible",
+      },
     ],
     empty: "No demo projects yet.",
     format: (item) => ({
       title: item.name,
-      meta: `${item.status} · ${formatCurrency(item.budget)}`,
+      meta: `${item.status} · ${formatCurrency(item.budget)}${isInvestorVisibleProject(item) ? " · investor visible" : ""}`,
     }),
   },
   receipts: {
@@ -214,10 +293,31 @@ const demoModules = {
     eyebrow: "Demo receipt inbox",
     submitLabel: "Save Receipt",
     fields: [
-      { name: "vendor", label: "Vendor", placeholder: "Harbor Supply", required: true },
-      { name: "project", label: "Project", placeholder: "Canal House Retrofit", required: true },
-      { name: "amount", label: "Amount", placeholder: "742.18", type: "number", required: true },
-      { name: "status", label: "Review status", placeholder: "Needs Review", required: true },
+      {
+        name: "vendor",
+        label: "Vendor",
+        placeholder: "Harbor Supply",
+        required: true,
+      },
+      {
+        name: "project",
+        label: "Project",
+        placeholder: "Canal House Retrofit",
+        required: true,
+      },
+      {
+        name: "amount",
+        label: "Amount",
+        placeholder: "742.18",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Review status",
+        placeholder: "Needs Review",
+        required: true,
+      },
     ],
     empty: "No demo receipts yet.",
     format: (item) => ({
@@ -230,11 +330,42 @@ const demoModules = {
     eyebrow: "Demo payroll prep",
     submitLabel: "Save Labor Record",
     fields: [
-      { name: "workerName", label: "Worker name", placeholder: "Mia Rivera", required: true },
-      { name: "project", label: "Project", placeholder: "Canal House Retrofit", required: true },
-      { name: "hours", label: "Hours", placeholder: "8", type: "number", step: "0.25", min: "0", required: true },
-      { name: "rate", label: "Rate", placeholder: "42", type: "number", step: "0.01", min: "0", required: true },
-      { name: "status", label: "Status", options: PAYROLL_PREP_STATUSES, required: true },
+      {
+        name: "workerName",
+        label: "Worker name",
+        placeholder: "Mia Rivera",
+        required: true,
+      },
+      {
+        name: "project",
+        label: "Project",
+        placeholder: "Canal House Retrofit",
+        required: true,
+      },
+      {
+        name: "hours",
+        label: "Hours",
+        placeholder: "8",
+        type: "number",
+        step: "0.25",
+        min: "0",
+        required: true,
+      },
+      {
+        name: "rate",
+        label: "Rate",
+        placeholder: "42",
+        type: "number",
+        step: "0.01",
+        min: "0",
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Status",
+        options: PAYROLL_PREP_STATUSES,
+        required: true,
+      },
     ],
     empty: "No demo payroll/labor records yet.",
     format: (item) => ({
@@ -247,12 +378,42 @@ const demoModules = {
     eyebrow: "Demo dispatch board",
     submitLabel: "Save Dispatch Request",
     fields: [
-      { name: "title", label: "Request title", placeholder: "Inspect air handler", required: true },
-      { name: "propertyProject", label: "Property / project", placeholder: "Canal House Retrofit", required: true },
-      { name: "priority", label: "Priority", options: MAINTENANCE_PRIORITIES, required: true },
-      { name: "tradeType", label: "Trade type", options: MAINTENANCE_TRADES, required: true },
-      { name: "assignedTechnician", label: "Assigned technician", placeholder: "Jordan Lee", required: true },
-      { name: "status", label: "Dispatch status", options: MAINTENANCE_DISPATCH_STATUSES, required: true },
+      {
+        name: "title",
+        label: "Request title",
+        placeholder: "Inspect air handler",
+        required: true,
+      },
+      {
+        name: "propertyProject",
+        label: "Property / project",
+        placeholder: "Canal House Retrofit",
+        required: true,
+      },
+      {
+        name: "priority",
+        label: "Priority",
+        options: MAINTENANCE_PRIORITIES,
+        required: true,
+      },
+      {
+        name: "tradeType",
+        label: "Trade type",
+        options: MAINTENANCE_TRADES,
+        required: true,
+      },
+      {
+        name: "assignedTechnician",
+        label: "Assigned technician",
+        placeholder: "Jordan Lee",
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Dispatch status",
+        options: MAINTENANCE_DISPATCH_STATUSES,
+        required: true,
+      },
       {
         name: "estimatedCost",
         label: "Estimated repair cost",
@@ -275,13 +436,48 @@ const demoModules = {
     eyebrow: "Field Walkthrough / Jobsite Capture",
     submitLabel: "Save Walkthrough",
     fields: [
-      { name: "projectProperty", label: "Project / property", placeholder: "Canal House Retrofit", required: true },
-      { name: "customerNotes", label: "Customer notes", placeholder: "Owner priorities, access notes, and requested alternates", multiline: true },
-      { name: "voiceNoteSummary", label: "Voice note summary", placeholder: "Typed demo summary of field voice notes", multiline: true },
-      { name: "measurementNotes", label: "Measurement notes", placeholder: "Measurements, dimensions, and verification reminders", multiline: true },
-      { name: "scopeDraft", label: "Scope draft", placeholder: "Initial field scope to review with the office", multiline: true },
-      { name: "photoProofPlaceholder", label: "Photo / proof placeholder text", placeholder: "Before, progress, and completion proof placeholders", multiline: true },
-      { name: "readinessStatus", label: "Estimate readiness status", options: WALKTHROUGH_READINESS_STATUSES, required: true },
+      {
+        name: "projectProperty",
+        label: "Project / property",
+        placeholder: "Canal House Retrofit",
+        required: true,
+      },
+      {
+        name: "customerNotes",
+        label: "Customer notes",
+        placeholder: "Owner priorities, access notes, and requested alternates",
+        multiline: true,
+      },
+      {
+        name: "voiceNoteSummary",
+        label: "Voice note summary",
+        placeholder: "Typed demo summary of field voice notes",
+        multiline: true,
+      },
+      {
+        name: "measurementNotes",
+        label: "Measurement notes",
+        placeholder: "Measurements, dimensions, and verification reminders",
+        multiline: true,
+      },
+      {
+        name: "scopeDraft",
+        label: "Scope draft",
+        placeholder: "Initial field scope to review with the office",
+        multiline: true,
+      },
+      {
+        name: "photoProofPlaceholder",
+        label: "Photo / proof placeholder text",
+        placeholder: "Before, progress, and completion proof placeholders",
+        multiline: true,
+      },
+      {
+        name: "readinessStatus",
+        label: "Estimate readiness status",
+        options: WALKTHROUGH_READINESS_STATUSES,
+        required: true,
+      },
     ],
     empty: "No demo walkthrough captures yet.",
     format: (item) => ({
@@ -294,11 +490,36 @@ const demoModules = {
     eyebrow: "Inventory / Tool Checkout",
     submitLabel: "Save Tool / Item",
     fields: [
-      { name: "name", label: "Item / tool name", placeholder: "Hammer Drill", required: true },
-      { name: "tag", label: "Tag / QR code", placeholder: "AH-312", required: true },
-      { name: "holder", label: "Holder / worker / truck", placeholder: "Jordan or Truck 2", required: true },
-      { name: "project", label: "Project", placeholder: "Canal House Retrofit", required: true },
-      { name: "status", label: "Status", options: INVENTORY_TOOL_STATUSES, required: true },
+      {
+        name: "name",
+        label: "Item / tool name",
+        placeholder: "Hammer Drill",
+        required: true,
+      },
+      {
+        name: "tag",
+        label: "Tag / QR code",
+        placeholder: "AH-312",
+        required: true,
+      },
+      {
+        name: "holder",
+        label: "Holder / worker / truck",
+        placeholder: "Jordan or Truck 2",
+        required: true,
+      },
+      {
+        name: "project",
+        label: "Project",
+        placeholder: "Canal House Retrofit",
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Status",
+        options: INVENTORY_TOOL_STATUSES,
+        required: true,
+      },
     ],
     empty: "No demo tools or inventory yet.",
     format: (item) => ({
@@ -311,8 +532,18 @@ const demoModules = {
     eyebrow: "Demo bug notes",
     submitLabel: "Save Bug",
     fields: [
-      { name: "title", label: "Bug title", placeholder: "Navigation label wraps", required: true },
-      { name: "notes", label: "Notes", placeholder: "Add context or steps to reproduce", required: true },
+      {
+        name: "title",
+        label: "Bug title",
+        placeholder: "Navigation label wraps",
+        required: true,
+      },
+      {
+        name: "notes",
+        label: "Notes",
+        placeholder: "Add context or steps to reproduce",
+        required: true,
+      },
     ],
     empty: "No demo bugs yet.",
     format: (item) => ({
@@ -344,6 +575,7 @@ const resetDemoData = document.querySelector("[data-reset-demo]");
 
 let demoData = loadDemoData();
 let recentActivity = loadRecentActivity();
+let investorVisibility = loadInvestorVisibility();
 let activeModule = null;
 let selectedProjectName = readLocalStorage(SELECTED_PROJECT_KEY);
 
@@ -397,22 +629,131 @@ function cloneDemoDefaults() {
   return JSON.parse(JSON.stringify(demoDefaults));
 }
 
+function slugifyLabel(value) {
+  return String(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function getProjectTags(project) {
+  const source = Array.isArray(project?.tags)
+    ? project.tags.join(",")
+    : (project?.tags ?? project?.tag ?? "");
+
+  return String(source)
+    .split(/[;,]/)
+    .map((tag) => tag.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function isTruthyInvestorFlag(value) {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  return ["yes", "true", "investor-visible", "aquabona", "visible"].includes(
+    String(value ?? "")
+      .trim()
+      .toLowerCase(),
+  );
+}
+
+function isInvestorVisibleProject(project) {
+  const tags = getProjectTags(project);
+
+  return (
+    isTruthyInvestorFlag(project?.investorVisible) ||
+    isTruthyInvestorFlag(project?.aquabona) ||
+    isTruthyInvestorFlag(project?.aquabonaInvestorVisible) ||
+    tags.some((tag) =>
+      [
+        "aquabona",
+        "investor",
+        "investor-visible",
+        "aquabona-investor",
+      ].includes(tag),
+    )
+  );
+}
+
+function normalizeProjectRecord(project) {
+  return {
+    name: String(project?.name ?? "Project").trim() || "Project",
+    status: String(project?.status ?? "Active").trim() || "Active",
+    budget: String(project?.budget ?? "0").trim(),
+    scope: String(project?.scope ?? "").trim(),
+    nextTask: String(project?.nextTask ?? project?.task ?? "").trim(),
+    proof: String(project?.proof ?? "").trim(),
+    permit: String(project?.permit ?? "").trim(),
+    notes: String(project?.notes ?? "").trim(),
+    tags: Array.isArray(project?.tags)
+      ? project.tags.join(", ")
+      : String(project?.tags ?? project?.tag ?? "").trim(),
+    investorVisible: isInvestorVisibleProject(project)
+      ? "Yes"
+      : String(project?.investorVisible ?? "No").trim(),
+    aquabona: isTruthyInvestorFlag(project?.aquabona),
+  };
+}
+
+function normalizeInvestorVisibility(value) {
+  const source =
+    value && typeof value === "object" && !Array.isArray(value) ? value : {};
+
+  return Object.fromEntries(
+    INVESTOR_VISIBILITY_CATEGORIES.map((category, index) => {
+      const key = slugifyLabel(category);
+      return [key, typeof source[key] === "boolean" ? source[key] : index < 5];
+    }),
+  );
+}
+
+function loadInvestorVisibility() {
+  const storedVisibility = readLocalStorage(INVESTOR_VISIBILITY_KEY);
+
+  if (!storedVisibility) {
+    return normalizeInvestorVisibility();
+  }
+
+  try {
+    return normalizeInvestorVisibility(JSON.parse(storedVisibility));
+  } catch (error) {
+    return normalizeInvestorVisibility();
+  }
+}
+
+function saveInvestorVisibility() {
+  writeLocalStorage(
+    INVESTOR_VISIBILITY_KEY,
+    JSON.stringify(investorVisibility),
+  );
+}
 
 function normalizeMaintenanceRequest(request) {
   return {
     title: getMaintenanceTitle(request),
-    propertyProject: String(request?.propertyProject ?? request?.project ?? "").trim(),
+    propertyProject: String(
+      request?.propertyProject ?? request?.project ?? "",
+    ).trim(),
     priority: getMaintenancePriority(request),
     tradeType: getMaintenanceTrade(request),
-    assignedTechnician: String(request?.assignedTechnician ?? request?.technician ?? "").trim(),
+    assignedTechnician: String(
+      request?.assignedTechnician ?? request?.technician ?? "",
+    ).trim(),
     status: getMaintenanceStatus(request),
-    estimatedCost: String(request?.estimatedCost ?? request?.cost ?? "0").trim(),
+    estimatedCost: String(
+      request?.estimatedCost ?? request?.cost ?? "0",
+    ).trim(),
   };
 }
 
 function normalizeInventoryToolItem(item) {
   return {
-    name: String(item?.name ?? item?.toolName ?? item?.itemName ?? "Inventory item").trim() || "Inventory item",
+    name:
+      String(
+        item?.name ?? item?.toolName ?? item?.itemName ?? "Inventory item",
+      ).trim() || "Inventory item",
     tag: String(item?.tag ?? item?.qrCode ?? item?.code ?? "").trim(),
     holder: String(item?.holder ?? item?.worker ?? item?.truck ?? "").trim(),
     project: String(item?.project ?? item?.job ?? "").trim(),
@@ -423,17 +764,28 @@ function normalizeInventoryToolItem(item) {
 function normalizeFieldWalkthroughRecord(record) {
   return {
     projectProperty: getWalkthroughProject(record),
-    customerNotes: String(record?.customerNotes ?? record?.customerNote ?? "").trim(),
-    voiceNoteSummary: String(record?.voiceNoteSummary ?? record?.voiceSummary ?? "").trim(),
-    measurementNotes: String(record?.measurementNotes ?? record?.measurements ?? "").trim(),
+    customerNotes: String(
+      record?.customerNotes ?? record?.customerNote ?? "",
+    ).trim(),
+    voiceNoteSummary: String(
+      record?.voiceNoteSummary ?? record?.voiceSummary ?? "",
+    ).trim(),
+    measurementNotes: String(
+      record?.measurementNotes ?? record?.measurements ?? "",
+    ).trim(),
     scopeDraft: String(record?.scopeDraft ?? record?.scope ?? "").trim(),
-    photoProofPlaceholder: String(record?.photoProofPlaceholder ?? record?.proof ?? "").trim(),
+    photoProofPlaceholder: String(
+      record?.photoProofPlaceholder ?? record?.proof ?? "",
+    ).trim(),
     readinessStatus: getWalkthroughStatus(record),
   };
 }
 
 function normalizeDemoData(value) {
-  const source = value?.demoData && typeof value.demoData === "object" ? value.demoData : value;
+  const source =
+    value?.demoData && typeof value.demoData === "object"
+      ? value.demoData
+      : value;
   const defaults = cloneDemoDefaults();
 
   if (!source || typeof source !== "object" || Array.isArray(source)) {
@@ -443,6 +795,10 @@ function normalizeDemoData(value) {
   return Object.fromEntries(
     Object.keys(defaults).map((key) => {
       const items = Array.isArray(source[key]) ? source[key] : defaults[key];
+
+      if (key === "projects") {
+        return [key, items.map(normalizeProjectRecord)];
+      }
 
       if (key === "maintenancePlusHvac") {
         return [key, items.map(normalizeMaintenanceRequest)];
@@ -493,7 +849,10 @@ function loadRecentActivity() {
 }
 
 function saveRecentActivity() {
-  writeLocalStorage(RECENT_ACTIVITY_KEY, JSON.stringify(recentActivity.slice(0, MAX_RECENT_ACTIVITY)));
+  writeLocalStorage(
+    RECENT_ACTIVITY_KEY,
+    JSON.stringify(recentActivity.slice(0, MAX_RECENT_ACTIVITY)),
+  );
 }
 
 function formatActivityTime(createdAt) {
@@ -514,29 +873,44 @@ function formatActivityTime(createdAt) {
 function getReceiptStatus(receipt) {
   const status = String(receipt?.status ?? "").trim();
 
-  return RECEIPT_REVIEW_STATUSES.includes(status) ? status : RECEIPT_REVIEW_STATUSES[0];
+  return RECEIPT_REVIEW_STATUSES.includes(status)
+    ? status
+    : RECEIPT_REVIEW_STATUSES[0];
 }
 
 function getPayrollStatus(record) {
   const status = String(record?.status ?? "").trim();
 
-  return PAYROLL_PREP_STATUSES.includes(status) ? status : PAYROLL_PREP_STATUSES[0];
+  return PAYROLL_PREP_STATUSES.includes(status)
+    ? status
+    : PAYROLL_PREP_STATUSES[0];
 }
 
 function getInventoryToolStatus(item) {
   const status = String(item?.status ?? "").trim();
 
-  return INVENTORY_TOOL_STATUSES.includes(status) ? status : INVENTORY_TOOL_STATUSES[0];
+  return INVENTORY_TOOL_STATUSES.includes(status)
+    ? status
+    : INVENTORY_TOOL_STATUSES[0];
 }
 
 function getWalkthroughProject(record) {
-  return String(record?.projectProperty ?? record?.propertyProject ?? record?.project ?? "Jobsite capture").trim() || "Jobsite capture";
+  return (
+    String(
+      record?.projectProperty ??
+        record?.propertyProject ??
+        record?.project ??
+        "Jobsite capture",
+    ).trim() || "Jobsite capture"
+  );
 }
 
 function getWalkthroughStatus(record) {
   const status = String(record?.readinessStatus ?? record?.status ?? "").trim();
 
-  return WALKTHROUGH_READINESS_STATUSES.includes(status) ? status : WALKTHROUGH_READINESS_STATUSES[0];
+  return WALKTHROUGH_READINESS_STATUSES.includes(status)
+    ? status
+    : WALKTHROUGH_READINESS_STATUSES[0];
 }
 
 function getLaborCost(record) {
@@ -544,7 +918,11 @@ function getLaborCost(record) {
 }
 
 function getMaintenanceTitle(request) {
-  return String(request?.title ?? request?.request ?? "Maintenance request").trim() || "Maintenance request";
+  return (
+    String(
+      request?.title ?? request?.request ?? "Maintenance request",
+    ).trim() || "Maintenance request"
+  );
 }
 
 function getMaintenancePriority(request) {
@@ -570,54 +948,97 @@ function getMaintenanceStatus(request) {
     return "New Request";
   }
 
-  return MAINTENANCE_DISPATCH_STATUSES.includes(status) ? status : "New Request";
+  return MAINTENANCE_DISPATCH_STATUSES.includes(status)
+    ? status
+    : "New Request";
 }
 
 function getMaintenanceSummary(requests = demoData.maintenancePlusHvac ?? []) {
   return {
     total: requests.length,
-    urgent: requests.filter((request) => getMaintenancePriority(request) === "Urgent").length,
-    active: requests.filter((request) => ACTIVE_MAINTENANCE_STATUSES.includes(getMaintenanceStatus(request))).length,
-    complete: requests.filter((request) => getMaintenanceStatus(request) === "Complete").length,
-    totalEstimatedCost: requests.reduce((total, request) => total + (Number(request.estimatedCost) || 0), 0),
+    urgent: requests.filter(
+      (request) => getMaintenancePriority(request) === "Urgent",
+    ).length,
+    active: requests.filter((request) =>
+      ACTIVE_MAINTENANCE_STATUSES.includes(getMaintenanceStatus(request)),
+    ).length,
+    complete: requests.filter(
+      (request) => getMaintenanceStatus(request) === "Complete",
+    ).length,
+    totalEstimatedCost: requests.reduce(
+      (total, request) => total + (Number(request.estimatedCost) || 0),
+      0,
+    ),
   };
 }
 
 function getPayrollPrepSummary(records = demoData.payrollPrep ?? []) {
   return {
-    totalLaborCost: records.reduce((total, record) => total + getLaborCost(record), 0),
-    draft: records.filter((record) => getPayrollStatus(record) === "Draft").length,
-    officeReview: records.filter((record) => getPayrollStatus(record) === "Office Review").length,
-    approvedHold: records.filter((record) => getPayrollStatus(record) === "Approved Hold").length,
+    totalLaborCost: records.reduce(
+      (total, record) => total + getLaborCost(record),
+      0,
+    ),
+    draft: records.filter((record) => getPayrollStatus(record) === "Draft")
+      .length,
+    officeReview: records.filter(
+      (record) => getPayrollStatus(record) === "Office Review",
+    ).length,
+    approvedHold: records.filter(
+      (record) => getPayrollStatus(record) === "Approved Hold",
+    ).length,
   };
 }
 
 function getReceiptAccountingSummary(receipts = demoData.receipts ?? []) {
   return {
-    totalAmount: receipts.reduce((total, receipt) => total + (Number(receipt.amount) || 0), 0),
-    needsReview: receipts.filter((receipt) => getReceiptStatus(receipt) === "Needs Review").length,
-    coded: receipts.filter((receipt) => getReceiptStatus(receipt) === "Coded").length,
-    accountingHold: receipts.filter((receipt) => getReceiptStatus(receipt) === "Accounting Hold").length,
+    totalAmount: receipts.reduce(
+      (total, receipt) => total + (Number(receipt.amount) || 0),
+      0,
+    ),
+    needsReview: receipts.filter(
+      (receipt) => getReceiptStatus(receipt) === "Needs Review",
+    ).length,
+    coded: receipts.filter((receipt) => getReceiptStatus(receipt) === "Coded")
+      .length,
+    accountingHold: receipts.filter(
+      (receipt) => getReceiptStatus(receipt) === "Accounting Hold",
+    ).length,
   };
 }
 
 function getInventoryToolSummary(items = demoData.inventoryTools ?? []) {
   return {
     total: items.length,
-    available: items.filter((item) => getInventoryToolStatus(item) === "Available").length,
-    checkedOut: items.filter((item) => getInventoryToolStatus(item) === "Checked Out").length,
-    assignedToJob: items.filter((item) => getInventoryToolStatus(item) === "Assigned to Job").length,
-    lostDamaged: items.filter((item) => getInventoryToolStatus(item) === "Lost / Damaged").length,
+    available: items.filter(
+      (item) => getInventoryToolStatus(item) === "Available",
+    ).length,
+    checkedOut: items.filter(
+      (item) => getInventoryToolStatus(item) === "Checked Out",
+    ).length,
+    assignedToJob: items.filter(
+      (item) => getInventoryToolStatus(item) === "Assigned to Job",
+    ).length,
+    lostDamaged: items.filter(
+      (item) => getInventoryToolStatus(item) === "Lost / Damaged",
+    ).length,
   };
 }
 
 function getWalkthroughSummary(records = demoData.fieldWalkthrough ?? []) {
   return {
     total: records.length,
-    draftCapture: records.filter((record) => getWalkthroughStatus(record) === "Draft Capture").length,
-    officeReview: records.filter((record) => getWalkthroughStatus(record) === "Needs Office Review").length,
-    readyForEstimate: records.filter((record) => getWalkthroughStatus(record) === "Ready for Estimate").length,
-    sentToProposal: records.filter((record) => getWalkthroughStatus(record) === "Sent to Proposal").length,
+    draftCapture: records.filter(
+      (record) => getWalkthroughStatus(record) === "Draft Capture",
+    ).length,
+    officeReview: records.filter(
+      (record) => getWalkthroughStatus(record) === "Needs Office Review",
+    ).length,
+    readyForEstimate: records.filter(
+      (record) => getWalkthroughStatus(record) === "Ready for Estimate",
+    ).length,
+    sentToProposal: records.filter(
+      (record) => getWalkthroughStatus(record) === "Sent to Proposal",
+    ).length,
   };
 }
 
@@ -625,7 +1046,8 @@ function renderRecentActivity() {
   clearActivity.disabled = recentActivity.length === 0;
 
   if (!recentActivity.length) {
-    activityList.innerHTML = '<li class="activity-empty">No recent demo activity yet.</li>';
+    activityList.innerHTML =
+      '<li class="activity-empty">No recent demo activity yet.</li>';
     return;
   }
 
@@ -651,7 +1073,9 @@ function addRecentActivity(moduleId, item) {
     return;
   }
 
-  const module = modules.find((candidate) => getModuleId(candidate.name) === moduleId);
+  const module = modules.find(
+    (candidate) => getModuleId(candidate.name) === moduleId,
+  );
   const formattedItem = demoModule.format(item);
 
   recentActivity = [
@@ -684,7 +1108,6 @@ function addPayrollStatusActivity(record, previousStatus, nextStatus) {
   saveRecentActivity();
   renderRecentActivity();
 }
-
 
 function addMaintenanceStatusActivity(request, previousStatus, nextStatus) {
   recentActivity = [
@@ -725,6 +1148,22 @@ function addInventoryToolStatusActivity(item, previousStatus, nextStatus) {
       module: "Inventory / Tools",
       title: item.name || "Inventory item",
       meta: `Status changed from ${previousStatus} to ${nextStatus} · ${item.tag || "No tag"} · ${item.holder || "No holder"} · ${item.project || "Unassigned project"}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function addInvestorVisibilityActivity(category, nextValue) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-investor-visibility`,
+      module: "Aquabona Investor Portal",
+      title: category,
+      meta: `Owner demo visibility ${nextValue ? "enabled" : "hidden"} · read-only investor view`,
       createdAt: new Date().toISOString(),
     },
     ...recentActivity,
@@ -789,7 +1228,9 @@ function importDemoDataFromJson() {
     refreshDemoViews();
     setBackupStatus("Demo data imported from pasted JSON.");
   } catch (error) {
-    setBackupStatus("Import failed. Check that the pasted demo data is valid JSON.");
+    setBackupStatus(
+      "Import failed. Check that the pasted demo data is valid JSON.",
+    );
   }
 }
 
@@ -830,6 +1271,10 @@ const setActiveModuleCard = (moduleId) => {
 
 function getDemoCount(moduleId) {
   const demoModule = demoModules[moduleId];
+
+  if (moduleId === "aquabona-investor-portal") {
+    return getInvestorProjects().length;
+  }
 
   if (!demoModule) {
     return 0;
@@ -901,8 +1346,137 @@ function renderDashboardSummary() {
   dashboardSummary.replaceChildren(fragment);
 }
 
+function getInvestorProjects() {
+  return (demoData.projects ?? []).filter(isInvestorVisibleProject);
+}
+
+function getInvestorCategorySummary(category, project) {
+  const receipts = getProjectReceipts(project.name);
+  const inventoryProof = (demoData.inventoryTools ?? []).filter(
+    (item) => item.project === project.name,
+  );
+
+  switch (category) {
+    case "Scope of Work":
+      return project.scope || "Placeholder scope summary for investor review.";
+    case "Project status":
+      return `${project.status || "Demo"} · Next: ${project.nextTask || "Owner-controlled update pending."}`;
+    case "Photos / Proof":
+      return (
+        project.proof ||
+        "Placeholder for before, progress, and completion proof."
+      );
+    case "Receipts":
+      return receipts.length
+        ? `${receipts.length} demo receipt${receipts.length === 1 ? "" : "s"} linked.`
+        : "Receipts hidden or pending.";
+    case "Permits / Inspections":
+      return (
+        project.permit ||
+        "Permit and inspection placeholders pending owner approval."
+      );
+    case "Insurance documents":
+      return "Placeholder insurance document visibility.";
+    case "Inventory proof":
+      return inventoryProof.length
+        ? `${inventoryProof.length} inventory/tool proof item${inventoryProof.length === 1 ? "" : "s"} linked.`
+        : "Inventory proof placeholder.";
+    case "Change orders":
+      return "Placeholder change-order visibility.";
+    case "Closeout":
+      return project.notes || "Closeout placeholder and owner notes pending.";
+    default:
+      return "Placeholder investor visibility category.";
+  }
+}
+
+function renderAquabonaInvestorPortal() {
+  const investorProjects = getInvestorProjects();
+  const enabledCategories = INVESTOR_VISIBILITY_CATEGORIES.filter(
+    (category) => investorVisibility[slugifyLabel(category)],
+  );
+  const toggleRows = INVESTOR_VISIBILITY_CATEGORIES.map((category) => {
+    const key = slugifyLabel(category);
+    const isChecked = investorVisibility[key];
+
+    return `
+        <label class="investor-toggle">
+          <input type="checkbox" data-investor-category="${escapeHtml(key)}" data-investor-category-label="${escapeHtml(category)}" ${isChecked ? "checked" : ""} />
+          <span>${escapeHtml(category)}</span>
+        </label>
+      `;
+  }).join("");
+
+  const projectCards = investorProjects.length
+    ? investorProjects
+        .map((project) => {
+          const categoryItems = enabledCategories
+            .map(
+              (category) => `
+                <li>
+                  <strong>${escapeHtml(category)}</strong>
+                  <span>${escapeHtml(getInvestorCategorySummary(category, project))}</span>
+                </li>
+              `,
+            )
+            .join("");
+
+          return `
+            <article class="investor-project-card">
+              <div class="investor-project-header">
+                <div>
+                  <p class="eyebrow">Investor Project</p>
+                  <h5>${escapeHtml(project.name)}</h5>
+                </div>
+                <span>${escapeHtml(project.status || "Demo")}</span>
+              </div>
+              <p>${escapeHtml(formatCurrency(project.budget))} demo budget · ${escapeHtml(getProjectTags(project).join(", ") || "Aquabona investor-visible")}</p>
+              <ul>${categoryItems || "<li><strong>Owner controlled</strong><span>No investor categories enabled yet.</span></li>"}</ul>
+            </article>
+          `;
+        })
+        .join("")
+    : `
+      <article class="investor-project-empty">
+        <p class="eyebrow">Investor Projects</p>
+        <h5>No Aquabona investor-visible projects yet</h5>
+        <p>Tag a saved project with Aquabona or investor-visible, or set Investor visible to Yes in Projects, to show it here.</p>
+      </article>
+    `;
+
+  return `
+    <section class="investor-portal-panel" aria-label="Aquabona Investor Portal panel">
+      <div class="investor-portal-header">
+        <div>
+          <p class="eyebrow">Aquabona</p>
+          <h4>Investor Portal</h4>
+        </div>
+        <span class="investor-readonly-status">Read-only demo</span>
+      </div>
+      <p class="investor-lock-note">Payroll is hidden by default. Investor view is read-only and owner-controlled.</p>
+      <div class="investor-toggle-panel">
+        <div>
+          <p class="eyebrow">Owner Controls</p>
+          <h5>Demo visibility toggles</h5>
+        </div>
+        <div class="investor-toggle-grid">${toggleRows}</div>
+      </div>
+      <div class="investor-project-grid">${projectCards}</div>
+    </section>
+  `;
+}
+
+function updateInvestorVisibility(categoryKey, categoryLabel, nextValue) {
+  investorVisibility[categoryKey] = nextValue;
+  saveInvestorVisibility();
+  addInvestorVisibilityActivity(categoryLabel, nextValue);
+  renderDemoModule("aquabona-investor-portal");
+}
+
 function getProjectReceipts(projectName) {
-  return (demoData.receipts ?? []).filter((receipt) => receipt.project === projectName);
+  return (demoData.receipts ?? []).filter(
+    (receipt) => receipt.project === projectName,
+  );
 }
 
 function getSelectedProject(items) {
@@ -915,20 +1489,28 @@ function getSelectedProject(items) {
 
 function getProjectFolderSections(project) {
   const projectReceipts = getProjectReceipts(project.name);
-  const receiptTotal = projectReceipts.reduce((total, receipt) => total + (Number(receipt.amount) || 0), 0);
+  const receiptTotal = projectReceipts.reduce(
+    (total, receipt) => total + (Number(receipt.amount) || 0),
+    0,
+  );
 
   return [
     {
       title: "Scope of Work",
-      body: project.scope || "Placeholder scope summary for this saved project.",
+      body:
+        project.scope || "Placeholder scope summary for this saved project.",
     },
     {
       title: "Schedule / Tasks",
-      body: project.nextTask || "Placeholder task list and schedule milestones for the field team.",
+      body:
+        project.nextTask ||
+        "Placeholder task list and schedule milestones for the field team.",
     },
     {
       title: "Photos / Proof",
-      body: project.proof || "Placeholder proof log for before, progress, and completion photos.",
+      body:
+        project.proof ||
+        "Placeholder proof log for before, progress, and completion photos.",
     },
     {
       title: "Receipts",
@@ -938,11 +1520,15 @@ function getProjectFolderSections(project) {
     },
     {
       title: "Permits / Inspections",
-      body: project.permit || "Placeholder permit and inspection checkpoints for office follow-up.",
+      body:
+        project.permit ||
+        "Placeholder permit and inspection checkpoints for office follow-up.",
     },
     {
       title: "Notes",
-      body: project.notes || "Placeholder notes for owner updates, field context, and open questions.",
+      body:
+        project.notes ||
+        "Placeholder notes for owner updates, field context, and open questions.",
     },
   ];
 }
@@ -1011,12 +1597,10 @@ function renderReceiptReviewPanel(receipts) {
   const receiptRows = receipts
     .map((receipt, index) => {
       const currentStatus = getReceiptStatus(receipt);
-      const statusOptions = RECEIPT_REVIEW_STATUSES
-        .map(
-          (status) =>
-            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
-        )
-        .join("");
+      const statusOptions = RECEIPT_REVIEW_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
 
       return `
         <article class="receipt-review-card">
@@ -1075,7 +1659,6 @@ function updateReceiptStatus(index, nextStatus) {
   renderDemoModule("receipts");
 }
 
-
 function renderMaintenanceDispatchPanel(requests) {
   const summary = getMaintenanceSummary(requests);
   const summaryGrid = `
@@ -1108,12 +1691,10 @@ function renderMaintenanceDispatchPanel(requests) {
   const requestRows = requests
     .map((request, index) => {
       const currentStatus = getMaintenanceStatus(request);
-      const statusOptions = MAINTENANCE_DISPATCH_STATUSES
-        .map(
-          (status) =>
-            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
-        )
-        .join("");
+      const statusOptions = MAINTENANCE_DISPATCH_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
 
       return `
         <article class="maintenance-dispatch-card">
@@ -1202,12 +1783,10 @@ function renderInventoryToolCheckoutPanel(items) {
   const itemRows = items
     .map((item, index) => {
       const currentStatus = getInventoryToolStatus(item);
-      const statusOptions = INVENTORY_TOOL_STATUSES
-        .map(
-          (status) =>
-            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
-        )
-        .join("");
+      const statusOptions = INVENTORY_TOOL_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
 
       return `
         <article class="inventory-checkout-card">
@@ -1276,7 +1855,8 @@ function renderWalkthroughCapturePanel(records) {
     </div>
   `;
 
-  const lockedNote = "Live camera, voice capture, AI measurements, and backend estimate generation are locked until backend/security gates are complete.";
+  const lockedNote =
+    "Live camera, voice capture, AI measurements, and backend estimate generation are locked until backend/security gates are complete.";
 
   if (!records.length) {
     return `
@@ -1298,12 +1878,10 @@ function renderWalkthroughCapturePanel(records) {
   const recordRows = records
     .map((record, index) => {
       const currentStatus = getWalkthroughStatus(record);
-      const statusOptions = WALKTHROUGH_READINESS_STATUSES
-        .map(
-          (status) =>
-            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
-        )
-        .join("");
+      const statusOptions = WALKTHROUGH_READINESS_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
 
       return `
         <article class="walkthrough-capture-card">
@@ -1393,12 +1971,10 @@ function renderPayrollPrepPanel(records) {
   const recordRows = records
     .map((record, index) => {
       const currentStatus = getPayrollStatus(record);
-      const statusOptions = PAYROLL_PREP_STATUSES
-        .map(
-          (status) =>
-            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
-        )
-        .join("");
+      const statusOptions = PAYROLL_PREP_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
 
       return `
         <article class="payroll-prep-card">
@@ -1460,9 +2036,15 @@ function renderDemoList(moduleId) {
   const projectFolderSlot = detailDemo.querySelector("[data-project-folder]");
   const receiptReviewSlot = detailDemo.querySelector("[data-receipt-review]");
   const payrollPrepSlot = detailDemo.querySelector("[data-payroll-prep]");
-  const maintenanceDispatchSlot = detailDemo.querySelector("[data-maintenance-dispatch]");
-  const inventoryCheckoutSlot = detailDemo.querySelector("[data-inventory-checkout]");
-  const walkthroughCaptureSlot = detailDemo.querySelector("[data-walkthrough-capture]");
+  const maintenanceDispatchSlot = detailDemo.querySelector(
+    "[data-maintenance-dispatch]",
+  );
+  const inventoryCheckoutSlot = detailDemo.querySelector(
+    "[data-inventory-checkout]",
+  );
+  const walkthroughCaptureSlot = detailDemo.querySelector(
+    "[data-walkthrough-capture]",
+  );
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
@@ -1494,7 +2076,8 @@ function renderDemoList(moduleId) {
   list.innerHTML = items
     .map((item) => {
       const formattedItem = demoModule.format(item);
-      const isSelectedProject = moduleId === "projects" && item.name === selectedProjectName;
+      const isSelectedProject =
+        moduleId === "projects" && item.name === selectedProjectName;
 
       return `
         <li class="${moduleId === "projects" ? "project-list-item" : ""} ${isSelectedProject ? "selected" : ""}">
@@ -1522,53 +2105,99 @@ function renderDemoList(moduleId) {
   });
 
   if (projectFolderSlot) {
-    projectFolderSlot.innerHTML = renderProjectFolder(getSelectedProject(items));
+    projectFolderSlot.innerHTML = renderProjectFolder(
+      getSelectedProject(items),
+    );
   }
 
   if (receiptReviewSlot) {
     receiptReviewSlot.innerHTML = renderReceiptReviewPanel(items);
-    receiptReviewSlot.querySelectorAll("[data-receipt-status-index]").forEach((select) => {
-      select.addEventListener("change", () => updateReceiptStatus(Number(select.dataset.receiptStatusIndex), select.value));
-    });
+    receiptReviewSlot
+      .querySelectorAll("[data-receipt-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateReceiptStatus(
+            Number(select.dataset.receiptStatusIndex),
+            select.value,
+          ),
+        );
+      });
   }
 
   if (payrollPrepSlot) {
     payrollPrepSlot.innerHTML = renderPayrollPrepPanel(items);
-    payrollPrepSlot.querySelectorAll("[data-payroll-status-index]").forEach((select) => {
-      select.addEventListener("change", () => updatePayrollStatus(Number(select.dataset.payrollStatusIndex), select.value));
-    });
+    payrollPrepSlot
+      .querySelectorAll("[data-payroll-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updatePayrollStatus(
+            Number(select.dataset.payrollStatusIndex),
+            select.value,
+          ),
+        );
+      });
   }
 
   if (maintenanceDispatchSlot) {
     maintenanceDispatchSlot.innerHTML = renderMaintenanceDispatchPanel(items);
-    maintenanceDispatchSlot.querySelectorAll("[data-maintenance-status-index]").forEach((select) => {
-      select.addEventListener("change", () =>
-        updateMaintenanceStatus(Number(select.dataset.maintenanceStatusIndex), select.value),
-      );
-    });
+    maintenanceDispatchSlot
+      .querySelectorAll("[data-maintenance-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateMaintenanceStatus(
+            Number(select.dataset.maintenanceStatusIndex),
+            select.value,
+          ),
+        );
+      });
   }
 
   if (inventoryCheckoutSlot) {
     inventoryCheckoutSlot.innerHTML = renderInventoryToolCheckoutPanel(items);
-    inventoryCheckoutSlot.querySelectorAll("[data-inventory-status-index]").forEach((select) => {
-      select.addEventListener("change", () =>
-        updateInventoryToolStatus(Number(select.dataset.inventoryStatusIndex), select.value),
-      );
-    });
+    inventoryCheckoutSlot
+      .querySelectorAll("[data-inventory-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateInventoryToolStatus(
+            Number(select.dataset.inventoryStatusIndex),
+            select.value,
+          ),
+        );
+      });
   }
 
   if (walkthroughCaptureSlot) {
     walkthroughCaptureSlot.innerHTML = renderWalkthroughCapturePanel(items);
-    walkthroughCaptureSlot.querySelectorAll("[data-walkthrough-status-index]").forEach((select) => {
-      select.addEventListener("change", () =>
-        updateWalkthroughStatus(Number(select.dataset.walkthroughStatusIndex), select.value),
-      );
-    });
+    walkthroughCaptureSlot
+      .querySelectorAll("[data-walkthrough-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateWalkthroughStatus(
+            Number(select.dataset.walkthroughStatusIndex),
+            select.value,
+          ),
+        );
+      });
   }
 }
 
 function renderDemoModule(moduleId) {
   const demoModule = demoModules[moduleId];
+
+  if (moduleId === "aquabona-investor-portal") {
+    detailDemo.hidden = false;
+    detailDemo.innerHTML = renderAquabonaInvestorPortal();
+    detailDemo.querySelectorAll("[data-investor-category]").forEach((input) => {
+      input.addEventListener("change", () =>
+        updateInvestorVisibility(
+          input.dataset.investorCategory,
+          input.dataset.investorCategoryLabel,
+          input.checked,
+        ),
+      );
+    });
+    return;
+  }
 
   if (!demoModule) {
     detailDemo.hidden = true;
@@ -1582,7 +2211,10 @@ function renderDemoModule(moduleId) {
 
       if (field.options?.length) {
         const options = field.options
-          .map((option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`)
+          .map(
+            (option) =>
+              `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`,
+          )
           .join("");
 
         return `
@@ -1639,34 +2271,44 @@ function renderDemoModule(moduleId) {
       <button type="submit">${demoModule.submitLabel}</button>
     </form>
     <ul class="demo-list" data-demo-list></ul>
-    ${moduleId === "projects" ? '<div data-project-folder></div>' : ""}
-    ${moduleId === "receipts" ? '<div data-receipt-review></div>' : ""}
-    ${moduleId === "payroll-prep" ? '<div data-payroll-prep></div>' : ""}
-    ${moduleId === "maintenance-plus-hvac" ? '<div data-maintenance-dispatch></div>' : ""}
-    ${moduleId === "inventory-tools" ? '<div data-inventory-checkout></div>' : ""}
-    ${moduleId === "field-walkthrough" ? '<div data-walkthrough-capture></div>' : ""}
+    ${moduleId === "projects" ? "<div data-project-folder></div>" : ""}
+    ${moduleId === "receipts" ? "<div data-receipt-review></div>" : ""}
+    ${moduleId === "payroll-prep" ? "<div data-payroll-prep></div>" : ""}
+    ${moduleId === "maintenance-plus-hvac" ? "<div data-maintenance-dispatch></div>" : ""}
+    ${moduleId === "inventory-tools" ? "<div data-inventory-checkout></div>" : ""}
+    ${moduleId === "field-walkthrough" ? "<div data-walkthrough-capture></div>" : ""}
   `;
 
-  detailDemo.querySelector("[data-demo-form]").addEventListener("submit", (event) => {
-    event.preventDefault();
+  detailDemo
+    .querySelector("[data-demo-form]")
+    .addEventListener("submit", (event) => {
+      event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
-    const nextItem = Object.fromEntries(
-      demoModule.fields.map((field) => [field.name, String(formData.get(field.name) ?? "").trim()]),
-    );
+      const formData = new FormData(event.currentTarget);
+      const nextItem = Object.fromEntries(
+        demoModule.fields.map((field) => [
+          field.name,
+          String(formData.get(field.name) ?? "").trim(),
+        ]),
+      );
 
-    demoData[demoModule.storageKey] = [nextItem, ...(demoData[demoModule.storageKey] ?? [])];
-    if (moduleId === "projects") {
-      saveSelectedProject(nextItem.name);
-    }
-    saveDemoData();
-    addRecentActivity(moduleId, nextItem);
-    event.currentTarget.reset();
-    renderModules();
-    renderDemoModule(moduleId);
-  });
+      demoData[demoModule.storageKey] = [
+        nextItem,
+        ...(demoData[demoModule.storageKey] ?? []),
+      ];
+      if (moduleId === "projects") {
+        saveSelectedProject(nextItem.name);
+      }
+      saveDemoData();
+      addRecentActivity(moduleId, nextItem);
+      event.currentTarget.reset();
+      renderModules();
+      renderDemoModule(moduleId);
+    });
 
-  detailDemo.querySelector("[data-reset-demo]").addEventListener("click", resetAllDemoData);
+  detailDemo
+    .querySelector("[data-reset-demo]")
+    .addEventListener("click", resetAllDemoData);
   renderDemoList(moduleId);
 }
 
@@ -1750,6 +2392,16 @@ window.addEventListener("storage", (event) => {
     setBackupStatus("Demo data updated in another tab.");
   }
 
+  if (event.key === INVESTOR_VISIBILITY_KEY) {
+    investorVisibility = loadInvestorVisibility();
+    if (
+      activeModule &&
+      getModuleId(activeModule.name) === "aquabona-investor-portal"
+    ) {
+      renderDemoModule("aquabona-investor-portal");
+    }
+  }
+
   if (event.key === RECENT_ACTIVITY_KEY) {
     recentActivity = loadRecentActivity();
     renderRecentActivity();
@@ -1759,7 +2411,9 @@ window.addEventListener("storage", (event) => {
 renderRecentActivity();
 renderModules();
 
-const lastOpenedModule = modules.find((module) => getModuleId(module.name) === getLastOpenedModule());
+const lastOpenedModule = modules.find(
+  (module) => getModuleId(module.name) === getLastOpenedModule(),
+);
 
 if (lastOpenedModule) {
   openModuleDetail(lastOpenedModule);
