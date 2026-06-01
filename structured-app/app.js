@@ -224,6 +224,23 @@ const modules = [
   },
 ];
 
+const quickAccessLinks = [
+  { label: "Projects", moduleId: "projects" },
+  { label: "Receipts Review", moduleId: "receipts" },
+  { label: "Payroll Prep", moduleId: "payroll-prep" },
+  { label: "Maintenance + HVAC", moduleId: "maintenance-plus-hvac" },
+  { label: "Inventory / Tools", moduleId: "inventory-tools" },
+  { label: "Field Walkthrough", moduleId: "field-walkthrough" },
+  { label: "Aquabona Investor Portal", moduleId: "aquabona-investor-portal" },
+  { label: "Customer / Homeowner Portal", moduleId: "customer-homeowner-portal" },
+  { label: "Estimates / Proposals", moduleId: "estimates-proposals-change-orders" },
+  { label: "Daily P&L / Accounting Review", moduleId: "accounting-review" },
+  { label: "Schedule / Tasks", moduleId: "schedule-tasks" },
+  { label: "Job Documents / Evidence Binder", moduleId: "job-documents-evidence-binder" },
+  { label: "Owner Approvals", moduleId: "owner-approvals-review-queue" },
+  { label: "Bug Capture / QA Issue Log", moduleId: "bug-capture-qa-issue-log" },
+];
+
 const demoDefaults = {
   projects: [
     {
@@ -1100,6 +1117,8 @@ const demoModules = {
 
 const navButtons = document.querySelectorAll(".bottom-nav button");
 const dashboardSummary = document.querySelector("[data-dashboard-summary]");
+const quickAccess = document.querySelector("[data-quick-access]");
+const lastOpenedModuleIndicator = document.querySelector("[data-last-opened-module]");
 const aiInsightsList = document.querySelector("[data-ai-insights]");
 const refreshInsights = document.querySelector("[data-refresh-insights]");
 const aiInsightsUpdated = document.querySelector("[data-ai-insights-updated]");
@@ -2413,6 +2432,22 @@ const saveLastOpenedModule = (moduleId) => {
 
 const getLastOpenedModule = () => readLocalStorage(LAST_OPENED_MODULE_KEY);
 
+const getModuleById = (moduleId) =>
+  modules.find((module) => getModuleId(module.name) === moduleId);
+
+function renderLastOpenedModule() {
+  const lastOpenedModule = getModuleById(getLastOpenedModule());
+  const label = lastOpenedModule?.name ?? "None yet";
+
+  lastOpenedModuleIndicator.textContent = `Last opened module: ${label}`;
+}
+
+function setActiveQuickAccessButton(moduleId) {
+  quickAccess.querySelectorAll(".quick-access-button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.moduleId === moduleId);
+  });
+}
+
 const saveSelectedProject = (projectName) => {
   selectedProjectName = projectName;
   writeLocalStorage(SELECTED_PROJECT_KEY, projectName);
@@ -2422,6 +2457,7 @@ const setActiveModuleCard = (moduleId) => {
   cardGrid.querySelectorAll(".brain-card").forEach((card) => {
     card.classList.toggle("active", card.dataset.moduleId === moduleId);
   });
+  setActiveQuickAccessButton(moduleId);
 };
 
 function getDemoCount(moduleId) {
@@ -4270,7 +4306,7 @@ function renderDemoModule(moduleId) {
   renderDemoList(moduleId);
 }
 
-const openModuleDetail = (module) => {
+const openModuleDetail = (module, options = {}) => {
   const moduleId = getModuleId(module.name);
 
   activeModule = module;
@@ -4280,6 +4316,11 @@ const openModuleDetail = (module) => {
   setActiveModuleCard(moduleId);
   renderDemoModule(moduleId);
   saveLastOpenedModule(moduleId);
+  renderLastOpenedModule();
+
+  if (options.scrollIntoView) {
+    detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 };
 
 const closeModuleDetail = () => {
@@ -4288,7 +4329,38 @@ const closeModuleDetail = () => {
   cardGrid.querySelectorAll(".brain-card").forEach((card) => {
     card.classList.remove("active");
   });
+  setActiveQuickAccessButton(null);
 };
+
+function renderQuickAccess() {
+  const fragment = document.createDocumentFragment();
+
+  quickAccessLinks.forEach((link) => {
+    const module = getModuleById(link.moduleId);
+
+    if (!module) {
+      return;
+    }
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "quick-access-button";
+    button.dataset.moduleId = link.moduleId;
+    button.textContent = link.label;
+    button.setAttribute("aria-label", `Open ${link.label}`);
+    button.addEventListener("click", () =>
+      openModuleDetail(module, { scrollIntoView: true }),
+    );
+    fragment.appendChild(button);
+  });
+
+  quickAccess.replaceChildren(fragment);
+  renderLastOpenedModule();
+
+  if (activeModule) {
+    setActiveQuickAccessButton(getModuleId(activeModule.name));
+  }
+}
 
 const renderModules = () => {
   renderDashboardSummary();
@@ -4371,9 +4443,14 @@ window.addEventListener("storage", (event) => {
     recentActivity = loadRecentActivity();
     renderRecentActivity();
   }
+
+  if (event.key === LAST_OPENED_MODULE_KEY) {
+    renderLastOpenedModule();
+  }
 });
 
 renderRecentActivity();
+renderQuickAccess();
 renderModules();
 
 const lastOpenedModule = modules.find(

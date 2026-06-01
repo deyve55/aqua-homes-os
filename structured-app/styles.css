@@ -132,6 +132,81 @@ h1 {
   font-weight: 700;
 }
 
+.quick-access-panel {
+  margin: 0 0 18px;
+  padding: 18px;
+  border: 1px solid rgba(247, 200, 67, 0.24);
+  border-radius: 22px;
+  background: linear-gradient(
+    160deg,
+    rgba(8, 21, 37, 0.86),
+    rgba(2, 5, 11, 0.7)
+  );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.quick-access-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.quick-access-header h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.25rem, 4vw, 1.6rem);
+}
+
+.last-opened-module {
+  max-width: 260px;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid rgba(247, 200, 67, 0.28);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(247, 200, 67, 0.08);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.quick-access-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.quick-access-button {
+  flex: 1 1 150px;
+  min-height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.quick-access-button:hover,
+.quick-access-button:focus-visible,
+.quick-access-button.active {
+  border-color: rgba(247, 200, 67, 0.55);
+  color: var(--black);
+  background: var(--gold);
+  transform: translateY(-1px);
+}
+
 .dashboard-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -381,6 +456,7 @@ h1 {
 }
 
 .brain-card:focus-visible,
+.quick-access-button:focus-visible,
 .module-detail button:focus-visible,
 .ai-insights-panel .ghost-button:focus-visible,
 .activity-panel .ghost-button:focus-visible {
@@ -501,6 +577,7 @@ h1 {
 
   .dashboard-header,
   .dashboard-summary,
+  .quick-access-header,
   .ai-insights-header,
   .activity-header,
   .card-grid {
@@ -512,7 +589,17 @@ h1 {
     margin-top: 12px;
   }
 
+  .last-opened-module {
+    max-width: none;
+    text-align: left;
+  }
+
+  .quick-access-button {
+    flex-basis: calc(50% - 5px);
+  }
+
   .summary-card + .summary-card,
+  .last-opened-module,
   .ai-insights-header .ghost-button,
   .activity-header .ghost-button,
   .brain-card + .brain-card {
@@ -533,6 +620,12 @@ h1 {
 
   .module-detail button {
     margin-top: 16px;
+  }
+}
+
+@media (max-width: 420px) {
+  .quick-access-button {
+    flex-basis: 100%;
   }
 }
 
