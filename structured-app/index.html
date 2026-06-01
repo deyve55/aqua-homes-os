@@ -3,7 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="application-name" content="Aqua Homes OS" />
+    <meta name="theme-color" content="#06111f" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Aqua Homes OS" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Aqua Homes AI Construction OS — Structured Starter</title>
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -74,6 +81,21 @@
             data-launch-readiness-list
             aria-label="Launch Control trial readiness checklist"
           ></div>
+        </section>
+
+        <section class="phone-trial-panel" aria-labelledby="phone-trial-title">
+          <div class="phone-trial-header">
+            <div>
+              <p class="eyebrow">Phone Trial</p>
+              <h2 id="phone-trial-title">Install Readiness</h2>
+            </div>
+            <span class="status-pill phone-trial-status">PWA Shell</span>
+          </div>
+          <p class="phone-trial-copy">
+            This is a local structured prototype shell that can later be hosted and installed as
+            a phone web app. Backend, auth, payments, payroll, GPS, customer-sensitive storage,
+            and accounting sync remain locked until production security and provider gates are complete.
+          </p>
         </section>
 
         <section class="activity-panel" aria-labelledby="activity-title">
