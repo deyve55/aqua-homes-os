@@ -86,6 +86,27 @@ const ACCOUNTING_REVIEW_STATUSES = [
 ];
 const ACCOUNTING_REVIEW_LOCK_NOTE =
   "Live accounting sync, ledger posting, tax filing, and P&L posting are locked until backend/security/provider gates are complete.";
+const OWNER_APPROVAL_TYPES = [
+  "Estimate Approval",
+  "Change Order",
+  "Receipt Review",
+  "Payroll Hold",
+  "Maintenance Dispatch",
+  "Investor Visibility",
+  "Accounting Review",
+  "Document Approval",
+  "Other",
+];
+const OWNER_APPROVAL_STATUSES = [
+  "Pending",
+  "Office Review",
+  "Owner Approved",
+  "Owner Rejected",
+  "Accounting Hold",
+  "Completed",
+];
+const OWNER_APPROVAL_LOCK_NOTE =
+  "Live approvals, payments, payroll release, and accounting impact are locked until backend/security/provider gates are complete.";
 const DOCUMENT_TYPES = [
   "Scope of Work",
   "Contract",
@@ -139,6 +160,11 @@ const modules = [
     name: "Accounting Review",
     description:
       "Review financial checkpoints, reconciliations, and open accounting questions.",
+  },
+  {
+    name: "Owner Approvals / Review Queue",
+    description:
+      "Stage owner approvals, office review holds, and accounting-sensitive decisions in local demo storage.",
   },
   {
     name: "Maintenance + HVAC",
@@ -331,6 +357,38 @@ const demoDefaults = {
       status: "Change Order",
     },
   ],
+  ownerApprovals: [
+    {
+      title: "Kitchen punch list estimate approval",
+      projectProperty: "Canal House Retrofit",
+      approvalType: "Estimate Approval",
+      amount: "28500",
+      requestedBy: "Avery Morgan",
+      status: "Pending",
+      notes:
+        "Demo approval item only. Owner approval workflow remains locked until backend/security/provider gates are complete.",
+    },
+    {
+      title: "Dock repair change order review",
+      projectProperty: "Canal House Retrofit",
+      approvalType: "Change Order",
+      amount: "12400",
+      requestedBy: "Aqua Homes Office",
+      status: "Office Review",
+      notes:
+        "Confirm scope, amount, and accounting hold before live approval routing is enabled.",
+    },
+    {
+      title: "Receipt packet accounting hold",
+      projectProperty: "Canal House Retrofit",
+      approvalType: "Accounting Review",
+      amount: "742.18",
+      requestedBy: "Harbor Supply",
+      status: "Accounting Hold",
+      notes:
+        "Placeholder for office reconciliation and owner visibility review.",
+    },
+  ],
   jobDocuments: [
     {
       title: "Canal House permit packet",
@@ -408,6 +466,11 @@ const dashboardSummaryItems = [
     label: "Estimates",
     storageKey: "estimatesProposals",
     helper: "Proposals and change orders",
+  },
+  {
+    label: "Owner Approvals",
+    storageKey: "ownerApprovals",
+    helper: "Approval queue items",
   },
   {
     label: "Job Documents",
@@ -866,6 +929,64 @@ const demoModules = {
       meta: `${item.tag} · ${item.holder} · ${item.project || "Unassigned project"} · ${getInventoryToolStatus(item)}`,
     }),
   },
+  "owner-approvals-review-queue": {
+    storageKey: "ownerApprovals",
+    eyebrow: "Owner Approvals / Review Queue",
+    submitLabel: "Save Approval Item",
+    fields: [
+      {
+        name: "title",
+        label: "Approval item title",
+        placeholder: "Kitchen punch list estimate approval",
+        required: true,
+      },
+      {
+        name: "projectProperty",
+        label: "Project / property",
+        placeholder: "Canal House Retrofit",
+        projectOptions: true,
+        required: true,
+      },
+      {
+        name: "approvalType",
+        label: "Approval type",
+        options: OWNER_APPROVAL_TYPES,
+        required: true,
+      },
+      {
+        name: "amount",
+        label: "Amount",
+        placeholder: "25000",
+        type: "number",
+        step: "0.01",
+        min: "0",
+        required: true,
+      },
+      {
+        name: "requestedBy",
+        label: "Requested by",
+        placeholder: "Aqua Homes Office",
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Status",
+        options: OWNER_APPROVAL_STATUSES,
+        required: true,
+      },
+      {
+        name: "notes",
+        label: "Notes",
+        placeholder: "Owner review notes, office conditions, and accounting hold context",
+        multiline: true,
+      },
+    ],
+    empty: "No owner approval demo records yet.",
+    format: (item) => ({
+      title: getOwnerApprovalTitle(item),
+      meta: `${getOwnerApprovalProject(item)} · ${getOwnerApprovalType(item)} · ${formatCurrency(item.amount)} · ${getOwnerApprovalStatus(item)}`,
+    }),
+  },
   "job-documents-evidence-binder": {
     storageKey: "jobDocuments",
     eyebrow: "Job Documents / Evidence Binder",
@@ -1201,6 +1322,18 @@ function normalizeEstimateProposalRecord(record) {
   };
 }
 
+function normalizeOwnerApprovalRecord(record) {
+  return {
+    title: getOwnerApprovalTitle(record),
+    projectProperty: getOwnerApprovalProject(record),
+    approvalType: getOwnerApprovalType(record),
+    amount: String(record?.amount ?? record?.reviewAmount ?? "0").trim(),
+    requestedBy: String(record?.requestedBy ?? record?.requester ?? "").trim(),
+    status: getOwnerApprovalStatus(record),
+    notes: String(record?.notes ?? record?.note ?? "").trim(),
+  };
+}
+
 function normalizeDocumentRecord(record) {
   return {
     title: getDocumentTitle(record),
@@ -1252,6 +1385,10 @@ function normalizeDemoData(value) {
 
       if (key === "estimatesProposals") {
         return [key, items.map(normalizeEstimateProposalRecord)];
+      }
+
+      if (key === "ownerApprovals") {
+        return [key, items.map(normalizeOwnerApprovalRecord)];
       }
 
       if (key === "jobDocuments") {
@@ -1467,6 +1604,40 @@ function getAccountingReviewStatus(value) {
   return ACCOUNTING_REVIEW_STATUSES.includes(status)
     ? status
     : ACCOUNTING_REVIEW_STATUSES[0];
+}
+
+function getOwnerApprovalTitle(record) {
+  return (
+    String(record?.title ?? record?.approvalTitle ?? "Approval item").trim() ||
+    "Approval item"
+  );
+}
+
+function getOwnerApprovalProject(record) {
+  return (
+    String(
+      record?.projectProperty ??
+        record?.propertyProject ??
+        record?.project ??
+        "Saved project",
+    ).trim() || "Saved project"
+  );
+}
+
+function getOwnerApprovalType(record) {
+  const approvalType = String(record?.approvalType ?? record?.type ?? "").trim();
+
+  return OWNER_APPROVAL_TYPES.includes(approvalType)
+    ? approvalType
+    : OWNER_APPROVAL_TYPES[0];
+}
+
+function getOwnerApprovalStatus(record) {
+  const status = String(record?.status ?? record?.approvalStatus ?? "").trim();
+
+  return OWNER_APPROVAL_STATUSES.includes(status)
+    ? status
+    : OWNER_APPROVAL_STATUSES[0];
 }
 
 function getLaborCost(record) {
@@ -1731,6 +1902,31 @@ function getDocumentSummary(records = demoData.jobDocuments ?? []) {
     ).length,
     missing: records.filter((record) => getDocumentStatus(record) === "Missing")
       .length,
+  };
+}
+
+function getOwnerApprovalSummary(records = demoData.ownerApprovals ?? []) {
+  return {
+    total: records.length,
+    pending: records.filter(
+      (record) => getOwnerApprovalStatus(record) === "Pending",
+    ).length,
+    officeReview: records.filter(
+      (record) => getOwnerApprovalStatus(record) === "Office Review",
+    ).length,
+    approved: records.filter(
+      (record) => getOwnerApprovalStatus(record) === "Owner Approved",
+    ).length,
+    accountingHold: records.filter(
+      (record) => getOwnerApprovalStatus(record) === "Accounting Hold",
+    ).length,
+    totalAmountUnderReview: records.reduce((total, record) => {
+      const status = getOwnerApprovalStatus(record);
+
+      return ["Pending", "Office Review", "Accounting Hold"].includes(status)
+        ? total + (Number(record.amount) || 0)
+        : total;
+    }, 0),
   };
 }
 
@@ -2015,6 +2211,22 @@ function addAccountingReviewStatusActivity(previousStatus, nextStatus) {
   renderRecentActivity();
 }
 
+function addOwnerApprovalStatusActivity(record, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-owner-approval-status`,
+      module: "Owner Approvals / Review Queue",
+      title: getOwnerApprovalTitle(record),
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${getOwnerApprovalProject(record)} · ${getOwnerApprovalType(record)} · ${formatCurrency(record.amount)}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
 function clearRecentActivity() {
   recentActivity = [];
   saveRecentActivity();
@@ -2137,6 +2349,10 @@ function getInsightMessage(summaryItem) {
       return `${count} customer portal ${count === 1 ? "request is" : "requests are"} saved for office follow-up.`;
     case "estimatesProposals":
       return `${count} estimate/proposal ${count === 1 ? "record is" : "records are"} saved for office review and change-order tracking.`;
+    case "ownerApprovals": {
+      const summary = getOwnerApprovalSummary(demoData.ownerApprovals ?? []);
+      return `${summary.total} owner approval ${summary.total === 1 ? "item is" : "items are"} saved: ${summary.pending} pending, ${summary.officeReview} in office review, ${summary.approved} approved, and ${summary.accountingHold} accounting hold.`;
+    }
     case "jobDocuments": {
       const summary = getDocumentSummary(demoData.jobDocuments ?? []);
       return `${summary.total} document ${summary.total === 1 ? "record is" : "records are"} saved: ${summary.permits} permits, ${summary.inspections} inspections, ${summary.insurance} insurance, ${summary.photoProof} photo proof, ${summary.needsReview} needs review, and ${summary.missing} missing.`;
@@ -3055,6 +3271,83 @@ function updateEstimateStatus(index, nextStatus) {
 }
 
 
+function renderOwnerApprovalsPanel(records) {
+  const summary = getOwnerApprovalSummary(records);
+  const summaryGrid = `
+    <div class="owner-approval-summary-grid" aria-label="Approvals Summary">
+      <article><strong>${summary.total}</strong><span>Total approval items</span></article>
+      <article><strong>${summary.pending}</strong><span>Pending count</span></article>
+      <article><strong>${summary.officeReview}</strong><span>Office review count</span></article>
+      <article><strong>${summary.approved}</strong><span>Approved count</span></article>
+      <article><strong>${summary.accountingHold}</strong><span>Accounting hold count</span></article>
+      <article><strong>${escapeHtml(formatCurrency(summary.totalAmountUnderReview))}</strong><span>Total amount under review</span></article>
+    </div>
+  `;
+  const rows = records.length
+    ? records
+        .map((record, index) => {
+          const currentStatus = getOwnerApprovalStatus(record);
+          const statusOptions = OWNER_APPROVAL_STATUSES.map(
+            (status) =>
+              `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+          ).join("");
+
+          return `
+            <article class="owner-approval-card">
+              <div>
+                <strong>${escapeHtml(getOwnerApprovalTitle(record))}</strong>
+                <span>${escapeHtml(getOwnerApprovalProject(record))} · ${escapeHtml(getOwnerApprovalType(record))} · ${escapeHtml(formatCurrency(record.amount))}</span>
+                <span>Requested by ${escapeHtml(record.requestedBy || "Unassigned requester")}</span>
+                <span>${escapeHtml(record.notes || "No approval notes saved yet.")}</span>
+              </div>
+              <label>
+                <span>Status</span>
+                <select data-owner-approval-status-index="${index}" aria-label="Update approval status for ${escapeHtml(getOwnerApprovalTitle(record))}">
+                  ${statusOptions}
+                </select>
+              </label>
+            </article>
+          `;
+        })
+        .join("")
+    : '<p class="owner-approval-empty">No saved owner approval demo records yet.</p>';
+
+  return `
+    <section class="owner-approvals-panel" aria-label="Owner Approvals / Review Queue panel">
+      <div class="owner-approvals-header">
+        <div>
+          <p class="eyebrow">Owner Approvals / Review Queue</p>
+          <h4>Approvals Summary</h4>
+        </div>
+        <span class="owner-approvals-status">Local demo queue</span>
+      </div>
+      <p class="owner-approvals-lock-note">${OWNER_APPROVAL_LOCK_NOTE}</p>
+      ${summaryGrid}
+      <div class="owner-approval-list">${rows}</div>
+    </section>
+  `;
+}
+
+function updateOwnerApprovalStatus(index, nextStatus) {
+  const record = demoData.ownerApprovals?.[index];
+
+  if (!record || !OWNER_APPROVAL_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getOwnerApprovalStatus(record);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  record.status = nextStatus;
+  saveDemoData();
+  addOwnerApprovalStatusActivity(record, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("owner-approvals-review-queue");
+}
+
 function renderDocumentsPanel(records) {
   const summary = getDocumentSummary(records);
   const summaryGrid = `
@@ -3360,6 +3653,7 @@ function renderDemoList(moduleId) {
     "[data-customer-portal]",
   );
   const estimatesSlot = detailDemo.querySelector("[data-estimates]");
+  const ownerApprovalsSlot = detailDemo.querySelector("[data-owner-approvals]");
   const documentsSlot = detailDemo.querySelector("[data-documents]");
 
   if (!items.length) {
@@ -3390,6 +3684,9 @@ function renderDemoList(moduleId) {
     }
     if (estimatesSlot) {
       estimatesSlot.innerHTML = renderEstimatesPanel(items);
+    }
+    if (ownerApprovalsSlot) {
+      ownerApprovalsSlot.innerHTML = renderOwnerApprovalsPanel(items);
     }
     if (documentsSlot) {
       documentsSlot.innerHTML = renderDocumentsPanel(items);
@@ -3550,6 +3847,20 @@ function renderDemoList(moduleId) {
       });
   }
 
+  if (ownerApprovalsSlot) {
+    ownerApprovalsSlot.innerHTML = renderOwnerApprovalsPanel(items);
+    ownerApprovalsSlot
+      .querySelectorAll("[data-owner-approval-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateOwnerApprovalStatus(
+            Number(select.dataset.ownerApprovalStatusIndex),
+            select.value,
+          ),
+        );
+      });
+  }
+
   if (documentsSlot) {
     documentsSlot.innerHTML = renderDocumentsPanel(items);
     documentsSlot
@@ -3695,6 +4006,7 @@ function renderDemoModule(moduleId) {
     ${moduleId === "field-walkthrough" ? "<div data-walkthrough-capture></div>" : ""}
     ${moduleId === "customer-homeowner-portal" ? "<div data-customer-portal></div>" : ""}
     ${moduleId === "estimates-proposals-change-orders" ? "<div data-estimates></div>" : ""}
+    ${moduleId === "owner-approvals-review-queue" ? "<div data-owner-approvals></div>" : ""}
     ${moduleId === "job-documents-evidence-binder" ? "<div data-documents></div>" : ""}
   `;
 
