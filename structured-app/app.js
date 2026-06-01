@@ -1,6 +1,7 @@
 const LAST_OPENED_MODULE_KEY = "aquaHomes.lastOpenedModule";
 const DEMO_DATA_KEY = "aquaHomes.structuredDemoData";
 const RECENT_ACTIVITY_KEY = "aquaHomes.structuredRecentActivity";
+const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
 const MAX_RECENT_ACTIVITY = 10;
 
 const modules = [
@@ -48,6 +49,11 @@ const demoDefaults = {
       name: "Canal House Retrofit",
       status: "Active",
       budget: "185000",
+      scope: "Kitchen refresh, dock repairs, punch list closeout, and final owner walkthrough.",
+      nextTask: "Confirm material delivery window and crew start time.",
+      proof: "Before photos saved in demo notes; completion photos pending.",
+      permit: "Permit check placeholder for city inspection follow-up.",
+      notes: "Keep owner updates lightweight until backend document storage is approved.",
     },
   ],
   receipts: [
@@ -120,6 +126,8 @@ const demoModules = {
       { name: "name", label: "Project name", placeholder: "Poolside Residence", required: true },
       { name: "status", label: "Status", placeholder: "Active", required: true },
       { name: "budget", label: "Budget", placeholder: "250000", type: "number", required: true },
+      { name: "scope", label: "Scope note", placeholder: "Interior punch list and exterior repairs" },
+      { name: "nextTask", label: "Next task", placeholder: "Schedule inspection walkthrough" },
     ],
     empty: "No demo projects yet.",
     format: (item) => ({
@@ -213,6 +221,7 @@ const resetDemoData = document.querySelector("[data-reset-demo]");
 let demoData = loadDemoData();
 let recentActivity = loadRecentActivity();
 let activeModule = null;
+let selectedProjectName = readLocalStorage(SELECTED_PROJECT_KEY);
 
 const getModuleId = (name) =>
   name
@@ -442,6 +451,11 @@ const saveLastOpenedModule = (moduleId) => {
 
 const getLastOpenedModule = () => readLocalStorage(LAST_OPENED_MODULE_KEY);
 
+const saveSelectedProject = (projectName) => {
+  selectedProjectName = projectName;
+  writeLocalStorage(SELECTED_PROJECT_KEY, projectName);
+};
+
 const setActiveModuleCard = (moduleId) => {
   cardGrid.querySelectorAll(".brain-card").forEach((card) => {
     card.classList.toggle("active", card.dataset.moduleId === moduleId);
@@ -519,28 +533,140 @@ function renderDashboardSummary() {
   dashboardSummary.replaceChildren(fragment);
 }
 
+function getProjectReceipts(projectName) {
+  return (demoData.receipts ?? []).filter((receipt) => receipt.project === projectName);
+}
+
+function getSelectedProject(items) {
+  if (!items.length) {
+    return null;
+  }
+
+  return items.find((item) => item.name === selectedProjectName) ?? null;
+}
+
+function getProjectFolderSections(project) {
+  const projectReceipts = getProjectReceipts(project.name);
+  const receiptTotal = projectReceipts.reduce((total, receipt) => total + (Number(receipt.amount) || 0), 0);
+
+  return [
+    {
+      title: "Scope of Work",
+      body: project.scope || "Placeholder scope summary for this saved project.",
+    },
+    {
+      title: "Schedule / Tasks",
+      body: project.nextTask || "Placeholder task list and schedule milestones for the field team.",
+    },
+    {
+      title: "Photos / Proof",
+      body: project.proof || "Placeholder proof log for before, progress, and completion photos.",
+    },
+    {
+      title: "Receipts",
+      body: projectReceipts.length
+        ? `${projectReceipts.length} demo receipt${projectReceipts.length === 1 ? "" : "s"} linked · ${formatCurrency(receiptTotal)} total.`
+        : "No demo receipts linked to this project yet.",
+    },
+    {
+      title: "Permits / Inspections",
+      body: project.permit || "Placeholder permit and inspection checkpoints for office follow-up.",
+    },
+    {
+      title: "Notes",
+      body: project.notes || "Placeholder notes for owner updates, field context, and open questions.",
+    },
+  ];
+}
+
+function renderProjectFolder(project) {
+  if (!project) {
+    return `
+      <section class="project-folder-empty" aria-label="Project detail placeholder">
+        <p class="eyebrow">Job Folder</p>
+        <h4>Select a saved project</h4>
+        <p>Choose a project from the demo list to preview the lightweight job folder sections.</p>
+      </section>
+    `;
+  }
+
+  const sections = getProjectFolderSections(project)
+    .map(
+      (section) => `
+        <article class="project-folder-card">
+          <h5>${escapeHtml(section.title)}</h5>
+          <p>${escapeHtml(section.body)}</p>
+        </article>
+      `,
+    )
+    .join("");
+
+  return `
+    <section class="project-folder" aria-label="Project job folder">
+      <div class="project-folder-header">
+        <div>
+          <p class="eyebrow">Job Folder</p>
+          <h4>${escapeHtml(project.name)}</h4>
+        </div>
+        <span class="project-folder-status">${escapeHtml(project.status || "Demo")}</span>
+      </div>
+      <p class="project-folder-meta">${escapeHtml(formatCurrency(project.budget))} demo budget · localStorage only</p>
+      <div class="project-folder-grid">${sections}</div>
+    </section>
+  `;
+}
+
 function renderDemoList(moduleId) {
   const demoModule = demoModules[moduleId];
   const items = demoData[demoModule.storageKey] ?? [];
   const list = detailDemo.querySelector("[data-demo-list]");
+  const projectFolderSlot = detailDemo.querySelector("[data-project-folder]");
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
+    if (projectFolderSlot) {
+      projectFolderSlot.innerHTML = renderProjectFolder(null);
+    }
     return;
+  }
+
+  if (moduleId === "projects" && !getSelectedProject(items)) {
+    saveSelectedProject(items[0].name);
   }
 
   list.innerHTML = items
     .map((item) => {
       const formattedItem = demoModule.format(item);
+      const isSelectedProject = moduleId === "projects" && item.name === selectedProjectName;
 
       return `
-        <li>
-          <strong>${escapeHtml(formattedItem.title)}</strong>
-          <span>${escapeHtml(formattedItem.meta)}</span>
+        <li class="${moduleId === "projects" ? "project-list-item" : ""} ${isSelectedProject ? "selected" : ""}">
+          <div>
+            <strong>${escapeHtml(formattedItem.title)}</strong>
+            <span>${escapeHtml(formattedItem.meta)}</span>
+          </div>
+          ${
+            moduleId === "projects"
+              ? `<button type="button" class="ghost-button project-select" data-project-select="${escapeHtml(item.name)}">${
+                  isSelectedProject ? "Selected" : "Open job folder"
+                }</button>`
+              : ""
+          }
         </li>
       `;
     })
     .join("");
+
+  list.querySelectorAll("[data-project-select]").forEach((button) => {
+    button.addEventListener("click", () => {
+      saveSelectedProject(button.dataset.projectSelect);
+      renderDemoList(moduleId);
+    });
+  });
+
+  if (projectFolderSlot) {
+    projectFolderSlot.innerHTML = renderProjectFolder(getSelectedProject(items));
+  }
 }
 
 function renderDemoModule(moduleId) {
@@ -582,6 +708,7 @@ function renderDemoModule(moduleId) {
       <button type="submit">${demoModule.submitLabel}</button>
     </form>
     <ul class="demo-list" data-demo-list></ul>
+    ${moduleId === "projects" ? '<div data-project-folder></div>' : ""}
   `;
 
   detailDemo.querySelector("[data-demo-form]").addEventListener("submit", (event) => {
@@ -593,6 +720,9 @@ function renderDemoModule(moduleId) {
     );
 
     demoData[demoModule.storageKey] = [nextItem, ...(demoData[demoModule.storageKey] ?? [])];
+    if (moduleId === "projects") {
+      saveSelectedProject(nextItem.name);
+    }
     saveDemoData();
     addRecentActivity(moduleId, nextItem);
     event.currentTarget.reset();
