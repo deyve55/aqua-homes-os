@@ -128,6 +128,17 @@ const DOCUMENT_STATUSES = [
 ];
 const DOCUMENT_LOCK_NOTE =
   "Live document storage, customer-sensitive files, and cloud sync are locked until backend/security gates are complete.";
+const BUG_SEVERITIES = ["Low", "Medium", "High", "Critical"];
+const BUG_STATUSES = [
+  "New",
+  "Investigating",
+  "Fix Planned",
+  "Fixed",
+  "Retest Needed",
+  "Closed",
+];
+const BUG_QA_LOCK_NOTE =
+  "This is a local prototype QA log only. Live bug reporting, user accounts, attachments, and production issue tracking are locked until backend/security gates are complete.";
 const INVESTOR_VISIBILITY_CATEGORIES = [
   "Scope of Work",
   "Project status",
@@ -207,9 +218,9 @@ const modules = [
       "Stage job document records, evidence status, and closeout proof in local demo storage.",
   },
   {
-    name: "Bug Capture",
+    name: "Bug Capture / QA Issue Log",
     description:
-      "Log product issues, UI notes, and starter shell improvement ideas.",
+      "Log prototype QA issues, severity, status, steps, and follow-up notes.",
   },
 ];
 
@@ -417,6 +428,11 @@ const demoDefaults = {
   bugCapture: [
     {
       title: "Tighten mobile spacing on project card",
+      moduleArea: "Projects dashboard",
+      severity: "Medium",
+      status: "New",
+      stepsToReproduce:
+        "Open the structured starter on a narrow mobile viewport and review project card spacing.",
       notes: "Check the dashboard cards after the next prototype pass.",
     },
   ],
@@ -480,7 +496,7 @@ const dashboardSummaryItems = [
   {
     label: "Bug Reports",
     storageKey: "bugCapture",
-    helper: "Captured product notes",
+    helper: "QA issues in local prototype log",
   },
 ];
 
@@ -1030,9 +1046,9 @@ const demoModules = {
       meta: `${getDocumentProject(item)} · ${getDocumentType(item)} · ${getDocumentStatus(item)}`,
     }),
   },
-  bugCapture: {
+  "bug-capture-qa-issue-log": {
     storageKey: "bugCapture",
-    eyebrow: "Demo bug notes",
+    eyebrow: "Bug Capture / QA Issue Log",
     submitLabel: "Save Bug",
     fields: [
       {
@@ -1042,16 +1058,42 @@ const demoModules = {
         required: true,
       },
       {
+        name: "moduleArea",
+        label: "Module / area",
+        placeholder: "Projects dashboard",
+        required: true,
+      },
+      {
+        name: "severity",
+        label: "Severity",
+        options: BUG_SEVERITIES,
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Status",
+        options: BUG_STATUSES,
+        required: true,
+      },
+      {
+        name: "stepsToReproduce",
+        label: "Steps to reproduce",
+        placeholder:
+          "1. Open the module\n2. Trigger the issue\n3. Confirm the unexpected result",
+        multiline: true,
+        required: true,
+      },
+      {
         name: "notes",
         label: "Notes",
-        placeholder: "Add context or steps to reproduce",
-        required: true,
+        placeholder: "Add QA context, expected result, or follow-up notes",
+        multiline: true,
       },
     ],
     empty: "No demo bugs yet.",
     format: (item) => ({
-      title: item.title,
-      meta: item.notes,
+      title: getBugTitle(item),
+      meta: `${getBugModuleArea(item)} · ${getBugSeverity(item)} · ${getBugStatus(item)} · ${item.notes || item.stepsToReproduce || "Notes pending"}`,
     }),
   },
 };
@@ -1344,6 +1386,19 @@ function normalizeDocumentRecord(record) {
   };
 }
 
+function normalizeBugRecord(record) {
+  return {
+    title: getBugTitle(record),
+    moduleArea: getBugModuleArea(record),
+    severity: getBugSeverity(record),
+    status: getBugStatus(record),
+    stepsToReproduce: String(
+      record?.stepsToReproduce ?? record?.steps ?? record?.reproSteps ?? "",
+    ).trim(),
+    notes: String(record?.notes ?? record?.note ?? "").trim(),
+  };
+}
+
 function normalizeDemoData(value) {
   const source =
     value?.demoData && typeof value.demoData === "object"
@@ -1393,6 +1448,10 @@ function normalizeDemoData(value) {
 
       if (key === "jobDocuments") {
         return [key, items.map(normalizeDocumentRecord)];
+      }
+
+      if (key === "bugCapture") {
+        return [key, items.map(normalizeBugRecord)];
       }
 
       return [key, items];
@@ -1596,6 +1655,34 @@ function getDocumentStatus(record) {
   const status = String(record?.status ?? record?.reviewStatus ?? "").trim();
 
   return DOCUMENT_STATUSES.includes(status) ? status : DOCUMENT_STATUSES[0];
+}
+
+function getBugTitle(record) {
+  return (
+    String(record?.title ?? record?.bugTitle ?? "QA issue").trim() ||
+    "QA issue"
+  );
+}
+
+function getBugModuleArea(record) {
+  return (
+    String(
+      record?.moduleArea ?? record?.module ?? record?.area ?? "General",
+    ).trim() ||
+    "General"
+  );
+}
+
+function getBugSeverity(record) {
+  const severity = String(record?.severity ?? "").trim();
+
+  return BUG_SEVERITIES.includes(severity) ? severity : BUG_SEVERITIES[0];
+}
+
+function getBugStatus(record) {
+  const status = String(record?.status ?? "").trim();
+
+  return BUG_STATUSES.includes(status) ? status : BUG_STATUSES[0];
 }
 
 function getAccountingReviewStatus(value) {
@@ -1905,6 +1992,20 @@ function getDocumentSummary(records = demoData.jobDocuments ?? []) {
   };
 }
 
+function getBugSummary(records = demoData.bugCapture ?? []) {
+  return {
+    total: records.length,
+    newBugs: records.filter((record) => getBugStatus(record) === "New").length,
+    highCritical: records.filter((record) =>
+      ["High", "Critical"].includes(getBugSeverity(record)),
+    ).length,
+    fixed: records.filter((record) => getBugStatus(record) === "Fixed").length,
+    retestNeeded: records.filter(
+      (record) => getBugStatus(record) === "Retest Needed",
+    ).length,
+  };
+}
+
 function getOwnerApprovalSummary(records = demoData.ownerApprovals ?? []) {
   return {
     total: records.length,
@@ -2193,6 +2294,22 @@ function addDocumentStatusActivity(record, previousStatus, nextStatus) {
   renderRecentActivity();
 }
 
+function addBugStatusActivity(record, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-bug-status`,
+      module: "Bug Capture / QA Issue Log",
+      title: getBugTitle(record),
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${getBugModuleArea(record)} · ${getBugSeverity(record)} severity`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
 function addAccountingReviewStatusActivity(previousStatus, nextStatus) {
   const summary = getDailyAccountingSummary();
 
@@ -2357,8 +2474,10 @@ function getInsightMessage(summaryItem) {
       const summary = getDocumentSummary(demoData.jobDocuments ?? []);
       return `${summary.total} document ${summary.total === 1 ? "record is" : "records are"} saved: ${summary.permits} permits, ${summary.inspections} inspections, ${summary.insurance} insurance, ${summary.photoProof} photo proof, ${summary.needsReview} needs review, and ${summary.missing} missing.`;
     }
-    case "bugCapture":
-      return `${count} bug ${count === 1 ? "report is" : "reports are"} captured for the structured starter.`;
+    case "bugCapture": {
+      const summary = getBugSummary(demoData.bugCapture ?? []);
+      return `${summary.total} QA ${summary.total === 1 ? "issue is" : "issues are"} captured: ${summary.newBugs} new, ${summary.highCritical} high/critical, ${summary.fixed} fixed, and ${summary.retestNeeded} needing retest.`;
+    }
     default:
       return `${count} ${summaryItem.label.toLowerCase()} saved in demo storage.`;
   }
@@ -3441,6 +3560,98 @@ function updateDocumentStatus(index, nextStatus) {
   renderDemoModule("job-documents-evidence-binder");
 }
 
+function renderBugCapturePanel(records) {
+  const summary = getBugSummary(records);
+  const summaryGrid = `
+    <div class="bug-summary-grid" aria-label="Bug Summary">
+      <article><strong>${summary.total}</strong><span>Total bugs</span></article>
+      <article><strong>${summary.newBugs}</strong><span>New bugs</span></article>
+      <article><strong>${summary.highCritical}</strong><span>High / critical bugs</span></article>
+      <article><strong>${summary.fixed}</strong><span>Fixed bugs</span></article>
+      <article><strong>${summary.retestNeeded}</strong><span>Retest needed count</span></article>
+    </div>
+  `;
+
+  if (!records.length) {
+    return `
+      <section class="bug-capture-panel" aria-label="Bug Capture / QA Issue Log panel">
+        <div class="bug-capture-header">
+          <div>
+            <p class="eyebrow">Bug Capture / QA Issue Log</p>
+            <h4>Bug Summary</h4>
+          </div>
+          <span class="bug-capture-status">Local QA prototype</span>
+        </div>
+        <p class="bug-capture-lock-note">${BUG_QA_LOCK_NOTE}</p>
+        ${summaryGrid}
+        <p class="bug-capture-empty">No saved bug demo records yet.</p>
+      </section>
+    `;
+  }
+
+  const bugRows = records
+    .map((record, index) => {
+      const currentStatus = getBugStatus(record);
+      const statusOptions = BUG_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
+
+      return `
+        <article class="bug-capture-card">
+          <div>
+            <strong>${escapeHtml(getBugTitle(record))}</strong>
+            <span>${escapeHtml(getBugModuleArea(record))} · ${escapeHtml(getBugSeverity(record))} severity</span>
+            <span>Steps: ${escapeHtml(record.stepsToReproduce || "Steps to reproduce pending")}</span>
+            <span>${escapeHtml(record.notes || "QA notes pending")}</span>
+          </div>
+          <label>
+            <span>Status</span>
+            <select data-bug-status-index="${index}" aria-label="Bug status for ${escapeHtml(getBugTitle(record))}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="bug-capture-panel" aria-label="Bug Capture / QA Issue Log panel">
+      <div class="bug-capture-header">
+        <div>
+          <p class="eyebrow">Bug Capture / QA Issue Log</p>
+          <h4>Bug Summary</h4>
+        </div>
+        <span class="bug-capture-status">Local QA prototype</span>
+      </div>
+      <p class="bug-capture-lock-note">${BUG_QA_LOCK_NOTE}</p>
+      ${summaryGrid}
+      <div class="bug-capture-list">${bugRows}</div>
+    </section>
+  `;
+}
+
+function updateBugStatus(index, nextStatus) {
+  const record = demoData.bugCapture?.[index];
+
+  if (!record || !BUG_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getBugStatus(record);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  record.status = nextStatus;
+  saveDemoData();
+  addBugStatusActivity(record, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("bug-capture-qa-issue-log");
+}
+
 function renderAccountingReviewPanel() {
   const summary = getDailyAccountingSummary();
   const currentStatus = getAccountingReviewStatus(accountingReview);
@@ -3655,6 +3866,7 @@ function renderDemoList(moduleId) {
   const estimatesSlot = detailDemo.querySelector("[data-estimates]");
   const ownerApprovalsSlot = detailDemo.querySelector("[data-owner-approvals]");
   const documentsSlot = detailDemo.querySelector("[data-documents]");
+  const bugCaptureSlot = detailDemo.querySelector("[data-bug-capture]");
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
@@ -3690,6 +3902,9 @@ function renderDemoList(moduleId) {
     }
     if (documentsSlot) {
       documentsSlot.innerHTML = renderDocumentsPanel(items);
+    }
+    if (bugCaptureSlot) {
+      bugCaptureSlot.innerHTML = renderBugCapturePanel(items);
     }
     return;
   }
@@ -3874,6 +4089,17 @@ function renderDemoList(moduleId) {
         );
       });
   }
+
+  if (bugCaptureSlot) {
+    bugCaptureSlot.innerHTML = renderBugCapturePanel(items);
+    bugCaptureSlot
+      .querySelectorAll("[data-bug-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateBugStatus(Number(select.dataset.bugStatusIndex), select.value),
+        );
+      });
+  }
 }
 
 function renderDemoModule(moduleId) {
@@ -4008,6 +4234,7 @@ function renderDemoModule(moduleId) {
     ${moduleId === "estimates-proposals-change-orders" ? "<div data-estimates></div>" : ""}
     ${moduleId === "owner-approvals-review-queue" ? "<div data-owner-approvals></div>" : ""}
     ${moduleId === "job-documents-evidence-binder" ? "<div data-documents></div>" : ""}
+    ${moduleId === "bug-capture-qa-issue-log" ? "<div data-bug-capture></div>" : ""}
   `;
 
   detailDemo
