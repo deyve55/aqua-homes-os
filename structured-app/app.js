@@ -54,6 +54,17 @@ const CUSTOMER_PORTAL_APPROVAL_STATUSES = [
 ];
 const CUSTOMER_PORTAL_LOCK_NOTE =
   "Live customer messaging, payment collection, and sensitive customer storage are locked until backend/security gates are complete.";
+const ESTIMATE_TIERS = ["Standard", "Premium", "Luxury"];
+const ESTIMATE_STATUSES = [
+  "Draft",
+  "Office Review",
+  "Sent to Customer",
+  "Approved",
+  "Change Order",
+  "Closed",
+];
+const ESTIMATE_LOCK_NOTE =
+  "Live e-signature, deposits, payment collection, and accounting impact are locked until backend/security gates are complete.";
 const INVESTOR_VISIBILITY_CATEGORIES = [
   "Scope of Work",
   "Project status",
@@ -111,6 +122,11 @@ const modules = [
     name: "Customer / Homeowner Portal",
     description:
       "Stage homeowner requests, approval status, and office follow-up notes in local demo storage.",
+  },
+  {
+    name: "Estimates / Proposals / Change Orders",
+    description:
+      "Stage lightweight estimates, proposal tiers, and change-order status in local demo storage.",
   },
   {
     name: "Bug Capture",
@@ -223,6 +239,28 @@ const demoDefaults = {
       approvalStatus: "Office Review",
     },
   ],
+  estimatesProposals: [
+    {
+      projectProperty: "Canal House Retrofit",
+      customerInvestor: "Avery Morgan",
+      estimateTitle: "Kitchen punch list with dock repair alternate",
+      scopeSummary:
+        "Standard repair scope for kitchen closeout, dock walkthrough pricing, and owner review.",
+      tier: "Premium",
+      amount: "28500",
+      status: "Office Review",
+    },
+    {
+      projectProperty: "Canal House Retrofit",
+      customerInvestor: "Aquabona Holdings",
+      estimateTitle: "Dock repair change order",
+      scopeSummary:
+        "Change-order placeholder for dock railing repairs and material verification.",
+      tier: "Luxury",
+      amount: "12400",
+      status: "Change Order",
+    },
+  ],
   bugCapture: [
     {
       title: "Tighten mobile spacing on project card",
@@ -265,6 +303,11 @@ const dashboardSummaryItems = [
     label: "Customer Requests",
     storageKey: "customerPortal",
     helper: "Homeowner portal records",
+  },
+  {
+    label: "Estimates",
+    storageKey: "estimatesProposals",
+    helper: "Proposals and change orders",
   },
   {
     label: "Bug Reports",
@@ -565,6 +608,65 @@ const demoModules = {
     format: (item) => ({
       title: getCustomerPortalTitle(item),
       meta: `${getCustomerPortalProject(item)} · ${getCustomerPortalRequestType(item)} · ${getCustomerPortalStatus(item)}`,
+    }),
+  },
+  "estimates-proposals-change-orders": {
+    storageKey: "estimatesProposals",
+    eyebrow: "Estimates / Proposals / Change Orders",
+    submitLabel: "Save Estimate",
+    fields: [
+      {
+        name: "projectProperty",
+        label: "Project / property",
+        placeholder: "Canal House Retrofit",
+        projectOptions: true,
+        required: true,
+      },
+      {
+        name: "customerInvestor",
+        label: "Customer / investor",
+        placeholder: "Avery Morgan or Aquabona Holdings",
+        required: true,
+      },
+      {
+        name: "estimateTitle",
+        label: "Estimate title",
+        placeholder: "Kitchen refresh proposal",
+        required: true,
+      },
+      {
+        name: "scopeSummary",
+        label: "Scope summary",
+        placeholder: "Scope, alternates, exclusions, and review notes",
+        multiline: true,
+        required: true,
+      },
+      {
+        name: "tier",
+        label: "Tier",
+        options: ESTIMATE_TIERS,
+        required: true,
+      },
+      {
+        name: "amount",
+        label: "Amount",
+        placeholder: "25000",
+        type: "number",
+        step: "0.01",
+        min: "0",
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Status",
+        options: ESTIMATE_STATUSES,
+        required: true,
+      },
+    ],
+    empty: "No estimate, proposal, or change-order demo records yet.",
+    format: (item) => ({
+      title: getEstimateTitle(item),
+      meta: `${getEstimateProject(item)} · ${getEstimateTier(item)} · ${formatCurrency(item.amount)} · ${getEstimateStatus(item)}`,
     }),
   },
   inventoryTools: {
@@ -875,6 +977,20 @@ function normalizeCustomerPortalRecord(record) {
   };
 }
 
+function normalizeEstimateProposalRecord(record) {
+  return {
+    projectProperty: getEstimateProject(record),
+    customerInvestor: getEstimateCustomerInvestor(record),
+    estimateTitle: getEstimateTitle(record),
+    scopeSummary: String(
+      record?.scopeSummary ?? record?.scope ?? record?.summary ?? "",
+    ).trim(),
+    tier: getEstimateTier(record),
+    amount: String(record?.amount ?? record?.estimateAmount ?? "0").trim(),
+    status: getEstimateStatus(record),
+  };
+}
+
 function normalizeDemoData(value) {
   const source =
     value?.demoData && typeof value.demoData === "object"
@@ -908,6 +1024,10 @@ function normalizeDemoData(value) {
 
       if (key === "customerPortal") {
         return [key, items.map(normalizeCustomerPortalRecord)];
+      }
+
+      if (key === "estimatesProposals") {
+        return [key, items.map(normalizeEstimateProposalRecord)];
       }
 
       return [key, items];
@@ -1043,6 +1163,42 @@ function getCustomerPortalStatus(record) {
   return CUSTOMER_PORTAL_APPROVAL_STATUSES.includes(status)
     ? status
     : CUSTOMER_PORTAL_APPROVAL_STATUSES[0];
+}
+
+function getEstimateTitle(record) {
+  return (
+    String(
+      record?.estimateTitle ?? record?.title ?? record?.proposalTitle ?? "Estimate",
+    ).trim() || "Estimate"
+  );
+}
+
+function getEstimateProject(record) {
+  return (
+    String(
+      record?.projectProperty ?? record?.propertyProject ?? record?.project ?? "Saved project",
+    ).trim() || "Saved project"
+  );
+}
+
+function getEstimateCustomerInvestor(record) {
+  return (
+    String(
+      record?.customerInvestor ?? record?.customer ?? record?.investor ?? "Customer / investor",
+    ).trim() || "Customer / investor"
+  );
+}
+
+function getEstimateTier(record) {
+  const tier = String(record?.tier ?? "").trim();
+
+  return ESTIMATE_TIERS.includes(tier) ? tier : ESTIMATE_TIERS[0];
+}
+
+function getEstimateStatus(record) {
+  const status = String(record?.status ?? record?.proposalStatus ?? "").trim();
+
+  return ESTIMATE_STATUSES.includes(status) ? status : ESTIMATE_STATUSES[0];
 }
 
 function getLaborCost(record) {
@@ -1188,6 +1344,29 @@ function getCustomerPortalSummary(records = demoData.customerPortal ?? []) {
     ).length,
     closed: records.filter(
       (record) => getCustomerPortalStatus(record) === "Closed",
+    ).length,
+  };
+}
+
+function getEstimateSummary(records = demoData.estimatesProposals ?? []) {
+  return {
+    totalAmount: records.reduce(
+      (total, record) => total + (Number(record.amount) || 0),
+      0,
+    ),
+    draft: records.filter((record) => getEstimateStatus(record) === "Draft")
+      .length,
+    officeReview: records.filter(
+      (record) => getEstimateStatus(record) === "Office Review",
+    ).length,
+    sent: records.filter(
+      (record) => getEstimateStatus(record) === "Sent to Customer",
+    ).length,
+    approved: records.filter(
+      (record) => getEstimateStatus(record) === "Approved",
+    ).length,
+    changeOrder: records.filter(
+      (record) => getEstimateStatus(record) === "Change Order",
     ).length,
   };
 }
@@ -1355,6 +1534,22 @@ function addCustomerPortalStatusActivity(record, previousStatus, nextStatus) {
   renderRecentActivity();
 }
 
+function addEstimateStatusActivity(record, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-estimate-status`,
+      module: "Estimates / Proposals / Change Orders",
+      title: getEstimateTitle(record),
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${getEstimateProject(record)} · ${getEstimateCustomerInvestor(record)} · ${formatCurrency(record.amount)}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
 function clearRecentActivity() {
   recentActivity = [];
   saveRecentActivity();
@@ -1471,6 +1666,8 @@ function getInsightMessage(summaryItem) {
       return `${count} field walkthrough ${count === 1 ? "capture is" : "captures are"} saved for estimate readiness review.`;
     case "customerPortal":
       return `${count} customer portal ${count === 1 ? "request is" : "requests are"} saved for office follow-up.`;
+    case "estimatesProposals":
+      return `${count} estimate/proposal ${count === 1 ? "record is" : "records are"} saved for office review and change-order tracking.`;
     case "bugCapture":
       return `${count} bug ${count === 1 ? "report is" : "reports are"} captured for the structured starter.`;
     default:
@@ -2199,6 +2396,100 @@ function updateCustomerPortalStatus(index, nextStatus) {
   renderDemoModule("customer-homeowner-portal");
 }
 
+
+function renderEstimatesPanel(records) {
+  const summary = getEstimateSummary(records);
+  const summaryGrid = `
+    <div class="estimate-summary-grid" aria-label="Estimate Summary">
+      <article><strong>${escapeHtml(formatCurrency(summary.totalAmount))}</strong><span>Total estimate amount</span></article>
+      <article><strong>${summary.draft}</strong><span>Draft count</span></article>
+      <article><strong>${summary.officeReview}</strong><span>Office review count</span></article>
+      <article><strong>${summary.sent}</strong><span>Sent count</span></article>
+      <article><strong>${summary.approved}</strong><span>Approved count</span></article>
+      <article><strong>${summary.changeOrder}</strong><span>Change order count</span></article>
+    </div>
+  `;
+
+  if (!records.length) {
+    return `
+      <section class="estimates-panel" aria-label="Estimates / Proposals panel">
+        <div class="estimates-header">
+          <div>
+            <p class="eyebrow">Estimates / Proposals</p>
+            <h4>Estimate Summary</h4>
+          </div>
+          <span class="estimates-status">Local demo proposals</span>
+        </div>
+        <p class="estimates-lock-note">${ESTIMATE_LOCK_NOTE}</p>
+        ${summaryGrid}
+        <p class="estimates-empty">No saved estimate, proposal, or change-order demo records yet.</p>
+      </section>
+    `;
+  }
+
+  const recordRows = records
+    .map((record, index) => {
+      const currentStatus = getEstimateStatus(record);
+      const statusOptions = ESTIMATE_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
+
+      return `
+        <article class="estimate-card">
+          <div>
+            <strong>${escapeHtml(getEstimateTitle(record))}</strong>
+            <span>${escapeHtml(getEstimateProject(record))} · ${escapeHtml(getEstimateCustomerInvestor(record))}</span>
+            <span>${escapeHtml(getEstimateTier(record))} tier · ${escapeHtml(formatCurrency(record.amount))}</span>
+            <span>${escapeHtml(record.scopeSummary || "Scope summary pending")}</span>
+          </div>
+          <label>
+            <span>Status</span>
+            <select data-estimate-status-index="${index}" aria-label="Estimate status for ${escapeHtml(getEstimateTitle(record))}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="estimates-panel" aria-label="Estimates / Proposals panel">
+      <div class="estimates-header">
+        <div>
+          <p class="eyebrow">Estimates / Proposals</p>
+          <h4>Estimate Summary</h4>
+        </div>
+        <span class="estimates-status">Local demo proposals</span>
+      </div>
+      <p class="estimates-lock-note">${ESTIMATE_LOCK_NOTE}</p>
+      ${summaryGrid}
+      <div class="estimate-list">${recordRows}</div>
+    </section>
+  `;
+}
+
+function updateEstimateStatus(index, nextStatus) {
+  const record = demoData.estimatesProposals?.[index];
+
+  if (!record || !ESTIMATE_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getEstimateStatus(record);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  record.status = nextStatus;
+  saveDemoData();
+  addEstimateStatusActivity(record, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("estimates-proposals-change-orders");
+}
+
 function renderPayrollPrepPanel(records) {
   const summary = getPayrollPrepSummary(records);
   const summaryGrid = `
@@ -2307,6 +2598,7 @@ function renderDemoList(moduleId) {
   const customerPortalSlot = detailDemo.querySelector(
     "[data-customer-portal]",
   );
+  const estimatesSlot = detailDemo.querySelector("[data-estimates]");
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
@@ -2330,6 +2622,9 @@ function renderDemoList(moduleId) {
     }
     if (customerPortalSlot) {
       customerPortalSlot.innerHTML = renderCustomerPortalPanel(items);
+    }
+    if (estimatesSlot) {
+      estimatesSlot.innerHTML = renderEstimatesPanel(items);
     }
     return;
   }
@@ -2458,6 +2753,20 @@ function renderDemoList(moduleId) {
         );
       });
   }
+
+  if (estimatesSlot) {
+    estimatesSlot.innerHTML = renderEstimatesPanel(items);
+    estimatesSlot
+      .querySelectorAll("[data-estimate-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateEstimateStatus(
+            Number(select.dataset.estimateStatusIndex),
+            select.value,
+          ),
+        );
+      });
+  }
 }
 
 function renderDemoModule(moduleId) {
@@ -2581,6 +2890,7 @@ function renderDemoModule(moduleId) {
     ${moduleId === "inventory-tools" ? "<div data-inventory-checkout></div>" : ""}
     ${moduleId === "field-walkthrough" ? "<div data-walkthrough-capture></div>" : ""}
     ${moduleId === "customer-homeowner-portal" ? "<div data-customer-portal></div>" : ""}
+    ${moduleId === "estimates-proposals-change-orders" ? "<div data-estimates></div>" : ""}
   `;
 
   detailDemo
