@@ -14,34 +14,20 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="app-shell">
-      <header class="hero" aria-label="Aqua Homes Main Brain command header">
-        <div class="brand-lockup" aria-label="Aqua Homes OS">
-          <span class="brand-mark" aria-hidden="true">AH</span>
-          <span class="brand-copy">
-            <span class="brand-name">Aqua Homes</span>
-            <span class="brand-subtitle">Owner Command OS</span>
-          </span>
-        </div>
-        <div class="hero-command">
-          <p class="eyebrow">Owner Command Center</p>
-          <h1 class="hero-wordmark">
-            <img src="assets/aqua-homes-logo.svg" alt="Aqua Homes Design Group" />
-          </h1>
-          <p class="hero-copy">
-            Main Brain contractor-tech cockpit for projects, approvals, receipts, payroll prep,
-            and field operations — visually aligned to the locked v51 design reference.
-          </p>
-        </div>
-        <div class="hero-status-row" aria-label="Prototype safety status">
-          <span class="hero-kicker">AI Construction OS</span>
-          <span class="hero-kicker hero-kicker-gold">Local Trial Shell</span>
-        </div>
-      </header>
+    <div class="phone-shell">
+      <div class="topfade" aria-hidden="true"></div>
+      <div class="status-bar" aria-hidden="true">9:41</div>
+      <div class="app-shell">
+        <header class="hero v51-header" aria-label="Aqua Homes Main Brain command header">
+          <div class="logoWrap">
+            <img class="main" src="assets/aqua-homes-logo.svg" alt="Aqua Homes Design Group" />
+          </div>
+          <div class="badge" aria-label="Aqua Homes OS">
+            <span aria-hidden="true">AH</span>
+          </div>
+        </header>
 
-      <div class="approved-gold-bar" aria-hidden="true"></div>
-
-      <main>
+        <main>
         <section class="dashboard-header" aria-labelledby="main-brain-title">
           <div>
             <p class="eyebrow">Main Brain</p>
@@ -232,7 +218,8 @@
             <button type="button" data-module-close aria-label="Close module detail">Close</button>
           </div>
         </aside>
-      </main>
+        </main>
+      </div>
 
       <nav class="bottom-nav" aria-label="Bottom navigation placeholder">
         <button type="button" data-section="home" class="active">Home</button>
