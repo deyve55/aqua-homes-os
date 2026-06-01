@@ -3185,7 +3185,7 @@ main {
 /* Second v51 visual correction pass: tighter premium Aqua Homes mobile command shell. */
 :root {
   --shell-max: 430px;
-  --bottom-nav-space: 148px;
+  --bottom-nav-space: 168px;
 }
 
 .app-shell {
@@ -3199,8 +3199,8 @@ main {
 }
 
 .hero {
-  min-height: 78px;
-  padding: 10px 10px 16px;
+  min-height: 0;
+  padding: 8px 10px 12px;
   border-color: rgba(255, 255, 255, 0.05);
   border-bottom: 0;
   border-radius: 18px 18px 14px 14px;
@@ -3228,9 +3228,9 @@ main {
 }
 
 .brand-lockup {
-  min-height: 44px;
-  margin-bottom: 8px;
-  padding: 4px 6px 8px;
+  min-height: 36px;
+  margin-bottom: 6px;
+  padding: 2px 5px 6px;
   border: 0;
   border-bottom: 1px solid rgba(223, 157, 52, 0.22);
   border-radius: 0;
@@ -3238,8 +3238,8 @@ main {
 }
 
 .brand-mark {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-color: rgba(255, 202, 77, 0.46);
   font-size: 0.74rem;
   box-shadow:
@@ -3249,29 +3249,29 @@ main {
 }
 
 .brand-name {
-  font-size: 0.92rem;
-  letter-spacing: 0.1em;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
 }
 
 .brand-subtitle {
   color: #b9c8df;
-  font-size: 0.54rem;
-  letter-spacing: 0.25em;
+  font-size: 0.5rem;
+  letter-spacing: 0.24em;
 }
 
 .hero h1,
 .hero-wordmark {
   display: block;
   max-width: none;
-  margin: 0 0 8px;
+  margin: 0 0 5px;
   line-height: 1;
 }
 
 .hero-wordmark img {
   display: block;
-  width: min(100%, 330px);
+  width: min(100%, 255px);
   height: auto;
-  max-height: 70px;
+  max-height: 52px;
   object-fit: contain;
   object-position: left center;
   filter:
@@ -3280,18 +3280,18 @@ main {
 }
 
 .hero-copy {
-  max-width: 314px;
-  font-size: 0.78rem;
-  line-height: 1.42;
+  max-width: 310px;
+  font-size: 0.74rem;
+  line-height: 1.34;
 }
 
 .hero-status-row {
-  margin-top: 12px;
+  margin-top: 8px;
 }
 
 .hero-kicker {
-  padding: 6px 9px;
-  font-size: 0.59rem;
+  padding: 5px 8px;
+  font-size: 0.56rem;
   letter-spacing: 0.1em;
 }
 
@@ -3402,14 +3402,14 @@ main {
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   left: 12px;
   width: min(calc(100% - 24px), var(--shell-max));
-  padding: 7px;
-  border-radius: 20px;
+  padding: 5px;
+  border-radius: 18px;
 }
 
 .bottom-nav button {
-  padding: 10px 8px;
-  border-radius: 14px;
-  font-size: 0.78rem;
+  padding: 8px 7px;
+  border-radius: 13px;
+  font-size: 0.74rem;
 }
 
 @media (min-width: 720px) {
@@ -3434,16 +3434,16 @@ main {
 
   .hero {
     min-height: auto;
-    padding: 11px 12px 14px;
+    padding: 9px 11px 12px;
   }
 
   .hero-wordmark img {
-    width: min(100%, 330px);
+    width: min(100%, 255px);
   }
 
   .hero-copy {
-    max-width: 326px;
-    font-size: 0.8rem;
+    max-width: 310px;
+    font-size: 0.74rem;
   }
 
   .bottom-nav {
