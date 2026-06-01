@@ -159,6 +159,87 @@ h1 {
   line-height: 1.35;
 }
 
+
+.activity-panel {
+  margin: 0 0 18px;
+  padding: 18px;
+  border: 1px solid rgba(247, 200, 67, 0.22);
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(8, 21, 37, 0.82), rgba(2, 5, 11, 0.68));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.activity-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.activity-header h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.25rem, 4vw, 1.6rem);
+}
+
+.activity-panel .ghost-button {
+  flex: none;
+  border: 1px solid rgba(247, 200, 67, 0.4);
+  border-radius: 14px;
+  padding: 10px 14px;
+  color: var(--gold);
+  background: rgba(247, 200, 67, 0.08);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.activity-panel .ghost-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.activity-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.activity-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 14px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.activity-list strong,
+.activity-list span {
+  display: block;
+}
+
+.activity-list strong {
+  margin-bottom: 3px;
+  font-size: 0.94rem;
+}
+
+.activity-list span,
+.activity-time,
+.activity-empty {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.activity-time {
+  white-space: nowrap;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -194,7 +275,8 @@ h1 {
 }
 
 .brain-card:focus-visible,
-.module-detail button:focus-visible {
+.module-detail button:focus-visible,
+.activity-panel .ghost-button:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
@@ -308,6 +390,7 @@ h1 {
 
   .dashboard-header,
   .dashboard-summary,
+  .activity-header,
   .card-grid {
     display: block;
   }
@@ -318,8 +401,17 @@ h1 {
   }
 
   .summary-card + .summary-card,
+  .activity-header .ghost-button,
   .brain-card + .brain-card {
     margin-top: 14px;
+  }
+
+  .activity-list li {
+    display: block;
+  }
+
+  .activity-time {
+    margin-top: 6px;
   }
 
   .module-detail {

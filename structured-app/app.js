@@ -1,5 +1,7 @@
 const LAST_OPENED_MODULE_KEY = "aquaHomes.lastOpenedModule";
 const DEMO_DATA_KEY = "aquaHomes.structuredDemoData";
+const RECENT_ACTIVITY_KEY = "aquaHomes.structuredRecentActivity";
+const MAX_RECENT_ACTIVITY = 10;
 
 const modules = [
   {
@@ -190,6 +192,8 @@ const demoModules = {
 
 const navButtons = document.querySelectorAll(".bottom-nav button");
 const dashboardSummary = document.querySelector("[data-dashboard-summary]");
+const activityList = document.querySelector("[data-activity-list]");
+const clearActivity = document.querySelector("[data-clear-activity]");
 const cardGrid = document.querySelector("[data-module-grid]");
 const detailPanel = document.querySelector("[data-module-detail]");
 const detailTitle = document.querySelector("[data-module-title]");
@@ -204,6 +208,7 @@ const backupResetDemoData = document.querySelector("[data-backup-reset]");
 const resetDemoData = document.querySelector("[data-reset-demo]");
 
 let demoData = loadDemoData();
+let recentActivity = loadRecentActivity();
 let activeModule = null;
 
 const getModuleId = (name) =>
@@ -267,6 +272,110 @@ function normalizeDemoData(value) {
   return Object.fromEntries(
     Object.keys(defaults).map((key) => [key, Array.isArray(source[key]) ? source[key] : defaults[key]]),
   );
+}
+
+function normalizeRecentActivity(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .filter((entry) => entry && typeof entry === "object")
+    .map((entry) => ({
+      id: String(entry.id ?? `${Date.now()}-${Math.random()}`),
+      module: String(entry.module ?? "Demo Data"),
+      title: String(entry.title ?? "Saved demo entry"),
+      meta: String(entry.meta ?? ""),
+      createdAt: String(entry.createdAt ?? new Date().toISOString()),
+    }))
+    .slice(0, MAX_RECENT_ACTIVITY);
+}
+
+function loadRecentActivity() {
+  const storedActivity = readLocalStorage(RECENT_ACTIVITY_KEY);
+
+  if (!storedActivity) {
+    return [];
+  }
+
+  try {
+    return normalizeRecentActivity(JSON.parse(storedActivity));
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveRecentActivity() {
+  writeLocalStorage(RECENT_ACTIVITY_KEY, JSON.stringify(recentActivity.slice(0, MAX_RECENT_ACTIVITY)));
+}
+
+function formatActivityTime(createdAt) {
+  const date = new Date(createdAt);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Just now";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function renderRecentActivity() {
+  clearActivity.disabled = recentActivity.length === 0;
+
+  if (!recentActivity.length) {
+    activityList.innerHTML = '<li class="activity-empty">No recent demo activity yet.</li>';
+    return;
+  }
+
+  activityList.innerHTML = recentActivity
+    .map(
+      (entry) => `
+        <li>
+          <div>
+            <strong>${escapeHtml(entry.module)} · ${escapeHtml(entry.title)}</strong>
+            <span>${escapeHtml(entry.meta)}</span>
+          </div>
+          <span class="activity-time">${escapeHtml(formatActivityTime(entry.createdAt))}</span>
+        </li>
+      `,
+    )
+    .join("");
+}
+
+function addRecentActivity(moduleId, item) {
+  const demoModule = demoModules[moduleId];
+
+  if (!demoModule) {
+    return;
+  }
+
+  const module = modules.find((candidate) => getModuleId(candidate.name) === moduleId);
+  const formattedItem = demoModule.format(item);
+
+  recentActivity = [
+    {
+      id: `${Date.now()}-${moduleId}`,
+      module: module?.name ?? demoModule.eyebrow,
+      title: formattedItem.title,
+      meta: `Saved ${demoModule.submitLabel.replace(/^Save\s+/i, "").toLowerCase()} · ${formattedItem.meta}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function clearRecentActivity() {
+  recentActivity = [];
+  saveRecentActivity();
+  renderRecentActivity();
 }
 
 function setBackupStatus(message) {
@@ -444,6 +553,7 @@ function renderDemoModule(moduleId) {
 
     demoData[demoModule.storageKey] = [nextItem, ...(demoData[demoModule.storageKey] ?? [])];
     saveDemoData();
+    addRecentActivity(moduleId, nextItem);
     event.currentTarget.reset();
     renderModules();
     renderDemoModule(moduleId);
@@ -522,17 +632,22 @@ exportDemoData.addEventListener("click", exportDemoDataAsJson);
 importDemoData.addEventListener("click", importDemoDataFromJson);
 backupResetDemoData.addEventListener("click", resetAllDemoData);
 resetDemoData.addEventListener("click", resetAllDemoData);
+clearActivity.addEventListener("click", clearRecentActivity);
 
 window.addEventListener("storage", (event) => {
-  if (event.key !== DEMO_DATA_KEY) {
-    return;
+  if (event.key === DEMO_DATA_KEY) {
+    demoData = loadDemoData();
+    refreshDemoViews();
+    setBackupStatus("Demo data updated in another tab.");
   }
 
-  demoData = loadDemoData();
-  refreshDemoViews();
-  setBackupStatus("Demo data updated in another tab.");
+  if (event.key === RECENT_ACTIVITY_KEY) {
+    recentActivity = loadRecentActivity();
+    renderRecentActivity();
+  }
 });
 
+renderRecentActivity();
 renderModules();
 
 const lastOpenedModule = modules.find((module) => getModuleId(module.name) === getLastOpenedModule());

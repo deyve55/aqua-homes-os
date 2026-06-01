@@ -29,6 +29,17 @@
 
         <section class="dashboard-summary" data-dashboard-summary aria-label="Saved demo data summary"></section>
 
+        <section class="activity-panel" aria-labelledby="activity-title">
+          <div class="activity-header">
+            <div>
+              <p class="eyebrow">Audit Trail</p>
+              <h2 id="activity-title">Recent Activity</h2>
+            </div>
+            <button type="button" class="ghost-button" data-clear-activity>Clear activity</button>
+          </div>
+          <ul class="activity-list" data-activity-list aria-live="polite"></ul>
+        </section>
+
         <section class="card-grid" data-module-grid aria-label="Main Brain dashboard cards"></section>
 
         <section class="safety-gates" aria-labelledby="safety-gates-title">
