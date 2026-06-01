@@ -987,6 +987,7 @@ h1 {
 .payroll-prep-panel,
 .receipt-review-panel,
 .maintenance-dispatch-panel,
+.schedule-tasks-panel,
 .inventory-checkout-panel,
 .walkthrough-capture-panel,
 .customer-portal-panel {
@@ -1001,6 +1002,7 @@ h1 {
 .payroll-prep-header,
 .receipt-review-header,
 .maintenance-dispatch-header,
+.schedule-tasks-header,
 .inventory-checkout-header,
 .walkthrough-capture-header,
 .customer-portal-header {
@@ -1015,6 +1017,7 @@ h1 {
 .payroll-prep-header h4,
 .receipt-review-header h4,
 .maintenance-dispatch-header h4,
+.schedule-tasks-header h4,
 .inventory-checkout-header h4,
 .walkthrough-capture-header h4,
 .customer-portal-header h4 {
@@ -1026,6 +1029,7 @@ h1 {
 .payroll-lock-status,
 .receipt-feed-status,
 .maintenance-dispatch-status,
+.schedule-task-status,
 .inventory-checkout-status,
 .walkthrough-capture-status,
 .customer-portal-status {
@@ -1043,6 +1047,7 @@ h1 {
 .payroll-summary-grid,
 .accounting-summary-grid,
 .maintenance-summary-grid,
+.schedule-summary-grid,
 .inventory-summary-grid,
 .walkthrough-summary-grid,
 .customer-summary-grid {
@@ -1052,7 +1057,8 @@ h1 {
   margin-bottom: 12px;
 }
 
-.maintenance-summary-grid {
+.maintenance-summary-grid,
+.schedule-summary-grid {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
@@ -1133,6 +1139,7 @@ h1 {
 .payroll-summary-grid article,
 .accounting-summary-grid article,
 .maintenance-summary-grid article,
+.schedule-summary-grid article,
 .inventory-summary-grid article,
 .walkthrough-summary-grid article,
 .customer-summary-grid article {
@@ -1151,6 +1158,8 @@ h1 {
 .accounting-summary-grid span,
 .maintenance-summary-grid strong,
 .maintenance-summary-grid span,
+.schedule-summary-grid strong,
+.schedule-summary-grid span,
 .inventory-summary-grid strong,
 .inventory-summary-grid span,
 .walkthrough-summary-grid strong,
@@ -1166,6 +1175,9 @@ h1 {
 .maintenance-dispatch-card strong,
 .maintenance-dispatch-card span,
 .maintenance-dispatch-card label span,
+.schedule-task-card strong,
+.schedule-task-card span,
+.schedule-task-card label span,
 .inventory-checkout-card strong,
 .inventory-checkout-card span,
 .inventory-checkout-card label span,
@@ -1182,6 +1194,7 @@ h1 {
 .payroll-summary-grid strong,
 .accounting-summary-grid strong,
 .maintenance-summary-grid strong,
+.schedule-summary-grid strong,
 .inventory-summary-grid strong,
 .walkthrough-summary-grid strong,
 .customer-summary-grid strong {
@@ -1195,6 +1208,7 @@ h1 {
 .payroll-summary-grid span,
 .accounting-summary-grid span,
 .maintenance-summary-grid span,
+.schedule-summary-grid span,
 .inventory-summary-grid span,
 .walkthrough-summary-grid span,
 .customer-summary-grid span,
@@ -1204,6 +1218,8 @@ h1 {
 .receipt-review-empty,
 .maintenance-dispatch-card span,
 .maintenance-dispatch-empty,
+.schedule-task-card span,
+.schedule-task-empty,
 .inventory-checkout-card span,
 .inventory-checkout-empty,
 .walkthrough-capture-card span,
@@ -1218,6 +1234,7 @@ h1 {
 .payroll-prep-list,
 .receipt-review-list,
 .maintenance-dispatch-list,
+.schedule-task-list,
 .inventory-checkout-list,
 .walkthrough-capture-list,
 .customer-portal-list {
@@ -1228,6 +1245,7 @@ h1 {
 .payroll-prep-card,
 .receipt-review-card,
 .maintenance-dispatch-card,
+.schedule-task-card,
 .inventory-checkout-card,
 .walkthrough-capture-card,
 .customer-portal-card {
@@ -1244,6 +1262,7 @@ h1 {
 .payroll-prep-card strong,
 .receipt-review-card strong,
 .maintenance-dispatch-card strong,
+.schedule-task-card strong,
 .inventory-checkout-card strong,
 .walkthrough-capture-card strong,
 .customer-portal-card strong {
@@ -1254,6 +1273,7 @@ h1 {
 .payroll-prep-card label,
 .receipt-review-card label,
 .maintenance-dispatch-card label,
+.schedule-task-card label,
 .inventory-checkout-card label,
 .walkthrough-capture-card label,
 .customer-portal-card label {
@@ -1270,6 +1290,7 @@ h1 {
 .payroll-prep-card select,
 .receipt-review-card select,
 .maintenance-dispatch-card select,
+.schedule-task-card select,
 .inventory-checkout-card select,
 .walkthrough-capture-card select,
 .customer-portal-card select {
@@ -1285,6 +1306,7 @@ h1 {
 .payroll-prep-card select:focus-visible,
 .receipt-review-card select:focus-visible,
 .maintenance-dispatch-card select:focus-visible,
+.schedule-task-card select:focus-visible,
 .inventory-checkout-card select:focus-visible,
 .walkthrough-capture-card select:focus-visible,
 .customer-portal-card select:focus-visible {
@@ -1297,6 +1319,8 @@ h1 {
 .receipt-review-empty,
 .maintenance-dispatch-card span,
 .maintenance-dispatch-empty,
+.schedule-task-card span,
+.schedule-task-empty,
 .inventory-checkout-card span,
 .inventory-checkout-empty,
 .walkthrough-capture-card span,
@@ -1309,6 +1333,7 @@ h1 {
 .accounting-review-lock-note,
 .payroll-lock-note,
 .maintenance-dispatch-note,
+.schedule-task-lock-note,
 .inventory-lock-note,
 .walkthrough-lock-note,
 .customer-portal-lock-note {
@@ -1328,6 +1353,7 @@ h1 {
   .payroll-prep-header,
   .receipt-review-header,
   .maintenance-dispatch-header,
+  .schedule-tasks-header,
   .inventory-checkout-header,
   .walkthrough-capture-header,
   .customer-portal-header,
@@ -1335,12 +1361,14 @@ h1 {
   .payroll-summary-grid,
   .accounting-summary-grid,
   .maintenance-summary-grid,
+  .schedule-summary-grid,
   .inventory-summary-grid,
   .walkthrough-summary-grid,
   .customer-summary-grid,
   .payroll-prep-card,
   .receipt-review-card,
   .maintenance-dispatch-card,
+  .schedule-task-card,
   .inventory-checkout-card,
   .walkthrough-capture-card,
   .customer-portal-card {
@@ -1351,12 +1379,14 @@ h1 {
   .payroll-lock-status,
   .receipt-feed-status,
   .maintenance-dispatch-status,
+  .schedule-task-status,
   .inventory-checkout-status,
   .walkthrough-capture-status,
   .customer-portal-status,
   .payroll-prep-card label,
   .receipt-review-card label,
   .maintenance-dispatch-card label,
+  .schedule-task-card label,
   .inventory-checkout-card label,
   .walkthrough-capture-card label,
   .customer-portal-card label,
@@ -1364,6 +1394,7 @@ h1 {
   .payroll-summary-grid article + article,
   .accounting-summary-grid article + article,
   .maintenance-summary-grid article + article,
+  .schedule-summary-grid article + article,
   .inventory-summary-grid article + article,
   .walkthrough-summary-grid article + article,
   .customer-summary-grid article + article {
