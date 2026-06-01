@@ -987,7 +987,8 @@ h1 {
 .receipt-review-panel,
 .maintenance-dispatch-panel,
 .inventory-checkout-panel,
-.walkthrough-capture-panel {
+.walkthrough-capture-panel,
+.customer-portal-panel {
   margin-top: 16px;
   padding: 16px;
   border: 1px solid rgba(247, 200, 67, 0.22);
@@ -999,7 +1000,8 @@ h1 {
 .receipt-review-header,
 .maintenance-dispatch-header,
 .inventory-checkout-header,
-.walkthrough-capture-header {
+.walkthrough-capture-header,
+.customer-portal-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1011,7 +1013,8 @@ h1 {
 .receipt-review-header h4,
 .maintenance-dispatch-header h4,
 .inventory-checkout-header h4,
-.walkthrough-capture-header h4 {
+.walkthrough-capture-header h4,
+.customer-portal-header h4 {
   margin: 0;
   font-size: 1rem;
 }
@@ -1020,7 +1023,8 @@ h1 {
 .receipt-feed-status,
 .maintenance-dispatch-status,
 .inventory-checkout-status,
-.walkthrough-capture-status {
+.walkthrough-capture-status,
+.customer-portal-status {
   flex: none;
   padding: 7px 10px;
   border: 1px solid rgba(247, 200, 67, 0.34);
@@ -1035,7 +1039,8 @@ h1 {
 .accounting-summary-grid,
 .maintenance-summary-grid,
 .inventory-summary-grid,
-.walkthrough-summary-grid {
+.walkthrough-summary-grid,
+.customer-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
@@ -1047,7 +1052,8 @@ h1 {
 }
 
 .inventory-summary-grid,
-.walkthrough-summary-grid {
+.walkthrough-summary-grid,
+.customer-summary-grid {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
@@ -1055,7 +1061,8 @@ h1 {
 .accounting-summary-grid article,
 .maintenance-summary-grid article,
 .inventory-summary-grid article,
-.walkthrough-summary-grid article {
+.walkthrough-summary-grid article,
+.customer-summary-grid article {
   min-height: 92px;
   padding: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1073,6 +1080,8 @@ h1 {
 .inventory-summary-grid span,
 .walkthrough-summary-grid strong,
 .walkthrough-summary-grid span,
+.customer-summary-grid strong,
+.customer-summary-grid span,
 .payroll-prep-card strong,
 .payroll-prep-card span,
 .payroll-prep-card label span,
@@ -1086,8 +1095,11 @@ h1 {
 .inventory-checkout-card span,
 .inventory-checkout-card label span,
 .walkthrough-capture-card strong,
+.customer-portal-card strong,
 .walkthrough-capture-card span,
-.walkthrough-capture-card label span {
+.customer-portal-card span,
+.walkthrough-capture-card label span,
+.customer-portal-card label span {
   display: block;
 }
 
@@ -1095,7 +1107,8 @@ h1 {
 .accounting-summary-grid strong,
 .maintenance-summary-grid strong,
 .inventory-summary-grid strong,
-.walkthrough-summary-grid strong {
+.walkthrough-summary-grid strong,
+.customer-summary-grid strong {
   margin-bottom: 8px;
   color: var(--gold);
   font-size: 1.3rem;
@@ -1107,6 +1120,7 @@ h1 {
 .maintenance-summary-grid span,
 .inventory-summary-grid span,
 .walkthrough-summary-grid span,
+.customer-summary-grid span,
 .payroll-prep-card span,
 .payroll-prep-empty,
 .receipt-review-card span,
@@ -1116,7 +1130,9 @@ h1 {
 .inventory-checkout-card span,
 .inventory-checkout-empty,
 .walkthrough-capture-card span,
-.walkthrough-capture-empty {
+.customer-portal-card span,
+.walkthrough-capture-empty,
+.customer-portal-empty {
   color: var(--muted);
   font-size: 0.84rem;
   line-height: 1.45;
@@ -1126,7 +1142,8 @@ h1 {
 .receipt-review-list,
 .maintenance-dispatch-list,
 .inventory-checkout-list,
-.walkthrough-capture-list {
+.walkthrough-capture-list,
+.customer-portal-list {
   display: grid;
   gap: 10px;
 }
@@ -1135,7 +1152,8 @@ h1 {
 .receipt-review-card,
 .maintenance-dispatch-card,
 .inventory-checkout-card,
-.walkthrough-capture-card {
+.walkthrough-capture-card,
+.customer-portal-card {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1150,7 +1168,8 @@ h1 {
 .receipt-review-card strong,
 .maintenance-dispatch-card strong,
 .inventory-checkout-card strong,
-.walkthrough-capture-card strong {
+.walkthrough-capture-card strong,
+.customer-portal-card strong {
   margin-bottom: 4px;
   font-size: 0.95rem;
 }
@@ -1159,7 +1178,8 @@ h1 {
 .receipt-review-card label,
 .maintenance-dispatch-card label,
 .inventory-checkout-card label,
-.walkthrough-capture-card label {
+.walkthrough-capture-card label,
+.customer-portal-card label {
   flex: 0 0 180px;
   display: grid;
   gap: 6px;
@@ -1174,7 +1194,8 @@ h1 {
 .receipt-review-card select,
 .maintenance-dispatch-card select,
 .inventory-checkout-card select,
-.walkthrough-capture-card select {
+.walkthrough-capture-card select,
+.customer-portal-card select {
   width: 100%;
   border: 1px solid var(--panel-border);
   border-radius: 14px;
@@ -1188,7 +1209,8 @@ h1 {
 .receipt-review-card select:focus-visible,
 .maintenance-dispatch-card select:focus-visible,
 .inventory-checkout-card select:focus-visible,
-.walkthrough-capture-card select:focus-visible {
+.walkthrough-capture-card select:focus-visible,
+.customer-portal-card select:focus-visible {
   border-color: rgba(247, 200, 67, 0.7);
   outline: 2px solid rgba(247, 200, 67, 0.34);
   outline-offset: 2px;
@@ -1201,14 +1223,17 @@ h1 {
 .inventory-checkout-card span,
 .inventory-checkout-empty,
 .walkthrough-capture-card span,
-.walkthrough-capture-empty {
+.customer-portal-card span,
+.walkthrough-capture-empty,
+.customer-portal-empty {
   margin: 0;
 }
 
 .payroll-lock-note,
 .maintenance-dispatch-note,
 .inventory-lock-note,
-.walkthrough-lock-note {
+.walkthrough-lock-note,
+.customer-portal-lock-note {
   margin: 0 0 12px;
   padding: 12px 14px;
   border: 1px solid rgba(247, 200, 67, 0.22);
@@ -1226,16 +1251,19 @@ h1 {
   .maintenance-dispatch-header,
   .inventory-checkout-header,
   .walkthrough-capture-header,
+  .customer-portal-header,
   .payroll-summary-grid,
   .accounting-summary-grid,
   .maintenance-summary-grid,
   .inventory-summary-grid,
   .walkthrough-summary-grid,
+  .customer-summary-grid,
   .payroll-prep-card,
   .receipt-review-card,
   .maintenance-dispatch-card,
   .inventory-checkout-card,
-  .walkthrough-capture-card {
+  .walkthrough-capture-card,
+  .customer-portal-card {
     display: block;
   }
 
@@ -1244,16 +1272,19 @@ h1 {
   .maintenance-dispatch-status,
   .inventory-checkout-status,
   .walkthrough-capture-status,
+  .customer-portal-status,
   .payroll-prep-card label,
   .receipt-review-card label,
   .maintenance-dispatch-card label,
   .inventory-checkout-card label,
   .walkthrough-capture-card label,
+  .customer-portal-card label,
   .payroll-summary-grid article + article,
   .accounting-summary-grid article + article,
   .maintenance-summary-grid article + article,
   .inventory-summary-grid article + article,
-  .walkthrough-summary-grid article + article {
+  .walkthrough-summary-grid article + article,
+  .customer-summary-grid article + article {
     margin-top: 10px;
   }
 }

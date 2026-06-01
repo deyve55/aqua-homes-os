@@ -37,6 +37,23 @@ const WALKTHROUGH_READINESS_STATUSES = [
   "Ready for Estimate",
   "Sent to Proposal",
 ];
+const CUSTOMER_PORTAL_REQUEST_TYPES = [
+  "General Question",
+  "Change Order Request",
+  "Schedule Question",
+  "Photo / Proof Request",
+  "Maintenance Request",
+  "Payment / Deposit Question",
+];
+const CUSTOMER_PORTAL_APPROVAL_STATUSES = [
+  "New",
+  "Office Review",
+  "Waiting on Owner",
+  "Approved",
+  "Closed",
+];
+const CUSTOMER_PORTAL_LOCK_NOTE =
+  "Live customer messaging, payment collection, and sensitive customer storage are locked until backend/security gates are complete.";
 const INVESTOR_VISIBILITY_CATEGORIES = [
   "Scope of Work",
   "Project status",
@@ -89,6 +106,11 @@ const modules = [
     name: "Aquabona Investor Portal",
     description:
       "Open a simple hub for investor updates, documents, and AquaBona context.",
+  },
+  {
+    name: "Customer / Homeowner Portal",
+    description:
+      "Stage homeowner requests, approval status, and office follow-up notes in local demo storage.",
   },
   {
     name: "Bug Capture",
@@ -191,6 +213,16 @@ const demoDefaults = {
       readinessStatus: "Needs Office Review",
     },
   ],
+  customerPortal: [
+    {
+      customerName: "Avery Morgan",
+      projectProperty: "Canal House Retrofit",
+      requestType: "Schedule Question",
+      messageNotes:
+        "Owner asks whether the dock repair walkthrough can happen before the kitchen punch-list review.",
+      approvalStatus: "Office Review",
+    },
+  ],
   bugCapture: [
     {
       title: "Tighten mobile spacing on project card",
@@ -228,6 +260,11 @@ const dashboardSummaryItems = [
     label: "Field Captures",
     storageKey: "fieldWalkthrough",
     helper: "Walkthrough records",
+  },
+  {
+    label: "Customer Requests",
+    storageKey: "customerPortal",
+    helper: "Homeowner portal records",
   },
   {
     label: "Bug Reports",
@@ -440,6 +477,7 @@ const demoModules = {
         name: "projectProperty",
         label: "Project / property",
         placeholder: "Canal House Retrofit",
+        projectOptions: true,
         required: true,
       },
       {
@@ -483,6 +521,50 @@ const demoModules = {
     format: (item) => ({
       title: getWalkthroughProject(item),
       meta: `${getWalkthroughStatus(item)} · ${item.scopeDraft || item.customerNotes || "Capture notes pending"}`,
+    }),
+  },
+  "customer-homeowner-portal": {
+    storageKey: "customerPortal",
+    eyebrow: "Customer / Homeowner Portal",
+    submitLabel: "Save Customer Request",
+    fields: [
+      {
+        name: "customerName",
+        label: "Customer name",
+        placeholder: "Avery Morgan",
+        required: true,
+      },
+      {
+        name: "projectProperty",
+        label: "Project / property",
+        placeholder: "Canal House Retrofit",
+        projectOptions: true,
+        required: true,
+      },
+      {
+        name: "requestType",
+        label: "Portal request type",
+        options: CUSTOMER_PORTAL_REQUEST_TYPES,
+        required: true,
+      },
+      {
+        name: "messageNotes",
+        label: "Message / request notes",
+        placeholder: "Customer question, request context, or office follow-up notes",
+        multiline: true,
+        required: true,
+      },
+      {
+        name: "approvalStatus",
+        label: "Approval status",
+        options: CUSTOMER_PORTAL_APPROVAL_STATUSES,
+        required: true,
+      },
+    ],
+    empty: "No customer portal demo requests yet.",
+    format: (item) => ({
+      title: getCustomerPortalTitle(item),
+      meta: `${getCustomerPortalProject(item)} · ${getCustomerPortalRequestType(item)} · ${getCustomerPortalStatus(item)}`,
     }),
   },
   inventoryTools: {
@@ -781,6 +863,18 @@ function normalizeFieldWalkthroughRecord(record) {
   };
 }
 
+function normalizeCustomerPortalRecord(record) {
+  return {
+    customerName: getCustomerPortalTitle(record),
+    projectProperty: getCustomerPortalProject(record),
+    requestType: getCustomerPortalRequestType(record),
+    messageNotes: String(
+      record?.messageNotes ?? record?.notes ?? record?.message ?? "",
+    ).trim(),
+    approvalStatus: getCustomerPortalStatus(record),
+  };
+}
+
 function normalizeDemoData(value) {
   const source =
     value?.demoData && typeof value.demoData === "object"
@@ -810,6 +904,10 @@ function normalizeDemoData(value) {
 
       if (key === "fieldWalkthrough") {
         return [key, items.map(normalizeFieldWalkthroughRecord)];
+      }
+
+      if (key === "customerPortal") {
+        return [key, items.map(normalizeCustomerPortalRecord)];
       }
 
       return [key, items];
@@ -911,6 +1009,40 @@ function getWalkthroughStatus(record) {
   return WALKTHROUGH_READINESS_STATUSES.includes(status)
     ? status
     : WALKTHROUGH_READINESS_STATUSES[0];
+}
+
+function getCustomerPortalTitle(record) {
+  return (
+    String(
+      record?.customerName ?? record?.customer ?? record?.ownerName ?? "Customer",
+    ).trim() || "Customer"
+  );
+}
+
+function getCustomerPortalProject(record) {
+  return (
+    String(
+      record?.projectProperty ?? record?.propertyProject ?? record?.project ?? "Saved project",
+    ).trim() || "Saved project"
+  );
+}
+
+function getCustomerPortalRequestType(record) {
+  const requestType = String(record?.requestType ?? record?.type ?? "").trim();
+
+  return CUSTOMER_PORTAL_REQUEST_TYPES.includes(requestType)
+    ? requestType
+    : CUSTOMER_PORTAL_REQUEST_TYPES[0];
+}
+
+function getCustomerPortalStatus(record) {
+  const status = String(
+    record?.approvalStatus ?? record?.status ?? record?.reviewStatus ?? "",
+  ).trim();
+
+  return CUSTOMER_PORTAL_APPROVAL_STATUSES.includes(status)
+    ? status
+    : CUSTOMER_PORTAL_APPROVAL_STATUSES[0];
 }
 
 function getLaborCost(record) {
@@ -1038,6 +1170,24 @@ function getWalkthroughSummary(records = demoData.fieldWalkthrough ?? []) {
     ).length,
     sentToProposal: records.filter(
       (record) => getWalkthroughStatus(record) === "Sent to Proposal",
+    ).length,
+  };
+}
+
+function getCustomerPortalSummary(records = demoData.customerPortal ?? []) {
+  return {
+    total: records.length,
+    officeReview: records.filter(
+      (record) => getCustomerPortalStatus(record) === "Office Review",
+    ).length,
+    waitingOnOwner: records.filter(
+      (record) => getCustomerPortalStatus(record) === "Waiting on Owner",
+    ).length,
+    approved: records.filter(
+      (record) => getCustomerPortalStatus(record) === "Approved",
+    ).length,
+    closed: records.filter(
+      (record) => getCustomerPortalStatus(record) === "Closed",
     ).length,
   };
 }
@@ -1189,6 +1339,22 @@ function addWalkthroughStatusActivity(record, previousStatus, nextStatus) {
   renderRecentActivity();
 }
 
+function addCustomerPortalStatusActivity(record, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-customer-portal-status`,
+      module: "Customer / Homeowner Portal",
+      title: getCustomerPortalTitle(record),
+      meta: `Approval status changed from ${previousStatus} to ${nextStatus} · ${getCustomerPortalProject(record)} · ${getCustomerPortalRequestType(record)}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
 function clearRecentActivity() {
   recentActivity = [];
   saveRecentActivity();
@@ -1303,6 +1469,8 @@ function getInsightMessage(summaryItem) {
       return `${count} inventory/tool ${count === 1 ? "record is" : "records are"} being tracked.`;
     case "fieldWalkthrough":
       return `${count} field walkthrough ${count === 1 ? "capture is" : "captures are"} saved for estimate readiness review.`;
+    case "customerPortal":
+      return `${count} customer portal ${count === 1 ? "request is" : "requests are"} saved for office follow-up.`;
     case "bugCapture":
       return `${count} bug ${count === 1 ? "report is" : "reports are"} captured for the structured starter.`;
     default:
@@ -1940,6 +2108,97 @@ function updateWalkthroughStatus(index, nextStatus) {
   renderDemoModule("field-walkthrough");
 }
 
+function renderCustomerPortalPanel(records) {
+  const summary = getCustomerPortalSummary(records);
+  const summaryGrid = `
+    <div class="customer-summary-grid" aria-label="Customer Portal Summary">
+      <article><strong>${summary.total}</strong><span>Total customer requests</span></article>
+      <article><strong>${summary.officeReview}</strong><span>Needs office review</span></article>
+      <article><strong>${summary.waitingOnOwner}</strong><span>Waiting on owner</span></article>
+      <article><strong>${summary.approved}</strong><span>Approved requests</span></article>
+      <article><strong>${summary.closed}</strong><span>Closed requests</span></article>
+    </div>
+  `;
+
+  if (!records.length) {
+    return `
+      <section class="customer-portal-panel" aria-label="Customer / Homeowner Portal panel">
+        <div class="customer-portal-header">
+          <div>
+            <p class="eyebrow">Customer Portal</p>
+            <h4>Homeowner Requests</h4>
+          </div>
+          <span class="customer-portal-status">Local demo portal</span>
+        </div>
+        <p class="customer-portal-lock-note">${CUSTOMER_PORTAL_LOCK_NOTE}</p>
+        ${summaryGrid}
+        <p class="customer-portal-empty">No saved customer portal demo requests yet.</p>
+      </section>
+    `;
+  }
+
+  const requestRows = records
+    .map((record, index) => {
+      const currentStatus = getCustomerPortalStatus(record);
+      const statusOptions = CUSTOMER_PORTAL_APPROVAL_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
+
+      return `
+        <article class="customer-portal-card">
+          <div>
+            <strong>${escapeHtml(getCustomerPortalTitle(record))}</strong>
+            <span>${escapeHtml(getCustomerPortalProject(record))} · ${escapeHtml(getCustomerPortalRequestType(record))}</span>
+            <span>${escapeHtml(record.messageNotes || "Request notes pending")}</span>
+          </div>
+          <label>
+            <span>Approval status</span>
+            <select data-customer-portal-status-index="${index}" aria-label="Customer portal approval status for ${escapeHtml(getCustomerPortalTitle(record))}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="customer-portal-panel" aria-label="Customer / Homeowner Portal panel">
+      <div class="customer-portal-header">
+        <div>
+          <p class="eyebrow">Customer Portal</p>
+          <h4>Homeowner Requests</h4>
+        </div>
+        <span class="customer-portal-status">Local demo portal</span>
+      </div>
+      <p class="customer-portal-lock-note">${CUSTOMER_PORTAL_LOCK_NOTE}</p>
+      ${summaryGrid}
+      <div class="customer-portal-list">${requestRows}</div>
+    </section>
+  `;
+}
+
+function updateCustomerPortalStatus(index, nextStatus) {
+  const record = demoData.customerPortal?.[index];
+
+  if (!record || !CUSTOMER_PORTAL_APPROVAL_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getCustomerPortalStatus(record);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  record.approvalStatus = nextStatus;
+  saveDemoData();
+  addCustomerPortalStatusActivity(record, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("customer-homeowner-portal");
+}
+
 function renderPayrollPrepPanel(records) {
   const summary = getPayrollPrepSummary(records);
   const summaryGrid = `
@@ -2045,6 +2304,9 @@ function renderDemoList(moduleId) {
   const walkthroughCaptureSlot = detailDemo.querySelector(
     "[data-walkthrough-capture]",
   );
+  const customerPortalSlot = detailDemo.querySelector(
+    "[data-customer-portal]",
+  );
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
@@ -2065,6 +2327,9 @@ function renderDemoList(moduleId) {
     }
     if (walkthroughCaptureSlot) {
       walkthroughCaptureSlot.innerHTML = renderWalkthroughCapturePanel(items);
+    }
+    if (customerPortalSlot) {
+      customerPortalSlot.innerHTML = renderCustomerPortalPanel(items);
     }
     return;
   }
@@ -2179,6 +2444,20 @@ function renderDemoList(moduleId) {
         );
       });
   }
+
+  if (customerPortalSlot) {
+    customerPortalSlot.innerHTML = renderCustomerPortalPanel(items);
+    customerPortalSlot
+      .querySelectorAll("[data-customer-portal-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateCustomerPortalStatus(
+            Number(select.dataset.customerPortalStatusIndex),
+            select.value,
+          ),
+        );
+      });
+  }
 }
 
 function renderDemoModule(moduleId) {
@@ -2208,6 +2487,30 @@ function renderDemoModule(moduleId) {
   const fields = demoModule.fields
     .map((field) => {
       const requiredAttribute = field.required ? "required" : "";
+
+      if (field.projectOptions) {
+        const projectOptions = (demoData.projects ?? [])
+          .map((project) => String(project?.name ?? "").trim())
+          .filter(Boolean);
+
+        if (projectOptions.length) {
+          const options = [...new Set(projectOptions)]
+            .map(
+              (option) =>
+                `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`,
+            )
+            .join("");
+
+          return `
+            <label>
+              <span>${field.label}</span>
+              <select name="${field.name}" ${requiredAttribute}>
+                ${options}
+              </select>
+            </label>
+          `;
+        }
+      }
 
       if (field.options?.length) {
         const options = field.options
@@ -2277,6 +2580,7 @@ function renderDemoModule(moduleId) {
     ${moduleId === "maintenance-plus-hvac" ? "<div data-maintenance-dispatch></div>" : ""}
     ${moduleId === "inventory-tools" ? "<div data-inventory-checkout></div>" : ""}
     ${moduleId === "field-walkthrough" ? "<div data-walkthrough-capture></div>" : ""}
+    ${moduleId === "customer-homeowner-portal" ? "<div data-customer-portal></div>" : ""}
   `;
 
   detailDemo
