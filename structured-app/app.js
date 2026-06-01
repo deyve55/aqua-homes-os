@@ -86,6 +86,27 @@ const ACCOUNTING_REVIEW_STATUSES = [
 ];
 const ACCOUNTING_REVIEW_LOCK_NOTE =
   "Live accounting sync, ledger posting, tax filing, and P&L posting are locked until backend/security/provider gates are complete.";
+const DOCUMENT_TYPES = [
+  "Scope of Work",
+  "Contract",
+  "Permit",
+  "Inspection",
+  "Insurance",
+  "Photo Proof",
+  "Receipt",
+  "Closeout",
+  "Other",
+];
+const DOCUMENT_STATUSES = [
+  "Draft",
+  "Uploaded",
+  "Needs Review",
+  "Approved",
+  "Missing",
+  "Archived",
+];
+const DOCUMENT_LOCK_NOTE =
+  "Live document storage, customer-sensitive files, and cloud sync are locked until backend/security gates are complete.";
 const INVESTOR_VISIBILITY_CATEGORIES = [
   "Scope of Work",
   "Project status",
@@ -153,6 +174,11 @@ const modules = [
     name: "Estimates / Proposals / Change Orders",
     description:
       "Stage lightweight estimates, proposal tiers, and change-order status in local demo storage.",
+  },
+  {
+    name: "Job Documents / Evidence Binder",
+    description:
+      "Stage job document records, evidence status, and closeout proof in local demo storage.",
   },
   {
     name: "Bug Capture",
@@ -305,6 +331,31 @@ const demoDefaults = {
       status: "Change Order",
     },
   ],
+  jobDocuments: [
+    {
+      title: "Canal House permit packet",
+      projectProperty: "Canal House Retrofit",
+      documentType: "Permit",
+      status: "Needs Review",
+      notes:
+        "Demo record only. Confirm permit proof and inspection linkage after backend gates are approved.",
+    },
+    {
+      title: "Kitchen progress photo proof",
+      projectProperty: "Canal House Retrofit",
+      documentType: "Photo Proof",
+      status: "Uploaded",
+      notes:
+        "Placeholder evidence note for owner closeout review; no live files are stored here.",
+    },
+    {
+      title: "Insurance certificate follow-up",
+      projectProperty: "Canal House Retrofit",
+      documentType: "Insurance",
+      status: "Missing",
+      notes: "Demo reminder to request current insurance document from office.",
+    },
+  ],
   bugCapture: [
     {
       title: "Tighten mobile spacing on project card",
@@ -357,6 +408,11 @@ const dashboardSummaryItems = [
     label: "Estimates",
     storageKey: "estimatesProposals",
     helper: "Proposals and change orders",
+  },
+  {
+    label: "Job Documents",
+    storageKey: "jobDocuments",
+    helper: "Evidence binder records",
   },
   {
     label: "Bug Reports",
@@ -810,6 +866,49 @@ const demoModules = {
       meta: `${item.tag} · ${item.holder} · ${item.project || "Unassigned project"} · ${getInventoryToolStatus(item)}`,
     }),
   },
+  "job-documents-evidence-binder": {
+    storageKey: "jobDocuments",
+    eyebrow: "Job Documents / Evidence Binder",
+    submitLabel: "Save Document Record",
+    fields: [
+      {
+        name: "title",
+        label: "Document title",
+        placeholder: "Signed scope of work",
+        required: true,
+      },
+      {
+        name: "projectProperty",
+        label: "Project / property",
+        placeholder: "Canal House Retrofit",
+        projectOptions: true,
+        required: true,
+      },
+      {
+        name: "documentType",
+        label: "Document type",
+        options: DOCUMENT_TYPES,
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Status",
+        options: DOCUMENT_STATUSES,
+        required: true,
+      },
+      {
+        name: "notes",
+        label: "Notes",
+        placeholder: "Add review notes, source, deadline, or closeout context",
+        multiline: true,
+      },
+    ],
+    empty: "No job document demo records yet.",
+    format: (item) => ({
+      title: getDocumentTitle(item),
+      meta: `${getDocumentProject(item)} · ${getDocumentType(item)} · ${getDocumentStatus(item)}`,
+    }),
+  },
   bugCapture: {
     storageKey: "bugCapture",
     eyebrow: "Demo bug notes",
@@ -1102,6 +1201,16 @@ function normalizeEstimateProposalRecord(record) {
   };
 }
 
+function normalizeDocumentRecord(record) {
+  return {
+    title: getDocumentTitle(record),
+    projectProperty: getDocumentProject(record),
+    documentType: getDocumentType(record),
+    status: getDocumentStatus(record),
+    notes: String(record?.notes ?? record?.note ?? "").trim(),
+  };
+}
+
 function normalizeDemoData(value) {
   const source =
     value?.demoData && typeof value.demoData === "object"
@@ -1143,6 +1252,10 @@ function normalizeDemoData(value) {
 
       if (key === "estimatesProposals") {
         return [key, items.map(normalizeEstimateProposalRecord)];
+      }
+
+      if (key === "jobDocuments") {
+        return [key, items.map(normalizeDocumentRecord)];
       }
 
       return [key, items];
@@ -1314,6 +1427,38 @@ function getEstimateStatus(record) {
   const status = String(record?.status ?? record?.proposalStatus ?? "").trim();
 
   return ESTIMATE_STATUSES.includes(status) ? status : ESTIMATE_STATUSES[0];
+}
+
+function getDocumentTitle(record) {
+  return (
+    String(record?.title ?? record?.documentTitle ?? "Job document").trim() ||
+    "Job document"
+  );
+}
+
+function getDocumentProject(record) {
+  return (
+    String(
+      record?.projectProperty ??
+        record?.propertyProject ??
+        record?.project ??
+        "Saved project",
+    ).trim() || "Saved project"
+  );
+}
+
+function getDocumentType(record) {
+  const documentType = String(
+    record?.documentType ?? record?.type ?? "",
+  ).trim();
+
+  return DOCUMENT_TYPES.includes(documentType) ? documentType : DOCUMENT_TYPES[0];
+}
+
+function getDocumentStatus(record) {
+  const status = String(record?.status ?? record?.reviewStatus ?? "").trim();
+
+  return DOCUMENT_STATUSES.includes(status) ? status : DOCUMENT_STATUSES[0];
 }
 
 function getAccountingReviewStatus(value) {
@@ -1574,6 +1719,21 @@ function getEstimateSummary(records = demoData.estimatesProposals ?? []) {
   };
 }
 
+function getDocumentSummary(records = demoData.jobDocuments ?? []) {
+  return {
+    total: records.length,
+    permits: records.filter((record) => getDocumentType(record) === "Permit").length,
+    inspections: records.filter((record) => getDocumentType(record) === "Inspection").length,
+    insurance: records.filter((record) => getDocumentType(record) === "Insurance").length,
+    photoProof: records.filter((record) => getDocumentType(record) === "Photo Proof").length,
+    needsReview: records.filter(
+      (record) => getDocumentStatus(record) === "Needs Review",
+    ).length,
+    missing: records.filter((record) => getDocumentStatus(record) === "Missing")
+      .length,
+  };
+}
+
 function getDailyAccountingSummary() {
   const estimateSummary = getEstimateSummary(demoData.estimatesProposals ?? []);
   const receiptSummary = getReceiptAccountingSummary(demoData.receipts ?? []);
@@ -1821,6 +1981,22 @@ function addEstimateStatusActivity(record, previousStatus, nextStatus) {
   renderRecentActivity();
 }
 
+function addDocumentStatusActivity(record, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-document-status`,
+      module: "Job Documents / Evidence Binder",
+      title: getDocumentTitle(record),
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${getDocumentProject(record)} · ${getDocumentType(record)}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
 function addAccountingReviewStatusActivity(previousStatus, nextStatus) {
   const summary = getDailyAccountingSummary();
 
@@ -1961,6 +2137,10 @@ function getInsightMessage(summaryItem) {
       return `${count} customer portal ${count === 1 ? "request is" : "requests are"} saved for office follow-up.`;
     case "estimatesProposals":
       return `${count} estimate/proposal ${count === 1 ? "record is" : "records are"} saved for office review and change-order tracking.`;
+    case "jobDocuments": {
+      const summary = getDocumentSummary(demoData.jobDocuments ?? []);
+      return `${summary.total} document ${summary.total === 1 ? "record is" : "records are"} saved: ${summary.permits} permits, ${summary.inspections} inspections, ${summary.insurance} insurance, ${summary.photoProof} photo proof, ${summary.needsReview} needs review, and ${summary.missing} missing.`;
+    }
     case "bugCapture":
       return `${count} bug ${count === 1 ? "report is" : "reports are"} captured for the structured starter.`;
     default:
@@ -2874,6 +3054,100 @@ function updateEstimateStatus(index, nextStatus) {
   renderDemoModule("estimates-proposals-change-orders");
 }
 
+
+function renderDocumentsPanel(records) {
+  const summary = getDocumentSummary(records);
+  const summaryGrid = `
+    <div class="documents-summary-grid" aria-label="Documents Summary">
+      <article><strong>${summary.total}</strong><span>Total documents</span></article>
+      <article><strong>${summary.permits}</strong><span>Permits</span></article>
+      <article><strong>${summary.inspections}</strong><span>Inspections</span></article>
+      <article><strong>${summary.insurance}</strong><span>Insurance documents</span></article>
+      <article><strong>${summary.photoProof}</strong><span>Photo proof records</span></article>
+      <article><strong>${summary.needsReview}</strong><span>Needs review count</span></article>
+      <article><strong>${summary.missing}</strong><span>Missing count</span></article>
+    </div>
+  `;
+
+  if (!records.length) {
+    return `
+      <section class="documents-panel" aria-label="Job Documents / Evidence Binder panel">
+        <div class="documents-header">
+          <div>
+            <p class="eyebrow">Evidence Binder</p>
+            <h4>Documents Summary</h4>
+          </div>
+          <span class="documents-status">Local demo binder</span>
+        </div>
+        <p class="documents-lock-note">${DOCUMENT_LOCK_NOTE}</p>
+        ${summaryGrid}
+        <p class="documents-empty">No saved job document demo records yet.</p>
+      </section>
+    `;
+  }
+
+  const documentRows = records
+    .map((record, index) => {
+      const currentStatus = getDocumentStatus(record);
+      const statusOptions = DOCUMENT_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
+
+      return `
+        <article class="documents-card">
+          <div>
+            <strong>${escapeHtml(getDocumentTitle(record))}</strong>
+            <span>${escapeHtml(getDocumentProject(record))} · ${escapeHtml(getDocumentType(record))}</span>
+            <span>${escapeHtml(record.notes || "Document notes pending")}</span>
+          </div>
+          <label>
+            <span>Status</span>
+            <select data-document-status-index="${index}" aria-label="Document status for ${escapeHtml(getDocumentTitle(record))}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="documents-panel" aria-label="Job Documents / Evidence Binder panel">
+      <div class="documents-header">
+        <div>
+          <p class="eyebrow">Evidence Binder</p>
+          <h4>Documents Summary</h4>
+        </div>
+        <span class="documents-status">Local demo binder</span>
+      </div>
+      <p class="documents-lock-note">${DOCUMENT_LOCK_NOTE}</p>
+      ${summaryGrid}
+      <div class="documents-list">${documentRows}</div>
+    </section>
+  `;
+}
+
+function updateDocumentStatus(index, nextStatus) {
+  const record = demoData.jobDocuments?.[index];
+
+  if (!record || !DOCUMENT_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getDocumentStatus(record);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  record.status = nextStatus;
+  saveDemoData();
+  addDocumentStatusActivity(record, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("job-documents-evidence-binder");
+}
+
 function renderAccountingReviewPanel() {
   const summary = getDailyAccountingSummary();
   const currentStatus = getAccountingReviewStatus(accountingReview);
@@ -3086,6 +3360,7 @@ function renderDemoList(moduleId) {
     "[data-customer-portal]",
   );
   const estimatesSlot = detailDemo.querySelector("[data-estimates]");
+  const documentsSlot = detailDemo.querySelector("[data-documents]");
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
@@ -3115,6 +3390,9 @@ function renderDemoList(moduleId) {
     }
     if (estimatesSlot) {
       estimatesSlot.innerHTML = renderEstimatesPanel(items);
+    }
+    if (documentsSlot) {
+      documentsSlot.innerHTML = renderDocumentsPanel(items);
     }
     return;
   }
@@ -3271,6 +3549,20 @@ function renderDemoList(moduleId) {
         );
       });
   }
+
+  if (documentsSlot) {
+    documentsSlot.innerHTML = renderDocumentsPanel(items);
+    documentsSlot
+      .querySelectorAll("[data-document-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateDocumentStatus(
+            Number(select.dataset.documentStatusIndex),
+            select.value,
+          ),
+        );
+      });
+  }
 }
 
 function renderDemoModule(moduleId) {
@@ -3403,6 +3695,7 @@ function renderDemoModule(moduleId) {
     ${moduleId === "field-walkthrough" ? "<div data-walkthrough-capture></div>" : ""}
     ${moduleId === "customer-homeowner-portal" ? "<div data-customer-portal></div>" : ""}
     ${moduleId === "estimates-proposals-change-orders" ? "<div data-estimates></div>" : ""}
+    ${moduleId === "job-documents-evidence-binder" ? "<div data-documents></div>" : ""}
   `;
 
   detailDemo
