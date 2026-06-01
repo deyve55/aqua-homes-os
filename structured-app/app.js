@@ -32,6 +32,17 @@ const MAINTENANCE_DISPATCH_STATUSES = [
   "Office Reconciliation Hold",
 ];
 const ACTIVE_MAINTENANCE_STATUSES = ["Dispatched", "En Route", "On Site"];
+const SCHEDULE_TASK_PRIORITIES = ["Low", "Normal", "High", "Urgent"];
+const SCHEDULE_TASK_STATUSES = [
+  "Not Started",
+  "In Progress",
+  "Waiting on Material",
+  "Waiting on Inspection",
+  "Complete",
+  "Office Review",
+];
+const SCHEDULE_TASK_LOCK_NOTE =
+  "Live crew dispatch, GPS, external calendar sync, and notifications are locked until backend/security gates are complete.";
 const WALKTHROUGH_READINESS_STATUSES = [
   "Draft Capture",
   "Needs Office Review",
@@ -112,6 +123,11 @@ const modules = [
     name: "Maintenance + HVAC",
     description:
       "Monitor service items, HVAC follow-ups, and recurring maintenance needs.",
+  },
+  {
+    name: "Schedule / Tasks",
+    description:
+      "Stage crew tasks, due dates, priority, and office status in local demo storage.",
   },
   {
     name: "Inventory / Tools",
@@ -207,6 +223,24 @@ const demoDefaults = {
       estimatedCost: "420",
     },
   ],
+  scheduleTasks: [
+    {
+      title: "Confirm cabinet delivery window",
+      propertyProject: "Canal House Retrofit",
+      assignedPerson: "Mia Rivera",
+      dueDate: "2026-06-05",
+      priority: "High",
+      status: "In Progress",
+    },
+    {
+      title: "Book rough-in inspection hold",
+      propertyProject: "Canal House Retrofit",
+      assignedPerson: "Jordan Lee",
+      dueDate: "2026-06-07",
+      priority: "Urgent",
+      status: "Waiting on Inspection",
+    },
+  ],
   inventoryTools: [
     {
       name: "Laser Level",
@@ -298,6 +332,11 @@ const dashboardSummaryItems = [
     label: "Maintenance / HVAC",
     storageKey: "maintenancePlusHvac",
     helper: "Open service requests",
+  },
+  {
+    label: "Schedule Tasks",
+    storageKey: "scheduleTasks",
+    helper: "Crew task records",
   },
   {
     label: "Inventory / Tools",
@@ -518,6 +557,56 @@ const demoModules = {
     format: (item) => ({
       title: getMaintenanceTitle(item),
       meta: `${getMaintenancePriority(item)} priority · ${getMaintenanceTrade(item)} · ${getMaintenanceStatus(item)} · ${formatCurrency(item.estimatedCost)}`,
+    }),
+  },
+
+  "schedule-tasks": {
+    storageKey: "scheduleTasks",
+    eyebrow: "Schedule / Tasks",
+    submitLabel: "Save Task",
+    fields: [
+      {
+        name: "title",
+        label: "Task title",
+        placeholder: "Confirm cabinet delivery window",
+        required: true,
+      },
+      {
+        name: "propertyProject",
+        label: "Project / property",
+        placeholder: "Canal House Retrofit",
+        projectOptions: true,
+        required: true,
+      },
+      {
+        name: "assignedPerson",
+        label: "Assigned person",
+        placeholder: "Mia Rivera",
+        required: true,
+      },
+      {
+        name: "dueDate",
+        label: "Due date",
+        type: "date",
+        required: true,
+      },
+      {
+        name: "priority",
+        label: "Priority",
+        options: SCHEDULE_TASK_PRIORITIES,
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Status",
+        options: SCHEDULE_TASK_STATUSES,
+        required: true,
+      },
+    ],
+    empty: "No demo schedule tasks yet.",
+    format: (item) => ({
+      title: getScheduleTaskTitle(item),
+      meta: `${getScheduleTaskProject(item)} · ${getScheduleTaskAssignee(item)} · ${formatScheduleDueDate(item.dueDate)} · ${getScheduleTaskPriority(item)} · ${getScheduleTaskStatus(item)}`,
     }),
   },
 
@@ -943,6 +1032,17 @@ function normalizeMaintenanceRequest(request) {
   };
 }
 
+function normalizeScheduleTask(task) {
+  return {
+    title: getScheduleTaskTitle(task),
+    propertyProject: getScheduleTaskProject(task),
+    assignedPerson: getScheduleTaskAssignee(task),
+    dueDate: String(task?.dueDate ?? task?.due ?? "").trim(),
+    priority: getScheduleTaskPriority(task),
+    status: getScheduleTaskStatus(task),
+  };
+}
+
 function normalizeInventoryToolItem(item) {
   return {
     name:
@@ -1023,6 +1123,10 @@ function normalizeDemoData(value) {
 
       if (key === "maintenancePlusHvac") {
         return [key, items.map(normalizeMaintenanceRequest)];
+      }
+
+      if (key === "scheduleTasks") {
+        return [key, items.map(normalizeScheduleTask)];
       }
 
       if (key === "inventoryTools") {
@@ -1258,6 +1362,79 @@ function getMaintenanceStatus(request) {
   return MAINTENANCE_DISPATCH_STATUSES.includes(status)
     ? status
     : "New Request";
+}
+
+function getScheduleTaskTitle(task) {
+  return (
+    String(task?.title ?? task?.taskTitle ?? "Schedule task").trim() ||
+    "Schedule task"
+  );
+}
+
+function getScheduleTaskProject(task) {
+  return (
+    String(
+      task?.propertyProject ??
+        task?.projectProperty ??
+        task?.project ??
+        "Saved project",
+    ).trim() || "Saved project"
+  );
+}
+
+function getScheduleTaskAssignee(task) {
+  return (
+    String(task?.assignedPerson ?? task?.assignee ?? "Unassigned").trim() ||
+    "Unassigned"
+  );
+}
+
+function getScheduleTaskPriority(task) {
+  const priority = String(task?.priority ?? "").trim();
+
+  return SCHEDULE_TASK_PRIORITIES.includes(priority) ? priority : "Normal";
+}
+
+function getScheduleTaskStatus(task) {
+  const status = String(task?.status ?? "").trim();
+
+  return SCHEDULE_TASK_STATUSES.includes(status) ? status : "Not Started";
+}
+
+function formatScheduleDueDate(value) {
+  if (!value) {
+    return "No due date";
+  }
+
+  const date = new Date(`${value}T00:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
+function getScheduleSummary(tasks = demoData.scheduleTasks ?? []) {
+  return {
+    total: tasks.length,
+    urgent: tasks.filter((task) => getScheduleTaskPriority(task) === "Urgent")
+      .length,
+    inProgress: tasks.filter(
+      (task) => getScheduleTaskStatus(task) === "In Progress",
+    ).length,
+    waiting: tasks.filter((task) =>
+      ["Waiting on Material", "Waiting on Inspection"].includes(
+        getScheduleTaskStatus(task),
+      ),
+    ).length,
+    completed: tasks.filter((task) => getScheduleTaskStatus(task) === "Complete")
+      .length,
+  };
 }
 
 function getMaintenanceSummary(requests = demoData.maintenancePlusHvac ?? []) {
@@ -1523,6 +1700,22 @@ function addMaintenanceStatusActivity(request, previousStatus, nextStatus) {
       module: "Maintenance + HVAC",
       title: getMaintenanceTitle(request),
       meta: `Status changed from ${previousStatus} to ${nextStatus} · ${request.propertyProject || "Unassigned property/project"} · ${getMaintenanceTrade(request)} · ${formatCurrency(request.estimatedCost)}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function addScheduleStatusActivity(task, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-schedule-status`,
+      module: "Schedule / Tasks",
+      title: getScheduleTaskTitle(task),
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${getScheduleTaskProject(task)} · Due ${formatScheduleDueDate(task.dueDate)}`,
       createdAt: new Date().toISOString(),
     },
     ...recentActivity,
@@ -2212,6 +2405,97 @@ function updateMaintenanceStatus(index, nextStatus) {
   renderDemoModule("maintenance-plus-hvac");
 }
 
+function renderScheduleTasksPanel(tasks) {
+  const summary = getScheduleSummary(tasks);
+  const summaryGrid = `
+    <div class="schedule-summary-grid" aria-label="Schedule task summary">
+      <article><strong>${summary.total}</strong><span>Total tasks</span></article>
+      <article><strong>${summary.urgent}</strong><span>Urgent tasks</span></article>
+      <article><strong>${summary.inProgress}</strong><span>In-progress tasks</span></article>
+      <article><strong>${summary.waiting}</strong><span>Waiting tasks</span></article>
+      <article><strong>${summary.completed}</strong><span>Completed tasks</span></article>
+    </div>
+  `;
+
+  if (!tasks.length) {
+    return `
+      <section class="schedule-tasks-panel" aria-label="Schedule and tasks panel">
+        <div class="schedule-tasks-header">
+          <div>
+            <p class="eyebrow">Schedule Summary</p>
+            <h4>Schedule / Tasks panel</h4>
+          </div>
+          <span class="schedule-task-status">Local demo schedule</span>
+        </div>
+        <p class="schedule-task-lock-note">${SCHEDULE_TASK_LOCK_NOTE}</p>
+        ${summaryGrid}
+        <p class="schedule-task-empty">No saved schedule task demo records yet.</p>
+      </section>
+    `;
+  }
+
+  const taskRows = tasks
+    .map((task, index) => {
+      const currentStatus = getScheduleTaskStatus(task);
+      const statusOptions = SCHEDULE_TASK_STATUSES.map(
+        (status) =>
+          `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+      ).join("");
+
+      return `
+        <article class="schedule-task-card">
+          <div>
+            <strong>${escapeHtml(getScheduleTaskTitle(task))}</strong>
+            <span>${escapeHtml(getScheduleTaskProject(task))} · ${escapeHtml(getScheduleTaskAssignee(task))}</span>
+            <span>${escapeHtml(getScheduleTaskPriority(task))} priority · Due ${escapeHtml(formatScheduleDueDate(task.dueDate))}</span>
+          </div>
+          <label>
+            <span>Status</span>
+            <select data-schedule-status-index="${index}" aria-label="Task status for ${escapeHtml(getScheduleTaskTitle(task))}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="schedule-tasks-panel" aria-label="Schedule and tasks panel">
+      <div class="schedule-tasks-header">
+        <div>
+          <p class="eyebrow">Schedule Summary</p>
+          <h4>Schedule / Tasks panel</h4>
+        </div>
+        <span class="schedule-task-status">Local demo schedule</span>
+      </div>
+      <p class="schedule-task-lock-note">${SCHEDULE_TASK_LOCK_NOTE}</p>
+      ${summaryGrid}
+      <div class="schedule-task-list">${taskRows}</div>
+    </section>
+  `;
+}
+
+function updateScheduleTaskStatus(index, nextStatus) {
+  const task = demoData.scheduleTasks?.[index];
+
+  if (!task || !SCHEDULE_TASK_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getScheduleTaskStatus(task);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  task.status = nextStatus;
+  saveDemoData();
+  addScheduleStatusActivity(task, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("schedule-tasks");
+}
+
 function renderInventoryToolCheckoutPanel(items) {
   const summary = getInventoryToolSummary(items);
   const summaryGrid = `
@@ -2787,6 +3071,7 @@ function renderDemoList(moduleId) {
   const maintenanceDispatchSlot = detailDemo.querySelector(
     "[data-maintenance-dispatch]",
   );
+  const scheduleTasksSlot = detailDemo.querySelector("[data-schedule-tasks]");
   const inventoryCheckoutSlot = detailDemo.querySelector(
     "[data-inventory-checkout]",
   );
@@ -2811,6 +3096,9 @@ function renderDemoList(moduleId) {
     }
     if (maintenanceDispatchSlot) {
       maintenanceDispatchSlot.innerHTML = renderMaintenanceDispatchPanel(items);
+    }
+    if (scheduleTasksSlot) {
+      scheduleTasksSlot.innerHTML = renderScheduleTasksPanel(items);
     }
     if (inventoryCheckoutSlot) {
       inventoryCheckoutSlot.innerHTML = renderInventoryToolCheckoutPanel(items);
@@ -2904,6 +3192,20 @@ function renderDemoList(moduleId) {
         select.addEventListener("change", () =>
           updateMaintenanceStatus(
             Number(select.dataset.maintenanceStatusIndex),
+            select.value,
+          ),
+        );
+      });
+  }
+
+  if (scheduleTasksSlot) {
+    scheduleTasksSlot.innerHTML = renderScheduleTasksPanel(items);
+    scheduleTasksSlot
+      .querySelectorAll("[data-schedule-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateScheduleTaskStatus(
+            Number(select.dataset.scheduleStatusIndex),
             select.value,
           ),
         );
@@ -3092,6 +3394,7 @@ function renderDemoModule(moduleId) {
     ${moduleId === "receipts" ? "<div data-receipt-review></div>" : ""}
     ${moduleId === "payroll-prep" ? "<div data-payroll-prep></div>" : ""}
     ${moduleId === "maintenance-plus-hvac" ? "<div data-maintenance-dispatch></div>" : ""}
+    ${moduleId === "schedule-tasks" ? "<div data-schedule-tasks></div>" : ""}
     ${moduleId === "inventory-tools" ? "<div data-inventory-checkout></div>" : ""}
     ${moduleId === "field-walkthrough" ? "<div data-walkthrough-capture></div>" : ""}
     ${moduleId === "customer-homeowner-portal" ? "<div data-customer-portal></div>" : ""}
