@@ -2614,6 +2614,15 @@ h1 {
     );
   }
 
+  .dashboard-header,
+  .quick-access-header,
+  .ai-insights-header,
+  .activity-header,
+  .safety-gates-header,
+  .phone-trial-header {
+    align-items: center;
+  }
+
   .approved-gold-bar {
     max-width: 880px;
     margin-right: auto;
@@ -2633,6 +2642,11 @@ h1 {
     margin-left: auto;
   }
 
+  .dashboard-summary {
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
   .card-grid {
     grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     gap: 18px;
@@ -2642,10 +2656,31 @@ h1 {
     min-height: 200px;
   }
 
+  .module-detail {
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .module-copy {
+    max-width: 860px;
+  }
+
+  .module-demo,
+  .backup-panel {
+    max-width: 820px;
+  }
+
+  .risk-control-grid,
+  .launch-readiness-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .bottom-nav {
     right: 28px;
+    bottom: 22px;
     left: 28px;
     width: min(calc(100% - 56px), 640px);
+    box-shadow: 0 18px 54px rgba(0, 0, 0, 0.28);
   }
 }
 
@@ -2670,5 +2705,15 @@ h1 {
 
   .quick-access-button {
     width: 100%;
+  }
+}
+
+@media (min-width: 1360px) {
+  .app-shell {
+    width: min(100%, 1360px);
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
