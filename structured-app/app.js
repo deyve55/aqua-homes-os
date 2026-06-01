@@ -192,6 +192,9 @@ const demoModules = {
 
 const navButtons = document.querySelectorAll(".bottom-nav button");
 const dashboardSummary = document.querySelector("[data-dashboard-summary]");
+const aiInsightsList = document.querySelector("[data-ai-insights]");
+const refreshInsights = document.querySelector("[data-refresh-insights]");
+const aiInsightsUpdated = document.querySelector("[data-ai-insights-updated]");
 const activityList = document.querySelector("[data-activity-list]");
 const clearActivity = document.querySelector("[data-clear-activity]");
 const cardGrid = document.querySelector("[data-module-grid]");
@@ -461,6 +464,44 @@ function getSummaryCount(summaryItem) {
   return summaryItem.getCount ? summaryItem.getCount(items) : items.length;
 }
 
+function getInsightMessage(summaryItem) {
+  const count = getSummaryCount(summaryItem);
+
+  switch (summaryItem.storageKey) {
+    case "projects":
+      return `${count} active ${count === 1 ? "project is" : "projects are"} in the local demo project log.`;
+    case "receipts":
+      return `${count} ${count === 1 ? "receipt needs" : "receipts need"} review before office handoff.`;
+    case "maintenancePlusHvac":
+      return `${count} maintenance/HVAC ${count === 1 ? "request is" : "requests are"} saved for follow-up.`;
+    case "inventoryTools":
+      return `${count} inventory/tool ${count === 1 ? "record is" : "records are"} being tracked.`;
+    case "bugCapture":
+      return `${count} bug ${count === 1 ? "report is" : "reports are"} captured for the structured starter.`;
+    default:
+      return `${count} ${summaryItem.label.toLowerCase()} saved in demo storage.`;
+  }
+}
+
+function renderAiInsights() {
+  const fragment = document.createDocumentFragment();
+
+  dashboardSummaryItems.forEach((summaryItem) => {
+    const insight = document.createElement("li");
+    insight.textContent = getInsightMessage(summaryItem);
+    fragment.appendChild(insight);
+  });
+
+  aiInsightsList.replaceChildren(fragment);
+  aiInsightsUpdated.textContent = `Insights refreshed from local demo data at ${formatActivityTime(new Date().toISOString())}.`;
+}
+
+function refreshAiInsights() {
+  demoData = loadDemoData();
+  renderDashboardSummary();
+  renderAiInsights();
+}
+
 function renderDashboardSummary() {
   const fragment = document.createDocumentFragment();
 
@@ -585,6 +626,7 @@ const closeModuleDetail = () => {
 
 const renderModules = () => {
   renderDashboardSummary();
+  renderAiInsights();
 
   const fragment = document.createDocumentFragment();
 
@@ -633,6 +675,7 @@ importDemoData.addEventListener("click", importDemoDataFromJson);
 backupResetDemoData.addEventListener("click", resetAllDemoData);
 resetDemoData.addEventListener("click", resetAllDemoData);
 clearActivity.addEventListener("click", clearRecentActivity);
+refreshInsights.addEventListener("click", refreshAiInsights);
 
 window.addEventListener("storage", (event) => {
   if (event.key === DEMO_DATA_KEY) {

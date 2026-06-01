@@ -29,6 +29,21 @@
 
         <section class="dashboard-summary" data-dashboard-summary aria-label="Saved demo data summary"></section>
 
+        <section class="ai-insights-panel" aria-labelledby="ai-insights-title">
+          <div class="ai-insights-header">
+            <div>
+              <p class="eyebrow">AI Assistant</p>
+              <h2 id="ai-insights-title">Main Brain Insights</h2>
+            </div>
+            <button type="button" class="ghost-button" data-refresh-insights>Refresh insights</button>
+          </div>
+          <ul class="ai-insights-list" data-ai-insights aria-live="polite"></ul>
+          <p class="ai-insights-note">
+            Demo insights only — live AI/backend connection locked until backend/security gates are complete.
+          </p>
+          <p class="ai-insights-updated" data-ai-insights-updated aria-live="polite"></p>
+        </section>
+
         <section class="activity-panel" aria-labelledby="activity-title">
           <div class="activity-header">
             <div>
