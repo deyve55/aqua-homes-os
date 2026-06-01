@@ -2,11 +2,18 @@ const LAST_OPENED_MODULE_KEY = "aquaHomes.lastOpenedModule";
 const DEMO_DATA_KEY = "aquaHomes.structuredDemoData";
 const RECENT_ACTIVITY_KEY = "aquaHomes.structuredRecentActivity";
 const MODULE_SETTINGS_KEY = "aquaHomes.structuredModuleSettings";
+const LAUNCH_READINESS_KEY = "aquaHomes.launchReadinessChecklist";
 const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
 const INVESTOR_VISIBILITY_KEY = "aquaHomes.aquabonaInvestorVisibility";
 const ACCOUNTING_REVIEW_KEY = "aquaHomes.accountingReview";
 const MAX_RECENT_ACTIVITY = 10;
 const MODULE_STATUSES = ["active", "hidden", "locked"];
+const LAUNCH_READINESS_STATUSES = [
+  "Not Started",
+  "In Progress",
+  "Verified",
+  "Blocked",
+];
 const MODULE_STATUS_LABELS = {
   active: "Active",
   hidden: "Hidden",
@@ -156,6 +163,59 @@ const INVESTOR_VISIBILITY_CATEGORIES = [
   "Inventory proof",
   "Change orders",
   "Closeout",
+];
+
+const launchReadinessItems = [
+  {
+    id: "visual-design-locked-v51",
+    label: "Visual design locked to v51",
+    defaultStatus: "Verified",
+  },
+  {
+    id: "v51-reference-read-only",
+    label: "Large v51 reference file remains read-only",
+    defaultStatus: "Verified",
+  },
+  {
+    id: "structured-app-running-separately",
+    label: "Structured app running separately",
+    defaultStatus: "Verified",
+  },
+  {
+    id: "localstorage-demo-data-working",
+    label: "localStorage demo data working",
+    defaultStatus: "In Progress",
+  },
+  {
+    id: "export-import-backup-controls-present",
+    label: "Export/import backup controls present",
+    defaultStatus: "Verified",
+  },
+  {
+    id: "safety-gates-visible-locked",
+    label: "Safety gates visible and locked",
+    defaultStatus: "Verified",
+  },
+  {
+    id: "admin-module-controls-present",
+    label: "Admin/module controls present",
+    defaultStatus: "Verified",
+  },
+  {
+    id: "mobile-first-layout-checked",
+    label: "Mobile-first layout checked",
+    defaultStatus: "In Progress",
+  },
+  {
+    id: "samsung-dex-desktop-layout-pending",
+    label: "Samsung DeX / desktop layout pending",
+    defaultStatus: "Not Started",
+  },
+  {
+    id: "backend-security-provider-gates-pending",
+    label: "Backend/security/provider gates pending",
+    defaultStatus: "Blocked",
+  },
 ];
 
 const modules = [
@@ -1130,6 +1190,7 @@ const aiInsightsList = document.querySelector("[data-ai-insights]");
 const refreshInsights = document.querySelector("[data-refresh-insights]");
 const aiInsightsUpdated = document.querySelector("[data-ai-insights-updated]");
 const activityList = document.querySelector("[data-activity-list]");
+const launchReadinessList = document.querySelector("[data-launch-readiness-list]");
 const clearActivity = document.querySelector("[data-clear-activity]");
 const cardGrid = document.querySelector("[data-module-grid]");
 const adminModuleList = document.querySelector("[data-admin-module-list]");
@@ -1151,6 +1212,7 @@ let recentActivity = loadRecentActivity();
 let investorVisibility = loadInvestorVisibility();
 let accountingReview = loadAccountingReview();
 let moduleSettings = loadModuleSettings();
+let launchReadiness = loadLaunchReadiness();
 let activeModule = null;
 let selectedProjectName = readLocalStorage(SELECTED_PROJECT_KEY);
 
@@ -2486,6 +2548,127 @@ function loadModuleSettings() {
 
 function saveModuleSettings() {
   writeLocalStorage(MODULE_SETTINGS_KEY, JSON.stringify(moduleSettings));
+}
+
+function getDefaultLaunchReadiness() {
+  return Object.fromEntries(
+    launchReadinessItems.map((item) => [item.id, item.defaultStatus]),
+  );
+}
+
+function normalizeLaunchReadiness(value) {
+  const defaults = getDefaultLaunchReadiness();
+
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return defaults;
+  }
+
+  return Object.fromEntries(
+    launchReadinessItems.map((item) => {
+      const nextStatus = String(value[item.id] ?? item.defaultStatus).trim();
+
+      return [
+        item.id,
+        LAUNCH_READINESS_STATUSES.includes(nextStatus)
+          ? nextStatus
+          : item.defaultStatus,
+      ];
+    }),
+  );
+}
+
+function loadLaunchReadiness() {
+  const storedReadiness = readLocalStorage(LAUNCH_READINESS_KEY);
+
+  if (!storedReadiness) {
+    return getDefaultLaunchReadiness();
+  }
+
+  try {
+    return normalizeLaunchReadiness(JSON.parse(storedReadiness));
+  } catch (error) {
+    return getDefaultLaunchReadiness();
+  }
+}
+
+function saveLaunchReadiness() {
+  writeLocalStorage(LAUNCH_READINESS_KEY, JSON.stringify(launchReadiness));
+}
+
+function getLaunchReadinessStatus(itemId) {
+  return launchReadiness[itemId] ?? "Not Started";
+}
+
+function addLaunchReadinessActivity(itemLabel, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-launch-readiness`,
+      module: "Launch Control / Trial Readiness",
+      title: itemLabel,
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · local trial readiness only`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function updateLaunchReadinessStatus(itemId, nextStatus) {
+  const item = launchReadinessItems.find((entry) => entry.id === itemId);
+  const previousStatus = getLaunchReadinessStatus(itemId);
+
+  if (
+    !item ||
+    previousStatus === nextStatus ||
+    !LAUNCH_READINESS_STATUSES.includes(nextStatus)
+  ) {
+    return;
+  }
+
+  launchReadiness = { ...launchReadiness, [itemId]: nextStatus };
+  saveLaunchReadiness();
+  addLaunchReadinessActivity(item.label, previousStatus, nextStatus);
+  renderLaunchReadiness();
+}
+
+function renderLaunchReadiness() {
+  if (!launchReadinessList) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  launchReadinessItems.forEach((item) => {
+    const status = getLaunchReadinessStatus(item.id);
+    const row = document.createElement("article");
+    row.className = `launch-readiness-item ${slugifyLabel(status)}`;
+    row.innerHTML = `
+      <div>
+        <span class="launch-readiness-badge">${escapeHtml(status)}</span>
+        <h3>${escapeHtml(item.label)}</h3>
+      </div>
+      <label>
+        <span>Readiness status</span>
+        <select data-launch-readiness-status="${escapeHtml(item.id)}" aria-label="Readiness status for ${escapeHtml(item.label)}">
+          ${LAUNCH_READINESS_STATUSES.map(
+            (option) =>
+              `<option value="${escapeHtml(option)}" ${option === status ? "selected" : ""}>${escapeHtml(option)}</option>`,
+          ).join("")}
+        </select>
+      </label>
+    `;
+
+    row
+      .querySelector("select")
+      .addEventListener("change", (event) =>
+        updateLaunchReadinessStatus(item.id, event.currentTarget.value),
+      );
+    fragment.appendChild(row);
+  });
+
+  launchReadinessList.replaceChildren(fragment);
 }
 
 function getModuleStatus(moduleId) {
@@ -4652,12 +4835,18 @@ window.addEventListener("storage", (event) => {
     renderModules();
   }
 
+  if (event.key === LAUNCH_READINESS_KEY) {
+    launchReadiness = loadLaunchReadiness();
+    renderLaunchReadiness();
+  }
+
   if (event.key === LAST_OPENED_MODULE_KEY) {
     renderLastOpenedModule();
   }
 });
 
 renderRecentActivity();
+renderLaunchReadiness();
 renderAdminModuleControl();
 renderQuickAccess();
 renderModules();
