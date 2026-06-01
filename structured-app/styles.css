@@ -119,7 +119,7 @@ h1 {
 
 .dashboard-summary {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin: 0 0 18px;
 }
@@ -560,7 +560,8 @@ h1 {
 }
 
 .demo-form input,
-.demo-form select {
+.demo-form select,
+.demo-form textarea {
   width: 100%;
   border: 1px solid var(--panel-border);
   border-radius: 14px;
@@ -570,8 +571,18 @@ h1 {
   font: inherit;
 }
 
+.demo-form textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.demo-form-wide {
+  grid-column: 1 / -1;
+}
+
 .demo-form input:focus-visible,
-.demo-form select:focus-visible {
+.demo-form select:focus-visible,
+.demo-form textarea:focus-visible {
   border-color: rgba(247, 200, 67, 0.7);
   outline: 2px solid rgba(247, 200, 67, 0.34);
   outline-offset: 2px;
@@ -934,7 +945,8 @@ h1 {
 .payroll-prep-panel,
 .receipt-review-panel,
 .maintenance-dispatch-panel,
-.inventory-checkout-panel {
+.inventory-checkout-panel,
+.walkthrough-capture-panel {
   margin-top: 16px;
   padding: 16px;
   border: 1px solid rgba(247, 200, 67, 0.22);
@@ -945,7 +957,8 @@ h1 {
 .payroll-prep-header,
 .receipt-review-header,
 .maintenance-dispatch-header,
-.inventory-checkout-header {
+.inventory-checkout-header,
+.walkthrough-capture-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -956,7 +969,8 @@ h1 {
 .payroll-prep-header h4,
 .receipt-review-header h4,
 .maintenance-dispatch-header h4,
-.inventory-checkout-header h4 {
+.inventory-checkout-header h4,
+.walkthrough-capture-header h4 {
   margin: 0;
   font-size: 1rem;
 }
@@ -964,7 +978,8 @@ h1 {
 .payroll-lock-status,
 .receipt-feed-status,
 .maintenance-dispatch-status,
-.inventory-checkout-status {
+.inventory-checkout-status,
+.walkthrough-capture-status {
   flex: none;
   padding: 7px 10px;
   border: 1px solid rgba(247, 200, 67, 0.34);
@@ -978,7 +993,8 @@ h1 {
 .payroll-summary-grid,
 .accounting-summary-grid,
 .maintenance-summary-grid,
-.inventory-summary-grid {
+.inventory-summary-grid,
+.walkthrough-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
@@ -989,14 +1005,16 @@ h1 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
-.inventory-summary-grid {
+.inventory-summary-grid,
+.walkthrough-summary-grid {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .payroll-summary-grid article,
 .accounting-summary-grid article,
 .maintenance-summary-grid article,
-.inventory-summary-grid article {
+.inventory-summary-grid article,
+.walkthrough-summary-grid article {
   min-height: 92px;
   padding: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1012,6 +1030,8 @@ h1 {
 .maintenance-summary-grid span,
 .inventory-summary-grid strong,
 .inventory-summary-grid span,
+.walkthrough-summary-grid strong,
+.walkthrough-summary-grid span,
 .payroll-prep-card strong,
 .payroll-prep-card span,
 .payroll-prep-card label span,
@@ -1023,14 +1043,18 @@ h1 {
 .maintenance-dispatch-card label span,
 .inventory-checkout-card strong,
 .inventory-checkout-card span,
-.inventory-checkout-card label span {
+.inventory-checkout-card label span,
+.walkthrough-capture-card strong,
+.walkthrough-capture-card span,
+.walkthrough-capture-card label span {
   display: block;
 }
 
 .payroll-summary-grid strong,
 .accounting-summary-grid strong,
 .maintenance-summary-grid strong,
-.inventory-summary-grid strong {
+.inventory-summary-grid strong,
+.walkthrough-summary-grid strong {
   margin-bottom: 8px;
   color: var(--gold);
   font-size: 1.3rem;
@@ -1041,6 +1065,7 @@ h1 {
 .accounting-summary-grid span,
 .maintenance-summary-grid span,
 .inventory-summary-grid span,
+.walkthrough-summary-grid span,
 .payroll-prep-card span,
 .payroll-prep-empty,
 .receipt-review-card span,
@@ -1048,7 +1073,9 @@ h1 {
 .maintenance-dispatch-card span,
 .maintenance-dispatch-empty,
 .inventory-checkout-card span,
-.inventory-checkout-empty {
+.inventory-checkout-empty,
+.walkthrough-capture-card span,
+.walkthrough-capture-empty {
   color: var(--muted);
   font-size: 0.84rem;
   line-height: 1.45;
@@ -1057,7 +1084,8 @@ h1 {
 .payroll-prep-list,
 .receipt-review-list,
 .maintenance-dispatch-list,
-.inventory-checkout-list {
+.inventory-checkout-list,
+.walkthrough-capture-list {
   display: grid;
   gap: 10px;
 }
@@ -1065,7 +1093,8 @@ h1 {
 .payroll-prep-card,
 .receipt-review-card,
 .maintenance-dispatch-card,
-.inventory-checkout-card {
+.inventory-checkout-card,
+.walkthrough-capture-card {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1079,7 +1108,8 @@ h1 {
 .payroll-prep-card strong,
 .receipt-review-card strong,
 .maintenance-dispatch-card strong,
-.inventory-checkout-card strong {
+.inventory-checkout-card strong,
+.walkthrough-capture-card strong {
   margin-bottom: 4px;
   font-size: 0.95rem;
 }
@@ -1087,7 +1117,8 @@ h1 {
 .payroll-prep-card label,
 .receipt-review-card label,
 .maintenance-dispatch-card label,
-.inventory-checkout-card label {
+.inventory-checkout-card label,
+.walkthrough-capture-card label {
   flex: 0 0 180px;
   display: grid;
   gap: 6px;
@@ -1101,7 +1132,8 @@ h1 {
 .payroll-prep-card select,
 .receipt-review-card select,
 .maintenance-dispatch-card select,
-.inventory-checkout-card select {
+.inventory-checkout-card select,
+.walkthrough-capture-card select {
   width: 100%;
   border: 1px solid var(--panel-border);
   border-radius: 14px;
@@ -1114,7 +1146,8 @@ h1 {
 .payroll-prep-card select:focus-visible,
 .receipt-review-card select:focus-visible,
 .maintenance-dispatch-card select:focus-visible,
-.inventory-checkout-card select:focus-visible {
+.inventory-checkout-card select:focus-visible,
+.walkthrough-capture-card select:focus-visible {
   border-color: rgba(247, 200, 67, 0.7);
   outline: 2px solid rgba(247, 200, 67, 0.34);
   outline-offset: 2px;
@@ -1125,13 +1158,16 @@ h1 {
 .maintenance-dispatch-card span,
 .maintenance-dispatch-empty,
 .inventory-checkout-card span,
-.inventory-checkout-empty {
+.inventory-checkout-empty,
+.walkthrough-capture-card span,
+.walkthrough-capture-empty {
   margin: 0;
 }
 
 .payroll-lock-note,
 .maintenance-dispatch-note,
-.inventory-lock-note {
+.inventory-lock-note,
+.walkthrough-lock-note {
   margin: 0 0 12px;
   padding: 12px 14px;
   border: 1px solid rgba(247, 200, 67, 0.22);
@@ -1148,14 +1184,17 @@ h1 {
   .receipt-review-header,
   .maintenance-dispatch-header,
   .inventory-checkout-header,
+  .walkthrough-capture-header,
   .payroll-summary-grid,
   .accounting-summary-grid,
   .maintenance-summary-grid,
   .inventory-summary-grid,
+  .walkthrough-summary-grid,
   .payroll-prep-card,
   .receipt-review-card,
   .maintenance-dispatch-card,
-  .inventory-checkout-card {
+  .inventory-checkout-card,
+  .walkthrough-capture-card {
     display: block;
   }
 
@@ -1163,14 +1202,17 @@ h1 {
   .receipt-feed-status,
   .maintenance-dispatch-status,
   .inventory-checkout-status,
+  .walkthrough-capture-status,
   .payroll-prep-card label,
   .receipt-review-card label,
   .maintenance-dispatch-card label,
   .inventory-checkout-card label,
+  .walkthrough-capture-card label,
   .payroll-summary-grid article + article,
   .accounting-summary-grid article + article,
   .maintenance-summary-grid article + article,
-  .inventory-summary-grid article + article {
+  .inventory-summary-grid article + article,
+  .walkthrough-summary-grid article + article {
     margin-top: 10px;
   }
 }
