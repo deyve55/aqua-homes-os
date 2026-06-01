@@ -933,7 +933,8 @@ h1 {
 
 .payroll-prep-panel,
 .receipt-review-panel,
-.maintenance-dispatch-panel {
+.maintenance-dispatch-panel,
+.inventory-checkout-panel {
   margin-top: 16px;
   padding: 16px;
   border: 1px solid rgba(247, 200, 67, 0.22);
@@ -943,7 +944,8 @@ h1 {
 
 .payroll-prep-header,
 .receipt-review-header,
-.maintenance-dispatch-header {
+.maintenance-dispatch-header,
+.inventory-checkout-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -953,14 +955,16 @@ h1 {
 
 .payroll-prep-header h4,
 .receipt-review-header h4,
-.maintenance-dispatch-header h4 {
+.maintenance-dispatch-header h4,
+.inventory-checkout-header h4 {
   margin: 0;
   font-size: 1rem;
 }
 
 .payroll-lock-status,
 .receipt-feed-status,
-.maintenance-dispatch-status {
+.maintenance-dispatch-status,
+.inventory-checkout-status {
   flex: none;
   padding: 7px 10px;
   border: 1px solid rgba(247, 200, 67, 0.34);
@@ -973,7 +977,8 @@ h1 {
 
 .payroll-summary-grid,
 .accounting-summary-grid,
-.maintenance-summary-grid {
+.maintenance-summary-grid,
+.inventory-summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
@@ -984,9 +989,14 @@ h1 {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
+.inventory-summary-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 .payroll-summary-grid article,
 .accounting-summary-grid article,
-.maintenance-summary-grid article {
+.maintenance-summary-grid article,
+.inventory-summary-grid article {
   min-height: 92px;
   padding: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1000,6 +1010,8 @@ h1 {
 .accounting-summary-grid span,
 .maintenance-summary-grid strong,
 .maintenance-summary-grid span,
+.inventory-summary-grid strong,
+.inventory-summary-grid span,
 .payroll-prep-card strong,
 .payroll-prep-card span,
 .payroll-prep-card label span,
@@ -1008,13 +1020,17 @@ h1 {
 .receipt-review-card label span,
 .maintenance-dispatch-card strong,
 .maintenance-dispatch-card span,
-.maintenance-dispatch-card label span {
+.maintenance-dispatch-card label span,
+.inventory-checkout-card strong,
+.inventory-checkout-card span,
+.inventory-checkout-card label span {
   display: block;
 }
 
 .payroll-summary-grid strong,
 .accounting-summary-grid strong,
-.maintenance-summary-grid strong {
+.maintenance-summary-grid strong,
+.inventory-summary-grid strong {
   margin-bottom: 8px;
   color: var(--gold);
   font-size: 1.3rem;
@@ -1024,12 +1040,15 @@ h1 {
 .payroll-summary-grid span,
 .accounting-summary-grid span,
 .maintenance-summary-grid span,
+.inventory-summary-grid span,
 .payroll-prep-card span,
 .payroll-prep-empty,
 .receipt-review-card span,
 .receipt-review-empty,
 .maintenance-dispatch-card span,
-.maintenance-dispatch-empty {
+.maintenance-dispatch-empty,
+.inventory-checkout-card span,
+.inventory-checkout-empty {
   color: var(--muted);
   font-size: 0.84rem;
   line-height: 1.45;
@@ -1037,14 +1056,16 @@ h1 {
 
 .payroll-prep-list,
 .receipt-review-list,
-.maintenance-dispatch-list {
+.maintenance-dispatch-list,
+.inventory-checkout-list {
   display: grid;
   gap: 10px;
 }
 
 .payroll-prep-card,
 .receipt-review-card,
-.maintenance-dispatch-card {
+.maintenance-dispatch-card,
+.inventory-checkout-card {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1057,14 +1078,16 @@ h1 {
 
 .payroll-prep-card strong,
 .receipt-review-card strong,
-.maintenance-dispatch-card strong {
+.maintenance-dispatch-card strong,
+.inventory-checkout-card strong {
   margin-bottom: 4px;
   font-size: 0.95rem;
 }
 
 .payroll-prep-card label,
 .receipt-review-card label,
-.maintenance-dispatch-card label {
+.maintenance-dispatch-card label,
+.inventory-checkout-card label {
   flex: 0 0 180px;
   display: grid;
   gap: 6px;
@@ -1077,7 +1100,8 @@ h1 {
 
 .payroll-prep-card select,
 .receipt-review-card select,
-.maintenance-dispatch-card select {
+.maintenance-dispatch-card select,
+.inventory-checkout-card select {
   width: 100%;
   border: 1px solid var(--panel-border);
   border-radius: 14px;
@@ -1089,7 +1113,8 @@ h1 {
 
 .payroll-prep-card select:focus-visible,
 .receipt-review-card select:focus-visible,
-.maintenance-dispatch-card select:focus-visible {
+.maintenance-dispatch-card select:focus-visible,
+.inventory-checkout-card select:focus-visible {
   border-color: rgba(247, 200, 67, 0.7);
   outline: 2px solid rgba(247, 200, 67, 0.34);
   outline-offset: 2px;
@@ -1098,12 +1123,15 @@ h1 {
 .payroll-prep-empty,
 .receipt-review-empty,
 .maintenance-dispatch-card span,
-.maintenance-dispatch-empty {
+.maintenance-dispatch-empty,
+.inventory-checkout-card span,
+.inventory-checkout-empty {
   margin: 0;
 }
 
 .payroll-lock-note,
-.maintenance-dispatch-note {
+.maintenance-dispatch-note,
+.inventory-lock-note {
   margin: 0 0 12px;
   padding: 12px 14px;
   border: 1px solid rgba(247, 200, 67, 0.22);
@@ -1119,24 +1147,30 @@ h1 {
   .payroll-prep-header,
   .receipt-review-header,
   .maintenance-dispatch-header,
+  .inventory-checkout-header,
   .payroll-summary-grid,
   .accounting-summary-grid,
   .maintenance-summary-grid,
+  .inventory-summary-grid,
   .payroll-prep-card,
   .receipt-review-card,
-  .maintenance-dispatch-card {
+  .maintenance-dispatch-card,
+  .inventory-checkout-card {
     display: block;
   }
 
   .payroll-lock-status,
   .receipt-feed-status,
   .maintenance-dispatch-status,
+  .inventory-checkout-status,
   .payroll-prep-card label,
   .receipt-review-card label,
   .maintenance-dispatch-card label,
+  .inventory-checkout-card label,
   .payroll-summary-grid article + article,
   .accounting-summary-grid article + article,
-  .maintenance-summary-grid article + article {
+  .maintenance-summary-grid article + article,
+  .inventory-summary-grid article + article {
     margin-top: 10px;
   }
 }

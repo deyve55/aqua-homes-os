@@ -5,6 +5,7 @@ const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
 const MAX_RECENT_ACTIVITY = 10;
 const RECEIPT_REVIEW_STATUSES = ["Needs Review", "Coded", "Accounting Hold"];
 const PAYROLL_PREP_STATUSES = ["Draft", "Office Review", "Approved Hold"];
+const INVENTORY_TOOL_STATUSES = ["Available", "Checked Out", "Assigned to Job", "Lost / Damaged", "Needs Review"];
 const MAINTENANCE_PRIORITIES = ["Low", "Normal", "Urgent"];
 const MAINTENANCE_TRADES = ["Maintenance", "HVAC", "Plumbing", "Electrical", "Carpentry"];
 const MAINTENANCE_DISPATCH_STATUSES = [
@@ -119,7 +120,15 @@ const demoDefaults = {
       name: "Laser Level",
       tag: "AH-204",
       holder: "Mia",
+      project: "Canal House Retrofit",
       status: "Checked Out",
+    },
+    {
+      name: "Submersible Pump",
+      tag: "QR-AH-118",
+      holder: "Truck 2",
+      project: "Dock Repair Hold",
+      status: "Available",
     },
   ],
   bugCapture: [
@@ -240,18 +249,19 @@ const demoModules = {
   },
   inventoryTools: {
     storageKey: "inventoryTools",
-    eyebrow: "Demo tool tracker",
+    eyebrow: "Inventory / Tool Checkout",
     submitLabel: "Save Tool / Item",
     fields: [
-      { name: "name", label: "Tool / item name", placeholder: "Hammer Drill", required: true },
-      { name: "tag", label: "Tag", placeholder: "AH-312", required: true },
-      { name: "holder", label: "Holder", placeholder: "Jordan", required: true },
-      { name: "status", label: "Checkout status", placeholder: "Checked Out", required: true },
+      { name: "name", label: "Item / tool name", placeholder: "Hammer Drill", required: true },
+      { name: "tag", label: "Tag / QR code", placeholder: "AH-312", required: true },
+      { name: "holder", label: "Holder / worker / truck", placeholder: "Jordan or Truck 2", required: true },
+      { name: "project", label: "Project", placeholder: "Canal House Retrofit", required: true },
+      { name: "status", label: "Status", options: INVENTORY_TOOL_STATUSES, required: true },
     ],
     empty: "No demo tools or inventory yet.",
     format: (item) => ({
       title: item.name,
-      meta: `${item.tag} · ${item.holder} · ${item.status}`,
+      meta: `${item.tag} · ${item.holder} · ${item.project || "Unassigned project"} · ${getInventoryToolStatus(item)}`,
     }),
   },
   bugCapture: {
@@ -358,6 +368,16 @@ function normalizeMaintenanceRequest(request) {
   };
 }
 
+function normalizeInventoryToolItem(item) {
+  return {
+    name: String(item?.name ?? item?.toolName ?? item?.itemName ?? "Inventory item").trim() || "Inventory item",
+    tag: String(item?.tag ?? item?.qrCode ?? item?.code ?? "").trim(),
+    holder: String(item?.holder ?? item?.worker ?? item?.truck ?? "").trim(),
+    project: String(item?.project ?? item?.job ?? "").trim(),
+    status: getInventoryToolStatus(item),
+  };
+}
+
 function normalizeDemoData(value) {
   const source = value?.demoData && typeof value.demoData === "object" ? value.demoData : value;
   const defaults = cloneDemoDefaults();
@@ -370,7 +390,15 @@ function normalizeDemoData(value) {
     Object.keys(defaults).map((key) => {
       const items = Array.isArray(source[key]) ? source[key] : defaults[key];
 
-      return [key, key === "maintenancePlusHvac" ? items.map(normalizeMaintenanceRequest) : items];
+      if (key === "maintenancePlusHvac") {
+        return [key, items.map(normalizeMaintenanceRequest)];
+      }
+
+      if (key === "inventoryTools") {
+        return [key, items.map(normalizeInventoryToolItem)];
+      }
+
+      return [key, items];
     }),
   );
 }
@@ -437,6 +465,12 @@ function getPayrollStatus(record) {
   return PAYROLL_PREP_STATUSES.includes(status) ? status : PAYROLL_PREP_STATUSES[0];
 }
 
+function getInventoryToolStatus(item) {
+  const status = String(item?.status ?? "").trim();
+
+  return INVENTORY_TOOL_STATUSES.includes(status) ? status : INVENTORY_TOOL_STATUSES[0];
+}
+
 function getLaborCost(record) {
   return (Number(record?.hours) || 0) * (Number(record?.rate) || 0);
 }
@@ -496,6 +530,16 @@ function getReceiptAccountingSummary(receipts = demoData.receipts ?? []) {
     needsReview: receipts.filter((receipt) => getReceiptStatus(receipt) === "Needs Review").length,
     coded: receipts.filter((receipt) => getReceiptStatus(receipt) === "Coded").length,
     accountingHold: receipts.filter((receipt) => getReceiptStatus(receipt) === "Accounting Hold").length,
+  };
+}
+
+function getInventoryToolSummary(items = demoData.inventoryTools ?? []) {
+  return {
+    total: items.length,
+    available: items.filter((item) => getInventoryToolStatus(item) === "Available").length,
+    checkedOut: items.filter((item) => getInventoryToolStatus(item) === "Checked Out").length,
+    assignedToJob: items.filter((item) => getInventoryToolStatus(item) === "Assigned to Job").length,
+    lostDamaged: items.filter((item) => getInventoryToolStatus(item) === "Lost / Damaged").length,
   };
 }
 
@@ -587,6 +631,22 @@ function addReceiptStatusActivity(receipt, previousStatus, nextStatus) {
       module: "Receipts",
       title: receipt.vendor || "Receipt status",
       meta: `Status changed from ${previousStatus} to ${nextStatus} · ${receipt.project || "Unassigned project"} · ${formatCurrency(receipt.amount)}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function addInventoryToolStatusActivity(item, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-inventory-status`,
+      module: "Inventory / Tools",
+      title: item.name || "Inventory item",
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${item.tag || "No tag"} · ${item.holder || "No holder"} · ${item.project || "Unassigned project"}`,
       createdAt: new Date().toISOString(),
     },
     ...recentActivity,
@@ -1014,6 +1074,100 @@ function updateMaintenanceStatus(index, nextStatus) {
   renderDemoModule("maintenance-plus-hvac");
 }
 
+function renderInventoryToolCheckoutPanel(items) {
+  const summary = getInventoryToolSummary(items);
+  const summaryGrid = `
+    <div class="inventory-summary-grid" aria-label="Inventory summary">
+      <article><strong>${summary.total}</strong><span>Total items</span></article>
+      <article><strong>${summary.available}</strong><span>Available items</span></article>
+      <article><strong>${summary.checkedOut}</strong><span>Checked out items</span></article>
+      <article><strong>${summary.assignedToJob}</strong><span>Assigned-to-job items</span></article>
+      <article><strong>${summary.lostDamaged}</strong><span>Lost/damaged items</span></article>
+    </div>
+  `;
+
+  if (!items.length) {
+    return `
+      <section class="inventory-checkout-panel" aria-label="Inventory and tool checkout panel">
+        <div class="inventory-checkout-header">
+          <div>
+            <p class="eyebrow">Inventory / Tool Checkout</p>
+            <h4>Inventory Summary</h4>
+          </div>
+          <span class="inventory-checkout-status">Local demo checkout</span>
+        </div>
+        <p class="inventory-lock-note">Live scanner hardware, GPS, purchasing sync, and accounting impact are locked until backend/security gates are complete.</p>
+        ${summaryGrid}
+        <p class="inventory-checkout-empty">No saved inventory/tool demo records yet.</p>
+      </section>
+    `;
+  }
+
+  const itemRows = items
+    .map((item, index) => {
+      const currentStatus = getInventoryToolStatus(item);
+      const statusOptions = INVENTORY_TOOL_STATUSES
+        .map(
+          (status) =>
+            `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+        )
+        .join("");
+
+      return `
+        <article class="inventory-checkout-card">
+          <div>
+            <strong>${escapeHtml(item.name || "Inventory item")}</strong>
+            <span>${escapeHtml(item.tag || "No tag / QR code")}</span>
+            <span>${escapeHtml(item.holder || "No holder / worker / truck")}</span>
+            <span>${escapeHtml(item.project || "Unassigned project")}</span>
+          </div>
+          <label>
+            <span>Status</span>
+            <select data-inventory-status-index="${index}" aria-label="Inventory status for ${escapeHtml(item.name || "inventory item")}">
+              ${statusOptions}
+            </select>
+          </label>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="inventory-checkout-panel" aria-label="Inventory and tool checkout panel">
+      <div class="inventory-checkout-header">
+        <div>
+          <p class="eyebrow">Inventory / Tool Checkout</p>
+          <h4>Inventory Summary</h4>
+        </div>
+        <span class="inventory-checkout-status">Local demo checkout</span>
+      </div>
+      <p class="inventory-lock-note">Live scanner hardware, GPS, purchasing sync, and accounting impact are locked until backend/security gates are complete.</p>
+      ${summaryGrid}
+      <div class="inventory-checkout-list">${itemRows}</div>
+    </section>
+  `;
+}
+
+function updateInventoryToolStatus(index, nextStatus) {
+  const item = demoData.inventoryTools?.[index];
+
+  if (!item || !INVENTORY_TOOL_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getInventoryToolStatus(item);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  item.status = nextStatus;
+  saveDemoData();
+  addInventoryToolStatusActivity(item, previousStatus, nextStatus);
+  renderModules();
+  renderDemoModule("inventory-tools");
+}
+
 function renderPayrollPrepPanel(records) {
   const summary = getPayrollPrepSummary(records);
   const summaryGrid = `
@@ -1113,6 +1267,7 @@ function renderDemoList(moduleId) {
   const receiptReviewSlot = detailDemo.querySelector("[data-receipt-review]");
   const payrollPrepSlot = detailDemo.querySelector("[data-payroll-prep]");
   const maintenanceDispatchSlot = detailDemo.querySelector("[data-maintenance-dispatch]");
+  const inventoryCheckoutSlot = detailDemo.querySelector("[data-inventory-checkout]");
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
@@ -1127,6 +1282,9 @@ function renderDemoList(moduleId) {
     }
     if (maintenanceDispatchSlot) {
       maintenanceDispatchSlot.innerHTML = renderMaintenanceDispatchPanel(items);
+    }
+    if (inventoryCheckoutSlot) {
+      inventoryCheckoutSlot.innerHTML = renderInventoryToolCheckoutPanel(items);
     }
     return;
   }
@@ -1188,6 +1346,15 @@ function renderDemoList(moduleId) {
     maintenanceDispatchSlot.querySelectorAll("[data-maintenance-status-index]").forEach((select) => {
       select.addEventListener("change", () =>
         updateMaintenanceStatus(Number(select.dataset.maintenanceStatusIndex), select.value),
+      );
+    });
+  }
+
+  if (inventoryCheckoutSlot) {
+    inventoryCheckoutSlot.innerHTML = renderInventoryToolCheckoutPanel(items);
+    inventoryCheckoutSlot.querySelectorAll("[data-inventory-status-index]").forEach((select) => {
+      select.addEventListener("change", () =>
+        updateInventoryToolStatus(Number(select.dataset.inventoryStatusIndex), select.value),
       );
     });
   }
@@ -1255,6 +1422,7 @@ function renderDemoModule(moduleId) {
     ${moduleId === "receipts" ? '<div data-receipt-review></div>' : ""}
     ${moduleId === "payroll-prep" ? '<div data-payroll-prep></div>' : ""}
     ${moduleId === "maintenance-plus-hvac" ? '<div data-maintenance-dispatch></div>' : ""}
+    ${moduleId === "inventory-tools" ? '<div data-inventory-checkout></div>' : ""}
   `;
 
   detailDemo.querySelector("[data-demo-form]").addEventListener("submit", (event) => {
