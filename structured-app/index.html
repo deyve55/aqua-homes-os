@@ -68,6 +68,21 @@
           <ul class="activity-list" data-activity-list aria-live="polite"></ul>
         </section>
 
+        <section class="admin-settings-panel" data-admin-module-control aria-labelledby="admin-module-control-title">
+          <div class="admin-settings-header">
+            <div>
+              <p class="eyebrow">Admin Settings</p>
+              <h2 id="admin-module-control-title">Module Control</h2>
+            </div>
+            <button type="button" class="ghost-button" data-reset-module-settings>Reset module settings</button>
+          </div>
+          <p class="admin-settings-note">
+            Admin configuration is local prototype-only. Real role permissions, user accounts, MFA, audit logs,
+            and backend feature flags are locked until backend/security gates are complete.
+          </p>
+          <div class="admin-module-grid" data-admin-module-list aria-label="Demo module visibility and status controls"></div>
+        </section>
+
         <section class="card-grid" data-module-grid aria-label="Main Brain dashboard cards"></section>
 
         <section class="safety-gates" aria-labelledby="safety-gates-title">

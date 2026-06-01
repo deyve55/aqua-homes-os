@@ -1,10 +1,17 @@
 const LAST_OPENED_MODULE_KEY = "aquaHomes.lastOpenedModule";
 const DEMO_DATA_KEY = "aquaHomes.structuredDemoData";
 const RECENT_ACTIVITY_KEY = "aquaHomes.structuredRecentActivity";
+const MODULE_SETTINGS_KEY = "aquaHomes.structuredModuleSettings";
 const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
 const INVESTOR_VISIBILITY_KEY = "aquaHomes.aquabonaInvestorVisibility";
 const ACCOUNTING_REVIEW_KEY = "aquaHomes.accountingReview";
 const MAX_RECENT_ACTIVITY = 10;
+const MODULE_STATUSES = ["active", "hidden", "locked"];
+const MODULE_STATUS_LABELS = {
+  active: "Active",
+  hidden: "Hidden",
+  locked: "Locked",
+};
 const RECEIPT_REVIEW_STATUSES = ["Needs Review", "Coded", "Accounting Hold"];
 const PAYROLL_PREP_STATUSES = ["Draft", "Office Review", "Approved Hold"];
 const INVENTORY_TOOL_STATUSES = [
@@ -1125,6 +1132,8 @@ const aiInsightsUpdated = document.querySelector("[data-ai-insights-updated]");
 const activityList = document.querySelector("[data-activity-list]");
 const clearActivity = document.querySelector("[data-clear-activity]");
 const cardGrid = document.querySelector("[data-module-grid]");
+const adminModuleList = document.querySelector("[data-admin-module-list]");
+const resetModuleSettings = document.querySelector("[data-reset-module-settings]");
 const detailPanel = document.querySelector("[data-module-detail]");
 const detailTitle = document.querySelector("[data-module-title]");
 const detailDescription = document.querySelector("[data-module-description]");
@@ -1141,6 +1150,7 @@ let demoData = loadDemoData();
 let recentActivity = loadRecentActivity();
 let investorVisibility = loadInvestorVisibility();
 let accountingReview = loadAccountingReview();
+let moduleSettings = loadModuleSettings();
 let activeModule = null;
 let selectedProjectName = readLocalStorage(SELECTED_PROJECT_KEY);
 
@@ -2434,6 +2444,164 @@ const getLastOpenedModule = () => readLocalStorage(LAST_OPENED_MODULE_KEY);
 
 const getModuleById = (moduleId) =>
   modules.find((module) => getModuleId(module.name) === moduleId);
+
+function getDefaultModuleSettings() {
+  return quickAccessLinks.reduce((settings, link) => {
+    settings[link.moduleId] = "active";
+    return settings;
+  }, {});
+}
+
+function normalizeModuleSettings(value) {
+  const defaults = getDefaultModuleSettings();
+
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return defaults;
+  }
+
+  return Object.fromEntries(
+    Object.entries(defaults).map(([moduleId, defaultStatus]) => {
+      const nextStatus = String(value[moduleId] ?? defaultStatus).toLowerCase();
+      return [
+        moduleId,
+        MODULE_STATUSES.includes(nextStatus) ? nextStatus : defaultStatus,
+      ];
+    }),
+  );
+}
+
+function loadModuleSettings() {
+  const storedSettings = readLocalStorage(MODULE_SETTINGS_KEY);
+
+  if (!storedSettings) {
+    return getDefaultModuleSettings();
+  }
+
+  try {
+    return normalizeModuleSettings(JSON.parse(storedSettings));
+  } catch (error) {
+    return getDefaultModuleSettings();
+  }
+}
+
+function saveModuleSettings() {
+  writeLocalStorage(MODULE_SETTINGS_KEY, JSON.stringify(moduleSettings));
+}
+
+function getModuleStatus(moduleId) {
+  return moduleSettings[moduleId] ?? "active";
+}
+
+function getModuleControlLabel(moduleId) {
+  const quickAccessLink = quickAccessLinks.find((link) => link.moduleId === moduleId);
+  return quickAccessLink?.label ?? getModuleById(moduleId)?.name ?? moduleId;
+}
+
+function getModuleStatusLabel(status) {
+  return MODULE_STATUS_LABELS[status] ?? MODULE_STATUS_LABELS.active;
+}
+
+function addModuleSettingsActivity(moduleLabel, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-module-settings`,
+      module: "Admin Settings / Module Control",
+      title: moduleLabel,
+      meta: `Module setting changed from ${getModuleStatusLabel(previousStatus)} to ${getModuleStatusLabel(nextStatus)} · local prototype-only`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function updateModuleSetting(moduleId, nextStatus) {
+  const previousStatus = getModuleStatus(moduleId);
+
+  if (previousStatus === nextStatus || !MODULE_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  moduleSettings = { ...moduleSettings, [moduleId]: nextStatus };
+  saveModuleSettings();
+  addModuleSettingsActivity(getModuleControlLabel(moduleId), previousStatus, nextStatus);
+
+  if (activeModule && getModuleId(activeModule.name) === moduleId && nextStatus !== "active") {
+    closeModuleDetail();
+  }
+
+  renderAdminModuleControl();
+  renderQuickAccess();
+  renderModules();
+}
+
+function resetAllModuleSettings() {
+  moduleSettings = getDefaultModuleSettings();
+  saveModuleSettings();
+  recentActivity = [
+    {
+      id: `${Date.now()}-module-settings-reset`,
+      module: "Admin Settings / Module Control",
+      title: "Module settings reset",
+      meta: "All module cards returned to Active defaults · local prototype-only",
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+  saveRecentActivity();
+  renderRecentActivity();
+
+  renderAdminModuleControl();
+  renderQuickAccess();
+  renderModules();
+}
+
+function renderAdminModuleControl() {
+  if (!adminModuleList) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  quickAccessLinks.forEach((link) => {
+    const module = getModuleById(link.moduleId);
+
+    if (!module) {
+      return;
+    }
+
+    const status = getModuleStatus(link.moduleId);
+    const row = document.createElement("article");
+    row.className = `admin-module-card ${status}`;
+    row.innerHTML = `
+      <div>
+        <span class="module-state-badge">${escapeHtml(getModuleStatusLabel(status))}</span>
+        <h3>${escapeHtml(link.label)}</h3>
+        <p>${escapeHtml(module.description)}</p>
+      </div>
+      <label>
+        <span>Module card state</span>
+        <select data-module-setting="${escapeHtml(link.moduleId)}">
+          ${MODULE_STATUSES.map(
+            (option) =>
+              `<option value="${option}" ${option === status ? "selected" : ""}>${getModuleStatusLabel(option)}</option>`,
+          ).join("")}
+        </select>
+      </label>
+    `;
+
+    row
+      .querySelector("select")
+      .addEventListener("change", (event) =>
+        updateModuleSetting(link.moduleId, event.currentTarget.value),
+      );
+    fragment.appendChild(row);
+  });
+
+  adminModuleList.replaceChildren(fragment);
+}
 
 function renderLastOpenedModule() {
   const lastOpenedModule = getModuleById(getLastOpenedModule());
@@ -4309,6 +4477,10 @@ function renderDemoModule(moduleId) {
 const openModuleDetail = (module, options = {}) => {
   const moduleId = getModuleId(module.name);
 
+  if (getModuleStatus(moduleId) !== "active") {
+    return;
+  }
+
   activeModule = module;
   detailTitle.textContent = module.name;
   detailDescription.textContent = module.description;
@@ -4338,7 +4510,9 @@ function renderQuickAccess() {
   quickAccessLinks.forEach((link) => {
     const module = getModuleById(link.moduleId);
 
-    if (!module) {
+    const status = getModuleStatus(link.moduleId);
+
+    if (!module || status === "hidden") {
       return;
     }
 
@@ -4346,11 +4520,19 @@ function renderQuickAccess() {
     button.type = "button";
     button.className = "quick-access-button";
     button.dataset.moduleId = link.moduleId;
-    button.textContent = link.label;
-    button.setAttribute("aria-label", `Open ${link.label}`);
-    button.addEventListener("click", () =>
-      openModuleDetail(module, { scrollIntoView: true }),
+    button.textContent = status === "locked" ? `${link.label} · Locked` : link.label;
+    button.disabled = status === "locked";
+    button.setAttribute(
+      "aria-label",
+      status === "locked" ? `${link.label} module is locked` : `Open ${link.label}`,
     );
+    if (status === "locked") {
+      button.classList.add("locked");
+    } else {
+      button.addEventListener("click", () =>
+        openModuleDetail(module, { scrollIntoView: true }),
+      );
+    }
     fragment.appendChild(button);
   });
 
@@ -4370,19 +4552,34 @@ const renderModules = () => {
 
   modules.forEach((module, index) => {
     const moduleId = getModuleId(module.name);
+    const moduleStatus = getModuleStatus(moduleId);
+
+    if (moduleStatus === "hidden") {
+      return;
+    }
+
     const demoCount = getDemoCount(moduleId);
     const card = document.createElement("button");
     card.type = "button";
-    card.className = "brain-card";
+    card.className = `brain-card ${moduleStatus}`;
     card.dataset.moduleId = moduleId;
-    card.setAttribute("aria-label", `Open ${module.name} module`);
+    card.disabled = moduleStatus === "locked";
+    card.setAttribute(
+      "aria-label",
+      moduleStatus === "locked"
+        ? `${module.name} module is locked by admin settings`
+        : `Open ${module.name} module`,
+    );
     card.innerHTML = `
       <span class="card-icon">${String(index + 1).padStart(2, "0")}</span>
       <span class="card-title">${module.name}</span>
       <span class="card-copy">${module.description}</span>
+      ${moduleStatus === "locked" ? '<span class="card-count locked-count">Locked by admin demo</span>' : ""}
       ${demoCount ? `<span class="card-count">${demoCount} demo saved</span>` : ""}
     `;
-    card.addEventListener("click", () => openModuleDetail(module));
+    if (moduleStatus !== "locked") {
+      card.addEventListener("click", () => openModuleDetail(module));
+    }
     fragment.appendChild(card);
   });
 
@@ -4414,6 +4611,7 @@ backupResetDemoData.addEventListener("click", resetAllDemoData);
 resetDemoData.addEventListener("click", resetAllDemoData);
 clearActivity.addEventListener("click", clearRecentActivity);
 refreshInsights.addEventListener("click", refreshAiInsights);
+resetModuleSettings.addEventListener("click", resetAllModuleSettings);
 
 window.addEventListener("storage", (event) => {
   if (event.key === DEMO_DATA_KEY) {
@@ -4444,12 +4642,23 @@ window.addEventListener("storage", (event) => {
     renderRecentActivity();
   }
 
+  if (event.key === MODULE_SETTINGS_KEY) {
+    moduleSettings = loadModuleSettings();
+    if (activeModule && getModuleStatus(getModuleId(activeModule.name)) !== "active") {
+      closeModuleDetail();
+    }
+    renderAdminModuleControl();
+    renderQuickAccess();
+    renderModules();
+  }
+
   if (event.key === LAST_OPENED_MODULE_KEY) {
     renderLastOpenedModule();
   }
 });
 
 renderRecentActivity();
+renderAdminModuleControl();
 renderQuickAccess();
 renderModules();
 
@@ -4457,6 +4666,6 @@ const lastOpenedModule = modules.find(
   (module) => getModuleId(module.name) === getLastOpenedModule(),
 );
 
-if (lastOpenedModule) {
+if (lastOpenedModule && getModuleStatus(getModuleId(lastOpenedModule.name)) === "active") {
   openModuleDetail(lastOpenedModule);
 }
