@@ -2597,3 +2597,78 @@ h1 {
     margin-top: 12px;
   }
 }
+
+/* Lightweight Samsung DeX / desktop pass: keep mobile-first defaults above. */
+@media (min-width: 900px) {
+  .app-shell {
+    width: min(100%, 1120px);
+    padding-inline: 28px;
+    padding-bottom: 112px;
+  }
+
+  .hero {
+    background: linear-gradient(
+      160deg,
+      rgba(12, 30, 51, 0.96),
+      rgba(2, 5, 11, 0.92)
+    );
+  }
+
+  .approved-gold-bar {
+    max-width: 880px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .quick-access-panel,
+  .ai-insights-panel,
+  .activity-panel,
+  .admin-settings-panel,
+  .launch-control-panel,
+  .phone-trial-panel,
+  .safety-gates,
+  .module-detail {
+    max-width: 1040px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 18px;
+  }
+
+  .brain-card {
+    min-height: 200px;
+  }
+
+  .bottom-nav {
+    right: 28px;
+    left: 28px;
+    width: min(calc(100% - 56px), 640px);
+  }
+}
+
+@media (min-width: 1180px) {
+  .app-shell {
+    width: min(100%, 1280px);
+    padding-inline: 36px;
+  }
+
+  .dashboard-summary {
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .quick-access-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .quick-access-button {
+    width: 100%;
+  }
+}
