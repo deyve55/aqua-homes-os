@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="application-name" content="Aqua Homes OS" />
+    <meta name="theme-color" content="#06111f" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Aqua Homes OS" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Aqua Homes AI Construction OS — Structured Starter</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero" aria-label="Aqua Homes header placeholder">
+        <p class="eyebrow">Aqua Homes</p>
+        <h1>AI Construction OS</h1>
+        <p class="hero-copy">
+          Lightweight structured starter shell beside the locked v51 design reference.
+        </p>
+      </header>
+
+      <div class="approved-gold-bar" aria-hidden="true"></div>
+
+      <main>
+        <section class="dashboard-header" aria-labelledby="main-brain-title">
+          <div>
+            <p class="eyebrow">Main Brain</p>
+            <h2 id="main-brain-title">Command Dashboard</h2>
+          </div>
+          <span class="status-pill">Starter Shell</span>
+        </section>
+
+        <section class="quick-access-panel" aria-labelledby="quick-access-title">
+          <div class="quick-access-header">
+            <div>
+              <p class="eyebrow">Quick Access</p>
+              <h2 id="quick-access-title">Module Navigation</h2>
+            </div>
+            <p class="last-opened-module" data-last-opened-module aria-live="polite">
+              Last opened module: None yet
+            </p>
+          </div>
+          <div class="quick-access-grid" data-quick-access aria-label="Module shortcuts"></div>
+        </section>
+
+        <section class="dashboard-summary" data-dashboard-summary aria-label="Saved demo data summary"></section>
+
+        <section class="ai-insights-panel" aria-labelledby="ai-insights-title">
+          <div class="ai-insights-header">
+            <div>
+              <p class="eyebrow">AI Assistant</p>
+              <h2 id="ai-insights-title">Main Brain Insights</h2>
+            </div>
+            <button type="button" class="ghost-button" data-refresh-insights>Refresh insights</button>
+          </div>
+          <ul class="ai-insights-list" data-ai-insights aria-live="polite"></ul>
+          <p class="ai-insights-note">
+            Demo insights only — live AI/backend connection locked until backend/security gates are complete.
+          </p>
+          <p class="ai-insights-updated" data-ai-insights-updated aria-live="polite"></p>
+        </section>
+
+        <section class="launch-control-panel" aria-labelledby="launch-control-title">
+          <div class="launch-control-header">
+            <div>
+              <p class="eyebrow">Launch Control</p>
+              <h2 id="launch-control-title">Trial Readiness</h2>
+            </div>
+            <span class="status-pill launch-control-status">Local Trial Only</span>
+          </div>
+          <p class="launch-control-note">
+            Trial readiness does not activate live payments, payroll, banking, GPS, accounting sync,
+            customer-sensitive storage, or ledger posting.
+          </p>
+          <div
+            class="launch-readiness-list"
+            data-launch-readiness-list
+            aria-label="Launch Control trial readiness checklist"
+          ></div>
+        </section>
+
+        <section class="phone-trial-panel" aria-labelledby="phone-trial-title">
+          <div class="phone-trial-header">
+            <div>
+              <p class="eyebrow">Phone Trial</p>
+              <h2 id="phone-trial-title">Install Readiness</h2>
+            </div>
+            <span class="status-pill phone-trial-status">PWA Shell</span>
+          </div>
+          <p class="phone-trial-copy">
+            This is a local structured prototype shell that can later be hosted and installed as
+            a phone web app. Backend, auth, payments, payroll, GPS, customer-sensitive storage,
+            and accounting sync remain locked until production security and provider gates are complete.
+          </p>
+        </section>
+
+        <section class="activity-panel" aria-labelledby="activity-title">
+          <div class="activity-header">
+            <div>
+              <p class="eyebrow">Audit Trail</p>
+              <h2 id="activity-title">Recent Activity</h2>
+            </div>
+            <button type="button" class="ghost-button" data-clear-activity>Clear activity</button>
+          </div>
+          <ul class="activity-list" data-activity-list aria-live="polite"></ul>
+        </section>
+
+        <section class="admin-settings-panel" data-admin-module-control aria-labelledby="admin-module-control-title">
+          <div class="admin-settings-header">
+            <div>
+              <p class="eyebrow">Admin Settings</p>
+              <h2 id="admin-module-control-title">Module Control</h2>
+            </div>
+            <button type="button" class="ghost-button" data-reset-module-settings>Reset module settings</button>
+          </div>
+          <p class="admin-settings-note">
+            Admin configuration is local prototype-only. Real role permissions, user accounts, MFA, audit logs,
+            and backend feature flags are locked until backend/security gates are complete.
+          </p>
+          <div class="admin-module-grid" data-admin-module-list aria-label="Demo module visibility and status controls"></div>
+        </section>
+
+        <section class="card-grid" data-module-grid aria-label="Main Brain dashboard cards"></section>
+
+        <section class="safety-gates" aria-labelledby="safety-gates-title">
+          <div class="safety-gates-header">
+            <div>
+              <p class="eyebrow">Safety Gates</p>
+              <h2 id="safety-gates-title">Live Risk Controls</h2>
+            </div>
+            <span class="status-pill safety-status">Locked for Launch</span>
+          </div>
+          <p class="safety-intro">
+            High-risk operational features are visible for planning, but stay locked until Aqua Homes
+            approves the required live controls.
+          </p>
+          <div class="risk-control-grid" aria-label="Locked live risk controls">
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Payments</h3>
+              <p>Disabled until payment provider review, approval, and secure settlement workflows are in place.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Payroll processing</h3>
+              <p>Locked until payroll authorization, tax handling, and verified role permissions are complete.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Banking / ACH / wire / card processing</h3>
+              <p>Requires banking partner approval, transaction controls, and reconciliation before activation.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>GPS tracking</h3>
+              <p>Off until location consent, access rules, retention limits, and field policies are approved.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Accounting sync</h3>
+              <p>Held until chart mapping, review queues, and sync error protections are validated.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Tenant-sensitive storage</h3>
+              <p>Unavailable until encryption, access logging, retention, and privacy review are complete.</p>
+            </article>
+            <article class="risk-control-card">
+              <span class="lock-badge">Locked</span>
+              <h3>Ledger / P&amp;L posting</h3>
+              <p>Blocked until owner-approved posting rules and office reconciliation checks are active.</p>
+            </article>
+          </div>
+          <p class="owner-admin-note">
+            Owner/Admin note: live activation requires backend security, auth/MFA, encryption, audit logs,
+            provider approval, office reconciliation, and owner approval.
+          </p>
+        </section>
+
+        <aside class="module-detail" data-module-detail aria-live="polite" hidden>
+          <div class="module-copy">
+            <p class="eyebrow">Module Detail</p>
+            <h3 data-module-title>Projects</h3>
+            <p data-module-description>Track active builds, milestones, and next actions.</p>
+            <section class="backup-panel" aria-label="Demo data backup controls">
+              <div class="backup-panel-header">
+                <div>
+                  <p class="eyebrow">Demo data backup</p>
+                  <h4>Export / Import</h4>
+                </div>
+                <p class="backup-status" data-backup-status aria-live="polite">Ready for demo data backups.</p>
+              </div>
+              <label class="backup-json-label" for="demo-backup-json">Pasted or exported JSON</label>
+              <textarea
+                id="demo-backup-json"
+                class="backup-json"
+                data-backup-json
+                rows="5"
+                spellcheck="false"
+                placeholder="Export fills this box. Paste JSON here to import demo data."
+              ></textarea>
+              <div class="backup-actions">
+                <button type="button" class="ghost-button" data-export-demo>Export JSON</button>
+                <button type="button" class="ghost-button" data-import-demo>Import JSON</button>
+                <button type="button" class="ghost-button" data-backup-reset>Reset demo data</button>
+              </div>
+            </section>
+            <div class="module-demo" data-module-demo hidden></div>
+          </div>
+          <div class="module-actions">
+            <button type="button" class="ghost-button" data-reset-demo>Reset demo data</button>
+            <button type="button" data-module-close aria-label="Close module detail">Close</button>
+          </div>
+        </aside>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Bottom navigation placeholder">
+        <button type="button" data-section="home" class="active">Home</button>
+        <button type="button" data-section="brain">Brain</button>
+        <button type="button" data-section="projects">Projects</button>
+        <button type="button" data-section="settings">Settings</button>
+      </nav>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
