@@ -1522,6 +1522,99 @@ body{
     0 0 22px rgba(255,171,31,.46) !important;
 }
 
+
+/* v54J GLOBAL MOBILE SUB-MODULE POLISH ONLY
+   Shared modal/table/action readability pass. Header, logo, glow divider, hero, cards, quick modules, and bottom nav remain untouched. */
+.modal .btn:not(.primary):not(.gold):not(.danger){
+  background:#12253f;
+  color:#f4f8ff;
+  border:1px solid rgba(92,151,255,.26);
+}
+.modal .btn{
+  min-height:38px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+  overflow-wrap:normal;
+  word-break:normal;
+  hyphens:none;
+}
+.modal .btn.primary{color:#fff;}
+.modal .btn.gold{background:rgba(243,167,45,.18)!important;color:#ffe2a3!important;border-color:rgba(243,167,45,.34)!important;}
+.modal .btn.danger{background:rgba(116,24,31,.92)!important;color:#ffe6e3!important;border-color:rgba(255,107,87,.38)!important;}
+.modal .actions{align-items:stretch;}
+.modal .table{table-layout:auto;}
+.modal .table th,
+.modal .table td{
+  vertical-align:top;
+  line-height:1.28;
+  white-space:normal;
+  overflow-wrap:break-word;
+  word-break:normal;
+  hyphens:none;
+}
+.modal .table strong,
+.modal .smallMut,
+.modal .note,
+.modal .locked{
+  overflow-wrap:break-word;
+  word-break:normal;
+  hyphens:none;
+}
+.modal .pill{
+  min-height:26px;
+  line-height:1.18;
+  white-space:normal!important;
+  overflow-wrap:normal;
+  word-break:normal;
+  hyphens:none;
+  text-align:left;
+}
+@media (max-width:560px){
+  .modalBack{align-items:flex-start;padding:10px;}
+  .modal{max-height:calc(100dvh - 20px);padding:14px;border-radius:16px;}
+  .modal .actions{display:grid;grid-template-columns:1fr;gap:8px;}
+  .modal .actions .btn{width:100%;min-height:42px;padding:10px 12px;font-size:12px;line-height:1.18;}
+  .modal .table{display:block;width:100%;font-size:12.5px;margin-top:12px;border-collapse:separate;}
+  .modal .table tbody{display:block;width:100%;}
+  .modal .table tr:first-child{display:none;}
+  .modal .table tr{
+    display:block;
+    width:100%;
+    margin:10px 0;
+    padding:10px 11px;
+    border:1px solid rgba(49,114,236,.22);
+    border-radius:14px;
+    background:linear-gradient(180deg,rgba(10,25,42,.88),rgba(6,17,29,.94));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+  }
+  .modal .table td{
+    display:block;
+    width:100%;
+    padding:7px 0;
+    border-bottom:1px solid rgba(255,255,255,.065);
+  }
+  .modal .table td:last-child{border-bottom:none;padding-bottom:0;}
+  .modal .table td[data-label]:not([data-label=""])::before{
+    content:attr(data-label);
+    display:block;
+    margin-bottom:3px;
+    color:#8fb4e8;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    line-height:1.1;
+  }
+  .modal .rowActions{display:grid;grid-template-columns:1fr;gap:8px;width:100%;}
+  .modal .rowActions .btn{width:100%;min-height:42px;padding:10px 12px;font-size:12px;line-height:1.18;}
+  .modal .pill{max-width:100%;}
+}
+
 </style>
 </head>
 <body>
@@ -1762,9 +1855,23 @@ function refreshDashboard(){
 const back = document.getElementById('modalBack');
 const modal = document.getElementById('modal');
 function header(title, note){ return `<button class="close" onclick="closeModal()">×</button><h3>${title}</h3>${note?`<div class="note">${note}</div>`:''}`; }
+function enhanceModalTables(){
+  modal.querySelectorAll('table.table').forEach(table=>{
+    const rows=[...table.querySelectorAll('tr')];
+    if(rows.length<2) return;
+    const labels=[...rows[0].children].map(cell=>cell.textContent.trim());
+    rows.slice(1).forEach(row=>{
+      [...row.children].forEach((cell,index)=>{
+        if(cell.colSpan && cell.colSpan>1) return;
+        cell.setAttribute('data-label', labels[index] || '');
+      });
+    });
+  });
+}
 function openModal(key){
   const render = renderers[key] || (()=> header('Coming Soon','This v53 shell is ready for the next functional pass.'));
   modal.innerHTML = render();
+  enhanceModalTables();
   back.style.display='flex';
 }
 function closeModal(){ back.style.display='none'; }
