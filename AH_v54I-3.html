@@ -1705,6 +1705,12 @@ body{
         </div>
       </div>
 
+      <div class="card" onclick="openModal('companies')">
+        <div class="label">Company Ecosystem</div>
+        <div style="display:flex;justify-content:space-between;align-items:end"><div><div class="big">7</div><div class="sub g">Parent Command</div></div><div><div class="big">3</div><div class="sub">Owner Review</div></div></div>
+        <div class="progress"><i></i></div>
+      </div>
+
       <div class="card activity" onclick="openModal('activity')">
         <div class="label">Recent Activity</div>
         <div class="item"><div>🟨</div><div><div>Daily Log submitted by John D.</div><div class="smallMut">Harborview Residence</div></div><div style="margin-left:auto" class="smallMut">2m ago</div></div>
@@ -1721,6 +1727,7 @@ body{
           <div class="mod" onclick="openModal('maintenance')"><div class="badgeN">16</div><div class="ico">🛠️</div><div class="txt">Maint.</div></div>
           <div class="mod" onclick="openModal('inventory')"><div class="badgeN">8</div><div class="ico">📦</div><div class="txt">Inventory</div></div>
           <div class="mod" onclick="openModal('walkthrough')"><div class="badgeN">1</div><div class="ico">📸</div><div class="txt">Field Walk</div></div>
+          <div class="mod" onclick="openModal('companies')"><div class="badgeN">3</div><div class="ico">🏢</div><div class="txt">Companies</div></div>
           <div class="mod" onclick="openModal('aquabona')"><div class="ico">💧</div><div class="txt">Aquabona</div></div>
           <div class="mod" onclick="openModal('bugs')"><div class="ico">🐞</div><div class="txt">QA Log</div></div>
         </div>
@@ -1741,8 +1748,27 @@ body{
 <div class="modalBack" id="modalBack"><div class="modal" id="modal"></div></div>
 <script>
 const STORAGE_KEY = 'aquaHomesOS_v54b_top_restored_module_fit_state';
-const VERSION = 'v54B TOP RESTORED MODULE FIT';
+const VERSION = 'v57 MULTI-COMPANY COMMAND CENTER + PROJECT FOLDERS';
 const TODAY = new Date().toISOString().slice(0,10);
+const PROJECT_FOLDER_TYPES = ['Scope of Work','Estimates / Proposals','Change Orders','Contracts','Customer Approvals','Receipts','Materials / Purchase Orders','Photos / Proof','Field Walkthrough Captures','Permits','Inspections','Insurance Documents','Code Compliance','Safety / Quality Reports','Punch List','Closeout','Warranty','Investor-Safe Packet','Customer-Safe Packet','Internal Notes','Audit Log / Source Proof'];
+const PROJECT_FOLDER_DEMOS = [
+  {project:'Harborview Residence', company:'Aqua Homes Carpentry'},
+  {project:'Oceanfront Condo', company:'Aqua Homes Painting'},
+  {project:'25 Melbrook Street', company:'Aqua Homes Parent'}
+];
+function demoProjectFolders(){
+  return PROJECT_FOLDER_DEMOS.flatMap((demo, projectIndex)=>PROJECT_FOLDER_TYPES.map((folderType, typeIndex)=>({
+    id:`pf${projectIndex+1}_${typeIndex+1}`,
+    project:demo.project,
+    company:demo.company,
+    folderType,
+    status:typeIndex % 5 === 0 ? 'Owner Review' : typeIndex % 4 === 0 ? 'Needs Update' : typeIndex % 3 === 0 ? 'Ready' : 'Open',
+    visibility:folderType.includes('Investor') ? 'Investor-Safe' : folderType.includes('Customer') || folderType==='Photos / Proof' ? 'Customer-Safe' : typeIndex % 5 === 0 ? 'Owner Review' : 'Internal',
+    notes:`Demo ${folderType.toLowerCase()} folder foundation for ${demo.project}. Future links: SOW Builder, Code Compliance, Photo Proof / Jobsite Media, Evidence Binder, Receipt Tracker, Accounting Command Center, Aquabona Investor Portal, Customer Portal, AI Brain Command Hub.`,
+    dateStatus:TODAY,
+    ownerReviewStatus:typeIndex % 5 === 0 ? 'Needs Owner Review' : 'Not Required'
+  })));
+}
 
 const defaultData = {
   projects:[
@@ -1750,6 +1776,16 @@ const defaultData = {
     {id:'p2', name:'Oceanfront Condo', status:'Approvals Pending', progress:54, budget:502250, investor:'Aqua Homes', scope:'Interior renovation, change orders, permits, customer approvals'},
     {id:'p3', name:'25 Melbrook Street', status:'Investor Tagged', progress:31, budget:314000, investor:'Aquabona', scope:'Flip scope, SOW, photos, receipts, permits, inspections, investor proof'}
   ],
+  companies:[
+    {id:'co_parent', name:'Aqua Homes Parent', healthScore:94, ownership:100, openProjects:8, revenue:2458750, expenses:1196400, profit:1262350, receiptsReview:4, payrollHold:2, insuranceStatus:'Active / Owner Verified', workersCompExposure:'Medium - audit watch', bankReconciliation:'Needs Review', complianceIssues:1, ownerReviewStatus:'Review Today', reviewedAt:''},
+    {id:'co_carpentry', name:'Aqua Homes Carpentry', healthScore:88, ownership:100, openProjects:6, revenue:742000, expenses:421500, profit:320500, receiptsReview:3, payrollHold:1, insuranceStatus:'Active', workersCompExposure:'Medium', bankReconciliation:'Balanced', complianceIssues:0, ownerReviewStatus:'Monitor', reviewedAt:''},
+    {id:'co_painting', name:'Aqua Homes Painting', healthScore:83, ownership:100, openProjects:4, revenue:318500, expenses:172200, profit:146300, receiptsReview:2, payrollHold:1, insuranceStatus:'Active', workersCompExposure:'Low', bankReconciliation:'Needs Receipt Match', complianceIssues:1, ownerReviewStatus:'Needs Owner Review', reviewedAt:''},
+    {id:'co_hvac', name:'Aqua Homes HVAC + Maintenance', healthScore:79, ownership:100, openProjects:9, revenue:286400, expenses:206800, profit:79600, receiptsReview:5, payrollHold:2, insuranceStatus:'Active - renewal watch', workersCompExposure:'Medium', bankReconciliation:'Open Items', complianceIssues:2, ownerReviewStatus:'Needs Owner Review', reviewedAt:''},
+    {id:'co_plumbing', name:'Aqua Homes Plumbing', healthScore:86, ownership:100, openProjects:3, revenue:224750, expenses:131900, profit:92850, receiptsReview:1, payrollHold:0, insuranceStatus:'Active', workersCompExposure:'Low', bankReconciliation:'Balanced', complianceIssues:0, ownerReviewStatus:'Clear', reviewedAt:''},
+    {id:'co_electrical', name:'Aqua Homes Electrical', healthScore:81, ownership:100, openProjects:5, revenue:364250, expenses:214700, profit:149550, receiptsReview:2, payrollHold:1, insuranceStatus:'Active - certificate review', workersCompExposure:'Medium', bankReconciliation:'Needs Review', complianceIssues:1, ownerReviewStatus:'Needs Owner Review', reviewedAt:''},
+    {id:'co_woodworking', name:'Aqua Homes Woodworking', healthScore:90, ownership:100, openProjects:4, revenue:196900, expenses:104600, profit:92300, receiptsReview:1, payrollHold:0, insuranceStatus:'Active', workersCompExposure:'Low', bankReconciliation:'Balanced', complianceIssues:0, ownerReviewStatus:'Clear', reviewedAt:''}
+  ],
+  projectFolders: demoProjectFolders(),
   receipts:[
     {id:'r1', vendor:'Home Supply', amount:418.22, project:'Harborview Residence', category:'Materials', coded:false, date:TODAY},
     {id:'r2', vendor:'HVAC Parts Direct', amount:96.40, project:'Maintenance + HVAC', category:'HVAC', coded:false, date:TODAY},
@@ -1801,7 +1837,7 @@ function loadData(){
 }
 let db = loadData();
 function saveDB(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); refreshDashboard(); }
-function resetDemo(){ if(confirm('Reset v53 phone-test data to the locked default set?')){ db=clone(defaultData); saveDB(); openModal('more'); toast('Demo data reset'); } }
+function resetDemo(){ if(confirm('Reset v57 phone-test data to the locked default set?')){ db=clone(defaultData); saveDB(); openModal('more'); toast('Demo data reset'); } }
 function esc(v){ return String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
 function money(v){ return '$' + Number(v||0).toLocaleString(undefined,{maximumFractionDigits:0}); }
 function money2(v){ return '$' + Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -1817,6 +1853,27 @@ function laborCost(){ return db.payroll.reduce((s,p)=>s+(Number(p.hours)||0)*(Nu
 function materialCost(){ return db.receipts.reduce((s,r)=>s+(Number(r.amount)||0),0); }
 function projectRevenue(){ return db.projects.reduce((s,p)=>s+(Number(p.budget)||0),0); }
 function pnl(){ return projectRevenue() - laborCost() - materialCost(); }
+function companyRollup(){
+  const companies=db.companies||[];
+  return {
+    revenue:companies.reduce((s,c)=>s+Number(c.revenue||0),0),
+    expenses:companies.reduce((s,c)=>s+Number(c.expenses||0),0),
+    profit:companies.reduce((s,c)=>s+Number(c.profit||0),0),
+    openProjects:companies.reduce((s,c)=>s+Number(c.openProjects||0),0),
+    riskAlerts:companies.reduce((s,c)=>s+Number(c.complianceIssues||0)+Number(c.receiptsReview||0)+Number(c.payrollHold||0)+(String(c.bankReconciliation||'').includes('Needs')?1:0),0),
+    ownerReview:companies.filter(c=>String(c.ownerReviewStatus||'').includes('Review') || Number(c.complianceIssues||0)>0 || String(c.bankReconciliation||'').includes('Needs')).length
+  };
+}
+function projectFolderCount(project){ return (db.projectFolders||[]).filter(f=>f.project===project).length; }
+function folderReviewCount(){ return (db.projectFolders||[]).filter(f=>f.ownerReviewStatus==='Needs Owner Review' || f.status==='Owner Review').length; }
+function folderCompanyOptions(){ return [...new Set([...(db.companies||[]).map(c=>c.name),'Aqua Homes Parent'])]; }
+function seedProjectFolders(project, company){
+  const existing=new Set((db.projectFolders||[]).filter(f=>f.project===project).map(f=>f.folderType));
+  PROJECT_FOLDER_TYPES.forEach(folderType=>{
+    if(existing.has(folderType)) return;
+    db.projectFolders.push({id:uid('pf'),project,company:company||'Aqua Homes Parent',folderType,status:'Open',visibility:folderType.includes('Investor')?'Investor-Safe':folderType.includes('Customer')?'Customer-Safe':'Internal',notes:'Structured project folder foundation created from Project module.',dateStatus:TODAY,ownerReviewStatus:'Not Required'});
+  });
+}
 function setCardValue(labelText, value, subText){
   const root = document.querySelector('.content'); if(!root) return;
   [...root.querySelectorAll('.label')].forEach(label=>{
@@ -1835,6 +1892,7 @@ function setQuickBadge(name, count){
   });
 }
 function refreshDashboard(){
+  const rollup=companyRollup();
   setCardValue('Total Revenue (MTD)', money(projectRevenue()), 'Live phone-test data');
   setCardValue('Active Projects', String(db.projects.length), db.projects.filter(p=>p.status!=='Complete').length + ' Live');
   setCardValue('Approvals', String(db.approvals.filter(a=>a.status==='Pending').length), 'Pending');
@@ -1843,12 +1901,14 @@ function refreshDashboard(){
   setCardValue('Accounting Review', String(accountingCount()), 'In Queue');
   setCardValue('Maintenance Requests', String(maintenanceOpen()), 'Open');
   setCardValue('Daily P&L', money(pnl()), 'Phone-test calculated');
+  setCardValue('Company Ecosystem', String((db.companies||[]).length), rollup.ownerReview + ' Owner Review');
   setQuickBadge('Receipts', totalReceiptPending());
   setQuickBadge('Payroll', payrollReviewCount());
   setQuickBadge('Accounting', accountingCount());
   setQuickBadge('Maintenance', maintenanceOpen());
   setQuickBadge('Inventory', db.inventory.filter(i=>i.status!=='Available').length);
   setQuickBadge('Walkthrough', walkthroughCount());
+  setQuickBadge('Companies', rollup.ownerReview);
   setQuickBadge('QA Log', db.bugs.length);
 }
 
@@ -1881,6 +1941,7 @@ function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg
 const renderers = {
   ai: renderAI,
   revenue: renderRevenue,
+  companies: renderCompanies,
   projects: renderProjects,
   approvals: renderApprovals,
   receipts: renderReceipts,
@@ -1921,22 +1982,42 @@ function renderRevenue(){
  return header('Total Revenue (MTD)', 'Calculated from saved project budgets in this phone-test prototype.') + `<div class="miniCards"><div class="miniCard"><strong>${money(projectRevenue())}</strong><span>Project revenue</span></div><div class="miniCard"><strong>${money(pnl())}</strong><span>Estimated P&L after costs</span></div></div><table class="table"><tr><th>Project</th><th>Owner/Investor</th><th>Budget</th></tr>${rows}</table><div class="actions"><button class="btn primary small" onclick="downloadJSON()">Export</button></div>`;
 }
 
+function renderCompanies(){
+ const rollup=companyRollup();
+ const cards=(db.companies||[]).map(c=>`<div class="miniCard" onclick="reviewCompany('${c.id}')" style="cursor:pointer"><strong>${esc(c.name)}</strong><span>Health ${Number(c.healthScore||0)} • ${Number(c.ownership||0)}% owned</span><span>${Number(c.openProjects||0)} open projects • ${money(c.revenue)} revenue</span><span>${money(c.expenses)} expenses • ${money(c.profit)} est. profit</span><span>${Number(c.receiptsReview||0)} receipts review • ${Number(c.payrollHold||0)} labor hold</span><span>Insurance: ${esc(c.insuranceStatus)}</span><span>Workers’ comp: ${esc(c.workersCompExposure)}</span><span>Bank rec: ${esc(c.bankReconciliation)}</span><span>Compliance: ${Number(c.complianceIssues||0)} issue(s)</span><span>Owner review: ${esc(c.ownerReviewStatus||'Clear')}${c.reviewedAt?' • '+esc(c.reviewedAt):''}</span></div>`).join('');
+ const rows=(db.companies||[]).map(c=>`<tr><td><strong>${esc(c.name)}</strong><div class="smallMut">${Number(c.ownership||0)}% ownership • Health ${Number(c.healthScore||0)}</div></td><td>${money(c.revenue)}<div class="smallMut">Expenses ${money(c.expenses)} • Profit ${money(c.profit)}</div></td><td>${Number(c.openProjects||0)} projects<div class="smallMut">${Number(c.receiptsReview||0)} receipts • ${Number(c.payrollHold||0)} payroll holds</div></td><td><span class="pill ${String(c.ownerReviewStatus||'').includes('Review')?'gold':'green'}">${esc(c.ownerReviewStatus||'Clear')}</span></td><td><button class="btn primary small" onclick="reviewCompany('${c.id}')">Review</button></td></tr>`).join('');
+ return header('Multi-Company Command Center', 'This is the parent-company command view. The parent Main Brain sees all companies. Future satellite/division apps will only see their permitted company data.') + `<div class="miniCards"><div class="miniCard"><strong>${money(rollup.revenue)}</strong><span>Total ecosystem revenue</span></div><div class="miniCard"><strong>${money(rollup.expenses)}</strong><span>Total ecosystem expenses</span></div><div class="miniCard"><strong>${money(rollup.profit)}</strong><span>Total estimated profit</span></div><div class="miniCard"><strong>${rollup.openProjects}</strong><span>Total open projects</span></div><div class="miniCard"><strong>${rollup.riskAlerts}</strong><span>Total risk alerts</span></div><div class="miniCard"><strong>${rollup.ownerReview}</strong><span>Companies needing owner review</span></div></div><div class="moduleDivider"></div><div class="miniCards">${cards}</div><div class="locked">LOCKED: Live banking, payroll, GPS, customer-sensitive storage, accounting sync, insurance audits, workers’ comp calculations, and tax reporting remain locked until backend/security/provider/owner approval gates are complete.</div><div class="note">Foundation links only: SOW Builder, Code Compliance, Photo Proof / Jobsite Media, Evidence Binder, Receipt Tracker, Accounting Command Center, Aquabona Investor Portal, Customer Portal, and AI Brain Command Hub.</div><table class="table"><tr><th>Company</th><th>Financials</th><th>Ops Holds</th><th>Owner</th><th>Action</th></tr>${rows}</table>`;
+}
+function reviewCompany(id){ const c=(db.companies||[]).find(x=>x.id===id); if(!c) return; c.ownerReviewStatus='Reviewed'; c.reviewedAt=TODAY; addActivity('🏢','Company status reviewed: '+c.name,c.name); saveDB(); openModal('companies'); toast('Company status reviewed'); }
+
 function renderProjects(){
- const rows=db.projects.map(p=>`<tr><td><strong>${esc(p.name)}</strong><div class="smallMut">${esc(p.scope)}</div></td><td>${esc(p.status)}<div class="smallMut">${p.progress}%</div></td><td>${money(p.budget)}</td><td><div class="rowActions"><button class="btn small" onclick="advanceProject('${p.id}')">Advance</button><button class="btn danger small" onclick="deleteItem('projects','${p.id}','projects')">Delete</button></div></td></tr>`).join('');
- return header('Active Projects', 'Real project rows with add/delete/progress actions. Saved to localStorage for phone prototype testing.') + `
+ const rows=db.projects.map(p=>`<tr><td><strong>${esc(p.name)}</strong><div class="smallMut">${esc(p.scope)}</div><div class="smallMut">${projectFolderCount(p.name)} structured folders</div></td><td>${esc(p.status)}<div class="smallMut">${p.progress}%</div></td><td>${money(p.budget)}</td><td><div class="rowActions"><button class="btn small" onclick="advanceProject('${p.id}')">Advance</button><button class="btn danger small" onclick="deleteItem('projects','${p.id}','projects')">Delete</button></div></td></tr>`).join('');
+ const folderRows=(db.projectFolders||[]).map(f=>`<tr><td><strong>${esc(f.project)}</strong><div class="smallMut">${esc(f.company)} • ${esc(f.folderType)}</div></td><td><span class="pill ${f.status==='Ready'?'green':f.status==='Owner Review'?'gold':''}">${esc(f.status)}</span><div class="smallMut">${esc(f.dateStatus||'')}</div></td><td>${esc(f.visibility)}<div class="smallMut">${esc(f.ownerReviewStatus)}</div></td><td>${esc(f.notes)}</td><td><div class="rowActions"><button class="btn small" onclick="setFolderStatus('${f.id}','Ready')">Ready</button><button class="btn small gold" onclick="setFolderStatus('${f.id}','Owner Review')">Review</button><button class="btn danger small" onclick="deleteItem('projectFolders','${f.id}','projects')">Delete</button></div></td></tr>`).join('') || '<tr><td colspan="5">No project folder records yet.</td></tr>';
+ return header('Active Projects', 'Real project rows with add/delete/progress actions plus v57 Project Folders saved to localStorage for phone prototype testing.') + `
  <div class="split2"><div class="field"><label>Project name</label><input id="projectName" placeholder="Example: 42 Main Street" /></div><div class="field"><label>Investor / Owner</label><input id="projectInvestor" placeholder="Aqua Homes or Aquabona" /></div></div>
  <div class="split2"><div class="field"><label>Status</label><select id="projectStatus"><option>On Schedule</option><option>Approvals Pending</option><option>Investor Tagged</option><option>Complete</option></select></div><div class="field"><label>Budget</label><input id="projectBudget" type="number" placeholder="250000" /></div></div>
  <div class="field"><label>Scope / SOW</label><textarea id="projectScope" placeholder="Scope of work, permits, inspections, document folder notes"></textarea></div>
  <div class="actions"><button class="btn primary small" onclick="saveProject()">Add Project</button><button class="btn small gold" onclick="openModal('fieldapps')">Field Update</button></div>
- <table class="table"><tr><th>Project</th><th>Status</th><th>Budget</th><th>Actions</th></tr>${rows}</table>`;
+ <table class="table"><tr><th>Project</th><th>Status</th><th>Budget</th><th>Actions</th></tr>${rows}</table>
+ <div class="moduleDivider"></div><h3 style="font-size:18px;margin:0 0 8px">Project Folders Foundation</h3><div class="note">Structured folders connect conceptually to future SOW Builder, Code Compliance, Photo Proof / Jobsite Media, Evidence Binder, Receipt Tracker, Accounting Command Center, Aquabona Investor Portal, Customer Portal, and AI Brain Command Hub modules.</div>
+ <div class="miniCards"><div class="miniCard"><strong>${(db.projectFolders||[]).length}</strong><span>Folder records</span></div><div class="miniCard"><strong>${folderReviewCount()}</strong><span>Owner review items</span></div></div>
+ <div class="split2"><div class="field"><label>Project</label><select id="folderProject">${db.projects.map(p=>`<option>${esc(p.name)}</option>`).join('')}</select></div><div class="field"><label>Company</label><select id="folderCompany">${folderCompanyOptions().map(c=>`<option>${esc(c)}</option>`).join('')}</select></div></div>
+ <div class="split2"><div class="field"><label>Folder Type</label><select id="folderType">${PROJECT_FOLDER_TYPES.map(t=>`<option>${esc(t)}</option>`).join('')}</select></div><div class="field"><label>Visibility</label><select id="folderVisibility"><option>Internal</option><option>Customer-Safe</option><option>Investor-Safe</option><option>Owner Review</option></select></div></div>
+ <div class="split2"><div class="field"><label>Status</label><select id="folderStatus"><option>Open</option><option>Needs Update</option><option>Ready</option><option>Owner Review</option><option>Closed</option></select></div><div class="field"><label>Owner Review Status</label><select id="folderOwnerReview"><option>Not Required</option><option>Needs Owner Review</option><option>Reviewed</option></select></div></div>
+ <div class="field"><label>Notes</label><textarea id="folderNotes" placeholder="Folder notes, source proof, portal visibility, or audit trail details"></textarea></div>
+ <div class="actions"><button class="btn primary small" onclick="saveProjectFolder()">Add Folder Item</button></div>
+ <table class="table"><tr><th>Folder</th><th>Status</th><th>Visibility</th><th>Notes</th><th>Actions</th></tr>${folderRows}</table>`;
 }
 function saveProject(){
  const name=document.getElementById('projectName').value.trim(); if(!name) return toast('Add project name');
  const investor=document.getElementById('projectInvestor').value.trim() || 'Aqua Homes';
  db.projects.push({id:uid('p'), name, status:document.getElementById('projectStatus').value, progress:1, budget:Number(document.getElementById('projectBudget').value||0), investor, scope:document.getElementById('projectScope').value.trim()||'New project scope pending office review'});
- addActivity('🗂️','Project added',name); saveDB(); openModal('projects'); toast('Project saved');
+ seedProjectFolders(name, investor.includes('Aqua Homes')?investor:'Aqua Homes Parent');
+ addActivity('🗂️','Project added with structured folders',name); saveDB(); openModal('projects'); toast('Project saved');
 }
 function advanceProject(id){ const p=db.projects.find(x=>x.id===id); if(!p) return; p.progress=Math.min(100,Number(p.progress||0)+10); if(p.progress>=100) p.status='Complete'; addActivity('📈','Project progress advanced',p.name); saveDB(); openModal('projects'); }
+function saveProjectFolder(){ const project=document.getElementById('folderProject').value; const folderType=document.getElementById('folderType').value; const status=document.getElementById('folderStatus').value; const visibility=document.getElementById('folderVisibility').value; const ownerReviewStatus=document.getElementById('folderOwnerReview').value; db.projectFolders.push({id:uid('pf'),project,company:document.getElementById('folderCompany').value,folderType,status,visibility,notes:document.getElementById('folderNotes').value.trim()||'Folder item added for structured source proof and future portal-safe packets.',dateStatus:TODAY,ownerReviewStatus}); addActivity('🗂️','Project folder item added: '+folderType,project); saveDB(); openModal('projects'); toast('Project folder item saved'); }
+function setFolderStatus(id,status){ const f=(db.projectFolders||[]).find(x=>x.id===id); if(!f) return; f.status=status; f.dateStatus=TODAY; if(status==='Owner Review') f.ownerReviewStatus='Needs Owner Review'; if(status==='Ready' && f.ownerReviewStatus==='Needs Owner Review') f.ownerReviewStatus='Reviewed'; addActivity('📁','Folder status updated: '+f.folderType+' → '+status,f.project); saveDB(); openModal('projects'); toast('Folder status updated'); }
 
 function renderApprovals(){
  const rows=db.approvals.map(a=>`<tr><td><strong>${esc(a.item)}</strong><div class="smallMut">${esc(a.project)} • ${esc(a.type)}</div></td><td><span class="pill ${a.status==='Pending'?'gold':a.status==='Approved'?'green':''}">${esc(a.status)}</span></td><td><div class="rowActions"><button class="btn primary small" onclick="setStatus('approvals','${a.id}','Approved','approvals')">Approve</button><button class="btn small gold" onclick="setStatus('approvals','${a.id}','Accounting Review','approvals')">Accounting</button><button class="btn danger small" onclick="deleteItem('approvals','${a.id}','approvals')">Delete</button></div></td></tr>`).join('');
@@ -2064,10 +2145,10 @@ function renderActivity(){
 }
 
 function renderMore(){
- return header('More', 'Navigation, safety gates, export/import, and recovery controls for this v53 phone-test prototype.') + `<div class="actions"><button class="btn small" style="background:#12253f" onclick="openModal('projects')">Projects</button><button class="btn small" style="background:#12253f" onclick="openModal('receipts')">Receipts</button><button class="btn small" style="background:#12253f" onclick="openModal('payroll')">Payroll</button><button class="btn small" style="background:#12253f" onclick="openModal('accounting')">Accounting</button><button class="btn small" style="background:#12253f" onclick="openModal('maintenance')">Maintenance</button><button class="btn small" style="background:#12253f" onclick="openModal('inventory')">Inventory</button><button class="btn small" style="background:#12253f" onclick="openModal('walkthrough')">Walkthrough</button><button class="btn small" style="background:#12253f" onclick="openModal('aquabona')">Aquabona</button><button class="btn small" style="background:#12253f" onclick="openModal('bugs')">Bug Capture</button></div><div class="locked">Safety gates remain active: no live payments, no banking/ACH/wire/card processing, no live payroll, no GPS tracking, no sensitive tenant storage, no accounting sync, and no live ledger/P&L posting.</div><div class="actions"><button class="btn primary small" onclick="downloadJSON()">Export Data</button><button class="btn small gold" onclick="showImportBox()">Import Data</button><button class="btn danger small" onclick="resetDemo()">Reset Data</button></div><div id="importBox"></div><div class="moduleDivider"></div><div class="monoBox">${esc(JSON.stringify({version:VERSION, savedRecords:Object.fromEntries(Object.keys(db).map(k=>[k,Array.isArray(db[k])?db[k].length:'object']))},null,2))}</div>`;
+ return header('More', 'Navigation, safety gates, export/import, and recovery controls for this v57 phone-test prototype.') + `<div class="actions"><button class="btn small" style="background:#12253f" onclick="openModal('companies')">Companies</button><button class="btn small" style="background:#12253f" onclick="openModal('projects')">Projects</button><button class="btn small" style="background:#12253f" onclick="openModal('receipts')">Receipts</button><button class="btn small" style="background:#12253f" onclick="openModal('payroll')">Payroll</button><button class="btn small" style="background:#12253f" onclick="openModal('accounting')">Accounting</button><button class="btn small" style="background:#12253f" onclick="openModal('maintenance')">Maintenance</button><button class="btn small" style="background:#12253f" onclick="openModal('inventory')">Inventory</button><button class="btn small" style="background:#12253f" onclick="openModal('walkthrough')">Walkthrough</button><button class="btn small" style="background:#12253f" onclick="openModal('aquabona')">Aquabona</button><button class="btn small" style="background:#12253f" onclick="openModal('bugs')">Bug Capture</button></div><div class="locked">Safety gates remain active: no live payments, no banking/ACH/wire/card processing, no live payroll, no GPS tracking, no sensitive tenant storage, no accounting sync, and no live ledger/P&L posting.</div><div class="actions"><button class="btn primary small" onclick="downloadJSON()">Export Data</button><button class="btn small gold" onclick="showImportBox()">Import Data</button><button class="btn danger small" onclick="resetDemo()">Reset Data</button></div><div id="importBox"></div><div class="moduleDivider"></div><div class="monoBox">${esc(JSON.stringify({version:VERSION, savedRecords:Object.fromEntries(Object.keys(db).map(k=>[k,Array.isArray(db[k])?db[k].length:'object']))},null,2))}</div>`;
 }
 function showImportBox(){ document.getElementById('importBox').innerHTML = `<div class="field"><label>Paste exported JSON</label><textarea id="importJson" placeholder="Paste data exported from this prototype"></textarea></div><button class="btn primary small" onclick="importJSON()">Import</button>`; }
-function downloadJSON(){ const payload={version:VERSION, exportedAt:new Date().toISOString(), data:db}; const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='AquaHomesOS_v53_test_data.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); toast('Export downloaded'); }
+function downloadJSON(){ const payload={version:VERSION, exportedAt:new Date().toISOString(), data:db}; const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='AquaHomesOS_v57_test_data.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); toast('Export downloaded'); }
 function importJSON(){ try{ const raw=document.getElementById('importJson').value; const parsed=JSON.parse(raw); db=Object.assign(clone(defaultData), parsed.data || parsed); saveDB(); openModal('more'); toast('Data imported'); }catch(e){ toast('Import failed — invalid JSON'); } }
 
 function setStatus(collection,id,status,returnKey){ const row=db[collection].find(x=>x.id===id); if(row){ row.status=status; addActivity('☑️',`${collection} set to ${status}`,row.project||row.property||row.worker||'AquaBrain'); saveDB(); openModal(returnKey); } }
