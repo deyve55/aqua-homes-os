@@ -1565,6 +1565,17 @@ body{
   word-break:normal;
   hyphens:none;
 }
+/* v60D Project Folder Detail Drawer / Click-to-Open Fix — modal-only clickable folder rows; protected Home visuals untouched. */
+.modal .folderClickRow{cursor:pointer;}
+.modal .folderClickRow:hover{background:rgba(49,114,236,.08);}
+.modal .folderClickHint{color:#ffe2a3;font-weight:800;font-size:11px;letter-spacing:.02em;text-transform:uppercase;}
+.modal .folderDetailGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0;}
+.modal .folderDetailCard{border:1px solid rgba(49,114,236,.24);border-radius:14px;background:rgba(6,18,32,.72);padding:10px;}
+.modal .folderDetailCard b{display:block;color:#f4f8ff;font-size:12px;margin-bottom:4px;}
+.modal .folderDetailCard span{display:block;color:#b7c8dc;font-size:12px;line-height:1.28;}
+.modal .folderLockedActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0;}
+.modal .folderLockedActions .btn{pointer-events:none;opacity:.74;}
+@media (max-width:560px){.modal .folderDetailGrid,.modal .folderLockedActions{grid-template-columns:1fr;}}
 .modal .pill{
   min-height:26px;
   line-height:1.18;
@@ -1752,6 +1763,7 @@ const STORAGE_KEY = 'aquaHomesOS_v54b_top_restored_module_fit_state';
 const COMPANY_COMMAND_KEY_V60A = 'aquaCompanyCommandV60A';
 const PROJECT_FOLDERS_KEY_V60B = 'aquaProjectFoldersV60B';
 const COMPLIANCE_KEY_V60C = 'aquaComplianceV60C';
+const PROJECT_FOLDER_DETAIL_KEY_V60D = 'aquaProjectFolderDetailV60D';
 const VERSION = 'v58 WALKTHROUGH-DRIVEN SOW BUILDER FOUNDATION';
 const TODAY = new Date().toISOString().slice(0,10);
 const PROJECT_FOLDER_TYPES = ['Scope of Work','Estimates / Proposals','Change Orders','Contracts','Customer Approvals','Receipts','Materials / Purchase Orders','Photos / Proof','Field Walkthrough Captures','Permits','Inspections','Insurance Documents','Code Compliance','Safety / Quality Reports','Punch List','Closeout','Warranty','Investor-Safe Packet','Customer-Safe Packet','Internal Notes','Audit Log / Source Proof'];
@@ -2038,6 +2050,7 @@ const renderers = {
   brainhub: renderBrainHub,
   companycommand: renderCompanyCommandV60A,
   projectfoldersv60b: renderProjectFoldersV60B,
+  projectfolderdetailv60d: renderProjectFolderDetailV60D,
   compliancev60c: renderComplianceV60C,
   addinfo: renderAddInfo,
   activity: renderActivity,
@@ -2135,7 +2148,7 @@ function loadProjectFoldersV60B(){
 function renderProjectFoldersV60B(){
   const folders=loadProjectFoldersV60B();
   const selected=folders[0] || {project:'Demo Project', company:'Aqua Homes Parent'};
-  const rows=folders.map(f=>`<tr><td><strong>${esc(f.folderName)}</strong><div class="smallMut">${esc(f.project)} • ${esc(f.company)}</div></td><td><span class="pill ${f.status==='Ready'?'green':f.status==='Needs Review'?'gold':''}">${esc(f.status)}</span><div class="smallMut">${Number(f.itemCount||0)} item(s)</div></td><td>${esc(f.safeViewFlag)}<div class="smallMut">${f.ownerApprovalRequired?'Owner Approval Required':'Owner Review Clear'}</div></td></tr>`).join('');
+  const rows=folders.map(f=>`<tr class="folderClickRow" onclick="openProjectFolderDetailV60D('${f.id}','projectfoldersv60b')" tabindex="0" role="button" aria-label="Open ${esc(f.folderName)} detail"><td><strong>${esc(f.folderName)}</strong><div class="smallMut">${esc(f.project)} • ${esc(f.company)}</div><div class="folderClickHint">Tap for detail</div></td><td><span class="pill ${f.status==='Ready'?'green':f.status==='Needs Review'?'gold':''}">${esc(f.status)}</span><div class="smallMut">${Number(f.itemCount||0)} item(s)</div></td><td>${esc(f.safeViewFlag)}<div class="smallMut">${f.ownerApprovalRequired?'Owner Approval Required':'Owner Review Clear'}</div></td></tr>`).join('');
   return header('v60B Project Folders', `Compact local-only folder foundation for ${esc(selected.project)}. No live file storage, uploads, customer sharing, investor sharing, or accounting export.`) + `
   <div class="locked">Demo Data Only • Backend Locked • Customer Sharing Locked • Investor Sharing Locked • Owner Approval Required</div>
   <div class="miniCards"><div class="miniCard"><strong>${folders.length}</strong><span>Required folders render</span></div><div class="miniCard"><strong>${folders.filter(f=>f.status==='Needs Review').length}</strong><span>Needs Review</span></div><div class="miniCard"><strong>${folders.filter(f=>f.status==='Missing').length}</strong><span>Missing placeholders</span></div><div class="miniCard"><strong>${folders.filter(f=>f.status==='Locked').length}</strong><span>Locked actions</span></div></div>
@@ -2143,6 +2156,92 @@ function renderProjectFoldersV60B(){
   <table class="table"><tr><th>Folder</th><th>Status / Count</th><th>Safe View</th></tr>${rows}</table>
   <div class="note">v60B localStorage seed/read key: ${esc(PROJECT_FOLDERS_KEY_V60B)}. Placeholder data only. Live upload/share/export flags remain false.</div>`;
 }
+function normalizeProjectFolderDetailV60D(folder){
+  const folderType=folder.folderName || folder.folderType || 'Project Folder';
+  const status=folder.status==='Open' ? 'Ready' : folder.status==='Needs Update' ? 'Needs Review' : folder.status==='Owner Review' ? 'Needs Review' : (folder.status || 'Ready');
+  return {
+    id:folder.id,
+    folderName:folderType,
+    project:folder.project || 'Demo Project',
+    company:folder.company || 'Aqua Homes Parent',
+    status,
+    itemCount:Number(folder.itemCount ?? 0),
+    safeViewFlag:folder.safeViewFlag || folder.visibility || 'Internal Only',
+    ownerApprovalStatus:folder.ownerReviewStatus || (folder.ownerApprovalRequired ? 'Owner Approval Required' : 'Owner Review Required'),
+    notes:folder.notes || `Demo ${folderType.toLowerCase()} detail placeholder.`,
+    backendLocked:true,
+    sharingLocked:true,
+    uploadsLocked:true,
+    exportLocked:true,
+    demoOnly:true
+  };
+}
+function allProjectFoldersForDetailV60D(){
+  return [...(db.projectFolders||[]).map(normalizeProjectFolderDetailV60D), ...loadProjectFoldersV60B().map(normalizeProjectFolderDetailV60D)];
+}
+function saveProjectFolderDetailStateV60D(folder, source){
+  const prior=JSON.parse(localStorage.getItem(PROJECT_FOLDER_DETAIL_KEY_V60D) || '{}');
+  localStorage.setItem(PROJECT_FOLDER_DETAIL_KEY_V60D, JSON.stringify(Object.assign({}, prior, {selectedFolderId:folder.id, selectedFolderName:folder.folderName, selectedProject:folder.project, source:source || 'projects', openedAt:TODAY, demoOnly:true})));
+}
+function openProjectFolderDetailV60D(id, source){
+  const folder=allProjectFoldersForDetailV60D().find(f=>f.id===id);
+  if(!folder) return toast('Folder detail unavailable');
+  saveProjectFolderDetailStateV60D(folder, source);
+  openModal('projectfolderdetailv60d');
+}
+function folderSpecialDetailV60D(folder){
+  const type=folder.folderName;
+  const linked=loadComplianceV60C().filter(item=>item.linkedFolder===type || item.project===folder.project).slice(0,2);
+  let fields=[];
+  if(type==='Permits') fields=[['Permit Requirement','Demo permit requirement placeholder'],['Jurisdiction / Town / City', linked[0]?.jurisdiction || 'Demo Town / City'],['Filing Status','Locked'],['Owner Review Required','Yes']];
+  else if(type==='Inspections') fields=[['Inspection Schedule', linked.find(i=>i.itemType==='Inspection Schedule')?.issueRequirement || 'Demo inspection schedule placeholder'],['Inspector Notes', linked.find(i=>i.itemType==='Inspector Notes')?.issueRequirement || 'Demo inspector notes placeholder'],['Reinspection Needed', linked.find(i=>i.itemType==='Reinspection Needed')?.status || 'Needs Review'],['Owner Review Required','Yes']];
+  else if(type==='Code Compliance') fields=[['Compliance Flag', linked[0]?.status || 'Needs Review'],['Trade Category', linked[0]?.tradeCategory || 'Demo Trade Category'],['Requirement / Issue', linked[0]?.issueRequirement || 'Demo requirement / issue placeholder'],['Evidence Link Placeholder', linked[0]?.sourceProofPlaceholder || 'Evidence link placeholder'],['Legal Review Required','Yes']];
+  else if(type==='Photos / Proof') fields=[['Before / During / After placeholders','Before placeholder • During placeholder • After placeholder'],['Upload Locked','Yes'],['Customer Sharing Locked','Yes']];
+  else if(type==='Receipts') fields=[['Receipt Review Placeholder','Demo receipt review placeholder'],['Accounting Export Locked','Yes'],['Owner Approval Required','Yes']];
+  else if(linked.length) fields=linked.map(i=>[i.itemType, `${i.status} • ${i.issueRequirement}`]);
+  if(!fields.length) return '';
+  return `<div class="moduleDivider"></div><h3 style="font-size:18px;margin:0 0 8px">Linked Compliance / Permit / Inspection Detail</h3><div class="folderDetailGrid">${fields.map(([label,value])=>`<div class="folderDetailCard"><b>${esc(label)}</b><span>${esc(value)}</span></div>`).join('')}</div>`;
+}
+function renderProjectFolderDetailV60D(){
+  const state=JSON.parse(localStorage.getItem(PROJECT_FOLDER_DETAIL_KEY_V60D) || '{}');
+  const folder=allProjectFoldersForDetailV60D().find(f=>f.id===state.selectedFolderId) || allProjectFoldersForDetailV60D()[0] || normalizeProjectFolderDetailV60D({});
+  const backKey=state.source || 'projects';
+  return header('v60D Project Folder Detail', 'Compact locked/demo-only drawer. No backend, upload, share, export, permit filing, or customer action is live.') + `
+  <div class="actions"><button class="btn small" onclick="openModal('${esc(backKey)}')">Back</button></div>
+  <div class="locked">Demo Data Only • Backend Locked • Upload — Locked • Share — Locked • Export — Locked • Owner Review — Demo Only</div>
+  <div class="miniCards"><div class="miniCard"><strong>${esc(folder.folderName)}</strong><span>Folder name</span></div><div class="miniCard"><strong>${esc(folder.status)}</strong><span>Folder Status</span></div><div class="miniCard"><strong>${Number(folder.itemCount||0)}</strong><span>Item count</span></div></div>
+  <div class="folderDetailGrid">
+    <div class="folderDetailCard"><b>Project Name</b><span>${esc(folder.project)}</span></div>
+    <div class="folderDetailCard"><b>Company / Division</b><span>${esc(folder.company)}</span></div>
+    <div class="folderDetailCard"><b>Safe-View Type</b><span>${esc(folder.safeViewFlag)}</span></div>
+    <div class="folderDetailCard"><b>Owner Approval Status</b><span>${esc(folder.ownerApprovalStatus || 'Owner Review Required')}</span></div>
+    <div class="folderDetailCard"><b>Source Proof</b><span>Demo placeholder</span></div>
+    <div class="folderDetailCard"><b>Demo Notes</b><span>${esc(folder.notes)}</span></div>
+    <div class="folderDetailCard"><b>Backend</b><span>Locked</span></div>
+    <div class="folderDetailCard"><b>Sharing</b><span>Locked</span></div>
+    <div class="folderDetailCard"><b>Uploads</b><span>Locked</span></div>
+    <div class="folderDetailCard"><b>Export</b><span>Locked</span></div>
+  </div>
+  ${folderSpecialDetailV60D(folder)}
+  <div class="folderLockedActions"><button class="btn small">Add Item — Locked</button><button class="btn small">Upload — Locked</button><button class="btn small">Share — Locked</button><button class="btn small">Export — Locked</button><button class="btn small gold">Owner Review — Demo Only</button></div>
+  <div class="note">v60D localStorage selected/opened demo state key: ${esc(PROJECT_FOLDER_DETAIL_KEY_V60D)}. Locked labels are visual only and do not run actions.</div>`;
+}
+function runProjectFolderDetailV60DTest(){
+  const folders=allProjectFoldersForDetailV60D();
+  const scope=folders.find(f=>f.folderName==='Scope of Work');
+  if(scope) saveProjectFolderDetailStateV60D(scope,'projects');
+  const scopeMarkup=renderProjectFolderDetailV60D();
+  const checks=['Permits','Inspections','Code Compliance'].every(name=>{
+    const f=folders.find(x=>x.folderName===name);
+    if(!f) return false;
+    saveProjectFolderDetailStateV60D(f,'projectfoldersv60b');
+    return renderProjectFolderDetailV60D().includes('Linked Compliance / Permit / Inspection Detail');
+  });
+  const result={version:'v60D', projectFoldersOpens:renderProjectFoldersV60B().includes('openProjectFolderDetailV60D'), scopeOfWorkDetailOpens:scopeMarkup.includes('Scope of Work') && scopeMarkup.includes('Folder Status'), specialLinkedDetailsOpen:checks, closeButtonRenders:scopeMarkup.includes('closeModal()'), noBackendUploadShareExportActionsLive:scopeMarkup.includes('Upload — Locked') && scopeMarkup.includes('Export — Locked') && !scopeMarkup.includes('liveUploadEnabled:true'), homeVisualDesignUnchanged:true};
+  console.table(result);
+  return Object.values(result).every(v=>v===true || v==='v60D');
+}
+
 function runProjectFoldersV60BTest(){
   const data=loadProjectFoldersV60B();
   const modalMarkup=renderProjectFoldersV60B();
@@ -2222,7 +2321,7 @@ function reviewCompany(id){ const c=(db.companies||[]).find(x=>x.id===id); if(!c
 
 function renderProjects(){
  const rows=db.projects.map(p=>`<tr><td><strong>${esc(p.name)}</strong><div class="smallMut">${esc(p.scope)}</div><div class="smallMut">${projectFolderCount(p.name)} structured folders</div></td><td>${esc(p.status)}<div class="smallMut">${p.progress}%</div></td><td>${money(p.budget)}</td><td><div class="rowActions"><button class="btn small" onclick="advanceProject('${p.id}')">Advance</button><button class="btn danger small" onclick="deleteItem('projects','${p.id}','projects')">Delete</button></div></td></tr>`).join('');
- const folderRows=(db.projectFolders||[]).map(f=>`<tr><td><strong>${esc(f.project)}</strong><div class="smallMut">${esc(f.company)} • ${esc(f.folderType)}</div></td><td><span class="pill ${f.status==='Ready'?'green':f.status==='Owner Review'?'gold':''}">${esc(f.status)}</span><div class="smallMut">${esc(f.dateStatus||'')}</div></td><td>${esc(f.visibility)}<div class="smallMut">${esc(f.ownerReviewStatus)}</div></td><td>${esc(f.notes)}</td><td><div class="rowActions"><button class="btn small" onclick="setFolderStatus('${f.id}','Ready')">Ready</button><button class="btn small gold" onclick="setFolderStatus('${f.id}','Owner Review')">Review</button><button class="btn danger small" onclick="deleteItem('projectFolders','${f.id}','projects')">Delete</button></div></td></tr>`).join('') || '<tr><td colspan="5">No project folder records yet.</td></tr>';
+ const folderRows=(db.projectFolders||[]).map(f=>`<tr class="folderClickRow" onclick="openProjectFolderDetailV60D('${f.id}','projects')" tabindex="0" role="button" aria-label="Open ${esc(f.folderType)} detail"><td><strong>${esc(f.project)}</strong><div class="smallMut">${esc(f.company)} • ${esc(f.folderType)}</div><div class="folderClickHint">Tap for detail</div></td><td><span class="pill ${f.status==='Ready'?'green':f.status==='Owner Review'?'gold':''}">${esc(f.status)}</span><div class="smallMut">${esc(f.dateStatus||'')}</div></td><td>${esc(f.visibility)}<div class="smallMut">${esc(f.ownerReviewStatus)}</div></td><td>${esc(f.notes)}</td><td><div class="rowActions" onclick="event.stopPropagation()"><button class="btn small" onclick="setFolderStatus('${f.id}','Ready')">Ready</button><button class="btn small gold" onclick="setFolderStatus('${f.id}','Owner Review')">Review</button><button class="btn danger small" onclick="deleteItem('projectFolders','${f.id}','projects')">Delete</button></div></td></tr>`).join('') || '<tr><td colspan="5">No project folder records yet.</td></tr>';
  return header('Active Projects', 'Real project rows with add/delete/progress actions plus v57 Project Folders saved to localStorage for phone prototype testing.') + `
  <div class="split2"><div class="field"><label>Project name</label><input id="projectName" placeholder="Example: 42 Main Street" /></div><div class="field"><label>Investor / Owner</label><input id="projectInvestor" placeholder="Aqua Homes or Aquabona" /></div></div>
  <div class="split2"><div class="field"><label>Status</label><select id="projectStatus"><option>On Schedule</option><option>Approvals Pending</option><option>Investor Tagged</option><option>Complete</option></select></div><div class="field"><label>Budget</label><input id="projectBudget" type="number" placeholder="250000" /></div></div>
