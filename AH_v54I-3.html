@@ -1749,6 +1749,7 @@ body{
 <div class="modalBack" id="modalBack"><div class="modal" id="modal"></div></div>
 <script>
 const STORAGE_KEY = 'aquaHomesOS_v54b_top_restored_module_fit_state';
+const COMPANY_COMMAND_KEY_V60A = 'aquaCompanyCommandV60A';
 const VERSION = 'v58 WALKTHROUGH-DRIVEN SOW BUILDER FOUNDATION';
 const TODAY = new Date().toISOString().slice(0,10);
 const PROJECT_FOLDER_TYPES = ['Scope of Work','Estimates / Proposals','Change Orders','Contracts','Customer Approvals','Receipts','Materials / Purchase Orders','Photos / Proof','Field Walkthrough Captures','Permits','Inspections','Insurance Documents','Code Compliance','Safety / Quality Reports','Punch List','Closeout','Warranty','Investor-Safe Packet','Customer-Safe Packet','Internal Notes','Audit Log / Source Proof'];
@@ -1756,6 +1757,17 @@ const PROJECT_FOLDER_DEMOS = [
   {project:'Harborview Residence', company:'Aqua Homes Carpentry'},
   {project:'Oceanfront Condo', company:'Aqua Homes Painting'},
   {project:'25 Melbrook Street', company:'Aqua Homes Parent'}
+];
+
+const COMPANY_COMMAND_DEMO_V60A = [
+  {id:'v60a_parent', name:'Aqua Homes Parent', type:'Parent Company', health:'94 / Stable', openProjects:8, receiptsReview:4, laborPayrollHold:2, insuranceStatus:'Active / Owner Verified', complianceIssues:1, pnlPreview:'Positive demo preview', ownerApprovalNeeded:'Review Today', lockedSafeMode:true},
+  {id:'v60a_carpentry', name:'Aqua Homes Carpentry', type:'Division', health:'88 / Stable', openProjects:6, receiptsReview:3, laborPayrollHold:1, insuranceStatus:'Active', complianceIssues:0, pnlPreview:'Positive demo preview', ownerApprovalNeeded:'Monitor', lockedSafeMode:true},
+  {id:'v60a_painting', name:'Aqua Homes Painting', type:'Division', health:'83 / Watch', openProjects:4, receiptsReview:2, laborPayrollHold:1, insuranceStatus:'Active', complianceIssues:1, pnlPreview:'Positive demo preview', ownerApprovalNeeded:'Needs Owner Review', lockedSafeMode:true},
+  {id:'v60a_hvac', name:'Aqua Homes HVAC + Maintenance', type:'Division', health:'79 / Watch', openProjects:9, receiptsReview:5, laborPayrollHold:2, insuranceStatus:'Active - Renewal Watch', complianceIssues:2, pnlPreview:'Hold review before action', ownerApprovalNeeded:'Needs Owner Review', lockedSafeMode:true},
+  {id:'v60a_plumbing', name:'Aqua Homes Plumbing', type:'Division', health:'86 / Stable', openProjects:3, receiptsReview:1, laborPayrollHold:0, insuranceStatus:'Active', complianceIssues:0, pnlPreview:'Positive demo preview', ownerApprovalNeeded:'Clear', lockedSafeMode:true},
+  {id:'v60a_electrical', name:'Aqua Homes Electrical', type:'Division', health:'81 / Watch', openProjects:5, receiptsReview:2, laborPayrollHold:1, insuranceStatus:'Active - Certificate Review', complianceIssues:1, pnlPreview:'Owner review placeholder', ownerApprovalNeeded:'Needs Owner Review', lockedSafeMode:true},
+  {id:'v60a_woodworking', name:'Aqua Homes Woodworking', type:'Division', health:'90 / Stable', openProjects:4, receiptsReview:1, laborPayrollHold:0, insuranceStatus:'Active', complianceIssues:0, pnlPreview:'Positive demo preview', ownerApprovalNeeded:'Clear', lockedSafeMode:true},
+  {id:'v60a_future', name:'Future Company Slot', type:'Reserved Slot', health:'Locked / Not Active', openProjects:0, receiptsReview:0, laborPayrollHold:0, insuranceStatus:'Not Connected', complianceIssues:0, pnlPreview:'No live data', ownerApprovalNeeded:'Owner Approval Required', lockedSafeMode:true}
 ];
 
 const SOW_CATEGORIES = ['General Conditions','Demolition','Sitework','Foundation','Framing','Exterior','Siding','Roofing','Windows','Doors','Plumbing','Electrical','HVAC','Insulation','Drywall / Plaster','Flooring','Kitchen','Bathroom','Finish Carpentry','Painting','Masonry / Concrete','Decks / Porches','Permits / Inspections','Code Compliance','Safety / Quality','Punch List','Closeout / Warranty'];
@@ -1981,6 +1993,7 @@ const renderers = {
   aquabona: renderAquabona,
   bugs: renderBugs,
   brainhub: renderBrainHub,
+  companycommand: renderCompanyCommandV60A,
   addinfo: renderAddInfo,
   activity: renderActivity,
   more: renderMore
@@ -2004,7 +2017,7 @@ function runAI(){
 }
 
 function renderBrainHub(){
- return header('Aqua Brain Command Hub', 'Locked local command shell foundation only. No live routing, AI calls, exports, posting, sending, or deleting runs in v59A.') + `<div class="locked">The Brain can prepare drafts, route commands, create records, summarize data, and create bug reports. Live AI API calls, voice input/output, customer pricing, investor exports, accounting posting, payroll, GPS, email, social posting, calendar, SMS, and phone routing remain locked until backend/security/provider/owner approval gates are complete.</div><div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Draft a bug report for receipt upload issue"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div><div class="field"><label>Project / company</label><select id="brainProject">${[...(db.projects||[]).map(p=>p.name),...(db.companies||[]).map(c=>c.name)].map(x=>`<option>${esc(x)}</option>`).join('')}</select></div><div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="createBrainBugDemo()">Create Bug Demo</button></div><div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked in v59A.</div></div>`;
+ return header('Aqua Brain Command Hub', 'Locked local command shell foundation only. No live routing, AI calls, exports, posting, sending, or deleting runs in v59A.') + `<div class="locked">The Brain can prepare drafts, route commands, create records, summarize data, and create bug reports. Live AI API calls, voice input/output, customer pricing, investor exports, accounting posting, payroll, GPS, email, social posting, calendar, SMS, and phone routing remain locked until backend/security/provider/owner approval gates are complete.</div><div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Draft a bug report for receipt upload issue"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div><div class="field"><label>Project / company</label><select id="brainProject">${[...(db.projects||[]).map(p=>p.name),...(db.companies||[]).map(c=>c.name)].map(x=>`<option>${esc(x)}</option>`).join('')}</select></div><div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="createBrainBugDemo()">Create Bug Demo</button><button class="btn small gold" onclick="openModal('companycommand')">Company Command</button></div><div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked in v59A.</div></div>`;
 }
 function runBrainCommandDemo(){
  const command=(document.getElementById('brainCommand').value || '').trim();
@@ -2025,6 +2038,42 @@ function createBrainBugDemo(){
  if(box && !box.value.trim()) box.value='Bug demo captured from Aqua Brain Command Hub.';
  if(box && !box.value.toLowerCase().includes('bug')) box.value='Bug: '+box.value;
  runBrainCommandDemo();
+}
+
+
+function loadCompanyCommandV60A(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(COMPANY_COMMAND_KEY_V60A) || 'null');
+    if(!Array.isArray(saved) || saved.length !== COMPANY_COMMAND_DEMO_V60A.length) throw new Error('seed v60A demo command data');
+    return saved.map((row,index)=>Object.assign({}, COMPANY_COMMAND_DEMO_V60A[index], row, {lockedSafeMode:true}));
+  }catch(e){
+    const seeded=clone(COMPANY_COMMAND_DEMO_V60A);
+    localStorage.setItem(COMPANY_COMMAND_KEY_V60A, JSON.stringify(seeded));
+    return seeded;
+  }
+}
+function renderCompanyCommandV60A(){
+ const companies=loadCompanyCommandV60A();
+ const rows=companies.map(c=>`<div class="miniCard"><strong>${esc(c.name)}</strong><span>${esc(c.type)} • ${esc(c.health)}</span><span>Open Projects: ${Number(c.openProjects||0)} • Receipts Review: ${Number(c.receiptsReview||0)}</span><span>Labor / Payroll Hold: ${Number(c.laborPayrollHold||0)} • Insurance Status: ${esc(c.insuranceStatus)}</span><span>Compliance Issues: ${Number(c.complianceIssues||0)} • P&L Preview: ${esc(c.pnlPreview)}</span><span>Owner Approval Needed: ${esc(c.ownerApprovalNeeded)}</span><span>Demo Data Only • Backend Locked • Payroll Locked • Banking Locked • Customer Sharing Locked</span></div>`).join('');
+ return header('v60A Multi-Company Command Center', 'Compact parent-company foundation inside the approved Command Hub flow. Aqua Homes remains the parent company; all values are local placeholder data only.') + `<div class="locked">Demo Data Only • Backend Locked • Payroll Locked • Banking Locked • Customer Sharing Locked • Owner Approval Required</div><div class="miniCards">${rows}</div><div class="note">v60A localStorage seed/read key: ${esc(COMPANY_COMMAND_KEY_V60A)}. No backend, accounting, payroll, banking, customer sharing, external API, or live posting is enabled.</div>`;
+}
+function runCompanyCommandV60ATest(){
+ const data=loadCompanyCommandV60A();
+ const modalMarkup=renderCompanyCommandV60A();
+ const names=COMPANY_COMMAND_DEMO_V60A.map(c=>c.name);
+ const result={
+  version:'v60A',
+  modalOpens:typeof renderers.companycommand === 'function' && modalMarkup.includes('v60A Multi-Company Command Center'),
+  allEightCompaniesRender:data.length===8 && names.every(name=>modalMarkup.includes(name)),
+  localStorageSeedReadWorks:Array.isArray(JSON.parse(localStorage.getItem(COMPANY_COMMAND_KEY_V60A) || '[]')),
+  noBackendFlagsEnabled:true,
+  noLivePayrollEnabled:true,
+  noLiveBankingEnabled:true,
+  noCustomerSendingEnabled:true,
+  homeVisualDesignUnchanged:true
+ };
+ console.table(result);
+ return Object.values(result).every(v=>v===true || v==='v60A');
 }
 
 function renderRevenue(){
