@@ -34,11 +34,13 @@ const COMMAND_ROUTE_LOCK_NOTE =
 
 const CURRENT_KEEPER_LABEL = "v59A Second Version / Command Routing";
 const CURRENT_STABILIZATION_PATCH = "v59B";
+const CURRENT_LIVE_ENTRY_FIX = "v59C";
 const KEEPER_SAFETY_BANNER_TEXT =
-  "Current Keeper: v59A Second Version. Build forward only. Do not roll back.";
+  "Current Keeper: v59A Second Version / Command Routing. Build forward only. Do not roll back.";
 const VERSION_TRUTH_ITEMS = [
   ["Current Keeper", CURRENT_KEEPER_LABEL],
   ["Current Stabilization Patch", CURRENT_STABILIZATION_PATCH],
+  ["Live Entry Fixed", CURRENT_LIVE_ENTRY_FIX],
   ["Source Status", "Merged live keeper confirmed by user"],
   ["Active Repo Paths", "docs/app.js\ndocs/styles.css\nstructured-app/app.js\nstructured-app/styles.css"],
   ["Design Lock", "Active"],
@@ -1480,7 +1482,7 @@ function getKeeperPanelMarkup() {
       <div class="keeper-panel-header">
         <div>
           <p class="eyebrow">Version / Source Truth</p>
-          <h2 id="version-truth-title">Keeper Stabilization v59B</h2>
+          <h2 id="version-truth-title">Keeper Stabilization v59B · Live Entry v59C</h2>
         </div>
         <span class="status-pill">Build Forward Only</span>
       </div>
