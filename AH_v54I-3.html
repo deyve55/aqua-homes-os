@@ -1786,7 +1786,8 @@ const COMPLIANCE_KEY_V60C = 'aquaComplianceV60C';
 const PROJECT_FOLDER_DETAIL_KEY_V60D = 'aquaProjectFolderDetailV60D';
 const QA_TEST_KEY_V60E = 'aquaQATestV60E';
 const SOW_BUILDER_KEY_V60H = 'aquaSOWBuilderV60H';
-const VERSION = 'v60I SOW / FOLDER INTERACTION REPAIR';
+const FIELD_WALKTHROUGH_KEY_V60J = 'aquaFieldWalkthroughV60J';
+const VERSION = 'v60J FIELD WALKTHROUGH LABEL REPAIR';
 const TODAY = new Date().toISOString().slice(0,10);
 const PROJECT_FOLDER_TYPES = ['Scope of Work','Estimates / Proposals','Change Orders','Contracts','Customer Approvals','Receipts','Materials / Purchase Orders','Photos / Proof','Field Walkthrough Captures','Permits','Inspections','Insurance Documents','Code Compliance','Safety / Quality Reports','Punch List','Closeout','Warranty','Investor-Safe Packet','Customer-Safe Packet','Internal Notes','Audit Log / Source Proof'];
 const PROJECT_FOLDER_DEMOS = [
@@ -2284,12 +2285,12 @@ function renderAquaQAReportV60E(rows, timestamp){
  const warningCount=warnings.length;
  const lockedCount=rows.filter(row=>row.status==='LOCKED').length;
  const passedCount=rows.filter(row=>row.status==='PASS' || row.status==='LOCKED').length;
- const report={version:'v60I', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:failed.length, warnings:warningCount, rows};
+ const report={version:'v60J', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:failed.length, warnings:warningCount, rows};
  aquaLastQAReportV60F=report;
- const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60I checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
+ const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60J checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
  const statusRows=rows.map(row=>`<div class="qaRowV60E"><div class="qaStatusV60E ${qaStatusClassV60E(row.status)}">${esc(row.status)}</div><div><strong>${esc(row.label)}</strong><div class="smallMut">${esc(row.detail)}</div></div></div>`).join('');
  const promptText=buildQACodexRepairPromptV60E(failed, warnings);
- return `<div class="qaReportV60E"><div class="locked">Version: v60I • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div id="qaHistoryV60F">${renderAquaQAHistoryV60F(report)}</div><div class="actions"><button class="btn small gold" onclick="saveAquaQAReportV60F()">Save QA Report</button><button class="btn small gold" onclick="copyCodexRepairPromptV60F()">Copy Codex Repair Prompt</button><button class="btn small danger" onclick="clearAquaQAReportV60F()">Clear QA Report</button></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}<div id="qaPromptStatusV60F" class="smallMut qaPromptStatusV60F"></div></div><label>Codex repair/status prompt</label><textarea id="qaRepairPromptV60F" class="qaRepairPromptV60E" readonly>${esc(promptText)}</textarea>${statusRows}</div>`;
+ return `<div class="qaReportV60E"><div class="locked">Version: v60J • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div id="qaHistoryV60F">${renderAquaQAHistoryV60F(report)}</div><div class="actions"><button class="btn small gold" onclick="saveAquaQAReportV60F()">Save QA Report</button><button class="btn small gold" onclick="copyCodexRepairPromptV60F()">Copy Codex Repair Prompt</button><button class="btn small danger" onclick="clearAquaQAReportV60F()">Clear QA Report</button></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}<div id="qaPromptStatusV60F" class="smallMut qaPromptStatusV60F"></div></div><label>Codex repair/status prompt</label><textarea id="qaRepairPromptV60F" class="qaRepairPromptV60E" readonly>${esc(promptText)}</textarea>${statusRows}</div>`;
 }
 function aquaLocalStorageProbeV60G(key, sample){
  const prior=localStorage.getItem(key);
@@ -2385,7 +2386,7 @@ function runAquaFullQAV60E(){
  const out=document.getElementById('brainOut') || document.getElementById('aiOut');
  if(out) out.innerHTML=html;
  console.table(rows.map(row=>({status:row.status, check:row.label, detail:row.detail})));
- const report={version:'v60I', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
+ const report={version:'v60J', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
  saveAquaQAReportV60F(report);
  return report;
 }
