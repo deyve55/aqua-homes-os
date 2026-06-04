@@ -1573,6 +1573,7 @@ body{
 /* v60I SOW / Folder Interaction Repair — compact clickable detail + locked action feedback only; protected Home visuals untouched. */
 /* v60J Field Walkthrough Capture Intake Foundation — compact modal-only local/demo intake; protected Home visuals untouched. */
 /* v60K Photo Proof / Evidence Binder Foundation — compact modal-only local/demo proof binder; protected Home visuals untouched. */
+/* v60L Receipt Tracker Detail Flow — compact modal-only receipt detail; protected Home visuals untouched. */
 .modal .qaReportV60E{display:grid;gap:8px;margin-top:12px;}
 .modal .qaSummaryV60E{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
 .modal .qaRowV60E{display:grid;grid-template-columns:84px 1fr;gap:8px;align-items:start;border:1px solid rgba(49,114,236,.18);border-radius:12px;background:rgba(6,18,32,.58);padding:8px 10px;}
@@ -1790,7 +1791,7 @@ const QA_TEST_KEY_V60E = 'aquaQATestV60E';
 const SOW_BUILDER_KEY_V60H = 'aquaSOWBuilderV60H';
 const FIELD_WALKTHROUGH_KEY_V60J = 'aquaFieldWalkthroughV60J';
 const EVIDENCE_BINDER_KEY_V60K = 'aquaEvidenceBinderV60K';
-const VERSION = 'v60K';
+const VERSION = 'v60L';
 const TODAY = new Date().toISOString().slice(0,10);
 const PROJECT_FOLDER_TYPES = ['Scope of Work','Estimates / Proposals','Change Orders','Contracts','Customer Approvals','Receipts','Materials / Purchase Orders','Photos / Proof','Field Walkthrough Captures','Permits','Inspections','Insurance Documents','Code Compliance','Safety / Quality Reports','Punch List','Closeout','Warranty','Investor-Safe Packet','Customer-Safe Packet','Internal Notes','Audit Log / Source Proof'];
 const PROJECT_FOLDER_DEMOS = [
@@ -2306,12 +2307,12 @@ function renderAquaQAReportV60E(rows, timestamp){
  const warningCount=warnings.length;
  const lockedCount=rows.filter(row=>row.status==='LOCKED').length;
  const passedCount=rows.filter(row=>row.status==='PASS' || row.status==='LOCKED').length;
- const report={version:'v60K', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:failed.length, warnings:warningCount, rows};
+ const report={version:'v60L', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:failed.length, warnings:warningCount, rows};
  aquaLastQAReportV60F=report;
- const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60K checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
+ const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60L checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
  const statusRows=rows.map(row=>`<div class="qaRowV60E"><div class="qaStatusV60E ${qaStatusClassV60E(row.status)}">${esc(row.status)}</div><div><strong>${esc(row.label)}</strong><div class="smallMut">${esc(row.detail)}</div></div></div>`).join('');
  const promptText=buildQACodexRepairPromptV60E(failed, warnings);
- return `<div class="qaReportV60E"><div class="locked">Version: v60K • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div id="qaHistoryV60F">${renderAquaQAHistoryV60F(report)}</div><div class="actions"><button class="btn small gold" onclick="saveAquaQAReportV60F()">Save QA Report</button><button class="btn small gold" onclick="copyCodexRepairPromptV60F()">Copy Codex Repair Prompt</button><button class="btn small danger" onclick="clearAquaQAReportV60F()">Clear QA Report</button></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}<div id="qaPromptStatusV60F" class="smallMut qaPromptStatusV60F"></div></div><label>Codex repair/status prompt</label><textarea id="qaRepairPromptV60F" class="qaRepairPromptV60E" readonly>${esc(promptText)}</textarea>${statusRows}</div>`;
+ return `<div class="qaReportV60E"><div class="locked">Version: v60L • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div id="qaHistoryV60F">${renderAquaQAHistoryV60F(report)}</div><div class="actions"><button class="btn small gold" onclick="saveAquaQAReportV60F()">Save QA Report</button><button class="btn small gold" onclick="copyCodexRepairPromptV60F()">Copy Codex Repair Prompt</button><button class="btn small danger" onclick="clearAquaQAReportV60F()">Clear QA Report</button></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}<div id="qaPromptStatusV60F" class="smallMut qaPromptStatusV60F"></div></div><label>Codex repair/status prompt</label><textarea id="qaRepairPromptV60F" class="qaRepairPromptV60E" readonly>${esc(promptText)}</textarea>${statusRows}</div>`;
 }
 function aquaLocalStorageProbeV60G(key, sample){
  const prior=localStorage.getItem(key);
@@ -2339,8 +2340,11 @@ function runAquaFullQAV60E(){
  const fieldWalkthroughMarkup=renderFieldWalkthroughV60J();
  const evidenceBinderData=loadEvidenceBinderV60K();
  const evidenceBinderMarkup=renderEvidenceBinderV60K();
+ const receiptMarkup=renderReceipts();
+ const receiptDetailMarkup=receiptDetailMarkupV60L(db.receipts[0]);
  const evidenceDetailMarkup=evidenceDetailMarkupV60K(evidenceBinderData[0], 'evidencebinderv60k');
  const projectMarkup=renderProjects();
+ const moreMarkup=renderMore();
  const folders=loadProjectFoldersV60B();
  const detailMarkup=renderProjectFolderDetailV60D();
  const brainMarkup=renderBrainHub();
@@ -2352,7 +2356,7 @@ function runAquaFullQAV60E(){
  const fieldWalkthroughSafetyLabels=['Demo Data Only','Camera Locked','Upload Locked','Backend Locked','AI Draft Locked','Customer Sharing Locked','Owner Review Required'];
  const evidenceSafetyLabels=['Demo Data Only','Upload Locked','Camera Locked','Backend Locked','Customer Sharing Locked','Investor Sharing Locked','Owner Review Required'];
  const qaControlMarkup=renderAquaQAReportV60E([], timestamp);
- const combinedMarkup=brainMarkup+companyMarkup+folderMarkup+detailMarkup+complianceMarkup+sowMarkup+fieldWalkthroughMarkup+evidenceBinderMarkup+evidenceDetailMarkup+projectMarkup+qaControlMarkup;
+ const combinedMarkup=brainMarkup+companyMarkup+folderMarkup+detailMarkup+complianceMarkup+sowMarkup+fieldWalkthroughMarkup+evidenceBinderMarkup+evidenceDetailMarkup+receiptMarkup+receiptDetailMarkup+projectMarkup+moreMarkup+qaControlMarkup;
  const detailBackHandler=detailMarkup.includes('openModal(') && detailMarkup.includes('Back');
  const qaStorageKeys=[QA_TEST_KEY_V60E, AQUA_LATEST_QA_REPORT_KEY_V60F, COMPANY_COMMAND_KEY_V60A, PROJECT_FOLDERS_KEY_V60B, COMPLIANCE_KEY_V60C, PROJECT_FOLDER_DETAIL_KEY_V60D, SOW_BUILDER_KEY_V60H, FIELD_WALKTHROUGH_KEY_V60J, EVIDENCE_BINDER_KEY_V60K];
  const storageWorks=qaStorageKeys.every(key=>aquaLocalStorageProbeV60G(key, key));
@@ -2411,6 +2415,10 @@ function runAquaFullQAV60E(){
  rows.push(qaCheckV60E('v60I no live upload/share/export/backend actions are enabled', noLiveActionFlagsEnabled && !combinedMarkup.includes('liveUploadEnabled:true') && !combinedMarkup.includes('liveShareEnabled:true') && !combinedMarkup.includes('liveExportEnabled:true') && !combinedMarkup.includes('liveBackendEnabled:true'), 'No live upload/share/export/backend actions are enabled by clickable repairs.', 'LOCKED'));
  rows.push(qaCheckV60E('Owner Review Required labels exist', combinedMarkup.includes('Owner Review Required') || complianceValues.includes('Owner Review Required'), 'Owner Review Required labels render in clickable modules.'));
  rows.push(qaCheckV60E('Locked/demo safety labels exist', lockedLabels.every(label=>combinedMarkup.includes(label) || complianceValues.includes(label)), lockedLabels.filter(label=>!(combinedMarkup.includes(label) || complianceValues.includes(label))).length ? 'Missing: '+lockedLabels.filter(label=>!(combinedMarkup.includes(label) || complianceValues.includes(label))).join(', ') : 'Locked/demo labels render across clickable modules.', 'LOCKED'));
+ rows.push(qaCheckV60E('v60L Receipt Tracker opens from existing flow', moreMarkup.includes("openModal('receipts')") && typeof renderers.receipts==='function' && receiptMarkup.includes('Receipt Tracker'), 'Receipt Tracker remains reachable through the approved existing modal flow.'));
+ rows.push(qaCheckV60E('v60L demo receipt rows open detail views', db.receipts.length>=2 && receiptMarkup.includes('openReceiptDetailV60L') && receiptMarkup.includes('receiptClickRowV60L') && typeof openReceiptDetailV60L==='function' && receiptDetailMarkup.includes('v60L Receipt Detail'), 'Demo receipt rows are tap/clickable and render compact receipt detail views.'));
+ rows.push(qaCheckV60E('v60L receipt detail back/close controls exist', receiptDetailMarkup.includes("openModal('receipts')") && receiptDetailMarkup.includes('closeModal()'), 'Receipt detail view can return to Receipt Tracker or close safely.'));
+ rows.push(qaCheckV60E('v60L receipt OCR/upload/backend/accounting/bank/payment/payroll locks exist', ['OCR Locked','Upload Locked','Backend Locked','Accounting Export Locked','Bank Sync Locked','Payment Locked','Payroll Locked'].every(label=>receiptMarkup.includes(label) && receiptDetailMarkup.includes(label)), 'Receipt Tracker/detail keep OCR, upload, backend, accounting export, bank sync, payment, and payroll locked.', 'LOCKED'));
  rows.push(qaCheckV60E('v60K Photo Proof trigger exists', brainMarkup.includes("openModal('evidencebinderv60k')") && projectMarkup.includes('Photo Proof / Evidence Binder') && fieldWalkthroughMarkup.includes('Photo Proof / Evidence Binder'), 'Command Hub, Projects, and Field Walkthrough include compact Photo Proof / Evidence Binder triggers.'));
  rows.push(qaCheckV60E('v60K Evidence Binder trigger exists', typeof renderers.evidencebinderv60k==='function' && evidenceBinderMarkup.includes('v60K Photo Proof / Evidence Binder'), 'Evidence Binder renderer is registered and opens in the modal pattern.'));
  rows.push(qaCheckV60E('v60K demo photo proof rows exist', evidenceBinderData.filter(row=>row.binderType==='Photo Proof').length>=2 && evidenceBinderMarkup.includes('Kitchen before photo placeholder') && evidenceBinderMarkup.includes('Bathroom issue photo placeholder'), 'Demo photo proof rows render.'));
@@ -2431,7 +2439,7 @@ function runAquaFullQAV60E(){
  rows.push(qaCheckV60E('localStorage keys used by QA and module demo data can save/read harmless test data', storageWorks, storageWorks ? 'Harmless v60H probes saved/read/restored for QA, Company Command, Project Folders, Compliance, detail state, and SOW Builder keys.' : 'One or more QA/module localStorage keys could not be saved/read/restored.'));
  rows.push(qaCheckV60E('No live external/backend action flags are enabled', noLiveActionFlagsEnabled, noLiveActionFlagsEnabled ? 'Backend/upload/share/export/customer/permit/payroll/legal live flags remain locked or false.' : 'One or more live action flags is enabled.', 'LOCKED'));
  rows.push(qaCheckV60E('Compliance rows include required row type labels', complianceRowTypes.every(term=>complianceMarkup.includes(term) || complianceValues.includes(term)), complianceRowTypes.filter(term=>!(complianceMarkup.includes(term) || complianceValues.includes(term))).length ? 'Missing: '+complianceRowTypes.filter(term=>!(complianceMarkup.includes(term) || complianceValues.includes(term))).join(', ') : 'Required compliance row type labels render.'));
- rows.push(qaCheckV60E('No live AI calls enabled', true, 'No OpenAI, Gemini, Claude, or external AI API call is invoked by v60K QA.', 'LOCKED'));
+ rows.push(qaCheckV60E('No live AI calls enabled', true, 'No OpenAI, Gemini, Claude, or external AI API call is invoked by v60L QA.', 'LOCKED'));
  rows.push(qaCheckV60E('No live phone/SMS enabled', true, 'Phone, SMS, voice, and calendar routing remain text-only/locked in this demo.', 'LOCKED'));
  rows.push(qaCheckV60E('No live email sending enabled', true, 'Email/social/customer sending remains locked.', 'LOCKED'));
  rows.push(qaCheckV60E('No live payroll enabled', loadCompanyCommandV60A().every(c=>c.lockedSafeMode===true), 'Company command data remains locked safe-mode; payroll action is not live.', 'LOCKED'));
@@ -2443,7 +2451,7 @@ function runAquaFullQAV60E(){
  const out=document.getElementById('brainOut') || document.getElementById('aiOut');
  if(out) out.innerHTML=html;
  console.table(rows.map(row=>({status:row.status, check:row.label, detail:row.detail})));
- const report={version:'v60K', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
+ const report={version:'v60L', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
  saveAquaQAReportV60F(report);
  return report;
 }
@@ -2791,8 +2799,23 @@ function renderApprovals(){
 function saveApproval(){ const item=document.getElementById('approvalItem').value.trim(); if(!item) return toast('Add approval item'); const project=document.getElementById('approvalProject').value.trim()||'Aqua Homes'; db.approvals.push({id:uid('a'),item,type:document.getElementById('approvalType').value,project,status:'Pending'}); addActivity('☑️','Approval added',project); saveDB(); openModal('approvals'); }
 
 function renderReceipts(){
- const rows=db.receipts.map(r=>`<tr><td><strong>${esc(r.vendor)}</strong><div class="smallMut">${esc(r.project)} • ${esc(r.category)} • ${esc(r.date||'')}</div></td><td>${money2(r.amount)}</td><td><span class="pill ${r.coded?'green':'gold'}">${r.coded?'Coded':'Needs coding'}</span></td><td><div class="rowActions"><button class="btn small" onclick="toggleReceipt('${r.id}')">${r.coded?'Uncode':'Code'}</button><button class="btn danger small" onclick="deleteItem('receipts','${r.id}','receipts')">Delete</button></div></td></tr>`).join('');
- return header('Receipt Tracker', 'Receipts persist locally, feed Accounting Review, P&L, and investor proof when tied to Aquabona projects.') + `<div class="split2"><div class="field"><label>Vendor</label><input id="receiptVendor" placeholder="Vendor name" /></div><div class="field"><label>Amount</label><input id="receiptAmt" type="number" step="0.01" placeholder="0.00" /></div></div><div class="split2"><div class="field"><label>Project</label><select id="receiptProject">${db.projects.map(p=>`<option>${esc(p.name)}</option>`).join('')}<option>Maintenance + HVAC</option></select></div><div class="field"><label>Category</label><select id="receiptCategory"><option>Materials</option><option>HVAC</option><option>Tools</option><option>Permit</option><option>Subcontractor</option><option>Office</option></select></div></div><div class="actions"><button class="btn primary small" onclick="saveReceipt()">Save Receipt</button><button class="btn small gold" onclick="openModal('accounting')">Accounting</button></div><table class="table"><tr><th>Receipt</th><th>Amount</th><th>Status</th><th>Actions</th></tr>${rows}</table>`;
+ const rows=db.receipts.map(r=>`<tr class="receiptClickRowV60L" onclick="openReceiptDetailV60L('${r.id}')" tabindex="0" role="button" aria-label="Open ${esc(r.vendor)} receipt detail"><td><strong>${esc(r.vendor)}</strong><div class="smallMut">${esc(r.project)} • ${esc(r.category)} • ${esc(r.date||'')}</div><div class="folderClickHint">Tap for receipt detail</div></td><td>${money2(r.amount)}</td><td><span class="pill ${r.coded?'green':'gold'}">${r.coded?'Coded':'Needs coding'}</span></td><td><div class="rowActions"><button class="btn small" onclick="event.stopPropagation(); toggleReceipt('${r.id}')">${r.coded?'Uncode':'Code'}</button><button class="btn danger small" onclick="event.stopPropagation(); deleteItem('receipts','${r.id}','receipts')">Delete</button></div></td></tr>`).join('');
+ return header('Receipt Tracker', 'Receipts persist locally, feed Accounting Review, P&L, and investor proof when tied to Aquabona projects.') + `<div class="locked">Demo Data Only • OCR Locked • Upload Locked • Backend Locked • Accounting Export Locked • Bank Sync Locked • Payment Locked • Payroll Locked</div><div class="split2"><div class="field"><label>Vendor</label><input id="receiptVendor" placeholder="Vendor name" /></div><div class="field"><label>Amount</label><input id="receiptAmt" type="number" step="0.01" placeholder="0.00" /></div></div><div class="split2"><div class="field"><label>Project</label><select id="receiptProject">${db.projects.map(p=>`<option>${esc(p.name)}</option>`).join('')}<option>Maintenance + HVAC</option></select></div><div class="field"><label>Category</label><select id="receiptCategory"><option>Materials</option><option>HVAC</option><option>Tools</option><option>Permit</option><option>Subcontractor</option><option>Office</option></select></div></div><div class="actions"><button class="btn primary small" onclick="saveReceipt()">Save Receipt</button><button class="btn small gold" onclick="openModal('accounting')">Accounting</button></div><table class="table"><tr><th>Receipt</th><th>Amount</th><th>Status</th><th>Actions</th></tr>${rows}</table>`;
+}
+function receiptDetailMarkupV60L(receipt){
+ const r=receipt || db.receipts[0] || {vendor:'Demo Receipt', project:'Aqua Homes', category:'Materials', amount:0, date:TODAY, coded:false};
+ const fields=[['Vendor',r.vendor],['Project',r.project],['Category',r.category],['Amount',money2(r.amount)],['Date',r.date||TODAY],['Coding Status',r.coded?'Coded':'Needs coding'],['OCR Locked','Yes'],['Upload Locked','Yes'],['Backend Locked','Yes'],['Accounting Export Locked','Yes'],['Bank Sync Locked','Yes'],['Payment Locked','Yes'],['Payroll Locked','Yes']];
+ return header('v60L Receipt Detail', 'Receipt detail opens from the existing Receipt Tracker flow. This is local/demo only; no OCR, upload, backend, accounting export, bank sync, payment, or payroll action is live.') + `
+ <div class="actions"><button class="btn small" onclick="openModal('receipts')">Back to Receipts</button><button class="btn small" onclick="closeModal()">Close</button></div>
+ <div class="locked">Demo Data Only • OCR Locked • Upload Locked • Backend Locked • Accounting Export Locked • Bank Sync Locked • Payment Locked • Payroll Locked</div>
+ <div class="folderDetailGrid">${fields.map(([label,value])=>`<div class="folderDetailCard"><b>${esc(label)}</b><span>${esc(value || 'Local placeholder')}</span></div>`).join('')}</div>
+ <div class="folderLockedActions"><button class="btn small" onclick="showLockedActionV60I('OCR Locked','receipts')">OCR Locked</button><button class="btn small" onclick="showLockedActionV60I('Upload Locked','receipts')">Upload Locked</button><button class="btn small" onclick="showLockedActionV60I('Backend Locked','receipts')">Backend Locked</button><button class="btn small" onclick="showLockedActionV60I('Accounting Export Locked','receipts')">Accounting Export Locked</button><button class="btn small" onclick="showLockedActionV60I('Bank Sync Locked','receipts')">Bank Sync Locked</button><button class="btn small gold" onclick="showLockedActionV60I('Payment Locked','receipts')">Payment Locked</button><button class="btn small gold" onclick="showLockedActionV60I('Payroll Locked','receipts')">Payroll Locked</button></div>`;
+}
+function openReceiptDetailV60L(id){
+ const receipt=db.receipts.find(r=>r.id===id) || db.receipts[0];
+ modal.innerHTML=receiptDetailMarkupV60L(receipt);
+ enhanceModalTables();
+ back.style.display='flex';
 }
 function saveReceipt(){ const vendor=document.getElementById('receiptVendor').value.trim(); const amount=Number(document.getElementById('receiptAmt').value||0); if(!vendor || !amount) return toast('Enter vendor and amount'); const project=document.getElementById('receiptProject').value; db.receipts.push({id:uid('r'),vendor,amount,project,category:document.getElementById('receiptCategory').value,coded:false,date:TODAY}); addActivity('🧾','Receipt uploaded: '+vendor,project); saveDB(); openModal('receipts'); toast('Receipt saved and sent to accounting queue'); }
 function toggleReceipt(id){ const r=db.receipts.find(x=>x.id===id); if(r){ r.coded=!r.coded; addActivity('🧮',r.coded?'Receipt coded':'Receipt returned to review',r.project); saveDB(); openModal('receipts'); } }
