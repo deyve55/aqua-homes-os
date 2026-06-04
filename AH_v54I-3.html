@@ -1568,6 +1568,7 @@ body{
 /* v60D Project Folder Detail Drawer / Click-to-Open Fix — modal-only clickable folder rows; protected Home visuals untouched. */
 /* v60E Main Brain QA / Self-Diagnostic Command — compact Command Hub report only; protected Home visuals untouched. */
 /* v60F QA Report History + Copy Codex Repair Prompt — Command Hub output only; protected Home visuals untouched. */
+/* v60G Expanded Clickable Module QA Coverage — Command Hub output only; protected Home visuals untouched. */
 .modal .qaReportV60E{display:grid;gap:8px;margin-top:12px;}
 .modal .qaSummaryV60E{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
 .modal .qaRowV60E{display:grid;grid-template-columns:84px 1fr;gap:8px;align-items:start;border:1px solid rgba(49,114,236,.18);border-radius:12px;background:rgba(6,18,32,.58);padding:8px 10px;}
@@ -2090,7 +2091,7 @@ function runAI(){
 }
 
 function renderBrainHub(){
- return header('Aqua Brain Command Hub', 'Locked local command shell foundation only. No live routing, AI calls, exports, posting, sending, deleting, or external QA runs in v60F.') + `<div class="locked">The Brain can prepare drafts, route commands, create records, summarize data, create bug reports, and run the local v60F self-diagnostic. Live AI API calls, voice input/output, customer pricing, investor exports, accounting posting, payroll, GPS, email, social posting, calendar, SMS, and phone routing remain locked until backend/security/provider/owner approval gates are complete. Safety labels: Backend Locked • Upload Locked • Sharing Locked • Export Locked • Owner Approval Required.</div><div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Run full Aqua QA"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div><div class="field"><label>Project / company</label><select id="brainProject">${[...(db.projects||[]).map(p=>p.name),...(db.companies||[]).map(c=>c.name)].map(x=>`<option>${esc(x)}</option>`).join('')}</select></div><div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small gold" onclick="createBrainBugDemo()">Create Bug Demo</button><button class="btn small gold" onclick="openModal('companycommand')">Company Command</button></div><div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked in v60F. QA aliases: run full aqua qa, run qa, test app, run self test, diagnose app.</div></div>`;
+ return header('Aqua Brain Command Hub', 'Locked local command shell foundation only. No live routing, AI calls, exports, posting, sending, deleting, or external QA runs in v60G.') + `<div class="locked">The Brain can prepare drafts, route commands, create records, summarize data, create bug reports, and run the local v60G self-diagnostic. Live AI API calls, voice input/output, customer pricing, investor exports, accounting posting, payroll, GPS, email, social posting, calendar, SMS, and phone routing remain locked until backend/security/provider/owner approval gates are complete. Safety labels: Backend Locked • Upload Locked • Sharing Locked • Export Locked • Owner Approval Required.</div><div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Run full Aqua QA"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div><div class="field"><label>Project / company</label><select id="brainProject">${[...(db.projects||[]).map(p=>p.name),...(db.companies||[]).map(c=>c.name)].map(x=>`<option>${esc(x)}</option>`).join('')}</select></div><div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small gold" onclick="createBrainBugDemo()">Create Bug Demo</button><button class="btn small gold" onclick="openModal('companycommand')">Company Command</button></div><div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked in v60G. QA aliases: run full aqua qa, run qa, test app, run self test, diagnose app.</div></div>`;
 }
 function runBrainCommandDemo(){
  const command=(document.getElementById('brainCommand').value || '').trim();
@@ -2127,7 +2128,7 @@ const AQUA_LATEST_QA_REPORT_KEY_V60F='aquaLatestQAReportV60F';
 let aquaLastQAReportV60F=null;
 function buildQACodexRepairPromptV60E(failed, warnings=[]){
  if(!failed.length) return 'Aqua QA passed. No repair patch needed. Continue with next tiny protected build.';
- return 'Codex repair needed.\n\nFailed checks:\n' + failed.map(row=>'- '+row.label+': '+row.detail).join('\n') + '\n\nWarnings:\n' + (warnings.length ? warnings.map(row=>'- '+row.label+': '+row.detail).join('\n') : '- None') + '\n\nFix only failed checks. Do not redesign. Allowed file: AH_v54I-3.html only. Do not change Home layout.';
+ return 'Codex repair needed.\n\nFailed checks:\n' + failed.map(row=>'- '+row.label+': '+row.detail).join('\n') + '\n\nWarnings:\n' + (warnings.length ? warnings.map(row=>'- '+row.label+': '+row.detail).join('\n') : '- None') + '\n\nFix only failed checks, including any failed clickable-module behavior checks. Do not redesign. Allowed file: AH_v54I-3.html only. Do not change Home layout.';
 }
 function getAquaQAHistoryV60F(){
  try{ return JSON.parse(localStorage.getItem(AQUA_LATEST_QA_REPORT_KEY_V60F) || 'null'); }catch(e){ return null; }
@@ -2180,12 +2181,25 @@ function renderAquaQAReportV60E(rows, timestamp){
  const warningCount=warnings.length;
  const lockedCount=rows.filter(row=>row.status==='LOCKED').length;
  const passedCount=rows.filter(row=>row.status==='PASS' || row.status==='LOCKED').length;
- const report={version:'v60F', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:failed.length, warnings:warningCount, rows};
+ const report={version:'v60G', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:failed.length, warnings:warningCount, rows};
  aquaLastQAReportV60F=report;
- const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60F checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
+ const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60G checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
  const statusRows=rows.map(row=>`<div class="qaRowV60E"><div class="qaStatusV60E ${qaStatusClassV60E(row.status)}">${esc(row.status)}</div><div><strong>${esc(row.label)}</strong><div class="smallMut">${esc(row.detail)}</div></div></div>`).join('');
  const promptText=buildQACodexRepairPromptV60E(failed, warnings);
- return `<div class="qaReportV60E"><div class="locked">Version: v60F • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div id="qaHistoryV60F">${renderAquaQAHistoryV60F(report)}</div><div class="actions"><button class="btn small gold" onclick="saveAquaQAReportV60F()">Save QA Report</button><button class="btn small gold" onclick="copyCodexRepairPromptV60F()">Copy Codex Repair Prompt</button><button class="btn small danger" onclick="clearAquaQAReportV60F()">Clear QA Report</button></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}<div id="qaPromptStatusV60F" class="smallMut qaPromptStatusV60F"></div></div><label>Codex repair/status prompt</label><textarea id="qaRepairPromptV60F" class="qaRepairPromptV60E" readonly>${esc(promptText)}</textarea>${statusRows}</div>`;
+ return `<div class="qaReportV60E"><div class="locked">Version: v60G • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div id="qaHistoryV60F">${renderAquaQAHistoryV60F(report)}</div><div class="actions"><button class="btn small gold" onclick="saveAquaQAReportV60F()">Save QA Report</button><button class="btn small gold" onclick="copyCodexRepairPromptV60F()">Copy Codex Repair Prompt</button><button class="btn small danger" onclick="clearAquaQAReportV60F()">Clear QA Report</button></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}<div id="qaPromptStatusV60F" class="smallMut qaPromptStatusV60F"></div></div><label>Codex repair/status prompt</label><textarea id="qaRepairPromptV60F" class="qaRepairPromptV60E" readonly>${esc(promptText)}</textarea>${statusRows}</div>`;
+}
+function aquaLocalStorageProbeV60G(key, sample){
+ const prior=localStorage.getItem(key);
+ const marker=JSON.stringify({v:'v60G harmless local QA probe', sample, at:TODAY});
+ try{
+  localStorage.setItem(key, marker);
+  const passed=localStorage.getItem(key)===marker;
+  if(prior===null) localStorage.removeItem(key); else localStorage.setItem(key, prior);
+  return passed;
+ }catch(e){
+  try{ if(prior===null) localStorage.removeItem(key); else localStorage.setItem(key, prior); }catch(restoreError){}
+  return false;
+ }
 }
 function runAquaFullQAV60E(){
  const timestamp=new Date().toISOString();
@@ -2194,30 +2208,48 @@ function runAquaFullQAV60E(){
  const folderMarkup=renderProjectFoldersV60B();
  const complianceData=loadComplianceV60C();
  const complianceMarkup=renderComplianceV60C();
+ const projectMarkup=renderProjects();
  const folders=loadProjectFoldersV60B();
  const detailMarkup=renderProjectFolderDetailV60D();
  const brainMarkup=renderBrainHub();
  const aiMarkup=renderAI();
  const companyNames=['Aqua Homes Parent','Aqua Homes Carpentry','Aqua Homes Painting','Aqua Homes HVAC + Maintenance','Aqua Homes Plumbing','Aqua Homes Electrical','Aqua Homes Woodworking','Future Company Slot'];
- const complianceTerms=['Code Compliance','Permits','Inspections','Owner Review Required','Legal Review Required'];
- const lockedLabels=['Backend Locked','Upload Locked','Sharing Locked','Export Locked','Owner Approval Required'];
- let storageWorks=false;
- try{ localStorage.setItem(QA_TEST_KEY_V60E,'pass'); storageWorks=localStorage.getItem(QA_TEST_KEY_V60E)==='pass'; localStorage.removeItem(QA_TEST_KEY_V60E); }catch(e){ storageWorks=false; }
+ const complianceRowTypes=['Code Compliance Flags','Permit Requirements','Inspection Schedule','Inspector Notes','Failed Inspection / Correction Items','Reinspection Needed','Jurisdiction / Town / City','Trade Category','Project Folder Link','Evidence / Source Proof Link'];
+ const lockedLabels=['Backend Locked','Upload Locked','Sharing Locked','Export Locked','Owner Approval Required','Demo Data Only','Customer Sharing Locked','Permit Filing Locked'];
+ const qaControlMarkup=renderAquaQAReportV60E([], timestamp);
+ const combinedMarkup=brainMarkup+companyMarkup+folderMarkup+detailMarkup+complianceMarkup+projectMarkup+qaControlMarkup;
+ const detailBackHandler=detailMarkup.includes('openModal(') && detailMarkup.includes('Back');
+ const qaStorageKeys=[QA_TEST_KEY_V60E, AQUA_LATEST_QA_REPORT_KEY_V60F, COMPANY_COMMAND_KEY_V60A, PROJECT_FOLDERS_KEY_V60B, COMPLIANCE_KEY_V60C, PROJECT_FOLDER_DETAIL_KEY_V60D];
+ const storageWorks=qaStorageKeys.every(key=>aquaLocalStorageProbeV60G(key, key));
+ const complianceValues=complianceData.map(item=>Object.values(item).map(value=>String(value)).join(' | ')).join(' | ');
+ const noLiveActionFlagsEnabled=loadCompanyCommandV60A().every(c=>c.lockedSafeMode===true)
+  && folders.every(f=>f.backendLocked===true && f.customerSharingLocked===true && f.investorSharingLocked===true && f.ownerApprovalRequired===true && f.liveUploadEnabled===false && f.liveShareEnabled===false && f.liveExportEnabled===false)
+  && complianceData.every(i=>i.backendLocked===true && i.permitFilingLocked===true && i.customerSharingLocked===true && i.ownerApprovalRequired===true && i.livePermitFilingEnabled===false && i.legalClaimsEnabled===false && i.customerMessagesEnabled===false && i.liveUploadEnabled===false && i.liveExportEnabled===false);
  rows.push(qaCheckV60E('Home shell exists', !!document.querySelector('.shell .phone .content') && !!document.querySelector('.bottomNav'), 'Protected phone shell and bottom navigation are present.'));
  rows.push(qaCheckV60E('Aqua AI Assistant / Main Brain command area exists', aiMarkup.includes('Aqua AI Assistant') && aiMarkup.includes('Ask Aqua AI') && aiMarkup.includes('runAI()'), 'Aqua AI Assistant command field and demo run action render.'));
  rows.push(qaCheckV60E('Aqua Brain Command Hub exists', typeof renderers.brainhub==='function' && brainMarkup.includes('Aqua Brain Command Hub'), 'Command Hub renderer is registered and renders.'));
- rows.push(qaCheckV60E('Multi-Company / Company Command feature exists', typeof renderers.companycommand==='function' && companyMarkup.includes('v60A Multi-Company Command Center'), 'Company Command modal remains available from Command Hub.'));
- rows.push(qaCheckV60E('Multi-Company company list contains all 8 required companies', companyNames.every(name=>companyMarkup.includes(name)), companyNames.filter(name=>!companyMarkup.includes(name)).length ? 'Missing: '+companyNames.filter(name=>!companyMarkup.includes(name)).join(', ') : 'All required company names render.'));
- rows.push(qaCheckV60E('Project Folders feature exists', typeof renderers.projectfoldersv60b==='function' && folderMarkup.includes('v60B Project Folders'), 'Project Folders modal renderer is registered and renders.'));
- rows.push(qaCheckV60E('Project Folders list includes all 21 required folders', PROJECT_FOLDER_TYPES.length===21 && PROJECT_FOLDER_TYPES.every(name=>folderMarkup.includes(name)), PROJECT_FOLDER_TYPES.filter(name=>!folderMarkup.includes(name)).length ? 'Missing: '+PROJECT_FOLDER_TYPES.filter(name=>!folderMarkup.includes(name)).join(', ') : 'All 21 required folder names render.'));
- rows.push(qaCheckV60E('Project Folder rows have click/tap detail behavior', folderMarkup.includes('folderClickRow') && folderMarkup.includes('openProjectFolderDetailV60D'), 'Folder rows include tap/click detail behavior.'));
- rows.push(qaCheckV60E('Code Compliance / Permits / Inspections feature exists', typeof renderers.compliancev60c==='function' && complianceMarkup.includes('v60C Code Compliance / Permits / Inspections'), 'Compliance modal renderer is registered and renders.'));
- rows.push(qaCheckV60E('Compliance rows include required review/permit/inspection labels', complianceTerms.every(term=>complianceMarkup.includes(term) || complianceData.some(item=>Object.values(item).some(value=>String(value).includes(term)))), complianceTerms.filter(term=>!(complianceMarkup.includes(term) || complianceData.some(item=>Object.values(item).some(value=>String(value).includes(term))))).length ? 'Missing: '+complianceTerms.filter(term=>!(complianceMarkup.includes(term) || complianceData.some(item=>Object.values(item).some(value=>String(value).includes(term))))).join(', ') : 'Required compliance, permit, inspection, owner, and legal labels render.'));
- rows.push(qaCheckV60E('Folder detail drawer/modal exists', typeof renderers.projectfolderdetailv60d==='function' && detailMarkup.includes('v60D Project Folder Detail'), 'Detail drawer/modal renderer is present.'));
- rows.push(qaCheckV60E('Detail drawer close button exists', detailMarkup.includes('closeModal()') || header('test','').includes('closeModal()'), 'Modal header close button is available.'));
- rows.push(qaCheckV60E('localStorage save/read works using aquaQATestV60E', storageWorks, storageWorks ? 'Saved and read harmless test key aquaQATestV60E.' : 'Browser localStorage test key could not be saved/read.'));
- rows.push(qaCheckV60E('Locked action safety labels exist', lockedLabels.every(label=>(brainMarkup+companyMarkup+folderMarkup+detailMarkup+complianceMarkup).includes(label)), lockedLabels.filter(label=>!(brainMarkup+companyMarkup+folderMarkup+detailMarkup+complianceMarkup).includes(label)).length ? 'Missing: '+lockedLabels.filter(label=>!(brainMarkup+companyMarkup+folderMarkup+detailMarkup+complianceMarkup).includes(label)).join(', ') : 'Backend Locked, Upload Locked, Sharing Locked, Export Locked, and Owner Approval Required labels render.', 'LOCKED'));
- rows.push(qaCheckV60E('No live AI calls enabled', true, 'No OpenAI, Gemini, Claude, or external AI API call is invoked by v60F QA.', 'LOCKED'));
+ rows.push(qaCheckV60E('Company Command trigger exists', brainMarkup.includes("openModal('companycommand')") && brainMarkup.includes('Company Command'), 'Command Hub includes the Company Command trigger button.'));
+ rows.push(qaCheckV60E('Company Command modal/render function exists', typeof renderers.companycommand==='function' && typeof renderCompanyCommandV60A==='function' && companyMarkup.includes('v60A Multi-Company Command Center'), 'Company Command renderer is registered and renders.'));
+ rows.push(qaCheckV60E('All 8 Company Command entries exist', loadCompanyCommandV60A().length===8 && companyNames.every(name=>companyMarkup.includes(name)), companyNames.filter(name=>!companyMarkup.includes(name)).length ? 'Missing: '+companyNames.filter(name=>!companyMarkup.includes(name)).join(', ') : 'All 8 required company names render.'));
+ rows.push(qaCheckV60E('Project Folders trigger exists', projectMarkup.includes("openModal('projectfoldersv60b')") && projectMarkup.includes('Project Folders'), 'Active Projects includes the Project Folders trigger button.'));
+ rows.push(qaCheckV60E('Project Folders modal/render function exists', typeof renderers.projectfoldersv60b==='function' && typeof renderProjectFoldersV60B==='function' && folderMarkup.includes('v60B Project Folders'), 'Project Folders renderer is registered and renders.'));
+ rows.push(qaCheckV60E('All 21 Project Folder names exist', PROJECT_FOLDER_TYPES.length===21 && folders.length===21 && PROJECT_FOLDER_TYPES.every(name=>folderMarkup.includes(name)), PROJECT_FOLDER_TYPES.filter(name=>!folderMarkup.includes(name)).length ? 'Missing: '+PROJECT_FOLDER_TYPES.filter(name=>!folderMarkup.includes(name)).join(', ') : 'All 21 required folder names render.'));
+ rows.push(qaCheckV60E('Project Folder row click/detail handler exists', folderMarkup.includes('folderClickRow') && folderMarkup.includes('onclick="openProjectFolderDetailV60D') && typeof openProjectFolderDetailV60D==='function', 'Project Folder row click/detail handler is present.'));
+ rows.push(qaCheckV60E('Project Folder detail drawer/modal exists', typeof renderers.projectfolderdetailv60d==='function' && typeof renderProjectFolderDetailV60D==='function' && detailMarkup.includes('v60D Project Folder Detail'), 'Detail drawer/modal renderer is present.'));
+ rows.push(qaCheckV60E('Project Folder detail close/back handler exists', detailMarkup.includes('closeModal()') && detailBackHandler, 'Detail view has modal close and Back handlers.'));
+ rows.push(qaCheckV60E('Code / Permits / Compliance trigger exists', folderMarkup.includes("openModal('compliancev60c')") && folderMarkup.includes('Code / Permits'), 'Project Folders includes Code / Permits trigger.'));
+ rows.push(qaCheckV60E('Code Compliance rows exist', complianceData.some(item=>String(item.itemType).includes('Code Compliance')) && complianceMarkup.includes('Code Compliance Flags'), 'Code Compliance rows render.'));
+ rows.push(qaCheckV60E('Permits row exists', complianceData.some(item=>String(item.itemType).includes('Permit')) && complianceMarkup.includes('Permit Requirements'), 'Permits row renders.'));
+ rows.push(qaCheckV60E('Inspections row exists', complianceData.some(item=>String(item.itemType).includes('Inspection')) && complianceMarkup.includes('Inspection Schedule'), 'Inspections row renders.'));
+ rows.push(qaCheckV60E('Owner Review Required labels exist', combinedMarkup.includes('Owner Review Required') || complianceValues.includes('Owner Review Required'), 'Owner Review Required labels render in clickable modules.'));
+ rows.push(qaCheckV60E('Locked/demo safety labels exist', lockedLabels.every(label=>combinedMarkup.includes(label) || complianceValues.includes(label)), lockedLabels.filter(label=>!(combinedMarkup.includes(label) || complianceValues.includes(label))).length ? 'Missing: '+lockedLabels.filter(label=>!(combinedMarkup.includes(label) || complianceValues.includes(label))).join(', ') : 'Locked/demo labels render across clickable modules.', 'LOCKED'));
+ rows.push(qaCheckV60E('Save QA Report button exists', qaControlMarkup.includes('saveAquaQAReportV60F()') && qaControlMarkup.includes('Save QA Report'), 'Save QA Report button remains in Command Hub output.'));
+ rows.push(qaCheckV60E('Copy Codex Repair Prompt button exists', qaControlMarkup.includes('copyCodexRepairPromptV60F()') && qaControlMarkup.includes('Copy Codex Repair Prompt'), 'Copy Codex Repair Prompt button remains in Command Hub output.'));
+ rows.push(qaCheckV60E('Clear QA Report button exists', qaControlMarkup.includes('clearAquaQAReportV60F()') && qaControlMarkup.includes('Clear QA Report'), 'Clear QA Report button remains in Command Hub output.'));
+ rows.push(qaCheckV60E('localStorage keys used by QA and module demo data can save/read harmless test data', storageWorks, storageWorks ? 'Harmless v60G probes saved/read/restored for QA, Company Command, Project Folders, Compliance, and detail state keys.' : 'One or more QA/module localStorage keys could not be saved/read/restored.'));
+ rows.push(qaCheckV60E('No live external/backend action flags are enabled', noLiveActionFlagsEnabled, noLiveActionFlagsEnabled ? 'Backend/upload/share/export/customer/permit/payroll/legal live flags remain locked or false.' : 'One or more live action flags is enabled.', 'LOCKED'));
+ rows.push(qaCheckV60E('Compliance rows include required row type labels', complianceRowTypes.every(term=>complianceMarkup.includes(term) || complianceValues.includes(term)), complianceRowTypes.filter(term=>!(complianceMarkup.includes(term) || complianceValues.includes(term))).length ? 'Missing: '+complianceRowTypes.filter(term=>!(complianceMarkup.includes(term) || complianceValues.includes(term))).join(', ') : 'Required compliance row type labels render.'));
+ rows.push(qaCheckV60E('No live AI calls enabled', true, 'No OpenAI, Gemini, Claude, or external AI API call is invoked by v60G QA.', 'LOCKED'));
  rows.push(qaCheckV60E('No live phone/SMS enabled', true, 'Phone, SMS, voice, and calendar routing remain text-only/locked in this demo.', 'LOCKED'));
  rows.push(qaCheckV60E('No live email sending enabled', true, 'Email/social/customer sending remains locked.', 'LOCKED'));
  rows.push(qaCheckV60E('No live payroll enabled', loadCompanyCommandV60A().every(c=>c.lockedSafeMode===true), 'Company command data remains locked safe-mode; payroll action is not live.', 'LOCKED'));
@@ -2229,11 +2261,10 @@ function runAquaFullQAV60E(){
  const out=document.getElementById('brainOut') || document.getElementById('aiOut');
  if(out) out.innerHTML=html;
  console.table(rows.map(row=>({status:row.status, check:row.label, detail:row.detail})));
- const report={version:'v60F', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
+ const report={version:'v60G', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
  saveAquaQAReportV60F(report);
  return report;
 }
-
 
 function loadCompanyCommandV60A(){
   try{
