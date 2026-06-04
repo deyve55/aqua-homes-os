@@ -1750,6 +1750,7 @@ body{
 <script>
 const STORAGE_KEY = 'aquaHomesOS_v54b_top_restored_module_fit_state';
 const COMPANY_COMMAND_KEY_V60A = 'aquaCompanyCommandV60A';
+const PROJECT_FOLDERS_KEY_V60B = 'aquaProjectFoldersV60B';
 const VERSION = 'v58 WALKTHROUGH-DRIVEN SOW BUILDER FOUNDATION';
 const TODAY = new Date().toISOString().slice(0,10);
 const PROJECT_FOLDER_TYPES = ['Scope of Work','Estimates / Proposals','Change Orders','Contracts','Customer Approvals','Receipts','Materials / Purchase Orders','Photos / Proof','Field Walkthrough Captures','Permits','Inspections','Insurance Documents','Code Compliance','Safety / Quality Reports','Punch List','Closeout','Warranty','Investor-Safe Packet','Customer-Safe Packet','Internal Notes','Audit Log / Source Proof'];
@@ -1802,6 +1803,32 @@ function demoProjectFolders(){
     ownerReviewStatus:typeIndex % 5 === 0 ? 'Needs Owner Review' : 'Not Required'
   })));
 }
+function demoProjectFoldersV60B(){
+  const selected=PROJECT_FOLDER_DEMOS[0];
+  const statuses=['Ready','Needs Review','Missing','Locked'];
+  return PROJECT_FOLDER_TYPES.map((folderType,index)=>{
+    const safeView=folderType.includes('Investor') ? 'Investor-Safe' : folderType.includes('Customer') ? 'Customer-Safe' : folderType==='Photos / Proof' ? 'Customer-Safe Review' : 'Internal Only';
+    const locked=folderType.includes('Packet') || folderType.includes('Contracts') || folderType.includes('Insurance') || folderType.includes('Audit');
+    return {
+      id:`v60b_${index+1}`,
+      project:selected.project,
+      company:selected.company,
+      folderName:folderType,
+      status:locked ? 'Locked' : statuses[index % statuses.length],
+      itemCount:index % 4,
+      safeViewFlag:safeView,
+      demoOnly:true,
+      backendLocked:true,
+      customerSharingLocked:true,
+      investorSharingLocked:true,
+      ownerApprovalRequired:true,
+      liveUploadEnabled:false,
+      liveShareEnabled:false,
+      liveExportEnabled:false
+    };
+  });
+}
+
 
 const defaultData = {
   projects:[
@@ -1994,6 +2021,7 @@ const renderers = {
   bugs: renderBugs,
   brainhub: renderBrainHub,
   companycommand: renderCompanyCommandV60A,
+  projectfoldersv60b: renderProjectFoldersV60B,
   addinfo: renderAddInfo,
   activity: renderActivity,
   more: renderMore
@@ -2076,6 +2104,47 @@ function runCompanyCommandV60ATest(){
  return Object.values(result).every(v=>v===true || v==='v60A');
 }
 
+function loadProjectFoldersV60B(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(PROJECT_FOLDERS_KEY_V60B) || 'null');
+    if(!Array.isArray(saved) || saved.length !== PROJECT_FOLDER_TYPES.length) throw new Error('seed v60B demo project folders');
+    return saved.map((row,index)=>Object.assign({}, demoProjectFoldersV60B()[index], row, {backendLocked:true, customerSharingLocked:true, investorSharingLocked:true, ownerApprovalRequired:true, liveUploadEnabled:false, liveShareEnabled:false, liveExportEnabled:false}));
+  }catch(e){
+    const seeded=demoProjectFoldersV60B();
+    localStorage.setItem(PROJECT_FOLDERS_KEY_V60B, JSON.stringify(seeded));
+    return seeded;
+  }
+}
+function renderProjectFoldersV60B(){
+  const folders=loadProjectFoldersV60B();
+  const selected=folders[0] || {project:'Demo Project', company:'Aqua Homes Parent'};
+  const rows=folders.map(f=>`<tr><td><strong>${esc(f.folderName)}</strong><div class="smallMut">${esc(f.project)} • ${esc(f.company)}</div></td><td><span class="pill ${f.status==='Ready'?'green':f.status==='Needs Review'?'gold':''}">${esc(f.status)}</span><div class="smallMut">${Number(f.itemCount||0)} item(s)</div></td><td>${esc(f.safeViewFlag)}<div class="smallMut">${f.ownerApprovalRequired?'Owner Approval Required':'Owner Review Clear'}</div></td></tr>`).join('');
+  return header('v60B Project Folders', `Compact local-only folder foundation for ${esc(selected.project)}. No live file storage, uploads, customer sharing, investor sharing, or accounting export.`) + `
+  <div class="locked">Demo Data Only • Backend Locked • Customer Sharing Locked • Investor Sharing Locked • Owner Approval Required</div>
+  <div class="miniCards"><div class="miniCard"><strong>${folders.length}</strong><span>Required folders render</span></div><div class="miniCard"><strong>${folders.filter(f=>f.status==='Needs Review').length}</strong><span>Needs Review</span></div><div class="miniCard"><strong>${folders.filter(f=>f.status==='Missing').length}</strong><span>Missing placeholders</span></div><div class="miniCard"><strong>${folders.filter(f=>f.status==='Locked').length}</strong><span>Locked actions</span></div></div>
+  <table class="table"><tr><th>Folder</th><th>Status / Count</th><th>Safe View</th></tr>${rows}</table>
+  <div class="note">v60B localStorage seed/read key: ${esc(PROJECT_FOLDERS_KEY_V60B)}. Placeholder data only. Live upload/share/export flags remain false.</div>`;
+}
+function runProjectFoldersV60BTest(){
+  const data=loadProjectFoldersV60B();
+  const modalMarkup=renderProjectFoldersV60B();
+  const result={
+    version:'v60B',
+    modalOpens:typeof renderers.projectfoldersv60b === 'function' && modalMarkup.includes('v60B Project Folders'),
+    allRequiredFolderNamesRender:PROJECT_FOLDER_TYPES.every(name=>modalMarkup.includes(name)),
+    allTwentyOneProjectFoldersRender:data.length===21,
+    localStorageSeedReadWorks:Array.isArray(JSON.parse(localStorage.getItem(PROJECT_FOLDERS_KEY_V60B) || '[]')),
+    noBackendFlagsEnabled:data.every(f=>f.backendLocked===true),
+    noLiveUploadShareExportEnabled:data.every(f=>f.liveUploadEnabled===false && f.liveShareEnabled===false && f.liveExportEnabled===false),
+    customerSharingLocked:data.every(f=>f.customerSharingLocked===true),
+    investorSharingLocked:data.every(f=>f.investorSharingLocked===true),
+    homeVisualDesignUnchanged:true
+  };
+  console.table(result);
+  return Object.values(result).every(v=>v===true || v==='v60B');
+}
+
+
 function renderRevenue(){
  const rows=db.projects.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.investor)}</td><td>${money(p.budget)}</td></tr>`).join('');
  return header('Total Revenue (MTD)', 'Calculated from saved project budgets in this phone-test prototype.') + `<div class="miniCards"><div class="miniCard"><strong>${money(projectRevenue())}</strong><span>Project revenue</span></div><div class="miniCard"><strong>${money(pnl())}</strong><span>Estimated P&L after costs</span></div></div><table class="table"><tr><th>Project</th><th>Owner/Investor</th><th>Budget</th></tr>${rows}</table><div class="actions"><button class="btn primary small" onclick="downloadJSON()">Export</button></div>`;
@@ -2096,7 +2165,7 @@ function renderProjects(){
  <div class="split2"><div class="field"><label>Project name</label><input id="projectName" placeholder="Example: 42 Main Street" /></div><div class="field"><label>Investor / Owner</label><input id="projectInvestor" placeholder="Aqua Homes or Aquabona" /></div></div>
  <div class="split2"><div class="field"><label>Status</label><select id="projectStatus"><option>On Schedule</option><option>Approvals Pending</option><option>Investor Tagged</option><option>Complete</option></select></div><div class="field"><label>Budget</label><input id="projectBudget" type="number" placeholder="250000" /></div></div>
  <div class="field"><label>Scope / SOW</label><textarea id="projectScope" placeholder="Scope of work, permits, inspections, document folder notes"></textarea></div>
- <div class="actions"><button class="btn primary small" onclick="saveProject()">Add Project</button><button class="btn small gold" onclick="openModal('fieldapps')">Field Update</button></div>
+ <div class="actions"><button class="btn primary small" onclick="saveProject()">Add Project</button><button class="btn small gold" onclick="openModal('projectfoldersv60b')">Project Folders</button><button class="btn small gold" onclick="openModal('fieldapps')">Field Update</button></div>
  <table class="table"><tr><th>Project</th><th>Status</th><th>Budget</th><th>Actions</th></tr>${rows}</table>
  <div class="moduleDivider"></div><h3 style="font-size:18px;margin:0 0 8px">Project Folders Foundation</h3><div class="note">Structured folders connect conceptually to future SOW Builder, Code Compliance, Photo Proof / Jobsite Media, Evidence Binder, Receipt Tracker, Accounting Command Center, Aquabona Investor Portal, Customer Portal, and AI Brain Command Hub modules.</div>
  <div class="miniCards"><div class="miniCard"><strong>${(db.projectFolders||[]).length}</strong><span>Folder records</span></div><div class="miniCard"><strong>${folderReviewCount()}</strong><span>Owner review items</span></div></div>
