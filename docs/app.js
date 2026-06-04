@@ -6,7 +6,9 @@ const LAUNCH_READINESS_KEY = "aquaHomes.launchReadinessChecklist";
 const SELECTED_PROJECT_KEY = "aquaHomes.selectedProjectName";
 const INVESTOR_VISIBILITY_KEY = "aquaHomes.aquabonaInvestorVisibility";
 const ACCOUNTING_REVIEW_KEY = "aquaHomes.accountingReview";
+const COMMAND_HISTORY_KEY = "aquaHomes.commandHistory";
 const MAX_RECENT_ACTIVITY = 10;
+const MAX_COMMAND_HISTORY = 12;
 const MODULE_STATUSES = ["active", "hidden", "locked"];
 const LAUNCH_READINESS_STATUSES = [
   "Not Started",
@@ -19,6 +21,16 @@ const MODULE_STATUS_LABELS = {
   hidden: "Hidden",
   locked: "Locked",
 };
+const COMMAND_ROUTE_PRIORITIES = ["Low", "Normal", "High", "Urgent"];
+const COMMAND_ROUTE_STATUSES = [
+  "Draft",
+  "Routed",
+  "Owner Gate",
+  "Office Review",
+  "Done",
+];
+const COMMAND_ROUTE_LOCK_NOTE =
+  "Command routing is local prototype-only. Live dispatch, notifications, AI execution, and backend workflow automation stay locked until backend/security/provider gates are complete.";
 const RECEIPT_REVIEW_STATUSES = ["Needs Review", "Coded", "Accounting Hold"];
 const PAYROLL_PREP_STATUSES = ["Draft", "Office Review", "Approved Hold"];
 const INVENTORY_TOOL_STATUSES = [
@@ -62,6 +74,12 @@ const WALKTHROUGH_READINESS_STATUSES = [
   "Needs Office Review",
   "Ready for Estimate",
   "Sent to Proposal",
+];
+const READBACK_STATUSES = [
+  "Not Read Back",
+  "Ready to Read Back",
+  "Readback Confirmed",
+  "Needs Correction",
 ];
 const CUSTOMER_PORTAL_REQUEST_TYPES = [
   "General Question",
@@ -118,6 +136,13 @@ const OWNER_APPROVAL_STATUSES = [
   "Owner Rejected",
   "Accounting Hold",
   "Completed",
+];
+const OWNER_APPROVAL_GATE_STATUSES = [
+  "Gate Needed",
+  "Gate Ready",
+  "Owner Approval Required",
+  "Owner Approved Gate",
+  "Blocked",
 ];
 const OWNER_APPROVAL_LOCK_NOTE =
   "Live approvals, payments, payroll release, and accounting impact are locked until backend/security/provider gates are complete.";
@@ -220,6 +245,11 @@ const launchReadinessItems = [
 
 const modules = [
   {
+    name: "Command Routing",
+    description:
+      "Route typed office commands into demo modules with owner gates, local status, and command history.",
+  },
+  {
     name: "Projects",
     description:
       "Track active builds, milestones, and next actions across Aqua Homes projects.",
@@ -292,6 +322,7 @@ const modules = [
 ];
 
 const quickAccessLinks = [
+  { label: "Command Routing", moduleId: "command-routing" },
   { label: "Projects", moduleId: "projects" },
   { label: "Receipts Review", moduleId: "receipts" },
   { label: "Payroll Prep", moduleId: "payroll-prep" },
@@ -309,6 +340,18 @@ const quickAccessLinks = [
 ];
 
 const demoDefaults = {
+  commandRoutes: [
+    {
+      commandText: "Route dock repair alternate into estimate review",
+      targetModule: "Estimates / Proposals / Change Orders",
+      projectProperty: "Canal House Retrofit",
+      ownerGate: "Owner Approval Required",
+      priority: "High",
+      status: "Owner Gate",
+      notes:
+        "Demo route only. Confirm owner approval and accounting hold before any live workflow is enabled.",
+    },
+  ],
   projects: [
     {
       name: "Canal House Retrofit",
@@ -418,6 +461,9 @@ const demoDefaults = {
       photoProofPlaceholder:
         "Placeholder for before photos, progress proof, and completion signoff notes.",
       readinessStatus: "Needs Office Review",
+      readbackStatus: "Ready to Read Back",
+      readbackScript:
+        "Read back dock alternate, kitchen punch-list scope, measurements, and photo-proof placeholders before estimate prep.",
     },
   ],
   customerPortal: [
@@ -460,6 +506,7 @@ const demoDefaults = {
       amount: "28500",
       requestedBy: "Avery Morgan",
       status: "Pending",
+      approvalGate: "Owner Approval Required",
       notes:
         "Demo approval item only. Owner approval workflow remains locked until backend/security/provider gates are complete.",
     },
@@ -470,6 +517,7 @@ const demoDefaults = {
       amount: "12400",
       requestedBy: "Aqua Homes Office",
       status: "Office Review",
+      approvalGate: "Gate Ready",
       notes:
         "Confirm scope, amount, and accounting hold before live approval routing is enabled.",
     },
@@ -480,6 +528,7 @@ const demoDefaults = {
       amount: "742.18",
       requestedBy: "Harbor Supply",
       status: "Accounting Hold",
+      approvalGate: "Blocked",
       notes:
         "Placeholder for office reconciliation and owner visibility review.",
     },
@@ -515,6 +564,9 @@ const demoDefaults = {
       moduleArea: "Projects dashboard",
       severity: "Medium",
       status: "New",
+      aiTestSuggestion:
+        "Run a narrow mobile viewport smoke test and compare card spacing before/after the next CSS pass.",
+      expectedResult: "Project cards remain readable without cramped text or clipped action buttons.",
       stepsToReproduce:
         "Open the structured starter on a narrow mobile viewport and review project card spacing.",
       notes: "Check the dashboard cards after the next prototype pass.",
@@ -523,6 +575,11 @@ const demoDefaults = {
 };
 
 const dashboardSummaryItems = [
+  {
+    label: "Command Routes",
+    storageKey: "commandRoutes",
+    helper: "Routed local demo commands",
+  },
   {
     label: "Active Projects",
     storageKey: "projects",
@@ -585,6 +642,64 @@ const dashboardSummaryItems = [
 ];
 
 const demoModules = {
+  "command-routing": {
+    storageKey: "commandRoutes",
+    eyebrow: "Command Routing",
+    submitLabel: "Route Command",
+    fields: [
+      {
+        name: "commandText",
+        label: "Command text",
+        placeholder: "Route dock repair alternate into estimate review",
+        multiline: true,
+        required: true,
+      },
+      {
+        name: "targetModule",
+        label: "Target module",
+        options: quickAccessLinks
+          .filter((link) => link.moduleId !== "command-routing")
+          .map((link) => link.label),
+        required: true,
+      },
+      {
+        name: "projectProperty",
+        label: "Project / property",
+        placeholder: "Canal House Retrofit",
+        projectOptions: true,
+        required: true,
+      },
+      {
+        name: "ownerGate",
+        label: "Owner gate",
+        options: OWNER_APPROVAL_GATE_STATUSES,
+        required: true,
+      },
+      {
+        name: "priority",
+        label: "Priority",
+        options: COMMAND_ROUTE_PRIORITIES,
+        required: true,
+      },
+      {
+        name: "status",
+        label: "Route status",
+        options: COMMAND_ROUTE_STATUSES,
+        required: true,
+      },
+      {
+        name: "notes",
+        label: "Routing notes",
+        placeholder: "Add owner gate, safety hold, or handoff context",
+        multiline: true,
+      },
+    ],
+    empty: "No command routes saved yet.",
+    format: (item) => ({
+      title: getCommandRouteTitle(item),
+      meta: `${getCommandRouteTarget(item)} · ${getCommandRouteProject(item)} · ${getCommandRoutePriority(item)} · ${getCommandRouteStatus(item)} · ${getCommandRouteGate(item)}`,
+    }),
+  },
   projects: {
     storageKey: "projects",
     eyebrow: "Demo project log",
@@ -877,6 +992,18 @@ const demoModules = {
         options: WALKTHROUGH_READINESS_STATUSES,
         required: true,
       },
+      {
+        name: "readbackStatus",
+        label: "Readback status",
+        options: READBACK_STATUSES,
+        required: true,
+      },
+      {
+        name: "readbackScript",
+        label: "Readback placeholder script",
+        placeholder: "What the assistant should read back before office approval",
+        multiline: true,
+      },
     ],
     empty: "No demo walkthrough captures yet.",
     format: (item) => ({
@@ -1075,6 +1202,12 @@ const demoModules = {
         required: true,
       },
       {
+        name: "approvalGate",
+        label: "Approval gate",
+        options: OWNER_APPROVAL_GATE_STATUSES,
+        required: true,
+      },
+      {
         name: "notes",
         label: "Notes",
         placeholder: "Owner review notes, office conditions, and accounting hold context",
@@ -1160,6 +1293,18 @@ const demoModules = {
         required: true,
       },
       {
+        name: "expectedResult",
+        label: "Expected result",
+        placeholder: "What should happen when the issue is fixed",
+        multiline: true,
+      },
+      {
+        name: "aiTestSuggestion",
+        label: "AI test suggestion",
+        placeholder: "Local AI-style test plan placeholder; no live AI call is made",
+        multiline: true,
+      },
+      {
         name: "stepsToReproduce",
         label: "Steps to reproduce",
         placeholder:
@@ -1209,6 +1354,7 @@ const resetDemoData = document.querySelector("[data-reset-demo]");
 
 let demoData = loadDemoData();
 let recentActivity = loadRecentActivity();
+let commandHistory = loadCommandHistory();
 let investorVisibility = loadInvestorVisibility();
 let accountingReview = loadAccountingReview();
 let moduleSettings = loadModuleSettings();
@@ -1367,6 +1513,18 @@ function saveInvestorVisibility() {
   );
 }
 
+function normalizeCommandRoute(route) {
+  return {
+    commandText: getCommandRouteTitle(route),
+    targetModule: getCommandRouteTarget(route),
+    projectProperty: getCommandRouteProject(route),
+    ownerGate: getCommandRouteGate(route),
+    priority: getCommandRoutePriority(route),
+    status: getCommandRouteStatus(route),
+    notes: String(route?.notes ?? route?.note ?? "").trim(),
+  };
+}
+
 function normalizeMaintenanceRequest(request) {
   return {
     title: getMaintenanceTitle(request),
@@ -1426,6 +1584,10 @@ function normalizeFieldWalkthroughRecord(record) {
       record?.photoProofPlaceholder ?? record?.proof ?? "",
     ).trim(),
     readinessStatus: getWalkthroughStatus(record),
+    readbackStatus: getReadbackStatus(record),
+    readbackScript: String(
+      record?.readbackScript ?? record?.readbackNotes ?? "",
+    ).trim(),
   };
 }
 
@@ -1463,6 +1625,7 @@ function normalizeOwnerApprovalRecord(record) {
     amount: String(record?.amount ?? record?.reviewAmount ?? "0").trim(),
     requestedBy: String(record?.requestedBy ?? record?.requester ?? "").trim(),
     status: getOwnerApprovalStatus(record),
+    approvalGate: getOwnerApprovalGate(record),
     notes: String(record?.notes ?? record?.note ?? "").trim(),
   };
 }
@@ -1483,6 +1646,12 @@ function normalizeBugRecord(record) {
     moduleArea: getBugModuleArea(record),
     severity: getBugSeverity(record),
     status: getBugStatus(record),
+    expectedResult: String(
+      record?.expectedResult ?? record?.expected ?? "",
+    ).trim(),
+    aiTestSuggestion: String(
+      record?.aiTestSuggestion ?? record?.testSuggestion ?? "",
+    ).trim(),
     stepsToReproduce: String(
       record?.stepsToReproduce ?? record?.steps ?? record?.reproSteps ?? "",
     ).trim(),
@@ -1504,6 +1673,10 @@ function normalizeDemoData(value) {
   return Object.fromEntries(
     Object.keys(defaults).map((key) => {
       const items = Array.isArray(source[key]) ? source[key] : defaults[key];
+
+      if (key === "commandRoutes") {
+        return [key, items.map(normalizeCommandRoute)];
+      }
 
       if (key === "projects") {
         return [key, items.map(normalizeProjectRecord)];
@@ -1567,6 +1740,42 @@ function normalizeRecentActivity(value) {
     .slice(0, MAX_RECENT_ACTIVITY);
 }
 
+function normalizeCommandHistory(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .filter((entry) => entry && typeof entry === "object")
+    .map((entry) => ({
+      id: String(entry.id ?? `${Date.now()}-${Math.random()}`),
+      commandText: String(entry.commandText ?? entry.title ?? "Command").trim(),
+      targetModule: String(entry.targetModule ?? "Command Routing").trim(),
+      status: getCommandRouteStatus(entry),
+      ownerGate: getCommandRouteGate(entry),
+      createdAt: String(entry.createdAt ?? new Date().toISOString()),
+    }))
+    .slice(0, MAX_COMMAND_HISTORY);
+}
+
+function loadCommandHistory() {
+  const storedHistory = readLocalStorage(COMMAND_HISTORY_KEY);
+
+  if (!storedHistory) {
+    return [];
+  }
+
+  try {
+    return normalizeCommandHistory(JSON.parse(storedHistory));
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveCommandHistory() {
+  writeLocalStorage(COMMAND_HISTORY_KEY, JSON.stringify(commandHistory));
+}
+
 function loadRecentActivity() {
   const storedActivity = readLocalStorage(RECENT_ACTIVITY_KEY);
 
@@ -1627,6 +1836,49 @@ function getInventoryToolStatus(item) {
     : INVENTORY_TOOL_STATUSES[0];
 }
 
+function getCommandRouteTitle(route) {
+  return (
+    String(route?.commandText ?? route?.title ?? route?.command ?? "Command").trim() ||
+    "Command"
+  );
+}
+
+function getCommandRouteTarget(route) {
+  return (
+    String(route?.targetModule ?? route?.module ?? "Projects").trim() || "Projects"
+  );
+}
+
+function getCommandRouteProject(route) {
+  return (
+    String(
+      route?.projectProperty ?? route?.propertyProject ?? route?.project ?? "Saved project",
+    ).trim() || "Saved project"
+  );
+}
+
+function getCommandRouteGate(route) {
+  const gate = String(route?.ownerGate ?? route?.approvalGate ?? "").trim();
+
+  return OWNER_APPROVAL_GATE_STATUSES.includes(gate)
+    ? gate
+    : OWNER_APPROVAL_GATE_STATUSES[0];
+}
+
+function getCommandRoutePriority(route) {
+  const priority = String(route?.priority ?? "").trim();
+
+  return COMMAND_ROUTE_PRIORITIES.includes(priority)
+    ? priority
+    : COMMAND_ROUTE_PRIORITIES[1];
+}
+
+function getCommandRouteStatus(route) {
+  const status = String(route?.status ?? route?.routeStatus ?? "").trim();
+
+  return COMMAND_ROUTE_STATUSES.includes(status) ? status : COMMAND_ROUTE_STATUSES[0];
+}
+
 function getWalkthroughProject(record) {
   return (
     String(
@@ -1644,6 +1896,12 @@ function getWalkthroughStatus(record) {
   return WALKTHROUGH_READINESS_STATUSES.includes(status)
     ? status
     : WALKTHROUGH_READINESS_STATUSES[0];
+}
+
+function getReadbackStatus(record) {
+  const status = String(record?.readbackStatus ?? "").trim();
+
+  return READBACK_STATUSES.includes(status) ? status : READBACK_STATUSES[0];
 }
 
 function getCustomerPortalTitle(record) {
@@ -1816,6 +2074,14 @@ function getOwnerApprovalStatus(record) {
   return OWNER_APPROVAL_STATUSES.includes(status)
     ? status
     : OWNER_APPROVAL_STATUSES[0];
+}
+
+function getOwnerApprovalGate(record) {
+  const gate = String(record?.approvalGate ?? record?.ownerGate ?? "").trim();
+
+  return OWNER_APPROVAL_GATE_STATUSES.includes(gate)
+    ? gate
+    : OWNER_APPROVAL_GATE_STATUSES[0];
 }
 
 function getLaborCost(record) {
@@ -2005,6 +2271,12 @@ function getInventoryToolSummary(items = demoData.inventoryTools ?? []) {
 function getWalkthroughSummary(records = demoData.fieldWalkthrough ?? []) {
   return {
     total: records.length,
+    readbackReady: records.filter(
+      (record) => getReadbackStatus(record) === "Ready to Read Back",
+    ).length,
+    readbackConfirmed: records.filter(
+      (record) => getReadbackStatus(record) === "Readback Confirmed",
+    ).length,
     draftCapture: records.filter(
       (record) => getWalkthroughStatus(record) === "Draft Capture",
     ).length,
@@ -2035,6 +2307,18 @@ function getCustomerPortalSummary(records = demoData.customerPortal ?? []) {
     closed: records.filter(
       (record) => getCustomerPortalStatus(record) === "Closed",
     ).length,
+  };
+}
+
+function getCommandRouteSummary(routes = demoData.commandRoutes ?? []) {
+  return {
+    total: routes.length,
+    ownerGate: routes.filter((route) => getCommandRouteStatus(route) === "Owner Gate").length,
+    urgentHigh: routes.filter((route) =>
+      ["High", "Urgent"].includes(getCommandRoutePriority(route)),
+    ).length,
+    routed: routes.filter((route) => getCommandRouteStatus(route) === "Routed").length,
+    done: routes.filter((route) => getCommandRouteStatus(route) === "Done").length,
   };
 }
 
@@ -2090,6 +2374,7 @@ function getBugSummary(records = demoData.bugCapture ?? []) {
     highCritical: records.filter((record) =>
       ["High", "Critical"].includes(getBugSeverity(record)),
     ).length,
+    aiSuggestions: records.filter((record) => String(record.aiTestSuggestion ?? "").trim()).length,
     fixed: records.filter((record) => getBugStatus(record) === "Fixed").length,
     retestNeeded: records.filter(
       (record) => getBugStatus(record) === "Retest Needed",
@@ -2111,6 +2396,11 @@ function getOwnerApprovalSummary(records = demoData.ownerApprovals ?? []) {
     ).length,
     accountingHold: records.filter(
       (record) => getOwnerApprovalStatus(record) === "Accounting Hold",
+    ).length,
+    gateRequired: records.filter((record) =>
+      ["Gate Needed", "Owner Approval Required", "Blocked"].includes(
+        getOwnerApprovalGate(record),
+      ),
     ).length,
     totalAmountUnderReview: records.reduce((total, record) => {
       const status = getOwnerApprovalStatus(record);
@@ -2303,6 +2593,38 @@ function addInventoryToolStatusActivity(item, previousStatus, nextStatus) {
 
   saveRecentActivity();
   renderRecentActivity();
+}
+
+function addCommandRouteActivity(route, previousStatus, nextStatus) {
+  recentActivity = [
+    {
+      id: `${Date.now()}-command-route-status`,
+      module: "Command Routing",
+      title: getCommandRouteTitle(route),
+      meta: `Status changed from ${previousStatus} to ${nextStatus} · ${getCommandRouteTarget(route)} · ${getCommandRouteGate(route)}`,
+      createdAt: new Date().toISOString(),
+    },
+    ...recentActivity,
+  ].slice(0, MAX_RECENT_ACTIVITY);
+
+  saveRecentActivity();
+  renderRecentActivity();
+}
+
+function addCommandHistory(route) {
+  commandHistory = [
+    {
+      id: `${Date.now()}-command-history`,
+      commandText: getCommandRouteTitle(route),
+      targetModule: getCommandRouteTarget(route),
+      status: getCommandRouteStatus(route),
+      ownerGate: getCommandRouteGate(route),
+      createdAt: new Date().toISOString(),
+    },
+    ...commandHistory,
+  ].slice(0, MAX_COMMAND_HISTORY);
+
+  saveCommandHistory();
 }
 
 function addInvestorVisibilityActivity(category, nextValue) {
@@ -2835,6 +3157,10 @@ function getInsightMessage(summaryItem) {
   const count = getSummaryCount(summaryItem);
 
   switch (summaryItem.storageKey) {
+    case "commandRoutes": {
+      const summary = getCommandRouteSummary(demoData.commandRoutes ?? []);
+      return `${summary.total} command ${summary.total === 1 ? "route is" : "routes are"} saved: ${summary.ownerGate} at owner gate, ${summary.urgentHigh} high/urgent, ${summary.routed} routed, and ${summary.done} done.`;
+    }
     case "projects":
       return `${count} active ${count === 1 ? "project is" : "projects are"} in the local demo project log.`;
     case "receipts":
@@ -3494,6 +3820,100 @@ function updateInventoryToolStatus(index, nextStatus) {
   renderDemoModule("inventory-tools");
 }
 
+function renderCommandRoutingPanel(routes) {
+  const summary = getCommandRouteSummary(routes);
+  const summaryGrid = `
+    <div class="command-route-summary-grid" aria-label="Command routing summary">
+      <article><strong>${summary.total}</strong><span>Total routes</span></article>
+      <article><strong>${summary.ownerGate}</strong><span>Owner gate routes</span></article>
+      <article><strong>${summary.urgentHigh}</strong><span>High / urgent</span></article>
+      <article><strong>${summary.routed}</strong><span>Routed</span></article>
+      <article><strong>${summary.done}</strong><span>Done</span></article>
+    </div>
+  `;
+  const historyRows = commandHistory.length
+    ? commandHistory
+        .map(
+          (entry) => `
+            <li>
+              <strong>${escapeHtml(entry.commandText || "Command")}</strong>
+              <span>${escapeHtml(entry.targetModule || "Command Routing")} · ${escapeHtml(entry.status || "Draft")} · ${escapeHtml(entry.ownerGate || "Gate Needed")} · ${escapeHtml(formatActivityTime(entry.createdAt))}</span>
+            </li>
+          `,
+        )
+        .join("")
+    : '<li><strong>No command history yet</strong><span>Saved routes will appear here as local-only history.</span></li>';
+
+  const routeRows = routes.length
+    ? routes
+        .map((route, index) => {
+          const currentStatus = getCommandRouteStatus(route);
+          const statusOptions = COMMAND_ROUTE_STATUSES.map(
+            (status) =>
+              `<option value="${escapeHtml(status)}" ${status === currentStatus ? "selected" : ""}>${escapeHtml(status)}</option>`,
+          ).join("");
+
+          return `
+            <article class="command-route-card">
+              <div>
+                <strong>${escapeHtml(getCommandRouteTitle(route))}</strong>
+                <span>${escapeHtml(getCommandRouteTarget(route))} · ${escapeHtml(getCommandRouteProject(route))}</span>
+                <span>${escapeHtml(getCommandRoutePriority(route))} priority · ${escapeHtml(getCommandRouteGate(route))}</span>
+                <span>${escapeHtml(route.notes || "Routing notes pending")}</span>
+              </div>
+              <label>
+                <span>Route status</span>
+                <select data-command-route-status-index="${index}" aria-label="Command route status for ${escapeHtml(getCommandRouteTitle(route))}">
+                  ${statusOptions}
+                </select>
+              </label>
+            </article>
+          `;
+        })
+        .join("")
+    : '<p class="command-route-empty">No command route demo records yet.</p>';
+
+  return `
+    <section class="command-route-panel" aria-label="Command Routing panel">
+      <div class="command-route-header">
+        <div>
+          <p class="eyebrow">Command Routing</p>
+          <h4>Route Commands + History</h4>
+        </div>
+        <span class="command-route-status">Local router</span>
+      </div>
+      <p class="command-route-lock-note">${COMMAND_ROUTE_LOCK_NOTE}</p>
+      ${summaryGrid}
+      <div class="command-route-list">${routeRows}</div>
+      <div class="command-history-panel">
+        <p class="eyebrow">Command History</p>
+        <ul>${historyRows}</ul>
+      </div>
+    </section>
+  `;
+}
+
+function updateCommandRouteStatus(index, nextStatus) {
+  const route = demoData.commandRoutes?.[index];
+
+  if (!route || !COMMAND_ROUTE_STATUSES.includes(nextStatus)) {
+    return;
+  }
+
+  const previousStatus = getCommandRouteStatus(route);
+
+  if (previousStatus === nextStatus) {
+    return;
+  }
+
+  route.status = nextStatus;
+  saveDemoData();
+  addCommandRouteActivity(route, previousStatus, nextStatus);
+  addCommandHistory(route);
+  renderModules();
+  renderDemoModule("command-routing");
+}
+
 function renderWalkthroughCapturePanel(records) {
   const summary = getWalkthroughSummary(records);
   const summaryGrid = `
@@ -3502,6 +3922,8 @@ function renderWalkthroughCapturePanel(records) {
       <article><strong>${summary.draftCapture}</strong><span>Draft capture</span></article>
       <article><strong>${summary.officeReview}</strong><span>Needs office review</span></article>
       <article><strong>${summary.readyForEstimate}</strong><span>Ready for estimate</span></article>
+      <article><strong>${summary.readbackReady}</strong><span>Readback ready</span></article>
+      <article><strong>${summary.readbackConfirmed}</strong><span>Readback confirmed</span></article>
       <article><strong>${summary.sentToProposal}</strong><span>Sent to proposal</span></article>
     </div>
   `;
@@ -3543,6 +3965,7 @@ function renderWalkthroughCapturePanel(records) {
             <span>Measurements: ${escapeHtml(record.measurementNotes || "Measurement notes pending")}</span>
             <span>Scope draft: ${escapeHtml(record.scopeDraft || "Scope draft pending")}</span>
             <span>Photo / proof: ${escapeHtml(record.photoProofPlaceholder || "Placeholder text pending")}</span>
+            <span>Readback: ${escapeHtml(getReadbackStatus(record))} · ${escapeHtml(record.readbackScript || "Readback placeholder pending")}</span>
           </div>
           <label>
             <span>Estimate readiness</span>
@@ -3786,6 +4209,7 @@ function renderOwnerApprovalsPanel(records) {
       <article><strong>${summary.officeReview}</strong><span>Office review count</span></article>
       <article><strong>${summary.approved}</strong><span>Approved count</span></article>
       <article><strong>${summary.accountingHold}</strong><span>Accounting hold count</span></article>
+      <article><strong>${summary.gateRequired}</strong><span>Gate required / blocked</span></article>
       <article><strong>${escapeHtml(formatCurrency(summary.totalAmountUnderReview))}</strong><span>Total amount under review</span></article>
     </div>
   `;
@@ -3804,6 +4228,7 @@ function renderOwnerApprovalsPanel(records) {
                 <strong>${escapeHtml(getOwnerApprovalTitle(record))}</strong>
                 <span>${escapeHtml(getOwnerApprovalProject(record))} · ${escapeHtml(getOwnerApprovalType(record))} · ${escapeHtml(formatCurrency(record.amount))}</span>
                 <span>Requested by ${escapeHtml(record.requestedBy || "Unassigned requester")}</span>
+                <span>Approval gate: ${escapeHtml(getOwnerApprovalGate(record))}</span>
                 <span>${escapeHtml(record.notes || "No approval notes saved yet.")}</span>
               </div>
               <label>
@@ -3954,6 +4379,7 @@ function renderBugCapturePanel(records) {
       <article><strong>${summary.total}</strong><span>Total bugs</span></article>
       <article><strong>${summary.newBugs}</strong><span>New bugs</span></article>
       <article><strong>${summary.highCritical}</strong><span>High / critical bugs</span></article>
+      <article><strong>${summary.aiSuggestions}</strong><span>AI test suggestions</span></article>
       <article><strong>${summary.fixed}</strong><span>Fixed bugs</span></article>
       <article><strong>${summary.retestNeeded}</strong><span>Retest needed count</span></article>
     </div>
@@ -3989,6 +4415,8 @@ function renderBugCapturePanel(records) {
           <div>
             <strong>${escapeHtml(getBugTitle(record))}</strong>
             <span>${escapeHtml(getBugModuleArea(record))} · ${escapeHtml(getBugSeverity(record))} severity</span>
+            <span>Expected: ${escapeHtml(record.expectedResult || "Expected result pending")}</span>
+            <span>AI test placeholder: ${escapeHtml(record.aiTestSuggestion || "AI test suggestion pending")}</span>
             <span>Steps: ${escapeHtml(record.stepsToReproduce || "Steps to reproduce pending")}</span>
             <span>${escapeHtml(record.notes || "QA notes pending")}</span>
           </div>
@@ -4234,6 +4662,7 @@ function renderDemoList(moduleId) {
   const demoModule = demoModules[moduleId];
   const items = demoData[demoModule.storageKey] ?? [];
   const list = detailDemo.querySelector("[data-demo-list]");
+  const commandRoutingSlot = detailDemo.querySelector("[data-command-routing]");
   const projectFolderSlot = detailDemo.querySelector("[data-project-folder]");
   const receiptReviewSlot = detailDemo.querySelector("[data-receipt-review]");
   const payrollPrepSlot = detailDemo.querySelector("[data-payroll-prep]");
@@ -4257,6 +4686,9 @@ function renderDemoList(moduleId) {
 
   if (!items.length) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
+    if (commandRoutingSlot) {
+      commandRoutingSlot.innerHTML = renderCommandRoutingPanel(items);
+    }
     if (projectFolderSlot) {
       projectFolderSlot.innerHTML = renderProjectFolder(null);
     }
@@ -4330,6 +4762,20 @@ function renderDemoList(moduleId) {
       renderDemoList(moduleId);
     });
   });
+
+  if (commandRoutingSlot) {
+    commandRoutingSlot.innerHTML = renderCommandRoutingPanel(items);
+    commandRoutingSlot
+      .querySelectorAll("[data-command-route-status-index]")
+      .forEach((select) => {
+        select.addEventListener("change", () =>
+          updateCommandRouteStatus(
+            Number(select.dataset.commandRouteStatusIndex),
+            select.value,
+          ),
+        );
+      });
+  }
 
   if (projectFolderSlot) {
     projectFolderSlot.innerHTML = renderProjectFolder(
@@ -4610,6 +5056,7 @@ function renderDemoModule(moduleId) {
       <button type="submit">${demoModule.submitLabel}</button>
     </form>
     <ul class="demo-list" data-demo-list></ul>
+    ${moduleId === "command-routing" ? "<div data-command-routing></div>" : ""}
     ${moduleId === "projects" ? "<div data-project-folder></div>" : ""}
     ${moduleId === "receipts" ? "<div data-receipt-review></div>" : ""}
     ${moduleId === "payroll-prep" ? "<div data-payroll-prep></div>" : ""}
@@ -4643,6 +5090,9 @@ function renderDemoModule(moduleId) {
       ];
       if (moduleId === "projects") {
         saveSelectedProject(nextItem.name);
+      }
+      if (moduleId === "command-routing") {
+        addCommandHistory(nextItem);
       }
       saveDemoData();
       addRecentActivity(moduleId, nextItem);
@@ -4823,6 +5273,13 @@ window.addEventListener("storage", (event) => {
   if (event.key === RECENT_ACTIVITY_KEY) {
     recentActivity = loadRecentActivity();
     renderRecentActivity();
+  }
+
+  if (event.key === COMMAND_HISTORY_KEY) {
+    commandHistory = loadCommandHistory();
+    if (activeModule && getModuleId(activeModule.name) === "command-routing") {
+      renderDemoModule("command-routing");
+    }
   }
 
   if (event.key === MODULE_SETTINGS_KEY) {
