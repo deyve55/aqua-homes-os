@@ -1570,6 +1570,7 @@ body{
 /* v60F QA Report History + Copy Codex Repair Prompt — Command Hub output only; protected Home visuals untouched. */
 /* v60G Expanded Clickable Module QA Coverage — Command Hub output only; protected Home visuals untouched. */
 /* v60H Walkthrough-Driven SOW Builder Foundation — compact modal-only SOW backbone; protected Home visuals untouched. */
+/* v60I SOW / Folder Interaction Repair — compact clickable detail + locked action feedback only; protected Home visuals untouched. */
 .modal .qaReportV60E{display:grid;gap:8px;margin-top:12px;}
 .modal .qaSummaryV60E{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
 .modal .qaRowV60E{display:grid;grid-template-columns:84px 1fr;gap:8px;align-items:start;border:1px solid rgba(49,114,236,.18);border-radius:12px;background:rgba(6,18,32,.58);padding:8px 10px;}
@@ -1590,7 +1591,10 @@ body{
 .modal .folderDetailCard b{display:block;color:#f4f8ff;font-size:12px;margin-bottom:4px;}
 .modal .folderDetailCard span{display:block;color:#b7c8dc;font-size:12px;line-height:1.28;}
 .modal .folderLockedActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0;}
-.modal .folderLockedActions .btn{pointer-events:none;opacity:.74;}
+.modal .folderLockedActions .btn{pointer-events:auto;opacity:.86;}
+.modal .sowClickRow,.modal .complianceClickRow,.modal .folderDetailCard{cursor:pointer;}
+.modal .sowClickRow:hover,.modal .complianceClickRow:hover,.modal .folderDetailCard:hover{background:rgba(49,114,236,.08);}
+.modal .lockedActionOutputV60I{border:1px solid rgba(243,167,45,.34);border-radius:14px;background:rgba(243,167,45,.10);color:#ffe2a3;padding:10px 12px;margin:10px 0;font-size:12px;line-height:1.35;}
 @media (max-width:560px){.modal .folderDetailGrid,.modal .folderLockedActions{grid-template-columns:1fr;}}
 .modal .pill{
   min-height:26px;
@@ -1782,7 +1786,7 @@ const COMPLIANCE_KEY_V60C = 'aquaComplianceV60C';
 const PROJECT_FOLDER_DETAIL_KEY_V60D = 'aquaProjectFolderDetailV60D';
 const QA_TEST_KEY_V60E = 'aquaQATestV60E';
 const SOW_BUILDER_KEY_V60H = 'aquaSOWBuilderV60H';
-const VERSION = 'v60H WALKTHROUGH-DRIVEN SOW BUILDER FOUNDATION';
+const VERSION = 'v60I SOW / FOLDER INTERACTION REPAIR';
 const TODAY = new Date().toISOString().slice(0,10);
 const PROJECT_FOLDER_TYPES = ['Scope of Work','Estimates / Proposals','Change Orders','Contracts','Customer Approvals','Receipts','Materials / Purchase Orders','Photos / Proof','Field Walkthrough Captures','Permits','Inspections','Insurance Documents','Code Compliance','Safety / Quality Reports','Punch List','Closeout','Warranty','Investor-Safe Packet','Customer-Safe Packet','Internal Notes','Audit Log / Source Proof'];
 const PROJECT_FOLDER_DEMOS = [
@@ -1823,9 +1827,64 @@ function loadSOWBuilderV60H(){
 }
 function renderSOWBuilderV60H(){
   const rows=loadSOWBuilderV60H();
-  const demoRows=rows.map(row=>`<tr><td><strong>${esc(row.roomArea)}</strong><div class="smallMut">${esc(row.project)} • ${esc(row.companyDivision)}</div></td><td>${esc(row.tradeCategory)}<div class="smallMut">${esc(row.scopeNote)}</div></td><td><span class="pill gold">${esc(row.status)}</span><div class="smallMut">Owner Review Required</div></td><td>${esc(row.linkedProjectFolder)}<div class="smallMut">${esc(row.linkedEvidenceSourceProof)}</div></td><td>${esc(row.safeModeLabel)}<div class="smallMut">No Customer Sharing</div></td></tr>`).join('');
+  const demoRows=rows.map(row=>`<tr class="sowClickRow" onclick='openSowDemoDetailV60I(${jsArgV60I(row.id)},"sow")' tabindex="0" role="button" aria-label="Open SOW detail for ${esc(row.roomArea)}"><td><strong>${esc(row.roomArea)}</strong><div class="smallMut">${esc(row.project)} • ${esc(row.companyDivision)}</div><div class="folderClickHint">Tap for SOW detail</div></td><td>${esc(row.tradeCategory)}<div class="smallMut">${esc(row.scopeNote)}</div></td><td><span class="pill gold">${esc(row.status)}</span><div class="smallMut">Owner Review Required</div></td><td>${esc(row.linkedProjectFolder)}<div class="smallMut">${esc(row.linkedEvidenceSourceProof)}</div></td><td><button class="btn small gold" onclick="event.stopPropagation();showLockedActionV60I('Backend Locked','sow')">${esc(row.safeModeLabel)}</button><div class="smallMut">No Customer Sharing</div></td></tr>`).join('');
   const fieldList=['Project','Company / Division','Room / Area','Trade Category','Scope Note','Measurements / Takeoff Placeholder','Photos / Proof Placeholder','Material Notes','Labor Notes','Assumptions','Exclusions','Allowances','Alternates','Standard / Premium / Luxury tier placeholder','Code / Permit Flag','Owner Review Required','Linked Project Folder: Scope of Work','Linked Evidence / Source Proof placeholder'];
-  return `<div class="moduleDivider"></div><h3 style="font-size:18px;margin:0 0 8px">v60H Walkthrough SOW Builder</h3><div class="locked">Demo Data Only • Backend Locked • AI Pricing Locked • Customer Proposal Locked • Owner Review Required • No Customer Sharing</div><div class="note">Compact local/demo-only SOW Builder foundation. Seed/read key: ${esc(SOW_BUILDER_KEY_V60H)}. No backend, live AI, pricing, supplier pricing, uploads, exports, final customer proposal, or customer sharing is enabled.</div><div class="miniCards"><div class="miniCard"><strong>${rows.length}</strong><span>Demo SOW rows</span></div><div class="miniCard"><strong>Scope of Work</strong><span>Linked Project Folder</span></div><div class="miniCard"><strong>Standard / Premium / Luxury</strong><span>Tier placeholder only</span></div><div class="miniCard"><strong>Locked</strong><span>AI pricing + customer proposal</span></div></div><div class="folderDetailGrid">${fieldList.map(label=>`<div class="folderDetailCard"><b>${esc(label)}</b><span>${label.includes('Scope of Work')?'Scope of Work':label.includes('Owner Review')?'Owner Review Required':'Local placeholder'}</span></div>`).join('')}</div><div class="folderLockedActions"><button class="btn small" disabled>Generate Proposal — Locked</button><button class="btn small" disabled>AI Pricing — Locked</button><button class="btn small" disabled>Upload Proof — Locked</button><button class="btn small" disabled>Export — Locked</button><button class="btn small gold" disabled>Owner Review Required</button></div><table class="table"><tr><th>Area</th><th>Trade</th><th>Status / Owner</th><th>Linked Folder</th><th>Safe Mode</th></tr>${demoRows}</table>`;
+  return `<div class="moduleDivider"></div><h3 style="font-size:18px;margin:0 0 8px">v60H Walkthrough SOW Builder</h3><div class="locked">Demo Data Only • Backend Locked • AI Pricing Locked • Customer Proposal Locked • Owner Review Required • No Customer Sharing</div><div class="note">Compact local/demo-only SOW Builder foundation. Seed/read key: ${esc(SOW_BUILDER_KEY_V60H)}. No backend, live AI, pricing, supplier pricing, uploads, exports, final customer proposal, or customer sharing is enabled.</div><div class="miniCards"><div class="miniCard"><strong>${rows.length}</strong><span>Demo SOW rows</span></div><div class="miniCard"><strong>Scope of Work</strong><span>Linked Project Folder</span></div><div class="miniCard"><strong>Standard / Premium / Luxury</strong><span>Tier placeholder only</span></div><div class="miniCard"><strong>Locked</strong><span>AI pricing + customer proposal</span></div></div><div class="folderDetailGrid">${fieldList.map(label=>{ const value=label.includes('Scope of Work')?'Scope of Work':label.includes('Owner Review')?'Owner Review Required':'Local placeholder'; return `<div class="folderDetailCard" onclick='${label.includes('Owner Review') ? `showLockedActionV60I("Owner Review Required","sow")` : `showFolderCardDetailV60I(${jsArgV60I(label)},${jsArgV60I(value)},"sow")`}'><b>${esc(label)}</b><span>${esc(value)}</span></div>`; }).join('')}</div><div class="folderLockedActions"><button class="btn small" onclick="showLockedActionV60I('Customer Proposal Locked','sow')">Generate Proposal — Locked</button><button class="btn small" onclick="showLockedActionV60I('AI Pricing Locked','sow')">AI Pricing — Locked</button><button class="btn small" onclick="showLockedActionV60I('Uploads Locked','sow')">Upload Proof — Locked</button><button class="btn small" onclick="showLockedActionV60I('Export Locked','sow')">Export — Locked</button><button class="btn small gold" onclick="showLockedActionV60I('Owner Review Required','sow')">Owner Review Required</button></div><table class="table"><tr><th>Area</th><th>Trade</th><th>Status / Owner</th><th>Linked Folder</th><th>Safe Mode</th></tr>${demoRows}</table>`;
+}
+
+function openSowDemoDetailV60I(id, backKey='sow'){
+ const item=loadSOWBuilderV60H().find(row=>row.id===id) || loadSOWBuilderV60H()[0];
+ if(!item) return toast('SOW detail unavailable');
+ renderSowDetailV60I({
+  title:item.roomArea+' / '+item.tradeCategory,
+  area:item.roomArea,
+  trade:item.tradeCategory,
+  scopeNote:item.scopeNote,
+  measurements:item.measurementsTakeoffPlaceholder,
+  material:item.materialNotes,
+  labor:item.laborNotes,
+  assumptions:item.assumptions,
+  exclusions:item.exclusions,
+  allowances:item.allowances,
+  alternates:item.alternates,
+  tier:item.tierPlaceholder,
+  folder:item.linkedProjectFolder,
+  owner:item.ownerReviewRequired ? 'Owner Review Required' : 'Owner Review Clear',
+  status:'Demo/local-only • '+item.safeModeLabel,
+  proof:item.linkedEvidenceSourceProof
+ }, backKey);
+}
+function openSowItemDetailV60I(id, backKey='sow'){
+ const item=(db.sowItems||[]).find(row=>row.id===id);
+ if(!item) return toast('SOW detail unavailable');
+ renderSowDetailV60I({
+  title:item.roomArea+' / '+item.trade,
+  area:item.roomArea,
+  trade:item.trade,
+  scopeNote:item.description || item.recommendedWork,
+  measurements:item.measurementsTakeoffNotes,
+  material:item.materialCategory,
+  labor:item.laborCategory,
+  assumptions:item.assumption,
+  exclusions:item.inclusionExclusion,
+  allowances:item.allowance,
+  alternates:item.alternateAddon,
+  tier:item.optionTier || 'Standard / Premium / Luxury placeholder',
+  folder:'Scope of Work',
+  owner:item.ownerAdminReviewNotes || 'Owner Review Required',
+  status:'Demo/local-only • '+item.status,
+  proof:item.photoProofPlaceholder
+ }, backKey);
+}
+function renderSowDetailV60I(item, backKey='sow'){
+ const fields=[['Area / Room',item.area],['Trade',item.trade],['Scope Note',item.scopeNote],['Measurements Placeholder',item.measurements],['Material Notes',item.material],['Labor Notes',item.labor],['Assumptions',item.assumptions],['Exclusions',item.exclusions],['Allowances',item.allowances],['Alternates',item.alternates],['Standard / Premium / Luxury Placeholder',item.tier],['Linked Folder',item.folder || 'Scope of Work'],['Owner Review Required',item.owner],['Demo / Local-Only Status',item.status],['Source Proof',item.proof]];
+ modal.innerHTML = header('v60I SOW detail', 'Compact SOW detail drawer. Local/demo-only output; no pricing, proposal, upload, sharing, export, or backend action is live.') + `
+ <div class="actions"><button class="btn small" onclick="openModal('${esc(backKey)}')">Back</button><button class="btn small" onclick="closeModal()">Close</button></div>
+ <div class="locked">Selected item: ${esc(item.title)} • Demo Data Only • Backend Locked • Owner/backend approval required</div>
+ <div class="folderDetailGrid">${fields.map(([label,value])=>`<div class="folderDetailCard"><b>${esc(label)}</b><span>${esc(value || 'Local placeholder')}</span></div>`).join('')}</div>
+ <div class="folderLockedActions"><button class="btn small" onclick="showLockedActionV60I('AI Pricing Locked','${esc(backKey)}')">AI Pricing Locked</button><button class="btn small" onclick="showLockedActionV60I('Customer Proposal Locked','${esc(backKey)}')">Customer Proposal Locked</button><button class="btn small" onclick="showLockedActionV60I('Uploads Locked','${esc(backKey)}')">Uploads Locked</button><button class="btn small" onclick="showLockedActionV60I('Export Locked','${esc(backKey)}')">Export Locked</button></div>`;
+ enhanceModalTables();
+ back.style.display='flex';
 }
 function makeSowItem(id, project, company, walkthroughType, audienceViewType, category, trade, area, description, conditionObserved, recommendedWork, opts={}){
   return Object.assign({id, project, company, walkthroughType, audienceViewType, category, trade, roomArea:area, description, conditionObserved, recommendedWork, laborCategory:trade + ' Labor', materialCategory:category + ' Materials', measurementsTakeoffNotes:'Walkthrough takeoff placeholder — verify quantities before pricing.', photoProofPlaceholder:'Photo/proof placeholder needed before export.', codePermitInspectionFlag:'Owner/Admin Review', inclusionExclusion:'Inclusion - draft', assumption:'Assumes concealed conditions are normal until verified.', allowance:'TBD owner-approved allowance', alternateAddon:'None', optionTier:'Standard', changeOrderTrigger:'Hidden condition, owner selection change, code/inspection directive, or quantity variance.', visibility:'Owner Review', status:'Draft', ownerAdminReviewNotes:'Owner/admin review required before external use.'}, opts);
@@ -2068,6 +2127,27 @@ function closeModal(){ back.style.display='none'; }
 back.addEventListener('click', e => { if(e.target===back) closeModal(); });
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; clearTimeout(window.tt); window.tt=setTimeout(()=>t.style.display='none', 1900); }
 
+function jsArgV60I(value){ return JSON.stringify(String(value ?? '')); }
+function lockedActionMessageV60I(){ return 'This action is locked in demo mode. Owner/backend approval required before live use.'; }
+function showLockedActionV60I(action='Locked Action', backKey='sow'){
+ modal.innerHTML = header('v60I Locked Action', 'Safe demo-only explanation. No live action was activated.') + `
+ <div class="actions"><button class="btn small" onclick="openModal('${esc(backKey)}')">Back</button><button class="btn small" onclick="closeModal()">Close</button></div>
+ <div class="lockedActionOutputV60I"><strong>${esc(action)}</strong><br>${esc(lockedActionMessageV60I())}</div>
+ <div class="note">No backend, upload, sharing, export, AI pricing, customer proposal, permit filing, sending, posting, or live action was enabled.</div>`;
+ enhanceModalTables();
+ back.style.display='flex';
+ toast('Demo locked: owner/backend approval required');
+}
+function showFolderCardDetailV60I(title, value, backKey='projectfolderdetailv60d'){
+ const locked=/backend|sharing|uploads|export|locked|owner/i.test(String(title)+' '+String(value));
+ modal.innerHTML = header('v60I Folder Detail', 'Compact local-only detail output for the selected folder field.') + `
+ <div class="actions"><button class="btn small" onclick="openModal('${esc(backKey)}')">Back</button><button class="btn small" onclick="closeModal()">Close</button></div>
+ <div class="folderDetailGrid"><div class="folderDetailCard"><b>Selected Item</b><span>${esc(title)}</span></div><div class="folderDetailCard"><b>Detail</b><span>${esc(value || 'Demo placeholder')}</span></div><div class="folderDetailCard"><b>Linked Folder</b><span>Project Folder Detail</span></div><div class="folderDetailCard"><b>Demo / Local Status</b><span>Local demo-only; no live action enabled.</span></div></div>
+ ${locked ? `<div class="lockedActionOutputV60I"><strong>${esc(title)}</strong><br>${esc(lockedActionMessageV60I())}</div>` : `<div class="note">This visible detail card is selectable and opens safely without routing or live backend actions.</div>`}`;
+ enhanceModalTables();
+ back.style.display='flex';
+}
+
 const renderers = {
   ai: renderAI,
   revenue: renderRevenue,
@@ -2114,7 +2194,7 @@ function runAI(){
 }
 
 function renderBrainHub(){
- return header('Aqua Brain Command Hub', 'Locked local command shell foundation only. No live routing, AI calls, exports, posting, sending, deleting, or external QA runs in v60H.') + `<div class="locked">The Brain can prepare drafts, route commands, create records, summarize data, create bug reports, and run the local v60H self-diagnostic. Live AI API calls, voice input/output, customer pricing, investor exports, accounting posting, payroll, GPS, email, social posting, calendar, SMS, and phone routing remain locked until backend/security/provider/owner approval gates are complete. Safety labels: Backend Locked • Upload Locked • Sharing Locked • Export Locked • Owner Approval Required.</div><div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Run full Aqua QA"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div><div class="field"><label>Project / company</label><select id="brainProject">${[...(db.projects||[]).map(p=>p.name),...(db.companies||[]).map(c=>c.name)].map(x=>`<option>${esc(x)}</option>`).join('')}</select></div><div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small gold" onclick="createBrainBugDemo()">Create Bug Demo</button><button class="btn small gold" onclick="openModal('companycommand')">Company Command</button><button class="btn small gold" onclick="openModal('sow')">Open SOW Builder</button></div><div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked in v60H. QA aliases: run full aqua qa, run qa, test app, run self test, diagnose app.</div></div>`;
+ return header('Aqua Brain Command Hub', 'Locked local command shell foundation only. No live routing, AI calls, exports, posting, sending, deleting, or external QA runs in v60I.') + `<div class="locked">The Brain can prepare drafts, route commands, create records, summarize data, create bug reports, and run the local v60I self-diagnostic. Live AI API calls, voice input/output, customer pricing, investor exports, accounting posting, payroll, GPS, email, social posting, calendar, SMS, and phone routing remain locked until backend/security/provider/owner approval gates are complete. Safety labels: Backend Locked • Upload Locked • Sharing Locked • Export Locked • Owner Approval Required.</div><div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Run full Aqua QA"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div><div class="field"><label>Project / company</label><select id="brainProject">${[...(db.projects||[]).map(p=>p.name),...(db.companies||[]).map(c=>c.name)].map(x=>`<option>${esc(x)}</option>`).join('')}</select></div><div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small gold" onclick="createBrainBugDemo()">Create Bug Demo</button><button class="btn small gold" onclick="openModal('companycommand')">Company Command</button><button class="btn small gold" onclick="openModal('sow')">Open SOW Builder</button></div><div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked in v60I. QA aliases: run full aqua qa, run qa, test app, run self test, diagnose app.</div></div>`;
 }
 function runBrainCommandDemo(){
  const command=(document.getElementById('brainCommand').value || '').trim();
@@ -2204,12 +2284,12 @@ function renderAquaQAReportV60E(rows, timestamp){
  const warningCount=warnings.length;
  const lockedCount=rows.filter(row=>row.status==='LOCKED').length;
  const passedCount=rows.filter(row=>row.status==='PASS' || row.status==='LOCKED').length;
- const report={version:'v60H', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:failed.length, warnings:warningCount, rows};
+ const report={version:'v60I', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:failed.length, warnings:warningCount, rows};
  aquaLastQAReportV60F=report;
- const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60G checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
+ const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60I checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
  const statusRows=rows.map(row=>`<div class="qaRowV60E"><div class="qaStatusV60E ${qaStatusClassV60E(row.status)}">${esc(row.status)}</div><div><strong>${esc(row.label)}</strong><div class="smallMut">${esc(row.detail)}</div></div></div>`).join('');
  const promptText=buildQACodexRepairPromptV60E(failed, warnings);
- return `<div class="qaReportV60E"><div class="locked">Version: v60H • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div id="qaHistoryV60F">${renderAquaQAHistoryV60F(report)}</div><div class="actions"><button class="btn small gold" onclick="saveAquaQAReportV60F()">Save QA Report</button><button class="btn small gold" onclick="copyCodexRepairPromptV60F()">Copy Codex Repair Prompt</button><button class="btn small danger" onclick="clearAquaQAReportV60F()">Clear QA Report</button></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}<div id="qaPromptStatusV60F" class="smallMut qaPromptStatusV60F"></div></div><label>Codex repair/status prompt</label><textarea id="qaRepairPromptV60F" class="qaRepairPromptV60E" readonly>${esc(promptText)}</textarea>${statusRows}</div>`;
+ return `<div class="qaReportV60E"><div class="locked">Version: v60I • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div id="qaHistoryV60F">${renderAquaQAHistoryV60F(report)}</div><div class="actions"><button class="btn small gold" onclick="saveAquaQAReportV60F()">Save QA Report</button><button class="btn small gold" onclick="copyCodexRepairPromptV60F()">Copy Codex Repair Prompt</button><button class="btn small danger" onclick="clearAquaQAReportV60F()">Clear QA Report</button></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}<div id="qaPromptStatusV60F" class="smallMut qaPromptStatusV60F"></div></div><label>Codex repair/status prompt</label><textarea id="qaRepairPromptV60F" class="qaRepairPromptV60E" readonly>${esc(promptText)}</textarea>${statusRows}</div>`;
 }
 function aquaLocalStorageProbeV60G(key, sample){
  const prior=localStorage.getItem(key);
@@ -2262,6 +2342,10 @@ function runAquaFullQAV60E(){
  rows.push(qaCheckV60E('v60H SOW Builder modal/render exists', typeof renderSOWBuilderV60H==='function' && sowMarkup.includes('v60H Walkthrough SOW Builder'), 'SOW Builder v60H foundation renders inside the existing modal pattern.'));
  rows.push(qaCheckV60E('v60H Scope of Work folder link exists', sowMarkup.includes('Linked Project Folder: Scope of Work') && sowMarkup.includes('Scope of Work'), 'SOW Builder links rows to the Scope of Work project folder.'));
  rows.push(qaCheckV60E('v60H demo SOW rows render', sowBuilderData.length>=3 && ['Kitchen','Bathroom','Exterior'].every(area=>sowMarkup.includes(area)), 'Kitchen, Bathroom, and Exterior demo SOW rows render.'));
+ rows.push(qaCheckV60E('v60I SOW demo row click handler exists', sowMarkup.includes('openSowDemoDetailV60I') && sowMarkup.includes('sowClickRow') && typeof openSowDemoDetailV60I==='function', 'SOW demo rows are tap/clickable and open the compact SOW detail drawer.'));
+ rows.push(qaCheckV60E('v60I SOW detail drawer exists', typeof renderSowDetailV60I==='function' && sowMarkup.includes('Tap for SOW detail') && sowMarkup.includes('showFolderCardDetailV60I'), 'SOW detail drawer function, clickable detail cards, and row hints render.'));
+ rows.push(qaCheckV60E('v60I locked action click handler exists', typeof showLockedActionV60I==='function' && combinedMarkup.includes('showLockedActionV60I'), 'Locked labels/buttons use a click handler instead of dead disabled controls.'));
+ rows.push(qaCheckV60E('v60I locked action message output exists', lockedActionMessageV60I().includes('Owner/backend approval required before live use'), 'Locked action message includes Owner/backend approval required before live use.'));
  rows.push(qaCheckV60E('v60H Standard / Premium / Luxury placeholder exists', sowMarkup.includes('Standard / Premium / Luxury'), 'Tier placeholder renders without pricing.'));
  rows.push(qaCheckV60E('v60H Owner Review Required labels exist', sowMarkup.includes('Owner Review Required'), 'Owner review labels render in SOW Builder.'));
  rows.push(qaCheckV60E('v60H AI Pricing Locked label exists', sowMarkup.includes('AI Pricing Locked'), 'AI pricing remains locked.'));
@@ -2274,10 +2358,13 @@ function runAquaFullQAV60E(){
  rows.push(qaCheckV60E('Project Folder row click/detail handler exists', folderMarkup.includes('folderClickRow') && folderMarkup.includes('onclick="openProjectFolderDetailV60D') && typeof openProjectFolderDetailV60D==='function', 'Project Folder row click/detail handler is present.'));
  rows.push(qaCheckV60E('Project Folder detail drawer/modal exists', typeof renderers.projectfolderdetailv60d==='function' && typeof renderProjectFolderDetailV60D==='function' && detailMarkup.includes('v60D Project Folder Detail'), 'Detail drawer/modal renderer is present.'));
  rows.push(qaCheckV60E('Project Folder detail close/back handler exists', detailMarkup.includes('closeModal()') && detailBackHandler, 'Detail view has modal close and Back handlers.'));
+ rows.push(qaCheckV60E('v60I Project Folder detail click behavior exists', detailMarkup.includes('showFolderCardDetailV60I') && typeof showFolderCardDetailV60I==='function', 'Project Folder detail cards and locked labels respond safely.'));
  rows.push(qaCheckV60E('Code / Permits / Compliance trigger exists', folderMarkup.includes("openModal('compliancev60c')") && folderMarkup.includes('Code / Permits'), 'Project Folders includes Code / Permits trigger.'));
  rows.push(qaCheckV60E('Code Compliance rows exist', complianceData.some(item=>String(item.itemType).includes('Code Compliance')) && complianceMarkup.includes('Code Compliance Flags'), 'Code Compliance rows render.'));
  rows.push(qaCheckV60E('Permits row exists', complianceData.some(item=>String(item.itemType).includes('Permit')) && complianceMarkup.includes('Permit Requirements'), 'Permits row renders.'));
  rows.push(qaCheckV60E('Inspections row exists', complianceData.some(item=>String(item.itemType).includes('Inspection')) && complianceMarkup.includes('Inspection Schedule'), 'Inspections row renders.'));
+ rows.push(qaCheckV60E('v60I Code / Permits row click behavior exists', complianceMarkup.includes('openComplianceDetailV60I') && complianceMarkup.includes('complianceClickRow') && typeof openComplianceDetailV60I==='function', 'Code / Permits / Inspections rows open local detail safely.'));
+ rows.push(qaCheckV60E('v60I no live upload/share/export/backend actions are enabled', noLiveActionFlagsEnabled && !combinedMarkup.includes('liveUploadEnabled:true') && !combinedMarkup.includes('liveShareEnabled:true') && !combinedMarkup.includes('liveExportEnabled:true') && !combinedMarkup.includes('liveBackendEnabled:true'), 'No live upload/share/export/backend actions are enabled by clickable repairs.', 'LOCKED'));
  rows.push(qaCheckV60E('Owner Review Required labels exist', combinedMarkup.includes('Owner Review Required') || complianceValues.includes('Owner Review Required'), 'Owner Review Required labels render in clickable modules.'));
  rows.push(qaCheckV60E('Locked/demo safety labels exist', lockedLabels.every(label=>combinedMarkup.includes(label) || complianceValues.includes(label)), lockedLabels.filter(label=>!(combinedMarkup.includes(label) || complianceValues.includes(label))).length ? 'Missing: '+lockedLabels.filter(label=>!(combinedMarkup.includes(label) || complianceValues.includes(label))).join(', ') : 'Locked/demo labels render across clickable modules.', 'LOCKED'));
  rows.push(qaCheckV60E('Save QA Report button exists', qaControlMarkup.includes('saveAquaQAReportV60F()') && qaControlMarkup.includes('Save QA Report'), 'Save QA Report button remains in Command Hub output.'));
@@ -2286,7 +2373,7 @@ function runAquaFullQAV60E(){
  rows.push(qaCheckV60E('localStorage keys used by QA and module demo data can save/read harmless test data', storageWorks, storageWorks ? 'Harmless v60H probes saved/read/restored for QA, Company Command, Project Folders, Compliance, detail state, and SOW Builder keys.' : 'One or more QA/module localStorage keys could not be saved/read/restored.'));
  rows.push(qaCheckV60E('No live external/backend action flags are enabled', noLiveActionFlagsEnabled, noLiveActionFlagsEnabled ? 'Backend/upload/share/export/customer/permit/payroll/legal live flags remain locked or false.' : 'One or more live action flags is enabled.', 'LOCKED'));
  rows.push(qaCheckV60E('Compliance rows include required row type labels', complianceRowTypes.every(term=>complianceMarkup.includes(term) || complianceValues.includes(term)), complianceRowTypes.filter(term=>!(complianceMarkup.includes(term) || complianceValues.includes(term))).length ? 'Missing: '+complianceRowTypes.filter(term=>!(complianceMarkup.includes(term) || complianceValues.includes(term))).join(', ') : 'Required compliance row type labels render.'));
- rows.push(qaCheckV60E('No live AI calls enabled', true, 'No OpenAI, Gemini, Claude, or external AI API call is invoked by v60H QA.', 'LOCKED'));
+ rows.push(qaCheckV60E('No live AI calls enabled', true, 'No OpenAI, Gemini, Claude, or external AI API call is invoked by v60I QA.', 'LOCKED'));
  rows.push(qaCheckV60E('No live phone/SMS enabled', true, 'Phone, SMS, voice, and calendar routing remain text-only/locked in this demo.', 'LOCKED'));
  rows.push(qaCheckV60E('No live email sending enabled', true, 'Email/social/customer sending remains locked.', 'LOCKED'));
  rows.push(qaCheckV60E('No live payroll enabled', loadCompanyCommandV60A().every(c=>c.lockedSafeMode===true), 'Company command data remains locked safe-mode; payroll action is not live.', 'LOCKED'));
@@ -2298,7 +2385,7 @@ function runAquaFullQAV60E(){
  const out=document.getElementById('brainOut') || document.getElementById('aiOut');
  if(out) out.innerHTML=html;
  console.table(rows.map(row=>({status:row.status, check:row.label, detail:row.detail})));
- const report={version:'v60H', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
+ const report={version:'v60I', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
  saveAquaQAReportV60F(report);
  return report;
 }
@@ -2415,19 +2502,19 @@ function renderProjectFolderDetailV60D(){
   <div class="locked">Demo Data Only • Backend Locked • Upload — Locked • Share — Locked • Export — Locked • Owner Review — Demo Only</div>
   <div class="miniCards"><div class="miniCard"><strong>${esc(folder.folderName)}</strong><span>Folder name</span></div><div class="miniCard"><strong>${esc(folder.status)}</strong><span>Folder Status</span></div><div class="miniCard"><strong>${Number(folder.itemCount||0)}</strong><span>Item count</span></div></div>
   <div class="folderDetailGrid">
-    <div class="folderDetailCard"><b>Project Name</b><span>${esc(folder.project)}</span></div>
-    <div class="folderDetailCard"><b>Company / Division</b><span>${esc(folder.company)}</span></div>
-    <div class="folderDetailCard"><b>Safe-View Type</b><span>${esc(folder.safeViewFlag)}</span></div>
-    <div class="folderDetailCard"><b>Owner Approval Status</b><span>${esc(folder.ownerApprovalStatus || 'Owner Review Required')}</span></div>
-    <div class="folderDetailCard"><b>Source Proof</b><span>Demo placeholder</span></div>
-    <div class="folderDetailCard"><b>Demo Notes</b><span>${esc(folder.notes)}</span></div>
-    <div class="folderDetailCard"><b>Backend</b><span>Locked</span></div>
-    <div class="folderDetailCard"><b>Sharing</b><span>Locked</span></div>
-    <div class="folderDetailCard"><b>Uploads</b><span>Locked</span></div>
-    <div class="folderDetailCard"><b>Export</b><span>Locked</span></div>
+    <div class="folderDetailCard" onclick='showFolderCardDetailV60I("Project Name",${jsArgV60I(folder.project)})'><b>Project Name</b><span>${esc(folder.project)}</span></div>
+    <div class="folderDetailCard" onclick='showFolderCardDetailV60I("Company / Division",${jsArgV60I(folder.company)})'><b>Company / Division</b><span>${esc(folder.company)}</span></div>
+    <div class="folderDetailCard" onclick='showFolderCardDetailV60I("Safe-View Type",${jsArgV60I(folder.safeViewFlag)})'><b>Safe-View Type</b><span>${esc(folder.safeViewFlag)}</span></div>
+    <div class="folderDetailCard" onclick='showFolderCardDetailV60I("Owner Approval Status",${jsArgV60I(folder.ownerApprovalStatus || 'Owner Review Required')})'><b>Owner Approval Status</b><span>${esc(folder.ownerApprovalStatus || 'Owner Review Required')}</span></div>
+    <div class="folderDetailCard" onclick='showFolderCardDetailV60I("Source Proof","Demo placeholder")'><b>Source Proof</b><span>Demo placeholder</span></div>
+    <div class="folderDetailCard" onclick='showFolderCardDetailV60I("Demo Notes",${jsArgV60I(folder.notes)})'><b>Demo Notes</b><span>${esc(folder.notes)}</span></div>
+    <div class="folderDetailCard" onclick='showLockedActionV60I("Backend Locked","projectfolderdetailv60d")'><b>Backend Locked</b><span>Locked</span></div>
+    <div class="folderDetailCard" onclick='showLockedActionV60I("Sharing Locked","projectfolderdetailv60d")'><b>Sharing Locked</b><span>Locked</span></div>
+    <div class="folderDetailCard" onclick='showLockedActionV60I("Uploads Locked","projectfolderdetailv60d")'><b>Uploads Locked</b><span>Locked</span></div>
+    <div class="folderDetailCard" onclick='showLockedActionV60I("Export Locked","projectfolderdetailv60d")'><b>Export Locked</b><span>Locked</span></div>
   </div>
   ${folderSpecialDetailV60D(folder)}
-  <div class="folderLockedActions"><button class="btn small">Add Item — Locked</button><button class="btn small">Upload — Locked</button><button class="btn small">Share — Locked</button><button class="btn small">Export — Locked</button><button class="btn small gold">Owner Review — Demo Only</button></div>
+  <div class="folderLockedActions"><button class="btn small" onclick="showLockedActionV60I('Backend Locked','projectfolderdetailv60d')">Add Item — Locked</button><button class="btn small" onclick="showLockedActionV60I('Uploads Locked','projectfolderdetailv60d')">Upload — Locked</button><button class="btn small" onclick="showLockedActionV60I('Sharing Locked','projectfolderdetailv60d')">Share — Locked</button><button class="btn small" onclick="showLockedActionV60I('Export Locked','projectfolderdetailv60d')">Export — Locked</button><button class="btn small gold" onclick="showLockedActionV60I('Owner Review Required','projectfolderdetailv60d')">Owner Review — Demo Only</button></div>
   <div class="note">v60D localStorage selected/opened demo state key: ${esc(PROJECT_FOLDER_DETAIL_KEY_V60D)}. Locked labels are visual only and do not run actions.</div>`;
 }
 function runProjectFolderDetailV60DTest(){
@@ -2482,9 +2569,21 @@ function loadComplianceV60C(){
 function compliancePill(status){
   return status==='Ready' ? 'green' : status==='Locked' || status==='Owner Review Required' ? 'gold' : '';
 }
+
+function openComplianceDetailV60I(id){
+ const item=loadComplianceV60C().find(row=>row.id===id);
+ if(!item) return toast('Code / Permits detail unavailable');
+ const fields=[['Row Type',item.itemType],['Project',item.project],['Jurisdiction / Town / City',item.jurisdiction],['Trade Category',item.tradeCategory],['Requirement / Issue',item.issueRequirement],['Status',item.status],['Owner Review Required',item.ownerReviewFlag],['Linked Folder',item.linkedFolder],['Source Proof',item.sourceProofPlaceholder],['Permit Filing', 'Locked'],['Uploads', 'Locked'],['Export', 'Locked']];
+ modal.innerHTML = header('v60I Code / Permits detail', 'Compact local-only detail output. No permit filing, legal/code conclusion, upload, sharing, or export is live.') + `
+ <div class="actions"><button class="btn small" onclick="openModal('compliancev60c')">Back</button><button class="btn small" onclick="closeModal()">Close</button></div>
+ <div class="folderDetailGrid">${fields.map(([label,value])=>`<div class="folderDetailCard" onclick='${String(value).includes('Locked') ? `showLockedActionV60I(${jsArgV60I(label+' Locked')},"compliancev60c")` : `showFolderCardDetailV60I(${jsArgV60I(label)},${jsArgV60I(value)},"compliancev60c")`}'><b>${esc(label)}</b><span>${esc(value)}</span></div>`).join('')}</div>
+ <div class="folderLockedActions"><button class="btn small" onclick="showLockedActionV60I('Backend Locked','compliancev60c')">Backend Locked</button><button class="btn small" onclick="showLockedActionV60I('Uploads Locked','compliancev60c')">Uploads Locked</button><button class="btn small" onclick="showLockedActionV60I('Export Locked','compliancev60c')">Export Locked</button><button class="btn small gold" onclick="showLockedActionV60I('Owner Review Required','compliancev60c')">Owner Review Required</button></div>`;
+ enhanceModalTables();
+ back.style.display='flex';
+}
 function renderComplianceV60C(){
   const items=loadComplianceV60C();
-  const rows=items.map(item=>`<tr><td><strong>${esc(item.itemType)}</strong><div class="smallMut">${esc(item.project)} • ${esc(item.jurisdiction)}</div></td><td>${esc(item.tradeCategory)}<div class="smallMut">${esc(item.issueRequirement)}</div></td><td><span class="pill ${compliancePill(item.status)}">${esc(item.status)}</span><div class="smallMut">${esc(item.ownerReviewFlag)}</div></td><td>${esc(item.linkedFolder)}<div class="smallMut">${esc(item.sourceProofPlaceholder)}</div></td></tr>`).join('');
+  const rows=items.map(item=>`<tr class="complianceClickRow" onclick='openComplianceDetailV60I(${jsArgV60I(item.id)})' tabindex="0" role="button" aria-label="Open ${esc(item.itemType)} detail"><td><strong>${esc(item.itemType)}</strong><div class="smallMut">${esc(item.project)} • ${esc(item.jurisdiction)}</div><div class="folderClickHint">Tap for detail</div></td><td>${esc(item.tradeCategory)}<div class="smallMut">${esc(item.issueRequirement)}</div></td><td><span class="pill ${compliancePill(item.status)}">${esc(item.status)}</span><div class="smallMut">${esc(item.ownerReviewFlag)}</div></td><td>${esc(item.linkedFolder)}<div class="smallMut">${esc(item.sourceProofPlaceholder)}</div></td></tr>`).join('');
   return header('v60C Code Compliance / Permits / Inspections', 'Compact local-only foundation inside Project Folders. Placeholder tracking only — no live permit filing, code/legal conclusions, customer notices, uploads, or exports.') + `
   <div class="locked">Demo Data Only • Backend Locked • Legal Review Required • Permit Filing Locked • Customer Sharing Locked • Owner Approval Required</div>
   <div class="miniCards"><div class="miniCard"><strong>${items.length}</strong><span>Compliance rows render</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Needs Review').length}</strong><span>Needs Review</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Ready').length}</strong><span>Ready</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Missing Info').length}</strong><span>Missing Info</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Locked').length}</strong><span>Locked</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Owner Review Required').length}</strong><span>Owner Review Required</span></div></div>
@@ -2655,7 +2754,7 @@ function renderSow(){
  const rows=filtered.map(i=>{
    const safeInvestor=i.visibility==='Investor-Safe' || i.audienceViewType==='Aquabona Investor SOW';
    const safeCustomer=i.visibility==='Customer-Safe' || i.audienceViewType==='Customer Proposal Scope';
-   return `<tr><td><strong>${esc(i.project)}</strong><div class="smallMut">${esc(i.company)} • ${esc(i.walkthroughType)}</div><div>${esc(i.category)} / ${esc(i.trade)}</div></td><td><strong>${esc(i.roomArea)}</strong><div class="smallMut">${esc(i.description)}</div><div>${esc(i.recommendedWork)}</div></td><td><span class="pill ${i.visibility==='Investor-Safe'||i.visibility==='Customer-Safe'?'green':i.visibility==='Owner Review'?'gold':''}">${esc(i.visibility)}</span><span class="pill">${esc(i.audienceViewType)}</span><div class="smallMut">${esc(i.codePermitInspectionFlag)}</div></td><td><span class="pill ${i.status==='Approved'?'green':i.status==='Needs Review'||i.status==='Change Order Needed'?'gold':''}">${esc(i.status)}</span><div class="smallMut">${esc(i.ownerAdminReviewNotes)}</div></td><td><div class="rowActions"><button class="btn small gold" onclick="setSowStatus('${i.id}','Needs Review')">Needs Review</button><button class="btn small" onclick="setSowStatus('${i.id}','Ready for Estimate')">Ready Estimate</button><button class="btn small" disabled>Customer Proposal Locked</button><button class="btn primary small" onclick="setSowStatus('${i.id}','Approved')">Approved</button><button class="btn danger small" onclick="flagSowChangeOrder('${i.id}')">CO Flag</button>${safeInvestor?`<button class="btn small gold" onclick="setSowView('Aquabona Investor SOW')">Aquabona View</button>`:''}${safeCustomer?`<button class="btn small gold" disabled>Customer Proposal Locked</button>`:''}</div></td></tr>`;
+   return `<tr class="sowClickRow" onclick="openSowItemDetailV60I('${i.id}','sow')" tabindex="0" role="button" aria-label="Open SOW detail for ${esc(i.roomArea)}"><td><strong>${esc(i.project)}</strong><div class="smallMut">${esc(i.company)} • ${esc(i.walkthroughType)}</div><div>${esc(i.category)} / ${esc(i.trade)}</div><div class="folderClickHint">Tap for SOW detail</div></td><td><strong>${esc(i.roomArea)}</strong><div class="smallMut">${esc(i.description)}</div><div>${esc(i.recommendedWork)}</div></td><td><span class="pill ${i.visibility==='Investor-Safe'||i.visibility==='Customer-Safe'?'green':i.visibility==='Owner Review'?'gold':''}">${esc(i.visibility)}</span><span class="pill">${esc(i.audienceViewType)}</span><div class="smallMut">${esc(i.codePermitInspectionFlag)}</div></td><td><span class="pill ${i.status==='Approved'?'green':i.status==='Needs Review'||i.status==='Change Order Needed'?'gold':''}">${esc(i.status)}</span><div class="smallMut">${esc(i.ownerAdminReviewNotes)}</div></td><td><div class="rowActions" onclick="event.stopPropagation()"><button class="btn small gold" onclick="setSowStatus('${i.id}','Needs Review')">Needs Review</button><button class="btn small" onclick="setSowStatus('${i.id}','Ready for Estimate')">Ready Estimate</button><button class="btn small" onclick="showLockedActionV60I('Customer Proposal Locked','sow')">Customer Proposal Locked</button><button class="btn primary small" onclick="setSowStatus('${i.id}','Approved')">Approved</button><button class="btn danger small" onclick="flagSowChangeOrder('${i.id}')">CO Flag</button>${safeInvestor?`<button class="btn small gold" onclick="setSowView('Aquabona Investor SOW')">Aquabona View</button>`:''}${safeCustomer?`<button class="btn small gold" onclick="showLockedActionV60I('Customer Proposal Locked','sow')">Customer Proposal Locked</button>`:''}</div></td></tr>`;
  }).join('') || '<tr><td colspan="5">No SOW records for this view yet.</td></tr>';
  return header('SOW Builder', 'Walkthrough-driven Scope of Work foundation. One master SOW data model can render internal, investor-safe, customer proposal, maintenance/HVAC, and change-order/punch-list views.') + `
  ${sowBuilderV60H}
@@ -2676,7 +2775,7 @@ function renderSow(){
  <div class="split2"><div class="field"><label>Code / permit / inspection flag</label><select id="sowCode"><option>None observed</option><option>Owner/Admin Review</option><option>Permit Review</option><option>Inspection Required</option><option>Code Compliance Review</option></select></div><div class="field"><label>Visibility</label><select id="sowVisibility">${visibilityOptions}</select></div></div>
  <div class="split2"><div class="field"><label>Status</label><select id="sowStatus">${statusOptions}</select></div><div class="field"><label>Allowance</label><input id="sowAllowance" placeholder="TBD / owner-approved allowance" /></div></div>
  <div class="field"><label>Inclusion / exclusion, assumptions, alternate/add-on, change-order trigger, owner/admin review notes</label><textarea id="sowReview" placeholder="Inclusions/exclusions, assumptions, alternates/add-ons, change order trigger, and review notes"></textarea></div>
- <div class="actions"><button class="btn primary small" onclick="saveSowItem()">Add SOW Item</button><button class="btn small" style="background:#12253f" onclick="openModal('projects')">Open Project Folders</button><button class="btn small" style="background:#12253f" onclick="openModal('walkthrough')">Open Field Walkthrough</button><button class="btn small gold" onclick="setSowView('Aquabona Investor SOW')">Open Aquabona View</button><button class="btn small gold" disabled>Customer Proposal Locked</button></div>
+ <div class="actions"><button class="btn primary small" onclick="saveSowItem()">Add SOW Item</button><button class="btn small" style="background:#12253f" onclick="openModal('projects')">Open Project Folders</button><button class="btn small" style="background:#12253f" onclick="openModal('walkthrough')">Open Field Walkthrough</button><button class="btn small gold" onclick="setSowView('Aquabona Investor SOW')">Open Aquabona View</button><button class="btn small gold" onclick="showLockedActionV60I('Customer Proposal Locked','sow')">Customer Proposal Locked</button></div>
  <div class="note">Conceptual connections: Project Folders, Field Walkthrough, Photo Proof / Jobsite Media, Code Compliance, Estimates / Proposals, Change Orders, Receipt Tracker, Evidence Binder, Aquabona Investor Portal, Customer Portal, AI Pricing Engine, and Owner Review Queue.</div>
  <table class="table"><tr><th>Project / Trade</th><th>Scope Item</th><th>View / Proof</th><th>Status</th><th>Actions</th></tr>${rows}</table>`;
 }
