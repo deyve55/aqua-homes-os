@@ -35,12 +35,14 @@ const COMMAND_ROUTE_LOCK_NOTE =
 const CURRENT_KEEPER_LABEL = "v59A Second Version / Command Routing";
 const CURRENT_STABILIZATION_PATCH = "v59B";
 const CURRENT_LIVE_ENTRY_FIX = "v59C";
+const CURRENT_DESIGN_TRUTH_RESTORE = "v59D Design Truth Restore";
 const KEEPER_SAFETY_BANNER_TEXT =
   "Current Keeper: v59A Second Version / Command Routing. Build forward only. Do not roll back.";
 const VERSION_TRUTH_ITEMS = [
   ["Current Keeper", CURRENT_KEEPER_LABEL],
   ["Current Stabilization Patch", CURRENT_STABILIZATION_PATCH],
   ["Live Entry Fixed", CURRENT_LIVE_ENTRY_FIX],
+  ["Design Truth Restore", CURRENT_DESIGN_TRUTH_RESTORE],
   ["Source Status", "Merged live keeper confirmed by user"],
   ["Active Repo Paths", "docs/app.js\ndocs/styles.css\nstructured-app/app.js\nstructured-app/styles.css"],
   ["Design Lock", "Active"],
@@ -59,7 +61,7 @@ const QA_REPORT_ITEMS = [
   ["Command Hub opens", "Verified"],
   ["Command Routing panel visible", "Verified"],
   ["Design lock preserved", "Verified"],
-  ["Version Truth Panel visible", "Verified"],
+  ["Version / Source Truth collapsed drawer available", "Verified"],
   ["Backend/live actions locked", "Verified"],
   ["Run Command Demo remains local only", "Verified"],
   ["Create Bug Demo remains local only", "Verified"],
@@ -1475,20 +1477,20 @@ function renderChecklist(items, listClass = "keeper-checklist") {
 
 function getKeeperPanelMarkup() {
   return `
-    <section class="keeper-safety-banner" aria-label="Keeper safety banner">
-      ${escapeHtml(KEEPER_SAFETY_BANNER_TEXT)}
-    </section>
-    <section class="version-truth-panel" data-version-truth-panel aria-labelledby="version-truth-title">
+    <details class="keeper-secondary-drawer" data-version-truth-panel>
+      <summary>Version / Source Truth · QA · Backend Locks</summary>
+      <p class="keeper-drawer-note">${escapeHtml(KEEPER_SAFETY_BANNER_TEXT)}</p>
+      <section class="version-truth-panel" aria-labelledby="version-truth-title">
       <div class="keeper-panel-header">
         <div>
           <p class="eyebrow">Version / Source Truth</p>
-          <h2 id="version-truth-title">Keeper Stabilization v59B · Live Entry v59C</h2>
+          <h2 id="version-truth-title">Keeper Stabilization v59B · Live Entry v59C · v59D</h2>
         </div>
         <span class="status-pill">Build Forward Only</span>
       </div>
       <div class="version-truth-grid">${renderInfoList(VERSION_TRUTH_ITEMS)}</div>
-    </section>
-    <section class="qa-report-panel" data-main-brain-qa-report aria-labelledby="qa-report-title">
+      </section>
+      <section class="qa-report-panel" data-main-brain-qa-report aria-labelledby="qa-report-title">
       <div class="keeper-panel-header">
         <div>
           <p class="eyebrow">Main Brain QA</p>
@@ -1502,8 +1504,8 @@ function getKeeperPanelMarkup() {
         <span>Local-only checks will verify version truth, command hub data, lock flags, QA rendering, and localStorage.</span>
       </article>
       <button type="button" class="ghost-button bug-from-qa-button" data-create-bug-from-qa>Create Bug From QA</button>
-    </section>
-    <section class="sync-checklist-panel" data-sync-checklist-panel aria-labelledby="sync-checklist-title">
+      </section>
+      <section class="sync-checklist-panel" data-sync-checklist-panel aria-labelledby="sync-checklist-title">
       <div class="keeper-panel-header">
         <div>
           <p class="eyebrow">Codex / GitHub Sync</p>
@@ -1512,7 +1514,8 @@ function getKeeperPanelMarkup() {
         <span class="status-pill">Local Proof Required</span>
       </div>
       <ul class="keeper-checklist sync-checklist">${renderChecklist(CODEX_GITHUB_SYNC_ITEMS)}</ul>
-    </section>
+      </section>
+    </details>
   `;
 }
 
@@ -1551,9 +1554,9 @@ function createBugFromQa() {
     aiTestSuggestion:
       "Review the v59B QA report card locally and visually confirm mobile layout before merge.",
     expectedResult:
-      "Version Truth Panel, Keeper Safety Banner, Command Routing, and lock notices remain visible without live actions.",
+      "Version / Source Truth, Command Routing, QA checks, and lock notices remain available in a collapsed Command Routing drawer without live actions.",
     stepsToReproduce:
-      "Open the app, review the Keeper Safety Banner, run the Main Brain Self-Test, then inspect Command Routing and Bug Capture locally.",
+      "Open Command Routing, expand the Version / Source Truth drawer, run the Main Brain Self-Test, then inspect Command Routing and Bug Capture locally.",
     notes:
       "Local placeholder only. No sending, posting, deleting, exporting, or external issue tracker action is performed.",
   };
@@ -1637,21 +1640,11 @@ function runMainBrainSelfTest() {
   return report;
 }
 
-function renderKeeperStabilizationPanels() {
-  if (document.querySelector("[data-version-truth-panel]")) {
-    return;
-  }
-
-  const dashboardHeader = document.querySelector(".dashboard-header");
-  if (!dashboardHeader) {
-    return;
-  }
-
-  dashboardHeader.insertAdjacentHTML("afterend", getKeeperPanelMarkup());
-  document
+function bindKeeperStabilizationDrawer(root = document) {
+  root
     .querySelector("[data-run-self-test]")
     ?.addEventListener("click", runMainBrainSelfTest);
-  document
+  root
     .querySelector("[data-create-bug-from-qa]")
     ?.addEventListener("click", createBugFromQa);
   runMainBrainSelfTest();
@@ -4163,6 +4156,7 @@ function renderCommandRoutingPanel(routes) {
       </div>
       <p class="command-route-lock-note">${COMMAND_ROUTE_LOCK_NOTE}</p>
       ${summaryGrid}
+      ${getKeeperPanelMarkup()}
       <div class="command-route-list">${routeRows}</div>
       <div class="command-history-panel">
         <p class="eyebrow">Command History</p>
@@ -4967,6 +4961,7 @@ function renderDemoList(moduleId) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
     if (commandRoutingSlot) {
       commandRoutingSlot.innerHTML = renderCommandRoutingPanel(items);
+      bindKeeperStabilizationDrawer(commandRoutingSlot);
     }
     if (projectFolderSlot) {
       projectFolderSlot.innerHTML = renderProjectFolder(null);
@@ -5044,6 +5039,7 @@ function renderDemoList(moduleId) {
 
   if (commandRoutingSlot) {
     commandRoutingSlot.innerHTML = renderCommandRoutingPanel(items);
+    bindKeeperStabilizationDrawer(commandRoutingSlot);
     commandRoutingSlot
       .querySelectorAll("[data-command-route-status-index]")
       .forEach((select) => {
@@ -5581,7 +5577,6 @@ window.addEventListener("storage", (event) => {
   }
 });
 
-renderKeeperStabilizationPanels();
 renderRecentActivity();
 renderLaunchReadiness();
 renderAdminModuleControl();
