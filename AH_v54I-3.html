@@ -1567,6 +1567,7 @@ body{
 }
 /* v60D Project Folder Detail Drawer / Click-to-Open Fix — modal-only clickable folder rows; protected Home visuals untouched. */
 /* v60E Main Brain QA / Self-Diagnostic Command — compact Command Hub report only; protected Home visuals untouched. */
+/* v60F QA Report History + Copy Codex Repair Prompt — Command Hub output only; protected Home visuals untouched. */
 .modal .qaReportV60E{display:grid;gap:8px;margin-top:12px;}
 .modal .qaSummaryV60E{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
 .modal .qaRowV60E{display:grid;grid-template-columns:84px 1fr;gap:8px;align-items:start;border:1px solid rgba(49,114,236,.18);border-radius:12px;background:rgba(6,18,32,.58);padding:8px 10px;}
@@ -1576,6 +1577,8 @@ body{
 .modal .qaStatusV60E.warning{color:#ffe2a3;}
 .modal .qaStatusV60E.locked{color:#8fb4e8;}
 .modal .qaRepairPromptV60E{width:100%;min-height:110px;border-radius:12px;border:1px solid rgba(255,204,102,.35);background:rgba(7,17,29,.92);color:#f4f8ff;padding:10px;font-size:12px;line-height:1.35;}
+.modal .qaHistoryV60F{border:1px solid rgba(49,114,236,.22);border-radius:12px;background:rgba(6,18,32,.58);padding:8px 10px;}
+.modal .qaPromptStatusV60F{min-height:18px;}
 @media (max-width:560px){.modal .qaSummaryV60E{grid-template-columns:1fr 1fr;}.modal .qaRowV60E{grid-template-columns:72px 1fr;}}
 .modal .folderClickRow{cursor:pointer;}
 .modal .folderClickRow:hover{background:rgba(49,114,236,.08);}
@@ -2087,7 +2090,7 @@ function runAI(){
 }
 
 function renderBrainHub(){
- return header('Aqua Brain Command Hub', 'Locked local command shell foundation only. No live routing, AI calls, exports, posting, sending, deleting, or external QA runs in v60E.') + `<div class="locked">The Brain can prepare drafts, route commands, create records, summarize data, create bug reports, and run the local v60E self-diagnostic. Live AI API calls, voice input/output, customer pricing, investor exports, accounting posting, payroll, GPS, email, social posting, calendar, SMS, and phone routing remain locked until backend/security/provider/owner approval gates are complete. Safety labels: Backend Locked • Upload Locked • Sharing Locked • Export Locked • Owner Approval Required.</div><div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Run full Aqua QA"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div><div class="field"><label>Project / company</label><select id="brainProject">${[...(db.projects||[]).map(p=>p.name),...(db.companies||[]).map(c=>c.name)].map(x=>`<option>${esc(x)}</option>`).join('')}</select></div><div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small gold" onclick="createBrainBugDemo()">Create Bug Demo</button><button class="btn small gold" onclick="openModal('companycommand')">Company Command</button></div><div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked in v60E. QA aliases: run full aqua qa, run qa, test app, run self test, diagnose app.</div></div>`;
+ return header('Aqua Brain Command Hub', 'Locked local command shell foundation only. No live routing, AI calls, exports, posting, sending, deleting, or external QA runs in v60F.') + `<div class="locked">The Brain can prepare drafts, route commands, create records, summarize data, create bug reports, and run the local v60F self-diagnostic. Live AI API calls, voice input/output, customer pricing, investor exports, accounting posting, payroll, GPS, email, social posting, calendar, SMS, and phone routing remain locked until backend/security/provider/owner approval gates are complete. Safety labels: Backend Locked • Upload Locked • Sharing Locked • Export Locked • Owner Approval Required.</div><div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Run full Aqua QA"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div><div class="field"><label>Project / company</label><select id="brainProject">${[...(db.projects||[]).map(p=>p.name),...(db.companies||[]).map(c=>c.name)].map(x=>`<option>${esc(x)}</option>`).join('')}</select></div><div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small gold" onclick="createBrainBugDemo()">Create Bug Demo</button><button class="btn small gold" onclick="openModal('companycommand')">Company Command</button></div><div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked in v60F. QA aliases: run full aqua qa, run qa, test app, run self test, diagnose app.</div></div>`;
 }
 function runBrainCommandDemo(){
  const command=(document.getElementById('brainCommand').value || '').trim();
@@ -2120,18 +2123,69 @@ function qaCheckV60E(label, passed, detail='', statusWhenPassed='PASS'){
 }
 function qaStatusClassV60E(status){ return String(status||'').toLowerCase(); }
 function qaPassedV60E(row){ return ['PASS','LOCKED','WARNING'].includes(row.status); }
-function buildQACodexRepairPromptV60E(failed){
- return 'Codex repair needed. Fix only the failed checks listed below. Do not redesign. Do not change Home layout. Allowed file: AH_v54I-3.html only.\n\nFailed checks:\n' + failed.map(row=>'- '+row.label+': '+row.detail).join('\n');
+const AQUA_LATEST_QA_REPORT_KEY_V60F='aquaLatestQAReportV60F';
+let aquaLastQAReportV60F=null;
+function buildQACodexRepairPromptV60E(failed, warnings=[]){
+ if(!failed.length) return 'Aqua QA passed. No repair patch needed. Continue with next tiny protected build.';
+ return 'Codex repair needed.\n\nFailed checks:\n' + failed.map(row=>'- '+row.label+': '+row.detail).join('\n') + '\n\nWarnings:\n' + (warnings.length ? warnings.map(row=>'- '+row.label+': '+row.detail).join('\n') : '- None') + '\n\nFix only failed checks. Do not redesign. Allowed file: AH_v54I-3.html only. Do not change Home layout.';
+}
+function getAquaQAHistoryV60F(){
+ try{ return JSON.parse(localStorage.getItem(AQUA_LATEST_QA_REPORT_KEY_V60F) || 'null'); }catch(e){ return null; }
+}
+function summarizeAquaQAReportV60F(report){
+ const rows=Array.isArray(report && report.rows) ? report.rows : [];
+ const failed=typeof report.failed==='number' ? report.failed : rows.filter(row=>row.status==='FAIL').length;
+ const warnings=typeof report.warnings==='number' ? report.warnings : rows.filter(row=>row.status==='WARNING').length;
+ return {timestamp:report && report.timestamp ? report.timestamp : 'Not run yet', total:typeof report.total==='number' ? report.total : rows.length, failed, warnings, status:failed ? 'Needs Repair' : 'Passed'};
+}
+function renderAquaQAHistoryV60F(report){
+ const summary=report ? summarizeAquaQAReportV60F(report) : {timestamp:'Not saved yet', total:0, failed:0, warnings:0, status:'Not Run'};
+ return `<div class="qaHistoryV60F"><strong>QA history (local only)</strong><div class="smallMut">Last run: ${esc(summary.timestamp)} • Total checks: ${esc(summary.total)} • Failed: ${esc(summary.failed)} • Warnings: ${esc(summary.warnings)} • Status: ${esc(summary.status)}</div></div>`;
+}
+function saveAquaQAReportV60F(report=aquaLastQAReportV60F){
+ if(!report) return toast('Run Full Aqua QA first');
+ try{ localStorage.setItem(AQUA_LATEST_QA_REPORT_KEY_V60F, JSON.stringify(report)); toast('QA report saved locally'); }catch(e){ toast('QA report could not be saved locally'); }
+ const history=document.getElementById('qaHistoryV60F');
+ if(history) history.innerHTML=renderAquaQAHistoryV60F(getAquaQAHistoryV60F() || report);
+}
+function clearAquaQAReportV60F(){
+ try{ localStorage.removeItem(AQUA_LATEST_QA_REPORT_KEY_V60F); }catch(e){}
+ aquaLastQAReportV60F=null;
+ const history=document.getElementById('qaHistoryV60F');
+ if(history) history.innerHTML=renderAquaQAHistoryV60F(null);
+ const prompt=document.getElementById('qaRepairPromptV60F');
+ if(prompt) prompt.value='';
+ const status=document.getElementById('qaPromptStatusV60F');
+ if(status) status.textContent='Local QA report cleared.';
+ toast('QA report cleared');
+}
+function copyCodexRepairPromptV60F(){
+ const report=aquaLastQAReportV60F || getAquaQAHistoryV60F();
+ if(!report) return toast('Run Full Aqua QA first');
+ const rows=Array.isArray(report.rows) ? report.rows : [];
+ const promptText=buildQACodexRepairPromptV60E(rows.filter(row=>row.status==='FAIL'), rows.filter(row=>row.status==='WARNING'));
+ const promptBox=document.getElementById('qaRepairPromptV60F');
+ const status=document.getElementById('qaPromptStatusV60F');
+ if(promptBox){ promptBox.value=promptText; promptBox.focus(); promptBox.select(); }
+ const fallback=function(){ if(status) status.textContent='Copy not available. Prompt is shown below and selected for manual copy.'; toast('Prompt ready to copy manually'); };
+ if(navigator.clipboard && window.isSecureContext){
+  navigator.clipboard.writeText(promptText).then(function(){ if(status) status.textContent='Codex repair prompt copied locally.'; toast('Codex repair prompt copied'); }).catch(fallback);
+ }else{
+  try{ if(document.execCommand && document.execCommand('copy')){ if(status) status.textContent='Codex repair prompt copied locally.'; toast('Codex repair prompt copied'); }else fallback(); }catch(e){ fallback(); }
+ }
 }
 function renderAquaQAReportV60E(rows, timestamp){
  const failed=rows.filter(row=>row.status==='FAIL');
- const warningCount=rows.filter(row=>row.status==='WARNING').length;
+ const warnings=rows.filter(row=>row.status==='WARNING');
+ const warningCount=warnings.length;
  const lockedCount=rows.filter(row=>row.status==='LOCKED').length;
  const passedCount=rows.filter(row=>row.status==='PASS' || row.status==='LOCKED').length;
- const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60E checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
+ const report={version:'v60F', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:failed.length, warnings:warningCount, rows};
+ aquaLastQAReportV60F=report;
+ const nextAction=failed.length ? 'Copy the Codex repair prompt below and fix only the failed v60F checks.' : 'Safe to continue phone QA. Live/backend actions remain locked.';
  const statusRows=rows.map(row=>`<div class="qaRowV60E"><div class="qaStatusV60E ${qaStatusClassV60E(row.status)}">${esc(row.status)}</div><div><strong>${esc(row.label)}</strong><div class="smallMut">${esc(row.detail)}</div></div></div>`).join('');
- const repair=failed.length ? `<div class="moduleDivider"></div><label>Copyable Codex repair prompt</label><textarea class="qaRepairPromptV60E" readonly>${esc(buildQACodexRepairPromptV60E(failed))}</textarea>` : '';
- return `<div class="qaReportV60E"><div class="locked">Version: v60E • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}</div>${statusRows}${repair}</div>`;
+ const promptText=buildQACodexRepairPromptV60E(failed, warnings);
+ return `<div class="qaReportV60E"><div class="locked">Version: v60F • Timestamp: ${esc(timestamp)} • Local deterministic QA only • No external AI/API requests.</div><div class="qaSummaryV60E"><div class="miniCard"><strong>${rows.length}</strong><span>Total checks</span></div><div class="miniCard"><strong>${passedCount}</strong><span>Passed / locked</span></div><div class="miniCard"><strong>${failed.length}</strong><span>Failed</span></div><div class="miniCard"><strong>${warningCount}</strong><span>Warnings</span></div></div><div id="qaHistoryV60F">${renderAquaQAHistoryV60F(report)}</div><div class="actions"><button class="btn small gold" onclick="saveAquaQAReportV60F()">Save QA Report</button><button class="btn small gold" onclick="copyCodexRepairPromptV60F()">Copy Codex Repair Prompt</button><button class="btn small danger" onclick="clearAquaQAReportV60F()">Clear QA Report</button></div><div class="note"><strong>Next recommended action:</strong> ${esc(nextAction)} ${lockedCount ? esc('Locked safety confirmations: '+lockedCount+'.') : ''}<div id="qaPromptStatusV60F" class="smallMut qaPromptStatusV60F"></div></div><label>Codex repair/status prompt</label><textarea id="qaRepairPromptV60F" class="qaRepairPromptV60E" readonly>${esc(promptText)}</textarea>${statusRows}</div>`;
 }
 function runAquaFullQAV60E(){
  const timestamp=new Date().toISOString();
@@ -2163,7 +2217,7 @@ function runAquaFullQAV60E(){
  rows.push(qaCheckV60E('Detail drawer close button exists', detailMarkup.includes('closeModal()') || header('test','').includes('closeModal()'), 'Modal header close button is available.'));
  rows.push(qaCheckV60E('localStorage save/read works using aquaQATestV60E', storageWorks, storageWorks ? 'Saved and read harmless test key aquaQATestV60E.' : 'Browser localStorage test key could not be saved/read.'));
  rows.push(qaCheckV60E('Locked action safety labels exist', lockedLabels.every(label=>(brainMarkup+companyMarkup+folderMarkup+detailMarkup+complianceMarkup).includes(label)), lockedLabels.filter(label=>!(brainMarkup+companyMarkup+folderMarkup+detailMarkup+complianceMarkup).includes(label)).length ? 'Missing: '+lockedLabels.filter(label=>!(brainMarkup+companyMarkup+folderMarkup+detailMarkup+complianceMarkup).includes(label)).join(', ') : 'Backend Locked, Upload Locked, Sharing Locked, Export Locked, and Owner Approval Required labels render.', 'LOCKED'));
- rows.push(qaCheckV60E('No live AI calls enabled', true, 'No OpenAI, Gemini, Claude, or external AI API call is invoked by v60E QA.', 'LOCKED'));
+ rows.push(qaCheckV60E('No live AI calls enabled', true, 'No OpenAI, Gemini, Claude, or external AI API call is invoked by v60F QA.', 'LOCKED'));
  rows.push(qaCheckV60E('No live phone/SMS enabled', true, 'Phone, SMS, voice, and calendar routing remain text-only/locked in this demo.', 'LOCKED'));
  rows.push(qaCheckV60E('No live email sending enabled', true, 'Email/social/customer sending remains locked.', 'LOCKED'));
  rows.push(qaCheckV60E('No live payroll enabled', loadCompanyCommandV60A().every(c=>c.lockedSafeMode===true), 'Company command data remains locked safe-mode; payroll action is not live.', 'LOCKED'));
@@ -2175,7 +2229,9 @@ function runAquaFullQAV60E(){
  const out=document.getElementById('brainOut') || document.getElementById('aiOut');
  if(out) out.innerHTML=html;
  console.table(rows.map(row=>({status:row.status, check:row.label, detail:row.detail})));
- return {version:'v60E', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
+ const report={version:'v60F', timestamp, total:rows.length, passed:rows.filter(qaPassedV60E).length, failed:rows.filter(row=>row.status==='FAIL').length, warnings:rows.filter(row=>row.status==='WARNING').length, rows};
+ saveAquaQAReportV60F(report);
+ return report;
 }
 
 
