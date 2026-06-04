@@ -1727,6 +1727,7 @@ body{
           <div class="mod" onclick="openModal('maintenance')"><div class="badgeN">16</div><div class="ico">🛠️</div><div class="txt">Maint.</div></div>
           <div class="mod" onclick="openModal('inventory')"><div class="badgeN">8</div><div class="ico">📦</div><div class="txt">Inventory</div></div>
           <div class="mod" onclick="openModal('walkthrough')"><div class="badgeN">1</div><div class="ico">📸</div><div class="txt">Field Walk</div></div>
+          <div class="mod" onclick="openModal('sow')"><div class="badgeN">8</div><div class="ico">📋</div><div class="txt">SOW Builder</div></div>
           <div class="mod" onclick="openModal('companies')"><div class="badgeN">3</div><div class="ico">🏢</div><div class="txt">Companies</div></div>
           <div class="mod" onclick="openModal('aquabona')"><div class="ico">💧</div><div class="txt">Aquabona</div></div>
           <div class="mod" onclick="openModal('bugs')"><div class="ico">🐞</div><div class="txt">QA Log</div></div>
@@ -1748,7 +1749,7 @@ body{
 <div class="modalBack" id="modalBack"><div class="modal" id="modal"></div></div>
 <script>
 const STORAGE_KEY = 'aquaHomesOS_v54b_top_restored_module_fit_state';
-const VERSION = 'v57 MULTI-COMPANY COMMAND CENTER + PROJECT FOLDERS';
+const VERSION = 'v58 WALKTHROUGH-DRIVEN SOW BUILDER FOUNDATION';
 const TODAY = new Date().toISOString().slice(0,10);
 const PROJECT_FOLDER_TYPES = ['Scope of Work','Estimates / Proposals','Change Orders','Contracts','Customer Approvals','Receipts','Materials / Purchase Orders','Photos / Proof','Field Walkthrough Captures','Permits','Inspections','Insurance Documents','Code Compliance','Safety / Quality Reports','Punch List','Closeout','Warranty','Investor-Safe Packet','Customer-Safe Packet','Internal Notes','Audit Log / Source Proof'];
 const PROJECT_FOLDER_DEMOS = [
@@ -1756,6 +1757,26 @@ const PROJECT_FOLDER_DEMOS = [
   {project:'Oceanfront Condo', company:'Aqua Homes Painting'},
   {project:'25 Melbrook Street', company:'Aqua Homes Parent'}
 ];
+
+const SOW_CATEGORIES = ['General Conditions','Demolition','Sitework','Foundation','Framing','Exterior','Siding','Roofing','Windows','Doors','Plumbing','Electrical','HVAC','Insulation','Drywall / Plaster','Flooring','Kitchen','Bathroom','Finish Carpentry','Painting','Masonry / Concrete','Decks / Porches','Permits / Inspections','Code Compliance','Safety / Quality','Punch List','Closeout / Warranty'];
+const SOW_VIEW_TYPES = ['Internal Aqua Homes SOW','Aquabona Investor SOW','Customer Proposal Scope','Maintenance / HVAC Service SOW','Change Order / Punch List SOW'];
+const SOW_STATUSES = ['Draft','Needs Review','Ready for Estimate','Sent to Proposal','Approved','Change Order Needed'];
+const SOW_VISIBILITIES = ['Internal','Customer-Safe','Investor-Safe','Owner Review'];
+function makeSowItem(id, project, company, walkthroughType, audienceViewType, category, trade, area, description, conditionObserved, recommendedWork, opts={}){
+  return Object.assign({id, project, company, walkthroughType, audienceViewType, category, trade, roomArea:area, description, conditionObserved, recommendedWork, laborCategory:trade + ' Labor', materialCategory:category + ' Materials', measurementsTakeoffNotes:'Walkthrough takeoff placeholder — verify quantities before pricing.', photoProofPlaceholder:'Photo/proof placeholder needed before export.', codePermitInspectionFlag:'Owner/Admin Review', inclusionExclusion:'Inclusion - draft', assumption:'Assumes concealed conditions are normal until verified.', allowance:'TBD owner-approved allowance', alternateAddon:'None', optionTier:'Standard', changeOrderTrigger:'Hidden condition, owner selection change, code/inspection directive, or quantity variance.', visibility:'Owner Review', status:'Draft', ownerAdminReviewNotes:'Owner/admin review required before external use.'}, opts);
+}
+function demoSowItems(){
+  return [
+    makeSowItem('sow1','Harborview Residence','Aqua Homes Carpentry','Internal walkthrough','Internal Aqua Homes SOW','Kitchen','Finish Carpentry','Kitchen','Kitchen finish package captured from walkthrough.','Existing kitchen finish package needs final selection review.','Coordinate cabinet trim, finish carpentry, hardware, paint touch-ups, and closeout proof.',{measurementsTakeoffNotes:'Verify cabinet run, island clearance, trim count, backsplash edges, and finish schedule.',photoProofPlaceholder:'Kitchen wall, island, trim, sample board, before/after proof.',optionTier:'Premium',visibility:'Internal',status:'Ready for Estimate'}),
+    makeSowItem('sow2','Harborview Residence','Aqua Homes Electrical','Internal walkthrough','Internal Aqua Homes SOW','Electrical','Electrical','Kitchen / ceiling','Electrical lighting review from jobsite notes.','Lighting layout may need fixture count and switch-leg confirmation.','Review recessed lighting, under-cabinet lighting, dimmers, circuit capacity, and inspection needs.',{codePermitInspectionFlag:'Electrical permit / inspection review',visibility:'Owner Review',status:'Needs Review',ownerAdminReviewNotes:'Confirm fixture allowance and any panel impact before estimating.'}),
+    makeSowItem('sow3','Harborview Residence','Aqua Homes Plumbing','Internal walkthrough','Internal Aqua Homes SOW','Plumbing','Plumbing','Kitchen','Plumbing fixture update.','Fixture locations appear reusable but final fixture package is not approved.','Update sink, faucet, disposal, supply/stop review, and final fixture allowance.',{materialCategory:'Plumbing fixtures',allowance:'Fixture allowance TBD by owner/admin',optionTier:'Premium',visibility:'Customer-Safe',status:'Ready for Estimate'}),
+    makeSowItem('sow4','25 Melbrook Street','Aqua Homes Parent','Aquabona walkthrough','Aquabona Investor SOW','General Conditions','Owner Review','Whole property','Aquabona investor SOW foundation.','Investor-tagged renovation requires safe proof package and scope summary.','Provide investor-safe SOW summary with payroll/internal notes hidden and owner-approved proof placeholders.',{visibility:'Investor-Safe',status:'Needs Review',photoProofPlaceholder:'Investor-safe before photos, permits, inspection milestones, receipt proof.',ownerAdminReviewNotes:'Investor-safe proof needed before Aquabona export.'}),
+    makeSowItem('sow5','25 Melbrook Street','Aqua Homes Carpentry','Aquabona walkthrough','Aquabona Investor SOW','Siding','Exterior','Exterior elevations','Exterior/siding work.','Siding needs replacement at visible exterior elevations.','Review replacement siding scope, weather barrier, trim transitions, and exterior closeout proof.',{trade:'Exterior',laborCategory:'Exterior / siding labor',materialCategory:'Siding package',visibility:'Investor-Safe',status:'Ready for Estimate',photoProofPlaceholder:'Investor-safe elevation photos and material proof needed.'}),
+    makeSowItem('sow6','25 Melbrook Street','Aqua Homes Parent','Aquabona walkthrough','Aquabona Investor SOW','Permits / Inspections','Permits','Office / municipality','Permit/inspection review.','Permit and inspection path needs confirmation before investor export.','Confirm applicable permits, inspection milestones, code compliance holds, and closeout binder requirements.',{codePermitInspectionFlag:'Permit and inspection required/review',visibility:'Investor-Safe',status:'Needs Review',ownerAdminReviewNotes:'Investor-safe proof needed; legal/code/compliance use locked until admin review.'}),
+    makeSowItem('sow7','Oceanfront Condo','Aqua Homes Painting','Customer estimate walkthrough','Customer Proposal Scope','Bathroom','Bathroom','Primary bathroom','Customer proposal scope for bathroom renovation.','Bathroom renovation requested with finish selection and schedule questions.','Draft customer-safe scope for demolition, waterproofing review, tile, fixtures, painting, and final punch list.',{visibility:'Customer-Safe',status:'Sent to Proposal',optionTier:'Luxury',allowance:'Tile/fixture allowance TBD',photoProofPlaceholder:'Customer-safe before photos and finish selections.'}),
+    makeSowItem('sow8','Oceanfront Condo','Aqua Homes Parent','Customer estimate walkthrough','Change Order / Punch List SOW','Code Compliance','Owner Review','Bathroom','Change order risk note.','Existing conditions may trigger added work after demo.','Flag possible change order for concealed damage, plumbing relocation, code correction, or customer finish changes.',{visibility:'Owner Review',status:'Change Order Needed',alternateAddon:'Potential add-on/change-order path',changeOrderTrigger:'Concealed bathroom conditions or customer selection changes.'})
+  ];
+}
 function demoProjectFolders(){
   return PROJECT_FOLDER_DEMOS.flatMap((demo, projectIndex)=>PROJECT_FOLDER_TYPES.map((folderType, typeIndex)=>({
     id:`pf${projectIndex+1}_${typeIndex+1}`,
@@ -1786,6 +1807,7 @@ const defaultData = {
     {id:'co_woodworking', name:'Aqua Homes Woodworking', healthScore:90, ownership:100, openProjects:4, revenue:196900, expenses:104600, profit:92300, receiptsReview:1, payrollHold:0, insuranceStatus:'Active', workersCompExposure:'Low', bankReconciliation:'Balanced', complianceIssues:0, ownerReviewStatus:'Clear', reviewedAt:''}
   ],
   projectFolders: demoProjectFolders(),
+  sowItems: demoSowItems(),
   receipts:[
     {id:'r1', vendor:'Home Supply', amount:418.22, project:'Harborview Residence', category:'Materials', coded:false, date:TODAY},
     {id:'r2', vendor:'HVAC Parts Direct', amount:96.40, project:'Maintenance + HVAC', category:'HVAC', coded:false, date:TODAY},
@@ -1837,7 +1859,7 @@ function loadData(){
 }
 let db = loadData();
 function saveDB(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); refreshDashboard(); }
-function resetDemo(){ if(confirm('Reset v57 phone-test data to the locked default set?')){ db=clone(defaultData); saveDB(); openModal('more'); toast('Demo data reset'); } }
+function resetDemo(){ if(confirm('Reset v58 phone-test data to the locked default set?')){ db=clone(defaultData); saveDB(); openModal('more'); toast('Demo data reset'); } }
 function esc(v){ return String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
 function money(v){ return '$' + Number(v||0).toLocaleString(undefined,{maximumFractionDigits:0}); }
 function money2(v){ return '$' + Number(v||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -1849,6 +1871,7 @@ function accountingCount(){ return totalReceiptPending() + db.approvals.filter(a
 function maintenanceOpen(){ return db.maintenance.filter(m=>m.status!=='Complete').length; }
 function walkthroughCount(){ return (db.walkthroughs||[]).length; }
 function walkthroughReviewCount(){ return (db.walkthroughs||[]).filter(w=>w.status==='Needs Office Review' || w.status==='Draft Capture').length; }
+function sowNeedsReviewCount(){ return (db.sowItems||[]).filter(i=>i.status==='Needs Review' || i.status==='Draft' || i.visibility==='Owner Review').length; }
 function laborCost(){ return db.payroll.reduce((s,p)=>s+(Number(p.hours)||0)*(Number(p.rate)||0),0); }
 function materialCost(){ return db.receipts.reduce((s,r)=>s+(Number(r.amount)||0),0); }
 function projectRevenue(){ return db.projects.reduce((s,p)=>s+(Number(p.budget)||0),0); }
@@ -1908,6 +1931,7 @@ function refreshDashboard(){
   setQuickBadge('Maintenance', maintenanceOpen());
   setQuickBadge('Inventory', db.inventory.filter(i=>i.status!=='Available').length);
   setQuickBadge('Walkthrough', walkthroughCount());
+  setQuickBadge('SOW Builder', (db.sowItems||[]).filter(i=>i.status!=='Approved').length);
   setQuickBadge('Companies', rollup.ownerReview);
   setQuickBadge('QA Log', db.bugs.length);
 }
@@ -1951,6 +1975,7 @@ const renderers = {
   pl: renderPL,
   fieldapps: renderFieldApps,
   walkthrough: renderWalkthrough,
+  sow: renderSow,
   document: renderDocument,
   inventory: renderInventory,
   aquabona: renderAquabona,
@@ -2103,6 +2128,75 @@ function saveWalkthrough(){
 }
 function setWalkStatus(id,status){ const w=(db.walkthroughs||[]).find(x=>x.id===id); if(w){ w.status=status; addActivity('📸','Walkthrough set to '+status,w.project); saveDB(); openModal('walkthrough'); } }
 
+
+let currentSowView = 'All Master SOW';
+function inferSowCategory(text){ const t=String(text||'').toLowerCase(); return SOW_CATEGORIES.find(c=>t.includes(c.toLowerCase().split(' / ')[0])) || (t.includes('panel')||t.includes('lighting')?'Electrical':t.includes('plumbing')||t.includes('fixture')?'Plumbing':t.includes('roof')?'Roofing':t.includes('window')?'Windows':t.includes('siding')?'Siding':t.includes('foundation')?'Foundation':t.includes('hvac')?'HVAC':'General Conditions'); }
+function inferSowTrade(category){ return ['Plumbing','Electrical','HVAC','Roofing','Siding','Windows','Foundation'].includes(category) ? category : category==='Kitchen'?'Finish Carpentry':category==='Bathroom'?'Bathroom':'General'; }
+function sowViewForWalkthrough(type){ const t=String(type||'').toLowerCase(); if(t.includes('aquabona')) return 'Aquabona Investor SOW'; if(t.includes('customer')) return 'Customer Proposal Scope'; if(t.includes('maintenance')||t.includes('hvac')) return 'Maintenance / HVAC Service SOW'; if(t.includes('change')||t.includes('punch')) return 'Change Order / Punch List SOW'; return 'Internal Aqua Homes SOW'; }
+function sowVisibleInView(item, view){ if(view==='All Master SOW') return true; if(view==='Aquabona Investor SOW') return item.audienceViewType===view || item.visibility==='Investor-Safe'; if(view==='Customer Proposal Scope') return item.audienceViewType===view || item.visibility==='Customer-Safe'; return item.audienceViewType===view; }
+function setSowView(view){ currentSowView=view; openModal('sow'); }
+function renderSow(){
+ const items=db.sowItems||[];
+ const filtered=items.filter(i=>sowVisibleInView(i,currentSowView));
+ const categoryOptions=SOW_CATEGORIES.map(c=>`<option>${esc(c)}</option>`).join('');
+ const viewOptions=SOW_VIEW_TYPES.map(v=>`<option>${esc(v)}</option>`).join('');
+ const visibilityOptions=SOW_VISIBILITIES.map(v=>`<option>${esc(v)}</option>`).join('');
+ const statusOptions=SOW_STATUSES.map(v=>`<option>${esc(v)}</option>`).join('');
+ const viewButtons=['All Master SOW',...SOW_VIEW_TYPES].map(v=>`<button class="btn small ${currentSowView===v?'gold':''}" onclick="setSowView('${esc(v)}')">${esc(v.replace(' Aqua Homes','').replace(' Scope',''))}</button>`).join('');
+ const rows=filtered.map(i=>{
+   const safeInvestor=i.visibility==='Investor-Safe' || i.audienceViewType==='Aquabona Investor SOW';
+   const safeCustomer=i.visibility==='Customer-Safe' || i.audienceViewType==='Customer Proposal Scope';
+   return `<tr><td><strong>${esc(i.project)}</strong><div class="smallMut">${esc(i.company)} • ${esc(i.walkthroughType)}</div><div>${esc(i.category)} / ${esc(i.trade)}</div></td><td><strong>${esc(i.roomArea)}</strong><div class="smallMut">${esc(i.description)}</div><div>${esc(i.recommendedWork)}</div></td><td><span class="pill ${i.visibility==='Investor-Safe'||i.visibility==='Customer-Safe'?'green':i.visibility==='Owner Review'?'gold':''}">${esc(i.visibility)}</span><span class="pill">${esc(i.audienceViewType)}</span><div class="smallMut">${esc(i.codePermitInspectionFlag)}</div></td><td><span class="pill ${i.status==='Approved'?'green':i.status==='Needs Review'||i.status==='Change Order Needed'?'gold':''}">${esc(i.status)}</span><div class="smallMut">${esc(i.ownerAdminReviewNotes)}</div></td><td><div class="rowActions"><button class="btn small gold" onclick="setSowStatus('${i.id}','Needs Review')">Needs Review</button><button class="btn small" onclick="setSowStatus('${i.id}','Ready for Estimate')">Ready Estimate</button><button class="btn small" onclick="setSowStatus('${i.id}','Sent to Proposal')">Sent Proposal</button><button class="btn primary small" onclick="setSowStatus('${i.id}','Approved')">Approved</button><button class="btn danger small" onclick="flagSowChangeOrder('${i.id}')">CO Flag</button>${safeInvestor?`<button class="btn small gold" onclick="setSowView('Aquabona Investor SOW')">Aquabona View</button>`:''}${safeCustomer?`<button class="btn small gold" onclick="setSowView('Customer Proposal Scope')">Customer View</button>`:''}</div></td></tr>`;
+ }).join('') || '<tr><td colspan="5">No SOW records for this view yet.</td></tr>';
+ return header('SOW Builder', 'Walkthrough-driven Scope of Work foundation. One master SOW data model can render internal, investor-safe, customer proposal, maintenance/HVAC, and change-order/punch-list views.') + `
+ <div class="locked">AI may draft SOW, pricing assumptions, and category suggestions, but owner/admin review is required before customer-facing proposal, investor export, change order, pricing, or legal/code/compliance use.</div>
+ <div class="miniCards"><div class="miniCard"><strong>${items.length}</strong><span>Master SOW items</span></div><div class="miniCard"><strong>${items.filter(i=>i.visibility==='Investor-Safe').length}</strong><span>Investor-safe</span></div><div class="miniCard"><strong>${items.filter(i=>i.visibility==='Customer-Safe').length}</strong><span>Customer-safe</span></div><div class="miniCard"><strong>${sowNeedsReviewCount()}</strong><span>Owner review queue</span></div></div>
+ <div class="actions">${viewButtons}</div>
+ <div class="moduleDivider"></div><h3 style="font-size:18px;margin:0 0 8px">Add SOW Item From Walkthrough</h3>
+ <div class="split2"><div class="field"><label>Project</label><select id="sowProject">${db.projects.map(p=>`<option>${esc(p.name)}</option>`).join('')}<option>Maintenance + HVAC</option><option>New Lead / Unassigned</option></select></div><div class="field"><label>Company</label><select id="sowCompany">${folderCompanyOptions().map(c=>`<option>${esc(c)}</option>`).join('')}</select></div></div>
+ <div class="split2"><div class="field"><label>Walkthrough type</label><select id="sowWalkType"><option>Internal walkthrough</option><option>Aquabona walkthrough</option><option>Customer estimate walkthrough</option><option>Maintenance / HVAC walkthrough</option><option>Change order / punch list walkthrough</option></select></div><div class="field"><label>Audience / view type</label><select id="sowAudience">${viewOptions}</select></div></div>
+ <div class="split2"><div class="field"><label>Category</label><select id="sowCategory">${categoryOptions}</select></div><div class="field"><label>Trade</label><input id="sowTrade" placeholder="Electrical, Plumbing, HVAC, Finish Carpentry" /></div></div>
+ <div class="split2"><div class="field"><label>Room / area</label><input id="sowArea" placeholder="Kitchen, exterior, panel, bathroom" /></div><div class="field"><label>Standard / Premium / Luxury option</label><select id="sowTier"><option>Standard</option><option>Premium</option><option>Luxury</option></select></div></div>
+ <div class="field"><label>Walkthrough notes / description</label><textarea id="sowDesc" placeholder="Example: Plumbing looks like a full renovation. Electrical may need a panel upgrade. Windows need historical 6-over-6."></textarea></div>
+ <div class="field"><label>Condition observed</label><textarea id="sowCondition" placeholder="Existing condition observed during walkthrough"></textarea></div>
+ <div class="field"><label>Recommended work</label><textarea id="sowWork" placeholder="Draft recommended work for owner/admin review"></textarea></div>
+ <div class="split2"><div class="field"><label>Labor category</label><input id="sowLabor" placeholder="Trade labor / service labor" /></div><div class="field"><label>Material category</label><input id="sowMaterial" placeholder="Fixture package, siding, panel, tile" /></div></div>
+ <div class="field"><label>Measurements / takeoff notes</label><textarea id="sowTakeoff" placeholder="Quantities, measurements, assumptions, alternates, proof required"></textarea></div>
+ <div class="field"><label>Photo/proof placeholder</label><textarea id="sowProof" placeholder="Before photos, inspection proof, investor-safe proof, customer-safe proof"></textarea></div>
+ <div class="split2"><div class="field"><label>Code / permit / inspection flag</label><select id="sowCode"><option>None observed</option><option>Owner/Admin Review</option><option>Permit Review</option><option>Inspection Required</option><option>Code Compliance Review</option></select></div><div class="field"><label>Visibility</label><select id="sowVisibility">${visibilityOptions}</select></div></div>
+ <div class="split2"><div class="field"><label>Status</label><select id="sowStatus">${statusOptions}</select></div><div class="field"><label>Allowance</label><input id="sowAllowance" placeholder="TBD / owner-approved allowance" /></div></div>
+ <div class="field"><label>Inclusion / exclusion, assumptions, alternate/add-on, change-order trigger, owner/admin review notes</label><textarea id="sowReview" placeholder="Inclusions/exclusions, assumptions, alternates/add-ons, change order trigger, and review notes"></textarea></div>
+ <div class="actions"><button class="btn primary small" onclick="saveSowItem()">Add SOW Item</button><button class="btn small" style="background:#12253f" onclick="openModal('projects')">Open Project Folders</button><button class="btn small" style="background:#12253f" onclick="openModal('walkthrough')">Open Field Walkthrough</button><button class="btn small gold" onclick="setSowView('Aquabona Investor SOW')">Open Aquabona View</button><button class="btn small gold" onclick="setSowView('Customer Proposal Scope')">Open Customer Proposal View</button></div>
+ <div class="note">Conceptual connections: Project Folders, Field Walkthrough, Photo Proof / Jobsite Media, Code Compliance, Estimates / Proposals, Change Orders, Receipt Tracker, Evidence Binder, Aquabona Investor Portal, Customer Portal, AI Pricing Engine, and Owner Review Queue.</div>
+ <table class="table"><tr><th>Project / Trade</th><th>Scope Item</th><th>View / Proof</th><th>Status</th><th>Actions</th></tr>${rows}</table>`;
+}
+function saveSowItem(){
+ const project=document.getElementById('sowProject').value;
+ const company=document.getElementById('sowCompany').value;
+ const walkthroughType=document.getElementById('sowWalkType').value;
+ let audienceViewType=document.getElementById('sowAudience').value;
+ const description=document.getElementById('sowDesc').value.trim();
+ if(!description) return toast('Add walkthrough notes or description');
+ if(audienceViewType==='Internal Aqua Homes SOW') audienceViewType=sowViewForWalkthrough(walkthroughType);
+ let category=document.getElementById('sowCategory').value || inferSowCategory(description);
+ const inferredCategory=inferSowCategory(description);
+ if(category==='General Conditions' && inferredCategory!=='General Conditions') category=inferredCategory;
+ const trade=document.getElementById('sowTrade').value.trim() || inferSowTrade(category);
+ const review=document.getElementById('sowReview').value.trim();
+ let visibility=document.getElementById('sowVisibility').value;
+ if(visibility==='Internal' && audienceViewType==='Aquabona Investor SOW') visibility='Investor-Safe';
+ if(visibility==='Internal' && audienceViewType==='Customer Proposal Scope') visibility='Customer-Safe';
+ const item=makeSowItem(uid('sow'),project,company,walkthroughType,audienceViewType,category,trade,document.getElementById('sowArea').value.trim()||'Whole property',description,document.getElementById('sowCondition').value.trim()||description,document.getElementById('sowWork').value.trim()||'Draft recommended work from walkthrough notes for owner/admin review.',{
+   laborCategory:document.getElementById('sowLabor').value.trim() || trade + ' Labor', materialCategory:document.getElementById('sowMaterial').value.trim() || category + ' Materials', measurementsTakeoffNotes:document.getElementById('sowTakeoff').value.trim() || 'Takeoff TBD', photoProofPlaceholder:document.getElementById('sowProof').value.trim() || 'Photo/proof placeholder required', codePermitInspectionFlag:document.getElementById('sowCode').value, allowance:document.getElementById('sowAllowance').value.trim() || 'TBD owner-approved allowance', optionTier:document.getElementById('sowTier').value, visibility, status:document.getElementById('sowStatus').value, inclusionExclusion:review || 'Draft inclusion; exclusions TBD', assumption:review || 'Assumptions TBD', alternateAddon:review || 'Alternates/add-ons TBD', changeOrderTrigger:review || 'Owner change, hidden condition, quantity variance, or inspection/code directive.', ownerAdminReviewNotes:review || 'Owner/admin review required before external use.'
+ });
+ db.sowItems.unshift(item);
+ db.notes.unshift({id:uid('n'),title:'SOW item added: '+project,body:description,date:TODAY,type:'SOW Builder',project});
+ addActivity('📋','SOW item added: '+category,project);
+ saveDB(); openModal('sow'); toast('SOW item saved locally');
+}
+function setSowStatus(id,status){ const item=(db.sowItems||[]).find(x=>x.id===id); if(item){ item.status=status; if(status==='Needs Review') item.visibility='Owner Review'; addActivity('📋','SOW item set to '+status,item.project); saveDB(); openModal('sow'); } }
+function flagSowChangeOrder(id){ const item=(db.sowItems||[]).find(x=>x.id===id); if(item){ item.status='Change Order Needed'; item.audienceViewType='Change Order / Punch List SOW'; item.visibility='Owner Review'; addActivity('⚠️','SOW change order flag created',item.project); saveDB(); openModal('sow'); toast('Change order flag created'); } }
+
 function renderDocument(){
  const img = document.querySelector('.docthumb img')?.src || '';
  return header('Latest Document / Letterhead Preview', 'Document preview stays tied to the Aqua Homes letterhead direction. Future versions can add real document binders.') + `${img?`<div class="previewDoc"><img src="${img}" alt="Aqua Homes letterhead preview"></div>`:''}<div class="actions"><button class="btn primary small" onclick="toast('Document binder opened in demo')">Evidence Binder</button><button class="btn small gold" onclick="openModal('projects')">Attach</button></div>`;
@@ -2145,10 +2239,10 @@ function renderActivity(){
 }
 
 function renderMore(){
- return header('More', 'Navigation, safety gates, export/import, and recovery controls for this v57 phone-test prototype.') + `<div class="actions"><button class="btn small" style="background:#12253f" onclick="openModal('companies')">Companies</button><button class="btn small" style="background:#12253f" onclick="openModal('projects')">Projects</button><button class="btn small" style="background:#12253f" onclick="openModal('receipts')">Receipts</button><button class="btn small" style="background:#12253f" onclick="openModal('payroll')">Payroll</button><button class="btn small" style="background:#12253f" onclick="openModal('accounting')">Accounting</button><button class="btn small" style="background:#12253f" onclick="openModal('maintenance')">Maintenance</button><button class="btn small" style="background:#12253f" onclick="openModal('inventory')">Inventory</button><button class="btn small" style="background:#12253f" onclick="openModal('walkthrough')">Walkthrough</button><button class="btn small" style="background:#12253f" onclick="openModal('aquabona')">Aquabona</button><button class="btn small" style="background:#12253f" onclick="openModal('bugs')">Bug Capture</button></div><div class="locked">Safety gates remain active: no live payments, no banking/ACH/wire/card processing, no live payroll, no GPS tracking, no sensitive tenant storage, no accounting sync, and no live ledger/P&L posting.</div><div class="actions"><button class="btn primary small" onclick="downloadJSON()">Export Data</button><button class="btn small gold" onclick="showImportBox()">Import Data</button><button class="btn danger small" onclick="resetDemo()">Reset Data</button></div><div id="importBox"></div><div class="moduleDivider"></div><div class="monoBox">${esc(JSON.stringify({version:VERSION, savedRecords:Object.fromEntries(Object.keys(db).map(k=>[k,Array.isArray(db[k])?db[k].length:'object']))},null,2))}</div>`;
+ return header('More', 'Navigation, safety gates, export/import, and recovery controls for this v58 phone-test prototype.') + `<div class="actions"><button class="btn small" style="background:#12253f" onclick="openModal('companies')">Companies</button><button class="btn small" style="background:#12253f" onclick="openModal('projects')">Projects</button><button class="btn small" style="background:#12253f" onclick="openModal('receipts')">Receipts</button><button class="btn small" style="background:#12253f" onclick="openModal('payroll')">Payroll</button><button class="btn small" style="background:#12253f" onclick="openModal('accounting')">Accounting</button><button class="btn small" style="background:#12253f" onclick="openModal('maintenance')">Maintenance</button><button class="btn small" style="background:#12253f" onclick="openModal('inventory')">Inventory</button><button class="btn small" style="background:#12253f" onclick="openModal('walkthrough')">Walkthrough</button><button class="btn small" style="background:#12253f" onclick="openModal('sow')">SOW Builder</button><button class="btn small" style="background:#12253f" onclick="openModal('aquabona')">Aquabona</button><button class="btn small" style="background:#12253f" onclick="openModal('bugs')">Bug Capture</button></div><div class="locked">Safety gates remain active: no live payments, no banking/ACH/wire/card processing, no live payroll, no GPS tracking, no sensitive tenant storage, no accounting sync, and no live ledger/P&L posting.</div><div class="actions"><button class="btn primary small" onclick="downloadJSON()">Export Data</button><button class="btn small gold" onclick="showImportBox()">Import Data</button><button class="btn danger small" onclick="resetDemo()">Reset Data</button></div><div id="importBox"></div><div class="moduleDivider"></div><div class="monoBox">${esc(JSON.stringify({version:VERSION, savedRecords:Object.fromEntries(Object.keys(db).map(k=>[k,Array.isArray(db[k])?db[k].length:'object']))},null,2))}</div>`;
 }
 function showImportBox(){ document.getElementById('importBox').innerHTML = `<div class="field"><label>Paste exported JSON</label><textarea id="importJson" placeholder="Paste data exported from this prototype"></textarea></div><button class="btn primary small" onclick="importJSON()">Import</button>`; }
-function downloadJSON(){ const payload={version:VERSION, exportedAt:new Date().toISOString(), data:db}; const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='AquaHomesOS_v57_test_data.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); toast('Export downloaded'); }
+function downloadJSON(){ const payload={version:VERSION, exportedAt:new Date().toISOString(), data:db}; const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='AquaHomesOS_v58_test_data.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); toast('Export downloaded'); }
 function importJSON(){ try{ const raw=document.getElementById('importJson').value; const parsed=JSON.parse(raw); db=Object.assign(clone(defaultData), parsed.data || parsed); saveDB(); openModal('more'); toast('Data imported'); }catch(e){ toast('Import failed — invalid JSON'); } }
 
 function setStatus(collection,id,status,returnKey){ const row=db[collection].find(x=>x.id===id); if(row){ row.status=status; addActivity('☑️',`${collection} set to ${status}`,row.project||row.property||row.worker||'AquaBrain'); saveDB(); openModal(returnKey); } }
