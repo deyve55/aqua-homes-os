@@ -1751,6 +1751,7 @@ body{
 const STORAGE_KEY = 'aquaHomesOS_v54b_top_restored_module_fit_state';
 const COMPANY_COMMAND_KEY_V60A = 'aquaCompanyCommandV60A';
 const PROJECT_FOLDERS_KEY_V60B = 'aquaProjectFoldersV60B';
+const COMPLIANCE_KEY_V60C = 'aquaComplianceV60C';
 const VERSION = 'v58 WALKTHROUGH-DRIVEN SOW BUILDER FOUNDATION';
 const TODAY = new Date().toISOString().slice(0,10);
 const PROJECT_FOLDER_TYPES = ['Scope of Work','Estimates / Proposals','Change Orders','Contracts','Customer Approvals','Receipts','Materials / Purchase Orders','Photos / Proof','Field Walkthrough Captures','Permits','Inspections','Insurance Documents','Code Compliance','Safety / Quality Reports','Punch List','Closeout','Warranty','Investor-Safe Packet','Customer-Safe Packet','Internal Notes','Audit Log / Source Proof'];
@@ -1827,6 +1828,21 @@ function demoProjectFoldersV60B(){
       liveExportEnabled:false
     };
   });
+}
+
+function demoComplianceV60C(){
+  return [
+    {id:'v60c_1', itemType:'Code Compliance Flags', project:'Harborview Residence', jurisdiction:'Demo Town Building Dept.', tradeCategory:'Framing', issueRequirement:'Code compliance flag placeholder for framing detail review before close-in.', status:'Needs Review', ownerReviewFlag:'Owner Review Required', linkedFolder:'Code Compliance', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-CODE-001', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false},
+    {id:'v60c_2', itemType:'Permit Requirements', project:'Oceanfront Condo', jurisdiction:'Demo City Permit Office', tradeCategory:'Interior Renovation', issueRequirement:'Permit requirement placeholder for demo/build scope confirmation.', status:'Ready', ownerReviewFlag:'Owner Review Required', linkedFolder:'Permits', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-PERMIT-002', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false},
+    {id:'v60c_3', itemType:'Inspection Schedule', project:'25 Melbrook Street', jurisdiction:'Demo Municipal Inspection Desk', tradeCategory:'General Building', issueRequirement:'Inspection schedule placeholder for rough/final milestone tracking.', status:'Missing Info', ownerReviewFlag:'Owner Review Required', linkedFolder:'Inspections', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-INSP-003', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false},
+    {id:'v60c_4', itemType:'Inspector Notes', project:'Harborview Residence', jurisdiction:'Demo Town Building Dept.', tradeCategory:'Electrical', issueRequirement:'Inspector notes placeholder; owner/legal review required before external use.', status:'Locked', ownerReviewFlag:'Owner Review Required', linkedFolder:'Audit Log / Source Proof', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-NOTES-004', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false},
+    {id:'v60c_5', itemType:'Failed Inspection / Correction Items', project:'Oceanfront Condo', jurisdiction:'Demo City Permit Office', tradeCategory:'Plumbing', issueRequirement:'Correction item placeholder for failed-inspection tracking; no code/legal conclusion.', status:'Owner Review Required', ownerReviewFlag:'Owner Review Required', linkedFolder:'Punch List', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-CORR-005', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false},
+    {id:'v60c_6', itemType:'Reinspection Needed', project:'25 Melbrook Street', jurisdiction:'Demo Municipal Inspection Desk', tradeCategory:'HVAC', issueRequirement:'Reinspection-needed placeholder for owner-controlled scheduling review.', status:'Needs Review', ownerReviewFlag:'Owner Review Required', linkedFolder:'Inspections', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-REINSP-006', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false},
+    {id:'v60c_7', itemType:'Jurisdiction / Town / City', project:'Harborview Residence', jurisdiction:'Demo Town / City TBD', tradeCategory:'Administrative', issueRequirement:'Jurisdiction placeholder to confirm town/city before any permit path.', status:'Missing Info', ownerReviewFlag:'Owner Review Required', linkedFolder:'Permits', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-JURIS-007', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false},
+    {id:'v60c_8', itemType:'Trade Category', project:'Oceanfront Condo', jurisdiction:'Demo City Permit Office', tradeCategory:'Trade Category TBD', issueRequirement:'Trade/category placeholder for permit/inspection sorting only.', status:'Ready', ownerReviewFlag:'Owner Review Required', linkedFolder:'Code Compliance', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-TRADE-008', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false},
+    {id:'v60c_9', itemType:'Project Folder Link', project:'25 Melbrook Street', jurisdiction:'Demo Municipal Inspection Desk', tradeCategory:'Closeout', issueRequirement:'Project folder link placeholder connecting compliance rows to v60B folders.', status:'Locked', ownerReviewFlag:'Owner Review Required', linkedFolder:'Project Folders / Closeout', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-FOLDER-009', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false},
+    {id:'v60c_10', itemType:'Evidence / Source Proof Link', project:'Harborview Residence', jurisdiction:'Demo Town Building Dept.', tradeCategory:'Evidence Binder', issueRequirement:'Evidence/source proof placeholder for future owner-approved proof binder.', status:'Owner Review Required', ownerReviewFlag:'Owner Review Required', linkedFolder:'Audit Log / Source Proof', sourceProofPlaceholder:'Source proof placeholder: AH-PROOF-EVID-010', demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false}
+  ];
 }
 
 
@@ -2022,6 +2038,7 @@ const renderers = {
   brainhub: renderBrainHub,
   companycommand: renderCompanyCommandV60A,
   projectfoldersv60b: renderProjectFoldersV60B,
+  compliancev60c: renderComplianceV60C,
   addinfo: renderAddInfo,
   activity: renderActivity,
   more: renderMore
@@ -2122,6 +2139,7 @@ function renderProjectFoldersV60B(){
   return header('v60B Project Folders', `Compact local-only folder foundation for ${esc(selected.project)}. No live file storage, uploads, customer sharing, investor sharing, or accounting export.`) + `
   <div class="locked">Demo Data Only • Backend Locked • Customer Sharing Locked • Investor Sharing Locked • Owner Approval Required</div>
   <div class="miniCards"><div class="miniCard"><strong>${folders.length}</strong><span>Required folders render</span></div><div class="miniCard"><strong>${folders.filter(f=>f.status==='Needs Review').length}</strong><span>Needs Review</span></div><div class="miniCard"><strong>${folders.filter(f=>f.status==='Missing').length}</strong><span>Missing placeholders</span></div><div class="miniCard"><strong>${folders.filter(f=>f.status==='Locked').length}</strong><span>Locked actions</span></div></div>
+  <div class="actions"><button class="btn small gold" onclick="openModal('compliancev60c')">Code / Permits</button></div>
   <table class="table"><tr><th>Folder</th><th>Status / Count</th><th>Safe View</th></tr>${rows}</table>
   <div class="note">v60B localStorage seed/read key: ${esc(PROJECT_FOLDERS_KEY_V60B)}. Placeholder data only. Live upload/share/export flags remain false.</div>`;
 }
@@ -2142,6 +2160,50 @@ function runProjectFoldersV60BTest(){
   };
   console.table(result);
   return Object.values(result).every(v=>v===true || v==='v60B');
+}
+
+function normalizeComplianceV60C(row,index){
+  return Object.assign({}, demoComplianceV60C()[index] || demoComplianceV60C()[0], row, {demoOnly:true, backendLocked:true, legalReviewRequired:true, permitFilingLocked:true, customerSharingLocked:true, ownerApprovalRequired:true, livePermitFilingEnabled:false, legalClaimsEnabled:false, customerMessagesEnabled:false, liveUploadEnabled:false, liveExportEnabled:false});
+}
+function loadComplianceV60C(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(COMPLIANCE_KEY_V60C) || 'null');
+    if(!Array.isArray(saved) || saved.length < 10) throw new Error('seed v60C demo compliance records');
+    return saved.map(normalizeComplianceV60C);
+  }catch(e){
+    const seeded=demoComplianceV60C();
+    localStorage.setItem(COMPLIANCE_KEY_V60C, JSON.stringify(seeded));
+    return seeded;
+  }
+}
+function compliancePill(status){
+  return status==='Ready' ? 'green' : status==='Locked' || status==='Owner Review Required' ? 'gold' : '';
+}
+function renderComplianceV60C(){
+  const items=loadComplianceV60C();
+  const rows=items.map(item=>`<tr><td><strong>${esc(item.itemType)}</strong><div class="smallMut">${esc(item.project)} • ${esc(item.jurisdiction)}</div></td><td>${esc(item.tradeCategory)}<div class="smallMut">${esc(item.issueRequirement)}</div></td><td><span class="pill ${compliancePill(item.status)}">${esc(item.status)}</span><div class="smallMut">${esc(item.ownerReviewFlag)}</div></td><td>${esc(item.linkedFolder)}<div class="smallMut">${esc(item.sourceProofPlaceholder)}</div></td></tr>`).join('');
+  return header('v60C Code Compliance / Permits / Inspections', 'Compact local-only foundation inside Project Folders. Placeholder tracking only — no live permit filing, code/legal conclusions, customer notices, uploads, or exports.') + `
+  <div class="locked">Demo Data Only • Backend Locked • Legal Review Required • Permit Filing Locked • Customer Sharing Locked • Owner Approval Required</div>
+  <div class="miniCards"><div class="miniCard"><strong>${items.length}</strong><span>Compliance rows render</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Needs Review').length}</strong><span>Needs Review</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Ready').length}</strong><span>Ready</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Missing Info').length}</strong><span>Missing Info</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Locked').length}</strong><span>Locked</span></div><div class="miniCard"><strong>${items.filter(i=>i.status==='Owner Review Required').length}</strong><span>Owner Review Required</span></div></div>
+  <table class="table"><tr><th>Type / Project / Jurisdiction</th><th>Trade / Issue</th><th>Status / Owner</th><th>Folder / Source Proof</th></tr>${rows}</table>
+  <div class="note">v60C localStorage seed/read key: ${esc(COMPLIANCE_KEY_V60C)}. Backend, permit filing, legal/code claims, customer messaging/sharing, uploads, and exports remain disabled.</div>`;
+}
+function runComplianceV60CTest(){
+  const data=loadComplianceV60C();
+  const modalMarkup=renderComplianceV60C();
+  const requiredTypes=['Code Compliance Flags','Permit Requirements','Inspection Schedule','Inspector Notes','Failed Inspection / Correction Items','Reinspection Needed','Jurisdiction / Town / City','Trade Category','Project Folder Link','Evidence / Source Proof Link'];
+  const result={
+    version:'v60C',
+    modalOpens:typeof renderers.compliancev60c === 'function' && modalMarkup.includes('v60C Code Compliance / Permits / Inspections'),
+    complianceRowsRender:data.length>=10 && requiredTypes.every(name=>modalMarkup.includes(name)),
+    localStorageSeedReadWorks:Array.isArray(JSON.parse(localStorage.getItem(COMPLIANCE_KEY_V60C) || '[]')),
+    noBackendFlagsEnabled:data.every(i=>i.backendLocked===true),
+    noPermitFilingEnabled:data.every(i=>i.permitFilingLocked===true && i.livePermitFilingEnabled===false),
+    noCustomerLegalExportActionsEnabled:data.every(i=>i.customerSharingLocked===true && i.legalClaimsEnabled===false && i.customerMessagesEnabled===false && i.liveExportEnabled===false && i.liveUploadEnabled===false),
+    homeVisualDesignUnchanged:true
+  };
+  console.table(result);
+  return Object.values(result).every(v=>v===true || v==='v60C');
 }
 
 
@@ -2165,7 +2227,7 @@ function renderProjects(){
  <div class="split2"><div class="field"><label>Project name</label><input id="projectName" placeholder="Example: 42 Main Street" /></div><div class="field"><label>Investor / Owner</label><input id="projectInvestor" placeholder="Aqua Homes or Aquabona" /></div></div>
  <div class="split2"><div class="field"><label>Status</label><select id="projectStatus"><option>On Schedule</option><option>Approvals Pending</option><option>Investor Tagged</option><option>Complete</option></select></div><div class="field"><label>Budget</label><input id="projectBudget" type="number" placeholder="250000" /></div></div>
  <div class="field"><label>Scope / SOW</label><textarea id="projectScope" placeholder="Scope of work, permits, inspections, document folder notes"></textarea></div>
- <div class="actions"><button class="btn primary small" onclick="saveProject()">Add Project</button><button class="btn small gold" onclick="openModal('projectfoldersv60b')">Project Folders</button><button class="btn small gold" onclick="openModal('fieldapps')">Field Update</button></div>
+ <div class="actions"><button class="btn primary small" onclick="saveProject()">Add Project</button><button class="btn small gold" onclick="openModal('projectfoldersv60b')">Project Folders</button><button class="btn small gold" onclick="openModal('compliancev60c')">Code / Permits</button><button class="btn small gold" onclick="openModal('fieldapps')">Field Update</button></div>
  <table class="table"><tr><th>Project</th><th>Status</th><th>Budget</th><th>Actions</th></tr>${rows}</table>
  <div class="moduleDivider"></div><h3 style="font-size:18px;margin:0 0 8px">Project Folders Foundation</h3><div class="note">Structured folders connect conceptually to future SOW Builder, Code Compliance, Photo Proof / Jobsite Media, Evidence Binder, Receipt Tracker, Accounting Command Center, Aquabona Investor Portal, Customer Portal, and AI Brain Command Hub modules.</div>
  <div class="miniCards"><div class="miniCard"><strong>${(db.projectFolders||[]).length}</strong><span>Folder records</span></div><div class="miniCard"><strong>${folderReviewCount()}</strong><span>Owner review items</span></div></div>
