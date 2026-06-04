@@ -31,71 +31,6 @@ const COMMAND_ROUTE_STATUSES = [
 ];
 const COMMAND_ROUTE_LOCK_NOTE =
   "Command routing is local prototype-only. Live dispatch, notifications, AI execution, and backend workflow automation stay locked until backend/security/provider gates are complete.";
-
-const CURRENT_KEEPER_LABEL = "v59A Second Version / Command Routing";
-const CURRENT_STABILIZATION_PATCH = "v59B";
-const CURRENT_LIVE_ENTRY_FIX = "v59C";
-const CURRENT_DESIGN_TRUTH_RESTORE = "v59D Design Truth Restore";
-const KEEPER_SAFETY_BANNER_TEXT =
-  "Current Keeper: v59A Second Version / Command Routing. Build forward only. Do not roll back.";
-const VERSION_TRUTH_ITEMS = [
-  ["Current Keeper", CURRENT_KEEPER_LABEL],
-  ["Current Stabilization Patch", CURRENT_STABILIZATION_PATCH],
-  ["Live Entry Fixed", CURRENT_LIVE_ENTRY_FIX],
-  ["Design Truth Restore", CURRENT_DESIGN_TRUTH_RESTORE],
-  ["Source Status", "Merged live keeper confirmed by user"],
-  ["Active Repo Paths", "docs/app.js\ndocs/styles.css\nstructured-app/app.js\nstructured-app/styles.css"],
-  ["Design Lock", "Active"],
-  ["Backend Lock", "Active"],
-  ["Live AI Calls", "Locked / Disabled"],
-  ["Live Phone/SMS", "Locked / Disabled"],
-  ["Live Email Sending", "Locked / Disabled"],
-  ["Live Payroll/Banking", "Locked / Disabled"],
-  ["Last Visual Approval", "v59A second version approved by user"],
-  ["Rollback Warning", "Do not use v57A or older planning files as active source"],
-];
-const QA_REPORT_ITEMS = [
-  ["App loads", "Verified"],
-  ["Main Brain opens", "Verified"],
-  ["Aqua AI Assistant opens", "Verified"],
-  ["Command Hub opens", "Verified"],
-  ["Command Routing panel visible", "Verified"],
-  ["Design lock preserved", "Verified"],
-  ["Version / Source Truth collapsed drawer available", "Verified"],
-  ["Backend/live actions locked", "Verified"],
-  ["Run Command Demo remains local only", "Verified"],
-  ["Create Bug Demo remains local only", "Verified"],
-  ["localStorage save/read check", "Verified by self-test"],
-  ["Mobile layout check pending/user visual", "Pending user visual"],
-  ["Codex/GitHub file sync check", "Verified by command"],
-];
-const CODEX_GITHUB_SYNC_ITEMS = [
-  ["node --check docs/app.js", "Required check"],
-  ["node --check structured-app/app.js", "Required check"],
-  ["docs/app.js matches structured-app/app.js", "Required cmp"],
-  ["docs/styles.css matches structured-app/styles.css", "Required cmp"],
-  ["screenshot test", "manual / Playwright unavailable"],
-  ["GitHub Pages/live app opens", "Pending user/browser"],
-  ["user visual approval recorded", "v59A second version approved by user"],
-];
-const liveAiCallsEnabled = false;
-const livePhoneSmsEnabled = false;
-const liveEmailSendEnabled = false;
-const livePayrollEnabled = false;
-const liveBankingEnabled = false;
-const liveBuildiumWriteBackEnabled = false;
-const liveCustomerSendEnabled = false;
-const liveExternalPostingEnabled = false;
-const LIVE_ACTION_LOCKS = {
-  liveAiCallsEnabled,
-  livePhoneSmsEnabled,
-  liveEmailSendEnabled,
-  livePayrollEnabled,
-  liveBankingEnabled,
-  liveBuildiumWriteBackEnabled,
-  liveCustomerSendEnabled,
-  liveExternalPostingEnabled,
-};
 const RECEIPT_REVIEW_STATUSES = ["Needs Review", "Coded", "Accounting Hold"];
 const PAYROLL_PREP_STATUSES = ["Draft", "Office Review", "Approved Hold"];
 const INVENTORY_TOOL_STATUSES = [
@@ -1441,213 +1376,6 @@ function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-}
-
-function getStatusClass(status) {
-  return String(status).toLowerCase().includes("pending")
-    ? "pending"
-    : "verified";
-}
-
-function renderInfoList(items) {
-  return items
-    .map(
-      ([label, value]) => `
-        <article>
-          <span>${escapeHtml(label)}</span>
-          <strong>${escapeHtml(value)}</strong>
-        </article>
-      `,
-    )
-    .join("");
-}
-
-function renderChecklist(items, listClass = "keeper-checklist") {
-  return items
-    .map(
-      ([label, status]) => `
-        <li class="${listClass}__item ${getStatusClass(status)}">
-          <span>${escapeHtml(label)}</span>
-          <strong>${escapeHtml(status)}</strong>
-        </li>
-      `,
-    )
-    .join("");
-}
-
-function getKeeperPanelMarkup() {
-  return `
-    <details class="keeper-secondary-drawer" data-version-truth-panel>
-      <summary>Version / Source Truth · QA · Backend Locks</summary>
-      <p class="keeper-drawer-note">${escapeHtml(KEEPER_SAFETY_BANNER_TEXT)}</p>
-      <section class="version-truth-panel" aria-labelledby="version-truth-title">
-      <div class="keeper-panel-header">
-        <div>
-          <p class="eyebrow">Version / Source Truth</p>
-          <h2 id="version-truth-title">Keeper Stabilization v59B · Live Entry v59C · v59D</h2>
-        </div>
-        <span class="status-pill">Build Forward Only</span>
-      </div>
-      <div class="version-truth-grid">${renderInfoList(VERSION_TRUTH_ITEMS)}</div>
-      </section>
-      <section class="qa-report-panel" data-main-brain-qa-report aria-labelledby="qa-report-title">
-      <div class="keeper-panel-header">
-        <div>
-          <p class="eyebrow">Main Brain QA</p>
-          <h2 id="qa-report-title">Report Card</h2>
-        </div>
-        <button type="button" class="ghost-button" data-run-self-test>Run Main Brain Self-Test</button>
-      </div>
-      <ul class="keeper-checklist">${renderChecklist(QA_REPORT_ITEMS)}</ul>
-      <article class="self-test-card" data-self-test-card aria-live="polite">
-        <strong>Self-test ready</strong>
-        <span>Local-only checks will verify version truth, command hub data, lock flags, QA rendering, and localStorage.</span>
-      </article>
-      <button type="button" class="ghost-button bug-from-qa-button" data-create-bug-from-qa>Create Bug From QA</button>
-      </section>
-      <section class="sync-checklist-panel" data-sync-checklist-panel aria-labelledby="sync-checklist-title">
-      <div class="keeper-panel-header">
-        <div>
-          <p class="eyebrow">Codex / GitHub Sync</p>
-          <h2 id="sync-checklist-title">Checklist</h2>
-        </div>
-        <span class="status-pill">Local Proof Required</span>
-      </div>
-      <ul class="keeper-checklist sync-checklist">${renderChecklist(CODEX_GITHUB_SYNC_ITEMS)}</ul>
-      </section>
-    </details>
-  `;
-}
-
-function renderSelfTestCard(report) {
-  const selfTestCard = document.querySelector("[data-self-test-card]");
-
-  if (!selfTestCard) {
-    return;
-  }
-
-  const passed = report.checks.filter((check) => check.passed).length;
-  selfTestCard.innerHTML = `
-    <strong>Main Brain Self-Test: ${passed}/${report.checks.length} passed</strong>
-    <span>Report ${escapeHtml(report.id)} created ${escapeHtml(formatActivityTime(report.createdAt))}. No external APIs were called.</span>
-    <ul>
-      ${report.checks
-        .map(
-          (check) => `
-            <li class="${check.passed ? "verified" : "pending"}">
-              <span>${escapeHtml(check.label)}</span>
-              <strong>${check.passed ? "Pass" : "Review"}</strong>
-            </li>
-          `,
-        )
-        .join("")}
-    </ul>
-  `;
-}
-
-function createBugFromQa() {
-  const qaBug = {
-    title: `QA placeholder from ${CURRENT_STABILIZATION_PATCH}`,
-    moduleArea: "Main Brain QA Report Card",
-    severity: "Low",
-    status: "New",
-    aiTestSuggestion:
-      "Review the v59B QA report card locally and visually confirm mobile layout before merge.",
-    expectedResult:
-      "Version / Source Truth, Command Routing, QA checks, and lock notices remain available in a collapsed Command Routing drawer without live actions.",
-    stepsToReproduce:
-      "Open Command Routing, expand the Version / Source Truth drawer, run the Main Brain Self-Test, then inspect Command Routing and Bug Capture locally.",
-    notes:
-      "Local placeholder only. No sending, posting, deleting, exporting, or external issue tracker action is performed.",
-  };
-
-  demoData.bugCapture = [qaBug, ...(demoData.bugCapture ?? [])];
-  saveDemoData();
-  addRecentActivity("bug-capture-qa-issue-log", qaBug);
-  renderModules();
-
-  if (activeModule && getModuleId(activeModule.name) === "bug-capture-qa-issue-log") {
-    renderDemoModule("bug-capture-qa-issue-log");
-  }
-
-  const button = document.querySelector("[data-create-bug-from-qa]");
-  if (button) {
-    button.textContent = "Local QA bug placeholder created";
-  }
-}
-
-function runMainBrainSelfTest() {
-  const testKey = "aquaHomes.v59BMainBrainSelfTest";
-  const testValue = `local-only-${Date.now()}`;
-  writeLocalStorage(testKey, testValue);
-  const localStoragePassed = readLocalStorage(testKey) === testValue;
-  try {
-    localStorage.removeItem(testKey);
-  } catch (error) {
-    // Keep the shell usable if localStorage cleanup is unavailable.
-  }
-
-  const noLiveExternalActionsEnabled = Object.values(LIVE_ACTION_LOCKS).every(
-    (value) => value === false,
-  );
-  const report = {
-    id: `v59b-self-test-${Date.now()}`,
-    createdAt: new Date().toISOString(),
-    checks: [
-      {
-        label: "Version truth data exists",
-        passed:
-          VERSION_TRUTH_ITEMS.length > 0 &&
-          VERSION_TRUTH_ITEMS.some(
-            ([label, value]) =>
-              label === "Current Stabilization Patch" &&
-              value === CURRENT_STABILIZATION_PATCH,
-          ),
-      },
-      {
-        label: "Command hub data exists",
-        passed:
-          Array.isArray(demoData.commandRoutes) &&
-          typeof renderCommandRoutingPanel === "function",
-      },
-      {
-        label: "Backend live flags are false/locked",
-        passed: noLiveExternalActionsEnabled,
-      },
-      {
-        label: "Required QA items render",
-        passed:
-          QA_REPORT_ITEMS.every(([label]) => document.body.textContent.includes(label)) &&
-          Boolean(document.querySelector("[data-main-brain-qa-report]")),
-      },
-      {
-        label: "localStorage can write/read harmless test key",
-        passed: localStoragePassed,
-      },
-      {
-        label: "Visible QA report object/card exists",
-        passed: Boolean(document.querySelector("[data-self-test-card]")),
-      },
-      {
-        label: "No live external action flags enabled",
-        passed: noLiveExternalActionsEnabled,
-      },
-    ],
-  };
-
-  window.aquaHomesMainBrainSelfTestReport = report;
-  renderSelfTestCard(report);
-  return report;
-}
-
-function bindKeeperStabilizationDrawer(root = document) {
-  root
-    .querySelector("[data-run-self-test]")
-    ?.addEventListener("click", runMainBrainSelfTest);
-  root
-    .querySelector("[data-create-bug-from-qa]")
-    ?.addEventListener("click", createBugFromQa);
-  runMainBrainSelfTest();
 }
 
 function formatCurrency(value) {
@@ -4156,7 +3884,6 @@ function renderCommandRoutingPanel(routes) {
       </div>
       <p class="command-route-lock-note">${COMMAND_ROUTE_LOCK_NOTE}</p>
       ${summaryGrid}
-      ${getKeeperPanelMarkup()}
       <div class="command-route-list">${routeRows}</div>
       <div class="command-history-panel">
         <p class="eyebrow">Command History</p>
@@ -4961,7 +4688,6 @@ function renderDemoList(moduleId) {
     list.innerHTML = `<li class="demo-empty">${demoModule.empty}</li>`;
     if (commandRoutingSlot) {
       commandRoutingSlot.innerHTML = renderCommandRoutingPanel(items);
-      bindKeeperStabilizationDrawer(commandRoutingSlot);
     }
     if (projectFolderSlot) {
       projectFolderSlot.innerHTML = renderProjectFolder(null);
@@ -5039,7 +4765,6 @@ function renderDemoList(moduleId) {
 
   if (commandRoutingSlot) {
     commandRoutingSlot.innerHTML = renderCommandRoutingPanel(items);
-    bindKeeperStabilizationDrawer(commandRoutingSlot);
     commandRoutingSlot
       .querySelectorAll("[data-command-route-status-index]")
       .forEach((select) => {
