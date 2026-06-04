@@ -1980,6 +1980,7 @@ const renderers = {
   inventory: renderInventory,
   aquabona: renderAquabona,
   bugs: renderBugs,
+  brainhub: renderBrainHub,
   addinfo: renderAddInfo,
   activity: renderActivity,
   more: renderMore
@@ -1989,7 +1990,7 @@ function renderAI(){
  return header('Aqua AI Assistant', 'Demo AI now reads saved local phone-test data from projects, receipts, payroll, maintenance, inventory, field messages, approvals, notes, and bug reports.') + `
  <div class="miniCards"><div class="miniCard"><strong>${db.projects.length}</strong><span>Projects</span></div><div class="miniCard"><strong>${totalReceiptPending()}</strong><span>Receipts pending</span></div><div class="miniCard"><strong>${maintenanceOpen()}</strong><span>Service requests</span></div><div class="miniCard"><strong>${accountingCount()}</strong><span>Accounting queue</span></div></div>
  <div class="field"><label>Ask Aqua AI</label><textarea id="aiAsk" placeholder="Example: What is holding up 25 Melbrook Street?"></textarea></div>
- <div class="actions"><button class="btn primary small" onclick="runAI()">Run AI</button><button class="btn small gold" onclick="openModal('more')">Export / Import</button></div><div id="aiOut" class="field"></div>`;
+ <div class="actions"><button class="btn primary small" onclick="runAI()">Run AI</button><button class="btn small gold" onclick="openModal('brainhub')">Command Hub</button><button class="btn small gold" onclick="openModal('more')">Export / Import</button></div><div id="aiOut" class="field"></div>`;
 }
 function runAI(){
  const q=(document.getElementById('aiAsk').value || '').toLowerCase();
@@ -2000,6 +2001,30 @@ function runAI(){
  const p=db.projects.find(x=>q.includes(x.name.toLowerCase().split(' ')[0]) || q.includes(x.name.toLowerCase()));
  if(p) focus=p.name;
  document.getElementById('aiOut').innerHTML = `<div class="note"><strong>Demo response — ${esc(focus)}:</strong><br><br>Current blockers: ${pendingApprovals.length} pending owner approval(s), ${uncoded.length} uncoded receipt(s), ${payrollReviewCount()} payroll prep item(s) needing review, and ${openMaint.length} maintenance/service ticket(s) not complete.<br><br>Recommended next action: open Approvals first, then Receipt Tracker, then Accounting Review. Live payments, payroll, GPS, banking, and ledger posting remain safety-locked.</div>`;
+}
+
+function renderBrainHub(){
+ return header('Aqua Brain Command Hub', 'Locked local command shell foundation only. No live routing, AI calls, exports, posting, sending, or deleting runs in v59A.') + `<div class="locked">The Brain can prepare drafts, route commands, create records, summarize data, and create bug reports. Live AI API calls, voice input/output, customer pricing, investor exports, accounting posting, payroll, GPS, email, social posting, calendar, SMS, and phone routing remain locked until backend/security/provider/owner approval gates are complete.</div><div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Draft a bug report for receipt upload issue"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div><div class="field"><label>Project / company</label><select id="brainProject">${[...(db.projects||[]).map(p=>p.name),...(db.companies||[]).map(c=>c.name)].map(x=>`<option>${esc(x)}</option>`).join('')}</select></div><div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="createBrainBugDemo()">Create Bug Demo</button></div><div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked in v59A.</div></div>`;
+}
+function runBrainCommandDemo(){
+ const command=(document.getElementById('brainCommand').value || '').trim();
+ const project=document.getElementById('brainProject').value || 'AquaBrain';
+ const type=document.getElementById('brainType').value;
+ const target=document.getElementById('brainTarget').value;
+ let msg=`Brain command captured as ${esc(type)} for ${esc(target)}. No live routing was run.`;
+ if(command.toLowerCase().includes('bug') && Array.isArray(db.bugs)){
+  db.bugs.unshift({id:uid('b'),title:'Brain command bug demo',detail:command||'Bug command captured from Aqua Brain Command Hub.',status:'Open'});
+  msg+=' Bug record created in local demo data.';
+ }
+ addActivity('🧠','Brain command captured.',project);
+ saveDB();
+ document.getElementById('brainOut').innerHTML=`<div class="note">${msg}</div>`;
+}
+function createBrainBugDemo(){
+ const box=document.getElementById('brainCommand');
+ if(box && !box.value.trim()) box.value='Bug demo captured from Aqua Brain Command Hub.';
+ if(box && !box.value.toLowerCase().includes('bug')) box.value='Bug: '+box.value;
+ runBrainCommandDemo();
 }
 
 function renderRevenue(){
