@@ -1,10 +1,10 @@
 # Aqua Homes OS v61Z Regression Report
 
-- Timestamp: 2026-06-05T17:26:37.086Z
+- Timestamp: 2026-06-05T17:55:19.622Z
 - Branch: work
-- Commit: fc809bfc4df01ec00183735114ef0b0b4563af15
-- Total tests: 184
-- Passed: 184
+- Commit: dd02986846d5ebc832efb10f7bceef64584d5750
+- Total tests: 213
+- Passed: 213
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -14,6 +14,7 @@
 - routingStillWorks: true
 - automationStillWorks: true
 - noLiveRecordChanges: true
+- noAudioStorage: true
 - noBackendNetworkLiveAI: true
 - spokenReadbackAvailable: false
 - spokenReadbackBrowserUnavailableFallback: true
@@ -22,6 +23,15 @@
 - runRegressionQaCommandWorks: true
 - automationCommandsDoNotFallback: true
 - askModeRouterWorks: true
+- voiceBrainToolRegistryExists: true
+- voiceBrainIntentClassifierWorks: true
+- hendersonReportIntentWorks: true
+- hendersonReceiptsIntentWorks: true
+- accountantExportStaysLocked: true
+- plumbingSpendIntentWorks: true
+- cameraAllocationIntentWorks: true
+- constructionDiagramUploadStaysLocked: true
+- suggestNextStepWorks: true
 - appNavigationModeWorks: true
 - automationStatusModeWorks: true
 - permissionedActionModeWorks: true
@@ -54,8 +64,10 @@
 - noBackendCalls: true
 - noNetworkCalls: true
 - noExternalAIApiCalls: true
+- noExternalAIAPICalls: true
 - noApiKeysInFrontend: true
 - noLiveRecordChanges: true
+- noAudioStorage: true
 - noPaymentPayrollBankAccountingExport: true
 
 ## Files Changed
@@ -102,8 +114,8 @@ MERGE_ALLOWED
 
 ## Extension Regression Summary
 - Version: v61Z
-- Total: 76
-- Passed: 76
+- Total: 83
+- Passed: 83
 - Failed: 0
 
 ## Copyable Codex Repair Prompt

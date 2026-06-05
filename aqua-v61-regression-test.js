@@ -274,6 +274,10 @@ function checkStaticFiles() {
   addCheck('v61U Ask AI mode classifier exists', /function\s+classifyAquaAskModeV61U/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
   addCheck('v61U General Ask locked placeholder exists', /General Ask \/ Jobsite Calculator — Locked Foundation/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
   addCheck('v61U noApiKeysInFrontend report flag exists', /noApiKeysInFrontend/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
+  addCheck('v61Z AquaVoiceBrainV61Z architecture exists', /window\.AquaVoiceBrainV61Z|function\s+createAquaVoiceBrainV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
+  addCheck('v61Z voice brain context key exists', /aquaVoiceBrainContextV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
+  addCheck('v61Z voice brain tool registry exists', /function\s+voiceBrainToolRegistryV61Z/.test(extension) && /openProjectReport/.test(extension) && /findProjectReceipts/.test(extension) && /prepareAccountantExportDemo/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
+  addCheck('v61Z voice brain mode route exists', /voice_brain_tool_plan/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61V local Jobsite Calculator parser exists', /function\s+parseLocalJobsiteCalculatorV61V/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V Concrete Sonotube calculator copy exists', /Jobsite Calculator — Concrete Sonotube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V sauna tube normalization support exists', /sauna tube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
@@ -355,6 +359,15 @@ function runExtensionRegression() {
     addCheck('unsupported General Ask remains locked', extensionReport.unsupportedGeneralAskRemainsLocked === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.unsupportedGeneralAskRemainsLocked, fileToFix: EXTENSION });
     addCheck('unknownFallbackWorks is true', extensionReport.unknownFallbackWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.unknownFallbackWorks, fileToFix: EXTENSION });
     addCheck('noApiKeysInFrontend is true', extensionReport.noApiKeysInFrontend === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.noApiKeysInFrontend, fileToFix: EXTENSION });
+    addCheck('voiceBrainToolRegistryExists is true', extensionReport.voiceBrainToolRegistryExists === true, { layer: 'voice-brain-v61z', actual: extensionReport.voiceBrainToolRegistryExists, fileToFix: EXTENSION });
+    addCheck('voiceBrainIntentClassifierWorks is true', extensionReport.voiceBrainIntentClassifierWorks === true, { layer: 'voice-brain-v61z', actual: extensionReport.voiceBrainIntentClassifierWorks, fileToFix: EXTENSION });
+    addCheck('hendersonReportIntentWorks is true', extensionReport.hendersonReportIntentWorks === true, { layer: 'voice-brain-v61z', actual: extensionReport.hendersonReportIntentWorks, fileToFix: EXTENSION });
+    addCheck('hendersonReceiptsIntentWorks is true', extensionReport.hendersonReceiptsIntentWorks === true, { layer: 'voice-brain-v61z', actual: extensionReport.hendersonReceiptsIntentWorks, fileToFix: EXTENSION });
+    addCheck('accountantExportStaysLocked is true', extensionReport.accountantExportStaysLocked === true, { layer: 'voice-brain-v61z', actual: extensionReport.accountantExportStaysLocked, fileToFix: EXTENSION });
+    addCheck('plumbingSpendIntentWorks is true', extensionReport.plumbingSpendIntentWorks === true, { layer: 'voice-brain-v61z', actual: extensionReport.plumbingSpendIntentWorks, fileToFix: EXTENSION });
+    addCheck('cameraAllocationIntentWorks is true', extensionReport.cameraAllocationIntentWorks === true, { layer: 'voice-brain-v61z', actual: extensionReport.cameraAllocationIntentWorks, fileToFix: EXTENSION });
+    addCheck('constructionDiagramUploadStaysLocked is true', extensionReport.constructionDiagramUploadStaysLocked === true, { layer: 'voice-brain-v61z', actual: extensionReport.constructionDiagramUploadStaysLocked, fileToFix: EXTENSION });
+    addCheck('suggestNextStepWorks is true', extensionReport.suggestNextStepWorks === true, { layer: 'voice-brain-v61z', actual: extensionReport.suggestNextStepWorks, fileToFix: EXTENSION });
     const failuresList = extensionReport.failures || [];
     failuresList.forEach((failure) => addCheck(`extension command passes: ${failure.command}`, false, { layer: 'extension-regression', expected: failure.expected, actual: failure.actual, fileToFix: EXTENSION }));
 
@@ -410,6 +423,13 @@ function runExtensionRegression() {
       ['how many sheets of drywall for this room', 'general_ask_locked'],
       ['what does this code term mean', 'general_ask_locked'],
       ['pull up receipts', 'app_navigation'],
+      ['pull up the report for the Henderson house staircase', 'voice_brain_tool_plan'],
+      ['look up all receipts for the Henderson house from Home Depot', 'voice_brain_tool_plan'],
+      ['prepare those Home Depot receipts for accountant export', 'voice_brain_tool_plan'],
+      ['how much money did we spend on Henderson house plumbing', 'voice_brain_tool_plan'],
+      ['were the cameras allocated to the right Henderson jobsite', 'voice_brain_tool_plan'],
+      ['upload that construction diagram to the Henderson files', 'voice_brain_tool_plan'],
+      ['what should I do next', 'voice_brain_tool_plan'],
       ['show automation report', 'automation_status'],
       ['run regression qa', 'automation_status'],
       ['code this receipt to materials', 'permissioned_action'],
@@ -419,6 +439,24 @@ function runExtensionRegression() {
       const row = byCommand.get(command);
       addCheck(`v61X Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.askMode === mode), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
+
+    [
+      ['pull up the report for the Henderson house staircase', 'openProjectReport'],
+      ['look up all receipts for the Henderson house from Home Depot', 'findProjectReceipts'],
+      ['prepare those Home Depot receipts for accountant export', 'prepareAccountantExportDemo'],
+      ['how much money did we spend on Henderson house plumbing', 'summarizeProjectSpend'],
+      ['were the cameras allocated to the right Henderson jobsite', 'checkJobsiteCameraAllocationDemo'],
+      ['upload that construction diagram to the Henderson files', 'uploadFileToProjectDemo'],
+      ['what should I do next', 'suggestNextStep']
+    ].forEach(([command, tool]) => {
+      const row = byCommand.get(command);
+      addCheck(`v61Z voice brain routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.renderedVoiceBrainToolPlan && row.actual.selectedTool === tool), { layer: 'voice-brain-v61z', expected: tool, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    });
+
+    const accountantRow = byCommand.get('prepare those Home Depot receipts for accountant export');
+    addCheck('v61Z accountant export remains locked/demo-only', Boolean(accountantRow && accountantRow.passed && accountantRow.actual && accountantRow.actual.permissionLevel === 'accounting_approval_required' && /Accounting Export Locked/.test((accountantRow.actual.safetyLocks || []).join(' '))), { layer: 'voice-brain-v61z', expected: 'accounting_approval_required + Accounting Export Locked', actual: accountantRow ? accountantRow.actual : 'missing', fileToFix: EXTENSION });
+    const uploadRow = byCommand.get('upload that construction diagram to the Henderson files');
+    addCheck('v61Z construction diagram upload remains locked/demo-only', Boolean(uploadRow && uploadRow.passed && uploadRow.actual && uploadRow.actual.permissionLevel === 'owner_approval_required' && /Upload Locked/.test((uploadRow.actual.safetyLocks || []).join(' '))), { layer: 'voice-brain-v61z', expected: 'owner approval + Upload Locked', actual: uploadRow ? uploadRow.actual : 'missing', fileToFix: EXTENSION });
 
     const concreteDefaultRow = byCommand.get('how many bags of concrete for an 8 inch sonotube 4 feet deep');
     addCheck('Concrete Sonotube calculator recommends 3 bags for 8 inch / 4 foot default 80 lb', Boolean(concreteDefaultRow && concreteDefaultRow.passed && concreteDefaultRow.actual && concreteDefaultRow.actual.recommendedBags === 3 && concreteDefaultRow.actual.bagSizePounds === 80), { layer: 'jobsite-calculator-v61v', expected: '3 recommended 80 lb bags', actual: concreteDefaultRow ? concreteDefaultRow.actual : 'missing from extension results', fileToFix: EXTENSION });
@@ -669,6 +707,7 @@ function markdown(report) {
     `- routingStillWorks: ${report.routingStillWorks === true}\n` +
     `- automationStillWorks: ${report.automationStillWorks === true}\n` +
     `- noLiveRecordChanges: ${report.noLiveRecordChanges === true}\n` +
+    `- noAudioStorage: ${report.noAudioStorage === true}\n` +
     `- noBackendNetworkLiveAI: ${report.noBackendNetworkLiveAI === true}\n` +
     `- spokenReadbackAvailable: ${report.spokenReadbackAvailable}\n` +
     `- spokenReadbackBrowserUnavailableFallback: ${report.spokenReadbackBrowserUnavailableFallback}\n` +
@@ -677,6 +716,15 @@ function markdown(report) {
     `- runRegressionQaCommandWorks: ${report.extensionRegression && report.extensionRegression.runRegressionQaCommandWorks === true}\n` +
     `- automationCommandsDoNotFallback: ${report.extensionRegression && report.extensionRegression.automationCommandsDoNotFallback === true}\n` +
     `- askModeRouterWorks: ${report.extensionRegression && report.extensionRegression.askModeRouterWorks === true}\n` +
+    `- voiceBrainToolRegistryExists: ${report.voiceBrainToolRegistryExists === true}\n` +
+    `- voiceBrainIntentClassifierWorks: ${report.voiceBrainIntentClassifierWorks === true}\n` +
+    `- hendersonReportIntentWorks: ${report.hendersonReportIntentWorks === true}\n` +
+    `- hendersonReceiptsIntentWorks: ${report.hendersonReceiptsIntentWorks === true}\n` +
+    `- accountantExportStaysLocked: ${report.accountantExportStaysLocked === true}\n` +
+    `- plumbingSpendIntentWorks: ${report.plumbingSpendIntentWorks === true}\n` +
+    `- cameraAllocationIntentWorks: ${report.cameraAllocationIntentWorks === true}\n` +
+    `- constructionDiagramUploadStaysLocked: ${report.constructionDiagramUploadStaysLocked === true}\n` +
+    `- suggestNextStepWorks: ${report.suggestNextStepWorks === true}\n` +
     `- appNavigationModeWorks: ${report.extensionRegression && report.extensionRegression.appNavigationModeWorks === true}\n` +
     `- automationStatusModeWorks: ${report.extensionRegression && report.extensionRegression.automationStatusModeWorks === true}\n` +
     `- permissionedActionModeWorks: ${report.extensionRegression && report.extensionRegression.permissionedActionModeWorks === true}\n` +
@@ -709,8 +757,10 @@ function markdown(report) {
     `- noBackendCalls: ${report.noBackendCalls === true}\n` +
     `- noNetworkCalls: ${report.noNetworkCalls === true}\n` +
     `- noExternalAIApiCalls: ${report.noExternalAIApiCalls === true}\n` +
+    `- noExternalAIAPICalls: ${report.noExternalAIAPICalls === true}\n` +
     `- noApiKeysInFrontend: ${report.extensionRegression && report.extensionRegression.noApiKeysInFrontend === true}\n` +
     `- noLiveRecordChanges: ${report.noLiveRecordChanges === true}\n` +
+    `- noAudioStorage: ${report.noAudioStorage === true}\n` +
     `- noPaymentPayrollBankAccountingExport: ${report.noPaymentPayrollBankAccountingExport === true}\n\n` +
     `## Files Changed\n${changedRows}\n\n` +
     `## Failed Commands / Checks\n${failedRows}\n\n` +
@@ -777,6 +827,15 @@ async function main() {
     unsupportedGeneralAskRemainsLocked: extensionReport ? extensionReport.unsupportedGeneralAskRemainsLocked === true : false,
     sonotubeEightInchFourFoot80lbReturnsThreeBags: extensionReport ? extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags === true : false,
     unknownFallbackWorks: extensionReport ? extensionReport.unknownFallbackWorks === true : false,
+    voiceBrainToolRegistryExists: extensionReport ? extensionReport.voiceBrainToolRegistryExists === true : false,
+    voiceBrainIntentClassifierWorks: extensionReport ? extensionReport.voiceBrainIntentClassifierWorks === true : false,
+    hendersonReportIntentWorks: extensionReport ? extensionReport.hendersonReportIntentWorks === true : false,
+    hendersonReceiptsIntentWorks: extensionReport ? extensionReport.hendersonReceiptsIntentWorks === true : false,
+    accountantExportStaysLocked: extensionReport ? extensionReport.accountantExportStaysLocked === true : false,
+    plumbingSpendIntentWorks: extensionReport ? extensionReport.plumbingSpendIntentWorks === true : false,
+    cameraAllocationIntentWorks: extensionReport ? extensionReport.cameraAllocationIntentWorks === true : false,
+    constructionDiagramUploadStaysLocked: extensionReport ? extensionReport.constructionDiagramUploadStaysLocked === true : false,
+    suggestNextStepWorks: extensionReport ? extensionReport.suggestNextStepWorks === true : false,
     calculatorDraftsWork: extensionReport ? extensionReport.calculatorDraftsWork === true : false,
     saveCalculationDraftWorks: extensionReport ? extensionReport.saveCalculationDraftWorks === true : false,
     showSavedCalculationsWorks: extensionReport ? extensionReport.showSavedCalculationsWorks === true : false,
@@ -793,8 +852,10 @@ async function main() {
     noBackendCalls: safetyStatus.noBackendCalls === true,
     noNetworkCalls: extensionReport ? extensionReport.noNetworkCalls === true : false,
     noExternalAIApiCalls: safetyStatus.noLiveAIApiCalls === true,
+    noExternalAIAPICalls: safetyStatus.noLiveAIApiCalls === true,
     noApiKeysInFrontend: extensionReport ? extensionReport.noApiKeysInFrontend === true : false,
     noLiveRecordChanges: extensionReport ? extensionReport.noLiveRecordChanges === true : false,
+    noAudioStorage: safetyStatus.noAudioStorage === true,
     noPaymentPayrollBankAccountingExport: safetyStatus.noPayment === true && safetyStatus.noPayroll === true && safetyStatus.noBankSync === true && safetyStatus.noAccountingExport === true,
     premiumModuleShellWorks: extensionReport ? extensionReport.premiumModuleShellWorks === true : false,
     openedModulesPolished: extensionReport ? extensionReport.openedModulesPolished === true : false,

@@ -1,16 +1,16 @@
 {
   "version": "v61Z",
-  "timestamp": "2026-06-05T17:26:37.086Z",
+  "timestamp": "2026-06-05T17:55:19.622Z",
   "branch": "work",
-  "commit": "fc809bfc4df01ec00183735114ef0b0b4563af15",
+  "commit": "dd02986846d5ebc832efb10f7bceef64584d5750",
   "filesChanged": [
     "aqua-regression-report.json",
     "aqua-regression-report.md",
     "aqua-v61-extensions.js",
     "aqua-v61-regression-test.js"
   ],
-  "total": 184,
-  "passed": 184,
+  "total": 213,
+  "passed": 213,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -128,6 +128,30 @@
       "name": "v61U noApiKeysInFrontend report flag exists",
       "passed": true,
       "layer": "ask-mode-router-v61u",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z AquaVoiceBrainV61Z architecture exists",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain context key exists",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain tool registry exists",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain mode route exists",
+      "passed": true,
+      "layer": "voice-brain-v61z",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -278,14 +302,14 @@
       "name": "extension regression produced total tests",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 76,
+      "actual": 83,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
       "name": "extension regression passed count present",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 76,
+      "actual": 83,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -607,6 +631,69 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "voiceBrainToolRegistryExists is true",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "voiceBrainIntentClassifierWorks is true",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "hendersonReportIntentWorks is true",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "hendersonReceiptsIntentWorks is true",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "accountantExportStaysLocked is true",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "plumbingSpendIntentWorks is true",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "cameraAllocationIntentWorks is true",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "constructionDiagramUploadStaysLocked is true",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "suggestNextStepWorks is true",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "automation command routes before fallback: show automation report",
       "passed": true,
       "layer": "automation-routing-v61t",
@@ -643,7 +730,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -684,7 +772,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -725,7 +814,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -766,7 +856,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -807,7 +898,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": false,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -848,7 +940,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": false,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -889,7 +982,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": false,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -930,7 +1024,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": false,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -971,7 +1066,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": false,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1012,7 +1108,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": false,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1053,7 +1150,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": false,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1095,7 +1193,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1137,7 +1236,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1179,7 +1279,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1220,7 +1321,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1261,7 +1363,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1302,7 +1405,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1343,7 +1447,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1384,7 +1489,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1430,7 +1536,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1476,7 +1583,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1522,7 +1630,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1568,7 +1677,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1614,7 +1724,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1656,7 +1767,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1698,7 +1810,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1740,7 +1853,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1782,7 +1896,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1826,7 +1941,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1867,7 +1983,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1908,7 +2025,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1949,7 +2067,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1990,7 +2109,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2031,7 +2151,504 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61X Ask AI mode routes: pull up the report for the Henderson house staircase",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "voice_brain_tool_plan",
+      "actual": {
+        "command": "pull up the report for the Henderson house staircase",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Project Folders / Project Reports placeholder",
+        "normalizedText": "pull up the report for the henderson house staircase",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "project_report_lookup",
+        "selectedTool": "openProjectReport",
+        "permissionLevel": "backend_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Backend Locked",
+          "Project File Backend Required"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can prepare that project report lookup for Henderson house. The report topic is recognized, but the project file backend is locked in this demo. No live file or record was opened.",
+        "extractedEntities": {
+          "project": "Henderson house",
+          "reportTopic": "staircase"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61X Ask AI mode routes: look up all receipts for the Henderson house from Home Depot",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "voice_brain_tool_plan",
+      "actual": {
+        "command": "look up all receipts for the Henderson house from Home Depot",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Receipts / Receipt Tracker filtered placeholder",
+        "normalizedText": "look up all receipts for the henderson house from home depot",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "project_vendor_receipt_lookup",
+        "selectedTool": "findProjectReceipts",
+        "permissionLevel": "backend_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Backend Locked",
+          "Receipt Database Required",
+          "No Live Export"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can prepare that receipt lookup. I found the project and vendor terms, but live receipt search requires the backend receipt database. No export or live accounting action was run.",
+        "extractedEntities": {
+          "project": "Henderson house",
+          "vendor": "Home Depot"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61X Ask AI mode routes: prepare those Home Depot receipts for accountant export",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "voice_brain_tool_plan",
+      "actual": {
+        "command": "prepare those Home Depot receipts for accountant export",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Receipts / Accountant Export Prep locked placeholder",
+        "normalizedText": "prepare those home depot receipts for accountant export",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "prepare_accountant_export",
+        "selectedTool": "prepareAccountantExportDemo",
+        "permissionLevel": "accounting_approval_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Permission Required",
+          "Owner Approval Required",
+          "Accounting Export Locked",
+          "Backend Locked",
+          "No Live Change Made"
+        ],
+        "missingInputs": [
+          "project"
+        ],
+        "spokenResponseDraft": "I can prepare an accountant export plan for those Home Depot receipts, but permission is required and accounting export is locked. No export was created or sent.",
+        "extractedEntities": {
+          "vendor": "Home Depot"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61X Ask AI mode routes: how much money did we spend on Henderson house plumbing",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "voice_brain_tool_plan",
+      "actual": {
+        "command": "how much money did we spend on Henderson house plumbing",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Accounting Command / Daily P&L cost summary placeholder",
+        "normalizedText": "how much money did we spend on henderson house plumbing",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "project_cost_summary",
+        "selectedTool": "summarizeProjectSpend",
+        "permissionLevel": "backend_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Backend Locked",
+          "Accounting Backend Required",
+          "No Accounting Change"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can prepare that spend summary for Henderson house, but live accounting totals require the backend accounting database. No accounting record was changed.",
+        "extractedEntities": {
+          "project": "Henderson house",
+          "trade": "plumbing"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61X Ask AI mode routes: were the cameras allocated to the right Henderson jobsite",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "voice_brain_tool_plan",
+      "actual": {
+        "command": "were the cameras allocated to the right Henderson jobsite",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Jobsite Camera / Inventory Allocation locked placeholder",
+        "normalizedText": "were the cameras allocated to the right henderson jobsite",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "jobsite_camera_allocation_check",
+        "selectedTool": "checkJobsiteCameraAllocationDemo",
+        "permissionLevel": "backend_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Backend Locked",
+          "Camera Inventory Backend Required",
+          "No Live Change Made"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can prepare a camera allocation check for Henderson jobsite, but the camera inventory backend is locked in this demo. No camera assignment was changed.",
+        "extractedEntities": {
+          "project": "Henderson jobsite"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61X Ask AI mode routes: upload that construction diagram to the Henderson files",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "voice_brain_tool_plan",
+      "actual": {
+        "command": "upload that construction diagram to the Henderson files",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Project Folders / File Upload locked placeholder",
+        "normalizedText": "upload that construction diagram to the henderson files",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "project_file_upload_request",
+        "selectedTool": "uploadFileToProjectDemo",
+        "permissionLevel": "owner_approval_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Permission Required",
+          "Owner Approval Required",
+          "Upload Locked",
+          "Backend Locked",
+          "No Live Change Made"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can stage that upload request for Henderson, but uploads are locked until owner approval and backend support are available. No file was stored or uploaded.",
+        "extractedEntities": {
+          "project": "Henderson",
+          "fileType": "construction diagram"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61X Ask AI mode routes: what should I do next",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "voice_brain_tool_plan",
+      "actual": {
+        "command": "what should I do next",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Owner Daily Briefing / Next Step local demo",
+        "normalizedText": "what should i do next",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "suggest_next_step",
+        "selectedTool": "suggestNextStep",
+        "permissionLevel": "read_demo",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Demo Only",
+          "No Live Change Made"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "Based on the local demo state, I would start with the automation report, review pending SOW drafts, and then check receipt coding items. No live task was changed.",
+        "extractedEntities": {}
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2072,7 +2689,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2113,7 +2731,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2155,7 +2774,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2196,7 +2816,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2237,7 +2858,651 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain routes: pull up the report for the Henderson house staircase",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "expected": "openProjectReport",
+      "actual": {
+        "command": "pull up the report for the Henderson house staircase",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Project Folders / Project Reports placeholder",
+        "normalizedText": "pull up the report for the henderson house staircase",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "project_report_lookup",
+        "selectedTool": "openProjectReport",
+        "permissionLevel": "backend_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Backend Locked",
+          "Project File Backend Required"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can prepare that project report lookup for Henderson house. The report topic is recognized, but the project file backend is locked in this demo. No live file or record was opened.",
+        "extractedEntities": {
+          "project": "Henderson house",
+          "reportTopic": "staircase"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain routes: look up all receipts for the Henderson house from Home Depot",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "expected": "findProjectReceipts",
+      "actual": {
+        "command": "look up all receipts for the Henderson house from Home Depot",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Receipts / Receipt Tracker filtered placeholder",
+        "normalizedText": "look up all receipts for the henderson house from home depot",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "project_vendor_receipt_lookup",
+        "selectedTool": "findProjectReceipts",
+        "permissionLevel": "backend_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Backend Locked",
+          "Receipt Database Required",
+          "No Live Export"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can prepare that receipt lookup. I found the project and vendor terms, but live receipt search requires the backend receipt database. No export or live accounting action was run.",
+        "extractedEntities": {
+          "project": "Henderson house",
+          "vendor": "Home Depot"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain routes: prepare those Home Depot receipts for accountant export",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "expected": "prepareAccountantExportDemo",
+      "actual": {
+        "command": "prepare those Home Depot receipts for accountant export",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Receipts / Accountant Export Prep locked placeholder",
+        "normalizedText": "prepare those home depot receipts for accountant export",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "prepare_accountant_export",
+        "selectedTool": "prepareAccountantExportDemo",
+        "permissionLevel": "accounting_approval_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Permission Required",
+          "Owner Approval Required",
+          "Accounting Export Locked",
+          "Backend Locked",
+          "No Live Change Made"
+        ],
+        "missingInputs": [
+          "project"
+        ],
+        "spokenResponseDraft": "I can prepare an accountant export plan for those Home Depot receipts, but permission is required and accounting export is locked. No export was created or sent.",
+        "extractedEntities": {
+          "vendor": "Home Depot"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain routes: how much money did we spend on Henderson house plumbing",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "expected": "summarizeProjectSpend",
+      "actual": {
+        "command": "how much money did we spend on Henderson house plumbing",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Accounting Command / Daily P&L cost summary placeholder",
+        "normalizedText": "how much money did we spend on henderson house plumbing",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "project_cost_summary",
+        "selectedTool": "summarizeProjectSpend",
+        "permissionLevel": "backend_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Backend Locked",
+          "Accounting Backend Required",
+          "No Accounting Change"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can prepare that spend summary for Henderson house, but live accounting totals require the backend accounting database. No accounting record was changed.",
+        "extractedEntities": {
+          "project": "Henderson house",
+          "trade": "plumbing"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain routes: were the cameras allocated to the right Henderson jobsite",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "expected": "checkJobsiteCameraAllocationDemo",
+      "actual": {
+        "command": "were the cameras allocated to the right Henderson jobsite",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Jobsite Camera / Inventory Allocation locked placeholder",
+        "normalizedText": "were the cameras allocated to the right henderson jobsite",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "jobsite_camera_allocation_check",
+        "selectedTool": "checkJobsiteCameraAllocationDemo",
+        "permissionLevel": "backend_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Backend Locked",
+          "Camera Inventory Backend Required",
+          "No Live Change Made"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can prepare a camera allocation check for Henderson jobsite, but the camera inventory backend is locked in this demo. No camera assignment was changed.",
+        "extractedEntities": {
+          "project": "Henderson jobsite"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain routes: upload that construction diagram to the Henderson files",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "expected": "uploadFileToProjectDemo",
+      "actual": {
+        "command": "upload that construction diagram to the Henderson files",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Project Folders / File Upload locked placeholder",
+        "normalizedText": "upload that construction diagram to the henderson files",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "project_file_upload_request",
+        "selectedTool": "uploadFileToProjectDemo",
+        "permissionLevel": "owner_approval_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Permission Required",
+          "Owner Approval Required",
+          "Upload Locked",
+          "Backend Locked",
+          "No Live Change Made"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can stage that upload request for Henderson, but uploads are locked until owner approval and backend support are available. No file was stored or uploaded.",
+        "extractedEntities": {
+          "project": "Henderson",
+          "fileType": "construction diagram"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z voice brain routes: what should I do next",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "expected": "suggestNextStep",
+      "actual": {
+        "command": "what should I do next",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Owner Daily Briefing / Next Step local demo",
+        "normalizedText": "what should i do next",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "suggest_next_step",
+        "selectedTool": "suggestNextStep",
+        "permissionLevel": "read_demo",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Demo Only",
+          "No Live Change Made"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "Based on the local demo state, I would start with the automation report, review pending SOW drafts, and then check receipt coding items. No live task was changed.",
+        "extractedEntities": {}
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z accountant export remains locked/demo-only",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "expected": "accounting_approval_required + Accounting Export Locked",
+      "actual": {
+        "command": "prepare those Home Depot receipts for accountant export",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Receipts / Accountant Export Prep locked placeholder",
+        "normalizedText": "prepare those home depot receipts for accountant export",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "prepare_accountant_export",
+        "selectedTool": "prepareAccountantExportDemo",
+        "permissionLevel": "accounting_approval_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Permission Required",
+          "Owner Approval Required",
+          "Accounting Export Locked",
+          "Backend Locked",
+          "No Live Change Made"
+        ],
+        "missingInputs": [
+          "project"
+        ],
+        "spokenResponseDraft": "I can prepare an accountant export plan for those Home Depot receipts, but permission is required and accounting export is locked. No export was created or sent.",
+        "extractedEntities": {
+          "vendor": "Home Depot"
+        }
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z construction diagram upload remains locked/demo-only",
+      "passed": true,
+      "layer": "voice-brain-v61z",
+      "expected": "owner approval + Upload Locked",
+      "actual": {
+        "command": "upload that construction diagram to the Henderson files",
+        "canonicalIntent": "voice_brain_tool_plan",
+        "module": "Project Folders / File Upload locked placeholder",
+        "normalizedText": "upload that construction diagram to the henderson files",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedNeedMoreInformation": false,
+        "renderedPaintCalculator": false,
+        "renderedDrywallCalculator": false,
+        "renderedFlooringCalculator": false,
+        "renderedStudCalculator": false,
+        "renderedConcreteSlabCalculator": false,
+        "renderedCalculatorDraftActions": false,
+        "renderedCalculatorDraftsPanel": false,
+        "renderedSaveCalculationDraft": false,
+        "renderedClearCalculatorDrafts": false,
+        "renderedEstimateDraftPlaceholder": false,
+        "renderedNoCurrentCalculation": false,
+        "renderedConcreteSonotubeCalculator": false,
+        "askMode": "voice_brain_tool_plan",
+        "renderedDraftQueue": false,
+        "renderedSowReviewQueue": false,
+        "renderedSendSowReviewQueue": false,
+        "renderedMarkReviewReadyDemo": false,
+        "renderedClearSowReviewQueue": false,
+        "renderedNoCalculatorDraftForSowReview": false,
+        "noLiveSowEstimateCustomerAccountingText": true,
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": true,
+        "voiceBrainIntent": "project_file_upload_request",
+        "selectedTool": "uploadFileToProjectDemo",
+        "permissionLevel": "owner_approval_required",
+        "liveStatus": "locked/demo",
+        "safetyLocks": [
+          "No backend calls",
+          "No network calls",
+          "No external AI/API calls",
+          "No API keys in frontend",
+          "No live record changes",
+          "No live export",
+          "No live upload",
+          "No customer sharing",
+          "No accounting export",
+          "No payment/payroll/bank action",
+          "No audio storage",
+          "No always-listening",
+          "Audit Required",
+          "Undo Required",
+          "Permission Required",
+          "Owner Approval Required",
+          "Upload Locked",
+          "Backend Locked",
+          "No Live Change Made"
+        ],
+        "missingInputs": [],
+        "spokenResponseDraft": "I can stage that upload request for Henderson, but uploads are locked until owner approval and backend support are available. No file was stored or uploaded.",
+        "extractedEntities": {
+          "project": "Henderson",
+          "fileType": "construction diagram"
+        }
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2283,7 +3548,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2329,7 +3595,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2375,7 +3642,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2417,7 +3685,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2459,7 +3728,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2501,7 +3771,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2543,7 +3814,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2587,7 +3859,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2628,7 +3901,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2669,7 +3943,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2710,7 +3985,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2751,7 +4027,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2792,7 +4069,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2833,7 +4111,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": false,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2874,7 +4153,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2915,7 +4195,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2956,7 +4237,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": true,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2997,7 +4279,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3038,7 +4321,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3079,7 +4363,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3120,7 +4405,8 @@
         "renderedClearSowReviewQueue": true,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3161,7 +4447,8 @@
         "renderedClearSowReviewQueue": true,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3202,7 +4489,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3243,7 +4531,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3284,7 +4573,8 @@
         "renderedClearSowReviewQueue": true,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3325,7 +4615,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3366,7 +4657,8 @@
         "renderedClearSowReviewQueue": true,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3407,7 +4699,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3448,7 +4741,8 @@
         "renderedClearSowReviewQueue": true,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3497,7 +4791,8 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": true
+        "noLiveChangeText": true,
+        "renderedVoiceBrainToolPlan": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3689,13 +4984,509 @@
   "extensionRegression": {
     "version": "v61Z",
     "harnessVersion": "v61L-compatible/v61Z",
-    "timestamp": "2026-06-05T17:26:36.590Z",
-    "total": 76,
-    "passed": 76,
+    "timestamp": "2026-06-05T17:55:19.156Z",
+    "total": 83,
+    "passed": 83,
     "failed": 0,
     "failedCommands": [],
     "failures": [],
     "results": [
+      {
+        "command": "pull up the report for the Henderson house staircase",
+        "expected": "AI Voice Brain Tool Plan / openProjectReport",
+        "actual": {
+          "command": "pull up the report for the Henderson house staircase",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Project Folders / Project Reports placeholder",
+          "normalizedText": "pull up the report for the henderson house staircase",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "voiceBrainIntent": "project_report_lookup",
+          "selectedTool": "openProjectReport",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Project File Backend Required"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare that project report lookup for Henderson house. The report topic is recognized, but the project file backend is locked in this demo. No live file or record was opened.",
+          "extractedEntities": {
+            "project": "Henderson house",
+            "reportTopic": "staircase"
+          }
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "look up all receipts for the Henderson house from Home Depot",
+        "expected": "AI Voice Brain Tool Plan / findProjectReceipts",
+        "actual": {
+          "command": "look up all receipts for the Henderson house from Home Depot",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Receipts / Receipt Tracker filtered placeholder",
+          "normalizedText": "look up all receipts for the henderson house from home depot",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "voiceBrainIntent": "project_vendor_receipt_lookup",
+          "selectedTool": "findProjectReceipts",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Receipt Database Required",
+            "No Live Export"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare that receipt lookup. I found the project and vendor terms, but live receipt search requires the backend receipt database. No export or live accounting action was run.",
+          "extractedEntities": {
+            "project": "Henderson house",
+            "vendor": "Home Depot"
+          }
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "prepare those Home Depot receipts for accountant export",
+        "expected": "AI Voice Brain Tool Plan / prepareAccountantExportDemo locked",
+        "actual": {
+          "command": "prepare those Home Depot receipts for accountant export",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Receipts / Accountant Export Prep locked placeholder",
+          "normalizedText": "prepare those home depot receipts for accountant export",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "voiceBrainIntent": "prepare_accountant_export",
+          "selectedTool": "prepareAccountantExportDemo",
+          "permissionLevel": "accounting_approval_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Permission Required",
+            "Owner Approval Required",
+            "Accounting Export Locked",
+            "Backend Locked",
+            "No Live Change Made"
+          ],
+          "missingInputs": [
+            "project"
+          ],
+          "spokenResponseDraft": "I can prepare an accountant export plan for those Home Depot receipts, but permission is required and accounting export is locked. No export was created or sent.",
+          "extractedEntities": {
+            "vendor": "Home Depot"
+          }
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "how much money did we spend on Henderson house plumbing",
+        "expected": "AI Voice Brain Tool Plan / summarizeProjectSpend backend locked",
+        "actual": {
+          "command": "how much money did we spend on Henderson house plumbing",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Accounting Command / Daily P&L cost summary placeholder",
+          "normalizedText": "how much money did we spend on henderson house plumbing",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "voiceBrainIntent": "project_cost_summary",
+          "selectedTool": "summarizeProjectSpend",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Accounting Backend Required",
+            "No Accounting Change"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare that spend summary for Henderson house, but live accounting totals require the backend accounting database. No accounting record was changed.",
+          "extractedEntities": {
+            "project": "Henderson house",
+            "trade": "plumbing"
+          }
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "were the cameras allocated to the right Henderson jobsite",
+        "expected": "AI Voice Brain Tool Plan / checkJobsiteCameraAllocationDemo backend locked",
+        "actual": {
+          "command": "were the cameras allocated to the right Henderson jobsite",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Jobsite Camera / Inventory Allocation locked placeholder",
+          "normalizedText": "were the cameras allocated to the right henderson jobsite",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "voiceBrainIntent": "jobsite_camera_allocation_check",
+          "selectedTool": "checkJobsiteCameraAllocationDemo",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Camera Inventory Backend Required",
+            "No Live Change Made"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare a camera allocation check for Henderson jobsite, but the camera inventory backend is locked in this demo. No camera assignment was changed.",
+          "extractedEntities": {
+            "project": "Henderson jobsite"
+          }
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "upload that construction diagram to the Henderson files",
+        "expected": "AI Voice Brain Tool Plan / uploadFileToProjectDemo upload locked",
+        "actual": {
+          "command": "upload that construction diagram to the Henderson files",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Project Folders / File Upload locked placeholder",
+          "normalizedText": "upload that construction diagram to the henderson files",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "voiceBrainIntent": "project_file_upload_request",
+          "selectedTool": "uploadFileToProjectDemo",
+          "permissionLevel": "owner_approval_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Permission Required",
+            "Owner Approval Required",
+            "Upload Locked",
+            "Backend Locked",
+            "No Live Change Made"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can stage that upload request for Henderson, but uploads are locked until owner approval and backend support are available. No file was stored or uploaded.",
+          "extractedEntities": {
+            "project": "Henderson",
+            "fileType": "construction diagram"
+          }
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "what should I do next",
+        "expected": "AI Voice Brain Tool Plan / suggestNextStep",
+        "actual": {
+          "command": "what should I do next",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Owner Daily Briefing / Next Step local demo",
+          "normalizedText": "what should i do next",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "voiceBrainIntent": "suggest_next_step",
+          "selectedTool": "suggestNextStep",
+          "permissionLevel": "read_demo",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Demo Only",
+            "No Live Change Made"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "Based on the local demo state, I would start with the automation report, review pending SOW drafts, and then check receipt coding items. No live task was changed.",
+          "extractedEntities": {}
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
       {
         "command": "show automation report",
         "expected": "Automation Report / Regression Report Viewer",
@@ -3731,7 +5522,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -3772,7 +5564,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -3813,7 +5606,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -3854,7 +5648,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -3895,7 +5690,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -3936,7 +5732,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -3977,7 +5774,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4018,7 +5816,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4059,7 +5858,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4100,7 +5900,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4141,7 +5942,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4182,7 +5984,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4223,7 +6026,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4264,7 +6068,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4305,7 +6110,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4346,7 +6152,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4388,7 +6195,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4430,7 +6238,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4472,7 +6281,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4514,7 +6324,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4556,7 +6367,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4598,7 +6410,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4639,7 +6452,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4680,7 +6494,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4721,7 +6536,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4762,7 +6578,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4803,7 +6620,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4844,7 +6662,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4885,7 +6704,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4926,7 +6746,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -4967,7 +6788,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5008,7 +6830,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5049,7 +6872,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5090,7 +6914,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5131,7 +6956,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": false
+          "noLiveChangeText": false,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5172,7 +6998,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": false
+          "noLiveChangeText": false,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5213,7 +7040,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": false
+          "noLiveChangeText": false,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5254,7 +7082,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": false
+          "noLiveChangeText": false,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5295,7 +7124,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": false
+          "noLiveChangeText": false,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5336,7 +7166,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": false
+          "noLiveChangeText": false,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5377,7 +7208,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": false
+          "noLiveChangeText": false,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5419,7 +7251,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5460,7 +7293,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5506,7 +7340,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5552,7 +7387,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5598,7 +7434,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5644,7 +7481,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5690,7 +7528,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5736,7 +7575,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5778,7 +7618,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5820,7 +7661,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5862,7 +7704,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5904,7 +7747,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5948,7 +7792,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -5989,7 +7834,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6031,7 +7877,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6072,7 +7919,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6113,7 +7961,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6154,7 +8003,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6195,7 +8045,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6236,7 +8087,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6277,7 +8129,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6318,7 +8171,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6359,7 +8213,8 @@
           "renderedClearSowReviewQueue": true,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6400,7 +8255,8 @@
           "renderedClearSowReviewQueue": true,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6441,7 +8297,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6482,7 +8339,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6523,7 +8381,8 @@
           "renderedClearSowReviewQueue": true,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6564,7 +8423,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": true,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6605,7 +8465,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6646,7 +8507,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": false,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6687,7 +8549,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6728,7 +8591,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6769,7 +8633,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6810,7 +8675,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6851,7 +8717,8 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": true
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": false
         },
         "passed": true,
         "errors": [],
@@ -6889,6 +8756,17 @@
     "conversationalContextRouterAvailable": true,
     "repeatLastActionRouterAvailable": true,
     "conversationalContextStorageKey": "aquaConversationalContextV61S",
+    "voiceBrainToolRegistryExists": true,
+    "voiceBrainIntentClassifierWorks": true,
+    "hendersonReportIntentWorks": true,
+    "hendersonReceiptsIntentWorks": true,
+    "accountantExportStaysLocked": true,
+    "plumbingSpendIntentWorks": true,
+    "cameraAllocationIntentWorks": true,
+    "constructionDiagramUploadStaysLocked": true,
+    "suggestNextStepWorks": true,
+    "noExternalAIAPICalls": true,
+    "noAudioStorage": true,
     "automationCommandRoutesBeforeFallback": true,
     "showAutomationReportCommandWorks": true,
     "runRegressionQaCommandWorks": true,
@@ -6948,6 +8826,15 @@
   "unsupportedGeneralAskRemainsLocked": true,
   "sonotubeEightInchFourFoot80lbReturnsThreeBags": true,
   "unknownFallbackWorks": true,
+  "voiceBrainToolRegistryExists": true,
+  "voiceBrainIntentClassifierWorks": true,
+  "hendersonReportIntentWorks": true,
+  "hendersonReceiptsIntentWorks": true,
+  "accountantExportStaysLocked": true,
+  "plumbingSpendIntentWorks": true,
+  "cameraAllocationIntentWorks": true,
+  "constructionDiagramUploadStaysLocked": true,
+  "suggestNextStepWorks": true,
   "calculatorDraftsWork": true,
   "saveCalculationDraftWorks": true,
   "showSavedCalculationsWorks": true,
@@ -6964,8 +8851,10 @@
   "noBackendCalls": true,
   "noNetworkCalls": true,
   "noExternalAIApiCalls": true,
+  "noExternalAIAPICalls": true,
   "noApiKeysInFrontend": true,
   "noLiveRecordChanges": true,
+  "noAudioStorage": true,
   "noPaymentPayrollBankAccountingExport": true,
   "premiumModuleShellWorks": true,
   "openedModulesPolished": true,

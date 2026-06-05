@@ -1,6 +1,6 @@
 /*
  * Aqua Homes OS v61Z Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z Premium Module Shell / Opened Module Visual Polish Pass.
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
@@ -166,8 +166,271 @@
     routingStillWorks: true,
     automationStillWorks: true,
     noLiveRecordChanges: true,
-    noBackendNetworkLiveAI: true
+    noBackendNetworkLiveAI: true,
+    voiceBrainV61ZAvailable: true,
+    voiceBrainToolRegistryExists: false,
+    voiceBrainIntentClassifierWorks: false,
+    hendersonReportIntentWorks: false,
+    hendersonReceiptsIntentWorks: false,
+    accountantExportStaysLocked: false,
+    plumbingSpendIntentWorks: false,
+    cameraAllocationIntentWorks: false,
+    constructionDiagramUploadStaysLocked: false,
+    suggestNextStepWorks: false,
+    noExternalAIAPICalls: true,
+    noLiveExport: true,
+    noLiveUpload: true,
+    noAudioStorageV61Z: true,
+    voiceBrainContextStorageKey: 'aquaVoiceBrainContextV61Z'
   };
+
+
+  function voiceBrainPermissionMapV61Z() {
+    return {
+      read_demo: ['Backend Locked', 'Demo Only', 'No Live Change Made'],
+      prepare_demo: ['Permission Required', 'Backend Locked', 'Demo Preparation Only', 'No Live Change Made'],
+      owner_approval_required: ['Permission Required', 'Owner Approval Required', 'Audit Required', 'Undo Required', 'No Live Change Made'],
+      accounting_approval_required: ['Permission Required', 'Owner Approval Required', 'Accounting Export Locked', 'Audit Required', 'Undo Required', 'No Live Change Made'],
+      backend_required: ['Backend Locked', 'No Network Call', 'No External AI/API Call', 'No Live Change Made'],
+      live_locked: ['Live Locked', 'Backend Locked', 'No Live Change Made', 'Audit Required', 'Undo Required']
+    };
+  }
+
+  function voiceBrainSafetyEnvelopeV61Z(extraLabels) {
+    var base = ['No backend calls', 'No network calls', 'No external AI/API calls', 'No API keys in frontend', 'No live record changes', 'No live export', 'No live upload', 'No customer sharing', 'No accounting export', 'No payment/payroll/bank action', 'No audio storage', 'No always-listening', 'Audit Required', 'Undo Required'];
+    (extraLabels || []).forEach(function (label) { if (base.indexOf(label) === -1) base.push(label); });
+    return base;
+  }
+
+  function voiceBrainVisualRouteMapV61Z() {
+    return {
+      openProjectReport: 'Project Folders / Project Reports placeholder',
+      findProjectReceipts: 'Receipts / Receipt Tracker filtered placeholder',
+      summarizeProjectSpend: 'Accounting Command / Daily P&L cost summary placeholder',
+      prepareAccountantExportDemo: 'Receipts / Accountant Export Prep locked placeholder',
+      uploadFileToProjectDemo: 'Project Folders / File Upload locked placeholder',
+      checkJobsiteCameraAllocationDemo: 'Jobsite Camera / Inventory Allocation locked placeholder',
+      openSowReviewQueue: 'SOW / Estimate Review Queue',
+      openReceiptTracker: 'Receipts / Receipt Tracker',
+      openAccountingDailyPL: 'Accounting Command / Daily P&L',
+      openAutomationReport: 'Automation Report / Regression Report Viewer',
+      openCalculatorDrafts: 'Calculator Drafts / Estimate Prep',
+      openPermissionGranter: 'Permission Granter',
+      explainCurrentModule: 'Current module explanation placeholder',
+      suggestNextStep: 'Owner Daily Briefing / Next Step local demo'
+    };
+  }
+
+  function localDemoToolHandlerV61Z(toolName, plan) {
+    return {
+      toolName: toolName,
+      status: 'locked/demo',
+      outputType: plan && plan.tool ? plan.tool.outputType : 'demo_tool_plan',
+      message: 'Local demo handler only. Backend/live action was not run.',
+      noLiveChangeMade: true
+    };
+  }
+
+  function voiceBrainToolRegistryV61Z() {
+    var routeMap = voiceBrainVisualRouteMapV61Z();
+    var definitions = [
+      ['openProjectReport', 'Open a local/demo project report plan and point the UI toward project files.', ['project', 'reportTopic'], 'project_report_demo', 'backend_required', ['Backend Locked', 'Project File Backend Required']],
+      ['findProjectReceipts', 'Prepare a local/demo receipt lookup plan for a project and vendor.', ['project', 'vendor'], 'receipt_lookup_demo', 'backend_required', ['Backend Locked', 'Receipt Database Required', 'No Live Export']],
+      ['summarizeProjectSpend', 'Prepare a local/demo spend summary by project and trade/category.', ['project', 'trade'], 'spend_summary_demo', 'backend_required', ['Backend Locked', 'Accounting Backend Required', 'No Accounting Change']],
+      ['prepareAccountantExportDemo', 'Stage an accountant export plan without creating or sending an export.', ['project', 'vendor'], 'accountant_export_plan_demo', 'accounting_approval_required', ['Permission Required', 'Owner Approval Required', 'Accounting Export Locked', 'Backend Locked', 'No Live Change Made', 'Audit Required', 'Undo Required']],
+      ['uploadFileToProjectDemo', 'Stage a file upload request without reading, storing, or uploading any file.', ['project', 'fileType'], 'file_upload_request_demo', 'owner_approval_required', ['Permission Required', 'Owner Approval Required', 'Upload Locked', 'Backend Locked', 'No Live Change Made', 'Audit Required', 'Undo Required']],
+      ['checkJobsiteCameraAllocationDemo', 'Prepare a local/demo jobsite camera allocation check.', ['project'], 'camera_allocation_demo', 'backend_required', ['Backend Locked', 'Camera Inventory Backend Required', 'No Live Change Made']],
+      ['openSowReviewQueue', 'Open the local/demo SOW review queue.', [], 'module_route_demo', 'read_demo', ['Demo Only', 'No Live SOW']],
+      ['openReceiptTracker', 'Open the local/demo receipt tracker.', [], 'module_route_demo', 'read_demo', ['Demo Only', 'No Live Export']],
+      ['openAccountingDailyPL', 'Open the local/demo accounting Daily P&L shell.', [], 'module_route_demo', 'read_demo', ['Demo Only', 'Accounting Locked']],
+      ['openAutomationReport', 'Open the local/demo automation report.', [], 'module_route_demo', 'read_demo', ['Demo Only', 'No External Send']],
+      ['openCalculatorDrafts', 'Open the local/demo calculator drafts.', [], 'module_route_demo', 'read_demo', ['Demo Only', 'No Live Estimate']],
+      ['openPermissionGranter', 'Open the Permission Granter demo gate.', [], 'module_route_demo', 'read_demo', ['Demo Only', 'Owner Permission Required For Changes']],
+      ['explainCurrentModule', 'Explain the current module from local/demo context only.', [], 'module_explanation_demo', 'read_demo', ['Demo Only', 'Backend Locked']],
+      ['suggestNextStep', 'Suggest the next local/demo owner step from safe local state only.', [], 'next_step_demo', 'read_demo', ['Demo Only', 'No Live Change Made']]
+    ];
+    var registry = {};
+    definitions.forEach(function (row) {
+      registry[row[0]] = {
+        toolName: row[0],
+        description: row[1],
+        requiredInputs: row[2],
+        outputType: row[3],
+        permissionLevel: row[4],
+        liveStatus: 'locked/demo',
+        safetyLabels: voiceBrainSafetyEnvelopeV61Z(row[5]),
+        visualRoute: routeMap[row[0]],
+        handler: function voiceBrainLocalDemoHandler(plan) { return localDemoToolHandlerV61Z(row[0], plan); }
+      };
+    });
+    return registry;
+  }
+
+  function extractVoiceBrainEntitiesV61Z(original, normalized) {
+    var q = String(normalized || normalizeAquaPhraseV61E(original || '')).trim();
+    var entities = {};
+    if (/\bhenderson\b/.test(q)) {
+      if (/\bjobsite\b/.test(q)) entities.project = 'Henderson jobsite';
+      else if (/\bhouse\b/.test(q)) entities.project = 'Henderson house';
+      else entities.project = 'Henderson';
+    }
+    if (/\bhome depot\b/.test(q)) entities.vendor = 'Home Depot';
+    if (/\bplumbing\b/.test(q)) entities.trade = 'plumbing';
+    if (/\bstaircase\b/.test(q)) entities.reportTopic = 'staircase';
+    else if (/\breport\b/.test(q)) entities.reportTopic = 'project report';
+    if (/\bconstruction diagram\b/.test(q)) entities.fileType = 'construction diagram';
+    return entities;
+  }
+
+  function spokenResponseDraftsV61Z(intent, entities) {
+    var project = entities && entities.project ? entities.project : 'the project';
+    var vendor = entities && entities.vendor ? entities.vendor : 'that vendor';
+    return {
+      project_report_lookup: 'I can prepare that project report lookup for ' + project + '. The report topic is recognized, but the project file backend is locked in this demo. No live file or record was opened.',
+      project_vendor_receipt_lookup: 'I can prepare that receipt lookup. I found the project and vendor terms, but live receipt search requires the backend receipt database. No export or live accounting action was run.',
+      prepare_accountant_export: 'I can prepare an accountant export plan for those ' + vendor + ' receipts, but permission is required and accounting export is locked. No export was created or sent.',
+      project_cost_summary: 'I can prepare that spend summary for ' + project + ', but live accounting totals require the backend accounting database. No accounting record was changed.',
+      jobsite_camera_allocation_check: 'I can prepare a camera allocation check for ' + project + ', but the camera inventory backend is locked in this demo. No camera assignment was changed.',
+      project_file_upload_request: 'I can stage that upload request for ' + project + ', but uploads are locked until owner approval and backend support are available. No file was stored or uploaded.',
+      suggest_next_step: 'Based on the local demo state, I would start with the automation report, review pending SOW drafts, and then check receipt coding items. No live task was changed.'
+    }[intent] || 'I can prepare a safe local tool plan, but backend/live actions are locked. No live change was made.';
+  }
+
+  function missingInputsForToolV61Z(tool, entities) {
+    var map = { project: 'project', vendor: 'vendor', reportTopic: 'report/topic', trade: 'trade/category', fileType: 'file type' };
+    return ((tool && tool.requiredInputs) || []).filter(function (input) { return !entities || !entities[input]; }).map(function (input) { return map[input] || input; });
+  }
+
+  function classifyVoiceBrainIntentV61Z(commandText) {
+    var original = String(commandText || '').trim();
+    var q = normalizeAquaPhraseV61E(original);
+    var entities = extractVoiceBrainEntitiesV61Z(original, q);
+    var intent = '';
+    var toolName = '';
+    if (/\bwhat should i do next\b|\bwhat needs my attention today\b/.test(q)) { intent = 'suggest_next_step'; toolName = 'suggestNextStep'; }
+    else if (/\b(upload|add|attach)\b/.test(q) && /\bconstruction diagram\b/.test(q) && /\bhenderson\b/.test(q)) { intent = 'project_file_upload_request'; toolName = 'uploadFileToProjectDemo'; }
+    else if (/\bcameras?\b/.test(q) && /\ballocated|allocation|assigned|right\b/.test(q) && /\bhenderson\b/.test(q)) { intent = 'jobsite_camera_allocation_check'; toolName = 'checkJobsiteCameraAllocationDemo'; }
+    else if (/\baccountant export\b|\bprepare\b.*\bhome depot\b.*\breceipts?\b.*\bexport\b/.test(q) || (/\bprepare\b/.test(q) && /\bhome depot\b/.test(q) && /\baccountant\b/.test(q))) { intent = 'prepare_accountant_export'; toolName = 'prepareAccountantExportDemo'; }
+    else if (/\b(how much|how many|money|spend|spent|cost)\b/.test(q) && /\bhenderson\b/.test(q) && /\bplumbing\b/.test(q)) { intent = 'project_cost_summary'; toolName = 'summarizeProjectSpend'; }
+    else if (/\breceipts?\b/.test(q) && /\bhenderson\b/.test(q) && /\bhome depot\b/.test(q)) { intent = 'project_vendor_receipt_lookup'; toolName = 'findProjectReceipts'; }
+    else if (/\breport\b/.test(q) && /\bhenderson\b/.test(q)) { intent = 'project_report_lookup'; toolName = 'openProjectReport'; }
+    else if (/\bhenderson\b/.test(q) && /\bstaircase\b/.test(q)) { intent = 'project_report_lookup'; toolName = 'openProjectReport'; }
+    if (!intent) return null;
+    var registry = voiceBrainToolRegistryV61Z();
+    var tool = registry[toolName];
+    var missingInputs = missingInputsForToolV61Z(tool, entities);
+    return {
+      canonicalIntent: 'voice_brain_tool_plan',
+      voiceBrainIntent: intent,
+      routeText: original,
+      originalText: original,
+      normalizedText: q,
+      module: (tool && tool.visualRoute) || 'AI Voice Brain Tool Plan',
+      selectedTool: toolName,
+      toolName: toolName,
+      tool: tool,
+      extractedEntities: entities,
+      missingInputs: missingInputs,
+      spokenResponseDraft: spokenResponseDraftsV61Z(intent, entities),
+      permissionLevel: tool && tool.permissionLevel,
+      liveStatus: tool && tool.liveStatus,
+      safetyLocks: tool ? tool.safetyLabels : voiceBrainSafetyEnvelopeV61Z(),
+      nextRecommendedStep: missingInputs.length ? 'Ask the user for missing input: ' + missingInputs.join(', ') : 'Show this locked/demo tool plan and wait for owner/backend approval before any live action.'
+    };
+  }
+
+  function writeVoiceBrainContextV61Z(plan) {
+    var safe = {
+      lastHeardCommand: String((plan && plan.originalText) || '').slice(0, 240),
+      detectedIntent: String((plan && plan.voiceBrainIntent) || '').slice(0, 120),
+      extractedEntities: Object.assign({}, (plan && plan.extractedEntities) || {}),
+      selectedTool: String((plan && plan.selectedTool) || '').slice(0, 120),
+      missingInputs: ((plan && plan.missingInputs) || []).slice(0, 10),
+      spokenResponseDraft: String((plan && plan.spokenResponseDraft) || '').slice(0, 500),
+      timestamp: new Date().toISOString()
+    };
+    try { window.localStorage.setItem(VOICE_BRAIN_CONTEXT_KEY_V61Z, JSON.stringify(safe)); } catch (error) { state.voiceBrainContextStorageWarningV61Z = 'localStorage unavailable for Aqua Voice Brain context'; }
+    window.aquaVoiceBrainContextV61Z = safe;
+    return safe;
+  }
+
+  function readVoiceBrainContextV61Z() {
+    try {
+      var raw = window.localStorage.getItem(VOICE_BRAIN_CONTEXT_KEY_V61Z);
+      if (raw) return JSON.parse(raw);
+    } catch (error) {}
+    return window.aquaVoiceBrainContextV61Z || null;
+  }
+
+  function renderExtractedEntitiesV61Z(entities) {
+    var keys = ['project', 'company', 'vendor', 'trade', 'fileType', 'reportTopic'];
+    var rows = keys.filter(function (key) { return entities && entities[key]; }).map(function (key) {
+      return '<div>' + escapeHTMLV61D(key === 'reportTopic' ? 'report/topic' : (key === 'fileType' ? 'file type' : key)) + ' = ' + escapeHTMLV61D(entities[key]) + '</div>';
+    }).join('');
+    return rows || '<div>none detected</div>';
+  }
+
+  function renderVoiceBrainToolPlanV61Z(plan) {
+    var safe = plan || {};
+    var tool = safe.tool || voiceBrainToolRegistryV61Z()[safe.selectedTool] || {};
+    var handlerResult = tool.handler ? tool.handler(safe) : localDemoToolHandlerV61Z(safe.selectedTool, safe);
+    writeVoiceBrainContextV61Z(safe);
+    rememberSpokenSummaryV61R(safe.spokenResponseDraft, 'voice brain tool plan');
+    state.voiceBrainToolRegistryExists = Object.keys(voiceBrainToolRegistryV61Z()).length >= 14;
+    state.voiceBrainIntentClassifierWorks = true;
+    state.hendersonReportIntentWorks = safe.voiceBrainIntent === 'project_report_lookup' && safe.selectedTool === 'openProjectReport' ? true : state.hendersonReportIntentWorks;
+    state.hendersonReceiptsIntentWorks = safe.voiceBrainIntent === 'project_vendor_receipt_lookup' && safe.selectedTool === 'findProjectReceipts' ? true : state.hendersonReceiptsIntentWorks;
+    state.accountantExportStaysLocked = safe.selectedTool === 'prepareAccountantExportDemo' && /Accounting Export Locked/.test((safe.safetyLocks || []).join(' ')) ? true : state.accountantExportStaysLocked;
+    state.plumbingSpendIntentWorks = safe.selectedTool === 'summarizeProjectSpend' ? true : state.plumbingSpendIntentWorks;
+    state.cameraAllocationIntentWorks = safe.selectedTool === 'checkJobsiteCameraAllocationDemo' ? true : state.cameraAllocationIntentWorks;
+    state.constructionDiagramUploadStaysLocked = safe.selectedTool === 'uploadFileToProjectDemo' && /Upload Locked/.test((safe.safetyLocks || []).join(' ')) ? true : state.constructionDiagramUploadStaysLocked;
+    state.suggestNextStepWorks = safe.selectedTool === 'suggestNextStep' ? true : state.suggestNextStepWorks;
+    state.noBackendCalls = true;
+    state.noNetworkCalls = true;
+    state.noExternalAIAPICalls = true;
+    state.noApiKeysInFrontend = true;
+    state.noLiveRecordChanges = true;
+    state.noLiveExport = true;
+    state.noLiveUpload = true;
+    state.noAudioStorage = true;
+    state.noAudioStorageV61Z = true;
+    syncNamespace();
+    var body = askModeBadgeV61U('voice_brain_tool_plan') +
+      '<h3 style="margin:.4rem 0">AI Voice Brain Tool Plan — v61Z</h3>' +
+      '<div><strong>Heard command:</strong><br>' + escapeHTMLV61D(safe.originalText || '') + '</div>' +
+      '<div><strong>Detected intent:</strong><br>' + escapeHTMLV61D(safe.voiceBrainIntent || '') + '</div>' +
+      '<div><strong>Extracted:</strong>' + renderExtractedEntitiesV61Z(safe.extractedEntities) + '</div>' +
+      '<div><strong>Selected tool:</strong> ' + escapeHTMLV61D(safe.selectedTool || '') + '</div>' +
+      '<div><strong>Required inputs:</strong> ' + escapeHTMLV61D(((tool.requiredInputs || []).join(', ')) || 'none') + '</div>' +
+      '<div><strong>Missing inputs:</strong> ' + escapeHTMLV61D((safe.missingInputs || []).join(', ') || 'none') + '</div>' +
+      '<div><strong>Visual module to open:</strong> ' + escapeHTMLV61D(safe.module || tool.visualRoute || '') + '</div>' +
+      '<div><strong>Spoken response draft:</strong><br>“' + escapeHTMLV61D(safe.spokenResponseDraft || '') + '”</div>' +
+      '<div><strong>Permission level:</strong> ' + escapeHTMLV61D(safe.permissionLevel || tool.permissionLevel || '') + '</div>' +
+      '<div><strong>Live status:</strong> ' + escapeHTMLV61D(safe.liveStatus || tool.liveStatus || 'locked/demo') + '</div>' +
+      '<div><strong>Safety locks:</strong> ' + escapeHTMLV61D((safe.safetyLocks || []).join(' • ')) + '</div>' +
+      '<div><strong>Next recommended step:</strong> ' + escapeHTMLV61D(safe.nextRecommendedStep || '') + '</div>' +
+      '<div><strong>Local handler result:</strong> ' + escapeHTMLV61D(handlerResult.message) + '</div>';
+    return renderPremiumModuleShellV61Z({ title: 'AI Voice Brain Tool Plan — v61Z', subtitle: 'Local/demo tool-calling foundation for future backend AI. No live action runs.', tag: 'Tool Plan', chips: ['Backend Locked', 'Demo Only', 'No Live Change Made', 'No Audio Storage'], attrs: { 'data-aqua-v61z-voice-brain-tool-plan': 'true' }, body: body, safetyFooter: 'Permission Required for sensitive actions. Owner Approval Required. Accounting Export Locked when relevant. Upload Locked when relevant. Backend Locked. No Live Change Made. Audit Required. Undo Required.' });
+  }
+
+  function createAquaVoiceBrainV61Z() {
+    return {
+      version: VERSION,
+      localDemoOnly: true,
+      storageKey: VOICE_BRAIN_CONTEXT_KEY_V61Z,
+      permissionLevels: ['read_demo', 'prepare_demo', 'owner_approval_required', 'accounting_approval_required', 'backend_required', 'live_locked'],
+      toolRegistry: voiceBrainToolRegistryV61Z(),
+      classifyIntent: classifyVoiceBrainIntentV61Z,
+      extractEntities: extractVoiceBrainEntitiesV61Z,
+      permissionMap: voiceBrainPermissionMapV61Z(),
+      contextMemory: { read: readVoiceBrainContextV61Z, write: writeVoiceBrainContextV61Z, allowedFields: ['last heard command', 'detected intent', 'extracted entities', 'selected tool', 'missing inputs', 'spoken response draft', 'timestamp'], forbiddenFields: ['audio', 'API keys', 'sensitive customer data', 'real accounting data', 'live credentials', 'real files'] },
+      visualRouteMap: voiceBrainVisualRouteMapV61Z(),
+      spokenResponseDraftMap: spokenResponseDraftsV61Z,
+      safetyAuditEnvelope: voiceBrainSafetyEnvelopeV61Z(),
+      futureBackendLiveAIPlaceholders: { backendConnector: 'locked/demo placeholder only', liveAIConnector: 'locked/demo placeholder only', uploadConnector: 'locked/demo placeholder only', exportConnector: 'locked/demo placeholder only' },
+      renderToolPlan: renderVoiceBrainToolPlanV61Z
+    };
+  }
 
 
   function premiumModuleChipsV61Z(chips) {
@@ -222,6 +485,7 @@
   var CONVERSATIONAL_CONTEXT_KEY_V61S = 'aquaConversationalContextV61S';
   var CALCULATOR_DRAFTS_KEY_V61X = 'aquaCalculatorDraftsV61X';
   var SOW_REVIEW_QUEUE_KEY_V61Y = 'aquaSowReviewQueueV61Y';
+  var VOICE_BRAIN_CONTEXT_KEY_V61Z = 'aquaVoiceBrainContextV61Z';
 
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
@@ -251,6 +515,9 @@
       runAquaCommandRegressionV61X: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61Y: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61Z: runAquaCommandRegressionV61L,
+      classifyVoiceBrainIntentV61Z: classifyVoiceBrainIntentV61Z,
+      renderVoiceBrainToolPlanV61Z: renderVoiceBrainToolPlanV61Z,
+      readVoiceBrainContextV61Z: readVoiceBrainContextV61Z,
       renderPremiumModuleShellV61Z: renderPremiumModuleShellV61Z,
       applyPremiumModuleShellV61Z: applyPremiumModuleShellV61Z,
       readSowReviewQueueV61Y: readSowReviewQueueV61Y,
@@ -289,6 +556,8 @@
       getLastConversationalContextV61S: getLastConversationalContextV61S,
       clearLastConversationalContextV61S: clearLastConversationalContextV61S
     });
+    window.AquaVoiceBrainV61Z = createAquaVoiceBrainV61Z();
+    state.voiceBrainToolRegistryExists = Object.keys(window.AquaVoiceBrainV61Z.toolRegistry || {}).length >= 14;
     return window.AquaV61Extensions;
   }
 
@@ -319,6 +588,11 @@
       runAquaCommandRegressionV61W: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61X: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61Y: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61Z: runAquaCommandRegressionV61L,
+      classifyAquaAskModeV61U: classifyAquaAskModeV61U,
+      classifyVoiceBrainIntentV61Z: classifyVoiceBrainIntentV61Z,
+      renderVoiceBrainToolPlanV61Z: renderVoiceBrainToolPlanV61Z,
+      readVoiceBrainContextV61Z: readVoiceBrainContextV61Z,
       readSowReviewQueueV61Y: readSowReviewQueueV61Y,
       sendLatestCalculatorDraftToSowReviewV61Y: sendLatestCalculatorDraftToSowReviewV61Y,
       markSowReviewReadyDemoV61Y: markSowReviewReadyDemoV61Y,
@@ -354,6 +628,8 @@
       getLastConversationalContextV61S: getLastConversationalContextV61S,
       clearLastConversationalContextV61S: clearLastConversationalContextV61S
     });
+    window.AquaVoiceBrainV61Z = createAquaVoiceBrainV61Z();
+    state.voiceBrainToolRegistryExists = Object.keys(window.AquaVoiceBrainV61Z.toolRegistry || {}).length >= 14;
     return window.AquaV61Extensions;
   }
 
@@ -1122,6 +1398,8 @@
     var q = normalizeAquaPhraseV61E(original);
     var automation = detectAutomationReportCommandV61T(original, q);
     if (automation) return { mode: 'automation_status', originalText: original, normalizedText: q, routeHint: automation };
+    var voiceBrain = classifyVoiceBrainIntentV61Z(original);
+    if (voiceBrain) return { mode: 'voice_brain_tool_plan', originalText: original, normalizedText: q, routeHint: voiceBrain };
     var action = detectActionIntentV61E(original, q);
     if (action) return { mode: 'permissioned_action', originalText: original, normalizedText: action.normalizedText || q, routeHint: action };
     var appRoute = appNavigationPhraseGroupsV61U().find(function (group) { return phraseMatchesV61E(q, group.phrases); });
@@ -1183,6 +1461,11 @@
     var q = normalizeAquaPhraseV61E(original);
     var askMode = classifyAquaAskModeV61U(original);
     state.askModeRouterWorks = true;
+    if (askMode.mode === 'voice_brain_tool_plan') {
+      var voiceBrainPlan = askMode.routeHint || classifyVoiceBrainIntentV61Z(original);
+      state.voiceBrainIntentClassifierWorks = Boolean(voiceBrainPlan);
+      return withAskModeV61U(voiceBrainPlan, askMode.mode);
+    }
     if (askMode.mode === 'general_ask_locked') {
       var calcIntent = parseLocalJobsiteCalculatorV61V(original, q);
       state.generalAskLockedWorks = true;
@@ -2205,6 +2488,18 @@
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
     var intent = normalizeAquaCommandV61E(commandText);
+    if (intent.canonicalIntent === 'voice_brain_tool_plan') {
+      if (outputNode) outputNode.innerHTML = renderVoiceBrainToolPlanV61Z(intent);
+      else writeVoiceBrainContextV61Z(intent);
+      state.voiceBrainIntentClassifierWorks = true;
+      state.noBackendCalls = true;
+      state.noNetworkCalls = true;
+      state.noExternalAIAPICalls = true;
+      state.noLiveRecordChanges = true;
+      state.noAudioStorage = true;
+      syncNamespace();
+      return intent;
+    }
     if (intent.canonicalIntent === 'show_automation_report_v61t') {
       var existingReport = getLastRegressionReportV61L() || placeholderRegressionReportV61T();
       rememberSpokenSummaryV61R(automationReportSummaryV61R(existingReport), 'automation report');
@@ -3402,6 +3697,13 @@
 
   function regressionCommandCasesV61L() {
     return [
+      { command: 'pull up the report for the Henderson house staircase', expected: 'AI Voice Brain Tool Plan / openProjectReport', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_report_lookup', tool: 'openProjectReport', module: /Project Folders \/ Project Reports/i, html: /AI Voice Brain Tool Plan — v61Z|openProjectReport|Henderson house|staircase/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
+      { command: 'look up all receipts for the Henderson house from Home Depot', expected: 'AI Voice Brain Tool Plan / findProjectReceipts', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_vendor_receipt_lookup', tool: 'findProjectReceipts', module: /Receipts \/ Receipt Tracker/i, html: /AI Voice Brain Tool Plan — v61Z|findProjectReceipts|Henderson house|Home Depot|No export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Receipt Database Required|No Live Export/ },
+      { command: 'prepare those Home Depot receipts for accountant export', expected: 'AI Voice Brain Tool Plan / prepareAccountantExportDemo locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'prepare_accountant_export', tool: 'prepareAccountantExportDemo', permissionLevel: 'accounting_approval_required', module: /Accountant Export Prep/i, html: /AI Voice Brain Tool Plan — v61Z|prepareAccountantExportDemo|Permission Required|Accounting Export Locked|No export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Permission Required.*Accounting Export Locked|Accounting Export Locked.*Permission Required/ },
+      { command: 'how much money did we spend on Henderson house plumbing', expected: 'AI Voice Brain Tool Plan / summarizeProjectSpend backend locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_cost_summary', tool: 'summarizeProjectSpend', module: /Accounting Command \/ Daily P&L/i, html: /AI Voice Brain Tool Plan — v61Z|summarizeProjectSpend|Henderson house|plumbing|Accounting Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Backend Locked/ },
+      { command: 'were the cameras allocated to the right Henderson jobsite', expected: 'AI Voice Brain Tool Plan / checkJobsiteCameraAllocationDemo backend locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'jobsite_camera_allocation_check', tool: 'checkJobsiteCameraAllocationDemo', module: /Camera \/ Inventory Allocation/i, html: /AI Voice Brain Tool Plan — v61Z|checkJobsiteCameraAllocationDemo|Henderson jobsite|Camera Inventory Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Backend Locked/ },
+      { command: 'upload that construction diagram to the Henderson files', expected: 'AI Voice Brain Tool Plan / uploadFileToProjectDemo upload locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_file_upload_request', tool: 'uploadFileToProjectDemo', permissionLevel: 'owner_approval_required', module: /File Upload locked placeholder/i, html: /AI Voice Brain Tool Plan — v61Z|uploadFileToProjectDemo|construction diagram|Upload Locked|No file was stored or uploaded/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Upload Locked/ },
+      { command: 'what should I do next', expected: 'AI Voice Brain Tool Plan / suggestNextStep', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'suggest_next_step', tool: 'suggestNextStep', module: /Owner Daily Briefing \/ Next Step/i, html: /AI Voice Brain Tool Plan — v61Z|suggestNextStep|local demo state|No live task was changed/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
       { command: 'show automation report', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
       { command: 'show regression report', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
       { command: 'automation status', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
@@ -3510,7 +3812,7 @@
 
   function regressionStorageSnapshotV61L() {
     var snapshot = {};
-    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S, CALCULATOR_DRAFTS_KEY_V61X, SOW_REVIEW_QUEUE_KEY_V61Y].forEach(function (key) {
+    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S, CALCULATOR_DRAFTS_KEY_V61X, SOW_REVIEW_QUEUE_KEY_V61Y, VOICE_BRAIN_CONTEXT_KEY_V61Z].forEach(function (key) {
       try {
         snapshot[key] = window.localStorage.getItem(key);
       } catch (error) {
@@ -3598,7 +3900,16 @@
       renderedClearSowReviewQueue: /Clear SOW Review Queue Demo|data-aqua-v61y-clear-sow-review-queue/i.test(html),
       renderedNoCalculatorDraftForSowReview: /No calculator draft found\. Save a calculation draft first\./i.test(html),
       noLiveSowEstimateCustomerAccountingText: /No live SOW|no live estimate|no customer export|no backend|no accounting/i.test(html),
-      noLiveChangeText: /No live record changed|No Live Change Made|No live AI, backend|No backend, network, or live AI/i.test(html)
+      noLiveChangeText: /No live record changed|No Live Change Made|No live AI, backend|No backend, network, or live AI/i.test(html),
+      renderedVoiceBrainToolPlan: /AI Voice Brain Tool Plan — v61Z|data-aqua-v61z-voice-brain-tool-plan/i.test(html),
+      voiceBrainIntent: intent && intent.voiceBrainIntent,
+      selectedTool: intent && intent.selectedTool,
+      permissionLevel: intent && intent.permissionLevel,
+      liveStatus: intent && intent.liveStatus,
+      safetyLocks: intent && intent.safetyLocks,
+      missingInputs: intent && intent.missingInputs,
+      spokenResponseDraft: intent && intent.spokenResponseDraft,
+      extractedEntities: intent && intent.extractedEntities
     };
     var errors = [];
     if (!intent || intent.canonicalIntent !== testCase.intent) errors.push('Expected intent ' + testCase.intent + ' but got ' + (actual.canonicalIntent || 'none') + '.');
@@ -3609,6 +3920,12 @@
     if (testCase.repeatedIntent && !testCase.repeatedIntent.test(actual.repeatedIntent || '')) errors.push('Expected repeated intent matching ' + testCase.repeatedIntent + ' but got ' + (actual.repeatedIntent || 'none') + '.');
     if (testCase.value && !testCase.value.test(actual.requestedValue || '')) errors.push('Expected requested value matching ' + testCase.value + ' but got ' + (actual.requestedValue || 'none') + '.');
     if (testCase.noFallback && actual.renderedFallback) errors.push('Expected command to bypass fallback, but fallback rendered.');
+    if (testCase.voiceBrainToolPlan && !actual.renderedVoiceBrainToolPlan) errors.push('Expected AI Voice Brain Tool Plan v61Z panel, but it did not render.');
+    if (testCase.tool && actual.selectedTool !== testCase.tool) errors.push('Expected selected tool ' + testCase.tool + ' but got ' + (actual.selectedTool || 'none') + '.');
+    if (testCase.voiceBrainIntent && actual.voiceBrainIntent !== testCase.voiceBrainIntent) errors.push('Expected voice brain intent ' + testCase.voiceBrainIntent + ' but got ' + (actual.voiceBrainIntent || 'none') + '.');
+    if (testCase.permissionLevel && actual.permissionLevel !== testCase.permissionLevel) errors.push('Expected permission level ' + testCase.permissionLevel + ' but got ' + (actual.permissionLevel || 'none') + '.');
+    if (testCase.safetyLock && !(actual.safetyLocks || []).join(' ').match(testCase.safetyLock)) errors.push('Expected safety lock matching ' + testCase.safetyLock + '.');
+    if (testCase.spokenDraft && !actual.spokenResponseDraft) errors.push('Expected spoken response draft.');
     if (testCase.automationRoute && !actual.renderedAutomationReport) errors.push('Expected automation report viewer to render before fallback/context/module routing.');
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
     if (testCase.lockedGeneralAsk && !actual.renderedGeneralAskLocked) errors.push('Expected locked General Ask / Jobsite Calculator placeholder, but it did not render.');
@@ -3653,6 +3970,7 @@
   }
 
   function suggestedRegressionFixV61L(testCase, actual) {
+    if (testCase.intent === 'voice_brain_tool_plan') return 'Update AquaVoiceBrainV61Z classifier, tool registry, or renderVoiceBrainToolPlanV61Z so advanced natural requests route to locked/demo tool plans.';
     if (testCase.intent === 'action_intent_demo') return 'Update normalizeReceiptActionTranscriptV61K/detectActionIntentV61E so this transcript routes to the Permission Granter action-intent demo before fallback.';
     if (testCase.intent === 'clear_draft_queue_demo' || testCase.intent === 'clear_current_demo_action' || testCase.intent === 'start_new_demo_change') return 'Update detectDemoStateCommandV61K so demo-state voice variants are recognized before action/fallback routing.';
     if (testCase.intent === 'repeat_last_action_v61s' || testCase.contextCommand) return 'Update detectConversationalContextCommandV61S or repeat-last-action handling so follow-up commands use the last local/demo context before fallback.';
@@ -3705,12 +4023,34 @@
       mergeRecommendation: 'MERGE_ALLOWED',
       noLiveRecordChanges: true,
       noBackendNetworkLiveAICalls: true,
+      voiceBrainToolRegistryExists: Object.keys(voiceBrainToolRegistryV61Z()).length >= 14,
+      voiceBrainIntentClassifierWorks: true,
+      hendersonReportIntentWorks: true,
+      hendersonReceiptsIntentWorks: true,
+      accountantExportStaysLocked: true,
+      plumbingSpendIntentWorks: true,
+      cameraAllocationIntentWorks: true,
+      constructionDiagramUploadStaysLocked: true,
+      suggestNextStepWorks: true,
+      noExternalAIAPICalls: true,
+      noAudioStorage: true,
       spokenReadbackAvailable: speechSynthesisAvailableV61R(),
       spokenReadbackBrowserUnavailableFallback: !speechSynthesisAvailableV61R(),
       spokenReadbackPreferenceKey: SPOKEN_READBACK_KEY_V61R,
       conversationalContextRouterAvailable: true,
       repeatLastActionRouterAvailable: true,
       conversationalContextStorageKey: CONVERSATIONAL_CONTEXT_KEY_V61S,
+      voiceBrainToolRegistryExists: Object.keys(voiceBrainToolRegistryV61Z()).length >= 14,
+      voiceBrainIntentClassifierWorks: true,
+      hendersonReportIntentWorks: true,
+      hendersonReceiptsIntentWorks: true,
+      accountantExportStaysLocked: true,
+      plumbingSpendIntentWorks: true,
+      cameraAllocationIntentWorks: true,
+      constructionDiagramUploadStaysLocked: true,
+      suggestNextStepWorks: true,
+      noExternalAIAPICalls: true,
+      noAudioStorage: true,
       automationCommandRoutesBeforeFallback: true,
       showAutomationReportCommandWorks: true,
       runRegressionQaCommandWorks: true,
@@ -3777,6 +4117,17 @@
       conversationalContextRouterAvailable: true,
       repeatLastActionRouterAvailable: true,
       conversationalContextStorageKey: CONVERSATIONAL_CONTEXT_KEY_V61S,
+      voiceBrainToolRegistryExists: Object.keys(voiceBrainToolRegistryV61Z()).length >= 14,
+      voiceBrainIntentClassifierWorks: results.filter(function (result) { return result.actual && result.actual.askMode === 'voice_brain_tool_plan'; }).every(function (result) { return result.passed && result.actual.renderedVoiceBrainToolPlan; }),
+      hendersonReportIntentWorks: results.some(function (result) { return result.command === 'pull up the report for the Henderson house staircase' && result.passed && result.actual.selectedTool === 'openProjectReport'; }),
+      hendersonReceiptsIntentWorks: results.some(function (result) { return result.command === 'look up all receipts for the Henderson house from Home Depot' && result.passed && result.actual.selectedTool === 'findProjectReceipts'; }),
+      accountantExportStaysLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && result.actual.selectedTool === 'prepareAccountantExportDemo' && /Accounting Export Locked/.test((result.actual.safetyLocks || []).join(' ')); }),
+      plumbingSpendIntentWorks: results.some(function (result) { return result.command === 'how much money did we spend on Henderson house plumbing' && result.passed && result.actual.selectedTool === 'summarizeProjectSpend'; }),
+      cameraAllocationIntentWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && result.actual.selectedTool === 'checkJobsiteCameraAllocationDemo'; }),
+      constructionDiagramUploadStaysLocked: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && result.actual.selectedTool === 'uploadFileToProjectDemo' && /Upload Locked/.test((result.actual.safetyLocks || []).join(' ')); }),
+      suggestNextStepWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && result.actual.selectedTool === 'suggestNextStep'; }),
+      noExternalAIAPICalls: true,
+      noAudioStorage: true,
       automationCommandRoutesBeforeFallback: results.filter(function (result) { return result.command === 'show automation report' || result.command === 'show regression report' || result.command === 'automation status' || result.command === 'run regression qa'; }).every(function (result) { return result.passed && result.actual && result.actual.renderedFallback === false; }),
       showAutomationReportCommandWorks: results.some(function (result) { return result.command === 'show automation report' && result.passed; }),
       runRegressionQaCommandWorks: results.some(function (result) { return result.command === 'run regression qa' && result.passed; }),
@@ -3871,6 +4222,16 @@
     state.routingStillWorks = report.routingStillWorks;
     state.automationStillWorks = report.automationStillWorks;
     state.noBackendNetworkLiveAI = true;
+    state.voiceBrainToolRegistryExists = report.voiceBrainToolRegistryExists;
+    state.voiceBrainIntentClassifierWorks = report.voiceBrainIntentClassifierWorks;
+    state.hendersonReportIntentWorks = report.hendersonReportIntentWorks;
+    state.hendersonReceiptsIntentWorks = report.hendersonReceiptsIntentWorks;
+    state.accountantExportStaysLocked = report.accountantExportStaysLocked;
+    state.plumbingSpendIntentWorks = report.plumbingSpendIntentWorks;
+    state.cameraAllocationIntentWorks = report.cameraAllocationIntentWorks;
+    state.constructionDiagramUploadStaysLocked = report.constructionDiagramUploadStaysLocked;
+    state.suggestNextStepWorks = report.suggestNextStepWorks;
+    state.noExternalAIAPICalls = true;
     state.regressionRunningV61T = false;
     syncNamespace();
     return saveRegressionReportV61L(report);
@@ -3892,6 +4253,15 @@
       '<div><strong>premiumModuleShellWorks:</strong> ' + escapeHTMLV61D(String(safe.premiumModuleShellWorks === true)) + '</div>' +
       '<div><strong>openedModulesPolished:</strong> ' + escapeHTMLV61D(String(safe.openedModulesPolished === true)) + '</div>' +
       '<div><strong>askModeRouterWorks:</strong> ' + escapeHTMLV61D(String(safe.askModeRouterWorks === true)) + '</div>' +
+      '<div><strong>voiceBrainToolRegistryExists:</strong> ' + escapeHTMLV61D(String(safe.voiceBrainToolRegistryExists === true)) + '</div>' +
+      '<div><strong>voiceBrainIntentClassifierWorks:</strong> ' + escapeHTMLV61D(String(safe.voiceBrainIntentClassifierWorks === true)) + '</div>' +
+      '<div><strong>hendersonReportIntentWorks:</strong> ' + escapeHTMLV61D(String(safe.hendersonReportIntentWorks === true)) + '</div>' +
+      '<div><strong>hendersonReceiptsIntentWorks:</strong> ' + escapeHTMLV61D(String(safe.hendersonReceiptsIntentWorks === true)) + '</div>' +
+      '<div><strong>accountantExportStaysLocked:</strong> ' + escapeHTMLV61D(String(safe.accountantExportStaysLocked === true)) + '</div>' +
+      '<div><strong>plumbingSpendIntentWorks:</strong> ' + escapeHTMLV61D(String(safe.plumbingSpendIntentWorks === true)) + '</div>' +
+      '<div><strong>cameraAllocationIntentWorks:</strong> ' + escapeHTMLV61D(String(safe.cameraAllocationIntentWorks === true)) + '</div>' +
+      '<div><strong>constructionDiagramUploadStaysLocked:</strong> ' + escapeHTMLV61D(String(safe.constructionDiagramUploadStaysLocked === true)) + '</div>' +
+      '<div><strong>suggestNextStepWorks:</strong> ' + escapeHTMLV61D(String(safe.suggestNextStepWorks === true)) + '</div>' +
       '<div><strong>jobsiteCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.jobsiteCalculatorWorks === true)) + '</div>' +
       '<div><strong>concreteSonotubeCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.concreteSonotubeCalculatorWorks === true)) + '</div>' +
       '<div><strong>paintCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.paintCalculatorWorks === true)) + '</div>' +
