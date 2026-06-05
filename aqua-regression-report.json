@@ -1,16 +1,14 @@
 {
-  "version": "v61Z",
-  "timestamp": "2026-06-05T17:55:19.622Z",
+  "version": "v62A",
+  "timestamp": "2026-06-05T20:31:29.562Z",
   "branch": "work",
-  "commit": "dd02986846d5ebc832efb10f7bceef64584d5750",
+  "commit": "039f22c7a6ed679f0e446539e80f3f8c0eddfa0b",
   "filesChanged": [
     "aqua-regression-report.json",
-    "aqua-regression-report.md",
-    "aqua-v61-extensions.js",
-    "aqua-v61-regression-test.js"
+    "aqua-regression-report.md"
   ],
-  "total": 213,
-  "passed": 213,
+  "total": 221,
+  "passed": 221,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -152,6 +150,12 @@
       "name": "v61Z voice brain mode route exists",
       "passed": true,
       "layer": "voice-brain-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62A command center strings exist",
+      "passed": true,
+      "layer": "voice-brain-v62a",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -302,14 +306,14 @@
       "name": "extension regression produced total tests",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 83,
+      "actual": 97,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
       "name": "extension regression passed count present",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 83,
+      "actual": 97,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -369,10 +373,10 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "extension regression version is v61Z",
+      "name": "extension regression version is v62A",
       "passed": true,
       "layer": "extension-regression",
-      "actual": "v61Z",
+      "actual": "v62A",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -731,7 +735,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -773,7 +780,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -815,7 +825,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -857,7 +870,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -899,7 +915,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": false,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -941,7 +960,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": false,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -983,7 +1005,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": false,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1025,7 +1050,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": false,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1067,7 +1095,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": false,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1109,7 +1140,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": false,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1151,7 +1185,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": false,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1194,7 +1231,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1237,7 +1277,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1280,7 +1323,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1322,7 +1368,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1364,7 +1413,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1406,7 +1458,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1448,7 +1503,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1490,7 +1548,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1537,7 +1598,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1584,7 +1648,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1631,7 +1698,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1678,7 +1748,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1725,7 +1798,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1768,7 +1844,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1811,7 +1890,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1854,7 +1936,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1897,7 +1982,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1942,7 +2030,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1984,7 +2075,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2026,7 +2120,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2068,7 +2165,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2110,7 +2210,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2152,7 +2255,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2195,6 +2301,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "project_report_lookup",
         "selectedTool": "openProjectReport",
         "permissionLevel": "backend_required",
@@ -2265,6 +2374,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "project_vendor_receipt_lookup",
         "selectedTool": "findProjectReceipts",
         "permissionLevel": "backend_required",
@@ -2336,6 +2448,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "prepare_accountant_export",
         "selectedTool": "prepareAccountantExportDemo",
         "permissionLevel": "accounting_approval_required",
@@ -2410,6 +2525,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "project_cost_summary",
         "selectedTool": "summarizeProjectSpend",
         "permissionLevel": "backend_required",
@@ -2481,6 +2599,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "jobsite_camera_allocation_check",
         "selectedTool": "checkJobsiteCameraAllocationDemo",
         "permissionLevel": "backend_required",
@@ -2551,6 +2672,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "project_file_upload_request",
         "selectedTool": "uploadFileToProjectDemo",
         "permissionLevel": "owner_approval_required",
@@ -2624,6 +2748,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "suggest_next_step",
         "selectedTool": "suggestNextStep",
         "permissionLevel": "read_demo",
@@ -2690,7 +2817,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2732,7 +2862,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2775,7 +2908,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2817,7 +2953,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2859,7 +2998,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2902,6 +3044,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "project_report_lookup",
         "selectedTool": "openProjectReport",
         "permissionLevel": "backend_required",
@@ -2972,6 +3117,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "project_vendor_receipt_lookup",
         "selectedTool": "findProjectReceipts",
         "permissionLevel": "backend_required",
@@ -3043,6 +3191,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "prepare_accountant_export",
         "selectedTool": "prepareAccountantExportDemo",
         "permissionLevel": "accounting_approval_required",
@@ -3117,6 +3268,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "project_cost_summary",
         "selectedTool": "summarizeProjectSpend",
         "permissionLevel": "backend_required",
@@ -3188,6 +3342,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "jobsite_camera_allocation_check",
         "selectedTool": "checkJobsiteCameraAllocationDemo",
         "permissionLevel": "backend_required",
@@ -3258,6 +3415,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "project_file_upload_request",
         "selectedTool": "uploadFileToProjectDemo",
         "permissionLevel": "owner_approval_required",
@@ -3331,6 +3491,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "suggest_next_step",
         "selectedTool": "suggestNextStep",
         "permissionLevel": "read_demo",
@@ -3398,6 +3561,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "prepare_accountant_export",
         "selectedTool": "prepareAccountantExportDemo",
         "permissionLevel": "accounting_approval_required",
@@ -3472,6 +3638,9 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
         "renderedVoiceBrainToolPlan": true,
+        "renderedAquaBrainCommandCenter": true,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": true,
         "voiceBrainIntent": "project_file_upload_request",
         "selectedTool": "uploadFileToProjectDemo",
         "permissionLevel": "owner_approval_required",
@@ -3504,6 +3673,55 @@
           "fileType": "construction diagram"
         }
       },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62A Aqua Brain Command Center works",
+      "passed": true,
+      "layer": "voice-brain-v62a",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62A Voice Brain plan viewer works",
+      "passed": true,
+      "layer": "voice-brain-v62a",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62A Save Voice Brain Plan works",
+      "passed": true,
+      "layer": "voice-brain-v62a",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62A Show Last Voice Brain Plan works",
+      "passed": true,
+      "layer": "voice-brain-v62a",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62A Clear Voice Brain Plan works",
+      "passed": true,
+      "layer": "voice-brain-v62a",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62A Copy Tool Plan works",
+      "passed": true,
+      "layer": "voice-brain-v62a",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62A permission explanation works",
+      "passed": true,
+      "layer": "voice-brain-v62a",
+      "actual": true,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -3549,7 +3767,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3596,7 +3817,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3643,7 +3867,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3686,7 +3913,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3729,7 +3959,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3772,7 +4005,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3815,7 +4051,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3860,7 +4099,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3902,7 +4144,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3944,7 +4189,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3986,7 +4234,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4028,7 +4279,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4070,7 +4324,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4112,7 +4369,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": false,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4154,7 +4414,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4196,7 +4459,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4238,7 +4504,10 @@
         "renderedNoCalculatorDraftForSowReview": true,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4280,7 +4549,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4322,7 +4594,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4364,7 +4639,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4406,7 +4684,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4448,7 +4729,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4490,7 +4774,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4532,7 +4819,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4574,7 +4864,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4616,7 +4909,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4658,7 +4954,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4700,7 +4999,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4742,7 +5044,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4792,7 +5097,10 @@
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true,
-        "renderedVoiceBrainToolPlan": false
+        "renderedVoiceBrainToolPlan": false,
+        "renderedAquaBrainCommandCenter": false,
+        "renderedVoiceBrainPlanViewer": false,
+        "renderedCopyToolPlanText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -4982,18 +5290,18 @@
     "reason": "Playwright/browser not available"
   },
   "extensionRegression": {
-    "version": "v61Z",
-    "harnessVersion": "v61L-compatible/v61Z",
-    "timestamp": "2026-06-05T17:55:19.156Z",
-    "total": 83,
-    "passed": 83,
+    "version": "v62A",
+    "harnessVersion": "v61L-compatible/v62A",
+    "timestamp": "2026-06-05T20:31:29.056Z",
+    "total": 97,
+    "passed": 97,
     "failed": 0,
     "failedCommands": [],
     "failures": [],
     "results": [
       {
         "command": "pull up the report for the Henderson house staircase",
-        "expected": "AI Voice Brain Tool Plan / openProjectReport",
+        "expected": "Aqua Brain Command Center v62A / openProjectReport",
         "actual": {
           "command": "pull up the report for the Henderson house staircase",
           "canonicalIntent": "voice_brain_tool_plan",
@@ -5028,6 +5336,9 @@
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
           "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
           "voiceBrainIntent": "project_report_lookup",
           "selectedTool": "openProjectReport",
           "permissionLevel": "backend_required",
@@ -5063,7 +5374,7 @@
       },
       {
         "command": "look up all receipts for the Henderson house from Home Depot",
-        "expected": "AI Voice Brain Tool Plan / findProjectReceipts",
+        "expected": "Aqua Brain Command Center v62A / findProjectReceipts",
         "actual": {
           "command": "look up all receipts for the Henderson house from Home Depot",
           "canonicalIntent": "voice_brain_tool_plan",
@@ -5098,6 +5409,9 @@
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
           "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
           "voiceBrainIntent": "project_vendor_receipt_lookup",
           "selectedTool": "findProjectReceipts",
           "permissionLevel": "backend_required",
@@ -5134,7 +5448,7 @@
       },
       {
         "command": "prepare those Home Depot receipts for accountant export",
-        "expected": "AI Voice Brain Tool Plan / prepareAccountantExportDemo locked",
+        "expected": "Aqua Brain Command Center v62A / prepareAccountantExportDemo locked",
         "actual": {
           "command": "prepare those Home Depot receipts for accountant export",
           "canonicalIntent": "voice_brain_tool_plan",
@@ -5169,6 +5483,9 @@
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
           "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
           "voiceBrainIntent": "prepare_accountant_export",
           "selectedTool": "prepareAccountantExportDemo",
           "permissionLevel": "accounting_approval_required",
@@ -5208,7 +5525,7 @@
       },
       {
         "command": "how much money did we spend on Henderson house plumbing",
-        "expected": "AI Voice Brain Tool Plan / summarizeProjectSpend backend locked",
+        "expected": "Aqua Brain Command Center v62A / summarizeProjectSpend backend locked",
         "actual": {
           "command": "how much money did we spend on Henderson house plumbing",
           "canonicalIntent": "voice_brain_tool_plan",
@@ -5243,6 +5560,9 @@
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
           "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
           "voiceBrainIntent": "project_cost_summary",
           "selectedTool": "summarizeProjectSpend",
           "permissionLevel": "backend_required",
@@ -5279,7 +5599,7 @@
       },
       {
         "command": "were the cameras allocated to the right Henderson jobsite",
-        "expected": "AI Voice Brain Tool Plan / checkJobsiteCameraAllocationDemo backend locked",
+        "expected": "Aqua Brain Command Center v62A / checkJobsiteCameraAllocationDemo backend locked",
         "actual": {
           "command": "were the cameras allocated to the right Henderson jobsite",
           "canonicalIntent": "voice_brain_tool_plan",
@@ -5314,6 +5634,9 @@
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
           "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
           "voiceBrainIntent": "jobsite_camera_allocation_check",
           "selectedTool": "checkJobsiteCameraAllocationDemo",
           "permissionLevel": "backend_required",
@@ -5349,7 +5672,7 @@
       },
       {
         "command": "upload that construction diagram to the Henderson files",
-        "expected": "AI Voice Brain Tool Plan / uploadFileToProjectDemo upload locked",
+        "expected": "Aqua Brain Command Center v62A / uploadFileToProjectDemo upload locked",
         "actual": {
           "command": "upload that construction diagram to the Henderson files",
           "canonicalIntent": "voice_brain_tool_plan",
@@ -5384,6 +5707,9 @@
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
           "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
           "voiceBrainIntent": "project_file_upload_request",
           "selectedTool": "uploadFileToProjectDemo",
           "permissionLevel": "owner_approval_required",
@@ -5422,7 +5748,7 @@
       },
       {
         "command": "what should I do next",
-        "expected": "AI Voice Brain Tool Plan / suggestNextStep",
+        "expected": "Aqua Brain Command Center v62A / suggestNextStep",
         "actual": {
           "command": "what should I do next",
           "canonicalIntent": "voice_brain_tool_plan",
@@ -5457,6 +5783,9 @@
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
           "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
           "voiceBrainIntent": "suggest_next_step",
           "selectedTool": "suggestNextStep",
           "permissionLevel": "read_demo",
@@ -5482,6 +5811,792 @@
           "missingInputs": [],
           "spokenResponseDraft": "Based on the local demo state, I would start with the automation report, review pending SOW drafts, and then check receipt coding items. No live task was changed.",
           "extractedEntities": {}
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "what is over budget",
+        "expected": "Aqua Brain Command Center v62A / budget risk locked",
+        "actual": {
+          "command": "what is over budget",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Accounting Command / Budget Risk locked placeholder",
+          "normalizedText": "what is over budget",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
+          "voiceBrainIntent": "budget_risk_lookup",
+          "selectedTool": "showBudgetRiskDemo",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Accounting Backend Required",
+            "No Accounting Change"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare a budget risk view, but live budget and accounting totals require the backend accounting database. No accounting record was changed.",
+          "extractedEntities": {}
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "what budget is about to go over",
+        "expected": "Aqua Brain Command Center v62A / budget risk locked",
+        "actual": {
+          "command": "what budget is about to go over",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Accounting Command / Budget Risk locked placeholder",
+          "normalizedText": "what budget is about to go over",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
+          "voiceBrainIntent": "budget_risk_lookup",
+          "selectedTool": "showBudgetRiskDemo",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Accounting Backend Required",
+            "No Accounting Change"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare a budget risk view, but live budget and accounting totals require the backend accounting database. No accounting record was changed.",
+          "extractedEntities": {}
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show employee time",
+        "expected": "Aqua Brain Command Center v62A / employee time locked",
+        "actual": {
+          "command": "show employee time",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Employee Time / Timecards locked placeholder",
+          "normalizedText": "show employee time",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
+          "voiceBrainIntent": "employee_time_lookup",
+          "selectedTool": "showEmployeeTimeDemo",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Payroll/Time Backend Required",
+            "No Payroll Action"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare an employee time view, but live timecards and payroll are locked behind backend permission. No payroll action was run.",
+          "extractedEntities": {}
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show payables",
+        "expected": "Aqua Brain Command Center v62A / payables locked",
+        "actual": {
+          "command": "show payables",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Accounting Command / Payables locked placeholder",
+          "normalizedText": "show payables",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
+          "voiceBrainIntent": "payables_lookup",
+          "selectedTool": "showPayablesDemo",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Accounting Backend Required",
+            "No Payment Action"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare a payables view, but live bills and payment actions are locked. No payment or accounting change was made.",
+          "extractedEntities": {}
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "what documents are missing",
+        "expected": "Aqua Brain Command Center v62A / missing documents locked",
+        "actual": {
+          "command": "what documents are missing",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Project Documents / Missing Docs locked placeholder",
+          "normalizedText": "what documents are missing",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
+          "voiceBrainIntent": "missing_documents_lookup",
+          "selectedTool": "showMissingDocumentsDemo",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Document Backend Required",
+            "No Customer Sharing"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare a missing documents checklist, but live document storage is locked. No customer sharing or file action was run.",
+          "extractedEntities": {}
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "diagnose this job file",
+        "expected": "Aqua Brain Command Center v62A / job file diagnostic locked",
+        "actual": {
+          "command": "diagnose this job file",
+          "canonicalIntent": "voice_brain_tool_plan",
+          "module": "Project Files / Job File Diagnostic locked placeholder",
+          "normalizedText": "diagnose this job file",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true,
+          "voiceBrainIntent": "diagnose_job_file",
+          "selectedTool": "diagnoseJobFileDemo",
+          "permissionLevel": "backend_required",
+          "liveStatus": "locked/demo",
+          "safetyLocks": [
+            "No backend calls",
+            "No network calls",
+            "No external AI/API calls",
+            "No API keys in frontend",
+            "No live record changes",
+            "No live export",
+            "No live upload",
+            "No customer sharing",
+            "No accounting export",
+            "No payment/payroll/bank action",
+            "No audio storage",
+            "No always-listening",
+            "Audit Required",
+            "Undo Required",
+            "Backend Locked",
+            "Project File Backend Required",
+            "No Live Change Made"
+          ],
+          "missingInputs": [],
+          "spokenResponseDraft": "I can prepare a job file diagnostic checklist, but live files and backend analysis are locked. No file was read, uploaded, or changed.",
+          "extractedEntities": {}
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show last voice brain plan",
+        "expected": "Voice Brain plan viewer",
+        "actual": {
+          "command": "show last voice brain plan",
+          "canonicalIntent": "voice_brain_plan_viewer_v62a",
+          "module": "Aqua Brain Command Center — v62A",
+          "normalizedText": "show last voice brain plan",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": false,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": true,
+          "renderedCopyToolPlanText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show last aqua brain plan",
+        "expected": "Voice Brain plan viewer alias",
+        "actual": {
+          "command": "show last aqua brain plan",
+          "canonicalIntent": "voice_brain_plan_viewer_v62a",
+          "module": "Aqua Brain Command Center — v62A",
+          "normalizedText": "show last aqua brain plan",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": false,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": true,
+          "renderedCopyToolPlanText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "save voice brain plan",
+        "expected": "Save Voice Brain Plan local demo",
+        "actual": {
+          "command": "save voice brain plan",
+          "canonicalIntent": "voice_brain_plan_viewer_v62a",
+          "module": "Aqua Brain Command Center — v62A",
+          "normalizedText": "save voice brain plan",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": false,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": true,
+          "renderedCopyToolPlanText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "clear voice brain plan demo",
+        "expected": "Clear Voice Brain Plan Demo local demo",
+        "actual": {
+          "command": "clear voice brain plan demo",
+          "canonicalIntent": "voice_brain_plan_viewer_v62a",
+          "module": "Aqua Brain Command Center — v62A",
+          "normalizedText": "clear voice brain plan demo",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": true,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": true,
+          "renderedCopyToolPlanText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "copy tool plan",
+        "expected": "Copy Tool Plan Text block",
+        "actual": {
+          "command": "copy tool plan",
+          "canonicalIntent": "voice_brain_plan_viewer_v62a",
+          "module": "Aqua Brain Command Center — v62A",
+          "normalizedText": "copy tool plan",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": false,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": true,
+          "renderedCopyToolPlanText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "explain this plan",
+        "expected": "Explain current tool plan",
+        "actual": {
+          "command": "explain this plan",
+          "canonicalIntent": "voice_brain_plan_viewer_v62a",
+          "module": "Aqua Brain Command Center — v62A",
+          "normalizedText": "explain this plan",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": false,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": true,
+          "renderedCopyToolPlanText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "what can aqua do now",
+        "expected": "Allowed local demo steps",
+        "actual": {
+          "command": "what can aqua do now",
+          "canonicalIntent": "voice_brain_plan_viewer_v62a",
+          "module": "Aqua Brain Command Center — v62A",
+          "normalizedText": "what can aqua do now",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": false,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": true,
+          "renderedCopyToolPlanText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "what requires approval",
+        "expected": "Permission/backend locks explanation",
+        "actual": {
+          "command": "what requires approval",
+          "canonicalIntent": "voice_brain_plan_viewer_v62a",
+          "module": "Aqua Brain Command Center — v62A",
+          "normalizedText": "what requires approval",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedNeedMoreInformation": false,
+          "renderedPaintCalculator": false,
+          "renderedDrywallCalculator": false,
+          "renderedFlooringCalculator": false,
+          "renderedStudCalculator": false,
+          "renderedConcreteSlabCalculator": false,
+          "renderedCalculatorDraftActions": false,
+          "renderedCalculatorDraftsPanel": false,
+          "renderedSaveCalculationDraft": false,
+          "renderedClearCalculatorDrafts": false,
+          "renderedEstimateDraftPlaceholder": false,
+          "renderedNoCurrentCalculation": false,
+          "renderedConcreteSonotubeCalculator": false,
+          "askMode": "voice_brain_tool_plan",
+          "renderedDraftQueue": false,
+          "renderedSowReviewQueue": false,
+          "renderedSendSowReviewQueue": false,
+          "renderedMarkReviewReadyDemo": false,
+          "renderedClearSowReviewQueue": false,
+          "renderedNoCalculatorDraftForSowReview": false,
+          "noLiveSowEstimateCustomerAccountingText": false,
+          "noLiveChangeText": true,
+          "renderedVoiceBrainToolPlan": true,
+          "renderedAquaBrainCommandCenter": true,
+          "renderedVoiceBrainPlanViewer": true,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -5523,7 +6638,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true
         },
         "passed": true,
         "errors": [],
@@ -5565,7 +6683,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true
         },
         "passed": true,
         "errors": [],
@@ -5607,7 +6728,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true
         },
         "passed": true,
         "errors": [],
@@ -5649,7 +6773,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true
         },
         "passed": true,
         "errors": [],
@@ -5691,7 +6818,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true
         },
         "passed": true,
         "errors": [],
@@ -5733,7 +6863,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true
         },
         "passed": true,
         "errors": [],
@@ -5775,7 +6908,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true
         },
         "passed": true,
         "errors": [],
@@ -5817,7 +6953,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": true
         },
         "passed": true,
         "errors": [],
@@ -5859,7 +6998,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -5901,7 +7043,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -5943,7 +7088,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -5985,7 +7133,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6027,7 +7178,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6069,7 +7223,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6111,7 +7268,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6153,7 +7313,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6196,7 +7359,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6239,7 +7405,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6282,7 +7451,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6325,7 +7497,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6368,7 +7543,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6411,7 +7589,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6453,7 +7634,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6495,7 +7679,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6537,7 +7724,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6579,7 +7769,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6621,7 +7814,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6663,7 +7859,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6705,7 +7904,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6747,7 +7949,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6789,7 +7994,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6831,7 +8039,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6873,7 +8084,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6915,7 +8129,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6957,7 +8174,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": false,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -6999,7 +8219,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": false,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7041,7 +8264,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": false,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7083,7 +8309,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": false,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7125,7 +8354,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": false,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7167,7 +8399,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": false,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7209,7 +8444,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": false,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7252,7 +8490,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7294,7 +8535,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7341,7 +8585,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7388,7 +8635,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7435,7 +8685,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7482,7 +8735,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7529,7 +8785,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7576,7 +8835,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7619,7 +8881,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7662,7 +8927,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7705,7 +8973,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7748,7 +9019,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7793,7 +9067,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7835,7 +9112,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7878,7 +9158,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7920,7 +9203,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -7962,7 +9248,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8004,7 +9293,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8046,7 +9338,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8088,7 +9383,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8130,7 +9428,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8172,7 +9473,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8214,7 +9518,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8256,7 +9563,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8298,7 +9608,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8340,7 +9653,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8382,7 +9698,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8424,7 +9743,10 @@
           "renderedNoCalculatorDraftForSowReview": true,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8466,7 +9788,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8508,7 +9833,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": false,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8550,7 +9878,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8592,7 +9923,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8634,7 +9968,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8676,7 +10013,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8718,7 +10058,10 @@
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
           "noLiveChangeText": true,
-          "renderedVoiceBrainToolPlan": false
+          "renderedVoiceBrainToolPlan": false,
+          "renderedAquaBrainCommandCenter": false,
+          "renderedVoiceBrainPlanViewer": false,
+          "renderedCopyToolPlanText": false
         },
         "passed": true,
         "errors": [],
@@ -8765,6 +10108,13 @@
     "cameraAllocationIntentWorks": true,
     "constructionDiagramUploadStaysLocked": true,
     "suggestNextStepWorks": true,
+    "aquaBrainCommandCenterWorks": true,
+    "voiceBrainPlanViewerWorks": true,
+    "saveVoiceBrainPlanWorks": true,
+    "showLastVoiceBrainPlanWorks": true,
+    "clearVoiceBrainPlanWorks": true,
+    "copyToolPlanWorks": true,
+    "permissionExplanationWorks": true,
     "noExternalAIAPICalls": true,
     "noAudioStorage": true,
     "automationCommandRoutesBeforeFallback": true,
@@ -8835,6 +10185,13 @@
   "cameraAllocationIntentWorks": true,
   "constructionDiagramUploadStaysLocked": true,
   "suggestNextStepWorks": true,
+  "aquaBrainCommandCenterWorks": true,
+  "voiceBrainPlanViewerWorks": true,
+  "saveVoiceBrainPlanWorks": true,
+  "showLastVoiceBrainPlanWorks": true,
+  "clearVoiceBrainPlanWorks": true,
+  "copyToolPlanWorks": true,
+  "permissionExplanationWorks": true,
   "calculatorDraftsWork": true,
   "saveCalculationDraftWorks": true,
   "showSavedCalculationsWorks": true,
