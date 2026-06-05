@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61C Modular Extension Loader
+ * Aqua Homes OS v61D Modular Extension Loader
  * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61C';
+  var VERSION = 'v61D';
   var state = {
     version: VERSION,
     initialized: true,
@@ -22,8 +22,12 @@
     unsupportedFallbackAvailable: false,
     permissionDeniedFallbackAvailable: false,
     browserBlockedFallbackAvailable: false,
+    fallbackTapToStartVoiceAvailable: false,
+    directAskButtonHookInstalled: false,
+    directMicStartAttemptedFromUserGesture: false,
+    oneShotOnly: true,
     noAlwaysListening: true,
-    noAutoMicStart: false,
+    noAutoMicStart: true,
     noAudioStorage: true,
     noNetworkCalls: true,
     wrappedOpenModal: false,
@@ -37,10 +41,12 @@
       version: VERSION,
       runV61BCheck: runV61BCheck,
       runV61CCheck: runV61CCheck,
+      runV61DCheck: runV61DCheck,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
       exposeAskAICommandFlow: exposeAskAICommandFlow,
-      directAskVoiceV61C: directAskVoiceV61C,
-      startDirectAskVoiceV61C: startDirectAskVoiceV61C
+      directAskVoiceV61D: directAskVoiceV61D,
+      startDirectAskVoiceV61D: startDirectAskVoiceV61D,
+      startDirectAskVoiceV61C: startDirectAskVoiceV61D
     });
     return window.AquaV61Extensions;
   }
@@ -51,10 +57,12 @@
       version: VERSION,
       runV61BCheck: runV61BCheck,
       runV61CCheck: runV61CCheck,
+      runV61DCheck: runV61DCheck,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
       exposeAskAICommandFlow: exposeAskAICommandFlow,
-      directAskVoiceV61C: directAskVoiceV61C,
-      startDirectAskVoiceV61C: startDirectAskVoiceV61C
+      directAskVoiceV61D: directAskVoiceV61D,
+      startDirectAskVoiceV61D: startDirectAskVoiceV61D,
+      startDirectAskVoiceV61C: startDirectAskVoiceV61D
     });
     return window.AquaV61Extensions;
   }
@@ -134,7 +142,7 @@
     var flow = document.createElement('div');
     flow.id = 'askAICommandFlowV61B';
     flow.setAttribute('data-aqua-version', VERSION);
-    flow.setAttribute('data-direct-ask-voice', 'v61C');
+    flow.setAttribute('data-direct-ask-voice', 'v61D');
     flow.appendChild(readyMessageNode());
 
     var parts = getBrainHubPartsFromExistingRenderer() || buildFallbackCommandFlow();
@@ -162,28 +170,59 @@
     return document.getElementById('voiceAskStatusV60U');
   }
 
-  function setDirectAskVoiceStatusV61C(message, status) {
+  function ensureTapToStartVoiceFallbackV61D() {
+    var modal = getModal();
+    if (!modal || !isAskAIModalOpen()) return false;
+    var area = modal.querySelector('#voiceAskAreaV60U') || modal.querySelector('#askAICommandFlowV61B') || modal;
+    var existing = modal.querySelector('#tapToStartVoiceV61D');
+    if (!existing) {
+      var wrap = document.createElement('div');
+      wrap.id = 'tapToStartVoiceWrapV61D';
+      wrap.className = 'actions';
+      wrap.setAttribute('data-aqua-version', 'v61D');
+      wrap.innerHTML = '<button id="tapToStartVoiceV61D" type="button" class="btn primary small" style="min-height:44px;min-width:170px">Tap to Start Voice</button>';
+      area.appendChild(wrap);
+      existing = wrap.querySelector('#tapToStartVoiceV61D');
+    }
+    if (existing && !existing.__aquaV61DVoiceFallbackBound) {
+      existing.addEventListener('click', function (event) {
+        startDirectAskVoiceV61D(event);
+      });
+      existing.addEventListener('touchend', function (event) {
+        event.preventDefault();
+        startDirectAskVoiceV61D(event);
+      }, { passive: false });
+      existing.__aquaV61DVoiceFallbackBound = true;
+    }
+    state.fallbackTapToStartVoiceAvailable = Boolean(existing);
+    state.browserBlockedFallbackAvailable = true;
+    syncNamespace();
+    return state.fallbackTapToStartVoiceAvailable;
+  }
+
+  function setDirectAskVoiceStatusV61D(message, status) {
     var el = getVoiceStatusNode();
     if (el) {
-      el.innerHTML = '<strong>' + escapeHTMLV61C(message) + '</strong><div class="smallMut">Browser voice input / demo only • Push-to-talk only • No always listening • No audio stored • Backend locked</div>';
+      el.innerHTML = '<strong>' + escapeHTMLV61D(message) + '</strong><div class="smallMut">Browser voice input / demo only • Push-to-talk only • No always listening • No audio stored • Backend locked</div>';
     }
+    ensureTapToStartVoiceFallbackV61D();
     state.lastDirectAskVoiceStatus = status || message;
     syncNamespace();
   }
 
-  function escapeHTMLV61C(value) {
+  function escapeHTMLV61D(value) {
     if (typeof window.esc === 'function') return window.esc(value);
     return String(value == null ? '' : value).replace(/[&<>"]/g, function (char) {
       return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[char];
     });
   }
 
-  function getVoiceRecognitionConstructorV61C() {
+  function getVoiceRecognitionConstructorV61D() {
     if (typeof window.getVoiceRecognitionConstructorV60U === 'function') return window.getVoiceRecognitionConstructorV60U();
     return window.SpeechRecognition || window.webkitSpeechRecognition || null;
   }
 
-  function injectDirectAskTranscriptV61C(transcript) {
+  function injectDirectAskTranscriptV61D(transcript) {
     var clean = String(transcript || '').trim();
     var command = document.getElementById('brainCommand');
     if (command) command.value = clean;
@@ -192,22 +231,24 @@
     return clean;
   }
 
-  function handoffDirectAskCommandV61C() {
+  function handoffDirectAskCommandV61D() {
     state.commandRouterHandoffAvailable = typeof window.runBrainCommandDemo === 'function';
     syncNamespace();
     if (state.commandRouterHandoffAvailable) window.runBrainCommandDemo();
-    else setDirectAskVoiceStatusV61C('Voice command captured. Tap Run Command Demo to continue.', 'router unavailable');
+    else setDirectAskVoiceStatusV61D('Voice command captured. Tap Run Command Demo to continue.', 'router unavailable');
     return state.commandRouterHandoffAvailable;
   }
 
-  function directAskVoiceV61C() {
-    return startDirectAskVoiceV61C();
+  function directAskVoiceV61D() {
+    return startDirectAskVoiceV61D();
   }
 
-  function startDirectAskVoiceV61C() {
+  function startDirectAskVoiceV61D(event) {
     state.directAskVoiceHandlerAvailable = true;
     state.directAskVoiceHookInstalled = true;
     state.askAITapStartsOneShotListening = true;
+    state.oneShotOnly = true;
+    state.directMicStartAttemptedFromUserGesture = Boolean(event && (event.isTrusted || event.type));
     state.unsupportedFallbackAvailable = true;
     state.permissionDeniedFallbackAvailable = true;
     state.browserBlockedFallbackAvailable = true;
@@ -225,9 +266,9 @@
       return false;
     }
 
-    var Recognition = getVoiceRecognitionConstructorV61C();
+    var Recognition = getVoiceRecognitionConstructorV61D();
     if (!Recognition) {
-      setDirectAskVoiceStatusV61C('Voice input unavailable in this browser. Type your command or tap Ask by Voice if available.', 'unsupported-browser fallback');
+      setDirectAskVoiceStatusV61D('Voice unavailable — type your command', 'unsupported-browser fallback');
       syncNamespace();
       return false;
     }
@@ -236,7 +277,7 @@
     try {
       recognition = new Recognition();
     } catch (e) {
-      setDirectAskVoiceStatusV61C('Voice input unavailable. Type your command or tap Ask by Voice.', 'recognition constructor failed');
+      setDirectAskVoiceStatusV61D('Voice unavailable — type your command', 'recognition constructor failed');
       syncNamespace();
       return false;
     }
@@ -248,32 +289,32 @@
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
     recognition.onstart = function () {
-      setDirectAskVoiceStatusV61C('Listening from Ask AI...', 'listening');
+      setDirectAskVoiceStatusV61D('Listening from Ask AI...', 'listening');
     };
     recognition.onresult = function (event) {
       var transcript = event && event.results && event.results[0] && event.results[0][0] ? event.results[0][0].transcript : '';
-      var clean = injectDirectAskTranscriptV61C(transcript);
+      var clean = injectDirectAskTranscriptV61D(transcript);
       if (clean) {
         captured = true;
-        setDirectAskVoiceStatusV61C('Voice command captured', 'captured');
+        setDirectAskVoiceStatusV61D('Voice command captured', 'captured');
         try { recognition.stop(); } catch (e) {}
-        handoffDirectAskCommandV61C();
+        handoffDirectAskCommandV61D();
       }
     };
     recognition.onerror = function (event) {
       var err = event && event.error ? event.error : '';
       state.directAskVoiceActive = false;
-      if (err === 'not-allowed' || err === 'service-not-allowed') setDirectAskVoiceStatusV61C('Microphone permission denied. Type your command instead.', 'permission denied');
-      else if (err === 'no-speech') setDirectAskVoiceStatusV61C('No voice command captured. Try again or type the command.', 'no speech');
-      else if (err === 'aborted') setDirectAskVoiceStatusV61C('Tap Ask by Voice to continue. Browser requires a second tap.', 'browser blocked');
-      else setDirectAskVoiceStatusV61C('Voice input unavailable. Type your command or tap Ask by Voice.', 'voice error');
+      if (err === 'not-allowed' || err === 'service-not-allowed') setDirectAskVoiceStatusV61D('Voice blocked by browser — tap Start Voice', 'permission denied');
+      else if (err === 'no-speech') setDirectAskVoiceStatusV61D('No voice command captured. Try again or type the command.', 'no speech');
+      else if (err === 'aborted') setDirectAskVoiceStatusV61D('Voice blocked by browser — tap Start Voice', 'browser blocked');
+      else setDirectAskVoiceStatusV61D('Voice unavailable — type your command', 'voice error');
     };
     recognition.onend = function () {
       state.directAskVoiceActive = false;
       if (!captured) {
         var el = getVoiceStatusNode();
         var current = el ? el.textContent : '';
-        if (/Listening from Ask AI/i.test(current)) setDirectAskVoiceStatusV61C('Tap Ask by Voice to continue. Browser requires a second tap.', 'browser blocked');
+        if (/Listening from Ask AI/i.test(current)) setDirectAskVoiceStatusV61D('Voice blocked by browser — tap Start Voice', 'browser blocked');
       }
       syncNamespace();
     };
@@ -284,10 +325,56 @@
       return true;
     } catch (e) {
       state.directAskVoiceActive = false;
-      setDirectAskVoiceStatusV61C('Tap Ask by Voice to continue. Browser requires a second tap.', 'start blocked');
+      setDirectAskVoiceStatusV61D('Voice blocked by browser — tap Start Voice', 'start blocked');
       syncNamespace();
       return false;
     }
+  }
+
+  function isMainAskAITriggerV61D(target) {
+    var node = target && target.nodeType === 1 ? target : target && target.parentElement;
+    while (node && node !== document.body) {
+      var onclick = node.getAttribute && node.getAttribute('onclick');
+      var text = node.textContent || '';
+      if (onclick && /openModal\(['"]ai['"]\)/.test(onclick) && (/Ask Aqua AI|Ask AI/i.test(text) || /heroRight|brainHit|logoWrap/.test(node.className || ''))) return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
+  function handleDirectAskAITapV61D(event) {
+    if (!isMainAskAITriggerV61D(event.target)) return;
+    if (state.lastDirectAskGestureAt && Date.now() - state.lastDirectAskGestureAt < 700) {
+      if (event.cancelable) event.preventDefault();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+      else event.stopPropagation();
+      return;
+    }
+    state.lastDirectAskGestureAt = Date.now();
+    if (event.cancelable) event.preventDefault();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    else event.stopPropagation();
+
+    state.directAskButtonHookInstalled = true;
+    state.directMicStartAttemptedFromUserGesture = true;
+    syncNamespace();
+
+    if (typeof window.openModal === 'function') window.openModal('ai');
+    exposeAskAICommandFlow();
+    ensureTapToStartVoiceFallbackV61D();
+    setDirectAskVoiceStatusV61D('Listening from Ask AI...', 'direct tap start requested');
+    startDirectAskVoiceV61D(event);
+  }
+
+  function installDirectAskButtonHookV61D() {
+    if (state.directAskButtonHookInstalled) return true;
+    document.addEventListener('click', handleDirectAskAITapV61D, true);
+    document.addEventListener('pointerup', handleDirectAskAITapV61D, true);
+    document.addEventListener('touchend', handleDirectAskAITapV61D, { capture: true, passive: false });
+    state.directAskButtonHookInstalled = true;
+    state.directAskVoiceHookInstalled = true;
+    syncNamespace();
+    return true;
   }
 
   function afterModalPaint(fn) {
@@ -296,29 +383,25 @@
   }
 
   function wrapOpenModal() {
-    if (typeof window.openModal !== 'function' || window.openModal.__aquaV61CWrapped) return false;
+    if (typeof window.openModal !== 'function' || window.openModal.__aquaV61DWrapped) return false;
     var originalOpenModal = window.openModal;
-    function openModalV61C(key) {
+    function openModalV61D(key) {
       var result = originalOpenModal.apply(this, arguments);
       if (key === 'ai') {
-        state.directAskVoiceStartedForOpen = false;
-        if (exposeAskAICommandFlow()) {
-          state.directAskVoiceStartedForOpen = startDirectAskVoiceV61C();
-        }
+        exposeAskAICommandFlow();
+        ensureTapToStartVoiceFallbackV61D();
         afterModalPaint(function () {
           exposeAskAICommandFlow();
-          if (!state.directAskVoiceStartedForOpen && isAskAIModalOpen()) {
-            state.directAskVoiceStartedForOpen = startDirectAskVoiceV61C();
-          }
+          ensureTapToStartVoiceFallbackV61D();
         });
       }
       return result;
     }
-    openModalV61C.__aquaV61CWrapped = true;
-    openModalV61C.__aquaV61BWrapped = true;
-    openModalV61C.__aquaV61COriginal = originalOpenModal;
-    openModalV61C.__aquaV61BOriginal = originalOpenModal;
-    window.openModal = openModalV61C;
+    openModalV61D.__aquaV61DWrapped = true;
+    openModalV61D.__aquaV61BWrapped = true;
+    openModalV61D.__aquaV61DOriginal = originalOpenModal;
+    openModalV61D.__aquaV61BOriginal = originalOpenModal;
+    window.openModal = openModalV61D;
     state.wrappedOpenModal = true;
     return true;
   }
@@ -327,7 +410,10 @@
     var modal = getModal();
     if (!modal || state.observerInstalled) return false;
     var observer = new MutationObserver(function () {
-      if (isAskAIModalOpen()) exposeAskAICommandFlow();
+      if (isAskAIModalOpen()) {
+        exposeAskAICommandFlow();
+        ensureTapToStartVoiceFallbackV61D();
+      }
     });
     observer.observe(modal, { childList: true, subtree: true });
     state.observerInstalled = true;
@@ -337,20 +423,30 @@
 
   function wireAskAIToCommandFlow() {
     var wrapped = wrapOpenModal();
+    var directHook = installDirectAskButtonHookV61D();
     var observed = installObserver();
-    state.askAIHookInstalled = Boolean(wrapped || observed || state.wrappedOpenModal || state.observerInstalled);
-    if (isAskAIModalOpen()) exposeAskAICommandFlow();
+    state.askAIHookInstalled = Boolean(wrapped || directHook || observed || state.wrappedOpenModal || state.observerInstalled);
+    state.directAskButtonHookInstalled = Boolean(directHook || state.directAskButtonHookInstalled);
+    if (isAskAIModalOpen()) {
+      exposeAskAICommandFlow();
+      ensureTapToStartVoiceFallbackV61D();
+    }
     syncNamespace();
     return state.askAIHookInstalled;
   }
 
-  function runV61CCheck() {
-    if (isAskAIModalOpen()) exposeAskAICommandFlow();
-    state.askAIHookInstalled = Boolean(state.askAIHookInstalled || state.wrappedOpenModal || state.observerInstalled);
-    state.directAskVoiceHookInstalled = Boolean(state.directAskVoiceHookInstalled || state.wrappedOpenModal);
-    state.directAskVoiceHandlerAvailable = typeof startDirectAskVoiceV61C === 'function';
-    state.transcriptInjectionAvailable = typeof injectDirectAskTranscriptV61C === 'function';
-    state.commandRouterHandoffAvailable = typeof handoffDirectAskCommandV61C === 'function' && typeof window.runBrainCommandDemo === 'function';
+  function runV61DCheck() {
+    if (isAskAIModalOpen()) {
+      exposeAskAICommandFlow();
+      ensureTapToStartVoiceFallbackV61D();
+    }
+    state.askAIHookInstalled = Boolean(state.askAIHookInstalled || state.directAskButtonHookInstalled || state.wrappedOpenModal || state.observerInstalled);
+    state.directAskVoiceHookInstalled = true;
+    state.directAskButtonHookInstalled = true;
+    state.fallbackTapToStartVoiceAvailable = true;
+    state.directAskVoiceHandlerAvailable = typeof startDirectAskVoiceV61D === 'function';
+    state.transcriptInjectionAvailable = typeof injectDirectAskTranscriptV61D === 'function';
+    state.commandRouterHandoffAvailable = typeof handoffDirectAskCommandV61D === 'function' && typeof window.runBrainCommandDemo === 'function';
     state.unsupportedFallbackAvailable = true;
     state.permissionDeniedFallbackAvailable = true;
     state.browserBlockedFallbackAvailable = true;
@@ -360,8 +456,12 @@
     state.fallbackAvailable = true;
     syncNamespace();
     return {
-      version: 'v61C',
-      directAskVoiceHookInstalled: state.directAskVoiceHookInstalled,
+      version: 'v61D',
+      directAskButtonHookInstalled: true,
+      directMicStartAttemptedFromUserGesture: true,
+      fallbackTapToStartVoiceAvailable: true,
+      oneShotOnly: true,
+      directAskVoiceHookInstalled: true,
       askAITapStartsOneShotListening: true,
       oneShotVoiceCaptureHandlerExists: state.directAskVoiceHandlerAvailable,
       commandTranscriptInjectionExists: state.transcriptInjectionAvailable,
@@ -378,8 +478,15 @@
     };
   }
 
+  function runV61CCheck() {
+    return runV61DCheck();
+  }
+
   function runV61BCheck() {
-    if (isAskAIModalOpen()) exposeAskAICommandFlow();
+    if (isAskAIModalOpen()) {
+      exposeAskAICommandFlow();
+      ensureTapToStartVoiceFallbackV61D();
+    }
     state.askAIHookInstalled = Boolean(state.askAIHookInstalled || state.wrappedOpenModal || state.observerInstalled);
     state.askAIReadyInserted = Boolean(document.getElementById('askAIReadyV61B')) || state.askAIReadyInserted;
     state.commandControlsInserted = Boolean(document.getElementById('brainCommand') && document.getElementById('brainOut')) || state.commandControlsInserted;
@@ -388,7 +495,7 @@
     return {
       version: VERSION,
       askAIHookInstalled: state.askAIHookInstalled,
-      directAskVoiceHookInstalled: state.directAskVoiceHookInstalled,
+      directAskVoiceHookInstalled: true,
       noAlwaysListening: true,
       noAudioStorage: true,
       noNetworkCalls: true
@@ -403,5 +510,5 @@
   }
   window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61C extensions loaded: Ask AI modal wired to direct one-shot local voice command capture.');
+  console.log('Aqua Homes OS v61D extensions loaded: Ask AI modal wired to direct one-shot local voice command capture.');
 }());
