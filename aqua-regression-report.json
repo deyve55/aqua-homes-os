@@ -1,0 +1,921 @@
+{
+  "version": "v61N",
+  "timestamp": "2026-06-05T13:13:43.800Z",
+  "branch": "work",
+  "commit": "a955cb80061cb0d082c993979e2d7f6ba2885ede",
+  "filesChanged": [
+    "aqua-v61-extensions.js",
+    ".github/workflows/aqua-regression.yml",
+    "aqua-regression-report.json",
+    "aqua-regression-report.md",
+    "aqua-v61-regression-test.js"
+  ],
+  "total": 42,
+  "passed": 42,
+  "failed": 0,
+  "failedCommands": [],
+  "checks": [
+    {
+      "name": "AH_v54I-3.html exists",
+      "passed": true,
+      "layer": "static-file-safety",
+      "fileToFix": "AH_v54I-3.html"
+    },
+    {
+      "name": "aqua-v61-extensions.js exists",
+      "passed": true,
+      "layer": "static-file-safety",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "AH_v54I-3.html references aqua-v61-extensions.js",
+      "passed": true,
+      "layer": "static-file-safety",
+      "fileToFix": "AH_v54I-3.html"
+    },
+    {
+      "name": "index.html routes to AH_v54I-3.html",
+      "passed": true,
+      "layer": "static-file-safety",
+      "fileToFix": "index.html"
+    },
+    {
+      "name": "docs/index.html routes to AH_v54I-3.html",
+      "passed": true,
+      "layer": "static-file-safety",
+      "fileToFix": "docs/index.html"
+    },
+    {
+      "name": "AH_v54I-3.html was not rewritten in working tree",
+      "passed": true,
+      "layer": "static-file-safety",
+      "actual": "unchanged",
+      "fileToFix": "AH_v54I-3.html"
+    },
+    {
+      "name": "no conflict markers exist",
+      "passed": true,
+      "layer": "static-file-safety",
+      "fileToFix": "repository files"
+    },
+    {
+      "name": "no syntax errors in aqua-v61-extensions.js",
+      "passed": true,
+      "layer": "static-file-safety",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "AquaV61Extensions exists",
+      "passed": true,
+      "layer": "extension-regression",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "runAquaCommandRegressionV61L exists",
+      "passed": true,
+      "layer": "extension-regression",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression produced total tests",
+      "passed": true,
+      "layer": "extension-regression",
+      "actual": 27,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression passed count present",
+      "passed": true,
+      "layer": "extension-regression",
+      "actual": 27,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression failed count present",
+      "passed": true,
+      "layer": "extension-regression",
+      "actual": 0,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression has failed command names",
+      "passed": true,
+      "layer": "extension-regression",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression has repairPrompt",
+      "passed": true,
+      "layer": "extension-regression",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression safety flags pass",
+      "passed": true,
+      "layer": "extension-regression",
+      "actual": {
+        "noLiveRecordChanges": true,
+        "noBackendCalls": true,
+        "noNetworkCalls": true,
+        "noLiveAI": true,
+        "noPaymentPayrollBankExport": true,
+        "noAudioStored": true,
+        "noAlwaysListening": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression has zero failures",
+      "passed": true,
+      "layer": "extension-regression",
+      "actual": 0,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "voice transcript simulation routes: cold this receipt to framing",
+      "passed": true,
+      "layer": "voice-transcript-simulation",
+      "expected": "recognized local/demo route",
+      "actual": {
+        "command": "cold this receipt to framing",
+        "canonicalIntent": "action_intent_demo",
+        "module": "Receipts / Receipt Tracker",
+        "normalizedText": "code this receipt to framing",
+        "requestedValue": "framing",
+        "renderedFallback": false,
+        "renderedPermissionGate": true,
+        "renderedDraftQueue": true,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "voice transcript simulation routes: call this receipt to framing",
+      "passed": true,
+      "layer": "voice-transcript-simulation",
+      "expected": "recognized local/demo route",
+      "actual": {
+        "command": "call this receipt to framing",
+        "canonicalIntent": "action_intent_demo",
+        "module": "Receipts / Receipt Tracker",
+        "normalizedText": "code this receipt to framing",
+        "requestedValue": "framing",
+        "renderedFallback": false,
+        "renderedPermissionGate": true,
+        "renderedDraftQueue": true,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "voice transcript simulation routes: code just received to framing",
+      "passed": true,
+      "layer": "voice-transcript-simulation",
+      "expected": "recognized local/demo route",
+      "actual": {
+        "command": "code just received to framing",
+        "canonicalIntent": "action_intent_demo",
+        "module": "Receipts / Receipt Tracker",
+        "normalizedText": "code this receipt to framing",
+        "requestedValue": "framing",
+        "renderedFallback": false,
+        "renderedPermissionGate": true,
+        "renderedDraftQueue": true,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "voice transcript simulation routes: clear draft Q demo",
+      "passed": true,
+      "layer": "voice-transcript-simulation",
+      "expected": "recognized local/demo route",
+      "actual": {
+        "command": "clear draft Q demo",
+        "canonicalIntent": "clear_draft_queue_demo",
+        "module": "Draft Change Queue",
+        "normalizedText": "clear draft q demo",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "voice transcript simulation routes: clear draft cute demo",
+      "passed": true,
+      "layer": "voice-transcript-simulation",
+      "expected": "recognized local/demo route",
+      "actual": {
+        "command": "clear draft cute demo",
+        "canonicalIntent": "clear_draft_queue_demo",
+        "module": "Draft Change Queue",
+        "normalizedText": "clear draft cute demo",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "voice transcript simulation routes: Claire draft queue demo",
+      "passed": true,
+      "layer": "voice-transcript-simulation",
+      "expected": "recognized local/demo route",
+      "actual": {
+        "command": "Claire draft queue demo",
+        "canonicalIntent": "clear_draft_queue_demo",
+        "module": "Draft Change Queue",
+        "normalizedText": "claire draft queue demo",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "voice transcript simulation routes: pull up accountant",
+      "passed": true,
+      "layer": "voice-transcript-simulation",
+      "expected": "recognized local/demo route",
+      "actual": {
+        "command": "pull up accountant",
+        "canonicalIntent": "show_accounting",
+        "module": "Accounting Command / Daily P&L",
+        "normalizedText": "pull up accountant",
+        "renderedFallback": true,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "voice transcript simulation routes: what’s going on today",
+      "passed": true,
+      "layer": "voice-transcript-simulation",
+      "expected": "recognized local/demo route",
+      "actual": {
+        "command": "what’s going on today",
+        "canonicalIntent": "owner_briefing",
+        "module": "Owner Daily Briefing",
+        "normalizedText": "whats going on today",
+        "renderedFallback": true,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "receipt coding routes to Permission Granter",
+      "passed": true,
+      "layer": "permission-draft-safety",
+      "expected": "Permission Granter demo gate",
+      "actual": {
+        "command": "code this receipt to materials",
+        "canonicalIntent": "action_intent_demo",
+        "module": "Receipts / Receipt Tracker",
+        "normalizedText": "code this receipt to materials",
+        "requestedValue": "materials",
+        "renderedFallback": false,
+        "renderedPermissionGate": true,
+        "renderedDraftQueue": true,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "no live record change occurs",
+      "passed": true,
+      "layer": "permission-draft-safety",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "Prepare/Approve/Cancel/Audit remain demo-only",
+      "passed": true,
+      "layer": "permission-draft-safety",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "draft queue is history only",
+      "passed": true,
+      "layer": "permission-draft-safety",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "active command is current command only",
+      "passed": true,
+      "layer": "permission-draft-safety",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "stale localStorage does not override active command",
+      "passed": true,
+      "layer": "permission-draft-safety",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noBackendCalls",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noNetworkCalls",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noLiveAIApiCalls",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noPayment",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noPayroll",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noBankSync",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noAccountingExport",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noCustomerSharingExport",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noAudioStorage",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "safety gate: noAlwaysListening",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "GitHub Action exists",
+      "passed": true,
+      "layer": "github-action",
+      "fileToFix": ".github/workflows/aqua-regression.yml"
+    }
+  ],
+  "skippedTests": [
+    {
+      "name": "browserVisualTest",
+      "reason": "Playwright/browser not available"
+    }
+  ],
+  "safetyStatus": {
+    "noBackendCalls": true,
+    "noNetworkCalls": true,
+    "noLiveAIApiCalls": true,
+    "noPayment": true,
+    "noPayroll": true,
+    "noBankSync": true,
+    "noAccountingExport": true,
+    "noCustomerSharingExport": true,
+    "noAudioStorage": true,
+    "noAlwaysListening": true
+  },
+  "browserVisualTest": {
+    "status": "skipped",
+    "reason": "Playwright/browser not available"
+  },
+  "extensionRegression": {
+    "version": "v61N",
+    "harnessVersion": "v61L-compatible/v61N",
+    "timestamp": "2026-06-05T13:13:43.722Z",
+    "total": 27,
+    "passed": 27,
+    "failed": 0,
+    "failedCommands": [],
+    "failures": [],
+    "results": [
+      {
+        "command": "pull up receipts",
+        "expected": "Receipts / Receipt Tracker",
+        "actual": {
+          "command": "pull up receipts",
+          "canonicalIntent": "show_receipts",
+          "module": "Receipts / Receipt Tracker",
+          "normalizedText": "pull up receipts",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "pull up accountant",
+        "expected": "Accounting / Daily P&L",
+        "actual": {
+          "command": "pull up accountant",
+          "canonicalIntent": "show_accounting",
+          "module": "Accounting Command / Daily P&L",
+          "normalizedText": "pull up accountant",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "how are my numbers",
+        "expected": "Accounting / Daily P&L",
+        "actual": {
+          "command": "how are my numbers",
+          "canonicalIntent": "show_accounting",
+          "module": "Accounting Command / Daily P&L",
+          "normalizedText": "how are my numbers",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "what’s going on today",
+        "expected": "Owner Daily Briefing",
+        "actual": {
+          "command": "what’s going on today",
+          "canonicalIntent": "owner_briefing",
+          "module": "Owner Daily Briefing",
+          "normalizedText": "whats going on today",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "what needs approval",
+        "expected": "Owner Action Queue",
+        "actual": {
+          "command": "what needs approval",
+          "canonicalIntent": "approval_queue",
+          "module": "Owner Action Queue / Approval Center",
+          "normalizedText": "what needs approval",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show SOW",
+        "expected": "SOW Builder",
+        "actual": {
+          "command": "show SOW",
+          "canonicalIntent": "show_sow",
+          "module": "SOW Builder / Scope of Work",
+          "normalizedText": "show sow",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show insurer",
+        "expected": "Insurance / Bank Reconciliation",
+        "actual": {
+          "command": "show insurer",
+          "canonicalIntent": "show_insurance_bank",
+          "module": "Insurance Dashboard / Bank Reconciliation",
+          "normalizedText": "show insurer",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show insurance",
+        "expected": "Insurance / Bank Reconciliation",
+        "actual": {
+          "command": "show insurance",
+          "canonicalIntent": "show_insurance_bank",
+          "module": "Insurance Dashboard / Bank Reconciliation",
+          "normalizedText": "show insurance",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "code this receipt to materials",
+        "expected": "Permission Required / Action Intent Demo",
+        "actual": {
+          "command": "code this receipt to materials",
+          "canonicalIntent": "action_intent_demo",
+          "module": "Receipts / Receipt Tracker",
+          "normalizedText": "code this receipt to materials",
+          "requestedValue": "materials",
+          "renderedFallback": false,
+          "renderedPermissionGate": true,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "code this receipt to coldest",
+        "expected": "Permission Required / Action Intent Demo",
+        "actual": {
+          "command": "code this receipt to coldest",
+          "canonicalIntent": "action_intent_demo",
+          "module": "Receipts / Receipt Tracker",
+          "normalizedText": "code this receipt to coldest",
+          "requestedValue": "unclear — owner must confirm",
+          "renderedFallback": false,
+          "renderedPermissionGate": true,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "cold this receipt to framing",
+        "expected": "Permission Required / Action Intent Demo; cold normalized to code",
+        "actual": {
+          "command": "cold this receipt to framing",
+          "canonicalIntent": "action_intent_demo",
+          "module": "Receipts / Receipt Tracker",
+          "normalizedText": "code this receipt to framing",
+          "requestedValue": "framing",
+          "renderedFallback": false,
+          "renderedPermissionGate": true,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "call this receipt to framing",
+        "expected": "Permission Required / Action Intent Demo; call normalized to code",
+        "actual": {
+          "command": "call this receipt to framing",
+          "canonicalIntent": "action_intent_demo",
+          "module": "Receipts / Receipt Tracker",
+          "normalizedText": "code this receipt to framing",
+          "requestedValue": "framing",
+          "renderedFallback": false,
+          "renderedPermissionGate": true,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "code just received to framing",
+        "expected": "Permission Required / Action Intent Demo; received normalized to receipt",
+        "actual": {
+          "command": "code just received to framing",
+          "canonicalIntent": "action_intent_demo",
+          "module": "Receipts / Receipt Tracker",
+          "normalizedText": "code this receipt to framing",
+          "requestedValue": "framing",
+          "renderedFallback": false,
+          "renderedPermissionGate": true,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "code this received to framing",
+        "expected": "Permission Required / Action Intent Demo; received normalized to receipt",
+        "actual": {
+          "command": "code this received to framing",
+          "canonicalIntent": "action_intent_demo",
+          "module": "Receipts / Receipt Tracker",
+          "normalizedText": "code this receipt to framing",
+          "requestedValue": "framing",
+          "renderedFallback": false,
+          "renderedPermissionGate": true,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "clear current demo action",
+        "expected": "Clear current demo action without fallback",
+        "actual": {
+          "command": "clear current demo action",
+          "canonicalIntent": "clear_current_demo_action",
+          "module": "Permission Granter",
+          "normalizedText": "clear current demo action",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "clear draft queue demo",
+        "expected": "Clear draft queue without fallback",
+        "actual": {
+          "command": "clear draft queue demo",
+          "canonicalIntent": "clear_draft_queue_demo",
+          "module": "Draft Change Queue",
+          "normalizedText": "clear draft queue demo",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "clear draft queued demo",
+        "expected": "Clear draft queue voice variant without fallback",
+        "actual": {
+          "command": "clear draft queued demo",
+          "canonicalIntent": "clear_draft_queue_demo",
+          "module": "Draft Change Queue",
+          "normalizedText": "clear draft queued demo",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "clear draft Q demo",
+        "expected": "Clear draft queue voice variant without fallback",
+        "actual": {
+          "command": "clear draft Q demo",
+          "canonicalIntent": "clear_draft_queue_demo",
+          "module": "Draft Change Queue",
+          "normalizedText": "clear draft q demo",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "clear draft cute demo",
+        "expected": "Clear draft queue voice variant without fallback",
+        "actual": {
+          "command": "clear draft cute demo",
+          "canonicalIntent": "clear_draft_queue_demo",
+          "module": "Draft Change Queue",
+          "normalizedText": "clear draft cute demo",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "Claire draft queue demo",
+        "expected": "Clear draft queue voice variant without fallback",
+        "actual": {
+          "command": "Claire draft queue demo",
+          "canonicalIntent": "clear_draft_queue_demo",
+          "module": "Draft Change Queue",
+          "normalizedText": "claire draft queue demo",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "start new demo change",
+        "expected": "Start new demo change without fallback",
+        "actual": {
+          "command": "start new demo change",
+          "canonicalIntent": "start_new_demo_change",
+          "module": "Permission Granter",
+          "normalizedText": "start new demo change",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show draft changes",
+        "expected": "Draft Change Queue",
+        "actual": {
+          "command": "show draft changes",
+          "canonicalIntent": "show_draft_change_queue",
+          "module": "Draft Change Queue",
+          "normalizedText": "show draft changes",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show prepared changes",
+        "expected": "Draft Change Queue prepared filter",
+        "actual": {
+          "command": "show prepared changes",
+          "canonicalIntent": "show_draft_change_queue",
+          "module": "Draft Change Queue",
+          "normalizedText": "show prepared changes",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show pending edits",
+        "expected": "Draft Change Queue",
+        "actual": {
+          "command": "show pending edits",
+          "canonicalIntent": "show_draft_change_queue",
+          "module": "Draft Change Queue",
+          "normalizedText": "show pending edits",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show change queue",
+        "expected": "Draft Change Queue",
+        "actual": {
+          "command": "show change queue",
+          "canonicalIntent": "show_draft_change_queue",
+          "module": "Draft Change Queue",
+          "normalizedText": "show change queue",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show approved demo changes",
+        "expected": "Draft Change Queue approved demo filter",
+        "actual": {
+          "command": "show approved demo changes",
+          "canonicalIntent": "show_draft_change_queue",
+          "module": "Draft Change Queue",
+          "normalizedText": "show approved demo changes",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": true,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "banana test",
+        "expected": "Guided fallback",
+        "actual": {
+          "command": "banana test",
+          "canonicalIntent": "unknown",
+          "module": "Guided fallback",
+          "normalizedText": "banana test",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      }
+    ],
+    "safety": {
+      "noLiveRecordChanges": true,
+      "noBackendCalls": true,
+      "noNetworkCalls": true,
+      "noLiveAI": true,
+      "noPaymentPayrollBankExport": true,
+      "noAudioStored": true,
+      "noAlwaysListening": true
+    },
+    "permissionDraftSafety": {
+      "noLiveRecordChangeOccurs": true,
+      "permissionButtonsDemoOnly": true,
+      "prepareApproveCancelAuditDemoOnly": true,
+      "draftQueueHistoryOnly": true,
+      "activeCommandIsCurrentCommandOnly": true,
+      "staleLocalStorageDoesNotOverrideActiveCommand": true,
+      "currentCommandOnlyNotDraftHistory": true,
+      "noBackendNetworkLiveAI": true
+    },
+    "repairPrompt": "No repair needed.",
+    "safeToMerge": true,
+    "noLiveRecordChanges": true,
+    "noBackendNetworkLiveAICalls": true
+  },
+  "generatedReports": [
+    "aqua-regression-report.json",
+    "aqua-regression-report.md"
+  ],
+  "safeToMerge": true,
+  "repairPrompt": "No repair needed."
+}
