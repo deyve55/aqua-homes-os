@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62G';
+const VERSION = 'v62H';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -286,6 +286,9 @@ function checkStaticFiles() {
   addCheck('v62F workflow report flags exist', /receiptExportWorkflowWorks/.test(extension) && /uploadWorkflowStaysLocked/.test(extension) && /ownerReviewDemoWorks/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
   addCheck('v62G workflow memory architecture exists', /AquaWorkflowMemoryV62G/.test(extension) && /function\s+continueAquaWorkflowV62G/.test(extension) && /Aqua Brain Workflow Continuation — v62G/.test(extension) && /aquaActiveWorkflowV62G/.test(extension), { layer: 'workflow-memory-v62g', fileToFix: EXTENSION });
   addCheck('v62G workflow memory report flags exist', /workflowMemoryExists/.test(extension) && /followUpContinuationWorks/.test(extension) && /spendPivotUsesActiveProject/.test(extension), { layer: 'workflow-memory-v62g', fileToFix: EXTENSION });
+  addCheck('v62H voice interaction controller exists', /AquaVoiceInteractionV62H/.test(extension) && /function\s+handleAquaVoiceCommandV62H/.test(extension) && /aquaVoiceInteractionV62H/.test(extension), { layer: 'voice-interaction-v62h', fileToFix: EXTENSION });
+  addCheck('v62H voice control panel strings exist', /Aqua Brain Voice Control — v62H/.test(extension) && /Current state/.test(extension) && /Manual fallback reason/.test(extension), { layer: 'voice-interaction-v62h', fileToFix: EXTENSION });
+  addCheck('v62H voice interaction report flags exist', /voiceInteractionControllerExists/.test(extension) && /voiceStatePanelWorks/.test(extension) && /continueUsesWorkflowMemory/.test(extension), { layer: 'voice-interaction-v62h', fileToFix: EXTENSION });
   addCheck('v61V local Jobsite Calculator parser exists', /function\s+parseLocalJobsiteCalculatorV61V/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V Concrete Sonotube calculator copy exists', /Jobsite Calculator — Concrete Sonotube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V sauna tube normalization support exists', /sauna tube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
@@ -330,7 +333,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62G', extensionReport.version === 'v62G', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62H', extensionReport.version === 'v62H', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
     addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
@@ -493,6 +496,14 @@ function runExtensionRegression() {
 
     ['workflowPlannerExists','receiptExportWorkflowWorks','reportReviewWorkflowWorks','missingDocumentsWorkflowWorks','spendBudgetWorkflowWorks','uploadWorkflowStaysLocked','cameraWorkflowWorks','dailyAttentionWorkflowWorks','saveWorkflowPlanWorks','showLastWorkflowPlanWorks','copyWorkflowPlanWorks','clearWorkflowPlanWorks','ownerReviewDemoWorks','workflowMemoryExists','activeWorkflowSaved','followUpContinuationWorks','exportPacketFollowUpWorks','approvalFollowUpWorks','ownerReviewDemoFollowUpWorks','readbackFollowUpWorks','spendPivotUsesActiveProject','clearActiveWorkflowWorks','noContextFollowUpHandled'].forEach((flag) => {
       addCheck(`v62F ${flag} is true`, extensionReport[flag] === true, { layer: 'workflow-planner-v62f', actual: extensionReport[flag], fileToFix: EXTENSION });
+    });
+
+    ['voiceInteractionControllerExists','voiceStatePanelWorks','voiceOnOffWorks','repeatLastResponseWorks','stopSpeakingWorks','manualFallbackWorks','continueUsesWorkflowMemory','permissionQuestionVoiceStateWorks'].forEach((flag) => {
+      addCheck(`v62H ${flag} is true`, extensionReport[flag] === true, { layer: 'voice-interaction-v62h', actual: extensionReport[flag], fileToFix: EXTENSION });
+    });
+    ['voice on','voice off','repeat last response','stop speaking','continue','cancel / clear context','manual controls','read it back after active workflow','what needs approval after active workflow','look up all receipts for Henderson from Home Depot and prepare them for accountant export','show automation report','banana test'].forEach((command) => {
+      const row = (extensionReport.results || []).find((result) => result.command === command);
+      addCheck(`v62H voice command/state test: ${command}`, Boolean(row && row.passed), { layer: 'voice-interaction-v62h', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     const concreteDefaultRow = byCommand.get('how many bags of concrete for an 8 inch sonotube 4 feet deep');
@@ -785,6 +796,22 @@ function markdown(report) {
     `- spendPivotUsesActiveProject: ${report.spendPivotUsesActiveProject === true}\n` +
     `- clearActiveWorkflowWorks: ${report.clearActiveWorkflowWorks === true}\n` +
     `- noContextFollowUpHandled: ${report.noContextFollowUpHandled === true}\n` +
+    `- voiceInteractionControllerExists: ${report.voiceInteractionControllerExists === true}
+` +
+    `- voiceStatePanelWorks: ${report.voiceStatePanelWorks === true}
+` +
+    `- voiceOnOffWorks: ${report.voiceOnOffWorks === true}
+` +
+    `- repeatLastResponseWorks: ${report.repeatLastResponseWorks === true}
+` +
+    `- stopSpeakingWorks: ${report.stopSpeakingWorks === true}
+` +
+    `- manualFallbackWorks: ${report.manualFallbackWorks === true}
+` +
+    `- continueUsesWorkflowMemory: ${report.continueUsesWorkflowMemory === true}
+` +
+    `- permissionQuestionVoiceStateWorks: ${report.permissionQuestionVoiceStateWorks === true}
+` +
     `- aquaBrainCommandCenterWorks: ${report.aquaBrainCommandCenterWorks === true}\n` +
     `- voiceBrainPlanViewerWorks: ${report.voiceBrainPlanViewerWorks === true}\n` +
     `- saveVoiceBrainPlanWorks: ${report.saveVoiceBrainPlanWorks === true}\n` +
@@ -952,6 +979,14 @@ async function main() {
     spendPivotUsesActiveProject: extensionReport ? extensionReport.spendPivotUsesActiveProject === true : false,
     clearActiveWorkflowWorks: extensionReport ? extensionReport.clearActiveWorkflowWorks === true : false,
     noContextFollowUpHandled: extensionReport ? extensionReport.noContextFollowUpHandled === true : false,
+    voiceInteractionControllerExists: extensionReport ? extensionReport.voiceInteractionControllerExists === true : false,
+    voiceStatePanelWorks: extensionReport ? extensionReport.voiceStatePanelWorks === true : false,
+    voiceOnOffWorks: extensionReport ? extensionReport.voiceOnOffWorks === true : false,
+    repeatLastResponseWorks: extensionReport ? extensionReport.repeatLastResponseWorks === true : false,
+    stopSpeakingWorks: extensionReport ? extensionReport.stopSpeakingWorks === true : false,
+    manualFallbackWorks: extensionReport ? extensionReport.manualFallbackWorks === true : false,
+    continueUsesWorkflowMemory: extensionReport ? extensionReport.continueUsesWorkflowMemory === true : false,
+    permissionQuestionVoiceStateWorks: extensionReport ? extensionReport.permissionQuestionVoiceStateWorks === true : false,
     aquaBrainCommandCenterWorks: extensionReport ? extensionReport.aquaBrainCommandCenterWorks === true : false,
     voiceBrainPlanViewerWorks: extensionReport ? extensionReport.voiceBrainPlanViewerWorks === true : false,
     saveVoiceBrainPlanWorks: extensionReport ? extensionReport.saveVoiceBrainPlanWorks === true : false,

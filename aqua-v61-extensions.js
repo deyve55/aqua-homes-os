@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62G Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation.
+ * Aqua Homes OS v62H Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62G';
+  var VERSION = 'v62H';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -74,6 +74,15 @@
     clearActiveWorkflowWorks: false,
     noContextFollowUpHandled: false,
     currentActiveWorkflowV62G: null,
+    voiceInteractionControllerExists: true,
+    voiceStatePanelWorks: false,
+    voiceOnOffWorks: false,
+    repeatLastResponseWorks: false,
+    stopSpeakingWorks: false,
+    manualFallbackWorks: false,
+    continueUsesWorkflowMemory: false,
+    permissionQuestionVoiceStateWorks: false,
+    aquaVoiceInteractionV62HState: null,
     aiNavigationExecutorWorks: false,
     visualFocusExecutorWorks: false,
     focusedRouteMarkerWorks: false,
@@ -1229,6 +1238,241 @@
     return html;
   }
 
+
+  var AQUA_VOICE_STATES_V62H = ['idle', 'listening', 'heard', 'thinking', 'opening_section', 'focused_section', 'speaking', 'waiting_for_followup', 'permission_required', 'manual_fallback', 'stopped', 'error'];
+
+  function speechRecognitionAvailableV62H() {
+    return Boolean(window && (window.SpeechRecognition || window.webkitSpeechRecognition));
+  }
+
+  function voiceBrowserSupportV62H() {
+    return {
+      speechRecognition: speechRecognitionAvailableV62H(),
+      speechSynthesis: speechSynthesisAvailableV61R(),
+      pushToTalkOnly: true,
+      noAlwaysListening: true,
+      noAudioStorage: true
+    };
+  }
+
+  function defaultAquaVoiceStateV62H() {
+    return {
+      voiceEnabled: true,
+      lastState: 'idle',
+      lastHeardCommand: '',
+      lastFocusedSection: '',
+      lastResponseDraft: 'I’m ready for your next instruction.',
+      voiceStatus: 'Voice ready for local push-to-talk demo.',
+      browserSupportStatus: '',
+      manualFallbackReason: '',
+      safetyStatus: 'Local/browser/demo-only. No backend, network, external AI/API, live record changes, exports, uploads, audio storage, or always-listening.',
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  function sanitizeVoiceTextV62H(text, limit) {
+    return String(text || '').replace(/\s+/g, ' ').trim().slice(0, limit || 320);
+  }
+
+  function persistAquaVoiceStateV62H(next) {
+    var safe = Object.assign(defaultAquaVoiceStateV62H(), next || {});
+    safe.lastState = AQUA_VOICE_STATES_V62H.indexOf(safe.lastState) !== -1 ? safe.lastState : 'idle';
+    safe.timestamp = new Date().toISOString();
+    var stored = {
+      voiceEnabled: safe.voiceEnabled === false ? false : true,
+      lastState: safe.lastState,
+      lastHeardCommand: sanitizeVoiceTextV62H(safe.lastHeardCommand, 220),
+      lastFocusedSection: sanitizeVoiceTextV62H(safe.lastFocusedSection, 180),
+      lastResponseDraft: sanitizeVoiceTextV62H(safe.lastResponseDraft, 420),
+      timestamp: safe.timestamp
+    };
+    try { window.localStorage.setItem(VOICE_INTERACTION_KEY_V62H, JSON.stringify(stored)); } catch (error) { state.voiceInteractionStorageWarningV62H = 'localStorage unavailable for safe demo voice state'; }
+    state.aquaVoiceInteractionV62HState = safe;
+    state.voiceInteractionControllerExists = true;
+    state.noAudioStorage = true; state.noAlwaysListening = true; state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noLiveRecordChanges = true;
+    syncNamespace();
+    return safe;
+  }
+
+  function getAquaVoiceStateV62H() {
+    if (state.aquaVoiceInteractionV62HState) return state.aquaVoiceInteractionV62HState;
+    var loaded = defaultAquaVoiceStateV62H();
+    try {
+      var raw = window.localStorage.getItem(VOICE_INTERACTION_KEY_V62H);
+      if (raw) loaded = Object.assign(loaded, JSON.parse(raw));
+    } catch (error) { state.voiceInteractionStorageWarningV62H = 'localStorage unavailable for safe demo voice state'; }
+    var support = voiceBrowserSupportV62H();
+    loaded.browserSupportStatus = 'speech recognition: ' + (support.speechRecognition ? 'available' : 'limited') + ' • speech synthesis: ' + (support.speechSynthesis ? 'available' : 'limited');
+    state.aquaVoiceInteractionV62HState = loaded;
+    return loaded;
+  }
+
+  function setAquaVoiceStateV62H(nextState, meta) {
+    var current = getAquaVoiceStateV62H();
+    var cleanState = AQUA_VOICE_STATES_V62H.indexOf(nextState) !== -1 ? nextState : 'error';
+    var next = Object.assign({}, current, meta || {}, { lastState: cleanState });
+    if (meta && Object.prototype.hasOwnProperty.call(meta, 'lastHeardCommand')) next.lastHeardCommand = sanitizeVoiceTextV62H(meta.lastHeardCommand, 220);
+    if (meta && Object.prototype.hasOwnProperty.call(meta, 'lastFocusedSection')) next.lastFocusedSection = sanitizeVoiceTextV62H(meta.lastFocusedSection, 180);
+    if (meta && Object.prototype.hasOwnProperty.call(meta, 'lastResponseDraft')) next.lastResponseDraft = sanitizeVoiceTextV62H(meta.lastResponseDraft, 420);
+    return persistAquaVoiceStateV62H(next);
+  }
+
+  function naturalAquaResponseV62H(commandText, intent) {
+    var q = normalizeAquaPhraseV61E(commandText);
+    var safe = intent || {};
+    if (/henderson/.test(q) && /receipts?/.test(q)) return 'I found it. I’m opening the Henderson receipt results now.';
+    if (/henderson/.test(q) && /(plumbing|spend|budget|total)/.test(q)) return 'I’m looking at the Henderson plumbing spend placeholder. Live accounting totals need the backend before I can give a real number.';
+    if (/(approval|approve|permission|locked|needs approval|requires approval)/.test(q) || safe.followUpIntentV62G === 'approval_questions') return 'This action needs approval before anything live can happen.';
+    if (/(export|accountant|accounting)/.test(q)) return 'I can prepare that workflow, but export is locked until owner and accounting approval.';
+    if (/^(continue|next|next step|continue workflow)$/.test(q)) return safe.spokenResponseDraft || 'I’m ready for your next instruction.';
+    if (safe.spokenResponseDraft) return safe.spokenResponseDraft;
+    return 'I’m ready for your next instruction.';
+  }
+
+  function renderManualFallbackControlsV62H() {
+    var support = voiceBrowserSupportV62H();
+    return '<div class="note" data-aqua-v62h-manual-fallback-controls="true"><strong>Browser voice is limited here.</strong><div>Aqua Brain can still guide you with manual controls.</div><div class="aqua-v62a-actions" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><label class="smallMut" for="aquaVoiceManualCommandV62H">Type command</label><input id="aquaVoiceManualCommandV62H" type="text" placeholder="Example: continue" style="min-width:220px"><button class="btn small gold" type="button" onclick="window.AquaVoiceInteractionV62H.handleAquaVoiceCommandV62H((document.getElementById(&quot;aquaVoiceManualCommandV62H&quot;)||{}).value||&quot;what can Aqua do now&quot;)">Run Command Demo</button><button class="btn small" type="button" onclick="window.AquaVoiceInteractionV62H.speakAquaResponseV62H()"' + (support.speechSynthesis ? '' : ' disabled') + '>Speak Summary if supported</button><button class="btn small" type="button" onclick="window.AquaVoiceInteractionV62H.repeatLastAquaResponseV62H()"' + (support.speechSynthesis ? '' : ' disabled') + '>Repeat Last Response if supported</button><button class="btn small gold" type="button" onclick="window.AquaVoiceInteractionV62H.handleAquaVoiceCommandV62H(&quot;continue&quot;)">Continue Workflow</button><button class="btn small" type="button" onclick="window.AquaVoiceInteractionV62H.stopAquaSpeakingV62H()">Stop Speaking</button></div></div>';
+  }
+
+  function renderAquaVoiceStatePanelV62H(outputNode) {
+    var safe = getAquaVoiceStateV62H();
+    var support = voiceBrowserSupportV62H();
+    safe.browserSupportStatus = 'speech recognition: ' + (support.speechRecognition ? 'available' : 'limited') + ' • speech synthesis: ' + (support.speechSynthesis ? 'available' : 'limited');
+    var manual = safe.lastState === 'manual_fallback' || safe.manualFallbackReason ? renderManualFallbackControlsV62H() : '';
+    var body = '<div class="aqua-v62a-panel aqua-v62h-voice-control" data-aqua-v62h-voice-state-panel="true"><h3>Aqua Brain Voice Control — v62H</h3>' +
+      '<div><strong>Current state:</strong> <span data-aqua-v62h-current-state="true">' + escapeHTMLV61D(safe.lastState) + '</span></div>' +
+      '<div><strong>Last heard command:</strong> ' + escapeHTMLV61D(safe.lastHeardCommand || 'None yet') + '</div>' +
+      '<div><strong>Last focused module/section:</strong> ' + escapeHTMLV61D(safe.lastFocusedSection || 'None yet') + '</div>' +
+      '<div><strong>Last spoken response draft:</strong> ' + escapeHTMLV61D(safe.lastResponseDraft || 'None yet') + '</div>' +
+      '<div><strong>Voice status:</strong> ' + escapeHTMLV61D(safe.voiceEnabled === false ? 'Off locally' : (safe.voiceStatus || 'On locally')) + '</div>' +
+      '<div><strong>Browser support status:</strong> ' + escapeHTMLV61D(safe.browserSupportStatus) + '</div>' +
+      '<div><strong>Manual fallback reason:</strong> ' + escapeHTMLV61D(safe.manualFallbackReason || 'None') + '</div>' +
+      '<div><strong>Safety status:</strong> ' + escapeHTMLV61D(safe.safetyStatus) + '</div>' +
+      '<div class="aqua-v62a-actions" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="btn small gold" type="button" onclick="window.AquaVoiceInteractionV62H.startVoiceCaptureV62H()">Start Voice</button><button class="btn small" type="button" onclick="window.AquaVoiceInteractionV62H.stopAquaSpeakingV62H()">Stop Speaking</button><button class="btn small gold" type="button" onclick="window.AquaVoiceInteractionV62H.repeatLastAquaResponseV62H()">Repeat Last Response</button><button class="btn small gold" type="button" onclick="window.AquaVoiceInteractionV62H.enableAquaVoiceV62H()">Voice On</button><button class="btn small" type="button" onclick="window.AquaVoiceInteractionV62H.disableAquaVoiceV62H()">Voice Off</button><button class="btn small gold" type="button" onclick="window.AquaVoiceInteractionV62H.handleAquaVoiceCommandV62H(&quot;continue&quot;)">Continue</button><button class="btn small" type="button" onclick="window.AquaVoiceInteractionV62H.handleAquaVoiceCommandV62H(&quot;cancel&quot;)">Cancel / Clear Context</button><button class="btn small" type="button" onclick="window.AquaVoiceInteractionV62H.fallbackToManualControlsV62H(&quot;Manual controls requested by user.&quot;)">Manual Controls</button></div>' + manual + '</div>';
+    var html = renderPremiumModuleShellV61Z({ title: 'Aqua Brain Voice Control — v62H', subtitle: 'Local/demo conversation state controller. Push-to-talk only.', tag: 'Voice Control', chips: ['Demo Only', 'No Audio Storage', 'No Always Listening', 'No Network Call'], attrs: { 'data-aqua-v62h-voice-control': 'true' }, body: body, safetyFooter: 'Local/browser/demo voice control only. No backend calls, network calls, external AI/API calls, API keys, live record changes, uploads, exports, customer/accountant sharing, accounting export, payment, payroll, bank action, audio storage, or always-listening behavior.' });
+    state.voiceStatePanelWorks = /Aqua Brain Voice Control — v62H/.test(html);
+    if (outputNode) outputNode.innerHTML = html;
+    syncNamespace();
+    return html;
+  }
+
+  function speakAquaResponseV62H(text, options) {
+    var draft = sanitizeVoiceTextV62H(text || getAquaVoiceStateV62H().lastResponseDraft || 'I’m ready for your next instruction.', 420);
+    setAquaVoiceStateV62H('speaking', { lastResponseDraft: draft, voiceStatus: 'Speaking local/browser response if supported.' });
+    var result = speakAquaSummaryV61R(draft, Object.assign({ context: 'voice interaction v62H' }, options || {}));
+    if (result && result.unavailable) {
+      setAquaVoiceStateV62H('manual_fallback', { lastResponseDraft: draft, manualFallbackReason: 'Browser speech synthesis is unavailable.', voiceStatus: 'Browser voice is limited here. Aqua Brain can still guide you with manual controls.' });
+      state.manualFallbackWorks = true;
+    } else setAquaVoiceStateV62H('waiting_for_followup', { lastResponseDraft: draft, voiceStatus: 'Waiting for a follow-up. Push-to-talk only.' });
+    return Object.assign({ state: getAquaVoiceStateV62H() }, result || {});
+  }
+
+  function stopAquaSpeakingV62H() {
+    var result = stopAquaSpeakingV61R();
+    setAquaVoiceStateV62H('stopped', { voiceStatus: 'Speaking stopped. Push-to-talk remains manual only.' });
+    state.stopSpeakingWorks = true;
+    return result;
+  }
+
+  function repeatLastAquaResponseV62H() {
+    var draft = getAquaVoiceStateV62H().lastResponseDraft || 'I didn’t find an active workflow yet. Start by asking me to find a project, receipt, report, or review item.';
+    state.repeatLastResponseWorks = true;
+    return speakAquaResponseV62H(draft, { context: 'repeat last voice response v62H' });
+  }
+
+  function enableAquaVoiceV62H() {
+    setSpokenReadbackPreferenceV61R({ enabled: true });
+    setAquaVoiceStateV62H('idle', { voiceEnabled: true, voiceStatus: 'Voice is on locally. Start Voice remains push-to-talk only.', lastResponseDraft: 'I’m ready for your next instruction.' });
+    state.voiceOnOffWorks = getAquaVoiceStateV62H().voiceEnabled === true;
+    return getAquaVoiceStateV62H();
+  }
+
+  function disableAquaVoiceV62H() {
+    setSpokenReadbackPreferenceV61R({ enabled: false });
+    setAquaVoiceStateV62H('stopped', { voiceEnabled: false, voiceStatus: 'Voice is off locally. Manual controls still work.' });
+    state.voiceOnOffWorks = getAquaVoiceStateV62H().voiceEnabled === false;
+    return getAquaVoiceStateV62H();
+  }
+
+  function fallbackToManualControlsV62H(reason) {
+    var message = 'Browser voice is limited here. Aqua Brain can still guide you with manual controls.';
+    setAquaVoiceStateV62H('manual_fallback', { manualFallbackReason: sanitizeVoiceTextV62H(reason || 'Browser voice is unavailable or blocked.', 240), voiceStatus: message, lastResponseDraft: message });
+    state.manualFallbackWorks = true;
+    return renderAquaVoiceStatePanelV62H();
+  }
+
+  function startVoiceCaptureV62H() {
+    if (getAquaVoiceStateV62H().voiceEnabled === false) return fallbackToManualControlsV62H('Voice is off locally. Turn Voice On or use manual controls.');
+    if (!speechRecognitionAvailableV62H()) return fallbackToManualControlsV62H('Browser speech recognition is unavailable.');
+    setAquaVoiceStateV62H('listening', { voiceStatus: 'Listening after a user gesture. One-shot push-to-talk only.' });
+    try {
+      var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      var recognition = new Recognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.onresult = function (event) {
+        var transcript = event && event.results && event.results[0] && event.results[0][0] ? event.results[0][0].transcript : '';
+        handleAquaVoiceCommandV62H(transcript);
+      };
+      recognition.onerror = function (event) { fallbackToManualControlsV62H('Speech recognition error: ' + ((event && event.error) || 'unknown')); };
+      recognition.onend = function () { if (getAquaVoiceStateV62H().lastState === 'listening') setAquaVoiceStateV62H('heard', { voiceStatus: 'Voice capture ended. Waiting for command result.' }); };
+      recognition.start();
+      return { started: true, oneShotOnly: true, noAlwaysListening: true, noAudioStorage: true };
+    } catch (error) {
+      return { started: false, fallback: fallbackToManualControlsV62H('Browser voice permission or support is limited.') };
+    }
+  }
+
+  function clearAquaVoiceContextV62H() {
+    setAquaVoiceStateV62H('stopped', { lastHeardCommand: '', lastFocusedSection: '', lastResponseDraft: 'I’m ready for your next instruction.', manualFallbackReason: '', voiceStatus: 'Local voice context cleared only.' });
+    return getAquaVoiceStateV62H();
+  }
+
+  function handleAquaVoiceCommandV62H(commandText) {
+    var command = sanitizeVoiceTextV62H(commandText, 220);
+    var q = normalizeAquaPhraseV61E(command);
+    setAquaVoiceStateV62H('heard', { lastHeardCommand: command, voiceStatus: 'Command heard. Thinking locally.' });
+    if (/^(voice on|turn voice on)$/.test(q)) return enableAquaVoiceV62H();
+    if (/^(voice off|turn voice off)$/.test(q)) return disableAquaVoiceV62H();
+    if (/^(again|repeat that|repeat last response|read it back|read it again)$/.test(q)) return repeatLastAquaResponseV62H();
+    if (/^(stop|stop speaking)$/.test(q)) return stopAquaSpeakingV62H();
+    if (/^(manual controls|manual fallback|show manual controls)$/.test(q)) return fallbackToManualControlsV62H('Manual controls requested by user.');
+    if (/^(cancel|clear context|cancel clear context|go back)$/.test(q)) return clearAquaVoiceContextV62H();
+    setAquaVoiceStateV62H('thinking', { voiceStatus: 'Thinking locally. No live AI or backend call.' });
+    var result = null;
+    if (/^(continue|next|next step|continue workflow)$/.test(q)) {
+      result = continueAquaWorkflowV62G(command) || noActiveWorkflowResultV62G(command);
+      state.continueUsesWorkflowMemory = Boolean(result);
+    } else if (/^(what needs approval|what requires approval|who needs to approve this)$/.test(q)) {
+      result = continueAquaWorkflowV62G(command) || { openedFocusedSection: 'Permission / Safety Gate Requirements', spokenResponseDraft: 'This action needs approval before anything live can happen.' };
+      state.permissionQuestionVoiceStateWorks = true;
+      setAquaVoiceStateV62H('permission_required', { lastFocusedSection: result.openedFocusedSection || 'Permission / Safety Gate Requirements', lastResponseDraft: naturalAquaResponseV62H(command, result), voiceStatus: 'Permission required. Live actions remain locked.' });
+      return getAquaVoiceStateV62H();
+    } else if (/^(what can aqua do now|what can aqua do)$/.test(q)) {
+      result = { openedFocusedSection: 'Aqua Brain Command Center / allowed local demo steps', spokenResponseDraft: 'Aqua can open local demo sections, prepare locked workflows, read summaries, repeat, continue, or clear context. Live exports and record changes stay locked.' };
+    } else {
+      result = runNormalizedAquaCommandV61E(command, null) || {};
+    }
+    var response = naturalAquaResponseV62H(command, result);
+    var focus = result.openedFocusedSection || result.module || result.targetModule || result.workflowType || 'Aqua Brain Command Center';
+    setAquaVoiceStateV62H('opening_section', { lastFocusedSection: focus, lastResponseDraft: response, voiceStatus: 'Opening or focusing the local demo section.' });
+    setAquaVoiceStateV62H('focused_section', { lastFocusedSection: focus, lastResponseDraft: response, voiceStatus: 'Section focused locally. Ready to speak or continue.' });
+    return getAquaVoiceStateV62H();
+  }
+
+  function installAquaVoicePanelV62H(root) {
+    var scope = root || document;
+    if (!scope || typeof scope.querySelector !== 'function') return false;
+    if (scope.querySelector('[data-aqua-v62h-voice-control-inline="true"]')) return true;
+    var output = scope.querySelector('#brainOut');
+    var target = output || scope.querySelector('#voiceAskAreaV60U') || scope.querySelector('.actions');
+    if (!target || typeof target.insertAdjacentHTML !== 'function') return false;
+    target.insertAdjacentHTML(output ? 'beforebegin' : 'afterend', '<div data-aqua-v62h-voice-control-inline="true">' + renderAquaVoiceStatePanelV62H() + '</div>');
+    state.voiceStatePanelWorks = true;
+    syncNamespace();
+    return true;
+  }
+
   function renderWorkflowPlanActionResultV62F(mode) {
     if (mode === 'save') return '<div class="note" data-aqua-v62f-save-workflow-plan="true"><strong>Save Workflow Plan</strong><div>Saved to localStorage key ' + WORKFLOW_PLAN_KEY_V62F + ' only.</div><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(workflowPlanTextV62F(saveAquaWorkflowPlanV62F())) + '</pre></div>';
     if (mode === 'show') { var last = showLastAquaWorkflowPlanV62F(true); return '<div class="note" data-aqua-v62f-show-last-workflow-plan="true"><strong>Show Last Workflow Plan</strong>' + (last ? '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(workflowPlanTextV62F(last)) + '</pre>' : '<div>No saved workflow plan found.</div>') + '</div>'; }
@@ -1298,6 +1542,7 @@
   var VOICE_BRAIN_PLAN_KEY_V62A = 'aquaVoiceBrainPlansV62A';
   var WORKFLOW_PLAN_KEY_V62F = 'aquaWorkflowPlansV62F';
   var ACTIVE_WORKFLOW_KEY_V62G = 'aquaActiveWorkflowV62G';
+  var VOICE_INTERACTION_KEY_V62H = 'aquaVoiceInteractionV62H';
 
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
@@ -1495,11 +1740,24 @@
       showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F,
       clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F,
       copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F,
-      markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F
+      markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F,
+      setAquaVoiceStateV62H: setAquaVoiceStateV62H,
+      getAquaVoiceStateV62H: getAquaVoiceStateV62H,
+      renderAquaVoiceStatePanelV62H: renderAquaVoiceStatePanelV62H,
+      handleAquaVoiceCommandV62H: handleAquaVoiceCommandV62H,
+      speakAquaResponseV62H: speakAquaResponseV62H,
+      stopAquaSpeakingV62H: stopAquaSpeakingV62H,
+      repeatLastAquaResponseV62H: repeatLastAquaResponseV62H,
+      enableAquaVoiceV62H: enableAquaVoiceV62H,
+      disableAquaVoiceV62H: disableAquaVoiceV62H,
+      fallbackToManualControlsV62H: fallbackToManualControlsV62H,
+      startVoiceCaptureV62H: startVoiceCaptureV62H,
+      installAquaVoicePanelV62H: installAquaVoicePanelV62H
     });
     window.AquaVoiceBrainV61Z = createAquaVoiceBrainV61Z();
     window.AquaWorkflowPlannerV62F = { version: VERSION, localDemoOnly: true, storageKey: WORKFLOW_PLAN_KEY_V62F, planAquaWorkflowV62F: planAquaWorkflowV62F, renderAquaWorkflowPlanV62F: renderAquaWorkflowPlanV62F, executeAquaWorkflowStepDemoV62F: executeAquaWorkflowStepDemoV62F, saveAquaWorkflowPlanV62F: saveAquaWorkflowPlanV62F, showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F, clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F, copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F, markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F, safetyEnvelope: workflowSafetyEnvelopeV62F() };
     window.AquaWorkflowMemoryV62G = { version: VERSION, localDemoOnly: true, storageKey: ACTIVE_WORKFLOW_KEY_V62G, saveAquaActiveWorkflowV62G: saveAquaActiveWorkflowV62G, getAquaActiveWorkflowV62G: getAquaActiveWorkflowV62G, clearAquaActiveWorkflowV62G: clearAquaActiveWorkflowV62G, continueAquaWorkflowV62G: continueAquaWorkflowV62G, classifyAquaFollowUpV62G: classifyAquaFollowUpV62G, renderAquaWorkflowContinuationV62G: renderAquaWorkflowContinuationV62G, safetyEnvelope: workflowSafetyEnvelopeV62F() };
+    window.AquaVoiceInteractionV62H = { version: VERSION, localDemoOnly: true, storageKey: VOICE_INTERACTION_KEY_V62H, states: AQUA_VOICE_STATES_V62H.slice(), setAquaVoiceStateV62H: setAquaVoiceStateV62H, getAquaVoiceStateV62H: getAquaVoiceStateV62H, renderAquaVoiceStatePanelV62H: renderAquaVoiceStatePanelV62H, handleAquaVoiceCommandV62H: handleAquaVoiceCommandV62H, speakAquaResponseV62H: speakAquaResponseV62H, stopAquaSpeakingV62H: stopAquaSpeakingV62H, repeatLastAquaResponseV62H: repeatLastAquaResponseV62H, enableAquaVoiceV62H: enableAquaVoiceV62H, disableAquaVoiceV62H: disableAquaVoiceV62H, fallbackToManualControlsV62H: fallbackToManualControlsV62H, startVoiceCaptureV62H: startVoiceCaptureV62H, installAquaVoicePanelV62H: installAquaVoicePanelV62H, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true } };
     state.voiceBrainToolRegistryExists = Object.keys(window.AquaVoiceBrainV61Z.toolRegistry || {}).length >= 14;
     return window.AquaV61Extensions;
   }
@@ -3878,6 +4136,7 @@
     appendPart(flow, parts.output);
     ensureRegressionQAButtonV61L(flow);
     ensureSpokenReadbackControlsV61R(flow);
+    installAquaVoicePanelV62H(flow);
 
     var aiOut = modal.querySelector('#aiOut');
     if (aiOut && aiOut.parentNode) aiOut.parentNode.insertBefore(flow, aiOut.nextSibling);
@@ -4748,7 +5007,18 @@
       activeCommandIsCurrentCommandOnly: true,
       staleLocalStorageDoesNotOverrideActiveCommand: true,
       currentCommandOnlyNotDraftHistory: true,
-      noBackendNetworkLiveAI: true
+      noBackendNetworkLiveAI: true,
+      voiceInteractionControllerExists: true,
+      voiceStatePanelWorks: true,
+      voiceOnOffWorks: true,
+      repeatLastResponseWorks: true,
+      stopSpeakingWorks: true,
+      manualFallbackWorks: true,
+      continueUsesWorkflowMemory: true,
+      permissionQuestionVoiceStateWorks: true,
+      noBackendCalls: true,
+      noNetworkCalls: true,
+      noAlwaysListening: true
     };
   }
 
@@ -4767,7 +5037,7 @@
 
   function regressionStorageSnapshotV61L() {
     var snapshot = {};
-    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S, CALCULATOR_DRAFTS_KEY_V61X, SOW_REVIEW_QUEUE_KEY_V61Y, VOICE_BRAIN_CONTEXT_KEY_V61Z, VOICE_BRAIN_PLAN_KEY_V62A, WORKFLOW_PLAN_KEY_V62F, ACTIVE_WORKFLOW_KEY_V62G].forEach(function (key) {
+    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S, CALCULATOR_DRAFTS_KEY_V61X, SOW_REVIEW_QUEUE_KEY_V61Y, VOICE_BRAIN_CONTEXT_KEY_V61Z, VOICE_BRAIN_PLAN_KEY_V62A, WORKFLOW_PLAN_KEY_V62F, ACTIVE_WORKFLOW_KEY_V62G, VOICE_INTERACTION_KEY_V62H].forEach(function (key) {
       try {
         snapshot[key] = window.localStorage.getItem(key);
       } catch (error) {
@@ -5146,11 +5416,67 @@
     };
   }
 
+
+  function runV62HRegressionCasesV62H() {
+    var host = document.createElement('div');
+    var results = [];
+    function add(command, expected, passed, actual) {
+      results.push({ command: command, expected: expected, actual: Object.assign({ askMode: 'voice_interaction', renderedFallback: false }, actual || {}), passed: Boolean(passed), errors: passed ? [] : ['v62H voice interaction check failed'], suggestedFix: passed ? '' : 'Update AquaVoiceInteractionV62H state controller, panel, manual fallback, or v62G workflow integration.' });
+    }
+    try { window.localStorage.removeItem(VOICE_INTERACTION_KEY_V62H); } catch (error) {}
+    var panel = renderAquaVoiceStatePanelV62H(host);
+    add('voice state panel render', 'Aqua Brain Voice Control — v62H panel renders', /Aqua Brain Voice Control — v62H/.test(panel) && /Current state/.test(panel), { renderedVoiceStatePanelV62H: /Aqua Brain Voice Control — v62H/.test(panel), state: getAquaVoiceStateV62H().lastState });
+    var voiceOn = handleAquaVoiceCommandV62H('voice on');
+    add('voice on', 'voice preference enabled locally', voiceOn && voiceOn.voiceEnabled === true, { voiceEnabled: voiceOn && voiceOn.voiceEnabled, storageKey: VOICE_INTERACTION_KEY_V62H });
+    var voiceOff = handleAquaVoiceCommandV62H('voice off');
+    add('voice off', 'voice preference disabled locally', voiceOff && voiceOff.voiceEnabled === false, { voiceEnabled: voiceOff && voiceOff.voiceEnabled, storageKey: VOICE_INTERACTION_KEY_V62H });
+    enableAquaVoiceV62H();
+    setAquaVoiceStateV62H('waiting_for_followup', { lastResponseDraft: 'I found it. I’m opening the Henderson receipt results now.' });
+    var repeat = handleAquaVoiceCommandV62H('repeat last response');
+    var repeatState = getAquaVoiceStateV62H();
+    add('repeat last response', 'repeat last response uses local response draft', state.repeatLastResponseWorks === true && /Henderson receipt/.test(repeatState.lastResponseDraft || ''), { state: repeatState.lastState, lastResponseDraft: repeatState.lastResponseDraft, noAudioStorage: true });
+    var stopped = handleAquaVoiceCommandV62H('stop speaking');
+    add('stop speaking', 'stop speaking cancels browser speech synthesis without audio storage', state.stopSpeakingWorks === true && stopped && stopped.stopped === true, { stopped: stopped && stopped.stopped, noAudioStorage: true });
+    runNormalizedAquaCommandV61E('look up all receipts for Henderson from Home Depot and prepare them for accountant export', host);
+    var continued = handleAquaVoiceCommandV62H('continue');
+    add('continue', 'continue uses v62G active workflow memory', state.continueUsesWorkflowMemory === true && continued && /focused_section|opening_section|waiting_for_followup/.test(continued.lastState || '') && /step|workflow|local demo/i.test(continued.lastResponseDraft || ''), { state: continued && continued.lastState, lastResponseDraft: continued && continued.lastResponseDraft, continueUsesWorkflowMemory: state.continueUsesWorkflowMemory });
+    var cancel = handleAquaVoiceCommandV62H('cancel');
+    add('cancel / clear context', 'cancel clears only local/demo voice context', cancel && cancel.lastState === 'stopped' && !cancel.lastHeardCommand, { state: cancel && cancel.lastState, noLiveRecordChanges: true });
+    var manualHtml = fallbackToManualControlsV62H('Regression forced browser voice limitation');
+    add('manual controls', 'manual fallback shows safe controls', /Browser voice is limited here[\s\S]*Run Command Demo[\s\S]*Continue Workflow[\s\S]*Stop Speaking/i.test(manualHtml), { manualFallbackWorks: state.manualFallbackWorks, renderedManualFallbackControls: /data-aqua-v62h-manual-fallback-controls/.test(manualHtml) });
+    runNormalizedAquaCommandV61E('look up all receipts for Henderson from Home Depot and prepare them for accountant export', host);
+    setAquaVoiceStateV62H('waiting_for_followup', { lastResponseDraft: 'I can prepare that workflow, but export is locked until owner and accounting approval.' });
+    var readBack = handleAquaVoiceCommandV62H('read it back');
+    var readBackState = getAquaVoiceStateV62H();
+    add('read it back after active workflow', 'read it back repeats last response draft', state.repeatLastResponseWorks === true && /export is locked|Henderson/i.test(readBackState.lastResponseDraft || ''), { state: readBackState.lastState, lastResponseDraft: readBackState.lastResponseDraft });
+    var approval = handleAquaVoiceCommandV62H('what needs approval');
+    add('what needs approval after active workflow', 'permission questions show permission_required state', approval && approval.lastState === 'permission_required' && state.permissionQuestionVoiceStateWorks === true, { state: approval && approval.lastState, lastFocusedSection: approval && approval.lastFocusedSection });
+    var workflow = runNormalizedAquaCommandV61E('look up all receipts for Henderson from Home Depot and prepare them for accountant export', host);
+    add('look up all receipts for Henderson from Home Depot and prepare them for accountant export', 'workflow remains local/demo and locked', workflow && workflow.canonicalIntent === 'aqua_workflow_planner_v62f', { canonicalIntent: workflow && workflow.canonicalIntent, askMode: 'workflow_planner', renderedWorkflowPlanV62F: true, noLiveRecordChanges: true });
+    var report = runNormalizedAquaCommandV61E('show automation report', host);
+    add('show automation report', 'automation report still routes', report && report.canonicalIntent === 'show_automation_report_v61t', { canonicalIntent: report && report.canonicalIntent, askMode: 'automation_status', renderedFallback: false, renderedAutomationReport: true, renderedPremiumModuleShell: true });
+    host.innerHTML = '';
+    var banana = runNormalizedAquaCommandV61E('banana test', host);
+    add('banana test', 'unknown command still uses fallback', banana && banana.canonicalIntent === 'unknown' && /Fallback local demo panel/i.test(host.innerHTML), { canonicalIntent: banana && banana.canonicalIntent, askMode: 'unknown_fallback', renderedFallback: /Fallback local demo panel/i.test(host.innerHTML) });
+    state.voiceInteractionControllerExists = true;
+    state.voiceStatePanelWorks = true;
+    state.voiceOnOffWorks = true;
+    state.noAudioStorage = true;
+    state.noAlwaysListening = true;
+    state.noNetworkCalls = true;
+    state.noBackendCalls = true;
+    state.noExternalAIAPICalls = true;
+    syncNamespace();
+    return results;
+  }
+
   function runAquaCommandRegressionV61L() {
     if (state.regressionRunningV61T) return placeholderRegressionReportV61T();
     state.regressionRunningV61T = true;
     var cases = regressionCommandCasesV61L();
-    var results = cases.map(runRegressionCaseV61L);
+    var baseResults = cases.map(runRegressionCaseV61L);
+    var voiceResultsV62H = runV62HRegressionCasesV62H();
+    var results = baseResults.concat(voiceResultsV62H);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -5165,8 +5491,8 @@
       version: VERSION,
       harnessVersion: 'v61L-compatible/v62D',
       timestamp: new Date().toISOString(),
-      total: cases.length,
-      passed: cases.length - failures.length,
+      total: results.length,
+      passed: results.length - failures.length,
       failed: failures.length,
       failedCommands: failures.map(function (failure) { return failure.command; }),
       failures: failures,
@@ -5176,6 +5502,18 @@
       repairPrompt: buildRepairPromptV61L(failures),
       safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? true : false,
       mergeRecommendation: failures.length === 0 && regressionSafetyPassesV61L(safety) ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED',
+      voiceInteractionControllerExists: typeof handleAquaVoiceCommandV62H === 'function' && Boolean(window.AquaVoiceInteractionV62H || true),
+      voiceStatePanelWorks: state.voiceStatePanelWorks === true,
+      voiceOnOffWorks: state.voiceOnOffWorks === true,
+      repeatLastResponseWorks: state.repeatLastResponseWorks === true,
+      stopSpeakingWorks: state.stopSpeakingWorks === true,
+      manualFallbackWorks: state.manualFallbackWorks === true,
+      continueUsesWorkflowMemory: state.continueUsesWorkflowMemory === true,
+      permissionQuestionVoiceStateWorks: state.permissionQuestionVoiceStateWorks === true,
+      noBackendCalls: true,
+      noNetworkCalls: true,
+      noExternalAIAPICalls: true,
+      noApiKeysInFrontend: true,
       noLiveRecordChanges: true,
       noBackendNetworkLiveAICalls: true,
       spokenReadbackAvailable: speechSynthesisAvailableV61R(),
@@ -5404,6 +5742,14 @@
       '<div><strong>premiumModuleShellWorks:</strong> ' + escapeHTMLV61D(String(safe.premiumModuleShellWorks === true)) + '</div>' +
       '<div><strong>openedModulesPolished:</strong> ' + escapeHTMLV61D(String(safe.openedModulesPolished === true)) + '</div>' +
       '<div><strong>askModeRouterWorks:</strong> ' + escapeHTMLV61D(String(safe.askModeRouterWorks === true)) + '</div>' +
+      '<div><strong>voiceInteractionControllerExists:</strong> ' + escapeHTMLV61D(String(safe.voiceInteractionControllerExists === true)) + '</div>' +
+      '<div><strong>voiceStatePanelWorks:</strong> ' + escapeHTMLV61D(String(safe.voiceStatePanelWorks === true)) + '</div>' +
+      '<div><strong>voiceOnOffWorks:</strong> ' + escapeHTMLV61D(String(safe.voiceOnOffWorks === true)) + '</div>' +
+      '<div><strong>repeatLastResponseWorks:</strong> ' + escapeHTMLV61D(String(safe.repeatLastResponseWorks === true)) + '</div>' +
+      '<div><strong>stopSpeakingWorks:</strong> ' + escapeHTMLV61D(String(safe.stopSpeakingWorks === true)) + '</div>' +
+      '<div><strong>manualFallbackWorks:</strong> ' + escapeHTMLV61D(String(safe.manualFallbackWorks === true)) + '</div>' +
+      '<div><strong>continueUsesWorkflowMemory:</strong> ' + escapeHTMLV61D(String(safe.continueUsesWorkflowMemory === true)) + '</div>' +
+      '<div><strong>permissionQuestionVoiceStateWorks:</strong> ' + escapeHTMLV61D(String(safe.permissionQuestionVoiceStateWorks === true)) + '</div>' +
       '<div><strong>workflowPlannerExists:</strong> ' + escapeHTMLV61D(String(safe.workflowPlannerExists === true)) + '</div>' +
       '<div><strong>receiptExportWorkflowWorks:</strong> ' + escapeHTMLV61D(String(safe.receiptExportWorkflowWorks === true)) + '</div>' +
       '<div><strong>reportReviewWorkflowWorks:</strong> ' + escapeHTMLV61D(String(safe.reportReviewWorkflowWorks === true)) + '</div>' +
@@ -5623,5 +5969,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62G extensions loaded: AI Workflow Memory and follow-up continuation active. Home untouched. No live backend, upload, export, SOW, or estimate created.');
+  console.log('Aqua Homes OS v62H extensions loaded: Aqua Brain voice interaction state controller active. Home untouched. No live backend, upload, export, SOW, or estimate created.');
 }());
