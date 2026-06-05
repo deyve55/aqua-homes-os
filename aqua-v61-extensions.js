@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61X Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation.
+ * Aqua Homes OS v61Y Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61X';
+  var VERSION = 'v61Y';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -20,6 +20,13 @@
     jobsiteCalculatorV61VAvailable: true,
     jobsiteCalculatorV61WAvailable: true,
     calculatorDraftsV61XAvailable: true,
+    sowReviewQueueV61YAvailable: true,
+    sowReviewQueueWorks: false,
+    sendToSowReviewWorks: false,
+    showSowReviewQueueWorks: false,
+    markReviewReadyDemoWorks: false,
+    clearSowReviewQueueWorks: false,
+    noLiveSowCreated: true,
     calculatorDraftsWork: false,
     saveCalculationDraftWorks: false,
     showSavedCalculationsWorks: false,
@@ -161,6 +168,7 @@
   var SPOKEN_READBACK_KEY_V61R = 'aquaSpokenReadbackV61R';
   var CONVERSATIONAL_CONTEXT_KEY_V61S = 'aquaConversationalContextV61S';
   var CALCULATOR_DRAFTS_KEY_V61X = 'aquaCalculatorDraftsV61X';
+  var SOW_REVIEW_QUEUE_KEY_V61Y = 'aquaSowReviewQueueV61Y';
 
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
@@ -188,6 +196,12 @@
       runAquaCommandRegressionV61V: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61W: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61X: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61Y: runAquaCommandRegressionV61L,
+      readSowReviewQueueV61Y: readSowReviewQueueV61Y,
+      sendLatestCalculatorDraftToSowReviewV61Y: sendLatestCalculatorDraftToSowReviewV61Y,
+      markSowReviewReadyDemoV61Y: markSowReviewReadyDemoV61Y,
+      clearSowReviewQueueV61Y: clearSowReviewQueueV61Y,
+      renderSowReviewQueueV61Y: renderSowReviewQueueV61Y,
       readCalculatorDraftsV61X: readCalculatorDraftsV61X,
       saveCurrentCalculatorDraftV61X: saveCurrentCalculatorDraftV61X,
       clearCalculatorDraftsV61X: clearCalculatorDraftsV61X,
@@ -248,6 +262,12 @@
       runAquaCommandRegressionV61V: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61W: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61X: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61Y: runAquaCommandRegressionV61L,
+      readSowReviewQueueV61Y: readSowReviewQueueV61Y,
+      sendLatestCalculatorDraftToSowReviewV61Y: sendLatestCalculatorDraftToSowReviewV61Y,
+      markSowReviewReadyDemoV61Y: markSowReviewReadyDemoV61Y,
+      clearSowReviewQueueV61Y: clearSowReviewQueueV61Y,
+      renderSowReviewQueueV61Y: renderSowReviewQueueV61Y,
       readCalculatorDraftsV61X: readCalculatorDraftsV61X,
       saveCurrentCalculatorDraftV61X: saveCurrentCalculatorDraftV61X,
       clearCalculatorDraftsV61X: clearCalculatorDraftsV61X,
@@ -365,7 +385,7 @@
     var canonical = intent && intent.canonicalIntent;
     if (!canonical || canonical === 'unknown' || canonical === 'repeat_last_action_v61s' || canonical === 'context_missing_v61s') return false;
     if (/^(?:speak_summary_v61r|read_report_v61r|stop_speaking_v61r|voice_off_v61r|voice_on_v61r|run_regression_qa|show_automation_report_v61t)$/.test(canonical)) return false;
-    if (/^(?:clear_draft_queue_demo|clear_current_demo_action|start_new_demo_change|save_calculation_draft_v61x|show_calculator_drafts_v61x|clear_calculator_drafts_v61x|add_to_estimate_draft_v61x)$/.test(canonical)) return false;
+    if (/^(?:clear_draft_queue_demo|clear_current_demo_action|start_new_demo_change|save_calculation_draft_v61x|show_calculator_drafts_v61x|clear_calculator_drafts_v61x|add_to_estimate_draft_v61x|send_to_sow_review_queue_v61y|show_sow_review_queue_v61y|mark_review_ready_demo_v61y|return_to_calculator_drafts_v61y|clear_sow_review_queue_demo_v61y)$/.test(canonical)) return false;
     return true;
   }
 
@@ -489,6 +509,33 @@
     }
     if (phraseMatchesV61E(q, ['add to estimate draft', 'add this to estimate', 'add this to SOW draft'])) {
       return { canonicalIntent: 'add_to_estimate_draft_v61x', routeText: 'add to estimate draft', originalText: original, normalizedText: q, module: 'Estimate Draft Placeholder' };
+    }
+    return null;
+  }
+
+
+
+  function detectSowReviewQueueCommandV61Y(original, normalized) {
+    var q = String(normalized || '').trim();
+    if (phraseMatchesV61E(q, [
+      'send to SOW review',
+      'send this to SOW review',
+      'send to estimate review',
+      'add this to SOW review queue'
+    ])) {
+      return { canonicalIntent: 'send_to_sow_review_queue_v61y', routeText: 'send to SOW review', originalText: original, normalizedText: q, module: 'SOW / Estimate Review Queue' };
+    }
+    if (phraseMatchesV61E(q, ['show SOW review queue', 'show estimate review queue'])) {
+      return { canonicalIntent: 'show_sow_review_queue_v61y', routeText: 'show SOW review queue', originalText: original, normalizedText: q, module: 'SOW / Estimate Review Queue' };
+    }
+    if (phraseMatchesV61E(q, ['mark review ready demo'])) {
+      return { canonicalIntent: 'mark_review_ready_demo_v61y', routeText: 'mark review ready demo', originalText: original, normalizedText: q, module: 'SOW / Estimate Review Queue' };
+    }
+    if (phraseMatchesV61E(q, ['return to calculator drafts'])) {
+      return { canonicalIntent: 'return_to_calculator_drafts_v61y', routeText: 'return to calculator drafts', originalText: original, normalizedText: q, module: 'Calculator Drafts / Estimate Prep' };
+    }
+    if (phraseMatchesV61E(q, ['clear SOW review queue demo'])) {
+      return { canonicalIntent: 'clear_sow_review_queue_demo_v61y', routeText: 'clear SOW review queue demo', originalText: original, normalizedText: q, module: 'SOW / Estimate Review Queue' };
     }
     return null;
   }
@@ -791,6 +838,8 @@
       '<button type="button" class="btn small" data-aqua-v61x-show-calculator-drafts="true">Show Saved Calculations</button>' +
       '<button type="button" class="btn small" data-aqua-v61x-clear-calculator-drafts="true">Clear Saved Calculation Drafts</button>' +
       '<button type="button" class="btn small" data-aqua-v61x-add-estimate-draft="true">Add to Estimate Draft Placeholder</button>' +
+      '<button type="button" class="btn small gold" data-aqua-v61y-send-sow-review="true">Send to SOW Review Queue</button>' +
+      '<button type="button" class="btn small" data-aqua-v61y-show-sow-review="true">Show SOW Review Queue</button>' +
       '</div><div class="smallMut" data-aqua-v61x-draft-safe-copy="true">Calculator draft actions are local/demo-only. No live estimate, no customer export, no backend, no accounting.</div>';
   }
 
@@ -871,7 +920,7 @@
         '<div><strong>Result Summary:</strong> ' + escapeHTMLV61D(draft.resultSummary) + '</div>' +
         '<div><strong>Recommended Amount:</strong> ' + escapeHTMLV61D(draft.recommendedAmount) + '</div>' +
         '<div><strong>Status:</strong> Draft only / Local demo</div>' +
-        '<div><strong>Safety:</strong> No live estimate, no customer export, no backend, no accounting</div></div>';
+        '<div><strong>Safety:</strong> No live estimate, no customer export, no backend, no accounting</div><div class="actions"><button type="button" class="btn small gold" data-aqua-v61y-send-sow-review="true">Send to SOW Review Queue</button></div></div>';
     }).join('') : '<div>No saved calculator drafts yet.</div>';
     state.showSavedCalculationsWorks = true;
     state.calculatorDraftsWork = true;
@@ -1097,6 +1146,8 @@
       state.automationStatusModeWorks = true;
       return withAskModeV61U(automation, askMode.mode);
     }
+    var sowReviewQueue = detectSowReviewQueueCommandV61Y(original, q);
+    if (sowReviewQueue) return withAskModeV61U(sowReviewQueue, askMode.mode);
     var calculatorDraft = detectCalculatorDraftCommandV61X(original, q);
     if (calculatorDraft) return withAskModeV61U(calculatorDraft, askMode.mode);
     var demoState = detectDemoStateCommandV61K(original, q);
@@ -1299,6 +1350,145 @@
   }
 
 
+
+
+  function createSowReviewQueueIdV61Y() {
+    return 'sow-review-v61y-' + new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14) + '-' + Math.floor(Math.random() * 900 + 100);
+  }
+
+  function readSowReviewQueueV61Y() {
+    try {
+      var parsed = JSON.parse(window.localStorage.getItem(SOW_REVIEW_QUEUE_KEY_V61Y) || '[]');
+      return Array.isArray(parsed) ? parsed.filter(function (item) { return item && item.status; }) : [];
+    } catch (error) {
+      state.sowReviewQueueStorageWarningV61Y = 'localStorage unavailable for SOW review queue';
+      return [];
+    }
+  }
+
+  function writeSowReviewQueueV61Y(queue) {
+    try {
+      window.localStorage.setItem(SOW_REVIEW_QUEUE_KEY_V61Y, JSON.stringify((queue || []).slice(-25)));
+      return true;
+    } catch (error) {
+      state.sowReviewQueueStorageWarningV61Y = 'localStorage unavailable for SOW review queue';
+      return false;
+    }
+  }
+
+  function latestCalculatorDraftV61Y() {
+    var drafts = readCalculatorDraftsV61X();
+    return drafts.length ? drafts[drafts.length - 1] : null;
+  }
+
+  function buildSowReviewQueueRecordV61Y(draft) {
+    if (!draft || !draft.draftCalculationId) return null;
+    return {
+      reviewQueueId: createSowReviewQueueIdV61Y(),
+      sourceDraftCalculationId: String(draft.draftCalculationId || '').slice(0, 120),
+      calculatorType: String(draft.calculatorType || '').slice(0, 120),
+      originalQuestion: String(draft.originalQuestion || '').slice(0, 240),
+      resultSummary: String(draft.resultSummary || '').slice(0, 360),
+      recommendedAmount: String(draft.recommendedAmount || '').slice(0, 120),
+      targetReviewType: 'SOW / Estimate Review',
+      status: 'local demo review',
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  function sendLatestCalculatorDraftToSowReviewV61Y() {
+    var draft = latestCalculatorDraftV61Y();
+    if (!draft) return null;
+    var record = buildSowReviewQueueRecordV61Y(draft);
+    var queue = readSowReviewQueueV61Y();
+    queue.push(record);
+    if (!writeSowReviewQueueV61Y(queue)) return null;
+    state.sowReviewQueueWorks = true;
+    state.sendToSowReviewWorks = true;
+    state.noLiveSowCreated = true;
+    state.noLiveEstimateCreated = true;
+    state.noCustomerExport = true;
+    state.noBackendCalls = true;
+    state.noNetworkCalls = true;
+    state.noApiKeysInFrontend = true;
+    state.noLiveRecordChanges = true;
+    syncNamespace();
+    return record;
+  }
+
+  function renderNoCalculatorDraftForSowReviewV61Y() {
+    return '<div class="note" data-aqua-v61y-no-calculator-draft="true"><strong>No calculator draft found.</strong><div>No calculator draft found. Save a calculation draft first.</div><div class="locked">Demo Data Only. SOW Review Locked. Estimate Review Locked. Customer Export Locked. Backend Locked. Accounting Export Locked. Owner Review Required. No Live Change Made. No live SOW, no live estimate, no customer export, no backend, no accounting.</div></div>';
+  }
+
+  function sowReviewSafetyLabelsV61Y() {
+    return '<ul><li>Demo Data Only</li><li>SOW Review Locked</li><li>Estimate Review Locked</li><li>Customer Export Locked</li><li>Backend Locked</li><li>Accounting Export Locked</li><li>Owner Review Required</li><li>No Live Change Made</li></ul>';
+  }
+
+  function renderSowReviewQueueRowsV61Y(queue) {
+    if (!queue.length) return '<div>No SOW / Estimate review queue demo items yet.</div>';
+    return queue.map(function (item) {
+      return '<div class="note" data-aqua-v61y-sow-review-row="true"><strong>Review Queue ID:</strong> ' + escapeHTMLV61D(item.reviewQueueId) +
+        '<div><strong>Source Draft Calculation ID:</strong> ' + escapeHTMLV61D(item.sourceDraftCalculationId) + '</div>' +
+        '<div><strong>Calculator Type:</strong> ' + escapeHTMLV61D(item.calculatorType) + '</div>' +
+        '<div><strong>Original Question:</strong> ' + escapeHTMLV61D(item.originalQuestion) + '</div>' +
+        '<div><strong>Result Summary:</strong> ' + escapeHTMLV61D(item.resultSummary) + '</div>' +
+        '<div><strong>Recommended Amount:</strong> ' + escapeHTMLV61D(item.recommendedAmount) + '</div>' +
+        '<div><strong>Review Status:</strong> ' + escapeHTMLV61D(item.status) + '</div>' +
+        '<div><strong>Safety:</strong> No live SOW, no live estimate, no customer export, no backend, no accounting</div></div>';
+    }).join('');
+  }
+
+  function renderSowReviewQueueV61Y() {
+    var queue = readSowReviewQueueV61Y();
+    state.sowReviewQueueWorks = true;
+    state.showSowReviewQueueWorks = true;
+    state.noLiveSowCreated = true;
+    state.noLiveEstimateCreated = true;
+    state.noCustomerExport = true;
+    syncNamespace();
+    return '<div class="note" data-aqua-v61y-sow-review-queue-panel="true"><strong>SOW / Estimate Review Queue — Local Demo</strong>' + renderSowReviewQueueRowsV61Y(queue) + sowReviewSafetyLabelsV61Y() + '<div class="actions"><button type="button" class="btn small gold" data-aqua-v61y-mark-review-ready="true">Mark Review Ready Demo</button><button type="button" class="btn small" data-aqua-v61y-return-calculator-drafts="true">Return to Calculator Drafts</button><button type="button" class="btn small" data-aqua-v61y-clear-sow-review="true">Clear SOW Review Queue Demo</button></div><div class="locked">Local/demo-only review queue stored as aquaSowReviewQueueV61Y. No live SOW, no live estimate, no customer export, no backend, no network, no external AI/API, no accounting/export/payment/payroll/bank action, and no live record change.</div></div>';
+  }
+
+  function renderSendSowReviewQueueConfirmationV61Y(record) {
+    if (!record) return renderNoCalculatorDraftForSowReviewV61Y();
+    return '<div class="note" data-aqua-v61y-send-sow-review-confirmation="true"><strong>Send to SOW Review Queue</strong><div>Calculator draft routed to local/demo review queue: ' + escapeHTMLV61D(record.reviewQueueId) + '</div><div><strong>Source Draft Calculation ID:</strong> ' + escapeHTMLV61D(record.sourceDraftCalculationId) + '</div><div><strong>Calculator Type:</strong> ' + escapeHTMLV61D(record.calculatorType) + '</div><div><strong>Result Summary:</strong> ' + escapeHTMLV61D(record.resultSummary) + '</div><div><strong>Recommended Amount:</strong> ' + escapeHTMLV61D(record.recommendedAmount) + '</div>' + sowReviewSafetyLabelsV61Y() + '<div class="locked">No live SOW created. No live estimate created. No customer export. No backend, network, external AI/API, accounting export, payment, payroll, bank, or live record change.</div></div>';
+  }
+
+  function markSowReviewReadyDemoV61Y() {
+    var queue = readSowReviewQueueV61Y().map(function (item) {
+      return Object.assign({}, item, { status: 'review ready demo / local only', updatedAt: new Date().toISOString() });
+    });
+    writeSowReviewQueueV61Y(queue);
+    state.markReviewReadyDemoWorks = true;
+    state.noLiveSowCreated = true;
+    state.noLiveEstimateCreated = true;
+    state.noCustomerExport = true;
+    state.noLiveRecordChanges = true;
+    syncNamespace();
+    return queue;
+  }
+
+  function renderMarkReviewReadyDemoV61Y() {
+    markSowReviewReadyDemoV61Y();
+    return '<div class="note" data-aqua-v61y-mark-review-ready-demo="true"><strong>Mark Review Ready Demo</strong><div>Review queue items were marked review ready demo / local only.</div>' + renderSowReviewQueueRowsV61Y(readSowReviewQueueV61Y()) + sowReviewSafetyLabelsV61Y() + '<div class="locked">Local/demo status only. No live SOW created. No live estimate created. No customer export. No backend, network, external AI/API, accounting, payment, payroll, bank, or live record change.</div></div>';
+  }
+
+  function clearSowReviewQueueV61Y() {
+    try { window.localStorage.removeItem(SOW_REVIEW_QUEUE_KEY_V61Y); } catch (error) { state.sowReviewQueueStorageWarningV61Y = 'localStorage unavailable while clearing SOW review queue'; }
+    state.clearSowReviewQueueWorks = true;
+    state.noLiveSowCreated = true;
+    state.noLiveEstimateCreated = true;
+    state.noCustomerExport = true;
+    state.noLiveRecordChanges = true;
+    syncNamespace();
+    return true;
+  }
+
+  function renderClearSowReviewQueueV61Y() {
+    clearSowReviewQueueV61Y();
+    return '<div class="note" data-aqua-v61y-clear-sow-review-queue="true"><strong>Clear SOW Review Queue Demo</strong><div>Only local/demo review queue key aquaSowReviewQueueV61Y was cleared.</div><div class="locked">Calculator drafts remain separate. No live SOW, live estimate, customer export, backend, accounting, payment, payroll, bank, or live record changed.</div></div>';
+  }
+
   function calculatorDraftOutputNodeV61X(button) {
     if (document && typeof document.getElementById === 'function') {
       var brainOut = document.getElementById('brainOut');
@@ -1316,7 +1506,12 @@
       var showButton = target && target.closest ? target.closest('[data-aqua-v61x-show-calculator-drafts="true"]') : null;
       var clearButton = target && target.closest ? target.closest('[data-aqua-v61x-clear-calculator-drafts="true"]') : null;
       var estimateButton = target && target.closest ? target.closest('[data-aqua-v61x-add-estimate-draft="true"]') : null;
-      var button = saveButton || showButton || clearButton || estimateButton;
+      var sendSowButton = target && target.closest ? target.closest('[data-aqua-v61y-send-sow-review="true"]') : null;
+      var showSowButton = target && target.closest ? target.closest('[data-aqua-v61y-show-sow-review="true"]') : null;
+      var markSowButton = target && target.closest ? target.closest('[data-aqua-v61y-mark-review-ready="true"]') : null;
+      var returnDraftsButton = target && target.closest ? target.closest('[data-aqua-v61y-return-calculator-drafts="true"]') : null;
+      var clearSowButton = target && target.closest ? target.closest('[data-aqua-v61y-clear-sow-review="true"]') : null;
+      var button = saveButton || showButton || clearButton || estimateButton || sendSowButton || showSowButton || markSowButton || returnDraftsButton || clearSowButton;
       if (!button) return;
       var output = calculatorDraftOutputNodeV61X(button);
       if (!output) return;
@@ -1324,6 +1519,12 @@
       if (showButton) output.innerHTML = renderSavedCalculatorDraftsV61X();
       if (clearButton) output.innerHTML = renderClearCalculatorDraftsV61X();
       if (estimateButton) output.innerHTML = renderEstimateDraftPlaceholderV61X();
+      if (sendSowButton) output.innerHTML = renderSendSowReviewQueueConfirmationV61Y(sendLatestCalculatorDraftToSowReviewV61Y());
+      if (showSowButton) output.innerHTML = renderSowReviewQueueV61Y();
+      if (markSowButton) output.innerHTML = renderMarkReviewReadyDemoV61Y();
+      if (returnDraftsButton) output.innerHTML = renderSavedCalculatorDraftsV61X();
+      if (clearSowButton) output.innerHTML = renderClearSowReviewQueueV61Y();
+      state.noLiveSowCreated = true;
       state.noLiveEstimateCreated = true;
       state.noCustomerExport = true;
       state.noBackendCalls = true;
@@ -1978,6 +2179,26 @@
     }
     if (intent.canonicalIntent === 'add_to_estimate_draft_v61x') {
       if (outputNode) outputNode.innerHTML = renderEstimateDraftPlaceholderV61X();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'send_to_sow_review_queue_v61y') {
+      if (outputNode) outputNode.innerHTML = renderSendSowReviewQueueConfirmationV61Y(sendLatestCalculatorDraftToSowReviewV61Y());
+      return intent;
+    }
+    if (intent.canonicalIntent === 'show_sow_review_queue_v61y') {
+      if (outputNode) outputNode.innerHTML = renderSowReviewQueueV61Y();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'mark_review_ready_demo_v61y') {
+      if (outputNode) outputNode.innerHTML = renderMarkReviewReadyDemoV61Y();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'return_to_calculator_drafts_v61y') {
+      if (outputNode) outputNode.innerHTML = renderSavedCalculatorDraftsV61X();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'clear_sow_review_queue_demo_v61y') {
+      if (outputNode) outputNode.innerHTML = renderClearSowReviewQueueV61Y();
       return intent;
     }
     if (intent.canonicalIntent === 'local_calculator_available' || intent.canonicalIntent === 'local_calculator_need_more_information') {
@@ -3184,6 +3405,16 @@
       { command: 'save this calculation', expected: 'Save Calculation Draft stores latest paint calculator draft locally', intent: 'save_calculation_draft_v61x', module: /Calculator Drafts \/ Estimate Prep/i, html: /Save Calculation Draft|Paint Gallons|draft\/local demo only|No live estimate created/i, noFallback: true, saveCalculationDraft: true },
       { command: 'show saved calculations', expected: 'Saved calculator drafts panel displays concrete and paint drafts', intent: 'show_calculator_drafts_v61x', module: /Calculator Drafts \/ Estimate Prep/i, html: /Calculator Drafts \/ Estimate Prep — Local Demo|Concrete Slab|Paint Gallons|Draft only \/ Local demo/i, noFallback: true, showCalculatorDrafts: true },
       { command: 'add to estimate draft', expected: 'Estimate Draft Placeholder stays locked and demo-only', intent: 'add_to_estimate_draft_v61x', module: /Estimate Draft Placeholder/i, html: /Estimate Draft Placeholder|Estimate Draft Locked|Customer Export Locked|No Live Change Made/i, noFallback: true, addEstimateDraftPlaceholder: true },
+      { command: 'send to SOW review', contextCommands: ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'save calculation draft'], expected: 'Saved calculator draft routes to local/demo SOW review queue', intent: 'send_to_sow_review_queue_v61y', module: /SOW \/ Estimate Review Queue/i, html: /Send to SOW Review Queue|aquaSowReviewQueueV61Y|No live SOW created|No live estimate created/i, noFallback: true, sendSowReviewQueue: true, sowSafety: true },
+      { command: 'send this to SOW review', contextCommands: ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'save calculation draft'], expected: 'Send this to SOW review synonym routes locally', intent: 'send_to_sow_review_queue_v61y', module: /SOW \/ Estimate Review Queue/i, html: /Send to SOW Review Queue|Source Draft Calculation ID/i, noFallback: true, sendSowReviewQueue: true, sowSafety: true },
+      { command: 'send to estimate review', contextCommands: ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'save calculation draft'], expected: 'Estimate review synonym routes locally', intent: 'send_to_sow_review_queue_v61y', module: /SOW \/ Estimate Review Queue/i, html: /SOW Review Queue|Estimate Review Locked|No live estimate created/i, noFallback: true, sendSowReviewQueue: true, sowSafety: true },
+      { command: 'add this to SOW review queue', contextCommands: ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'save calculation draft'], expected: 'Add this to queue synonym routes locally', intent: 'send_to_sow_review_queue_v61y', module: /SOW \/ Estimate Review Queue/i, html: /Send to SOW Review Queue|Demo Data Only/i, noFallback: true, sendSowReviewQueue: true, sowSafety: true },
+      { command: 'show SOW review queue', contextCommands: ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'save calculation draft', 'send to SOW review'], expected: 'SOW Review Queue displays queued draft', intent: 'show_sow_review_queue_v61y', module: /SOW \/ Estimate Review Queue/i, html: /SOW \/ Estimate Review Queue — Local Demo|Review Queue ID|Source Draft Calculation ID|Safety: No live SOW, no live estimate, no customer export, no backend, no accounting/i, noFallback: true, showSowReviewQueue: true, sowSafety: true },
+      { command: 'show estimate review queue', contextCommands: ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'save calculation draft', 'send to SOW review'], expected: 'Estimate review queue synonym displays queued draft', intent: 'show_sow_review_queue_v61y', module: /SOW \/ Estimate Review Queue/i, html: /SOW \/ Estimate Review Queue — Local Demo|Recommended Amount/i, noFallback: true, showSowReviewQueue: true, sowSafety: true },
+      { command: 'mark review ready demo', contextCommands: ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'save calculation draft', 'send to SOW review'], expected: 'Mark Review Ready Demo changes local/demo status only', intent: 'mark_review_ready_demo_v61y', module: /SOW \/ Estimate Review Queue/i, html: /Mark Review Ready Demo|review ready demo \/ local only|No live SOW created|No live estimate created/i, noFallback: true, markReviewReadyDemo: true, sowSafety: true },
+      { command: 'return to calculator drafts', contextCommands: ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'save calculation draft', 'send to SOW review'], expected: 'Return to calculator drafts reopens local drafts panel', intent: 'return_to_calculator_drafts_v61y', module: /Calculator Drafts \/ Estimate Prep/i, html: /Calculator Drafts \/ Estimate Prep — Local Demo|Send to SOW Review Queue/i, noFallback: true, showCalculatorDrafts: true },
+      { command: 'clear SOW review queue demo', contextCommands: ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'save calculation draft', 'send to SOW review'], expected: 'Clear SOW Review Queue Demo clears only local/demo queue', intent: 'clear_sow_review_queue_demo_v61y', module: /SOW \/ Estimate Review Queue/i, html: /Clear SOW Review Queue Demo|aquaSowReviewQueueV61Y|No live SOW/i, noFallback: true, clearSowReviewQueue: true, sowSafety: true },
+      { command: 'send to SOW review', expected: 'No calculator draft found. Save a calculation draft first.', intent: 'send_to_sow_review_queue_v61y', module: /SOW \/ Estimate Review Queue/i, html: /No calculator draft found\. Save a calculation draft first\./i, noFallback: true, noCalculatorDraftForSowReview: true, sowSafety: true },
       { command: 'clear saved calculations', expected: 'Clear Saved Calculation Drafts clears local demo drafts only', intent: 'clear_calculator_drafts_v61x', module: /Calculator Drafts \/ Estimate Prep/i, html: /Clear Saved Calculation Drafts|aquaCalculatorDraftsV61X|No live estimate/i, noFallback: true, clearCalculatorDrafts: true },
       { command: 'save calculation draft', expected: 'Save Calculation Draft without active calculator result asks user to run calculator first', intent: 'save_calculation_draft_v61x', module: /Calculator Drafts \/ Estimate Prep/i, html: /No current calculator result found\. Run a local jobsite calculator first\./i, noFallback: true, noCurrentCalculation: true },
       { command: 'how many gallons of paint', expected: 'Need More Information for missing paint square footage', intent: 'local_calculator_need_more_information', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Need More Information|square footage to paint|No internet\/API call was made/i, noFallback: true, jobsiteCalculator: true, needMoreInformation: true },
@@ -3223,7 +3454,7 @@
 
   function regressionStorageSnapshotV61L() {
     var snapshot = {};
-    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S].forEach(function (key) {
+    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S, CALCULATOR_DRAFTS_KEY_V61X, SOW_REVIEW_QUEUE_KEY_V61Y].forEach(function (key) {
       try {
         snapshot[key] = window.localStorage.getItem(key);
       } catch (error) {
@@ -3259,6 +3490,7 @@
     var intent;
     try {
       if (testCase.contextCommand) runNormalizedAquaCommandV61E(testCase.contextCommand, createRegressionHostV61L());
+      if (testCase.contextCommands) testCase.contextCommands.forEach(function (command) { runNormalizedAquaCommandV61E(command, createRegressionHostV61L()); });
       intent = runNormalizedAquaCommandV61E(testCase.command, host);
     } finally {
       restoreRegressionStorageSnapshotV61L(snapshot);
@@ -3303,6 +3535,12 @@
       normalizedTubeTerm: intent && intent.normalizedTubeTerm,
       askMode: intent && intent.askMode,
       renderedDraftQueue: /Draft Change Queue/i.test(html),
+      renderedSowReviewQueue: /SOW \/ Estimate Review Queue — Local Demo|data-aqua-v61y-sow-review-queue-panel/i.test(html),
+      renderedSendSowReviewQueue: /Send to SOW Review Queue|data-aqua-v61y-send-sow-review-confirmation/i.test(html),
+      renderedMarkReviewReadyDemo: /Mark Review Ready Demo|review ready demo \/ local only|data-aqua-v61y-mark-review-ready-demo/i.test(html),
+      renderedClearSowReviewQueue: /Clear SOW Review Queue Demo|data-aqua-v61y-clear-sow-review-queue/i.test(html),
+      renderedNoCalculatorDraftForSowReview: /No calculator draft found\. Save a calculation draft first\./i.test(html),
+      noLiveSowEstimateCustomerAccountingText: /No live SOW|no live estimate|no customer export|no backend|no accounting/i.test(html),
       noLiveChangeText: /No live record changed|No Live Change Made|No live AI, backend|No backend, network, or live AI/i.test(html)
     };
     var errors = [];
@@ -3331,6 +3569,12 @@
     if (testCase.clearCalculatorDrafts && !actual.renderedClearCalculatorDrafts) errors.push('Expected clear saved calculation drafts panel, but it did not render.');
     if (testCase.addEstimateDraftPlaceholder && !actual.renderedEstimateDraftPlaceholder) errors.push('Expected locked estimate draft placeholder, but it did not render.');
     if (testCase.noCurrentCalculation && !actual.renderedNoCurrentCalculation) errors.push('Expected no-current-calculation message, but it did not render.');
+    if (testCase.sendSowReviewQueue && !actual.renderedSendSowReviewQueue) errors.push('Expected Send to SOW Review Queue confirmation, but it did not render.');
+    if (testCase.showSowReviewQueue && !actual.renderedSowReviewQueue) errors.push('Expected SOW / Estimate Review Queue panel, but it did not render.');
+    if (testCase.markReviewReadyDemo && !actual.renderedMarkReviewReadyDemo) errors.push('Expected Mark Review Ready Demo status, but it did not render.');
+    if (testCase.clearSowReviewQueue && !actual.renderedClearSowReviewQueue) errors.push('Expected Clear SOW Review Queue Demo panel, but it did not render.');
+    if (testCase.noCalculatorDraftForSowReview && !actual.renderedNoCalculatorDraftForSowReview) errors.push('Expected no calculator draft found message, but it did not render.');
+    if (testCase.sowSafety && !actual.noLiveSowEstimateCustomerAccountingText) errors.push('Expected SOW/estimate/customer/backend/accounting safety copy.');
     if (typeof testCase.recommendedGallons === 'number' && actual.recommendedGallons !== testCase.recommendedGallons) errors.push('Expected recommended gallons ' + testCase.recommendedGallons + ' but got ' + actual.recommendedGallons + '.');
     if (typeof testCase.recommendedSheets === 'number' && actual.recommendedSheets !== testCase.recommendedSheets) errors.push('Expected recommended sheets ' + testCase.recommendedSheets + ' but got ' + actual.recommendedSheets + '.');
     if (typeof testCase.recommendedSquareFeet === 'number' && actual.recommendedSquareFeet !== testCase.recommendedSquareFeet) errors.push('Expected recommended square feet ' + testCase.recommendedSquareFeet + ' but got ' + actual.recommendedSquareFeet + '.');
@@ -3388,8 +3632,8 @@
   function placeholderRegressionReportV61T() {
     var safety = regressionSafetyV61L();
     return {
-      version: 'v61X',
-      harnessVersion: 'v61L-compatible/v61X',
+      version: 'v61Y',
+      harnessVersion: 'v61L-compatible/v61Y',
       timestamp: new Date().toISOString(),
       total: 0,
       passed: 0,
@@ -3420,6 +3664,14 @@
       permissionedActionModeWorks: true,
       generalAskLockedWorks: true,
       unknownFallbackWorks: true,
+      sowReviewQueueWorks: true,
+      sendToSowReviewWorks: true,
+      showSowReviewQueueWorks: true,
+      markReviewReadyDemoWorks: true,
+      clearSowReviewQueueWorks: true,
+      noLiveSowCreated: true,
+      noLiveEstimateCreated: true,
+      noCustomerExport: true,
       noApiKeysInFrontend: true
     };
   }
@@ -3440,8 +3692,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61X',
-      harnessVersion: 'v61L-compatible/v61X',
+      version: 'v61Y',
+      harnessVersion: 'v61L-compatible/v61Y',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -3483,6 +3735,12 @@
       showSavedCalculationsWorks: results.some(function (result) { return result.command === 'show saved calculations' && result.passed && result.actual.renderedCalculatorDraftsPanel; }),
       clearSavedCalculationsWorks: results.some(function (result) { return result.command === 'clear saved calculations' && result.passed && result.actual.renderedClearCalculatorDrafts; }),
       addToEstimateDraftLockedWorks: results.some(function (result) { return result.command === 'add to estimate draft' && result.passed && result.actual.renderedEstimateDraftPlaceholder; }),
+      sowReviewQueueWorks: results.some(function (result) { return result.command === 'show SOW review queue' && result.passed && result.actual.renderedSowReviewQueue; }),
+      sendToSowReviewWorks: results.some(function (result) { return result.command === 'send to SOW review' && result.passed && result.actual.renderedSendSowReviewQueue; }),
+      showSowReviewQueueWorks: results.some(function (result) { return result.command === 'show SOW review queue' && result.passed && result.actual.renderedSowReviewQueue; }),
+      markReviewReadyDemoWorks: results.some(function (result) { return result.command === 'mark review ready demo' && result.passed && result.actual.renderedMarkReviewReadyDemo; }),
+      clearSowReviewQueueWorks: results.some(function (result) { return result.command === 'clear SOW review queue demo' && result.passed && result.actual.renderedClearSowReviewQueue; }),
+      noLiveSowCreated: true,
       noLiveEstimateCreated: true,
       noCustomerExport: true,
       needMoreInformationWorks: results.some(function (result) { return result.command === 'how many gallons of paint' && result.passed && result.actual.renderedNeedMoreInformation; }),
@@ -3518,6 +3776,12 @@
     state.showSavedCalculationsWorks = report.showSavedCalculationsWorks;
     state.clearSavedCalculationsWorks = report.clearSavedCalculationsWorks;
     state.addToEstimateDraftLockedWorks = report.addToEstimateDraftLockedWorks;
+    state.sowReviewQueueWorks = report.sowReviewQueueWorks;
+    state.sendToSowReviewWorks = report.sendToSowReviewWorks;
+    state.showSowReviewQueueWorks = report.showSowReviewQueueWorks;
+    state.markReviewReadyDemoWorks = report.markReviewReadyDemoWorks;
+    state.clearSowReviewQueueWorks = report.clearSowReviewQueueWorks;
+    state.noLiveSowCreated = true;
     state.noLiveEstimateCreated = true;
     state.noCustomerExport = true;
     state.needMoreInformationWorks = report.needMoreInformationWorks;
@@ -3745,5 +4009,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61X extensions loaded: Calculator Report / Save-to-Estimate Draft Foundation active. No live estimate created.');
+  console.log('Aqua Homes OS v61Y extensions loaded: Calculator Draft Approval / SOW Review Queue active. No live SOW or live estimate created.');
 }());

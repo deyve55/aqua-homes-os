@@ -1,10 +1,10 @@
-# Aqua Homes OS v61X Regression Report
+# Aqua Homes OS v61Y Regression Report
 
-- Timestamp: 2026-06-05T16:43:45.277Z
+- Timestamp: 2026-06-05T17:12:28.643Z
 - Branch: work
-- Commit: 32893afd016c60eddd03987060b38993426c52be
-- Total tests: 152
-- Passed: 152
+- Commit: f188def13560f68dd533bac5a17b6dae67c6603f
+- Total tests: 171
+- Passed: 171
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -32,6 +32,12 @@
 - showSavedCalculationsWorks: true
 - clearSavedCalculationsWorks: true
 - addToEstimateDraftLockedWorks: true
+- sowReviewQueueWorks: true
+- sendToSowReviewWorks: true
+- showSowReviewQueueWorks: true
+- markReviewReadyDemoWorks: true
+- clearSowReviewQueueWorks: true
+- noLiveSowCreated: true
 - noLiveEstimateCreated: true
 - noCustomerExport: true
 - unsupportedGeneralAskRemainsLocked: true
@@ -88,9 +94,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v61X
-- Total: 66
-- Passed: 66
+- Version: v61Y
+- Total: 76
+- Passed: 76
 - Failed: 0
 
 ## Copyable Codex Repair Prompt

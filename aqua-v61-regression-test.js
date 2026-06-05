@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v61X';
+const VERSION = 'v61Y';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -288,6 +288,11 @@ function checkStaticFiles() {
   addCheck('v61X Save Calculation Draft action exists', /Save Calculation Draft/.test(extension) && /save_calculation_draft_v61x/.test(extension), { layer: 'calculator-drafts-v61x', fileToFix: EXTENSION });
   addCheck('v61X Calculator Drafts panel exists', /Calculator Drafts \/ Estimate Prep — Local Demo/.test(extension), { layer: 'calculator-drafts-v61x', fileToFix: EXTENSION });
   addCheck('v61X Estimate Draft Placeholder lock exists', /Estimate Draft Placeholder/.test(extension) && /Estimate Draft Locked/.test(extension), { layer: 'calculator-drafts-v61x', fileToFix: EXTENSION });
+  addCheck('v61Y SOW review queue storage key exists', /aquaSowReviewQueueV61Y/.test(extension), { layer: 'sow-review-queue-v61y', fileToFix: EXTENSION });
+  addCheck('v61Y SOW / Estimate Review Queue panel exists', /SOW \/ Estimate Review Queue — Local Demo/.test(extension), { layer: 'sow-review-queue-v61y', fileToFix: EXTENSION });
+  addCheck('v61Y Send to SOW Review Queue action exists', /Send to SOW Review Queue/.test(extension) && /send_to_sow_review_queue_v61y/.test(extension), { layer: 'sow-review-queue-v61y', fileToFix: EXTENSION });
+  addCheck('v61Y Mark Review Ready Demo action exists', /Mark Review Ready Demo/.test(extension) && /mark_review_ready_demo_v61y/.test(extension), { layer: 'sow-review-queue-v61y', fileToFix: EXTENSION });
+  addCheck('v61Y Clear SOW Review Queue Demo action exists', /Clear SOW Review Queue Demo/.test(extension) && /clear_sow_review_queue_demo_v61y/.test(extension), { layer: 'sow-review-queue-v61y', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -310,7 +315,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v61X', extensionReport.version === 'v61X', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v61Y', extensionReport.version === 'v61Y', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('extension regression includes spoken readback availability or fallback flag', extensionReport.spokenReadbackAvailable === true || extensionReport.spokenReadbackBrowserUnavailableFallback === true, { layer: 'spoken-readback-v61r', actual: { available: extensionReport.spokenReadbackAvailable, fallback: extensionReport.spokenReadbackBrowserUnavailableFallback }, fileToFix: EXTENSION });
     addCheck('extension regression spoken preference key is aquaSpokenReadbackV61R', extensionReport.spokenReadbackPreferenceKey === 'aquaSpokenReadbackV61R', { layer: 'spoken-readback-v61r', actual: extensionReport.spokenReadbackPreferenceKey, fileToFix: EXTENSION });
     addCheck('automationCommandRoutesBeforeFallback is true', extensionReport.automationCommandRoutesBeforeFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandRoutesBeforeFallback, fileToFix: EXTENSION });
@@ -442,6 +447,31 @@ function runExtensionRegression() {
     const bestPaintRow = byCommand.get('what is the best paint brand today');
     addCheck('Unsupported general ask remains locked with no external API/search', Boolean(bestPaintRow && bestPaintRow.passed && bestPaintRow.actual && bestPaintRow.actual.renderedGeneralAskLocked), { layer: 'jobsite-calculator-v61w', expected: 'locked placeholder', actual: bestPaintRow ? bestPaintRow.actual : 'missing from extension results', fileToFix: EXTENSION });
 
+
+    [
+      ['send to SOW review', 'send_to_sow_review_queue_v61y'],
+      ['send this to SOW review', 'send_to_sow_review_queue_v61y'],
+      ['send to estimate review', 'send_to_sow_review_queue_v61y'],
+      ['add this to SOW review queue', 'send_to_sow_review_queue_v61y'],
+      ['show SOW review queue', 'show_sow_review_queue_v61y'],
+      ['show estimate review queue', 'show_sow_review_queue_v61y'],
+      ['mark review ready demo', 'mark_review_ready_demo_v61y'],
+      ['return to calculator drafts', 'return_to_calculator_drafts_v61y'],
+      ['clear SOW review queue demo', 'clear_sow_review_queue_demo_v61y']
+    ].forEach(([command, intent]) => {
+      const row = byCommand.get(command);
+      addCheck(`v61Y SOW review command routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.canonicalIntent === intent), { layer: 'sow-review-queue-v61y', expected: intent, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    });
+    const sowSendRow = extensionReport.results.find((row) => row.command === 'send to SOW review' && row.actual && row.actual.renderedSendSowReviewQueue) || byCommand.get('send to SOW review');
+    addCheck('v61Y Send to SOW review displays local/demo confirmation', Boolean(sowSendRow && sowSendRow.passed && sowSendRow.actual && sowSendRow.actual.renderedSendSowReviewQueue), { layer: 'sow-review-queue-v61y', expected: 'send confirmation', actual: sowSendRow ? sowSendRow.actual : 'missing', fileToFix: EXTENSION });
+    const sowShowRow = byCommand.get('show SOW review queue');
+    addCheck('v61Y SOW review queue displays queued calculator draft', Boolean(sowShowRow && sowShowRow.passed && sowShowRow.actual && sowShowRow.actual.renderedSowReviewQueue), { layer: 'sow-review-queue-v61y', expected: 'queue panel', actual: sowShowRow ? sowShowRow.actual : 'missing', fileToFix: EXTENSION });
+    const markReadyRow = byCommand.get('mark review ready demo');
+    addCheck('v61Y Mark Review Ready Demo is local/demo-only', Boolean(markReadyRow && markReadyRow.passed && markReadyRow.actual && markReadyRow.actual.renderedMarkReviewReadyDemo), { layer: 'sow-review-queue-v61y', expected: 'local demo ready status', actual: markReadyRow ? markReadyRow.actual : 'missing', fileToFix: EXTENSION });
+    const clearSowRow = byCommand.get('clear SOW review queue demo');
+    addCheck('v61Y Clear SOW Review Queue Demo clears local demo queue', Boolean(clearSowRow && clearSowRow.passed && clearSowRow.actual && clearSowRow.actual.renderedClearSowReviewQueue), { layer: 'sow-review-queue-v61y', expected: 'local demo clear panel', actual: clearSowRow ? clearSowRow.actual : 'missing', fileToFix: EXTENSION });
+    addCheck('v61Y no live SOW created', extensionReport.noLiveSowCreated === true, { layer: 'sow-review-queue-v61y', actual: extensionReport.noLiveSowCreated, fileToFix: EXTENSION });
+
     const permissionRow = byCommand.get('code this receipt to materials');
     addCheck('receipt coding routes to Permission Granter', Boolean(permissionRow && permissionRow.passed && permissionRow.actual && permissionRow.actual.renderedPermissionGate), { layer: 'permission-draft-safety', expected: 'Permission Granter demo gate', actual: permissionRow && permissionRow.actual, fileToFix: EXTENSION });
     const safety = extensionReport.permissionDraftSafety || {};
@@ -553,7 +583,7 @@ function buildRepairPrompt(report) {
 
 function createGateSelfTestReport(overrides = {}) {
   const baseReport = {
-    version: 'v61V-gate-self-test',
+    version: 'v61Y-gate-self-test',
     total: 1,
     passed: 1,
     failed: 0,
@@ -573,10 +603,10 @@ function createGateSelfTestReport(overrides = {}) {
 function runMergeGateSelfTest() {
   const beforeHtmlHash = hashFileSafe(HTML_KEEPER);
   const fakePassingReport = createGateSelfTestReport({
-    version: 'v61V-simulated-passing'
+    version: 'v61Y-simulated-passing'
   });
   const fakeFailingReport = createGateSelfTestReport({
-    version: 'v61V-simulated-failure',
+    version: 'v61Y-simulated-failure',
     total: 1,
     passed: 0,
     failed: 1,
@@ -644,6 +674,12 @@ function markdown(report) {
     `- showSavedCalculationsWorks: ${report.showSavedCalculationsWorks === true}\n` +
     `- clearSavedCalculationsWorks: ${report.clearSavedCalculationsWorks === true}\n` +
     `- addToEstimateDraftLockedWorks: ${report.addToEstimateDraftLockedWorks === true}\n` +
+    `- sowReviewQueueWorks: ${report.sowReviewQueueWorks === true}\n` +
+    `- sendToSowReviewWorks: ${report.sendToSowReviewWorks === true}\n` +
+    `- showSowReviewQueueWorks: ${report.showSowReviewQueueWorks === true}\n` +
+    `- markReviewReadyDemoWorks: ${report.markReviewReadyDemoWorks === true}\n` +
+    `- clearSowReviewQueueWorks: ${report.clearSowReviewQueueWorks === true}\n` +
+    `- noLiveSowCreated: ${report.noLiveSowCreated === true}\n` +
     `- noLiveEstimateCreated: ${report.noLiveEstimateCreated === true}\n` +
     `- noCustomerExport: ${report.noCustomerExport === true}\n` +
     `- unsupportedGeneralAskRemainsLocked: ${report.extensionRegression && report.extensionRegression.unsupportedGeneralAskRemainsLocked === true}\n` +
@@ -726,6 +762,12 @@ async function main() {
     showSavedCalculationsWorks: extensionReport ? extensionReport.showSavedCalculationsWorks === true : false,
     clearSavedCalculationsWorks: extensionReport ? extensionReport.clearSavedCalculationsWorks === true : false,
     addToEstimateDraftLockedWorks: extensionReport ? extensionReport.addToEstimateDraftLockedWorks === true : false,
+    sowReviewQueueWorks: extensionReport ? extensionReport.sowReviewQueueWorks === true : false,
+    sendToSowReviewWorks: extensionReport ? extensionReport.sendToSowReviewWorks === true : false,
+    showSowReviewQueueWorks: extensionReport ? extensionReport.showSowReviewQueueWorks === true : false,
+    markReviewReadyDemoWorks: extensionReport ? extensionReport.markReviewReadyDemoWorks === true : false,
+    clearSowReviewQueueWorks: extensionReport ? extensionReport.clearSowReviewQueueWorks === true : false,
+    noLiveSowCreated: extensionReport ? extensionReport.noLiveSowCreated === true : false,
     noLiveEstimateCreated: extensionReport ? extensionReport.noLiveEstimateCreated === true : false,
     noCustomerExport: extensionReport ? extensionReport.noCustomerExport === true : false,
     noBackendCalls: safetyStatus.noBackendCalls === true,
