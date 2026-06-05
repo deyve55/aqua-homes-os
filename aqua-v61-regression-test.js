@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v61T';
+const VERSION = 'v61U';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -268,9 +268,12 @@ function checkStaticFiles() {
   addCheck('v61R Stop Speaking button exists', /Stop Speaking/.test(extension) && /data-aqua-v61r-stop-speaking/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
   addCheck('v61R spoken readback uses safe local preference key only', /aquaSpokenReadbackV61R/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
   addCheck('v61R spoken readback browser fallback copy exists', /Spoken readback unavailable in this browser\./.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
-  addCheck('v61T automation report command phrase exists', /show automation report/.test(extension), { layer: 'automation-routing-v61t', fileToFix: EXTENSION });
-  addCheck('v61T automation routing priority flag exists', /automationCommandRoutesBeforeFallback/.test(extension), { layer: 'automation-routing-v61t', fileToFix: EXTENSION });
-  addCheck('v61T show automation report flag exists', /showAutomationReportCommandWorks/.test(extension), { layer: 'automation-routing-v61t', fileToFix: EXTENSION });
+  addCheck('v61U automation report command phrase exists', /show automation report/.test(extension), { layer: 'automation-routing-v61t', fileToFix: EXTENSION });
+  addCheck('v61U automation routing priority flag exists', /automationCommandRoutesBeforeFallback/.test(extension), { layer: 'automation-routing-v61t', fileToFix: EXTENSION });
+  addCheck('v61U show automation report flag exists', /showAutomationReportCommandWorks/.test(extension), { layer: 'automation-routing-v61u', fileToFix: EXTENSION });
+  addCheck('v61U Ask AI mode classifier exists', /function\s+classifyAquaAskModeV61U/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
+  addCheck('v61U General Ask locked placeholder exists', /General Ask \/ Jobsite Calculator — Locked Foundation/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
+  addCheck('v61U noApiKeysInFrontend report flag exists', /noApiKeysInFrontend/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -293,13 +296,20 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v61T', extensionReport.version === 'v61T', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v61U', extensionReport.version === 'v61U', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('extension regression includes spoken readback availability or fallback flag', extensionReport.spokenReadbackAvailable === true || extensionReport.spokenReadbackBrowserUnavailableFallback === true, { layer: 'spoken-readback-v61r', actual: { available: extensionReport.spokenReadbackAvailable, fallback: extensionReport.spokenReadbackBrowserUnavailableFallback }, fileToFix: EXTENSION });
     addCheck('extension regression spoken preference key is aquaSpokenReadbackV61R', extensionReport.spokenReadbackPreferenceKey === 'aquaSpokenReadbackV61R', { layer: 'spoken-readback-v61r', actual: extensionReport.spokenReadbackPreferenceKey, fileToFix: EXTENSION });
     addCheck('automationCommandRoutesBeforeFallback is true', extensionReport.automationCommandRoutesBeforeFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandRoutesBeforeFallback, fileToFix: EXTENSION });
     addCheck('showAutomationReportCommandWorks is true', extensionReport.showAutomationReportCommandWorks === true, { layer: 'automation-routing-v61t', actual: extensionReport.showAutomationReportCommandWorks, fileToFix: EXTENSION });
     addCheck('runRegressionQaCommandWorks is true', extensionReport.runRegressionQaCommandWorks === true, { layer: 'automation-routing-v61t', actual: extensionReport.runRegressionQaCommandWorks, fileToFix: EXTENSION });
-    addCheck('automationCommandsDoNotFallback is true', extensionReport.automationCommandsDoNotFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandsDoNotFallback, fileToFix: EXTENSION });
+    addCheck('automationCommandsDoNotFallback is true', extensionReport.automationCommandsDoNotFallback === true, { layer: 'automation-routing-v61u', actual: extensionReport.automationCommandsDoNotFallback, fileToFix: EXTENSION });
+    addCheck('askModeRouterWorks is true', extensionReport.askModeRouterWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.askModeRouterWorks, fileToFix: EXTENSION });
+    addCheck('appNavigationModeWorks is true', extensionReport.appNavigationModeWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.appNavigationModeWorks, fileToFix: EXTENSION });
+    addCheck('automationStatusModeWorks is true', extensionReport.automationStatusModeWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.automationStatusModeWorks, fileToFix: EXTENSION });
+    addCheck('permissionedActionModeWorks is true', extensionReport.permissionedActionModeWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.permissionedActionModeWorks, fileToFix: EXTENSION });
+    addCheck('generalAskLockedWorks is true', extensionReport.generalAskLockedWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.generalAskLockedWorks, fileToFix: EXTENSION });
+    addCheck('unknownFallbackWorks is true', extensionReport.unknownFallbackWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.unknownFallbackWorks, fileToFix: EXTENSION });
+    addCheck('noApiKeysInFrontend is true', extensionReport.noApiKeysInFrontend === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.noApiKeysInFrontend, fileToFix: EXTENSION });
     const failuresList = extensionReport.failures || [];
     failuresList.forEach((failure) => addCheck(`extension command passes: ${failure.command}`, false, { layer: 'extension-regression', expected: failure.expected, actual: failure.actual, fileToFix: EXTENSION }));
 
@@ -337,6 +347,22 @@ function runExtensionRegression() {
     ].forEach((command) => {
       const row = byCommand.get(command);
       addCheck(`voice transcript simulation routes: ${command}`, Boolean(row && row.passed), { layer: 'voice-transcript-simulation', expected: 'recognized local/demo route', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    });
+
+    [
+      ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'general_ask_locked'],
+      ['how many sheets of drywall for this room', 'general_ask_locked'],
+      ['what does this code term mean', 'general_ask_locked'],
+      ['how many gallons of paint do I need', 'general_ask_locked'],
+      ['pull up receipts', 'app_navigation'],
+      ['show automation report', 'automation_status'],
+      ['run regression qa', 'automation_status'],
+      ['code this receipt to materials', 'permissioned_action'],
+      ['what needs approval', 'app_navigation'],
+      ['banana test', 'unknown_fallback']
+    ].forEach(([command, mode]) => {
+      const row = byCommand.get(command);
+      addCheck(`v61U Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.askMode === mode), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     const permissionRow = byCommand.get('code this receipt to materials');
@@ -450,7 +476,7 @@ function buildRepairPrompt(report) {
 
 function createGateSelfTestReport(overrides = {}) {
   const baseReport = {
-    version: 'v61T-gate-self-test',
+    version: 'v61U-gate-self-test',
     total: 1,
     passed: 1,
     failed: 0,
@@ -470,10 +496,10 @@ function createGateSelfTestReport(overrides = {}) {
 function runMergeGateSelfTest() {
   const beforeHtmlHash = hashFileSafe(HTML_KEEPER);
   const fakePassingReport = createGateSelfTestReport({
-    version: 'v61T-simulated-passing'
+    version: 'v61U-simulated-passing'
   });
   const fakeFailingReport = createGateSelfTestReport({
-    version: 'v61T-simulated-failure',
+    version: 'v61U-simulated-failure',
     total: 1,
     passed: 0,
     failed: 1,
@@ -522,7 +548,14 @@ function markdown(report) {
     `- automationCommandRoutesBeforeFallback: ${report.extensionRegression && report.extensionRegression.automationCommandRoutesBeforeFallback === true}\n` +
     `- showAutomationReportCommandWorks: ${report.extensionRegression && report.extensionRegression.showAutomationReportCommandWorks === true}\n` +
     `- runRegressionQaCommandWorks: ${report.extensionRegression && report.extensionRegression.runRegressionQaCommandWorks === true}\n` +
-    `- automationCommandsDoNotFallback: ${report.extensionRegression && report.extensionRegression.automationCommandsDoNotFallback === true}\n\n` +
+    `- automationCommandsDoNotFallback: ${report.extensionRegression && report.extensionRegression.automationCommandsDoNotFallback === true}\n` +
+    `- askModeRouterWorks: ${report.extensionRegression && report.extensionRegression.askModeRouterWorks === true}\n` +
+    `- appNavigationModeWorks: ${report.extensionRegression && report.extensionRegression.appNavigationModeWorks === true}\n` +
+    `- automationStatusModeWorks: ${report.extensionRegression && report.extensionRegression.automationStatusModeWorks === true}\n` +
+    `- permissionedActionModeWorks: ${report.extensionRegression && report.extensionRegression.permissionedActionModeWorks === true}\n` +
+    `- generalAskLockedWorks: ${report.extensionRegression && report.extensionRegression.generalAskLockedWorks === true}\n` +
+    `- unknownFallbackWorks: ${report.extensionRegression && report.extensionRegression.unknownFallbackWorks === true}\n` +
+    `- noApiKeysInFrontend: ${report.extensionRegression && report.extensionRegression.noApiKeysInFrontend === true}\n\n` +
     `## Files Changed\n${changedRows}\n\n` +
     `## Failed Commands / Checks\n${failedRows}\n\n` +
     `## Safety Status\n${safetyRows}\n\n` +
@@ -572,6 +605,15 @@ async function main() {
     safetyStatus,
     browserVisualTest,
     extensionRegression: extensionReport,
+    askModeRouterWorks: extensionReport ? extensionReport.askModeRouterWorks === true : false,
+    appNavigationModeWorks: extensionReport ? extensionReport.appNavigationModeWorks === true : false,
+    automationStatusModeWorks: extensionReport ? extensionReport.automationStatusModeWorks === true : false,
+    permissionedActionModeWorks: extensionReport ? extensionReport.permissionedActionModeWorks === true : false,
+    generalAskLockedWorks: extensionReport ? extensionReport.generalAskLockedWorks === true : false,
+    unknownFallbackWorks: extensionReport ? extensionReport.unknownFallbackWorks === true : false,
+    noNetworkCalls: extensionReport ? extensionReport.noNetworkCalls === true : false,
+    noApiKeysInFrontend: extensionReport ? extensionReport.noApiKeysInFrontend === true : false,
+    noLiveRecordChanges: extensionReport ? extensionReport.noLiveRecordChanges === true : false,
     spokenReadbackAvailable: extensionReport ? extensionReport.spokenReadbackAvailable === true : false,
     spokenReadbackBrowserUnavailableFallback: extensionReport ? extensionReport.spokenReadbackBrowserUnavailableFallback === true : true,
     gateSelfTest,

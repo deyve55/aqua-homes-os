@@ -1,16 +1,16 @@
 {
-  "version": "v61T",
-  "timestamp": "2026-06-05T14:56:54.169Z",
+  "version": "v61U",
+  "timestamp": "2026-06-05T15:47:22.423Z",
   "branch": "work",
-  "commit": "26692d38c8c954e11dfbad80ed869f30e4671165",
+  "commit": "1a4f65c067d3be214dd82edcfd3e66ff016146c7",
   "filesChanged": [
     "aqua-regression-report.json",
     "aqua-regression-report.md",
     "aqua-v61-extensions.js",
     "aqua-v61-regression-test.js"
   ],
-  "total": 74,
-  "passed": 74,
+  "total": 94,
+  "passed": 94,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -95,21 +95,39 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61T automation report command phrase exists",
+      "name": "v61U automation report command phrase exists",
       "passed": true,
       "layer": "automation-routing-v61t",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61T automation routing priority flag exists",
+      "name": "v61U automation routing priority flag exists",
       "passed": true,
       "layer": "automation-routing-v61t",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61T show automation report flag exists",
+      "name": "v61U show automation report flag exists",
       "passed": true,
-      "layer": "automation-routing-v61t",
+      "layer": "automation-routing-v61u",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode classifier exists",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U General Ask locked placeholder exists",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U noApiKeysInFrontend report flag exists",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -128,14 +146,14 @@
       "name": "extension regression produced total tests",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 44,
+      "actual": 48,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
       "name": "extension regression passed count present",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 44,
+      "actual": 48,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -195,10 +213,10 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "extension regression version is v61T",
+      "name": "extension regression version is v61U",
       "passed": true,
       "layer": "extension-regression",
-      "actual": "v61T",
+      "actual": "v61U",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -242,7 +260,56 @@
     {
       "name": "automationCommandsDoNotFallback is true",
       "passed": true,
-      "layer": "automation-routing-v61t",
+      "layer": "automation-routing-v61u",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "askModeRouterWorks is true",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "appNavigationModeWorks is true",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "automationStatusModeWorks is true",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "permissionedActionModeWorks is true",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "generalAskLockedWorks is true",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "unknownFallbackWorks is true",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "noApiKeysInFrontend is true",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
       "actual": true,
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -259,6 +326,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
       },
@@ -277,6 +346,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
       },
@@ -295,6 +366,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
       },
@@ -313,6 +386,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
       },
@@ -331,6 +406,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
       },
@@ -349,6 +426,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
       },
@@ -367,6 +446,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
       },
@@ -385,6 +466,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
       },
@@ -403,6 +486,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
       },
@@ -421,6 +506,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
       },
@@ -439,6 +526,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
       },
@@ -458,6 +547,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": true,
+        "renderedGeneralAskLocked": false,
+        "askMode": "permissioned_action",
         "renderedDraftQueue": true,
         "noLiveChangeText": true
       },
@@ -477,6 +568,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": true,
+        "renderedGeneralAskLocked": false,
+        "askMode": "permissioned_action",
         "renderedDraftQueue": true,
         "noLiveChangeText": true
       },
@@ -496,6 +589,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": true,
+        "renderedGeneralAskLocked": false,
+        "askMode": "permissioned_action",
         "renderedDraftQueue": true,
         "noLiveChangeText": true
       },
@@ -514,6 +609,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
       },
@@ -532,6 +629,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
       },
@@ -550,6 +649,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
       },
@@ -568,6 +669,8 @@
         "renderedFallback": true,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "app_navigation",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
       },
@@ -586,6 +689,209 @@
         "renderedFallback": true,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "app_navigation",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: how many bags of concrete for an 8 inch sonotube 4 feet deep",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "general_ask_locked",
+      "actual": {
+        "command": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
+        "canonicalIntent": "general_ask_locked",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": true,
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: how many sheets of drywall for this room",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "general_ask_locked",
+      "actual": {
+        "command": "how many sheets of drywall for this room",
+        "canonicalIntent": "general_ask_locked",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "how many sheets of drywall for this room",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": true,
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: what does this code term mean",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "general_ask_locked",
+      "actual": {
+        "command": "what does this code term mean",
+        "canonicalIntent": "general_ask_locked",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "what does this code term mean",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": true,
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: how many gallons of paint do I need",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "general_ask_locked",
+      "actual": {
+        "command": "how many gallons of paint do I need",
+        "canonicalIntent": "general_ask_locked",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "how many gallons of paint do i need",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": true,
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: pull up receipts",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "app_navigation",
+      "actual": {
+        "command": "pull up receipts",
+        "canonicalIntent": "show_receipts",
+        "module": "Receipts / Receipt Tracker",
+        "normalizedText": "pull up receipts",
+        "renderedFallback": true,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "app_navigation",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: show automation report",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "automation_status",
+      "actual": {
+        "command": "show automation report",
+        "canonicalIntent": "show_automation_report_v61t",
+        "module": "Automation Report / Regression Report Viewer",
+        "normalizedText": "show automation report",
+        "renderedFallback": false,
+        "renderedAutomationReport": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "automation_status",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: run regression qa",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "automation_status",
+      "actual": {
+        "command": "run regression qa",
+        "canonicalIntent": "run_regression_qa",
+        "module": "Automation Report / Regression Report Viewer",
+        "normalizedText": "run regression qa",
+        "renderedFallback": false,
+        "renderedAutomationReport": true,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "automation_status",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: code this receipt to materials",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "permissioned_action",
+      "actual": {
+        "command": "code this receipt to materials",
+        "canonicalIntent": "action_intent_demo",
+        "module": "Receipts / Receipt Tracker",
+        "normalizedText": "code this receipt to materials",
+        "requestedValue": "materials",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": true,
+        "renderedGeneralAskLocked": false,
+        "askMode": "permissioned_action",
+        "renderedDraftQueue": true,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: what needs approval",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "app_navigation",
+      "actual": {
+        "command": "what needs approval",
+        "canonicalIntent": "approval_queue",
+        "module": "Owner Action Queue / Approval Center",
+        "normalizedText": "what needs approval",
+        "renderedFallback": true,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "app_navigation",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61U Ask AI mode routes: banana test",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "unknown_fallback",
+      "actual": {
+        "command": "banana test",
+        "canonicalIntent": "unknown",
+        "module": "Guided fallback",
+        "normalizedText": "banana test",
+        "renderedFallback": true,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
       },
@@ -605,6 +911,8 @@
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": true,
+        "renderedGeneralAskLocked": false,
+        "askMode": "permissioned_action",
         "renderedDraftQueue": true,
         "noLiveChangeText": true
       },
@@ -766,11 +1074,11 @@
     "reason": "Playwright/browser not available"
   },
   "extensionRegression": {
-    "version": "v61T",
-    "harnessVersion": "v61L-compatible/v61T",
-    "timestamp": "2026-06-05T14:56:53.735Z",
-    "total": 44,
-    "passed": 44,
+    "version": "v61U",
+    "harnessVersion": "v61L-compatible/v61U",
+    "timestamp": "2026-06-05T15:47:21.977Z",
+    "total": 48,
+    "passed": 48,
     "failed": 0,
     "failedCommands": [],
     "failures": [],
@@ -786,6 +1094,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -804,6 +1114,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -822,6 +1134,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -840,6 +1154,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -858,6 +1174,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -876,6 +1194,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -894,6 +1214,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -912,6 +1234,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -930,6 +1254,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -948,6 +1274,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -966,6 +1294,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -984,6 +1314,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1002,6 +1334,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1020,6 +1354,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1038,6 +1374,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1056,6 +1394,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1075,6 +1415,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
+          "renderedGeneralAskLocked": false,
+          "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1094,6 +1436,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
+          "renderedGeneralAskLocked": false,
+          "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1113,6 +1457,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
+          "renderedGeneralAskLocked": false,
+          "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1132,6 +1478,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
+          "renderedGeneralAskLocked": false,
+          "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1151,6 +1499,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
+          "renderedGeneralAskLocked": false,
+          "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1170,6 +1520,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
+          "renderedGeneralAskLocked": false,
+          "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1188,6 +1540,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1206,6 +1560,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1224,6 +1580,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1242,6 +1600,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1260,6 +1620,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1278,6 +1640,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1296,6 +1660,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1314,6 +1680,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1332,6 +1700,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1350,6 +1720,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1368,6 +1740,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1386,6 +1760,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
         },
@@ -1404,6 +1780,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
         },
@@ -1422,6 +1800,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
         },
@@ -1440,6 +1820,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
         },
@@ -1458,6 +1840,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
         },
@@ -1476,6 +1860,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
         },
@@ -1494,6 +1880,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
         },
@@ -1512,6 +1900,8 @@
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
         },
@@ -1531,6 +1921,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1549,8 +1941,90 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
+        "expected": "General Ask / Jobsite Calculator locked placeholder",
+        "actual": {
+          "command": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
+          "canonicalIntent": "general_ask_locked",
+          "module": "General Ask / Jobsite Calculator",
+          "normalizedText": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": true,
+          "askMode": "general_ask_locked",
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "how many sheets of drywall for this room",
+        "expected": "General Ask / Jobsite Calculator locked placeholder",
+        "actual": {
+          "command": "how many sheets of drywall for this room",
+          "canonicalIntent": "general_ask_locked",
+          "module": "General Ask / Jobsite Calculator",
+          "normalizedText": "how many sheets of drywall for this room",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": true,
+          "askMode": "general_ask_locked",
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "what does this code term mean",
+        "expected": "General Ask / Jobsite Calculator locked placeholder",
+        "actual": {
+          "command": "what does this code term mean",
+          "canonicalIntent": "general_ask_locked",
+          "module": "General Ask / Jobsite Calculator",
+          "normalizedText": "what does this code term mean",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": true,
+          "askMode": "general_ask_locked",
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "how many gallons of paint do I need",
+        "expected": "General Ask / Jobsite Calculator locked placeholder",
+        "actual": {
+          "command": "how many gallons of paint do I need",
+          "canonicalIntent": "general_ask_locked",
+          "module": "General Ask / Jobsite Calculator",
+          "normalizedText": "how many gallons of paint do i need",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": true,
+          "askMode": "general_ask_locked",
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
         },
         "passed": true,
         "errors": [],
@@ -1567,6 +2041,8 @@
           "renderedFallback": true,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
         },
@@ -1609,8 +2085,25 @@
     "automationCommandRoutesBeforeFallback": true,
     "showAutomationReportCommandWorks": true,
     "runRegressionQaCommandWorks": true,
-    "automationCommandsDoNotFallback": true
+    "automationCommandsDoNotFallback": true,
+    "askModeRouterWorks": true,
+    "appNavigationModeWorks": true,
+    "automationStatusModeWorks": true,
+    "permissionedActionModeWorks": true,
+    "generalAskLockedWorks": true,
+    "unknownFallbackWorks": true,
+    "noNetworkCalls": true,
+    "noApiKeysInFrontend": true
   },
+  "askModeRouterWorks": true,
+  "appNavigationModeWorks": true,
+  "automationStatusModeWorks": true,
+  "permissionedActionModeWorks": true,
+  "generalAskLockedWorks": true,
+  "unknownFallbackWorks": true,
+  "noNetworkCalls": true,
+  "noApiKeysInFrontend": true,
+  "noLiveRecordChanges": true,
   "spokenReadbackAvailable": false,
   "spokenReadbackBrowserUnavailableFallback": true,
   "gateSelfTest": {
