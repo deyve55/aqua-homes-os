@@ -1,10 +1,10 @@
-# Aqua Homes OS v61W Regression Report
+# Aqua Homes OS v61X Regression Report
 
-- Timestamp: 2026-06-05T16:25:40.802Z
+- Timestamp: 2026-06-05T16:43:45.277Z
 - Branch: work
-- Commit: 09eedb9c8fa83c056c898e44bab46c4fe74cc8d5
-- Total tests: 135
-- Passed: 135
+- Commit: 32893afd016c60eddd03987060b38993426c52be
+- Total tests: 152
+- Passed: 152
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -27,11 +27,23 @@
 - studCalculatorWorks: true
 - concreteSlabCalculatorWorks: true
 - needMoreInformationWorks: true
+- calculatorDraftsWork: true
+- saveCalculationDraftWorks: true
+- showSavedCalculationsWorks: true
+- clearSavedCalculationsWorks: true
+- addToEstimateDraftLockedWorks: true
+- noLiveEstimateCreated: true
+- noCustomerExport: true
 - unsupportedGeneralAskRemainsLocked: true
 - sonotubeEightInchFourFoot80lbReturnsThreeBags: true
 - saunaTubeNormalizesToSonotube: true
 - unknownFallbackWorks: true
+- noBackendCalls: true
+- noNetworkCalls: true
+- noExternalAIApiCalls: true
 - noApiKeysInFrontend: true
+- noLiveRecordChanges: true
+- noPaymentPayrollBankAccountingExport: true
 
 ## Files Changed
 - aqua-regression-report.json
@@ -76,9 +88,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v61W
-- Total: 59
-- Passed: 59
+- Version: v61X
+- Total: 66
+- Passed: 66
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
