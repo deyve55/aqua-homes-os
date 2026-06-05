@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v61R';
+const VERSION = 'v61T';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -268,6 +268,9 @@ function checkStaticFiles() {
   addCheck('v61R Stop Speaking button exists', /Stop Speaking/.test(extension) && /data-aqua-v61r-stop-speaking/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
   addCheck('v61R spoken readback uses safe local preference key only', /aquaSpokenReadbackV61R/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
   addCheck('v61R spoken readback browser fallback copy exists', /Spoken readback unavailable in this browser\./.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
+  addCheck('v61T automation report command phrase exists', /show automation report/.test(extension), { layer: 'automation-routing-v61t', fileToFix: EXTENSION });
+  addCheck('v61T automation routing priority flag exists', /automationCommandRoutesBeforeFallback/.test(extension), { layer: 'automation-routing-v61t', fileToFix: EXTENSION });
+  addCheck('v61T show automation report flag exists', /showAutomationReportCommandWorks/.test(extension), { layer: 'automation-routing-v61t', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -290,13 +293,26 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v61R', extensionReport.version === 'v61R', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v61T', extensionReport.version === 'v61T', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('extension regression includes spoken readback availability or fallback flag', extensionReport.spokenReadbackAvailable === true || extensionReport.spokenReadbackBrowserUnavailableFallback === true, { layer: 'spoken-readback-v61r', actual: { available: extensionReport.spokenReadbackAvailable, fallback: extensionReport.spokenReadbackBrowserUnavailableFallback }, fileToFix: EXTENSION });
     addCheck('extension regression spoken preference key is aquaSpokenReadbackV61R', extensionReport.spokenReadbackPreferenceKey === 'aquaSpokenReadbackV61R', { layer: 'spoken-readback-v61r', actual: extensionReport.spokenReadbackPreferenceKey, fileToFix: EXTENSION });
+    addCheck('automationCommandRoutesBeforeFallback is true', extensionReport.automationCommandRoutesBeforeFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandRoutesBeforeFallback, fileToFix: EXTENSION });
+    addCheck('showAutomationReportCommandWorks is true', extensionReport.showAutomationReportCommandWorks === true, { layer: 'automation-routing-v61t', actual: extensionReport.showAutomationReportCommandWorks, fileToFix: EXTENSION });
+    addCheck('runRegressionQaCommandWorks is true', extensionReport.runRegressionQaCommandWorks === true, { layer: 'automation-routing-v61t', actual: extensionReport.runRegressionQaCommandWorks, fileToFix: EXTENSION });
+    addCheck('automationCommandsDoNotFallback is true', extensionReport.automationCommandsDoNotFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandsDoNotFallback, fileToFix: EXTENSION });
     const failuresList = extensionReport.failures || [];
     failuresList.forEach((failure) => addCheck(`extension command passes: ${failure.command}`, false, { layer: 'extension-regression', expected: failure.expected, actual: failure.actual, fileToFix: EXTENSION }));
 
     const byCommand = new Map((extensionReport.results || []).map((row) => [row.command, row]));
+    [
+      'show automation report',
+      'show regression report',
+      'automation status',
+      'run regression qa'
+    ].forEach((command) => {
+      const row = byCommand.get(command);
+      addCheck(`automation command routes before fallback: ${command}`, Boolean(row && row.passed && row.actual && row.actual.renderedFallback === false && row.actual.renderedAutomationReport === true), { layer: 'automation-routing-v61t', expected: 'Automation Report / Regression Report Viewer without fallback', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    });
     [
       'speak summary',
       'read this back',
@@ -434,7 +450,7 @@ function buildRepairPrompt(report) {
 
 function createGateSelfTestReport(overrides = {}) {
   const baseReport = {
-    version: 'v61R-gate-self-test',
+    version: 'v61T-gate-self-test',
     total: 1,
     passed: 1,
     failed: 0,
@@ -454,10 +470,10 @@ function createGateSelfTestReport(overrides = {}) {
 function runMergeGateSelfTest() {
   const beforeHtmlHash = hashFileSafe(HTML_KEEPER);
   const fakePassingReport = createGateSelfTestReport({
-    version: 'v61R-simulated-passing'
+    version: 'v61T-simulated-passing'
   });
   const fakeFailingReport = createGateSelfTestReport({
-    version: 'v61R-simulated-failure',
+    version: 'v61T-simulated-failure',
     total: 1,
     passed: 0,
     failed: 1,
@@ -502,7 +518,11 @@ function markdown(report) {
     `- safeToMerge: ${report.safeToMerge}\n` +
     `- Merge recommendation: ${report.mergeRecommendation}\n` +
     `- spokenReadbackAvailable: ${report.spokenReadbackAvailable}\n` +
-    `- spokenReadbackBrowserUnavailableFallback: ${report.spokenReadbackBrowserUnavailableFallback}\n\n` +
+    `- spokenReadbackBrowserUnavailableFallback: ${report.spokenReadbackBrowserUnavailableFallback}\n` +
+    `- automationCommandRoutesBeforeFallback: ${report.extensionRegression && report.extensionRegression.automationCommandRoutesBeforeFallback === true}\n` +
+    `- showAutomationReportCommandWorks: ${report.extensionRegression && report.extensionRegression.showAutomationReportCommandWorks === true}\n` +
+    `- runRegressionQaCommandWorks: ${report.extensionRegression && report.extensionRegression.runRegressionQaCommandWorks === true}\n` +
+    `- automationCommandsDoNotFallback: ${report.extensionRegression && report.extensionRegression.automationCommandsDoNotFallback === true}\n\n` +
     `## Files Changed\n${changedRows}\n\n` +
     `## Failed Commands / Checks\n${failedRows}\n\n` +
     `## Safety Status\n${safetyRows}\n\n` +
