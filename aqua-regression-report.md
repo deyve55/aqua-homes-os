@@ -1,13 +1,20 @@
-# Aqua Homes OS v61Y Regression Report
+# Aqua Homes OS v61Z Regression Report
 
-- Timestamp: 2026-06-05T17:12:28.643Z
+- Timestamp: 2026-06-05T17:26:37.086Z
 - Branch: work
-- Commit: f188def13560f68dd533bac5a17b6dae67c6603f
-- Total tests: 171
-- Passed: 171
+- Commit: fc809bfc4df01ec00183735114ef0b0b4563af15
+- Total tests: 184
+- Passed: 184
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
+- premiumModuleShellWorks: true
+- openedModulesPolished: true
+- homeDesignUntouched: true
+- routingStillWorks: true
+- automationStillWorks: true
+- noLiveRecordChanges: true
+- noBackendNetworkLiveAI: true
 - spokenReadbackAvailable: false
 - spokenReadbackBrowserUnavailableFallback: true
 - automationCommandRoutesBeforeFallback: true
@@ -94,7 +101,7 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v61Y
+- Version: v61Z
 - Total: 76
 - Passed: 76
 - Failed: 0

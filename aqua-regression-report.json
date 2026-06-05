@@ -1,16 +1,16 @@
 {
-  "version": "v61Y",
-  "timestamp": "2026-06-05T17:12:28.643Z",
+  "version": "v61Z",
+  "timestamp": "2026-06-05T17:26:37.086Z",
   "branch": "work",
-  "commit": "f188def13560f68dd533bac5a17b6dae67c6603f",
+  "commit": "fc809bfc4df01ec00183735114ef0b0b4563af15",
   "filesChanged": [
     "aqua-regression-report.json",
     "aqua-regression-report.md",
     "aqua-v61-extensions.js",
     "aqua-v61-regression-test.js"
   ],
-  "total": 171,
-  "passed": 171,
+  "total": 184,
+  "passed": 184,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -245,6 +245,24 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "v61Z premium module shell helper exists",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z premium module shell report flags exist",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z premium shell marker class exists",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "AquaV61Extensions exists",
       "passed": true,
       "layer": "extension-regression",
@@ -327,10 +345,45 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "extension regression version is v61Y",
+      "name": "extension regression version is v61Z",
       "passed": true,
       "layer": "extension-regression",
-      "actual": "v61Y",
+      "actual": "v61Z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "premiumModuleShellWorks is true",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "openedModulesPolished is true",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "homeDesignUntouched is true",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "routingStillWorks is true",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "automationStillWorks is true",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "actual": true,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -565,6 +618,7 @@
         "normalizedText": "show automation report",
         "renderedFallback": false,
         "renderedAutomationReport": true,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -605,6 +659,7 @@
         "normalizedText": "show regression report",
         "renderedFallback": false,
         "renderedAutomationReport": true,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -645,6 +700,7 @@
         "normalizedText": "automation status",
         "renderedFallback": false,
         "renderedAutomationReport": true,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -685,6 +741,7 @@
         "normalizedText": "run regression qa",
         "renderedFallback": false,
         "renderedAutomationReport": true,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -725,6 +782,7 @@
         "normalizedText": "speak summary",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -765,6 +823,7 @@
         "normalizedText": "read this back",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -805,6 +864,7 @@
         "normalizedText": "read report",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -845,6 +905,7 @@
         "normalizedText": "stop speaking",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -885,6 +946,7 @@
         "normalizedText": "mute voice",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -925,6 +987,7 @@
         "normalizedText": "voice off",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -965,6 +1028,7 @@
         "normalizedText": "voice on",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1006,6 +1070,7 @@
         "requestedValue": "framing",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1047,6 +1112,7 @@
         "requestedValue": "framing",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1088,6 +1154,7 @@
         "requestedValue": "framing",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1128,6 +1195,7 @@
         "normalizedText": "clear draft q demo",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1168,6 +1236,7 @@
         "normalizedText": "clear draft cute demo",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1208,6 +1277,7 @@
         "normalizedText": "claire draft queue demo",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1248,6 +1318,7 @@
         "normalizedText": "pull up accountant",
         "renderedFallback": true,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1288,6 +1359,7 @@
         "normalizedText": "whats going on today",
         "renderedFallback": true,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1328,6 +1400,7 @@
         "normalizedText": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1357,7 +1430,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1373,6 +1446,7 @@
         "normalizedText": "how many 80 pound bags for an 8 inch sonotube 4 feet deep",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1402,7 +1476,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1418,6 +1492,7 @@
         "normalizedText": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1447,7 +1522,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1463,6 +1538,7 @@
         "normalizedText": "concrete for 8 inch sauna tube 4 ft deep",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1492,7 +1568,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1508,6 +1584,7 @@
         "normalizedText": "8 inch tube 4 feet deep concrete bags",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1537,7 +1614,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1553,6 +1630,7 @@
         "normalizedText": "how many gallons of paint for 1200 square feet",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1578,7 +1656,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1594,6 +1672,7 @@
         "normalizedText": "how many sheets of drywall for a 12 by 12 room 8 foot ceiling",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1619,7 +1698,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1635,6 +1714,7 @@
         "normalizedText": "flooring for 12 by 15 room",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1660,7 +1740,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1676,6 +1756,7 @@
         "normalizedText": "how many studs for a 16 foot wall",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1701,7 +1782,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1717,6 +1798,7 @@
         "normalizedText": "concrete for 10 by 12 slab 4 inches thick",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1744,7 +1826,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1760,6 +1842,7 @@
         "normalizedText": "how many gallons of paint",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1784,7 +1867,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1800,6 +1883,7 @@
         "normalizedText": "what is the best paint brand today",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": true,
         "renderedJobsiteCalculator": false,
@@ -1824,7 +1908,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1840,6 +1924,7 @@
         "normalizedText": "how many sheets of drywall for this room",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -1864,7 +1949,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1880,6 +1965,7 @@
         "normalizedText": "what does this code term mean",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": true,
         "renderedJobsiteCalculator": false,
@@ -1904,7 +1990,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -1920,6 +2006,7 @@
         "normalizedText": "pull up receipts",
         "renderedFallback": true,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -1960,6 +2047,7 @@
         "normalizedText": "show automation report",
         "renderedFallback": false,
         "renderedAutomationReport": true,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2000,6 +2088,7 @@
         "normalizedText": "run regression qa",
         "renderedFallback": false,
         "renderedAutomationReport": true,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2041,6 +2130,7 @@
         "requestedValue": "materials",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2081,6 +2171,7 @@
         "normalizedText": "what needs approval",
         "renderedFallback": true,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2121,6 +2212,7 @@
         "normalizedText": "banana test",
         "renderedFallback": true,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2161,6 +2253,7 @@
         "normalizedText": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -2190,7 +2283,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2206,6 +2299,7 @@
         "normalizedText": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -2235,7 +2329,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2251,6 +2345,7 @@
         "normalizedText": "concrete for 8 inch sauna tube 4 ft deep",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -2280,7 +2375,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2296,6 +2391,7 @@
         "normalizedText": "how many gallons of paint for 1200 square feet",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -2321,7 +2417,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2337,6 +2433,7 @@
         "normalizedText": "how many sheets of drywall for a 12 by 12 room 8 foot ceiling",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -2362,7 +2459,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2378,6 +2475,7 @@
         "normalizedText": "flooring for 12 by 15 room",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -2403,7 +2501,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2419,6 +2517,7 @@
         "normalizedText": "how many studs for a 16 foot wall",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -2444,7 +2543,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2460,6 +2559,7 @@
         "normalizedText": "concrete for 10 by 12 slab 4 inches thick",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -2487,7 +2587,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2503,6 +2603,7 @@
         "normalizedText": "save calculation draft",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2527,7 +2628,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2543,6 +2644,7 @@
         "normalizedText": "save this calculation",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2567,7 +2669,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2583,6 +2685,7 @@
         "normalizedText": "show saved calculations",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2607,7 +2710,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2623,6 +2726,7 @@
         "normalizedText": "add to estimate draft",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2663,6 +2767,7 @@
         "normalizedText": "clear saved calculations",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2687,7 +2792,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2703,6 +2808,7 @@
         "normalizedText": "save calculation draft",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2743,6 +2849,7 @@
         "normalizedText": "how many gallons of paint",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": true,
@@ -2767,7 +2874,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2783,6 +2890,7 @@
         "normalizedText": "what is the best paint brand today",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": true,
         "renderedJobsiteCalculator": false,
@@ -2807,7 +2915,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": false,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -2823,6 +2931,7 @@
         "normalizedText": "send to sow review",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2863,6 +2972,7 @@
         "normalizedText": "send this to sow review",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2903,6 +3013,7 @@
         "normalizedText": "send to estimate review",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2943,6 +3054,7 @@
         "normalizedText": "add this to sow review queue",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -2983,6 +3095,7 @@
         "normalizedText": "show sow review queue",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3023,6 +3136,7 @@
         "normalizedText": "show estimate review queue",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3063,6 +3177,7 @@
         "normalizedText": "mark review ready demo",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3103,6 +3218,7 @@
         "normalizedText": "return to calculator drafts",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3127,7 +3243,7 @@
         "renderedClearSowReviewQueue": false,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3143,6 +3259,7 @@
         "normalizedText": "clear sow review queue demo",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3167,7 +3284,7 @@
         "renderedClearSowReviewQueue": true,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3183,6 +3300,7 @@
         "normalizedText": "send to sow review",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3223,6 +3341,7 @@
         "normalizedText": "show sow review queue",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3263,6 +3382,7 @@
         "normalizedText": "mark review ready demo",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3303,6 +3423,7 @@
         "normalizedText": "clear sow review queue demo",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3327,7 +3448,7 @@
         "renderedClearSowReviewQueue": true,
         "renderedNoCalculatorDraftForSowReview": false,
         "noLiveSowEstimateCustomerAccountingText": true,
-        "noLiveChangeText": false
+        "noLiveChangeText": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -3351,6 +3472,7 @@
         "requestedValue": "materials",
         "renderedFallback": false,
         "renderedAutomationReport": false,
+        "renderedPremiumModuleShell": true,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
         "renderedJobsiteCalculator": false,
@@ -3377,6 +3499,36 @@
         "noLiveSowEstimateCustomerAccountingText": true,
         "noLiveChangeText": true
       },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z Receipt module renders with premium shell marker/class",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z Automation Report renders with premium shell marker/class",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z Permission Granter renders with premium shell marker/class",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z Calculator panel renders with premium shell marker/class",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61Z SOW Review Queue renders with premium shell marker/class",
+      "passed": true,
+      "layer": "premium-module-shell-v61z",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -3535,9 +3687,9 @@
     "reason": "Playwright/browser not available"
   },
   "extensionRegression": {
-    "version": "v61Y",
-    "harnessVersion": "v61L-compatible/v61Y",
-    "timestamp": "2026-06-05T17:12:28.144Z",
+    "version": "v61Z",
+    "harnessVersion": "v61L-compatible/v61Z",
+    "timestamp": "2026-06-05T17:26:36.590Z",
     "total": 76,
     "passed": 76,
     "failed": 0,
@@ -3554,6 +3706,7 @@
           "normalizedText": "show automation report",
           "renderedFallback": false,
           "renderedAutomationReport": true,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3594,6 +3747,7 @@
           "normalizedText": "show regression report",
           "renderedFallback": false,
           "renderedAutomationReport": true,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3634,6 +3788,7 @@
           "normalizedText": "automation status",
           "renderedFallback": false,
           "renderedAutomationReport": true,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3674,6 +3829,7 @@
           "normalizedText": "run regression qa",
           "renderedFallback": false,
           "renderedAutomationReport": true,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3714,6 +3870,7 @@
           "normalizedText": "show qa report",
           "renderedFallback": false,
           "renderedAutomationReport": true,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3754,6 +3911,7 @@
           "normalizedText": "run qa regression",
           "renderedFallback": false,
           "renderedAutomationReport": true,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3794,6 +3952,7 @@
           "normalizedText": "run command regression",
           "renderedFallback": false,
           "renderedAutomationReport": true,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3834,6 +3993,7 @@
           "normalizedText": "test app",
           "renderedFallback": false,
           "renderedAutomationReport": true,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3874,6 +4034,7 @@
           "normalizedText": "pull up receipts",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3914,6 +4075,7 @@
           "normalizedText": "pull up accountant",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3954,6 +4116,7 @@
           "normalizedText": "how are my numbers",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -3994,6 +4157,7 @@
           "normalizedText": "whats going on today",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4034,6 +4198,7 @@
           "normalizedText": "what needs approval",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4074,6 +4239,7 @@
           "normalizedText": "show sow",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4114,6 +4280,7 @@
           "normalizedText": "show insurer",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4154,6 +4321,7 @@
           "normalizedText": "show insurance",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4195,6 +4363,7 @@
           "requestedValue": "materials",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4236,6 +4405,7 @@
           "requestedValue": "unclear — owner must confirm",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4277,6 +4447,7 @@
           "requestedValue": "framing",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4318,6 +4489,7 @@
           "requestedValue": "framing",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4359,6 +4531,7 @@
           "requestedValue": "framing",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4400,6 +4573,7 @@
           "requestedValue": "framing",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4440,6 +4614,7 @@
           "normalizedText": "clear current demo action",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4480,6 +4655,7 @@
           "normalizedText": "clear draft queue demo",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4520,6 +4696,7 @@
           "normalizedText": "clear draft queued demo",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4560,6 +4737,7 @@
           "normalizedText": "clear draft q demo",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4600,6 +4778,7 @@
           "normalizedText": "clear draft cute demo",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4640,6 +4819,7 @@
           "normalizedText": "claire draft queue demo",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4680,6 +4860,7 @@
           "normalizedText": "start new demo change",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4720,6 +4901,7 @@
           "normalizedText": "show draft changes",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4760,6 +4942,7 @@
           "normalizedText": "show prepared changes",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4800,6 +4983,7 @@
           "normalizedText": "show pending edits",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4840,6 +5024,7 @@
           "normalizedText": "show change queue",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4880,6 +5065,7 @@
           "normalizedText": "show approved demo changes",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4920,6 +5106,7 @@
           "normalizedText": "speak summary",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -4960,6 +5147,7 @@
           "normalizedText": "read this back",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5000,6 +5188,7 @@
           "normalizedText": "read report",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5040,6 +5229,7 @@
           "normalizedText": "stop speaking",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5080,6 +5270,7 @@
           "normalizedText": "mute voice",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5120,6 +5311,7 @@
           "normalizedText": "voice off",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5160,6 +5352,7 @@
           "normalizedText": "voice on",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5201,6 +5394,7 @@
           "repeatedIntent": "show_receipts",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5241,6 +5435,7 @@
           "normalizedText": "open that",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5281,6 +5476,7 @@
           "normalizedText": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5310,7 +5506,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5326,6 +5522,7 @@
           "normalizedText": "how many 80 pound bags for an 8 inch sonotube 4 feet deep",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5355,7 +5552,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5371,6 +5568,7 @@
           "normalizedText": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5400,7 +5598,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5416,6 +5614,7 @@
           "normalizedText": "concrete for 8 inch sauna tube 4 ft deep",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5445,7 +5644,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5461,6 +5660,7 @@
           "normalizedText": "8 inch tube 4 feet deep concrete bags",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5490,7 +5690,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5506,6 +5706,7 @@
           "normalizedText": "how many bags for 8 inch sonotube 4 feet deep how many bags for 8 sonotube 4 deep",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5535,7 +5736,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5551,6 +5752,7 @@
           "normalizedText": "how many gallons of paint for 1200 square feet",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5576,7 +5778,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5592,6 +5794,7 @@
           "normalizedText": "how many sheets of drywall for a 12 by 12 room 8 foot ceiling",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5617,7 +5820,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5633,6 +5836,7 @@
           "normalizedText": "flooring for 12 by 15 room",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5658,7 +5862,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5674,6 +5878,7 @@
           "normalizedText": "how many studs for a 16 foot wall",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5699,7 +5904,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5715,6 +5920,7 @@
           "normalizedText": "concrete for 10 by 12 slab 4 inches thick",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5742,7 +5948,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5758,6 +5964,7 @@
           "normalizedText": "save calculation draft",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5782,7 +5989,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5798,6 +6005,7 @@
           "normalizedText": "how many gallons of paint for 1200 square feet",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -5823,7 +6031,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5839,6 +6047,7 @@
           "normalizedText": "save this calculation",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5863,7 +6072,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5879,6 +6088,7 @@
           "normalizedText": "show saved calculations",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5903,7 +6113,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -5919,6 +6129,7 @@
           "normalizedText": "add to estimate draft",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5959,6 +6170,7 @@
           "normalizedText": "send to sow review",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -5999,6 +6211,7 @@
           "normalizedText": "send this to sow review",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6039,6 +6252,7 @@
           "normalizedText": "send to estimate review",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6079,6 +6293,7 @@
           "normalizedText": "add this to sow review queue",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6119,6 +6334,7 @@
           "normalizedText": "show sow review queue",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6159,6 +6375,7 @@
           "normalizedText": "show estimate review queue",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6199,6 +6416,7 @@
           "normalizedText": "mark review ready demo",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6239,6 +6457,7 @@
           "normalizedText": "return to calculator drafts",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6263,7 +6482,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -6279,6 +6498,7 @@
           "normalizedText": "clear sow review queue demo",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6303,7 +6523,7 @@
           "renderedClearSowReviewQueue": true,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -6319,6 +6539,7 @@
           "normalizedText": "send to sow review",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6359,6 +6580,7 @@
           "normalizedText": "clear saved calculations",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6383,7 +6605,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -6399,6 +6621,7 @@
           "normalizedText": "save calculation draft",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6439,6 +6662,7 @@
           "normalizedText": "how many gallons of paint",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -6463,7 +6687,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -6479,6 +6703,7 @@
           "normalizedText": "what is the best paint brand today",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": true,
           "renderedJobsiteCalculator": false,
@@ -6503,7 +6728,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -6519,6 +6744,7 @@
           "normalizedText": "how many sheets of drywall for this room",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": true,
@@ -6543,7 +6769,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": true,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -6559,6 +6785,7 @@
           "normalizedText": "what does this code term mean",
           "renderedFallback": false,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": true,
           "renderedJobsiteCalculator": false,
@@ -6583,7 +6810,7 @@
           "renderedClearSowReviewQueue": false,
           "renderedNoCalculatorDraftForSowReview": false,
           "noLiveSowEstimateCustomerAccountingText": false,
-          "noLiveChangeText": false
+          "noLiveChangeText": true
         },
         "passed": true,
         "errors": [],
@@ -6599,6 +6826,7 @@
           "normalizedText": "banana test",
           "renderedFallback": true,
           "renderedAutomationReport": false,
+          "renderedPremiumModuleShell": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
           "renderedJobsiteCalculator": false,
@@ -6696,7 +6924,13 @@
     "unsupportedGeneralAskRemainsLocked": true,
     "unknownFallbackWorks": true,
     "noNetworkCalls": true,
-    "noApiKeysInFrontend": true
+    "noApiKeysInFrontend": true,
+    "premiumModuleShellWorks": true,
+    "openedModulesPolished": true,
+    "homeDesignUntouched": true,
+    "routingStillWorks": true,
+    "automationStillWorks": true,
+    "noBackendNetworkLiveAI": true
   },
   "askModeRouterWorks": true,
   "appNavigationModeWorks": true,
@@ -6733,6 +6967,12 @@
   "noApiKeysInFrontend": true,
   "noLiveRecordChanges": true,
   "noPaymentPayrollBankAccountingExport": true,
+  "premiumModuleShellWorks": true,
+  "openedModulesPolished": true,
+  "homeDesignUntouched": true,
+  "routingStillWorks": true,
+  "automationStillWorks": true,
+  "noBackendNetworkLiveAI": true,
   "spokenReadbackAvailable": false,
   "spokenReadbackBrowserUnavailableFallback": true,
   "gateSelfTest": {
