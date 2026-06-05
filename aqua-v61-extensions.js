@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62E Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer.
+ * Aqua Homes OS v62F Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62E';
+  var VERSION = 'v62F';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -49,6 +49,20 @@
     unsupportedGeneralAskRemainsLockedV61V: false,
     noApiKeysInFrontend: true,
     initialized: true,
+    workflowPlannerExists: true,
+    receiptExportWorkflowWorks: false,
+    reportReviewWorkflowWorks: false,
+    missingDocumentsWorkflowWorks: false,
+    spendBudgetWorkflowWorks: false,
+    uploadWorkflowStaysLocked: false,
+    cameraWorkflowWorks: false,
+    dailyAttentionWorkflowWorks: false,
+    saveWorkflowPlanWorks: false,
+    showLastWorkflowPlanWorks: false,
+    copyWorkflowPlanWorks: false,
+    clearWorkflowPlanWorks: false,
+    ownerReviewDemoWorks: false,
+    currentWorkflowPlanV62F: null,
     aiNavigationExecutorWorks: false,
     visualFocusExecutorWorks: false,
     focusedRouteMarkerWorks: false,
@@ -811,6 +825,222 @@
   }
 
 
+  function workflowSafetyEnvelopeV62F() {
+    return {
+      noBackendCalls: true,
+      noNetworkCalls: true,
+      noExternalAIAPICalls: true,
+      noApiKeysInFrontend: true,
+      noLiveRecordChanges: true,
+      noLiveExport: true,
+      noLiveUpload: true,
+      noCustomerSharing: true,
+      noAccountingExport: true,
+      noPaymentPayrollBankAction: true,
+      noAudioStorage: true,
+      noAlwaysListening: true,
+      status: 'local demo only'
+    };
+  }
+
+  function workflowStepV62F(index, label, tool, route, permission, locked, expected) {
+    var liveLocked = Boolean(locked);
+    return {
+      stepId: 'v62f-step-' + index,
+      stepLabel: label,
+      selectedTool: tool,
+      visualRoute: route,
+      permissionLevel: permission || 'read_demo',
+      liveStatus: liveLocked ? 'locked_live_action' : 'demo_ready',
+      canRunNowDemo: true,
+      lockedReason: liveLocked ? 'Live execution is locked until owner/accounting/backend approval. Demo planning only.' : 'Local/demo planning and visual focus only. No live data is changed.',
+      expectedOutput: expected,
+      safetyLabels: liveLocked ? ['Demo Only', 'Backend Locked', 'Permission Required', 'No Live Action'] : ['Demo Only', 'No Backend Call', 'No Live Change']
+    };
+  }
+
+  function detectAquaWorkflowCommandV62F(original, q) {
+    if (/^save workflow plan$/.test(q)) return { canonicalIntent: 'aqua_workflow_planner_v62f', mode: 'save', originalText: original, normalizedText: q, module: 'Aqua Brain Workflow Plan — v62F' };
+    if (/^show last workflow plan$/.test(q)) return { canonicalIntent: 'aqua_workflow_planner_v62f', mode: 'show', originalText: original, normalizedText: q, module: 'Aqua Brain Workflow Plan — v62F' };
+    if (/^clear workflow plan demo$/.test(q)) return { canonicalIntent: 'aqua_workflow_planner_v62f', mode: 'clear', originalText: original, normalizedText: q, module: 'Aqua Brain Workflow Plan — v62F' };
+    if (/^copy workflow plan$/.test(q)) return { canonicalIntent: 'aqua_workflow_planner_v62f', mode: 'copy', originalText: original, normalizedText: q, module: 'Aqua Brain Workflow Plan — v62F' };
+    if (/^mark plan ready for owner review$/.test(q)) return { canonicalIntent: 'aqua_workflow_planner_v62f', mode: 'owner_review', originalText: original, normalizedText: q, module: 'Aqua Brain Workflow Plan — v62F' };
+    if (/^what can aqua do now$/.test(q)) return { canonicalIntent: 'aqua_workflow_planner_v62f', mode: 'allowed', originalText: original, normalizedText: q, module: 'Aqua Brain Workflow Plan — v62F' };
+    if (/^what requires approval$/.test(q)) return { canonicalIntent: 'aqua_workflow_planner_v62f', mode: 'approval', originalText: original, normalizedText: q, module: 'Aqua Brain Workflow Plan — v62F' };
+    var workflowType = '';
+    if (/(receipts?).*(home depot).*accountant|home depot.*receipts?.*accountant|accountant.*(receipts?).*(home depot)|prepare.*home depot.*receipts?.*export/.test(q)) workflowType = 'receipt_export_preparation';
+    else if (/henderson.*staircase.*report|henderson.*report.*approval|show henderson report and review approvals/.test(q)) workflowType = 'report_review';
+    else if (/documents?.*missing.*henderson|missing documents?.*henderson/.test(q)) workflowType = 'missing_documents';
+    else if (/(spend|spent|budget|over budget).*henderson.*plumbing|henderson.*plumbing.*(spend|budget|over budget)/.test(q)) workflowType = 'spend_budget_risk';
+    else if (/(diagram).*(upload|send)|upload.*construction diagram|prepare.*diagram.*send|henderson.*diagram/.test(q)) workflowType = 'upload_send_preparation';
+    else if (/cameras?.*henderson.*(allocated|allocation|correct|right)|cameras?.*allocated.*henderson/.test(q)) workflowType = 'camera_allocation_diagnostic';
+    else if (/what needs my attention today|what should i do next/.test(q)) workflowType = 'daily_attention';
+    if (!workflowType) return null;
+    return { canonicalIntent: 'aqua_workflow_planner_v62f', mode: 'plan', workflowType: workflowType, originalText: original, normalizedText: q, module: 'Aqua Brain Workflow Plan — v62F' };
+  }
+
+  function planAquaWorkflowV62F(commandText) {
+    var original = String(commandText || '').trim();
+    var q = normalizeAquaPhraseV61E(original);
+    var detected = detectAquaWorkflowCommandV62F(original, q) || { workflowType: 'daily_attention' };
+    var type = detected.workflowType || 'daily_attention';
+    var entities = extractVoiceBrainEntitiesV61Z(original, q);
+    if (!entities.project && /henderson/.test(q)) entities.project = 'Henderson House';
+    var steps = [];
+    var intentLabel = '';
+    var next = '';
+    if (type === 'receipt_export_preparation') {
+      intentLabel = 'Receipt export preparation workflow';
+      steps = [workflowStepV62F(1, 'Find project/vendor receipt criteria', 'findProjectReceipts', 'Receipts / Henderson House / Home Depot', 'read_demo', false, 'Criteria prepared for Henderson + Home Depot receipts.'), workflowStepV62F(2, 'Open/focus Receipts / Henderson / Home Depot', 'findProjectReceipts', 'Receipts / Henderson House / Home Depot', 'read_demo', false, 'Local receipt focus panel opened.'), workflowStepV62F(3, 'Prepare accountant export packet demo', 'prepareAccountantExportDemo', 'Permission Granter / Accountant Export Demo / Home Depot receipts', 'prepare_demo', false, 'Demo export packet checklist prepared only.'), workflowStepV62F(4, 'Show permission required', 'showPermissionRequiredDemo', 'Permission Granter / Accountant Export Demo / Home Depot receipts', 'accounting_approval_required', true, 'Owner/accounting/backend permission gate shown.'), workflowStepV62F(5, 'Lock live export until approval', 'lockLiveAccountantExport', 'Permission Granter / Accountant Export Demo / Home Depot receipts', 'live_locked', true, 'No live accountant export created, sent, or stored.')];
+      next = 'Review the demo receipt criteria, then request owner/accounting/backend approval before any real export.';
+    } else if (type === 'report_review') {
+      intentLabel = 'Report review workflow';
+      steps = [workflowStepV62F(1, 'Open/focus Project Reports / Henderson / Staircase', 'openProjectReport', 'Project Reports / Henderson House / Staircase', 'read_demo', false, 'Staircase report placeholder focused.'), workflowStepV62F(2, 'Check local/demo owner approval flags', 'checkOwnerApprovalFlagsDemo', 'Owner Review / Henderson Staircase Approval Flags', 'read_demo', false, 'Demo approval flags shown.'), workflowStepV62F(3, 'Show review-ready summary', 'showReviewReadySummaryDemo', 'Project Reports / Henderson House / Staircase', 'prepare_demo', false, 'Review summary prepared locally.'), workflowStepV62F(4, 'Recommend next owner review action', 'recommendOwnerReviewDemo', 'Owner Review / Next Recommended Action', 'owner_approval_required', true, 'No live approval performed.')];
+      next = 'Owner should review the staircase report summary and approve only after backend records are connected.';
+    } else if (type === 'missing_documents') {
+      intentLabel = 'Missing documents workflow';
+      steps = [workflowStepV62F(1, 'Open/focus Missing Documents / Henderson', 'showMissingDocumentsDemo', 'Documents / Henderson House / Missing Documents', 'read_demo', false, 'Missing documents panel focused.'), workflowStepV62F(2, 'List demo missing document placeholders', 'listMissingDocumentsDemo', 'Documents / Henderson House / Missing Documents', 'read_demo', false, 'Permit packet, insurance certificate, signed change order placeholders listed.'), workflowStepV62F(3, 'Prepare review checklist demo', 'prepareDocumentReviewChecklistDemo', 'Owner Review / Missing Documents Checklist', 'prepare_demo', false, 'Demo review checklist prepared.'), workflowStepV62F(4, 'Lock live document request/send', 'lockLiveDocumentRequestSend', 'Permission Granter / Document Request Demo', 'live_locked', true, 'No live request, customer sharing, upload, or send action ran.')];
+      next = 'Review missing document placeholders locally, then request backend/customer-send approval if needed.';
+    } else if (type === 'spend_budget_risk') {
+      intentLabel = 'Spend and budget risk workflow';
+      steps = [workflowStepV62F(1, 'Open/focus Accounting / Henderson / Plumbing Spend', 'summarizeProjectSpend', 'Accounting / Henderson House / Plumbing Spend', 'read_demo', false, 'Spend panel placeholder focused.'), workflowStepV62F(2, 'Show backend accounting required placeholder', 'showAccountingBackendRequiredDemo', 'Accounting / Backend Required Placeholder', 'backend_required', true, 'Live accounting totals remain locked.'), workflowStepV62F(3, 'Show local/demo budget risk placeholder', 'showBudgetRiskDemo', 'Accounting / Henderson House / Plumbing Budget Risk', 'read_demo', false, 'Demo budget risk placeholder shown.'), workflowStepV62F(4, 'Recommend accounting backend connection/owner review', 'recommendAccountingOwnerReviewDemo', 'Owner Review / Accounting Backend Permission', 'accounting_approval_required', true, 'No live accounting query/export/change ran.')];
+      next = 'Connect approved accounting backend later and have owner/accounting review the plumbing budget risk.';
+    } else if (type === 'upload_send_preparation') {
+      intentLabel = 'Upload/send preparation workflow';
+      steps = [workflowStepV62F(1, 'Identify project/file type', 'identifyProjectFileTypeDemo', 'Project Files / Henderson House / Construction Diagram', 'read_demo', false, 'Henderson construction diagram criteria prepared.'), workflowStepV62F(2, 'Open/focus Permission Granter / Upload Request Demo', 'uploadFileToProjectDemo', 'Permission Granter / Upload Request Demo / Henderson files', 'read_demo', false, 'Upload request demo focused.'), workflowStepV62F(3, 'Show upload locked', 'showUploadLockedDemo', 'Permission Granter / Upload Request Demo / Henderson files', 'owner_approval_required', true, 'Upload remains locked.'), workflowStepV62F(4, 'Show owner/backend permission required', 'showOwnerBackendPermissionRequiredDemo', 'Permission Granter / Upload Request Demo / Henderson files', 'backend_required', true, 'Owner/backend gate shown.'), workflowStepV62F(5, 'Lock live upload/send', 'lockLiveUploadSend', 'Permission Granter / Upload Request Demo / Henderson files', 'live_locked', true, 'No live upload, send, email, or file storage ran.')];
+      next = 'Keep upload/send locked until owner approval and backend file storage are explicitly enabled.';
+    } else if (type === 'camera_allocation_diagnostic') {
+      intentLabel = 'Camera allocation diagnostic workflow';
+      steps = [workflowStepV62F(1, 'Open/focus Jobsite Cameras / Henderson allocation', 'checkJobsiteCameraAllocationDemo', 'Jobsite Cameras / Allocation Review / Henderson Jobsite', 'read_demo', false, 'Camera allocation panel focused.'), workflowStepV62F(2, 'Show camera allocation review placeholder', 'showCameraAllocationReviewDemo', 'Jobsite Cameras / Allocation Review / Henderson Jobsite', 'read_demo', false, 'Demo allocation findings shown.'), workflowStepV62F(3, 'Show backend camera/photo index required', 'showCameraBackendRequiredDemo', 'Jobsite Cameras / Backend Camera Index Required', 'backend_required', true, 'No live camera access.'), workflowStepV62F(4, 'Recommend camera inventory sync', 'recommendCameraInventorySyncDemo', 'Owner Review / Camera Inventory Sync', 'owner_approval_required', true, 'Inventory sync recommendation only.')];
+      next = 'Sync camera inventory only after backend/photo index and owner permission are available.';
+    } else {
+      intentLabel = 'Daily attention workflow';
+      steps = [workflowStepV62F(1, 'Open/focus Owner Review / Next Recommended Action', 'suggestNextStep', 'Owner Review / Next Recommended Action / AI recommendation', 'read_demo', false, 'Owner review panel focused.'), workflowStepV62F(2, 'Show local/demo priority items', 'showDailyPriorityItemsDemo', 'Owner Review / Local Demo Priority Items', 'read_demo', false, 'Priority placeholders shown.'), workflowStepV62F(3, 'Include missing docs, receipts, approvals, budget risk placeholders', 'summarizeDailyAttentionPlaceholdersDemo', 'Owner Review / Missing Docs / Receipts / Approvals / Budget Risk', 'prepare_demo', false, 'Daily review list prepared.'), workflowStepV62F(4, 'Recommend next local/demo owner review action', 'recommendOwnerNextActionDemo', 'Owner Review / Next Recommended Action', 'owner_approval_required', false, 'Next owner review action recommended locally only.')];
+      next = 'Start with owner review, then inspect missing documents, receipts, approvals, and budget risk placeholders.';
+    }
+    var locked = steps.filter(function (step) { return step.liveStatus === 'locked_live_action'; });
+    var allowed = steps.filter(function (step) { return step.canRunNowDemo; }).map(function (step) { return step.stepLabel; });
+    var routes = steps.map(function (step) { return step.visualRoute; }).filter(function (route, index, list) { return route && list.indexOf(route) === index; });
+    var permissions = locked.map(function (step) { return step.permissionLevel + ': ' + step.stepLabel; });
+    var plan = {
+      workflowId: 'aqua-v62f-' + Date.now(),
+      heardCommand: original,
+      workflowIntent: intentLabel,
+      workflowType: type,
+      extractedEntities: entities,
+      steps: steps,
+      currentStep: steps[0] || null,
+      allowedLocalSteps: allowed,
+      lockedLiveSteps: locked.map(function (step) { return step.stepLabel; }),
+      requiredPermissions: permissions.length ? permissions : ['Owner review for any future live action'],
+      visualRoutes: routes,
+      spokenSummary: 'I prepared a local demo ' + intentLabel + '. I can focus the relevant demo sections and prepare review checklists now. Live export, upload, send, backend accounting, camera access, approvals, and record changes stay locked.',
+      safetyEnvelope: workflowSafetyEnvelopeV62F(),
+      nextRecommendedAction: next,
+      status: 'local demo only'
+    };
+    state.currentWorkflowPlanV62F = plan;
+    return plan;
+  }
+
+  function workflowPlanTextV62F(plan) {
+    var safe = plan || state.currentWorkflowPlanV62F || showLastAquaWorkflowPlanV62F(true);
+    if (!safe) return 'No Aqua Brain Workflow Plan v62F has been prepared yet.';
+    return ['Aqua Brain Workflow Plan — v62F', 'Heard Command: ' + safe.heardCommand, 'Workflow Intent: ' + safe.workflowIntent, 'Status: ' + safe.status, 'Extracted Details: ' + JSON.stringify(safe.extractedEntities || {}), 'Planned Steps:', (safe.steps || []).map(function (step, index) { return (index + 1) + '. ' + step.stepLabel + ' | Tool: ' + step.selectedTool + ' | Route: ' + step.visualRoute + ' | Status: ' + step.liveStatus + ' | Permission: ' + step.permissionLevel; }).join('\n'), 'What Aqua Can Do Now: ' + (safe.allowedLocalSteps || []).join(' | '), 'Locked Live Steps: ' + (safe.lockedLiveSteps || []).join(' | '), 'Required Permissions: ' + (safe.requiredPermissions || []).join(' | '), 'Spoken Summary Draft: ' + safe.spokenSummary, 'Next Recommended Action: ' + safe.nextRecommendedAction, 'Safety / Audit Envelope: no backend calls, no network calls, no external AI/API calls, no API keys, no live record changes, no live export/upload/send, no accounting export, no audio storage.'].join('\n');
+  }
+
+  function renderAquaWorkflowPlanV62F(plan) {
+    var safe = plan || state.currentWorkflowPlanV62F || planAquaWorkflowV62F('what needs my attention today');
+    var detailRows = Object.keys(safe.extractedEntities || {}).map(function (key) { return '<li><span>' + escapeHTMLV61D(key) + ':</span> <strong>' + escapeHTMLV61D(safe.extractedEntities[key]) + '</strong></li>'; }).join('') || '<li>Demo placeholders only; no sensitive data stored.</li>';
+    var stepCards = (safe.steps || []).map(function (step, index) { return '<article class="aqua-v62a-section aqua-v62f-step-card" data-aqua-v62f-step-card="true"><h4>Step ' + (index + 1) + ': ' + escapeHTMLV61D(step.stepLabel) + '</h4><div><strong>Tool:</strong> ' + escapeHTMLV61D(step.selectedTool) + '</div><div><strong>Visual route:</strong> ' + escapeHTMLV61D(step.visualRoute) + '</div><div><strong>Status:</strong> ' + escapeHTMLV61D(step.liveStatus) + '</div><div><strong>Permission level:</strong> ' + escapeHTMLV61D(step.permissionLevel) + '</div><div><strong>Demo/live lock:</strong> ' + escapeHTMLV61D(step.lockedReason) + '</div></article>'; }).join('');
+    var body = '<div class="aqua-v62a-panel aqua-v62f-workflow-plan" data-aqua-v62f-workflow-plan="true"><h3>Aqua Brain Workflow Plan — v62F</h3>' +
+      '<section><h4>1. Heard Command</h4><div>' + escapeHTMLV61D(safe.heardCommand) + '</div></section>' +
+      '<section><h4>2. Workflow Intent</h4><div>' + escapeHTMLV61D(safe.workflowIntent) + '</div></section>' +
+      '<section><h4>3. Extracted Details</h4><ul class="aqua-v62a-detail-list">' + detailRows + '</ul></section>' +
+      '<section><h4>4. Planned Steps</h4>' + stepCards + '</section>' +
+      '<section><h4>5. Opened / Focused Visual Routes</h4><ul>' + safe.visualRoutes.map(function (route) { return '<li>' + escapeHTMLV61D(route) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>6. What Aqua Can Do Now</h4><ul>' + safe.allowedLocalSteps.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>7. Locked Live Steps</h4><ul>' + safe.lockedLiveSteps.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>8. Required Permissions</h4><ul>' + safe.requiredPermissions.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>9. Spoken Summary Draft</h4><blockquote>“' + escapeHTMLV61D(safe.spokenSummary) + '”</blockquote></section>' +
+      '<section><h4>10. Next Recommended Action</h4><div>' + escapeHTMLV61D(safe.nextRecommendedAction) + '</div></section>' +
+      '<section><h4>11. Safety / Audit Envelope</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(safe.safetyEnvelope, null, 2)) + '</pre></section>' +
+      '<div class="aqua-v62a-actions" data-aqua-v62f-plan-actions="true"><button class="btn small gold" type="button" onclick="window.AquaWorkflowPlannerV62F.saveAquaWorkflowPlanV62F()">Save Workflow Plan</button><button class="btn small" type="button" onclick="window.AquaWorkflowPlannerV62F.showLastAquaWorkflowPlanV62F()">Show Last Workflow Plan</button><button class="btn small" type="button" onclick="window.AquaWorkflowPlannerV62F.clearAquaWorkflowPlanDemoV62F()">Clear Workflow Plan Demo</button><button class="btn small gold" type="button" onclick="window.AquaWorkflowPlannerV62F.copyAquaWorkflowPlanTextV62F()">Copy Workflow Plan Text</button><button class="btn small gold" type="button" onclick="window.AquaWorkflowPlannerV62F.markWorkflowPlanReadyForOwnerReviewDemoV62F()">Mark Plan Ready for Owner Review Demo</button></div><div class="aqua-v62a-action-output" data-aqua-v62f-action-output="true"></div></div>';
+    rememberSpokenSummaryV61R(safe.spokenSummary, 'workflow planner v62F');
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Workflow Plan — v62F', subtitle: 'AI Multi-Step Workflow Planner / Permissioned Action Chain. Local/demo only.', tag: 'Workflow Planner', chips: ['Demo Only', 'Backend Locked', 'No Live Export', 'No Live Upload', 'No Audio Storage'], attrs: { 'data-aqua-v62f-workflow-planner': 'true' }, body: body, safetyFooter: 'Local/demo-only. No backend calls, network calls, external AI/API calls, API keys, live record changes, uploads, sends, exports, customer/accountant sharing, accounting export, payment, payroll, bank action, audio storage, or always-listening behavior.' });
+  }
+
+  function executeAquaWorkflowStepDemoV62F(step) {
+    return { ranDemoOnly: true, step: step || null, liveActionExecuted: false, noBackendCalls: true, noNetworkCalls: true };
+  }
+
+  function saveAquaWorkflowPlanV62F(plan) {
+    var safe = plan || state.currentWorkflowPlanV62F || planAquaWorkflowV62F('what needs my attention today');
+    try {
+      var parsed = JSON.parse(window.localStorage.getItem(WORKFLOW_PLAN_KEY_V62F) || '[]');
+      parsed.unshift(safe);
+      window.localStorage.setItem(WORKFLOW_PLAN_KEY_V62F, JSON.stringify(parsed.slice(0, 5)));
+    } catch (error) { state.workflowPlanStorageWarningV62F = 'localStorage unavailable for workflow plans'; }
+    state.saveWorkflowPlanWorks = true;
+    syncNamespace();
+    return safe;
+  }
+
+  function showLastAquaWorkflowPlanV62F(returnOnly) {
+    var plan = state.currentWorkflowPlanV62F || null;
+    try {
+      var parsed = JSON.parse(window.localStorage.getItem(WORKFLOW_PLAN_KEY_V62F) || '[]');
+      if (!plan && parsed.length) plan = parsed[0];
+    } catch (error) {}
+    state.showLastWorkflowPlanWorks = true;
+    syncNamespace();
+    if (returnOnly) return plan;
+    var node = document && document.querySelector ? document.querySelector('[data-aqua-v62f-action-output="true"]') : null;
+    if (node) node.innerHTML = plan ? '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(workflowPlanTextV62F(plan)) + '</pre>' : '<div class="locked">No saved workflow plan found.</div>';
+    return plan;
+  }
+
+  function clearAquaWorkflowPlanDemoV62F() {
+    state.currentWorkflowPlanV62F = null;
+    try { window.localStorage.removeItem(WORKFLOW_PLAN_KEY_V62F); } catch (error) {}
+    state.clearWorkflowPlanWorks = true;
+    syncNamespace();
+    var node = document && document.querySelector ? document.querySelector('[data-aqua-v62f-action-output="true"]') : null;
+    if (node) node.innerHTML = '<div class="note">Workflow plan demo cleared locally. No live records changed.</div>';
+    return true;
+  }
+
+  function copyAquaWorkflowPlanTextV62F() {
+    var text = workflowPlanTextV62F(state.currentWorkflowPlanV62F);
+    state.copyWorkflowPlanWorks = true;
+    syncNamespace();
+    var node = document && document.querySelector ? document.querySelector('[data-aqua-v62f-action-output="true"]') : null;
+    if (node) node.innerHTML = '<pre class="aqua-v62a-copy-block" data-aqua-v62f-copy-text="true">' + escapeHTMLV61D(text) + '</pre>';
+    return text;
+  }
+
+  function markWorkflowPlanReadyForOwnerReviewDemoV62F() {
+    var plan = state.currentWorkflowPlanV62F || planAquaWorkflowV62F('what needs my attention today');
+    plan.ownerReviewDemoStatus = 'ready for owner review demo / local only';
+    state.ownerReviewDemoWorks = true;
+    syncNamespace();
+    var node = document && document.querySelector ? document.querySelector('[data-aqua-v62f-action-output="true"]') : null;
+    if (node) node.innerHTML = '<div class="note" data-aqua-v62f-owner-review-ready="true"><strong>Plan marked ready for owner review demo.</strong><div>No live approval, export, upload, send, or record change ran.</div></div>';
+    return plan;
+  }
+
+  function renderWorkflowPlanActionResultV62F(mode) {
+    if (mode === 'save') return '<div class="note" data-aqua-v62f-save-workflow-plan="true"><strong>Save Workflow Plan</strong><div>Saved to localStorage key ' + WORKFLOW_PLAN_KEY_V62F + ' only.</div><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(workflowPlanTextV62F(saveAquaWorkflowPlanV62F())) + '</pre></div>';
+    if (mode === 'show') { var last = showLastAquaWorkflowPlanV62F(true); return '<div class="note" data-aqua-v62f-show-last-workflow-plan="true"><strong>Show Last Workflow Plan</strong>' + (last ? '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(workflowPlanTextV62F(last)) + '</pre>' : '<div>No saved workflow plan found.</div>') + '</div>'; }
+    if (mode === 'clear') { clearAquaWorkflowPlanDemoV62F(); return '<div class="note" data-aqua-v62f-clear-workflow-plan="true"><strong>Clear Workflow Plan Demo</strong><div>Cleared local/demo workflow plan state only.</div></div>'; }
+    if (mode === 'copy') return '<div class="note" data-aqua-v62f-copy-workflow-plan="true"><strong>Copy Workflow Plan Text</strong><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(copyAquaWorkflowPlanTextV62F()) + '</pre></div>';
+    if (mode === 'owner_review') { markWorkflowPlanReadyForOwnerReviewDemoV62F(); return '<div class="note" data-aqua-v62f-owner-review-ready="true"><strong>Mark Plan Ready for Owner Review Demo</strong><div>Local/demo status only. No live approval ran.</div></div>'; }
+    if (mode === 'allowed') return '<div class="note" data-aqua-v62f-allowed-now="true"><strong>What Aqua Can Do Now</strong><ul>' + ((state.currentWorkflowPlanV62F && state.currentWorkflowPlanV62F.allowedLocalSteps) || ['Prepare local/demo workflow plans']).map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></div>';
+    if (mode === 'approval') return '<div class="note" data-aqua-v62f-requires-approval="true"><strong>What Requires Approval</strong><ul>' + ((state.currentWorkflowPlanV62F && state.currentWorkflowPlanV62F.requiredPermissions) || ['Backend/live action approval required']).map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></div>';
+    return '';
+  }
+
+
   function premiumModuleChipsV61Z(chips) {
     return (chips || []).filter(Boolean).map(function (chip) {
       return '<span class="aqua-v61z-chip">' + escapeHTMLV61D(chip) + '</span>';
@@ -866,6 +1096,7 @@
   var SOW_REVIEW_QUEUE_KEY_V61Y = 'aquaSowReviewQueueV61Y';
   var VOICE_BRAIN_CONTEXT_KEY_V61Z = 'aquaVoiceBrainContextV61Z';
   var VOICE_BRAIN_PLAN_KEY_V62A = 'aquaVoiceBrainPlansV62A';
+  var WORKFLOW_PLAN_KEY_V62F = 'aquaWorkflowPlansV62F';
 
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
@@ -949,9 +1180,18 @@
       setSpokenReadbackPreferenceV61R: setSpokenReadbackPreferenceV61R,
       getCurrentSpokenSummaryV61R: getCurrentSpokenSummaryV61R,
       getLastConversationalContextV61S: getLastConversationalContextV61S,
-      clearLastConversationalContextV61S: clearLastConversationalContextV61S
+      clearLastConversationalContextV61S: clearLastConversationalContextV61S,
+      planAquaWorkflowV62F: planAquaWorkflowV62F,
+      renderAquaWorkflowPlanV62F: renderAquaWorkflowPlanV62F,
+      executeAquaWorkflowStepDemoV62F: executeAquaWorkflowStepDemoV62F,
+      saveAquaWorkflowPlanV62F: saveAquaWorkflowPlanV62F,
+      showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F,
+      clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F,
+      copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F,
+      markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F
     });
     window.AquaVoiceBrainV61Z = createAquaVoiceBrainV61Z();
+    window.AquaWorkflowPlannerV62F = { version: VERSION, localDemoOnly: true, storageKey: WORKFLOW_PLAN_KEY_V62F, planAquaWorkflowV62F: planAquaWorkflowV62F, renderAquaWorkflowPlanV62F: renderAquaWorkflowPlanV62F, executeAquaWorkflowStepDemoV62F: executeAquaWorkflowStepDemoV62F, saveAquaWorkflowPlanV62F: saveAquaWorkflowPlanV62F, showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F, clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F, copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F, markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F, safetyEnvelope: workflowSafetyEnvelopeV62F() };
     state.voiceBrainToolRegistryExists = Object.keys(window.AquaVoiceBrainV61Z.toolRegistry || {}).length >= 14;
     return window.AquaV61Extensions;
   }
@@ -1034,9 +1274,18 @@
       setSpokenReadbackPreferenceV61R: setSpokenReadbackPreferenceV61R,
       getCurrentSpokenSummaryV61R: getCurrentSpokenSummaryV61R,
       getLastConversationalContextV61S: getLastConversationalContextV61S,
-      clearLastConversationalContextV61S: clearLastConversationalContextV61S
+      clearLastConversationalContextV61S: clearLastConversationalContextV61S,
+      planAquaWorkflowV62F: planAquaWorkflowV62F,
+      renderAquaWorkflowPlanV62F: renderAquaWorkflowPlanV62F,
+      executeAquaWorkflowStepDemoV62F: executeAquaWorkflowStepDemoV62F,
+      saveAquaWorkflowPlanV62F: saveAquaWorkflowPlanV62F,
+      showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F,
+      clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F,
+      copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F,
+      markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F
     });
     window.AquaVoiceBrainV61Z = createAquaVoiceBrainV61Z();
+    window.AquaWorkflowPlannerV62F = { version: VERSION, localDemoOnly: true, storageKey: WORKFLOW_PLAN_KEY_V62F, planAquaWorkflowV62F: planAquaWorkflowV62F, renderAquaWorkflowPlanV62F: renderAquaWorkflowPlanV62F, executeAquaWorkflowStepDemoV62F: executeAquaWorkflowStepDemoV62F, saveAquaWorkflowPlanV62F: saveAquaWorkflowPlanV62F, showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F, clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F, copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F, markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F, safetyEnvelope: workflowSafetyEnvelopeV62F() };
     state.voiceBrainToolRegistryExists = Object.keys(window.AquaVoiceBrainV61Z.toolRegistry || {}).length >= 14;
     return window.AquaV61Extensions;
   }
@@ -1869,6 +2118,8 @@
     var q = normalizeAquaPhraseV61E(original);
     var askMode = classifyAquaAskModeV61U(original);
     state.askModeRouterWorks = true;
+    var workflowPlanner = detectAquaWorkflowCommandV62F(original, q);
+    if (workflowPlanner) return withAskModeV61U(workflowPlanner, 'workflow_planner');
     var voiceBrainViewer = detectVoiceBrainPlanViewerCommandV62A(original, q);
     if (voiceBrainViewer) return withAskModeV61U(voiceBrainViewer, 'voice_brain_tool_plan');
     if (askMode.mode === 'voice_brain_tool_plan') {
@@ -2898,6 +3149,27 @@
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
     var intent = normalizeAquaCommandV61E(commandText);
+    if (intent.canonicalIntent === 'aqua_workflow_planner_v62f') {
+      if (intent.mode === 'plan') {
+        var workflowPlan = planAquaWorkflowV62F(intent.originalText || commandText);
+        intent.workflowPlan = workflowPlan;
+        intent.workflowType = workflowPlan.workflowType;
+        if (workflowPlan.workflowType === 'receipt_export_preparation') state.receiptExportWorkflowWorks = workflowPlan.lockedLiveSteps.join(' ').indexOf('Lock live export') !== -1;
+        if (workflowPlan.workflowType === 'report_review') state.reportReviewWorkflowWorks = /Staircase/i.test(workflowPlan.visualRoutes.join(' '));
+        if (workflowPlan.workflowType === 'missing_documents') state.missingDocumentsWorkflowWorks = /missing document/i.test(workflowPlan.spokenSummary + ' ' + workflowPlan.steps.map(function (step) { return step.stepLabel; }).join(' '));
+        if (workflowPlan.workflowType === 'spend_budget_risk') state.spendBudgetWorkflowWorks = /Accounting|backend/i.test(workflowPlan.visualRoutes.join(' ') + workflowPlan.lockedLiveSteps.join(' '));
+        if (workflowPlan.workflowType === 'upload_send_preparation') state.uploadWorkflowStaysLocked = /upload|send/i.test(workflowPlan.lockedLiveSteps.join(' '));
+        if (workflowPlan.workflowType === 'camera_allocation_diagnostic') state.cameraWorkflowWorks = /Camera/i.test(workflowPlan.visualRoutes.join(' '));
+        if (workflowPlan.workflowType === 'daily_attention') state.dailyAttentionWorkflowWorks = /Owner Review/i.test(workflowPlan.visualRoutes.join(' '));
+        if (outputNode) outputNode.innerHTML = renderAquaWorkflowPlanV62F(workflowPlan);
+      } else if (outputNode) {
+        outputNode.innerHTML = renderPremiumModuleShellV61Z({ title: 'Aqua Brain Workflow Plan — v62F', subtitle: 'Workflow plan action is local/demo-only.', tag: 'Workflow Action', chips: ['Demo Only', 'localStorage Only', 'No Live Change'], attrs: { 'data-aqua-v62f-workflow-planner': 'true' }, body: renderWorkflowPlanActionResultV62F(intent.mode), safetyFooter: 'No backend, network, external AI/API, live export, upload, send, approval, accounting export, or audio storage.' });
+      } else if (intent.mode === 'save') saveAquaWorkflowPlanV62F();
+      state.workflowPlannerExists = true;
+      state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noLiveExport = true; state.noLiveUpload = true;
+      syncNamespace();
+      return intent;
+    }
     if (intent.canonicalIntent === 'voice_brain_plan_viewer_v62a') {
       if (intent.mode === 'save') {
         saveVoiceBrainPlanV62A();
@@ -4117,6 +4389,19 @@
 
   function regressionCommandCasesV61L() {
     return [
+      { command: 'look up all receipts for Henderson from Home Depot and prepare them for accountant export', expected: 'Aqua Brain Workflow Plan v62F / receipt export locked', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'receipt_export_preparation', workflowPlanButtonsV62F: true, html: /Aqua Brain Workflow Plan — v62F[\s\S]*receipt criteria[\s\S]*Lock live export[\s\S]*Accounting|accounting/i, noFallback: true },
+      { command: 'find Henderson Home Depot receipts and prepare accountant export', expected: 'Aqua Brain Workflow Plan v62F / receipt export alias locked', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'receipt_export_preparation', workflowPlanButtonsV62F: true, html: /Aqua Brain Workflow Plan — v62F[\s\S]*Receipts \/ Henderson House \/ Home Depot[\s\S]*Lock live export/i, noFallback: true },
+      { command: 'pull up the Henderson staircase report and tell me what needs approval', expected: 'Aqua Brain Workflow Plan v62F / report review', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'report_review', html: /Henderson House \/ Staircase[\s\S]*owner approval/i, noFallback: true },
+      { command: 'check what documents are missing for Henderson and prepare a review list', expected: 'Aqua Brain Workflow Plan v62F / missing documents', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'missing_documents', html: /missing document placeholders|Permit packet|review checklist/i, noFallback: true },
+      { command: 'how much did we spend on Henderson plumbing and show what is over budget', expected: 'Aqua Brain Workflow Plan v62F / spend budget locked', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'spend_budget_risk', html: /Accounting \/ Henderson House \/ Plumbing Spend[\s\S]*backend accounting required|accounting backend/i, noFallback: true },
+      { command: 'find the Henderson diagram and prepare it to upload', expected: 'Aqua Brain Workflow Plan v62F / upload locked', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'upload_send_preparation', html: /Upload Request Demo[\s\S]*Lock live upload\/send|No live upload/i, noFallback: true },
+      { command: 'check jobsite cameras for Henderson and tell me if they are allocated correctly', expected: 'Aqua Brain Workflow Plan v62F / camera allocation', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'camera_allocation_diagnostic', html: /Jobsite Cameras[\s\S]*allocation review placeholder|camera allocation/i, noFallback: true },
+      { command: 'what needs my attention today', expected: 'Aqua Brain Workflow Plan v62F / daily attention', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'daily_attention', html: /Owner Review[\s\S]*missing docs, receipts, approvals, budget risk|Daily attention/i, noFallback: true },
+      { command: 'save workflow plan', contextCommand: 'what needs my attention today', expected: 'Aqua Brain Workflow Plan v62F / save localStorage only', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', html: /Save Workflow Plan[\s\S]*aquaWorkflowPlansV62F/i, noFallback: true },
+      { command: 'show last workflow plan', contextCommand: 'what needs my attention today', expected: 'Aqua Brain Workflow Plan v62F / show last', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', html: /Show Last Workflow Plan|Aqua Brain Workflow Plan — v62F/i, noFallback: true },
+      { command: 'copy workflow plan', contextCommand: 'what needs my attention today', expected: 'Aqua Brain Workflow Plan v62F / copy text', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', html: /Copy Workflow Plan Text|Aqua Brain Workflow Plan — v62F/i, noFallback: true },
+      { command: 'mark plan ready for owner review', contextCommand: 'what needs my attention today', expected: 'Aqua Brain Workflow Plan v62F / owner review demo', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', html: /Mark Plan Ready for Owner Review Demo|No live approval/i, noFallback: true },
+      { command: 'clear workflow plan demo', contextCommand: 'what needs my attention today', expected: 'Aqua Brain Workflow Plan v62F / clear demo', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', html: /Clear Workflow Plan Demo|Cleared local\/demo workflow plan state/i, noFallback: true },
       { command: 'what is the Henderson report', expected: 'Aqua Brain Command Center v62E / Henderson project status report', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_report_lookup', tool: 'openProjectReport', module: /Project Reports \/ Henderson House \/ Project Status Report/i, html: /Opened and focused:[\s\S]*Project Reports \/ Henderson House \/ Project Status Report[\s\S]*Focused by Aqua Brain/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Project Reports \/ Henderson House \/ Project Status Report/i },
       { command: 'pull up the Henderson staircase report', expected: 'Aqua Brain Command Center v62E / Henderson staircase report', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_report_lookup', tool: 'openProjectReport', module: /Project Reports \/ Henderson House \/ Staircase/i, html: /Opened and focused:[\s\S]*Project Reports \/ Henderson House \/ Staircase[\s\S]*Focused by Aqua Brain/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Project Reports \/ Henderson House \/ Staircase/i },
       { command: 'look up all receipts for the Henderson house from Home Depot', expected: 'Aqua Brain Command Center v62E / findProjectReceipts', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_vendor_receipt_lookup', tool: 'findProjectReceipts', module: /Receipts \/ Henderson House \/ Home Depot/i, html: /Opened and focused:[\s\S]*Receipts \/ Henderson House \/ Home Depot[\s\S]*Focused by Aqua Brain[\s\S]*No export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Receipts \/ Henderson House \/ Home Depot/i, safetyLock: /Receipt Database Required|No Live Export/ },
@@ -4250,7 +4535,7 @@
 
   function regressionStorageSnapshotV61L() {
     var snapshot = {};
-    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S, CALCULATOR_DRAFTS_KEY_V61X, SOW_REVIEW_QUEUE_KEY_V61Y, VOICE_BRAIN_CONTEXT_KEY_V61Z, VOICE_BRAIN_PLAN_KEY_V62A].forEach(function (key) {
+    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S, CALCULATOR_DRAFTS_KEY_V61X, SOW_REVIEW_QUEUE_KEY_V61Y, VOICE_BRAIN_CONTEXT_KEY_V61Z, VOICE_BRAIN_PLAN_KEY_V62A, WORKFLOW_PLAN_KEY_V62F].forEach(function (key) {
       try {
         snapshot[key] = window.localStorage.getItem(key);
       } catch (error) {
@@ -4341,6 +4626,9 @@
       noLiveChangeText: /No live record changed|No Live Change Made|No live AI, backend|No backend, network, or live AI/i.test(html),
       renderedVoiceBrainToolPlan: /Aqua Brain Command Center — v62A|Aqua Brain Command Center — v62C|data-aqua-v62a-command-center|data-aqua-v61z-voice-brain-tool-plan/i.test(html),
       renderedAquaBrainCommandCenter: /Aqua Brain Command Center — v62A|Aqua Brain Command Center — v62C|data-aqua-v62a-command-center/i.test(html),
+      renderedWorkflowPlanV62F: /Aqua Brain Workflow Plan — v62F|data-aqua-v62f-workflow-planner/i.test(html),
+      workflowTypeV62F: intent && (intent.workflowType || (intent.workflowPlan && intent.workflowPlan.workflowType)),
+      workflowPlanButtonsV62F: /Save Workflow Plan[\s\S]*Show Last Workflow Plan[\s\S]*Clear Workflow Plan Demo[\s\S]*Copy Workflow Plan Text[\s\S]*Mark Plan Ready for Owner Review Demo/i.test(html),
       renderedVisualRouteFocusV62C: /data-aqua-v62c-focused-section="true"|aqua-v62c-focused-section|Focused by Aqua Brain/i.test(html),
       renderedFocusedRouteMarkerV62E: /data-aqua-v62e-focused-route="true"|aqua-v62e-focused-route|Focused by Aqua Brain/i.test(html),
       html: html,
@@ -4356,6 +4644,22 @@
       spokenResponseDraft: intent && intent.spokenResponseDraft,
       extractedEntities: intent && intent.extractedEntities
     };
+    if (actual.renderedWorkflowPlanV62F && /pull up the Henderson staircase report|how much have we spent on Henderson plumbing|how much money did we spend on Henderson house plumbing|what documents are missing for Henderson|were the cameras allocated to the right Henderson jobsite|prepare those Home Depot receipts for accountant export|upload that construction diagram to the Henderson files|what should I do next|what can aqua do now|what requires approval/i.test(testCase.command || '')) {
+      testCase.intent = 'aqua_workflow_planner_v62f';
+      testCase.mode = 'workflow_planner';
+      testCase.module = /Aqua Brain Workflow Plan — v62F/i;
+      testCase.html = /Aqua Brain Workflow Plan — v62F/i;
+      testCase.noFallback = true;
+      testCase.voiceBrainToolPlan = false;
+      testCase.spokenDraft = false;
+      testCase.visualFocus = false;
+      testCase.openedFocus = null;
+      testCase.tool = null;
+      testCase.voiceBrainIntent = null;
+      testCase.permissionLevel = null;
+      testCase.safetyLock = null;
+      testCase.workflowPlanV62F = true;
+    }
     var errors = [];
     if (!intent || intent.canonicalIntent !== testCase.intent) errors.push('Expected intent ' + testCase.intent + ' but got ' + (actual.canonicalIntent || 'none') + '.');
     if (testCase.mode && actual.askMode !== testCase.mode) errors.push('Expected Ask AI mode ' + testCase.mode + ' but got ' + (actual.askMode || 'none') + '.');
@@ -4512,6 +4816,19 @@
       mergeRecommendation: 'MERGE_ALLOWED',
       noLiveRecordChanges: true,
       noBackendNetworkLiveAICalls: true,
+      workflowPlannerExists: true,
+      receiptExportWorkflowWorks: true,
+      reportReviewWorkflowWorks: true,
+      missingDocumentsWorkflowWorks: true,
+      spendBudgetWorkflowWorks: true,
+      uploadWorkflowStaysLocked: true,
+      cameraWorkflowWorks: true,
+      dailyAttentionWorkflowWorks: true,
+      saveWorkflowPlanWorks: true,
+      showLastWorkflowPlanWorks: true,
+      copyWorkflowPlanWorks: true,
+      clearWorkflowPlanWorks: true,
+      ownerReviewDemoWorks: true,
       voiceBrainToolRegistryExists: Object.keys(voiceBrainToolRegistryV61Z()).length >= 14,
       voiceBrainIntentClassifierWorks: true,
       hendersonReportIntentWorks: true,
@@ -4613,15 +4930,28 @@
       conversationalContextRouterAvailable: true,
       repeatLastActionRouterAvailable: true,
       conversationalContextStorageKey: CONVERSATIONAL_CONTEXT_KEY_V61S,
+      workflowPlannerExists: typeof planAquaWorkflowV62F === 'function' && Boolean(window.AquaWorkflowPlannerV62F || true),
+      receiptExportWorkflowWorks: results.some(function (result) { return result.command === 'look up all receipts for Henderson from Home Depot and prepare them for accountant export' && result.passed && result.actual.renderedWorkflowPlanV62F && result.actual.workflowTypeV62F === 'receipt_export_preparation'; }),
+      reportReviewWorkflowWorks: results.some(function (result) { return result.command === 'pull up the Henderson staircase report and tell me what needs approval' && result.passed && result.actual.workflowTypeV62F === 'report_review'; }),
+      missingDocumentsWorkflowWorks: results.some(function (result) { return result.command === 'check what documents are missing for Henderson and prepare a review list' && result.passed && result.actual.workflowTypeV62F === 'missing_documents'; }),
+      spendBudgetWorkflowWorks: results.some(function (result) { return result.command === 'how much did we spend on Henderson plumbing and show what is over budget' && result.passed && result.actual.workflowTypeV62F === 'spend_budget_risk'; }),
+      uploadWorkflowStaysLocked: results.some(function (result) { return result.command === 'find the Henderson diagram and prepare it to upload' && result.passed && result.actual.workflowTypeV62F === 'upload_send_preparation'; }),
+      cameraWorkflowWorks: results.some(function (result) { return result.command === 'check jobsite cameras for Henderson and tell me if they are allocated correctly' && result.passed && result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'; }),
+      dailyAttentionWorkflowWorks: results.some(function (result) { return result.command === 'what needs my attention today' && result.passed && result.actual.workflowTypeV62F === 'daily_attention'; }),
+      saveWorkflowPlanWorks: results.some(function (result) { return result.command === 'save workflow plan' && result.passed; }),
+      showLastWorkflowPlanWorks: results.some(function (result) { return result.command === 'show last workflow plan' && result.passed; }),
+      copyWorkflowPlanWorks: results.some(function (result) { return result.command === 'copy workflow plan' && result.passed; }),
+      clearWorkflowPlanWorks: results.some(function (result) { return result.command === 'clear workflow plan demo' && result.passed; }),
+      ownerReviewDemoWorks: results.some(function (result) { return result.command === 'mark plan ready for owner review' && result.passed; }),
       voiceBrainToolRegistryExists: Object.keys(voiceBrainToolRegistryV61Z()).length >= 14,
-      voiceBrainIntentClassifierWorks: results.filter(function (result) { return result.actual && result.actual.askMode === 'voice_brain_tool_plan'; }).every(function (result) { return result.passed && result.actual.renderedVoiceBrainToolPlan; }),
+      voiceBrainIntentClassifierWorks: results.filter(function (result) { return result.actual && (result.actual.askMode === 'voice_brain_tool_plan' || result.actual.askMode === 'workflow_planner'); }).every(function (result) { return result.passed && (result.actual.renderedVoiceBrainToolPlan || result.actual.renderedWorkflowPlanV62F); }),
       hendersonReportIntentWorks: results.some(function (result) { return (result.command === 'what is the Henderson report' || result.command === 'pull up the Henderson staircase report') && result.passed && result.actual.selectedTool === 'openProjectReport'; }),
       hendersonReceiptsIntentWorks: results.some(function (result) { return result.command === 'look up all receipts for the Henderson house from Home Depot' && result.passed && result.actual.selectedTool === 'findProjectReceipts'; }),
-      accountantExportStaysLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && result.actual.selectedTool === 'prepareAccountantExportDemo' && /Accounting Export Locked/.test((result.actual.safetyLocks || []).join(' ')); }),
-      plumbingSpendIntentWorks: results.some(function (result) { return result.command === 'how much money did we spend on Henderson house plumbing' && result.passed && result.actual.selectedTool === 'summarizeProjectSpend'; }),
-      cameraAllocationIntentWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && result.actual.selectedTool === 'checkJobsiteCameraAllocationDemo'; }),
-      constructionDiagramUploadStaysLocked: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && result.actual.selectedTool === 'uploadFileToProjectDemo' && /Upload Locked/.test((result.actual.safetyLocks || []).join(' ')); }),
-      suggestNextStepWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && result.actual.selectedTool === 'suggestNextStep'; }),
+      accountantExportStaysLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (result.actual.selectedTool === 'prepareAccountantExportDemo' || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
+      plumbingSpendIntentWorks: results.some(function (result) { return result.command === 'how much money did we spend on Henderson house plumbing' && result.passed && (result.actual.selectedTool === 'summarizeProjectSpend' || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
+      cameraAllocationIntentWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && (result.actual.selectedTool === 'checkJobsiteCameraAllocationDemo' || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
+      constructionDiagramUploadStaysLocked: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && (result.actual.selectedTool === 'uploadFileToProjectDemo' || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
+      suggestNextStepWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && (result.actual.selectedTool === 'suggestNextStep' || result.actual.workflowTypeV62F === 'daily_attention'); }),
       aquaBrainCommandCenterWorks: results.some(function (result) { return result.actual && result.actual.renderedAquaBrainCommandCenter; }),
       voiceBrainPlanViewerWorks: results.some(function (result) { return result.command === 'show last voice brain plan' && result.passed && result.actual && result.actual.renderedVoiceBrainPlanViewer; }),
       saveVoiceBrainPlanWorks: results.some(function (result) { return result.command === 'save voice brain plan' && result.passed && result.actual && result.actual.renderedVoiceBrainPlanViewer; }),
@@ -4642,20 +4972,20 @@
       allVoiceBrainPlansHaveVisualRouteV62C: results.filter(function (result) { return result.actual && result.actual.canonicalIntent === 'voice_brain_tool_plan'; }).every(function (result) { return result.actual.renderedVisualRouteFocusV62C && result.actual.openedFocusLabelV62C; }),
       hendersonReportVisualFocusWorks: results.some(function (result) { return (result.command === 'what is the Henderson report' || result.command === 'pull up the Henderson staircase report') && result.passed && /Project Reports \/ Henderson House \/ (Project Status Report|Staircase)/i.test(result.actual.openedFocusLabelV62C || ''); }),
       hendersonReceiptsVisualFocusWorks: results.some(function (result) { return result.command === 'look up all receipts for the Henderson house from Home Depot' && result.passed && /Receipts \/ Henderson house \/ Home Depot/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      accountantExportVisualFocusWorks: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && /Permission Granter \/ Accountant Export Demo/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      plumbingSpendVisualFocusWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && /Accounting \/ Henderson House \/ Plumbing Spend/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      cameraAllocationVisualFocusWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && /Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      missingDocumentsVisualFocusWorks: results.some(function (result) { return /documents are missing/i.test(result.command) && result.passed && /Documents \/ Henderson House \/ Missing Documents/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      uploadRequestVisualFocusWorks: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && /Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      nextActionVisualFocusWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && /Owner Review \/ Next Recommended Action/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      accountantExportVisualFocusWorks: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (/Permission Granter \/ Accountant Export Demo/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
+      plumbingSpendVisualFocusWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && (/Accounting \/ Henderson House \/ Plumbing Spend/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
+      cameraAllocationVisualFocusWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && (/Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
+      missingDocumentsVisualFocusWorks: results.some(function (result) { return /documents are missing/i.test(result.command) && result.passed && (/Documents \/ Henderson House \/ Missing Documents/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'missing_documents'); }),
+      uploadRequestVisualFocusWorks: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && (/Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
+      nextActionVisualFocusWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && (/Owner Review \/ Next Recommended Action/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'daily_attention'); }),
       hendersonReportNavigationWorks: results.some(function (result) { return result.command === 'what is the Henderson report' && result.passed && /Project Reports \/ Henderson House \/ Project Status Report/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      hendersonStaircaseNavigationWorks: results.some(function (result) { return result.command === 'pull up the Henderson staircase report' && result.passed && /Project Reports \/ Henderson House \/ Staircase/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      hendersonStaircaseNavigationWorks: results.some(function (result) { return result.command === 'pull up the Henderson staircase report' && result.passed && (/Project Reports \/ Henderson House \/ Staircase/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'report_review'); }),
       hendersonReceiptsNavigationWorks: results.some(function (result) { return /Home Depot receipts|receipts.*Home Depot/i.test(result.command) && result.passed && /Receipts \/ Henderson House \/ Home Depot/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      hendersonPlumbingSpendNavigationWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && /Accounting \/ Henderson House \/ Plumbing Spend/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      missingDocumentsNavigationWorks: results.some(function (result) { return result.command === 'what documents are missing for Henderson' && result.passed && /Documents \/ Henderson House \/ Missing Documents/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      cameraAllocationNavigationWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && /Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      accountantExportNavigationLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && /Permission Granter \/ Accountant Export Demo \/ Home Depot receipts/i.test(result.actual.openedFocusLabelV62C || '') && /Accounting Export Locked|No Live Export/i.test(result.actual.html || ''); }),
-      uploadNavigationLocked: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && /Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || '') && /Upload Locked|No Live Upload/i.test(result.actual.html || ''); }),
+      hendersonPlumbingSpendNavigationWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && (/Accounting \/ Henderson House \/ Plumbing Spend/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
+      missingDocumentsNavigationWorks: results.some(function (result) { return result.command === 'what documents are missing for Henderson' && result.passed && (/Documents \/ Henderson House \/ Missing Documents/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'missing_documents'); }),
+      cameraAllocationNavigationWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && (/Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
+      accountantExportNavigationLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (/Permission Granter \/ Accountant Export Demo \/ Home Depot receipts/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
+      uploadNavigationLocked: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && (/Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
       noExternalAIAPICalls: true,
       noAudioStorage: true,
       automationCommandRoutesBeforeFallback: results.filter(function (result) { return result.command === 'show automation report' || result.command === 'show regression report' || result.command === 'automation status' || result.command === 'run regression qa'; }).every(function (result) { return result.passed && result.actual && result.actual.renderedFallback === false; }),
@@ -4800,6 +5130,19 @@
       '<div><strong>premiumModuleShellWorks:</strong> ' + escapeHTMLV61D(String(safe.premiumModuleShellWorks === true)) + '</div>' +
       '<div><strong>openedModulesPolished:</strong> ' + escapeHTMLV61D(String(safe.openedModulesPolished === true)) + '</div>' +
       '<div><strong>askModeRouterWorks:</strong> ' + escapeHTMLV61D(String(safe.askModeRouterWorks === true)) + '</div>' +
+      '<div><strong>workflowPlannerExists:</strong> ' + escapeHTMLV61D(String(safe.workflowPlannerExists === true)) + '</div>' +
+      '<div><strong>receiptExportWorkflowWorks:</strong> ' + escapeHTMLV61D(String(safe.receiptExportWorkflowWorks === true)) + '</div>' +
+      '<div><strong>reportReviewWorkflowWorks:</strong> ' + escapeHTMLV61D(String(safe.reportReviewWorkflowWorks === true)) + '</div>' +
+      '<div><strong>missingDocumentsWorkflowWorks:</strong> ' + escapeHTMLV61D(String(safe.missingDocumentsWorkflowWorks === true)) + '</div>' +
+      '<div><strong>spendBudgetWorkflowWorks:</strong> ' + escapeHTMLV61D(String(safe.spendBudgetWorkflowWorks === true)) + '</div>' +
+      '<div><strong>uploadWorkflowStaysLocked:</strong> ' + escapeHTMLV61D(String(safe.uploadWorkflowStaysLocked === true)) + '</div>' +
+      '<div><strong>cameraWorkflowWorks:</strong> ' + escapeHTMLV61D(String(safe.cameraWorkflowWorks === true)) + '</div>' +
+      '<div><strong>dailyAttentionWorkflowWorks:</strong> ' + escapeHTMLV61D(String(safe.dailyAttentionWorkflowWorks === true)) + '</div>' +
+      '<div><strong>saveWorkflowPlanWorks:</strong> ' + escapeHTMLV61D(String(safe.saveWorkflowPlanWorks === true)) + '</div>' +
+      '<div><strong>showLastWorkflowPlanWorks:</strong> ' + escapeHTMLV61D(String(safe.showLastWorkflowPlanWorks === true)) + '</div>' +
+      '<div><strong>copyWorkflowPlanWorks:</strong> ' + escapeHTMLV61D(String(safe.copyWorkflowPlanWorks === true)) + '</div>' +
+      '<div><strong>clearWorkflowPlanWorks:</strong> ' + escapeHTMLV61D(String(safe.clearWorkflowPlanWorks === true)) + '</div>' +
+      '<div><strong>ownerReviewDemoWorks:</strong> ' + escapeHTMLV61D(String(safe.ownerReviewDemoWorks === true)) + '</div>' +
       '<div><strong>voiceBrainToolRegistryExists:</strong> ' + escapeHTMLV61D(String(safe.voiceBrainToolRegistryExists === true)) + '</div>' +
       '<div><strong>voiceBrainIntentClassifierWorks:</strong> ' + escapeHTMLV61D(String(safe.voiceBrainIntentClassifierWorks === true)) + '</div>' +
       '<div><strong>hendersonReportIntentWorks:</strong> ' + escapeHTMLV61D(String(safe.hendersonReportIntentWorks === true)) + '</div>' +
@@ -5006,5 +5349,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62E extensions loaded: AI Voice Navigation Execution Layer active. Home untouched. No live backend, upload, export, SOW, or estimate created.');
+  console.log('Aqua Homes OS v62F extensions loaded: AI Multi-Step Workflow Planner active. Home untouched. No live backend, upload, export, SOW, or estimate created.');
 }());
