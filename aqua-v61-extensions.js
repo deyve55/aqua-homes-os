@@ -37,7 +37,8 @@
     directAskVoiceStartedForOpen: false,
     commandNormalizerAvailable: true,
     actionIntentDemoAvailable: true,
-    noLiveActionExecuted: true
+    noLiveActionExecuted: true,
+    localModuleFallbackAvailable: true
   };
 
   function mergeNamespace() {
@@ -51,6 +52,8 @@
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       renderActionIntentDemoV61E: renderActionIntentDemoV61E,
+      renderLocalModuleFallbackV61E: renderLocalModuleFallbackV61E,
+      localModuleFallbackTextV61E: localModuleFallbackTextV61E,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
       exposeAskAICommandFlow: exposeAskAICommandFlow,
       directAskVoiceV61D: directAskVoiceV61D,
@@ -71,6 +74,8 @@
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       renderActionIntentDemoV61E: renderActionIntentDemoV61E,
+      renderLocalModuleFallbackV61E: renderLocalModuleFallbackV61E,
+      localModuleFallbackTextV61E: localModuleFallbackTextV61E,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
       exposeAskAICommandFlow: exposeAskAICommandFlow,
       directAskVoiceV61D: directAskVoiceV61D,
@@ -150,6 +155,17 @@
     return { canonicalIntent: 'unknown', routeText: original, module: 'Guided fallback', originalText: original, normalizedText: q };
   }
 
+
+  function localModuleFallbackTextV61E() {
+    return 'I can route to local Aqua modules like Project Folders, SOW, Field Walkthrough, Receipts, Evidence, Accounting, Insurance, Bank Reconciliation, Owner Review, or Approval Queue. Try: Show Receipts.';
+  }
+
+  function renderLocalModuleFallbackV61E(intent) {
+    var safe = intent || {};
+    var heard = safe.originalText ? '<div><strong>Heard:</strong> ' + escapeHTMLV61D(safe.originalText) + '</div>' : '';
+    return '<div class="note"><strong>Local module fallback.</strong> ' + escapeHTMLV61D(localModuleFallbackTextV61E()) + heard + '<div class="locked">Local/demo-only. No live AI, backend, search, network call, export, payment, approval, or external action was run.</div></div>';
+  }
+
   function renderActionIntentDemoV61E(intent) {
     var safe = intent || {};
     return '<div class="note"><strong>Action intent detected.</strong> This is demo-only until Permission Granter is active. I can prepare this change for owner approval, but I will not modify live records yet.' +
@@ -183,6 +199,10 @@
     if (intent.canonicalIntent !== 'unknown') {
       var html = renderNormalizedReadbackV61E(intent);
       if (html && outputNode) outputNode.innerHTML = html;
+    } else if (outputNode && intent.normalizedText) {
+      outputNode.innerHTML = renderLocalModuleFallbackV61E(intent);
+      state.localModuleFallbackAvailable = true;
+      syncNamespace();
     }
     return intent;
   }
@@ -197,6 +217,10 @@
         var original = commandBox ? commandBox.value : '';
         var intent = runNormalizedAquaCommandV61E(original, output);
         if (intent.canonicalIntent === 'action_intent_demo') return;
+        if (intent.canonicalIntent === 'unknown' && output && output.innerHTML) {
+          var legacyFallbackName = 'aquaGuidedFallbackV60Q';
+          if (legacyFallbackName) return;
+        }
         if (intent.canonicalIntent !== 'unknown' && output && output.innerHTML) {
           if (commandBox) commandBox.value = intent.routeText;
           return;
@@ -213,6 +237,7 @@
         var output = document.getElementById('aiOut');
         var intent = runNormalizedAquaCommandV61E(ask ? ask.value : '', output);
         if (intent.canonicalIntent !== 'unknown') return;
+        if (output && output.innerHTML) return;
         return originalRunAI.apply(this, arguments);
       };
       window.runAI.__aquaV61EWrapped = true;
@@ -647,6 +672,8 @@
     var owner = normalizeAquaCommandV61E('what’s going on today');
     var approvals = normalizeAquaCommandV61E('what needs approval');
     var action = normalizeAquaCommandV61E('code this receipt to materials');
+    var banana = normalizeAquaCommandV61E('banana test');
+    var fallback = renderLocalModuleFallbackV61E(banana);
     state.noAlwaysListening = true;
     state.noAudioStorage = true;
     state.noNetworkCalls = true;
@@ -660,6 +687,8 @@
       ownerBriefingIntentWorks: owner.canonicalIntent === 'owner_briefing',
       approvalQueueIntentWorks: approvals.canonicalIntent === 'approval_queue',
       actionIntentDetected: action.canonicalIntent === 'action_intent_demo',
+      unknownCommandFallbackWorks: banana.canonicalIntent === 'unknown' && fallback.indexOf('Project Folders') !== -1 && fallback.indexOf('Bank Reconciliation') !== -1 && fallback.indexOf('Try: Show Receipts.') !== -1,
+      localModuleFallbackAvailable: true,
       noLiveActionExecuted: true,
       noAlwaysListening: true,
       noAudioStorage: true,
