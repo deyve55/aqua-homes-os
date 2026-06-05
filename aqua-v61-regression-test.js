@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v61Q';
+const VERSION = 'v61R';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -263,6 +263,11 @@ function checkStaticFiles() {
   } catch (error) {
     addCheck(`no syntax errors in ${EXTENSION}`, false, { layer: 'static-file-safety', actual: String(error.stderr || error.message), fileToFix: EXTENSION });
   }
+  addCheck('v61R speech readback function exists', /function\s+speakAquaSummaryV61R/.test(extension) && /speechSynthesis/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
+  addCheck('v61R Speak Summary button exists', /Speak Summary/.test(extension) && /data-aqua-v61r-speak-summary/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
+  addCheck('v61R Stop Speaking button exists', /Stop Speaking/.test(extension) && /data-aqua-v61r-stop-speaking/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
+  addCheck('v61R spoken readback uses safe local preference key only', /aquaSpokenReadbackV61R/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
+  addCheck('v61R spoken readback browser fallback copy exists', /Spoken readback unavailable in this browser\./.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -285,10 +290,25 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
+    addCheck('extension regression version is v61R', extensionReport.version === 'v61R', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression includes spoken readback availability or fallback flag', extensionReport.spokenReadbackAvailable === true || extensionReport.spokenReadbackBrowserUnavailableFallback === true, { layer: 'spoken-readback-v61r', actual: { available: extensionReport.spokenReadbackAvailable, fallback: extensionReport.spokenReadbackBrowserUnavailableFallback }, fileToFix: EXTENSION });
+    addCheck('extension regression spoken preference key is aquaSpokenReadbackV61R', extensionReport.spokenReadbackPreferenceKey === 'aquaSpokenReadbackV61R', { layer: 'spoken-readback-v61r', actual: extensionReport.spokenReadbackPreferenceKey, fileToFix: EXTENSION });
     const failuresList = extensionReport.failures || [];
     failuresList.forEach((failure) => addCheck(`extension command passes: ${failure.command}`, false, { layer: 'extension-regression', expected: failure.expected, actual: failure.actual, fileToFix: EXTENSION }));
 
     const byCommand = new Map((extensionReport.results || []).map((row) => [row.command, row]));
+    [
+      'speak summary',
+      'read this back',
+      'read report',
+      'stop speaking',
+      'mute voice',
+      'voice off',
+      'voice on'
+    ].forEach((command) => {
+      const row = byCommand.get(command);
+      addCheck(`spoken readback typed command routes: ${command}`, Boolean(row && row.passed), { layer: 'spoken-readback-v61r', expected: 'recognized local spoken readback route', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    });
     [
       'cold this receipt to framing',
       'call this receipt to framing',
@@ -377,7 +397,8 @@ function runSafetyGate() {
     noAccountingExport: !/accounting\s*export\s*\(/i.test(extension),
     noCustomerSharingExport: !/customer\s*(sharing|export)\s*\(/i.test(extension),
     noAudioStorage: !/MediaRecorder|new\s+Blob\s*\([^)]*audio|audio\/webm|audio\/mpeg|audio\/wav/i.test(extension),
-    noAlwaysListening: !/continuous\s*=\s*true/i.test(extension)
+    noAlwaysListening: !/continuous\s*=\s*true/i.test(extension),
+    noExternalTTSApiCalls: !/https?:\/\/|fetch\s*\(|XMLHttpRequest|sendBeacon/i.test(extension)
   };
   Object.entries(safetyChecks).forEach(([name, value]) => addCheck(`safety gate: ${name}`, value === true, { layer: 'safety-gate', fileToFix: EXTENSION }));
   return safetyChecks;
@@ -413,7 +434,7 @@ function buildRepairPrompt(report) {
 
 function createGateSelfTestReport(overrides = {}) {
   const baseReport = {
-    version: 'v61Q-gate-self-test',
+    version: 'v61R-gate-self-test',
     total: 1,
     passed: 1,
     failed: 0,
@@ -433,10 +454,10 @@ function createGateSelfTestReport(overrides = {}) {
 function runMergeGateSelfTest() {
   const beforeHtmlHash = hashFileSafe(HTML_KEEPER);
   const fakePassingReport = createGateSelfTestReport({
-    version: 'v61Q-simulated-passing'
+    version: 'v61R-simulated-passing'
   });
   const fakeFailingReport = createGateSelfTestReport({
-    version: 'v61Q-simulated-failure',
+    version: 'v61R-simulated-failure',
     total: 1,
     passed: 0,
     failed: 1,
@@ -479,7 +500,9 @@ function markdown(report) {
     `- Passed: ${report.passed}\n` +
     `- Failed: ${report.failed}\n` +
     `- safeToMerge: ${report.safeToMerge}\n` +
-    `- Merge recommendation: ${report.mergeRecommendation}\n\n` +
+    `- Merge recommendation: ${report.mergeRecommendation}\n` +
+    `- spokenReadbackAvailable: ${report.spokenReadbackAvailable}\n` +
+    `- spokenReadbackBrowserUnavailableFallback: ${report.spokenReadbackBrowserUnavailableFallback}\n\n` +
     `## Files Changed\n${changedRows}\n\n` +
     `## Failed Commands / Checks\n${failedRows}\n\n` +
     `## Safety Status\n${safetyRows}\n\n` +
@@ -529,6 +552,8 @@ async function main() {
     safetyStatus,
     browserVisualTest,
     extensionRegression: extensionReport,
+    spokenReadbackAvailable: extensionReport ? extensionReport.spokenReadbackAvailable === true : false,
+    spokenReadbackBrowserUnavailableFallback: extensionReport ? extensionReport.spokenReadbackBrowserUnavailableFallback === true : true,
     gateSelfTest,
     noConflictMarkers: conflictMarkerFiles.length === 0,
     hasConflictMarkers: conflictMarkerFiles.length > 0,

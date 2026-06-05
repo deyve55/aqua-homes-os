@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61P Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields.
+ * Aqua Homes OS v61R Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61P';
+  var VERSION = 'v61R';
   var state = {
     version: VERSION,
     initialized: true,
@@ -93,12 +93,29 @@
     oldAskAIInputNotPolluted: true,
     buttonLabelsNotInjected: true,
     regressionButtonPreservesInput: false,
-    typedRegressionCommandWorks: false
+    typedRegressionCommandWorks: false,
+    spokenReadbackV61RAvailable: false,
+    spokenReadbackUnavailableFallbackV61R: false,
+    spokenReadbackControlsInsertedV61R: false,
+    speakSummaryButtonExistsV61R: false,
+    stopSpeakingButtonExistsV61R: false,
+    spokenReadbackPreferenceKey: 'aquaSpokenReadbackV61R',
+    spokenReadbackEnabledV61R: true,
+    spokenReadbackFunctionExistsV61R: true,
+    spokenReadbackLastSummaryV61R: '',
+    typedSpeakSummaryWorksV61R: false,
+    typedStopSpeakingWorksV61R: false,
+    voiceOffPreferenceWorksV61R: false,
+    voiceOnPreferenceWorksV61R: false,
+    noAudioStorageV61R: true,
+    noBackendNetworkLiveAIV61R: true,
+    noAlwaysListeningV61R: true
   };
 
   var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
   var PERMISSION_GRANTER_KEY_V61I = 'aquaPermissionGranterV61I';
   var REGRESSION_REPORT_KEY_V61L = 'aquaRegressionReportV61L';
+  var SPOKEN_READBACK_KEY_V61R = 'aquaSpokenReadbackV61R';
 
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
@@ -115,10 +132,12 @@
       runV61JCheck: runV61JCheck,
       runV61KCheck: runV61KCheck,
       runV61MCheck: runV61MCheck,
+      runV61RCheck: runV61RCheck,
       getAquaCommandInputV61M: getAquaCommandInputV61M,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61N: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61P: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61R: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -134,7 +153,12 @@
       exposeAskAICommandFlow: exposeAskAICommandFlow,
       directAskVoiceV61D: directAskVoiceV61D,
       startDirectAskVoiceV61D: startDirectAskVoiceV61D,
-      startDirectAskVoiceV61C: startDirectAskVoiceV61D
+      startDirectAskVoiceV61C: startDirectAskVoiceV61D,
+      speakAquaSummaryV61R: speakAquaSummaryV61R,
+      stopAquaSpeakingV61R: stopAquaSpeakingV61R,
+      getSpokenReadbackPreferenceV61R: getSpokenReadbackPreferenceV61R,
+      setSpokenReadbackPreferenceV61R: setSpokenReadbackPreferenceV61R,
+      getCurrentSpokenSummaryV61R: getCurrentSpokenSummaryV61R
     });
     return window.AquaV61Extensions;
   }
@@ -154,10 +178,12 @@
       runV61JCheck: runV61JCheck,
       runV61KCheck: runV61KCheck,
       runV61MCheck: runV61MCheck,
+      runV61RCheck: runV61RCheck,
       getAquaCommandInputV61M: getAquaCommandInputV61M,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61N: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61P: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61R: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -173,7 +199,12 @@
       exposeAskAICommandFlow: exposeAskAICommandFlow,
       directAskVoiceV61D: directAskVoiceV61D,
       startDirectAskVoiceV61D: startDirectAskVoiceV61D,
-      startDirectAskVoiceV61C: startDirectAskVoiceV61D
+      startDirectAskVoiceV61C: startDirectAskVoiceV61D,
+      speakAquaSummaryV61R: speakAquaSummaryV61R,
+      stopAquaSpeakingV61R: stopAquaSpeakingV61R,
+      getSpokenReadbackPreferenceV61R: getSpokenReadbackPreferenceV61R,
+      setSpokenReadbackPreferenceV61R: setSpokenReadbackPreferenceV61R,
+      getCurrentSpokenSummaryV61R: getCurrentSpokenSummaryV61R
     });
     return window.AquaV61Extensions;
   }
@@ -278,6 +309,21 @@
     var q = normalizeAquaPhraseV61E(original);
     var demoState = detectDemoStateCommandV61K(original, q);
     if (demoState) return demoState;
+    if (phraseMatchesV61E(q, ['speak summary', 'read this back'])) {
+      return { canonicalIntent: 'speak_summary_v61r', routeText: 'speak summary', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+    }
+    if (phraseMatchesV61E(q, ['read report'])) {
+      return { canonicalIntent: 'read_report_v61r', routeText: 'read report', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+    }
+    if (phraseMatchesV61E(q, ['stop speaking', 'mute voice'])) {
+      return { canonicalIntent: 'stop_speaking_v61r', routeText: 'stop speaking', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+    }
+    if (phraseMatchesV61E(q, ['voice off'])) {
+      return { canonicalIntent: 'voice_off_v61r', routeText: 'voice off', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+    }
+    if (phraseMatchesV61E(q, ['voice on'])) {
+      return { canonicalIntent: 'voice_on_v61r', routeText: 'voice on', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+    }
     if (phraseMatchesV61E(q, ['run regression qa', 'run regression quality assurance', 'run command regression qa', 'command regression qa', 'regression qa'])) {
       return { canonicalIntent: 'run_regression_qa', routeText: 'run regression qa', originalText: original, normalizedText: q, module: 'Aqua Command Regression QA' };
     }
@@ -311,6 +357,176 @@
     var safe = intent || {};
     var heard = safe.originalText ? '<div><strong>Heard:</strong> ' + escapeHTMLV61D(safe.originalText) + '</div>' : '';
     return '<div class="note"><strong>Fallback local demo panel: native module opener not found.</strong> ' + escapeHTMLV61D(localModuleFallbackTextV61E()) + heard + '<div class="locked">Local/demo-only. No live AI, backend, search, network call, export, payment, approval, or external action was run.</div></div>';
+  }
+
+  function spokenReadbackPreferenceDefaultsV61R() {
+    return { enabled: true, selectedVoiceName: '', rate: 1 };
+  }
+
+  function getSpokenReadbackPreferenceV61R() {
+    var preference = spokenReadbackPreferenceDefaultsV61R();
+    try {
+      var raw = window.localStorage.getItem(SPOKEN_READBACK_KEY_V61R);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        preference.enabled = parsed && parsed.enabled === false ? false : true;
+        preference.selectedVoiceName = parsed && typeof parsed.selectedVoiceName === 'string' ? parsed.selectedVoiceName : '';
+        preference.rate = parsed && Number(parsed.rate) > 0 ? Math.min(2, Math.max(0.5, Number(parsed.rate))) : 1;
+      }
+    } catch (error) {
+      state.spokenReadbackStorageWarningV61R = 'localStorage unavailable for spoken readback preference';
+    }
+    state.spokenReadbackEnabledV61R = preference.enabled;
+    return preference;
+  }
+
+  function setSpokenReadbackPreferenceV61R(updates) {
+    var next = Object.assign(spokenReadbackPreferenceDefaultsV61R(), getSpokenReadbackPreferenceV61R(), updates || {});
+    next.enabled = next.enabled === false ? false : true;
+    next.selectedVoiceName = typeof next.selectedVoiceName === 'string' ? next.selectedVoiceName : '';
+    next.rate = Number(next.rate) > 0 ? Math.min(2, Math.max(0.5, Number(next.rate))) : 1;
+    try {
+      window.localStorage.setItem(SPOKEN_READBACK_KEY_V61R, JSON.stringify({ enabled: next.enabled, selectedVoiceName: next.selectedVoiceName, rate: next.rate }));
+    } catch (error) {
+      state.spokenReadbackStorageWarningV61R = 'localStorage unavailable for spoken readback preference';
+    }
+    state.spokenReadbackEnabledV61R = next.enabled;
+    state.noAudioStorageV61R = true;
+    state.noBackendNetworkLiveAIV61R = true;
+    state.noAlwaysListeningV61R = true;
+    syncNamespace();
+    return next;
+  }
+
+  function speechSynthesisAvailableV61R() {
+    var available = Boolean(window && window.speechSynthesis && typeof window.speechSynthesis.speak === 'function');
+    state.spokenReadbackV61RAvailable = available;
+    state.spokenReadbackUnavailableFallbackV61R = !available;
+    return available;
+  }
+
+  function setSpokenReadbackStatusV61R(message) {
+    var status = document && typeof document.getElementById === 'function' ? document.getElementById('aquaSpokenReadbackStatusV61R') : null;
+    if (status) status.textContent = message || 'Spoken readback: local/browser demo only • no audio stored • backend locked';
+    state.spokenReadbackStatusTextV61R = message || '';
+  }
+
+  function rememberSpokenSummaryV61R(summary, context) {
+    var clean = String(summary || '').replace(/\s+/g, ' ').trim();
+    if (!clean) return '';
+    state.spokenReadbackLastSummaryV61R = clean;
+    state.spokenReadbackLastContextV61R = context || 'current visual summary';
+    syncNamespace();
+    return clean;
+  }
+
+  function automationReportSummaryV61R(report) {
+    var safe = report || getLastRegressionReportV61L() || null;
+    if (!safe) return 'Automation report is not available yet. No backend, network, live AI, payment, payroll, bank, or accounting export action ran.';
+    var recommendation = safe.mergeRecommendation === 'MERGE_ALLOWED' ? 'allowed' : String(safe.mergeRecommendation || 'unavailable').toLowerCase();
+    return 'Automation report complete. Total tests ' + escapeHTMLV61D(safe.total) + '. Passed tests ' + escapeHTMLV61D(safe.passed) + '. Failed tests ' + escapeHTMLV61D(safe.failed) + '. Merge recommendation is ' + recommendation + '. No backend, network, live AI, payment, payroll, bank, or accounting export action ran.';
+  }
+
+  function visualSummaryForIntentV61R(intent) {
+    var safe = intent || {};
+    if (safe.canonicalIntent === 'show_receipts') return 'Receipts are open. Demo receipt items are visible. Some receipt categories need owner or accounting review. No live accounting export, payment, upload, OCR, or backend action has run.';
+    if (safe.canonicalIntent === 'action_intent_demo') return 'Permission required. I detected a receipt coding action. The requested category is ' + String(safe.requestedValue || 'unclear') + '. No live change has been made. Owner approval and audit controls are required before any future live action.';
+    if (safe.canonicalIntent === 'run_regression_qa') return automationReportSummaryV61R(getLastRegressionReportV61L());
+    if (safe.canonicalIntent === 'approval_queue') return 'Owner approval queue is open. Demo review cards are visible. No approval, customer sharing, backend, payment, or export action has run.';
+    if (safe.module) return safe.module + ' is open in local demo mode. Visual summary rows are visible. No backend, network, live AI, payment, payroll, bank sync, accounting export, upload, sharing, or live record change ran.';
+    return '';
+  }
+
+  function getCurrentSpokenSummaryV61R(outputNode) {
+    if (state.spokenReadbackLastSummaryV61R) return state.spokenReadbackLastSummaryV61R;
+    var text = outputNode && (outputNode.textContent || outputNode.innerHTML) ? String(outputNode.textContent || outputNode.innerHTML).replace(/<[^>]+>/g, ' ') : '';
+    if (/Regression QA Report|Automation/i.test(text)) return automationReportSummaryV61R(getLastRegressionReportV61L());
+    if (/Permission Required|Action Intent Demo/i.test(text)) return rememberSpokenSummaryV61R('Permission required. I detected a receipt coding action. The requested category is materials. No live change has been made. Owner approval and audit controls are required before any future live action.', 'permission granter');
+    if (/Receipts|Receipt Tracker/i.test(text)) return rememberSpokenSummaryV61R('Receipts are open. Demo receipt items are visible. Some receipt categories need owner or accounting review. No live accounting export, payment, upload, OCR, or backend action has run.', 'receipts');
+    return rememberSpokenSummaryV61R('Aqua Homes OS local demo is ready. No backend, network, live AI, payment, payroll, bank, accounting export, audio storage, or live record change has run.', 'safe default');
+  }
+
+  function speakAquaSummaryV61R(summary, options) {
+    var preference = getSpokenReadbackPreferenceV61R();
+    var text = String(summary || getCurrentSpokenSummaryV61R(options && options.outputNode)).replace(/\s+/g, ' ').trim();
+    rememberSpokenSummaryV61R(text, options && options.context ? options.context : 'spoken readback');
+    if (!preference.enabled) {
+      setSpokenReadbackStatusV61R('Spoken readback is off locally. Say or type voice on to enable.');
+      return { spoken: false, disabled: true, text: text };
+    }
+    if (!speechSynthesisAvailableV61R()) {
+      setSpokenReadbackStatusV61R('Spoken readback unavailable in this browser.');
+      return { spoken: false, unavailable: true, text: text, fallback: 'Spoken readback unavailable in this browser.' };
+    }
+    try {
+      if (typeof window.speechSynthesis.cancel === 'function') window.speechSynthesis.cancel();
+      var utterance = new window.SpeechSynthesisUtterance(text);
+      utterance.rate = preference.rate || 1;
+      if (preference.selectedVoiceName && typeof window.speechSynthesis.getVoices === 'function') {
+        var voices = window.speechSynthesis.getVoices() || [];
+        var selected = voices.filter(function (voice) { return voice && voice.name === preference.selectedVoiceName; })[0];
+        if (selected) utterance.voice = selected;
+      }
+      window.speechSynthesis.speak(utterance);
+      setSpokenReadbackStatusV61R('Speaking local/browser demo summary. No audio stored. Backend locked.');
+      state.spokenReadbackLastSpokenV61R = text;
+      state.noAudioStorageV61R = true;
+      state.noBackendNetworkLiveAIV61R = true;
+      state.noAlwaysListeningV61R = true;
+      syncNamespace();
+      return { spoken: true, text: text };
+    } catch (error) {
+      setSpokenReadbackStatusV61R('Spoken readback unavailable in this browser.');
+      return { spoken: false, unavailable: true, text: text, error: String(error && error.message ? error.message : error) };
+    }
+  }
+
+  function stopAquaSpeakingV61R() {
+    if (speechSynthesisAvailableV61R() && typeof window.speechSynthesis.cancel === 'function') window.speechSynthesis.cancel();
+    setSpokenReadbackStatusV61R('Spoken readback stopped. Local/browser demo only • no audio stored • backend locked');
+    state.spokenReadbackStoppedV61R = true;
+    state.noAudioStorageV61R = true;
+    state.noBackendNetworkLiveAIV61R = true;
+    state.noAlwaysListeningV61R = true;
+    syncNamespace();
+    return { stopped: true };
+  }
+
+  function renderSpokenReadbackControlsV61R() {
+    return '<span data-aqua-v61r-spoken-readback="true" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+      '<button type="button" class="btn small gold" data-aqua-v61r-speak-summary="true">Speak Summary</button>' +
+      '<button type="button" class="btn small" data-aqua-v61r-stop-speaking="true">Stop Speaking</button>' +
+      '<span id="aquaSpokenReadbackStatusV61R" class="smallMut">Spoken readback: local/browser demo only • no audio stored • backend locked</span>' +
+      '</span>';
+  }
+
+  function ensureSpokenReadbackControlsV61R(root) {
+    var scope = root || document;
+    if (!scope || typeof scope.querySelector !== 'function') return false;
+    if (scope.querySelector('[data-aqua-v61r-spoken-readback="true"]')) return true;
+    var actions = scope.querySelector('.actions');
+    if (!actions || typeof actions.insertAdjacentHTML !== 'function') return false;
+    actions.insertAdjacentHTML('beforeend', renderSpokenReadbackControlsV61R());
+    state.spokenReadbackControlsInsertedV61R = true;
+    state.speakSummaryButtonExistsV61R = true;
+    state.stopSpeakingButtonExistsV61R = true;
+    syncNamespace();
+    return true;
+  }
+
+  function installSpokenReadbackButtonHandlerV61R() {
+    if (state.spokenReadbackButtonHandlerInstalledV61R || !document || typeof document.addEventListener !== 'function') return true;
+    document.addEventListener('click', function (event) {
+      var speakButton = event.target && event.target.closest ? event.target.closest('[data-aqua-v61r-speak-summary="true"]') : null;
+      var stopButton = event.target && event.target.closest ? event.target.closest('[data-aqua-v61r-stop-speaking="true"]') : null;
+      if (!speakButton && !stopButton) return;
+      event.preventDefault();
+      if (stopButton) stopAquaSpeakingV61R();
+      else speakAquaSummaryV61R(getCurrentSpokenSummaryV61R(), { context: 'button' });
+    });
+    state.spokenReadbackButtonHandlerInstalledV61R = true;
+    syncNamespace();
+    return true;
   }
 
   function commandHashV61J(commandText) {
@@ -866,6 +1082,7 @@
 
     recordNativeAttemptV61G(intent, opened);
     if (opened) {
+      rememberSpokenSummaryV61R(visualSummaryForIntentV61R(intent), config.module);
       showNativeBridgeReadbackV61G(outputNode, renderNativeBridgeReadbackV61G(config, intent, true));
       return true;
     }
@@ -895,6 +1112,7 @@
     if (openNativeModuleV61G(intent, outputNode)) return true;
     var html = renderVisualModuleRouteV61F(intent);
     if (!html) return false;
+    rememberSpokenSummaryV61R(visualSummaryForIntentV61R(intent), 'visual module');
     if (outputNode) outputNode.innerHTML = html;
     state.visualModuleRouterExists = true;
     state.fallbackOnlyWhenNativeMissing = true;
@@ -907,6 +1125,43 @@
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
     var intent = normalizeAquaCommandV61E(commandText);
+    if (intent.canonicalIntent === 'speak_summary_v61r') {
+      var speakResult = speakAquaSummaryV61R(getCurrentSpokenSummaryV61R(outputNode), { outputNode: outputNode, context: 'typed command' });
+      if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61r-spoken-command="speak_summary"><strong>Speak Summary</strong><div>' + escapeHTMLV61D(speakResult.fallback || speakResult.text) + '</div><div class="locked">Local/browser demo only. No audio stored. Backend locked.</div></div>';
+      state.typedSpeakSummaryWorksV61R = true;
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'read_report_v61r') {
+      var reportSummary = automationReportSummaryV61R(getLastRegressionReportV61L());
+      var readResult = speakAquaSummaryV61R(reportSummary, { outputNode: outputNode, context: 'typed report command' });
+      if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61r-spoken-command="read_report"><strong>Read Report</strong><div>' + escapeHTMLV61D(readResult.fallback || reportSummary) + '</div><div class="locked">Local/browser demo only. No audio stored. Backend locked.</div></div>';
+      state.typedSpeakSummaryWorksV61R = true;
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'stop_speaking_v61r') {
+      stopAquaSpeakingV61R();
+      if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61r-spoken-command="stop_speaking"><strong>Stop Speaking</strong><div>Spoken readback stopped locally.</div><div class="locked">No audio stored. Backend locked.</div></div>';
+      state.typedStopSpeakingWorksV61R = true;
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'voice_off_v61r') {
+      setSpokenReadbackPreferenceV61R({ enabled: false });
+      stopAquaSpeakingV61R();
+      if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61r-spoken-command="voice_off"><strong>Voice off</strong><div>Spoken readback disabled locally.</div><div class="locked">Preference only. No audio stored.</div></div>';
+      state.voiceOffPreferenceWorksV61R = getSpokenReadbackPreferenceV61R().enabled === false;
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'voice_on_v61r') {
+      setSpokenReadbackPreferenceV61R({ enabled: true });
+      if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61r-spoken-command="voice_on"><strong>Voice on</strong><div>Spoken readback enabled locally.</div><div class="locked">Local/browser demo only. No audio stored. Backend locked.</div></div>';
+      state.voiceOnPreferenceWorksV61R = getSpokenReadbackPreferenceV61R().enabled === true;
+      syncNamespace();
+      return intent;
+    }
     if (intent.canonicalIntent === 'clear_draft_queue_demo') {
       clearDraftQueueDemoV61J(outputNode);
       if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61k-clear-draft-queue="true"><strong>Draft queue demo cleared.</strong><div>Current command was not changed.</div><div class="locked">No live record changed. No backend, network, or live AI call was made.</div></div>';
@@ -937,12 +1192,14 @@
     if (intent.canonicalIntent === 'action_intent_demo') {
       state.noLiveActionExecuted = true;
       state.actionIntentPanelWorks = true;
+      rememberSpokenSummaryV61R(visualSummaryForIntentV61R(intent), 'permission granter');
       if (outputNode) outputNode.innerHTML = renderActionIntentDemoV61E(intent);
       syncNamespace();
       return intent;
     }
     if (intent.canonicalIntent === 'run_regression_qa') {
       var regressionReport = runAquaCommandRegressionV61L();
+      rememberSpokenSummaryV61R(automationReportSummaryV61R(regressionReport), 'automation report');
       if (outputNode) outputNode.innerHTML = renderRegressionReportV61L(regressionReport);
       state.regressionQACommandWorksV61L = true;
       state.noLiveActionExecuted = true;
@@ -1173,7 +1430,7 @@
       '<div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Show Receipts"></textarea></div>',
       '<div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div>',
       '<div class="field"><label>Project / company</label><select id="brainProject"><option>Aqua Homes Parent</option><option>Main Brain</option></select></div>',
-      '<div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="startVoiceAskV60U()">Ask by Voice</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small gold" data-aqua-v61l-regression="true" type="button" style="visibility:visible;opacity:1">Run Regression QA</button></div>',
+      '<div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="startVoiceAskV60U()">Ask by Voice</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small gold" data-aqua-v61l-regression="true" type="button" style="visibility:visible;opacity:1">Run Regression QA</button>' + renderSpokenReadbackControlsV61R() + '</div>',
       '<div id="voiceAskAreaV60U" class="field"><div class="smallMut"><strong>Browser voice input / demo only</strong> • Push-to-talk only • No always listening • No audio stored • Backend locked</div><div id="voiceAskStatusV60U" class="note"><strong>Browser requires one more tap for microphone safety.</strong><div class="smallMut">Tap once to start voice. This is push-to-talk only. No always listening. No audio stored.</div><div class="smallMut">Voice rough draft — final one-tap/native flow planned.</div></div></div>',
       '<div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked. Try: What needs my attention today?, Owner briefing, Show approval queue, Show receipts, Show Project Folders, Show Bank Reconciliation, or Run full Aqua QA.</div></div>'
     ].join('');
@@ -1210,6 +1467,7 @@
     appendPart(flow, parts.voice);
     appendPart(flow, parts.output);
     ensureRegressionQAButtonV61L(flow);
+    ensureSpokenReadbackControlsV61R(flow);
 
     var aiOut = modal.querySelector('#aiOut');
     if (aiOut && aiOut.parentNode) aiOut.parentNode.insertBefore(flow, aiOut.nextSibling);
@@ -1495,6 +1753,7 @@
   function wireAskAIToCommandFlow() {
     installCommandNormalizerV61E();
     installPermissionGranterDemoButtonsV61I();
+    installSpokenReadbackButtonHandlerV61R();
     var wrapped = wrapOpenModal();
     var directHook = installDirectAskButtonHookV61D();
     var observed = installObserver();
@@ -1969,6 +2228,13 @@
       { command: 'show pending edits', expected: 'Draft Change Queue', intent: 'show_draft_change_queue', module: /Draft Change Queue/i, html: /Draft Change Queue/i },
       { command: 'show change queue', expected: 'Draft Change Queue', intent: 'show_draft_change_queue', module: /Draft Change Queue/i, html: /Draft Change Queue/i },
       { command: 'show approved demo changes', expected: 'Draft Change Queue approved demo filter', intent: 'show_draft_change_queue', module: /Draft Change Queue/i, html: /Draft Change Queue/i },
+      { command: 'speak summary', expected: 'Speak current summary', intent: 'speak_summary_v61r', module: /Spoken Readback/i, html: /Speak Summary|Spoken readback unavailable|No audio stored/i, noFallback: true },
+      { command: 'read this back', expected: 'Read current summary', intent: 'speak_summary_v61r', module: /Spoken Readback/i, html: /Speak Summary|Spoken readback unavailable|No audio stored/i, noFallback: true },
+      { command: 'read report', expected: 'Read automation report summary', intent: 'read_report_v61r', module: /Spoken Readback/i, html: /Read Report|Automation report/i, noFallback: true },
+      { command: 'stop speaking', expected: 'Stop speech synthesis', intent: 'stop_speaking_v61r', module: /Spoken Readback/i, html: /Stop Speaking|Spoken readback stopped/i, noFallback: true },
+      { command: 'mute voice', expected: 'Mute voice command stops speech', intent: 'stop_speaking_v61r', module: /Spoken Readback/i, html: /Stop Speaking|Spoken readback stopped/i, noFallback: true },
+      { command: 'voice off', expected: 'Voice preference off', intent: 'voice_off_v61r', module: /Spoken Readback/i, html: /Voice off|disabled locally/i, noFallback: true },
+      { command: 'voice on', expected: 'Voice preference on', intent: 'voice_on_v61r', module: /Spoken Readback/i, html: /Voice on|enabled locally/i, noFallback: true },
       { command: 'banana test', expected: 'Guided fallback', intent: 'unknown', module: /Guided fallback/i, html: /Fallback local demo panel/i, fallback: true }
     ];
   }
@@ -1995,13 +2261,14 @@
       noLiveAI: true,
       noPaymentPayrollBankExport: true,
       noAudioStored: true,
-      noAlwaysListening: true
+      noAlwaysListening: true,
+      noExternalTTSApiCalls: true
     };
   }
 
   function regressionStorageSnapshotV61L() {
     var snapshot = {};
-    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I].forEach(function (key) {
+    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R].forEach(function (key) {
       try {
         snapshot[key] = window.localStorage.getItem(key);
       } catch (error) {
@@ -2117,8 +2384,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61P',
-      harnessVersion: 'v61L-compatible/v61P',
+      version: 'v61R',
+      harnessVersion: 'v61L-compatible/v61R',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -2132,7 +2399,10 @@
       safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? true : false,
       mergeRecommendation: failures.length === 0 && regressionSafetyPassesV61L(safety) ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED',
       noLiveRecordChanges: true,
-      noBackendNetworkLiveAICalls: true
+      noBackendNetworkLiveAICalls: true,
+      spokenReadbackAvailable: speechSynthesisAvailableV61R(),
+      spokenReadbackBrowserUnavailableFallback: !speechSynthesisAvailableV61R(),
+      spokenReadbackPreferenceKey: SPOKEN_READBACK_KEY_V61R
     };
     state.regressionHarnessV61LAvailable = true;
     state.lastRegressionReportV61L = report;
@@ -2150,7 +2420,7 @@
     var safe = report || getLastRegressionReportV61L() || runAquaCommandRegressionV61L();
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
-    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Regression QA Report — v61L/v61M/v61N/v61P</strong>' +
+    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Regression QA Report — v61L/v61M/v61N/v61P/v61R</strong>' +
       '<div data-aqua-v61l-report-total="true"><strong>Total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
       '<div data-aqua-v61l-report-passed="true"><strong>Passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
       '<div data-aqua-v61l-report-failed="true"><strong>Failed:</strong> ' + escapeHTMLV61D(safe.failed) + '</div>' +
@@ -2258,6 +2528,51 @@
   }
 
 
+  function runV61RCheck() {
+    installSpokenReadbackButtonHandlerV61R();
+    var host = document.createElement('div');
+    host.innerHTML = '<div class="actions"></div><div id="brainOut"></div>';
+    ensureSpokenReadbackControlsV61R(host);
+    rememberSpokenSummaryV61R('Receipts are open. Demo receipt items are visible. Some receipt categories need owner or accounting review. No live accounting export, payment, upload, OCR, or backend action has run.', 'test');
+    var speak = runNormalizedAquaCommandV61E('speak summary', host);
+    var speakHtml = host.innerHTML;
+    host.innerHTML = '';
+    var stop = runNormalizedAquaCommandV61E('stop speaking', host);
+    var stopHtml = host.innerHTML;
+    host.innerHTML = '';
+    var off = runNormalizedAquaCommandV61E('voice off', host);
+    var offWorks = getSpokenReadbackPreferenceV61R().enabled === false;
+    host.innerHTML = '';
+    var on = runNormalizedAquaCommandV61E('voice on', host);
+    var onWorks = getSpokenReadbackPreferenceV61R().enabled === true;
+    state.spokenReadbackFunctionExistsV61R = typeof speakAquaSummaryV61R === 'function';
+    state.speakSummaryButtonExistsV61R = /Speak Summary/.test(renderSpokenReadbackControlsV61R());
+    state.stopSpeakingButtonExistsV61R = /Stop Speaking/.test(renderSpokenReadbackControlsV61R());
+    state.typedSpeakSummaryWorksV61R = speak.canonicalIntent === 'speak_summary_v61r' && /Speak Summary|Spoken readback unavailable|No audio stored/i.test(speakHtml);
+    state.typedStopSpeakingWorksV61R = stop.canonicalIntent === 'stop_speaking_v61r' && /Stop Speaking|Spoken readback stopped/i.test(stopHtml);
+    state.voiceOffPreferenceWorksV61R = off.canonicalIntent === 'voice_off_v61r' && offWorks;
+    state.voiceOnPreferenceWorksV61R = on.canonicalIntent === 'voice_on_v61r' && onWorks;
+    state.noAudioStorageV61R = true;
+    state.noBackendNetworkLiveAIV61R = true;
+    state.noAlwaysListeningV61R = true;
+    syncNamespace();
+    return {
+      version: 'v61R',
+      speechReadbackFunctionExists: state.spokenReadbackFunctionExistsV61R,
+      speakSummaryButtonExists: state.speakSummaryButtonExistsV61R,
+      stopSpeakingButtonExists: state.stopSpeakingButtonExistsV61R,
+      typedSpeakSummaryRoutes: state.typedSpeakSummaryWorksV61R,
+      typedStopSpeakingRoutes: state.typedStopSpeakingWorksV61R,
+      voiceOffPreferenceWorks: state.voiceOffPreferenceWorksV61R,
+      voiceOnPreferenceWorks: state.voiceOnPreferenceWorksV61R,
+      spokenReadbackAvailable: state.spokenReadbackV61RAvailable,
+      browserUnavailableFallback: state.spokenReadbackUnavailableFallbackV61R,
+      noAudioStorage: true,
+      noBackendNetworkLiveAI: true,
+      noAlwaysListening: true
+    };
+  }
+
   function runV61CCheck() {
     return runV61DCheck();
   }
@@ -2285,6 +2600,7 @@
   mergeNamespace();
   installCommandNormalizerV61E();
   installPermissionGranterDemoButtonsV61I();
+  installSpokenReadbackButtonHandlerV61R();
   installRegressionQAButtonHandlerV61L();
   installButtonLabelInjectionGuardV61M();
   if (document.readyState === 'loading') {
@@ -2294,5 +2610,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61P extensions loaded: automation gate hardening active. No live change made.');
+  console.log('Aqua Homes OS v61R extensions loaded: local/browser spoken readback foundation active. No live change made.');
 }());
