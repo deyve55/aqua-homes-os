@@ -109,13 +109,21 @@
     voiceOnPreferenceWorksV61R: false,
     noAudioStorageV61R: true,
     noBackendNetworkLiveAIV61R: true,
-    noAlwaysListeningV61R: true
+    noAlwaysListeningV61R: true,
+    conversationalContextRouterAvailableV61S: true,
+    repeatLastActionRouterAvailableV61S: true,
+    lastConversationalContextV61S: null,
+    repeatLastActionWorksV61S: false,
+    contextualFollowupWorksV61S: false,
+    noLiveActionExecutedV61S: true,
+    noBackendNetworkLiveAIV61S: true
   };
 
   var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
   var PERMISSION_GRANTER_KEY_V61I = 'aquaPermissionGranterV61I';
   var REGRESSION_REPORT_KEY_V61L = 'aquaRegressionReportV61L';
   var SPOKEN_READBACK_KEY_V61R = 'aquaSpokenReadbackV61R';
+  var CONVERSATIONAL_CONTEXT_KEY_V61S = 'aquaConversationalContextV61S';
 
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
@@ -158,7 +166,9 @@
       stopAquaSpeakingV61R: stopAquaSpeakingV61R,
       getSpokenReadbackPreferenceV61R: getSpokenReadbackPreferenceV61R,
       setSpokenReadbackPreferenceV61R: setSpokenReadbackPreferenceV61R,
-      getCurrentSpokenSummaryV61R: getCurrentSpokenSummaryV61R
+      getCurrentSpokenSummaryV61R: getCurrentSpokenSummaryV61R,
+      getLastConversationalContextV61S: getLastConversationalContextV61S,
+      clearLastConversationalContextV61S: clearLastConversationalContextV61S
     });
     return window.AquaV61Extensions;
   }
@@ -204,7 +214,9 @@
       stopAquaSpeakingV61R: stopAquaSpeakingV61R,
       getSpokenReadbackPreferenceV61R: getSpokenReadbackPreferenceV61R,
       setSpokenReadbackPreferenceV61R: setSpokenReadbackPreferenceV61R,
-      getCurrentSpokenSummaryV61R: getCurrentSpokenSummaryV61R
+      getCurrentSpokenSummaryV61R: getCurrentSpokenSummaryV61R,
+      getLastConversationalContextV61S: getLastConversationalContextV61S,
+      clearLastConversationalContextV61S: clearLastConversationalContextV61S
     });
     return window.AquaV61Extensions;
   }
@@ -227,6 +239,110 @@
       var clean = normalizeAquaPhraseV61E(phrase);
       return normalized === clean || normalized.indexOf(clean) !== -1;
     });
+  }
+
+
+  function cloneIntentForContextV61S(intent) {
+    return JSON.parse(JSON.stringify(intent || {}));
+  }
+
+  function isRepeatLastActionCommandV61S(normalized) {
+    return phraseMatchesV61E(normalized, [
+      'repeat last action',
+      'repeat the last action',
+      'repeat that',
+      'repeat it',
+      'do that again',
+      'do it again',
+      'run that again',
+      'run it again',
+      'same again',
+      'one more time',
+      'rerun that',
+      'rerun last command'
+    ]);
+  }
+
+  function isContextualFollowupCommandV61S(normalized) {
+    return phraseMatchesV61E(normalized, [
+      'open that',
+      'open it',
+      'show that',
+      'show it',
+      'pull that up',
+      'pull it up',
+      'bring that up',
+      'bring it up',
+      'go there',
+      'take me there',
+      'show me that',
+      'open the same module'
+    ]);
+  }
+
+  function getLastConversationalContextV61S() {
+    if (state.lastConversationalContextV61S) return cloneIntentForContextV61S(state.lastConversationalContextV61S);
+    try {
+      var raw = window.localStorage.getItem(CONVERSATIONAL_CONTEXT_KEY_V61S);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      state.conversationalContextStorageWarningV61S = 'localStorage unavailable for conversational context';
+      return null;
+    }
+  }
+
+  function clearLastConversationalContextV61S() {
+    state.lastConversationalContextV61S = null;
+    try {
+      window.localStorage.removeItem(CONVERSATIONAL_CONTEXT_KEY_V61S);
+    } catch (error) {
+      state.conversationalContextStorageWarningV61S = 'localStorage unavailable while clearing conversational context';
+    }
+    syncNamespace();
+  }
+
+  function shouldRememberConversationalIntentV61S(intent) {
+    var canonical = intent && intent.canonicalIntent;
+    if (!canonical || canonical === 'unknown' || canonical === 'repeat_last_action_v61s' || canonical === 'context_missing_v61s') return false;
+    if (/^(?:speak_summary_v61r|read_report_v61r|stop_speaking_v61r|voice_off_v61r|voice_on_v61r|run_regression_qa)$/.test(canonical)) return false;
+    if (/^(?:clear_draft_queue_demo|clear_current_demo_action|start_new_demo_change)$/.test(canonical)) return false;
+    return true;
+  }
+
+  function rememberConversationalContextV61S(intent) {
+    if (!shouldRememberConversationalIntentV61S(intent)) return false;
+    var safe = cloneIntentForContextV61S(intent);
+    safe.contextSavedAt = new Date().toISOString();
+    safe.repeatCommandText = safe.contextSourceCommand || safe.repeatCommandText || safe.originalText || safe.routeText || '';
+    state.lastConversationalContextV61S = safe;
+    state.conversationalContextRouterAvailableV61S = true;
+    state.noLiveActionExecutedV61S = true;
+    state.noBackendNetworkLiveAIV61S = true;
+    try {
+      window.localStorage.setItem(CONVERSATIONAL_CONTEXT_KEY_V61S, JSON.stringify(safe));
+    } catch (error) {
+      state.conversationalContextStorageWarningV61S = 'localStorage unavailable for conversational context';
+    }
+    syncNamespace();
+    return true;
+  }
+
+  function detectConversationalContextCommandV61S(original, normalized) {
+    if (isRepeatLastActionCommandV61S(normalized)) {
+      return { canonicalIntent: 'repeat_last_action_v61s', routeText: 'repeat last action', originalText: original, normalizedText: normalized, module: 'Conversational Context Router' };
+    }
+    if (!isContextualFollowupCommandV61S(normalized)) return null;
+    var previous = getLastConversationalContextV61S();
+    if (!previous) {
+      return { canonicalIntent: 'context_missing_v61s', routeText: 'context follow-up missing', originalText: original, normalizedText: normalized, module: 'Conversational Context Router' };
+    }
+    var contextual = cloneIntentForContextV61S(previous);
+    contextual.originalText = original;
+    contextual.normalizedText = normalized;
+    contextual.contextualFollowupV61S = true;
+    contextual.contextSourceCommand = previous.repeatCommandText || previous.originalText || previous.routeText || '';
+    state.contextualFollowupWorksV61S = true;
+    return contextual;
   }
 
   function knownReceiptCategoryV61K(text) {
@@ -324,6 +440,8 @@
     if (phraseMatchesV61E(q, ['voice on'])) {
       return { canonicalIntent: 'voice_on_v61r', routeText: 'voice on', originalText: original, normalizedText: q, module: 'Spoken Readback' };
     }
+    var conversational = detectConversationalContextCommandV61S(original, q);
+    if (conversational) return conversational;
     if (phraseMatchesV61E(q, ['run regression qa', 'run regression quality assurance', 'run command regression qa', 'command regression qa', 'regression qa'])) {
       return { canonicalIntent: 'run_regression_qa', routeText: 'run regression qa', originalText: original, normalizedText: q, module: 'Aqua Command Regression QA' };
     }
@@ -1125,6 +1243,33 @@
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
     var intent = normalizeAquaCommandV61E(commandText);
+    if (intent.canonicalIntent === 'context_missing_v61s') {
+      if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61s-context-missing="true"><strong>Conversational context needed.</strong><div>Say a module command first, like “show receipts,” then use “open that” or “repeat last action.”</div><div class="locked">Local/demo-only. No live AI, backend, network, or record change was run.</div></div>';
+      state.conversationalContextRouterAvailableV61S = true;
+      state.noLiveActionExecutedV61S = true;
+      state.noBackendNetworkLiveAIV61S = true;
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'repeat_last_action_v61s') {
+      var previousContext = getLastConversationalContextV61S();
+      if (!previousContext) {
+        if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61s-repeat-missing="true"><strong>No previous local action to repeat.</strong><div>Run a local module command first, then say “repeat last action.”</div><div class="locked">Local/demo-only. No live AI, backend, network, or record change was run.</div></div>';
+        state.repeatLastActionRouterAvailableV61S = true;
+        syncNamespace();
+        return intent;
+      }
+      var repeatHost = outputNode ? document.createElement('div') : null;
+      var repeatedIntent = runNormalizedAquaCommandV61E(previousContext.repeatCommandText || previousContext.originalText || previousContext.routeText || '', repeatHost);
+      intent.repeatedIntent = repeatedIntent && repeatedIntent.canonicalIntent;
+      intent.module = repeatedIntent && (repeatedIntent.module || repeatedIntent.targetModule) ? (repeatedIntent.module || repeatedIntent.targetModule) : previousContext.module;
+      if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61s-repeat-last-action="true"><strong>Repeated last local action.</strong><div><strong>Previous command:</strong> ' + escapeHTMLV61D(previousContext.repeatCommandText || previousContext.originalText || previousContext.routeText || '') + '</div><div class="locked">Local/demo-only. No live AI, backend, network, or record change was run.</div></div>' + (repeatHost ? repeatHost.innerHTML : '');
+      state.repeatLastActionWorksV61S = true;
+      state.noLiveActionExecutedV61S = true;
+      state.noBackendNetworkLiveAIV61S = true;
+      syncNamespace();
+      return intent;
+    }
     if (intent.canonicalIntent === 'speak_summary_v61r') {
       var speakResult = speakAquaSummaryV61R(getCurrentSpokenSummaryV61R(outputNode), { outputNode: outputNode, context: 'typed command' });
       if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61r-spoken-command="speak_summary"><strong>Speak Summary</strong><div>' + escapeHTMLV61D(speakResult.fallback || speakResult.text) + '</div><div class="locked">Local/browser demo only. No audio stored. Backend locked.</div></div>';
@@ -1194,6 +1339,7 @@
       state.actionIntentPanelWorks = true;
       rememberSpokenSummaryV61R(visualSummaryForIntentV61R(intent), 'permission granter');
       if (outputNode) outputNode.innerHTML = renderActionIntentDemoV61E(intent);
+      rememberConversationalContextV61S(intent);
       syncNamespace();
       return intent;
     }
@@ -1217,13 +1363,18 @@
       state.noLiveActionExecuted = true;
       state.noLiveRecordChangeV61J = true;
       state.noBackendNetworkLiveAIV61J = true;
+      rememberConversationalContextV61S(intent);
       syncNamespace();
       return intent;
     }
     if (intent.canonicalIntent !== 'unknown') {
-      if (openVisualModuleV61F(intent, outputNode)) return intent;
+      if (openVisualModuleV61F(intent, outputNode)) {
+        rememberConversationalContextV61S(intent);
+        return intent;
+      }
       var html = renderNormalizedReadbackV61E(intent);
       if (html && outputNode) outputNode.innerHTML = html;
+      rememberConversationalContextV61S(intent);
     } else if (outputNode && intent.normalizedText) {
       outputNode.innerHTML = renderLocalModuleFallbackV61E(intent);
       state.localModuleFallbackAvailable = true;
@@ -2235,6 +2386,8 @@
       { command: 'mute voice', expected: 'Mute voice command stops speech', intent: 'stop_speaking_v61r', module: /Spoken Readback/i, html: /Stop Speaking|Spoken readback stopped/i, noFallback: true },
       { command: 'voice off', expected: 'Voice preference off', intent: 'voice_off_v61r', module: /Spoken Readback/i, html: /Voice off|disabled locally/i, noFallback: true },
       { command: 'voice on', expected: 'Voice preference on', intent: 'voice_on_v61r', module: /Spoken Readback/i, html: /Voice on|enabled locally/i, noFallback: true },
+      { command: 'repeat last action', contextCommand: 'show receipts', expected: 'Repeat last action routes previous receipts command', intent: 'repeat_last_action_v61s', module: /Receipts \/ Receipt Tracker/i, html: /Repeated last local action|Receipts/i, repeatedIntent: /show_receipts/i },
+      { command: 'open that', contextCommand: 'show accounting', expected: 'Context follow-up reopens previous accounting route', intent: 'show_accounting', module: /Accounting Command \/ Daily P&L/i, html: /Accounting Command|Daily P&L|Fallback local demo panel/i },
       { command: 'banana test', expected: 'Guided fallback', intent: 'unknown', module: /Guided fallback/i, html: /Fallback local demo panel/i, fallback: true }
     ];
   }
@@ -2268,7 +2421,7 @@
 
   function regressionStorageSnapshotV61L() {
     var snapshot = {};
-    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R].forEach(function (key) {
+    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S].forEach(function (key) {
       try {
         snapshot[key] = window.localStorage.getItem(key);
       } catch (error) {
@@ -2299,12 +2452,15 @@
 
   function runRegressionCaseV61L(testCase) {
     var snapshot = regressionStorageSnapshotV61L();
+    var stateContextSnapshot = cloneIntentForContextV61S(state.lastConversationalContextV61S);
     var host = createRegressionHostV61L();
     var intent;
     try {
+      if (testCase.contextCommand) runNormalizedAquaCommandV61E(testCase.contextCommand, createRegressionHostV61L());
       intent = runNormalizedAquaCommandV61E(testCase.command, host);
     } finally {
       restoreRegressionStorageSnapshotV61L(snapshot);
+      state.lastConversationalContextV61S = stateContextSnapshot;
     }
     var html = String(host.innerHTML || '');
     var actual = {
@@ -2313,6 +2469,7 @@
       module: intent && (intent.module || intent.targetModule || ''),
       normalizedText: intent && intent.normalizedText,
       requestedValue: intent && intent.requestedValue,
+      repeatedIntent: intent && intent.repeatedIntent,
       renderedFallback: /Fallback local demo panel/i.test(html),
       renderedPermissionGate: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i.test(html),
       renderedDraftQueue: /Draft Change Queue/i.test(html),
@@ -2323,6 +2480,7 @@
     if (testCase.module && !testCase.module.test(actual.module)) errors.push('Expected module matching ' + testCase.module + ' but got ' + (actual.module || 'none') + '.');
     if (testCase.html && !testCase.html.test(html)) errors.push('Expected rendered output matching ' + testCase.html + '.');
     if (testCase.normalized && !testCase.normalized.test(actual.normalizedText || '')) errors.push('Expected normalized transcript matching ' + testCase.normalized + ' but got ' + (actual.normalizedText || 'none') + '.');
+    if (testCase.repeatedIntent && !testCase.repeatedIntent.test(actual.repeatedIntent || '')) errors.push('Expected repeated intent matching ' + testCase.repeatedIntent + ' but got ' + (actual.repeatedIntent || 'none') + '.');
     if (testCase.value && !testCase.value.test(actual.requestedValue || '')) errors.push('Expected requested value matching ' + testCase.value + ' but got ' + (actual.requestedValue || 'none') + '.');
     if (testCase.noFallback && actual.renderedFallback) errors.push('Expected command to bypass fallback, but fallback rendered.');
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
@@ -2340,6 +2498,7 @@
   function suggestedRegressionFixV61L(testCase, actual) {
     if (testCase.intent === 'action_intent_demo') return 'Update normalizeReceiptActionTranscriptV61K/detectActionIntentV61E so this transcript routes to the Permission Granter action-intent demo before fallback.';
     if (testCase.intent === 'clear_draft_queue_demo' || testCase.intent === 'clear_current_demo_action' || testCase.intent === 'start_new_demo_change') return 'Update detectDemoStateCommandV61K so demo-state voice variants are recognized before action/fallback routing.';
+    if (testCase.intent === 'repeat_last_action_v61s' || testCase.contextCommand) return 'Update detectConversationalContextCommandV61S or repeat-last-action handling so follow-up commands use the last local/demo context before fallback.';
     if (testCase.intent === 'show_draft_change_queue') return 'Update the show_draft_change_queue phrase list and renderDraftChangeQueueV61J handoff.';
     if (testCase.intent === 'unknown') return 'Verify unknown commands still render renderLocalModuleFallbackV61E.';
     return 'Update normalizeAquaCommandV61E phrase groups or visual route config for this command.';
@@ -2402,7 +2561,10 @@
       noBackendNetworkLiveAICalls: true,
       spokenReadbackAvailable: speechSynthesisAvailableV61R(),
       spokenReadbackBrowserUnavailableFallback: !speechSynthesisAvailableV61R(),
-      spokenReadbackPreferenceKey: SPOKEN_READBACK_KEY_V61R
+      spokenReadbackPreferenceKey: SPOKEN_READBACK_KEY_V61R,
+      conversationalContextRouterAvailable: true,
+      repeatLastActionRouterAvailable: true,
+      conversationalContextStorageKey: CONVERSATIONAL_CONTEXT_KEY_V61S
     };
     state.regressionHarnessV61LAvailable = true;
     state.lastRegressionReportV61L = report;
