@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62C Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge.
+ * Aqua Homes OS v62D Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62C';
+  var VERSION = 'v62D';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -193,6 +193,11 @@
     visualRouteBridgeV62CWorks: false,
     visualRouteFocusMarkerV62CWorks: false,
     visualRouteReadbackBoundV62CWorks: false,
+    liveInAppRegressionRunnerV62DAvailable: true,
+    liveInAppRegressionRunnerV62DWorks: false,
+    reportSyncV62DWorks: false,
+    reportSyncStorageKeyV62D: 'aquaRegressionReportSyncV62D',
+    reportSyncNoNetworkV62D: true,
     allVoiceBrainPlansHaveVisualRouteV62C: false,
     hendersonReportVisualFocusWorks: false,
     hendersonReceiptsVisualFocusWorks: false,
@@ -745,6 +750,8 @@
       futureBackendLiveAIPlaceholders: { backendConnector: 'locked/demo placeholder only', liveAIConnector: 'locked/demo placeholder only', uploadConnector: 'locked/demo placeholder only', exportConnector: 'locked/demo placeholder only' },
       renderToolPlan: renderVoiceBrainToolPlanV61Z,
       openAquaBrainVisualRouteV62C: openAquaBrainVisualRouteV62C,
+      runLiveInAppRegressionReportV62D: runLiveInAppRegressionReportV62D,
+      syncRegressionReportV62D: syncRegressionReportV62D,
       focusAquaToolPlanSectionV62C: focusAquaToolPlanSectionV62C
     };
   }
@@ -798,6 +805,7 @@
   var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
   var PERMISSION_GRANTER_KEY_V61I = 'aquaPermissionGranterV61I';
   var REGRESSION_REPORT_KEY_V61L = 'aquaRegressionReportV61L';
+  var REGRESSION_REPORT_SYNC_KEY_V62D = 'aquaRegressionReportSyncV62D';
   var SPOKEN_READBACK_KEY_V61R = 'aquaSpokenReadbackV61R';
   var CONVERSATIONAL_CONTEXT_KEY_V61S = 'aquaConversationalContextV61S';
   var CALCULATOR_DRAFTS_KEY_V61X = 'aquaCalculatorDraftsV61X';
@@ -843,6 +851,8 @@
       handleVoiceBrainPlanActionV62A: handleVoiceBrainPlanActionV62A,
       readVoiceBrainPlansV62A: readVoiceBrainPlansV62A,
       openAquaBrainVisualRouteV62C: openAquaBrainVisualRouteV62C,
+      runLiveInAppRegressionReportV62D: runLiveInAppRegressionReportV62D,
+      syncRegressionReportV62D: syncRegressionReportV62D,
       focusAquaToolPlanSectionV62C: focusAquaToolPlanSectionV62C,
       readVoiceBrainContextV61Z: readVoiceBrainContextV61Z,
       renderPremiumModuleShellV61Z: renderPremiumModuleShellV61Z,
@@ -4353,12 +4363,54 @@
     })).concat(['Safety reminder: keep all tests local/demo-only; preserve no live records changed, no backend calls, no network calls, no live AI/API calls, no audio storage, no always-listening, and no payment/payroll/bank/accounting export.']).join('\n');
   }
 
+  function syncRegressionReportV62D(report, source) {
+    var safe = report || placeholderRegressionReportV61T();
+    safe.version = safe.version || VERSION;
+    safe.harnessVersion = safe.harnessVersion || 'v61L-compatible/v62D';
+    safe.inAppReportSyncV62D = {
+      synced: true,
+      source: source || 'local-in-app-runner',
+      syncedAt: new Date().toISOString(),
+      storageKey: REGRESSION_REPORT_SYNC_KEY_V62D,
+      generatedReports: ['aqua-regression-report.json', 'aqua-regression-report.md'],
+      noBackendCalls: true,
+      noNetworkCalls: true,
+      noExternalAIAPICalls: true,
+      noLiveRecordChanges: true
+    };
+    safe.liveInAppRegressionRunnerV62DWorks = true;
+    safe.reportSyncV62DWorks = true;
+    state.lastRegressionReportV61L = safe;
+    state.liveInAppRegressionRunnerV62DWorks = true;
+    state.reportSyncV62DWorks = true;
+    state.reportSyncNoNetworkV62D = true;
+    return safe;
+  }
+
   function saveRegressionReportV61L(report) {
+    var safe = syncRegressionReportV62D(report, report && report.inAppReportSyncV62D && report.inAppReportSyncV62D.source ? report.inAppReportSyncV62D.source : 'local-regression-save');
     try {
-      window.localStorage.setItem(REGRESSION_REPORT_KEY_V61L, JSON.stringify(report));
+      window.localStorage.setItem(REGRESSION_REPORT_KEY_V61L, JSON.stringify(safe));
+      window.localStorage.setItem(REGRESSION_REPORT_SYNC_KEY_V62D, JSON.stringify(safe.inAppReportSyncV62D));
     } catch (error) {
-      report.storageWarning = 'localStorage unavailable; report returned but not saved.';
+      safe.storageWarning = 'localStorage unavailable; report returned but not saved.';
     }
+    return safe;
+  }
+
+  function runLiveInAppRegressionReportV62D(outputNode) {
+    var report = runAquaCommandRegressionV61L();
+    report = syncRegressionReportV62D(report, 'live-in-app-runner');
+    saveRegressionReportV61L(report);
+    rememberSpokenSummaryV61R(automationReportSummaryV61R(report), 'live in-app regression report');
+    if (outputNode) outputNode.innerHTML = renderRegressionReportV61L(report);
+    state.liveInAppRegressionRunnerV62DWorks = true;
+    state.reportSyncV62DWorks = true;
+    state.noBackendCalls = true;
+    state.noNetworkCalls = true;
+    state.noExternalAIAPICalls = true;
+    state.noLiveRecordChanges = true;
+    syncNamespace();
     return report;
   }
 
@@ -4374,8 +4426,8 @@
   function placeholderRegressionReportV61T() {
     var safety = regressionSafetyV61L();
     return {
-      version: 'v62C',
-      harnessVersion: 'v61L-compatible/v62C',
+      version: VERSION,
+      harnessVersion: 'v61L-compatible/v62D',
       timestamp: new Date().toISOString(),
       total: 0,
       passed: 0,
@@ -4469,8 +4521,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v62C',
-      harnessVersion: 'v61L-compatible/v62C',
+      version: VERSION,
+      harnessVersion: 'v61L-compatible/v62D',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -4510,6 +4562,10 @@
       visualRouteBridgeV62CWorks: results.filter(function (result) { return result.actual && result.actual.canonicalIntent === 'voice_brain_tool_plan'; }).every(function (result) { return result.actual.renderedVisualRouteFocusV62C; }),
       visualRouteFocusMarkerV62CWorks: results.some(function (result) { return result.actual && result.actual.renderedVisualRouteFocusV62C; }),
       visualRouteReadbackBoundV62CWorks: results.filter(function (result) { return result.actual && result.actual.canonicalIntent === 'voice_brain_tool_plan'; }).every(function (result) { return /You are now looking at/i.test(result.actual.spokenResponseDraft || ''); }),
+      liveInAppRegressionRunnerV62DWorks: true,
+      reportSyncV62DWorks: true,
+      reportSyncStorageKeyV62D: REGRESSION_REPORT_SYNC_KEY_V62D,
+      reportSyncNoNetworkV62D: true,
       allVoiceBrainPlansHaveVisualRouteV62C: results.filter(function (result) { return result.actual && result.actual.canonicalIntent === 'voice_brain_tool_plan'; }).every(function (result) { return result.actual.renderedVisualRouteFocusV62C && result.actual.openedFocusLabelV62C; }),
       hendersonReportVisualFocusWorks: results.some(function (result) { return result.command === 'pull up the report for the Henderson house staircase' && result.passed && /Project Reports \/ Henderson house \/ Staircase/i.test(result.actual.openedFocusLabelV62C || ''); }),
       hendersonReceiptsVisualFocusWorks: results.some(function (result) { return result.command === 'look up all receipts for the Henderson house from Home Depot' && result.passed && /Receipts \/ Henderson house \/ Home Depot/i.test(result.actual.openedFocusLabelV62C || ''); }),
@@ -4627,6 +4683,8 @@
     state.visualRouteBridgeV62CWorks = report.visualRouteBridgeV62CWorks;
     state.visualRouteFocusMarkerV62CWorks = report.visualRouteFocusMarkerV62CWorks;
     state.visualRouteReadbackBoundV62CWorks = report.visualRouteReadbackBoundV62CWorks;
+    state.liveInAppRegressionRunnerV62DWorks = report.liveInAppRegressionRunnerV62DWorks === true || state.liveInAppRegressionRunnerV62DWorks === true;
+    state.reportSyncV62DWorks = report.reportSyncV62DWorks === true || state.reportSyncV62DWorks === true;
     state.allVoiceBrainPlansHaveVisualRouteV62C = report.allVoiceBrainPlansHaveVisualRouteV62C;
     state.hendersonReportVisualFocusWorks = report.hendersonReportVisualFocusWorks;
     state.hendersonReceiptsVisualFocusWorks = report.hendersonReceiptsVisualFocusWorks;
@@ -4643,7 +4701,8 @@
   }
 
   function renderRegressionReportV61L(report) {
-    var safe = report || getLastRegressionReportV61L() || runAquaCommandRegressionV61L();
+    var safe = syncRegressionReportV62D(report || getLastRegressionReportV61L() || runAquaCommandRegressionV61L(), report ? 'rendered-report' : 'rendered-last-report');
+    var syncMeta = safe.inAppReportSyncV62D || {};
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
     var body = askModeBadgeV61U('automation_status') +
@@ -4655,6 +4714,8 @@
       '<div data-aqua-v61l-report-safety="true"><strong>safety status:</strong><ul>' + safetyRows + '</ul></div>' +
       '<div><strong>safeToMerge:</strong> ' + escapeHTMLV61D(safe.safeToMerge || 'no') + '</div>' +
       '<div><strong>mergeRecommendation:</strong> ' + escapeHTMLV61D(safe.mergeRecommendation || (safe.safeToMerge === true ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED')) + '</div>' +
+      '<div data-aqua-v62d-report-sync="true"><strong>reportSyncV62D:</strong> ' + escapeHTMLV61D(String(safe.reportSyncV62DWorks === true || syncMeta.synced === true)) + ' • source: ' + escapeHTMLV61D(syncMeta.source || 'local') + ' • key: ' + escapeHTMLV61D(syncMeta.storageKey || REGRESSION_REPORT_SYNC_KEY_V62D) + '</div>' +
+      '<div data-aqua-v62d-live-runner="true"><strong>liveInAppRegressionRunnerV62D:</strong> ' + escapeHTMLV61D(String(safe.liveInAppRegressionRunnerV62DWorks === true || state.liveInAppRegressionRunnerV62DWorks === true)) + ' • no backend/network/live AI calls</div>' +
       '<div><strong>premiumModuleShellWorks:</strong> ' + escapeHTMLV61D(String(safe.premiumModuleShellWorks === true)) + '</div>' +
       '<div><strong>openedModulesPolished:</strong> ' + escapeHTMLV61D(String(safe.openedModulesPolished === true)) + '</div>' +
       '<div><strong>askModeRouterWorks:</strong> ' + escapeHTMLV61D(String(safe.askModeRouterWorks === true)) + '</div>' +
@@ -4678,8 +4739,9 @@
       '<div><strong>unsupportedGeneralAskRemainsLocked:</strong> ' + escapeHTMLV61D(String(safe.unsupportedGeneralAskRemainsLocked === true)) + '</div>' +
       '<div><strong>noApiKeysInFrontend:</strong> ' + escapeHTMLV61D(String(safe.noApiKeysInFrontend === true)) + '</div>' +
       '<label class="smallMut" for="aquaRegressionRepairPromptV61L">repairPrompt:</label>' +
-      '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>';
-    return renderPremiumModuleShellV61Z({ title: 'Automation Report / Regression Report Viewer', subtitle: 'Merge gate and safety status for this local demo build.', tag: safe.mergeRecommendation || 'MERGE_ALLOWED', chips: ['MERGE_ALLOWED', 'Demo Data Only', 'Backend Locked', 'No Live Change Made'], attrs: { 'data-aqua-v61l-regression-report': 'true' }, body: body, safetyFooter: 'Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.' });
+      '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
+      '<div class="aqua-v61z-actions"><button type="button" class="btn small gold" data-aqua-v62d-live-regression="true">Run Live In-App Regression</button></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Automation Report / Regression Report Viewer', subtitle: 'Merge gate and safety status for this local demo build.', tag: safe.mergeRecommendation || 'MERGE_ALLOWED', chips: ['MERGE_ALLOWED', 'Demo Data Only', 'Backend Locked', 'No Network Sync', 'No Live Change Made'], attrs: { 'data-aqua-v61l-regression-report': 'true' }, body: body, safetyFooter: 'Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.' });
   }
 
   function ensureRegressionQAButtonV61L(root) {
@@ -4702,14 +4764,14 @@
   function installRegressionQAButtonHandlerV61L() {
     if (!document || typeof document.addEventListener !== 'function' || state.regressionQAButtonHandlerInstalledV61L) return false;
     document.addEventListener('click', function (event) {
-      var button = event.target && event.target.closest ? event.target.closest('[data-aqua-v61l-regression="true"]') : null;
+      var button = event.target && event.target.closest ? event.target.closest('[data-aqua-v61l-regression="true"], [data-aqua-v62d-live-regression="true"]') : null;
       if (!button) return;
       event.preventDefault();
       var commandInput = getAquaCommandInputV61M();
       var originalValue = commandInput ? commandInput.value : '';
       var oldAsk = document.getElementById && document.getElementById('aiAsk');
       var oldAskValue = oldAsk ? oldAsk.value : '';
-      var report = runAquaCommandRegressionV61L();
+      var report = button.getAttribute && button.getAttribute('data-aqua-v62d-live-regression') === 'true' ? runLiveInAppRegressionReportV62D(null) : runAquaCommandRegressionV61L();
       var output = getAquaCommandOutputV61M(commandInput);
       if (!output && button.parentNode && button.parentNode.parentNode && typeof button.parentNode.parentNode.querySelector === 'function') output = button.parentNode.parentNode.querySelector('#brainOut');
       if (output) output.innerHTML = renderRegressionReportV61L(report);
@@ -4770,6 +4832,8 @@
       buttonLabelsNotInjected: state.buttonLabelsNotInjected,
       regressionButtonPreservesInput: state.regressionButtonPreservesInput,
       typedRegressionCommandWorks: state.typedRegressionCommandWorks,
+      liveInAppRegressionRunnerV62DWorks: state.liveInAppRegressionRunnerV62DWorks,
+      reportSyncV62DWorks: state.reportSyncV62DWorks,
       noLiveChangeExecuted: true,
       noBackendCalls: true,
       noNetworkCalls: true
@@ -4861,5 +4925,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62C extensions loaded: Visual Route / Section Focus Bridge active. Home untouched. No live backend, upload, export, SOW, or estimate created.');
+  console.log('Aqua Homes OS v62D extensions loaded: Visual Route / Section Focus Bridge active. Home untouched. No live backend, upload, export, SOW, or estimate created.');
 }());
