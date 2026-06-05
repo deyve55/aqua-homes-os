@@ -1,10 +1,10 @@
-# Aqua Homes OS v62D Regression Report
+# Aqua Homes OS v62E Regression Report
 
-- Timestamp: 2026-06-05T22:49:57.617Z
+- Timestamp: 2026-06-05T23:03:25.915Z
 - Branch: work
-- Commit: b2879106cd5cb030c263f7fe6d52e09f3e663c6a
-- Total tests: 240
-- Passed: 240
+- Commit: f6c90396c07c1562758d31c80a784a3c1fdabba6
+- Total tests: 250
+- Passed: 250
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -45,6 +45,17 @@
 - liveInAppRegressionRunnerV62DWorks: true
 - reportSyncV62DWorks: true
 - reportSyncNoNetworkV62D: true
+- aiNavigationExecutorWorks: true
+- visualFocusExecutorWorks: true
+- focusedRouteMarkerWorks: true
+- hendersonReportNavigationWorks: true
+- hendersonStaircaseNavigationWorks: true
+- hendersonReceiptsNavigationWorks: true
+- hendersonPlumbingSpendNavigationWorks: true
+- missingDocumentsNavigationWorks: true
+- cameraAllocationNavigationWorks: true
+- accountantExportNavigationLocked: true
+- uploadNavigationLocked: true
 - allVoiceBrainPlansHaveVisualRouteV62C: true
 - hendersonReportVisualFocusWorks: true
 - hendersonReceiptsVisualFocusWorks: true
@@ -135,9 +146,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62D
-- Total: 97
-- Passed: 97
+- Version: v62E
+- Total: 101
+- Passed: 101
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
