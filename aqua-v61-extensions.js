@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61J Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation.
+ * Aqua Homes OS v61K Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61J';
+  var VERSION = 'v61K';
   var state = {
     version: VERSION,
     initialized: true,
@@ -74,7 +74,16 @@
     staleLocalStorageDoesNotOverrideCurrentCommandV61J: false,
     clearCurrentDemoActionWorksV61J: false,
     clearDraftQueueDemoWorksV61J: false,
-    savedDraftHistorySeparateV61J: false
+    savedDraftHistorySeparateV61J: false,
+    clearDraftQueueVoiceVariantsWork: false,
+    clearCurrentDemoActionVariantsWork: false,
+    startNewDemoChangeVariantsWork: false,
+    codeColdCallCorrectionWorks: false,
+    receivedToReceiptCorrectionWorks: false,
+    badTranscriptNotSavedAsValue: false,
+    demoStateCommandsRunBeforeFallback: false,
+    noBackendCalls: true,
+    noLiveChangeExecuted: true
   };
 
   var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
@@ -93,6 +102,7 @@
       runV61HCheck: runV61HCheck,
       runV61ICheck: runV61ICheck,
       runV61JCheck: runV61JCheck,
+      runV61KCheck: runV61KCheck,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
@@ -125,6 +135,7 @@
       runV61HCheck: runV61HCheck,
       runV61ICheck: runV61ICheck,
       runV61JCheck: runV61JCheck,
+      runV61KCheck: runV61KCheck,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
@@ -164,30 +175,76 @@
     });
   }
 
+  function knownReceiptCategoryV61K(text) {
+    var match = String(text || '').match(/\b(framing|materials?|plumbing|paint)\b/);
+    if (!match) return '';
+    return match[1] === 'material' ? 'materials' : match[1];
+  }
+
+  function normalizeReceiptActionTranscriptV61K(normalized) {
+    var clean = String(normalized || '').trim();
+    var hasReceiptTarget = /\b(receipts?|received|materials?|framing|plumbing|paint|vendor|expense)\b/.test(clean);
+    if (hasReceiptTarget) clean = clean.replace(/^(cold|call|coat)\b/, 'code');
+    if (/^(?:code|categorize|mark|change|update|move|approve|set|review|put)\b/.test(clean)) {
+      clean = clean.replace(/\breceived\b/g, 'receipt');
+      clean = clean.replace(/^(code|categorize|mark|change|update|move|approve|set|review|put)\s+just\s+receipt\s+(?=to|as|under\b)/, '$1 this receipt ');
+      clean = clean.replace(/^(code|categorize|mark|change|update|move|approve|set|review|put)\s+just\s+(?=to|as|under\b)/, '$1 this receipt ');
+    }
+    return clean.replace(/\s+/g, ' ').trim();
+  }
+
+  function requestedReceiptValueV61K(normalized, actionMatch) {
+    var afterConnector = String(normalized || '').match(/\b(?:to|as|under)\s+(framing|materials?|plumbing|paint)\b/);
+    if (afterConnector) return afterConnector[1] === 'material' ? 'materials' : afterConnector[1];
+    var known = knownReceiptCategoryV61K(normalized);
+    if (known) return known;
+    if (actionMatch && actionMatch[2]) {
+      var tailKnown = knownReceiptCategoryV61K(actionMatch[2]);
+      if (tailKnown) return tailKnown;
+    }
+    return 'unclear — owner must confirm';
+  }
+
+  function detectDemoStateCommandV61K(original, normalized) {
+    var q = String(normalized || '').trim();
+    if (/^(?:clear|claire|delete|reset)(?: the)? draft (?:queue|queued|q|cute)(?: demo)?$/.test(q) || /^(?:clear|claire)(?: the)? demo (?:queue|queued)$/.test(q)) {
+      return { canonicalIntent: 'clear_draft_queue_demo', routeText: 'clear draft queue demo', originalText: original, normalizedText: q, module: 'Draft Change Queue' };
+    }
+    if (/^(?:clear current demo action|clear current action|clear active action|clear active demo|clear current demo|reset current action|reset current demo|clear current permission|clear current panel)$/.test(q)) {
+      return { canonicalIntent: 'clear_current_demo_action', routeText: 'clear current demo action', originalText: original, normalizedText: q, module: 'Permission Granter' };
+    }
+    if (/^(?:start new demo change|start a new demo change|new demo change|start new change|recompute current command|rerun current command|refresh current command|start over with current command)$/.test(q)) {
+      return { canonicalIntent: 'start_new_demo_change', routeText: 'start new demo change', originalText: original, normalizedText: q, module: 'Permission Granter' };
+    }
+    return null;
+  }
+
   function detectActionIntentV61E(original, normalized) {
-    var actionMatch = normalized.match(/^(?:please\s+)?(code|categorize|mark|change|update|move|approve|set|review|put)\b(?:\s+this|\s+that|\s+the)?(?:\s+item|\s+receipt|\s+amount|\s+record)?(?:\s+as|\s+to|\s+under)?\s*([a-z0-9 ]*)/);
+    var routedNormalized = normalizeReceiptActionTranscriptV61K(normalized);
+    var actionMatch = routedNormalized.match(/^(?:please\s+)?(code|categorize|mark|change|update|move|approve|set|review|put)\b(?:\s+(?:this|that|the|just))?(?:\s+(?:item|receipt|amount|record))?(?:\s+(?:as|to|under))?\s*([a-z0-9 ]*)/);
     if (!actionMatch) return null;
-    if (/\b(show|open|pull up|bring up) code\b/.test(normalized)) return null;
+    if (/\b(show|open|pull up|bring up) code\b/.test(routedNormalized)) return null;
     var target = 'General local/demo module';
-    var receiptAction = /receipt|materials|material|vendor|expense/.test(normalized);
+    var receiptAction = /\b(receipts?|materials?|framing|plumbing|paint|vendor|expense)\b/.test(routedNormalized);
     if (receiptAction) target = 'Receipts / Receipt Tracker';
-    else if (/approval|approve|owner review/.test(normalized)) target = 'Owner Action Queue / Approval Center';
-    else if (/amount|number|account|bank|ledger|p and l|accounting/.test(normalized)) target = 'Accounting Command / Daily P&L';
-    else if (/sow|scope/.test(normalized)) target = 'SOW Builder / Scope of Work';
+    else if (/approval|approve|owner review/.test(routedNormalized)) target = 'Owner Action Queue / Approval Center';
+    else if (/amount|number|account|bank|ledger|p and l|accounting/.test(routedNormalized)) target = 'Accounting Command / Daily P&L';
+    else if (/sow|scope/.test(routedNormalized)) target = 'SOW Builder / Scope of Work';
     var requested = '';
-    var amount = normalized.match(/\b(?:to|as)\s*\$?([0-9]+(?:\.[0-9]{1,2})?)\b/);
+    var amount = routedNormalized.match(/\b(?:to|as)\s*\$?([0-9]+(?:\.[0-9]{1,2})?)\b/);
     if (amount) requested = '$' + amount[1];
-    else if (/materials?/.test(normalized)) requested = 'materials';
-    else if (/reviewed/.test(normalized)) requested = 'reviewed';
-    else if (/owner approval|owner review/.test(normalized)) requested = 'owner approval';
+    else if (receiptAction) requested = requestedReceiptValueV61K(routedNormalized, actionMatch);
+    else if (/reviewed/.test(routedNormalized)) requested = 'reviewed';
+    else if (/owner approval|owner review/.test(routedNormalized)) requested = 'owner approval';
     else if (actionMatch[2]) requested = actionMatch[2].trim();
     return {
       canonicalIntent: 'action_intent_demo',
       routeText: 'action_intent_demo',
       originalText: original,
-      detectedAction: receiptAction ? 'receipt coding / categorization / review' : (original || normalized),
+      normalizedText: routedNormalized,
+      detectedAction: receiptAction ? 'receipt coding / categorization / review' : (original || routedNormalized),
       targetModule: target,
-      requestedValue: requested || 'not clear from transcript',
+      requestedValue: requested || 'unclear — owner must confirm',
       permissionGate: 'Permission Granter required',
       undoAuditRequirement: 'owner permission, audit log, undo/revert'
     };
@@ -196,6 +253,8 @@
   function normalizeAquaCommandV61E(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
+    var demoState = detectDemoStateCommandV61K(original, q);
+    if (demoState) return demoState;
     var action = detectActionIntentV61E(original, q);
     if (action) return action;
     var groups = [
@@ -697,6 +756,33 @@
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
     var intent = normalizeAquaCommandV61E(commandText);
+    if (intent.canonicalIntent === 'clear_draft_queue_demo') {
+      clearDraftQueueDemoV61J(outputNode);
+      if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61k-clear-draft-queue="true"><strong>Draft queue demo cleared.</strong><div>Current command was not changed.</div><div class="locked">No live record changed. No backend, network, or live AI call was made.</div></div>';
+      state.demoStateCommandsRunBeforeFallback = true;
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'clear_current_demo_action') {
+      clearCurrentDemoActionV61J(null);
+      if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61k-clear-current-action="true"><strong>Current demo action cleared.</strong><div>Draft queue history was not changed.</div><div class="locked">No live record changed. No backend, network, or live AI call was made.</div></div>';
+      state.demoStateCommandsRunBeforeFallback = true;
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'start_new_demo_change') {
+      var current = currentCommandInputV61J();
+      var startMessage = '<div class="note" data-aqua-v61k-start-new-demo-change="true"><strong>Started new demo change from current command.</strong><div class="locked">No live record changed. No backend, network, or live AI call was made.</div></div>';
+      if (outputNode) outputNode.innerHTML = startMessage;
+      state.demoStateCommandsRunBeforeFallback = true;
+      if (current && current !== commandText) {
+        var reparseHost = outputNode ? document.createElement('div') : null;
+        runNormalizedAquaCommandV61E(current, reparseHost);
+        if (outputNode && reparseHost) outputNode.innerHTML = startMessage + reparseHost.innerHTML;
+      }
+      syncNamespace();
+      return intent;
+    }
     if (intent.canonicalIntent === 'action_intent_demo') {
       state.noLiveActionExecuted = true;
       state.actionIntentPanelWorks = true;
@@ -1578,6 +1664,116 @@
   }
 
 
+  function runV61KCheck() {
+    installCommandNormalizerV61E();
+    installPermissionGranterDemoButtonsV61I();
+    try {
+      window.localStorage.removeItem(DRAFT_CHANGE_QUEUE_KEY_V61J);
+      window.localStorage.removeItem(PERMISSION_GRANTER_KEY_V61I);
+    } catch (error) {
+      state.draftChangeQueueStorageWarning = 'localStorage unavailable in this browser context';
+    }
+    var host = document.createElement('div');
+    var clearDraftVariants = [
+      'clear draft queue demo',
+      'clear draft queued demo',
+      'clear draft Q demo',
+      'clear draft cute demo',
+      'Claire draft queue demo',
+      'Claire draft queued demo',
+      'clear the draft queue',
+      'clear the draft queued',
+      'clear demo queue',
+      'clear demo queued',
+      'delete draft queue',
+      'reset draft queue',
+      'reset draft queued'
+    ];
+    var clearCurrentVariants = [
+      'clear current demo action',
+      'clear current action',
+      'clear active action',
+      'clear active demo',
+      'clear current demo',
+      'reset current action',
+      'reset current demo',
+      'clear current permission',
+      'clear current panel'
+    ];
+    var startNewVariants = [
+      'start new demo change',
+      'start a new demo change',
+      'new demo change',
+      'start new change',
+      'recompute current command',
+      'rerun current command',
+      'refresh current command',
+      'start over with current command'
+    ];
+    function routesAll(phrases, intentName, htmlPattern) {
+      return phrases.every(function (phrase) {
+        host.innerHTML = '';
+        var intent = runNormalizedAquaCommandV61E(phrase, host);
+        return intent && intent.canonicalIntent === intentName && htmlPattern.test(host.innerHTML) && !/Fallback local demo panel/i.test(host.innerHTML);
+      });
+    }
+    var clearDraftWorks = routesAll(clearDraftVariants, 'clear_draft_queue_demo', /Draft queue demo cleared/i);
+    var clearCurrentWorks = routesAll(clearCurrentVariants, 'clear_current_demo_action', /Current demo action cleared/i);
+    var startNewWorks = routesAll(startNewVariants, 'start_new_demo_change', /Started new demo change from current command/i);
+    var cold = normalizeAquaCommandV61E('cold this receipt to framing');
+    var call = normalizeAquaCommandV61E('call this receipt to framing');
+    var coat = normalizeAquaCommandV61E('coat this receipt to framing');
+    var received = normalizeAquaCommandV61E('code this received to framing');
+    var justReceived = normalizeAquaCommandV61E('code just received to framing');
+    host.innerHTML = '';
+    var coldRun = runNormalizedAquaCommandV61E('cold this receipt to framing', host);
+    var coldHtml = host.innerHTML;
+    host.innerHTML = '';
+    var noisyRun = runNormalizedAquaCommandV61E('code just received to framing', host);
+    var noisyQueue = readDraftChangeQueueV61J()[0] || {};
+    host.innerHTML = '';
+    var materialsRun = runNormalizedAquaCommandV61E('code this receipt to materials', host);
+    var materialsQueue = readDraftChangeQueueV61J()[0] || {};
+    host.innerHTML = '';
+    var banana = runNormalizedAquaCommandV61E('banana test', host);
+    var bananaHtml = host.innerHTML;
+    state.clearDraftQueueVoiceVariantsWork = clearDraftWorks;
+    state.clearCurrentDemoActionVariantsWork = clearCurrentWorks;
+    state.startNewDemoChangeVariantsWork = startNewWorks;
+    state.codeColdCallCorrectionWorks = [cold, call, coat, coldRun].every(function (intent) { return intent && intent.canonicalIntent === 'action_intent_demo' && intent.targetModule === 'Receipts / Receipt Tracker' && intent.requestedValue === 'framing'; });
+    state.receivedToReceiptCorrectionWorks = [received, justReceived, noisyRun].every(function (intent) { return intent && intent.canonicalIntent === 'action_intent_demo' && intent.targetModule === 'Receipts / Receipt Tracker' && intent.requestedValue === 'framing'; });
+    state.badTranscriptNotSavedAsValue = noisyQueue.proposedValue === 'framing' && materialsQueue.proposedValue === 'materials' && !/just received|code just received|received to framing/i.test(noisyQueue.proposedValue || '');
+    state.demoStateCommandsRunBeforeFallback = clearDraftWorks && clearCurrentWorks && startNewWorks;
+    state.actionIntentRunsBeforeFallback = coldRun.canonicalIntent === 'action_intent_demo' && /Permission Required \/ Action Intent Demo/i.test(coldHtml) && !/Fallback local demo panel/i.test(coldHtml);
+    state.unknownFallbackStillWorks = banana.canonicalIntent === 'unknown' && /Fallback local demo panel/i.test(bananaHtml);
+    state.noLiveActionExecuted = true;
+    state.noLiveChangeExecuted = true;
+    state.noLiveRecordChangeV61I = true;
+    state.noLiveRecordChangeV61J = true;
+    state.noBackendNetworkLiveAIV61I = true;
+    state.noBackendNetworkLiveAIV61J = true;
+    state.noBackendCalls = true;
+    state.noAudioStorage = true;
+    state.noNetworkCalls = true;
+    syncNamespace();
+    return {
+      version: 'v61K',
+      clearDraftQueueVoiceVariantsWork: state.clearDraftQueueVoiceVariantsWork,
+      clearCurrentDemoActionVariantsWork: state.clearCurrentDemoActionVariantsWork,
+      startNewDemoChangeVariantsWork: state.startNewDemoChangeVariantsWork,
+      codeColdCallCorrectionWorks: state.codeColdCallCorrectionWorks,
+      receivedToReceiptCorrectionWorks: state.receivedToReceiptCorrectionWorks,
+      badTranscriptNotSavedAsValue: state.badTranscriptNotSavedAsValue,
+      demoStateCommandsRunBeforeFallback: state.demoStateCommandsRunBeforeFallback,
+      actionIntentRunsBeforeFallback: state.actionIntentRunsBeforeFallback,
+      bananaFallbackStillWorks: state.unknownFallbackStillWorks,
+      noLiveChangeExecuted: true,
+      noBackendCalls: true,
+      noNetworkCalls: true
+    };
+  }
+
+
   function runV61CCheck() {
     return runV61DCheck();
   }
@@ -1612,5 +1808,5 @@
   }
   window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61J extensions loaded: Permission Granter / Draft Change Queue demo active. No live change made.');
+  console.log('Aqua Homes OS v61K extensions loaded: voice synonym router repair active. No live change made.');
 }());
