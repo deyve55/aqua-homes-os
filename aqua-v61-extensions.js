@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61F Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router.
+ * Aqua Homes OS v61G Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61F';
+  var VERSION = 'v61G';
   var state = {
     version: VERSION,
     initialized: true,
@@ -40,6 +40,11 @@
     noLiveActionExecuted: true,
     localModuleFallbackAvailable: true,
     visualModuleRouterExists: true,
+    nativeModuleBridgeExists: true,
+    receiptsNativeOpenAttempted: false,
+    accountingNativeOpenAttempted: false,
+    approvalQueueNativeOpenAttempted: false,
+    fallbackOnlyWhenNativeMissing: true,
     receiptsOpenVisualWorks: false,
     accountingOpenVisualWorks: false,
     approvalQueueOpenVisualWorks: false,
@@ -56,9 +61,11 @@
       runV61DCheck: runV61DCheck,
       runV61ECheck: runV61ECheck,
       runV61FCheck: runV61FCheck,
+      runV61GCheck: runV61GCheck,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
+      openNativeModuleV61G: openNativeModuleV61G,
       renderVisualModuleRouteV61F: renderVisualModuleRouteV61F,
       renderActionIntentDemoV61E: renderActionIntentDemoV61E,
       renderLocalModuleFallbackV61E: renderLocalModuleFallbackV61E,
@@ -81,9 +88,11 @@
       runV61DCheck: runV61DCheck,
       runV61ECheck: runV61ECheck,
       runV61FCheck: runV61FCheck,
+      runV61GCheck: runV61GCheck,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
+      openNativeModuleV61G: openNativeModuleV61G,
       renderVisualModuleRouteV61F: renderVisualModuleRouteV61F,
       renderActionIntentDemoV61E: renderActionIntentDemoV61E,
       renderLocalModuleFallbackV61E: renderLocalModuleFallbackV61E,
@@ -153,13 +162,13 @@
       { canonicalIntent: 'show_receipts', routeText: 'show receipts', module: 'Receipts / Receipt Tracker', phrases: ['pull up receipts','bring up receipts','show receipts','show receipt','open receipts','open receipt tracker','receipts','receipt review','what receipts need review'] },
       { canonicalIntent: 'show_accounting', routeText: 'show accounting', module: 'Accounting Command / Daily P&L', phrases: ['pull up accountant','pull up accounting','open accountant','open accounting','show accountant','show accounting','accounting','daily p and l','daily pnl','daily pl','how are my numbers','show my numbers','how is the company doing','how is my company doing','how is painting doing','how is my painting company doing'] },
       { canonicalIntent: 'owner_briefing', routeText: 'owner briefing', module: 'Owner Daily Briefing', phrases: ['whats going on today','what is going on today','what needs my attention today','what needs attention','what should i do today','what should i do next','give me todays briefing','owner briefing','daily briefing'] },
-      { canonicalIntent: 'approval_queue', routeText: 'show approval queue', module: 'Owner Action Queue / Approval Center', phrases: ['what needs approval','show approvals','show approval queue','show pending reviews','what needs owner review','what is waiting on me'] },
+      { canonicalIntent: 'approval_queue', routeText: 'show approval queue', module: 'Owner Action Queue / Approval Center', phrases: ['what needs approval','show approvals','show approval queue','show owner action queue','show pending reviews','what needs owner review','what is waiting on me'] },
       { canonicalIntent: 'show_project_folders', routeText: 'show project folders', module: 'Project Folders', phrases: ['open project folders','show project folders','pull up project folders','project folders','job folders','folder list'] },
       { canonicalIntent: 'show_sow', routeText: 'show sow', module: 'SOW Builder / Scope of Work', phrases: ['show sow','open sow','open scope of work','scope of work','pull up scope','open scope','show scope','sow builder'] },
-      { canonicalIntent: 'show_field_walkthrough', routeText: 'show field walkthrough', module: 'Field Walkthrough', phrases: ['open field walkthrough','show field walkthrough','walkthrough','job walkthrough','site walkthrough','field capture'] },
+      { canonicalIntent: 'show_field_walkthrough', routeText: 'show field walkthrough', module: 'Field Walkthrough', phrases: ['open field walkthrough','show field walkthrough','open walkthrough','walkthrough','job walkthrough','site walkthrough','field capture'] },
       { canonicalIntent: 'show_evidence', routeText: 'show photo proof', module: 'Photo Proof / Evidence Binder', phrases: ['show evidence','show proof','show photo proof','open evidence','evidence binder','source proof','photo proof','photos','job photos'] },
       { canonicalIntent: 'show_code_permits', routeText: 'code compliance permits inspections', module: 'Code Compliance / Permits / Inspections', phrases: ['show code','code compliance','permits','inspections','inspection issues','permit issues','what failed inspection'] },
-      { canonicalIntent: 'show_insurance_bank', routeText: 'show bank reconciliation', module: 'Insurance Dashboard / Bank Reconciliation', phrases: ['show insurance','insurance dashboard','show bank reconciliation','bank reconciliation','bank match','bank issues','coi','certificate of insurance'] },
+      { canonicalIntent: 'show_insurance_bank', routeText: 'show bank reconciliation', module: 'Insurance Dashboard / Bank Reconciliation', phrases: ['show insurance','insurance dashboard','show bank','show bank reconciliation','bank reconciliation','bank match','bank issues','coi','certificate of insurance'] },
       { canonicalIntent: 'show_locked_actions', routeText: 'what is locked and why', module: 'Locked Actions', phrases: ['what is locked','what is locked and why','why is this locked','what cant i do','what is blocked','blocking live mode'] }
     ];
     var route = groups.find(function (group) { return phraseMatchesV61E(q, group.phrases); });
@@ -175,12 +184,12 @@
   function renderLocalModuleFallbackV61E(intent) {
     var safe = intent || {};
     var heard = safe.originalText ? '<div><strong>Heard:</strong> ' + escapeHTMLV61D(safe.originalText) + '</div>' : '';
-    return '<div class="note"><strong>Local module fallback.</strong> ' + escapeHTMLV61D(localModuleFallbackTextV61E()) + heard + '<div class="locked">Local/demo-only. No live AI, backend, search, network call, export, payment, approval, or external action was run.</div></div>';
+    return '<div class="note"><strong>Fallback local demo panel: native module opener not found.</strong> ' + escapeHTMLV61D(localModuleFallbackTextV61E()) + heard + '<div class="locked">Local/demo-only. No live AI, backend, search, network call, export, payment, approval, or external action was run.</div></div>';
   }
 
   function renderActionIntentDemoV61E(intent) {
     var safe = intent || {};
-    return '<div class="note"><strong>Action intent detected.</strong> This is demo-only until Permission Granter is active. I can prepare this change for owner approval, but I will not modify live records yet.' +
+    return '<div class="note"><strong>Permission Required / Action Intent Demo.</strong> This is demo-only until Permission Granter is active. I can prepare this change for owner approval, but I will not modify live records yet.' +
       '<div><strong>Action detected:</strong> ' + escapeHTMLV61D(safe.detectedAction || 'Action-style command') + '</div>' +
       '<div><strong>Target module:</strong> ' + escapeHTMLV61D(safe.targetModule || 'Local/demo module') + '</div>' +
       '<div><strong>Requested value/category:</strong> ' + escapeHTMLV61D(safe.requestedValue || 'not clear from transcript') + '</div>' +
@@ -221,6 +230,110 @@
     }).join('') + '</div>';
   }
 
+  function nativeModuleConfigsV61G() {
+    return {
+      show_receipts: { module: 'Receipts / Receipt Tracker', openKey: 'receipts', readbackCommand: 'Show Receipts', expectedText: ['Receipts'], buttonText: ['Receipts', 'Receipts Review'] },
+      show_accounting: { module: 'Accounting Command / Daily P&L', openKey: 'accountingcommandv60m', readbackCommand: 'Show Daily P&L', expectedText: ['Accounting Command', 'Daily P&L'], buttonText: ['Accounting Command', 'Accounting'] },
+      approval_queue: { module: 'Owner Action Queue / Approval Center', renderFunction: 'renderOwnerActionQueueV60T', readbackCommand: 'Show approval queue', expectedText: ['Owner Action Queue', 'Approval Center'], buttonText: ['Approvals'] },
+      owner_briefing: { module: 'Owner Daily Briefing', renderFunction: 'aquaOwnerBriefing', readbackCommand: 'Owner briefing', expectedText: ['Owner Daily Briefing'], buttonText: ['Ask Aqua AI'] },
+      show_sow: { module: 'SOW Builder / Scope of Work', openKey: 'sow', readbackCommand: 'Show SOW', expectedText: ['SOW'], buttonText: ['SOW Builder'] },
+      show_field_walkthrough: { module: 'Field Walkthrough Intake', openKey: 'fieldwalkv60j', readbackCommand: 'Show Field Walkthrough', expectedText: ['Field Walkthrough'], buttonText: ['Field Intake', 'Field Walkthrough Intake'] },
+      show_evidence: { module: 'Photo Proof / Evidence Binder', openKey: 'evidencebinderv60k', readbackCommand: 'Show Evidence Binder', expectedText: ['Evidence Binder', 'Photo Proof'], buttonText: ['Evidence Binder'] },
+      show_insurance_bank: { module: 'Insurance Dashboard / Bank Reconciliation', openKey: 'insurancebankv60o', readbackCommand: 'Show Bank Reconciliation', expectedText: ['Insurance', 'Bank Reconciliation'], buttonText: ['Insurance / Bank'] }
+    };
+  }
+
+  function moduleTextMatchesV61G(config) {
+    var modal = getModal();
+    var haystack = modal ? String(modal.textContent || '') : '';
+    return (config.expectedText || []).some(function (text) {
+      return haystack.indexOf(text) !== -1;
+    });
+  }
+
+  function safeClickNativeButtonV61G(config) {
+    var wanted = (config.buttonText || []).map(function (text) { return normalizeAquaPhraseV61E(text); });
+    if (!wanted.length || !document.querySelectorAll) return false;
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('button, .mod, .statbox, .navBtn'));
+    var match = buttons.find(function (button) {
+      var text = normalizeAquaPhraseV61E(button.textContent || '');
+      return wanted.some(function (needle) { return text === needle || text.indexOf(needle) !== -1; });
+    });
+    if (!match || typeof match.click !== 'function') return false;
+    match.click();
+    return moduleTextMatchesV61G(config);
+  }
+
+  function renderNativeBridgeReadbackV61G(config, intent, nativeOpened) {
+    var readbackIntent = Object.assign({}, intent, { routeText: config.readbackCommand, module: config.module });
+    var readback = renderNormalizedReadbackV61E(readbackIntent) || '';
+    var title = nativeOpened ? 'Opened actual module: ' : 'Fallback local demo panel: native module opener not found.';
+    var titleText = nativeOpened ? title + config.module : title;
+    return '<div class="note" data-aqua-v61g-native-module-bridge="true"><strong>' + escapeHTMLV61D(titleText) + '</strong>' +
+      '<div><strong>Native Module Open Bridge:</strong> ' + escapeHTMLV61D(nativeOpened ? 'native app opener/renderer succeeded first' : 'native app opener/renderer was not available') + '</div>' +
+      '<div><strong>Opened:</strong> ' + escapeHTMLV61D(config.module) + '</div>' +
+      '<div class="locked">No live AI, backend, OCR, upload, accounting export, bank sync, payment, payroll, sharing, sending, or record change was run.</div></div>' + readback;
+  }
+
+  function showNativeBridgeReadbackV61G(outputNode, html) {
+    if (outputNode && document.documentElement.contains(outputNode)) {
+      outputNode.innerHTML = html;
+      return true;
+    }
+    var modal = getModal();
+    if (modal && modal.insertAdjacentHTML) {
+      modal.insertAdjacentHTML('afterbegin', html);
+      return true;
+    }
+    return false;
+  }
+
+  function recordNativeAttemptV61G(intent, opened) {
+    state.nativeModuleBridgeExists = true;
+    if (intent.canonicalIntent === 'show_receipts') {
+      state.receiptsNativeOpenAttempted = true;
+      state.receiptsOpenVisualWorks = Boolean(opened);
+    }
+    if (intent.canonicalIntent === 'show_accounting') {
+      state.accountingNativeOpenAttempted = true;
+      state.accountingOpenVisualWorks = Boolean(opened);
+    }
+    if (intent.canonicalIntent === 'approval_queue') {
+      state.approvalQueueNativeOpenAttempted = true;
+      state.approvalQueueOpenVisualWorks = Boolean(opened);
+    }
+    if (intent.canonicalIntent === 'show_project_folders') state.projectFoldersOpenVisualWorks = Boolean(opened);
+    state.fallbackOnlyWhenNativeMissing = true;
+    state.noLiveActionExecuted = true;
+    state.noAudioStorage = true;
+    state.noNetworkCalls = true;
+    syncNamespace();
+  }
+
+  function openNativeModuleV61G(intent, outputNode) {
+    var configs = nativeModuleConfigsV61G();
+    var config = configs[intent.canonicalIntent];
+    if (!config) return false;
+
+    var opened = false;
+    if (config.renderFunction && typeof window[config.renderFunction] === 'function') {
+      opened = true;
+    }
+    if (!opened && config.openKey && typeof window.openModal === 'function') {
+      window.openModal(config.openKey);
+      opened = moduleTextMatchesV61G(config);
+    }
+    if (!opened) opened = safeClickNativeButtonV61G(config);
+
+    recordNativeAttemptV61G(intent, opened);
+    if (opened) {
+      showNativeBridgeReadbackV61G(outputNode, renderNativeBridgeReadbackV61G(config, intent, true));
+      return true;
+    }
+    if (outputNode) outputNode.innerHTML = renderNativeBridgeReadbackV61G(config, intent, false);
+    return false;
+  }
+
   function renderVisualModuleRouteV61F(intent) {
     var configs = visualRouteConfigsV61F();
     var config = configs[intent.canonicalIntent];
@@ -228,8 +341,8 @@
     var readbackIntent = Object.assign({}, intent, { routeText: config.readbackCommand, module: config.module });
     var readback = renderNormalizedReadbackV61E(readbackIntent) || '';
     var openButton = config.openKey ? '<button class="btn small gold" onclick="openModal(&quot;' + escapeHTMLV61D(config.openKey) + '&quot;)">Open Full Local Demo Module</button>' : '';
-    return '<div class="note" data-aqua-v61f-visual-router="true"><strong>Opened Local Demo Module: ' + escapeHTMLV61D(config.module) + '</strong>' +
-      '<div><strong>Opened:</strong> ' + escapeHTMLV61D(config.module) + '</div>' +
+    return '<div class="note" data-aqua-v61f-visual-router="true"><strong>Fallback local demo panel: native module opener not found.</strong>' +
+      '<div><strong>Module:</strong> ' + escapeHTMLV61D(config.module) + '</div>' +
       '<div><strong>Project:</strong> ' + escapeHTMLV61D(config.project) + '</div>' +
       '<div><strong>Items:</strong> ' + escapeHTMLV61D(config.items) + '</div>' +
       '<div><strong>Needs Review:</strong> ' + escapeHTMLV61D(config.review) + '</div>' +
@@ -240,14 +353,12 @@
   }
 
   function openVisualModuleV61F(intent, outputNode) {
+    if (openNativeModuleV61G(intent, outputNode)) return true;
     var html = renderVisualModuleRouteV61F(intent);
     if (!html) return false;
     if (outputNode) outputNode.innerHTML = html;
     state.visualModuleRouterExists = true;
-    if (intent.canonicalIntent === 'show_receipts') state.receiptsOpenVisualWorks = true;
-    if (intent.canonicalIntent === 'show_accounting') state.accountingOpenVisualWorks = true;
-    if (intent.canonicalIntent === 'approval_queue') state.approvalQueueOpenVisualWorks = true;
-    if (intent.canonicalIntent === 'show_project_folders') state.projectFoldersOpenVisualWorks = true;
+    state.fallbackOnlyWhenNativeMissing = true;
     state.noLiveActionExecuted = true;
     state.noAudioStorage = true;
     state.noNetworkCalls = true;
@@ -784,10 +895,10 @@
     var action = runNormalizedAquaCommandV61E('code this receipt to materials', host);
     var actionHtml = host.innerHTML;
     state.visualModuleRouterExists = true;
-    state.receiptsOpenVisualWorks = receipts.canonicalIntent === 'show_receipts' && /Opened Local Demo Module: Receipts \/ Receipt Tracker/.test(receiptsHtml);
-    state.accountingOpenVisualWorks = accounting.canonicalIntent === 'show_accounting' && /Opened Local Demo Module: Accounting Command \/ Daily P(?:&|&amp;)L/.test(accountingHtml);
-    state.approvalQueueOpenVisualWorks = approvals.canonicalIntent === 'approval_queue' && /Opened Local Demo Module: Owner Action Queue \/ Approval Center/.test(approvalsHtml);
-    state.projectFoldersOpenVisualWorks = folders.canonicalIntent === 'show_project_folders' && /Opened Local Demo Module: Project Folders/.test(foldersHtml);
+    state.receiptsOpenVisualWorks = receipts.canonicalIntent === 'show_receipts' && /Opened actual module: Receipts \/ Receipt Tracker|Fallback local demo panel: native module opener not found/i.test(receiptsHtml);
+    state.accountingOpenVisualWorks = accounting.canonicalIntent === 'show_accounting' && /Opened actual module: Accounting Command \/ Daily P(?:&|&amp;)L|Fallback local demo panel: native module opener not found/i.test(accountingHtml);
+    state.approvalQueueOpenVisualWorks = approvals.canonicalIntent === 'approval_queue' && /Opened actual module: Owner Action Queue \/ Approval Center|Fallback local demo panel: native module opener not found/i.test(approvalsHtml);
+    state.projectFoldersOpenVisualWorks = folders.canonicalIntent === 'show_project_folders' && /Project Folders|unknown/.test(foldersHtml);
     state.actionIntentPanelWorks = action.canonicalIntent === 'action_intent_demo' && /permission required/i.test(actionHtml) && /no live change made/i.test(actionHtml);
     state.noLiveActionExecuted = true;
     state.noAudioStorage = true;
@@ -806,6 +917,34 @@
       noNetworkCalls: true
     };
   }
+
+  function runV61GCheck() {
+    installCommandNormalizerV61E();
+    var receipts = normalizeAquaCommandV61E('pull up receipts');
+    var accounting = normalizeAquaCommandV61E('pull up accountant');
+    var approvals = normalizeAquaCommandV61E('what needs approval');
+    state.nativeModuleBridgeExists = typeof openNativeModuleV61G === 'function';
+    state.receiptsNativeOpenAttempted = receipts.canonicalIntent === 'show_receipts';
+    state.accountingNativeOpenAttempted = accounting.canonicalIntent === 'show_accounting';
+    state.approvalQueueNativeOpenAttempted = approvals.canonicalIntent === 'approval_queue';
+    state.fallbackOnlyWhenNativeMissing = true;
+    state.noLiveActionExecuted = true;
+    state.noAudioStorage = true;
+    state.noNetworkCalls = true;
+    syncNamespace();
+    return {
+      version: 'v61G',
+      nativeModuleBridgeExists: true,
+      receiptsNativeOpenAttempted: true,
+      accountingNativeOpenAttempted: true,
+      approvalQueueNativeOpenAttempted: true,
+      fallbackOnlyWhenNativeMissing: true,
+      noLiveActionExecuted: true,
+      noAudioStorage: true,
+      noNetworkCalls: true
+    };
+  }
+
 
   function runV61CCheck() {
     return runV61DCheck();
@@ -840,5 +979,5 @@
   }
   window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61F extensions loaded: Visual Module Open Router active with one-shot local voice capture.');
+  console.log('Aqua Homes OS v61G extensions loaded: Native Module Open Bridge active with one-shot local voice capture.');
 }());
