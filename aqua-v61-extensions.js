@@ -211,11 +211,12 @@
     var safe = intent || {};
     return {
       version: 'v61I',
-      stage: stage || 'Detected Action',
+      stage: stage || 'detected',
       detectedAction: safe.detectedAction || 'Action-style command',
       targetModule: safe.targetModule || 'Local/demo module',
       requestedValue: safe.requestedValue || 'not clear from transcript',
-      status: 'Owner/Admin permission required',
+      localDemoStatus: stage || 'permission required',
+      status: 'Permission required / No live change made',
       liveChange: 'Not performed',
       auditRequirement: 'Audit placeholder required before any future live change',
       undoRequirement: 'Undo checkpoint required before any future live change',
@@ -240,30 +241,29 @@
 
   function renderPermissionGranterV61I(intent) {
     var safe = intent || {};
-    savePermissionGranterDemoV61I(safe, 'Detected Action');
+    savePermissionGranterDemoV61I(safe, 'permission required');
     state.permissionGranterPanelWorks = true;
     state.actionIntentPanelWorks = true;
     state.noLiveActionExecuted = true;
     state.noLiveRecordChangeV61I = true;
     state.noBackendNetworkLiveAIV61I = true;
     syncNamespace();
-    return '<div class="note" data-aqua-v61i-permission-granter="true"><strong>Permission Required / Action Authority Demo</strong>' +
-      '<div><strong>Detected Action:</strong> ' + escapeHTMLV61D(safe.detectedAction || 'Action-style command') + '</div>' +
-      '<div><strong>Target Module:</strong> ' + escapeHTMLV61D(safe.targetModule || 'Local/demo module') + '</div>' +
-      '<div><strong>Requested Category/Value:</strong> ' + escapeHTMLV61D(safe.requestedValue || 'not clear from transcript') + '</div>' +
-      '<div><strong>Status:</strong> Owner/Admin permission required</div>' +
-      '<div><strong>Live Change:</strong> Not performed</div>' +
-      '<div><strong>Audit Requirement:</strong> Audit placeholder required before any future live change.</div>' +
-      '<div><strong>Undo Requirement:</strong> Undo checkpoint required before any future live change.</div>' +
-      '<div><strong>Next Step:</strong> Prepare a local demo change request, request Owner/Admin approval in demo, cancel, or view the audit placeholder.</div>' +
-      '<div class="locked"><strong>No Live Change Made.</strong> Demo only. No live record change, backend call, network call, live AI call, approval, accounting export, bank sync, payment, payroll, sharing, sending, OCR, upload, or external action was run.</div>' +
-      '<div class="actions" data-aqua-v61i-demo-buttons="true">' +
+    return '<div class="note" data-aqua-v61i-permission-granter="true"><strong>Permission Required / Action Intent Demo</strong>' +
+      '<div><strong>Detected action:</strong> ' + escapeHTMLV61D(safe.detectedAction || 'Action-style command') + '</div>' +
+      '<div><strong>Target module:</strong> ' + escapeHTMLV61D(safe.targetModule || 'Local/demo module') + '</div>' +
+      '<div><strong>Requested category/value:</strong> ' + escapeHTMLV61D(safe.requestedValue || 'not clear from transcript') + '</div>' +
+      '<div><strong>Status:</strong> Permission required / No live change made</div>' +
+      '<div class="actions" data-aqua-v61i-demo-buttons="true" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;visibility:visible;opacity:1">' +
       '<button type="button" class="btn small gold" data-aqua-v61i-action="prepare">Prepare Change</button>' +
       '<button type="button" class="btn small primary" data-aqua-v61i-action="approve-demo">Owner Approve Demo</button>' +
       '<button type="button" class="btn small" data-aqua-v61i-action="cancel">Cancel</button>' +
       '<button type="button" class="btn small" data-aqua-v61i-action="audit">View Audit Placeholder</button>' +
       '</div>' +
-      '<div class="smallMut" id="aquaPermissionGranterV61IStatus">Local demo state key: aquaPermissionGranterV61I. No Live Change Made.</div></div>';
+      '<div class="smallMut" id="aquaPermissionGranterV61IStatus">Local demo status: permission required. No live change made.</div>' +
+      '<div class="smallMut" id="aquaPermissionGranterV61IAudit" hidden>Audit placeholder: demo-only permission event. No backend, network call, live AI call, approval execution, accounting export, bank sync, payment, upload, or live record change was run.</div>' +
+      '<div><strong>Audit requirement:</strong> Audit placeholder required before any future live change.</div>' +
+      '<div><strong>Undo requirement:</strong> Undo checkpoint required before any future live change.</div>' +
+      '<div class="locked"><strong>No live change made.</strong> Demo only. No live record change, backend call, network call, live AI call, approval, accounting export, bank sync, payment, payroll, sharing, sending, OCR, upload, or external action was run.</div></div>';
   }
 
   function renderActionIntentDemoV61E(intent) {
@@ -507,21 +507,30 @@
       event.preventDefault();
       var action = button.getAttribute('data-aqua-v61i-action') || 'prepare';
       var labelMap = {
-        prepare: 'Prepared local demo change request. No Live Change Made.',
-        'approve-demo': 'Owner approval demo recorded locally. No Live Change Made.',
-        cancel: 'Permission request canceled locally. No Live Change Made.',
-        audit: 'Audit placeholder viewed locally. No Live Change Made.'
+        prepare: 'Local demo status: prepared. No live change made.',
+        'approve-demo': 'Local demo status: approved demo. No live change made.',
+        cancel: 'Local demo status: cancelled. No live change made.',
+        audit: 'Audit placeholder shown. Local demo status unchanged. No live change made.'
+      };
+      var localStatusMap = {
+        prepare: 'prepared',
+        'approve-demo': 'approved demo',
+        cancel: 'cancelled',
+        audit: 'audit placeholder viewed'
       };
       var panel = button.closest('[data-aqua-v61i-permission-granter]');
       var statusNode = panel ? panel.querySelector('#aquaPermissionGranterV61IStatus') : document.getElementById('aquaPermissionGranterV61IStatus');
-      var record = savePermissionGranterDemoV61I({}, action);
+      var auditNode = panel ? panel.querySelector('#aquaPermissionGranterV61IAudit') : document.getElementById('aquaPermissionGranterV61IAudit');
+      var record = savePermissionGranterDemoV61I({}, localStatusMap[action] || 'prepared');
       record.buttonAction = action;
+      record.localDemoStatus = localStatusMap[action] || 'prepared';
       try {
         window.localStorage.setItem('aquaPermissionGranterV61I', JSON.stringify(record));
       } catch (error) {
         record.storageWarning = 'localStorage unavailable in this browser context';
       }
       if (statusNode) statusNode.textContent = (labelMap[action] || labelMap.prepare) + ' Local demo state key: aquaPermissionGranterV61I.';
+      if (auditNode && action === 'audit') auditNode.hidden = false;
       state.permissionGranterButtonsWork = true;
       state.noLiveActionExecuted = true;
       state.noLiveRecordChangeV61I = true;
@@ -1079,7 +1088,7 @@
     state.sowRouteWorks = sow.canonicalIntent === 'show_sow' && (sowNativeWorks || sowFallbackWorks);
     state.insuranceRouteWorks = insurance.canonicalIntent === 'show_insurance_bank' && (insuranceNativeWorks || insuranceFallbackWorks);
     state.insurerSynonymWorks = insurer.canonicalIntent === 'show_insurance_bank' && (insurerNativeWorks || insurerFallbackWorks);
-    state.receiptActionIntentWorks = receiptAction.canonicalIntent === 'action_intent_demo' && /Detected action:<\/strong> receipt coding \/ categorization \/ review/i.test(receiptActionHtml) && /Target module:<\/strong> Receipts \/ Receipt Tracker/i.test(receiptActionHtml) && /Requested value\/category:<\/strong> materials/i.test(receiptActionHtml) && /Permission Required \/ Action Authority Demo/i.test(receiptActionHtml) && /No Live Change Made/i.test(receiptActionHtml);
+    state.receiptActionIntentWorks = receiptAction.canonicalIntent === 'action_intent_demo' && /Detected action:<\/strong> receipt coding \/ categorization \/ review/i.test(receiptActionHtml) && /Target module:<\/strong> Receipts \/ Receipt Tracker/i.test(receiptActionHtml) && /Requested category\/value:<\/strong> materials/i.test(receiptActionHtml) && /Permission Required \/ Action Intent Demo/i.test(receiptActionHtml) && /No Live Change Made/i.test(receiptActionHtml);
     state.actionIntentRunsBeforeFallback = state.receiptActionIntentWorks && !/Fallback local demo panel/i.test(receiptActionHtml);
     state.unknownFallbackStillWorks = banana.canonicalIntent === 'unknown' && /Fallback local demo panel: native module opener not found/i.test(bananaHtml) && /Try: Show Receipts\./i.test(bananaHtml);
     state.noLiveActionExecuted = true;
@@ -1119,7 +1128,7 @@
     var approve = runNormalizedAquaCommandV61E('approve this item', host);
     var approveHtml = host.innerHTML;
     var combined = [receiptMaterialsHtml, receiptCodeHtml, receiptUnderHtml, reviewedHtml, approveHtml].join(' ');
-    state.permissionGranterPanelWorks = /Permission Required \/ Action Authority Demo/i.test(combined) && /Status:<\/strong> Owner\/Admin permission required/i.test(combined) && /Live Change:<\/strong> Not performed/i.test(combined);
+    state.permissionGranterPanelWorks = /Permission Required \/ Action Intent Demo/i.test(combined) && /Status:<\/strong> Permission required \/ No live change made/i.test(combined);
     state.permissionGranterButtonsWork = /Prepare Change/i.test(combined) && /Owner Approve Demo/i.test(combined) && /Cancel/i.test(combined) && /View Audit Placeholder/i.test(combined);
     state.receiptActionIntentWorks = receiptMaterials.canonicalIntent === 'action_intent_demo' && receiptCode.canonicalIntent === 'action_intent_demo' && receiptUnder.canonicalIntent === 'action_intent_demo' && reviewed.canonicalIntent === 'action_intent_demo';
     state.actionIntentRunsBeforeFallback = state.receiptActionIntentWorks && approve.canonicalIntent === 'action_intent_demo' && !/Fallback local demo panel/i.test(combined);
@@ -1177,5 +1186,5 @@
   }
   window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61I extensions loaded: Permission Granter / Action Authority Demo Gate active. No Live Change Made.');
+  console.log('Aqua Homes OS v61I extensions loaded: Permission Granter / Action Intent Demo Gate active. No live change made.');
 }());
