@@ -1,10 +1,10 @@
-# Aqua Homes OS v62E Regression Report
+# Aqua Homes OS v62F Regression Report
 
-- Timestamp: 2026-06-05T23:03:25.915Z
+- Timestamp: 2026-06-05T23:16:29.656Z
 - Branch: work
-- Commit: f6c90396c07c1562758d31c80a784a3c1fdabba6
-- Total tests: 250
-- Passed: 250
+- Commit: 5c4aa3de8d760fc6fc0b463dd338d62a541e8827
+- Total tests: 265
+- Passed: 265
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -32,6 +32,19 @@
 - cameraAllocationIntentWorks: true
 - constructionDiagramUploadStaysLocked: true
 - suggestNextStepWorks: true
+- workflowPlannerExists: true
+- receiptExportWorkflowWorks: true
+- reportReviewWorkflowWorks: true
+- missingDocumentsWorkflowWorks: true
+- spendBudgetWorkflowWorks: true
+- uploadWorkflowStaysLocked: true
+- cameraWorkflowWorks: true
+- dailyAttentionWorkflowWorks: true
+- saveWorkflowPlanWorks: true
+- showLastWorkflowPlanWorks: true
+- copyWorkflowPlanWorks: true
+- clearWorkflowPlanWorks: true
+- ownerReviewDemoWorks: true
 - aquaBrainCommandCenterWorks: true
 - voiceBrainPlanViewerWorks: true
 - saveVoiceBrainPlanWorks: true
@@ -146,9 +159,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62E
-- Total: 101
-- Passed: 101
+- Version: v62F
+- Total: 114
+- Passed: 114
 - Failed: 0
 
 ## Copyable Codex Repair Prompt

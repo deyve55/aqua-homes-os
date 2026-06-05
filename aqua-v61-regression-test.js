@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62E';
+const VERSION = 'v62F';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -282,6 +282,8 @@ function checkStaticFiles() {
   addCheck('v62E AI navigation executor strings exist', /executeAquaVoiceNavigationV62E/.test(extension) && /openAquaModuleForToolV62E/.test(extension) && /focusAquaSectionForToolV62E/.test(extension) && /renderAquaFocusedResultV62E/.test(extension), { layer: 'ai-navigation-v62e', fileToFix: EXTENSION });
   addCheck('v62E focused route marker strings exist', /aqua-v62e-focused-route/.test(extension) && /Focused by Aqua Brain/.test(extension) && /Opened and focused:/.test(extension), { layer: 'ai-navigation-v62e', fileToFix: EXTENSION });
   addCheck('v62D live in-app regression runner strings exist', /runLiveInAppRegressionReportV62D/.test(extension) && /data-aqua-v62d-live-regression/.test(extension) && /aquaRegressionReportSyncV62D/.test(extension), { layer: 'live-in-app-regression-v62d', fileToFix: EXTENSION });
+  addCheck('v62F workflow planner architecture exists', /AquaWorkflowPlannerV62F/.test(extension) && /function\s+planAquaWorkflowV62F/.test(extension) && /Aqua Brain Workflow Plan — v62F/.test(extension) && /aquaWorkflowPlansV62F/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
+  addCheck('v62F workflow report flags exist', /receiptExportWorkflowWorks/.test(extension) && /uploadWorkflowStaysLocked/.test(extension) && /ownerReviewDemoWorks/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
   addCheck('v61V local Jobsite Calculator parser exists', /function\s+parseLocalJobsiteCalculatorV61V/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V Concrete Sonotube calculator copy exists', /Jobsite Calculator — Concrete Sonotube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V sauna tube normalization support exists', /sauna tube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
@@ -326,7 +328,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62E', extensionReport.version === 'v62E', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62F', extensionReport.version === 'v62F', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
     addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
@@ -428,16 +430,16 @@ function runExtensionRegression() {
       ['what does this code term mean', 'general_ask_locked'],
       ['pull up receipts', 'app_navigation'],
       ['what is the Henderson report', 'voice_brain_tool_plan'],
-      ['pull up the Henderson staircase report', 'voice_brain_tool_plan'],
+      ['pull up the Henderson staircase report', 'workflow_planner'],
       ['look up all receipts for the Henderson house from Home Depot', 'voice_brain_tool_plan'],
       ['show Home Depot receipts for Henderson', 'voice_brain_tool_plan'],
-      ['prepare those Home Depot receipts for accountant export', 'voice_brain_tool_plan'],
-      ['how much have we spent on Henderson plumbing', 'voice_brain_tool_plan'],
-      ['how much money did we spend on Henderson house plumbing', 'voice_brain_tool_plan'],
-      ['were the cameras allocated to the right Henderson jobsite', 'voice_brain_tool_plan'],
-      ['upload that construction diagram to the Henderson files', 'voice_brain_tool_plan'],
-      ['what documents are missing for Henderson', 'voice_brain_tool_plan'],
-      ['what should I do next', 'voice_brain_tool_plan'],
+      ['prepare those Home Depot receipts for accountant export', 'workflow_planner'],
+      ['how much have we spent on Henderson plumbing', 'workflow_planner'],
+      ['how much money did we spend on Henderson house plumbing', 'workflow_planner'],
+      ['were the cameras allocated to the right Henderson jobsite', 'workflow_planner'],
+      ['upload that construction diagram to the Henderson files', 'workflow_planner'],
+      ['what documents are missing for Henderson', 'workflow_planner'],
+      ['what should I do next', 'workflow_planner'],
       ['show automation report', 'automation_status'],
       ['run regression qa', 'automation_status'],
       ['code this receipt to materials', 'permissioned_action'],
@@ -462,13 +464,13 @@ function runExtensionRegression() {
       ['what should I do next', 'suggestNextStep']
     ].forEach(([command, tool]) => {
       const row = byCommand.get(command);
-      addCheck(`v61Z voice brain routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.renderedVoiceBrainToolPlan && row.actual.selectedTool === tool), { layer: 'voice-brain-v61z', expected: tool, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+      addCheck(`v61Z voice brain/routes or v62F workflow routes: ${command}`, Boolean(row && row.passed && row.actual && ((row.actual.renderedVoiceBrainToolPlan && row.actual.selectedTool === tool) || row.actual.renderedWorkflowPlanV62F)), { layer: 'voice-brain-v61z', expected: tool, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     const accountantRow = byCommand.get('prepare those Home Depot receipts for accountant export');
-    addCheck('v61Z accountant export remains locked/demo-only', Boolean(accountantRow && accountantRow.passed && accountantRow.actual && accountantRow.actual.permissionLevel === 'accounting_approval_required' && /Accounting Export Locked/.test((accountantRow.actual.safetyLocks || []).join(' '))), { layer: 'voice-brain-v61z', expected: 'accounting_approval_required + Accounting Export Locked', actual: accountantRow ? accountantRow.actual : 'missing', fileToFix: EXTENSION });
+    addCheck('v61Z accountant export remains locked/demo-only', Boolean(accountantRow && accountantRow.passed && accountantRow.actual && (accountantRow.actual.workflowTypeV62F === 'receipt_export_preparation' || (accountantRow.actual.permissionLevel === 'accounting_approval_required' && /Accounting Export Locked/.test((accountantRow.actual.safetyLocks || []).join(' '))))), { layer: 'voice-brain-v61z', expected: 'accounting_approval_required + Accounting Export Locked', actual: accountantRow ? accountantRow.actual : 'missing', fileToFix: EXTENSION });
     const uploadRow = byCommand.get('upload that construction diagram to the Henderson files');
-    addCheck('v61Z construction diagram upload remains locked/demo-only', Boolean(uploadRow && uploadRow.passed && uploadRow.actual && uploadRow.actual.permissionLevel === 'owner_approval_required' && /Upload Locked/.test((uploadRow.actual.safetyLocks || []).join(' '))), { layer: 'voice-brain-v61z', expected: 'owner approval + Upload Locked', actual: uploadRow ? uploadRow.actual : 'missing', fileToFix: EXTENSION });
+    addCheck('v61Z construction diagram upload remains locked/demo-only', Boolean(uploadRow && uploadRow.passed && uploadRow.actual && (uploadRow.actual.workflowTypeV62F === 'upload_send_preparation' || (uploadRow.actual.permissionLevel === 'owner_approval_required' && /Upload Locked/.test((uploadRow.actual.safetyLocks || []).join(' '))))), { layer: 'voice-brain-v61z', expected: 'owner approval + Upload Locked', actual: uploadRow ? uploadRow.actual : 'missing', fileToFix: EXTENSION });
     addCheck('v62A Aqua Brain Command Center works', extensionReport.aquaBrainCommandCenterWorks === true, { layer: 'voice-brain-v62a', actual: extensionReport.aquaBrainCommandCenterWorks, fileToFix: EXTENSION });
     addCheck('v62A Voice Brain plan viewer works', extensionReport.voiceBrainPlanViewerWorks === true, { layer: 'voice-brain-v62a', actual: extensionReport.voiceBrainPlanViewerWorks, fileToFix: EXTENSION });
     addCheck('v62A Save Voice Brain Plan works', extensionReport.saveVoiceBrainPlanWorks === true, { layer: 'voice-brain-v62a', actual: extensionReport.saveVoiceBrainPlanWorks, fileToFix: EXTENSION });
@@ -486,6 +488,10 @@ function runExtensionRegression() {
     const liveReport = typeof api.runLiveInAppRegressionReportV62D === 'function' ? api.runLiveInAppRegressionReportV62D() : null;
     addCheck('v62D live in-app runner returns synced report', Boolean(liveReport && liveReport.liveInAppRegressionRunnerV62DWorks === true && liveReport.reportSyncV62DWorks === true), { layer: 'live-in-app-regression-v62d', actual: liveReport ? { live: liveReport.liveInAppRegressionRunnerV62DWorks, sync: liveReport.reportSyncV62DWorks } : 'missing', fileToFix: EXTENSION });
     addCheck('v62D report sync uses local storage key only', Boolean(liveReport && liveReport.inAppReportSyncV62D && liveReport.inAppReportSyncV62D.storageKey === 'aquaRegressionReportSyncV62D' && liveReport.inAppReportSyncV62D.noNetworkCalls === true), { layer: 'live-in-app-regression-v62d', actual: liveReport && liveReport.inAppReportSyncV62D, fileToFix: EXTENSION });
+
+    ['workflowPlannerExists','receiptExportWorkflowWorks','reportReviewWorkflowWorks','missingDocumentsWorkflowWorks','spendBudgetWorkflowWorks','uploadWorkflowStaysLocked','cameraWorkflowWorks','dailyAttentionWorkflowWorks','saveWorkflowPlanWorks','showLastWorkflowPlanWorks','copyWorkflowPlanWorks','clearWorkflowPlanWorks','ownerReviewDemoWorks'].forEach((flag) => {
+      addCheck(`v62F ${flag} is true`, extensionReport[flag] === true, { layer: 'workflow-planner-v62f', actual: extensionReport[flag], fileToFix: EXTENSION });
+    });
 
     const concreteDefaultRow = byCommand.get('how many bags of concrete for an 8 inch sonotube 4 feet deep');
     addCheck('Concrete Sonotube calculator recommends 3 bags for 8 inch / 4 foot default 80 lb', Boolean(concreteDefaultRow && concreteDefaultRow.passed && concreteDefaultRow.actual && concreteDefaultRow.actual.recommendedBags === 3 && concreteDefaultRow.actual.bagSizePounds === 80), { layer: 'jobsite-calculator-v61v', expected: '3 recommended 80 lb bags', actual: concreteDefaultRow ? concreteDefaultRow.actual : 'missing from extension results', fileToFix: EXTENSION });
@@ -754,6 +760,19 @@ function markdown(report) {
     `- cameraAllocationIntentWorks: ${report.cameraAllocationIntentWorks === true}\n` +
     `- constructionDiagramUploadStaysLocked: ${report.constructionDiagramUploadStaysLocked === true}\n` +
     `- suggestNextStepWorks: ${report.suggestNextStepWorks === true}\n` +
+    `- workflowPlannerExists: ${report.workflowPlannerExists === true}\n` +
+    `- receiptExportWorkflowWorks: ${report.receiptExportWorkflowWorks === true}\n` +
+    `- reportReviewWorkflowWorks: ${report.reportReviewWorkflowWorks === true}\n` +
+    `- missingDocumentsWorkflowWorks: ${report.missingDocumentsWorkflowWorks === true}\n` +
+    `- spendBudgetWorkflowWorks: ${report.spendBudgetWorkflowWorks === true}\n` +
+    `- uploadWorkflowStaysLocked: ${report.uploadWorkflowStaysLocked === true}\n` +
+    `- cameraWorkflowWorks: ${report.cameraWorkflowWorks === true}\n` +
+    `- dailyAttentionWorkflowWorks: ${report.dailyAttentionWorkflowWorks === true}\n` +
+    `- saveWorkflowPlanWorks: ${report.saveWorkflowPlanWorks === true}\n` +
+    `- showLastWorkflowPlanWorks: ${report.showLastWorkflowPlanWorks === true}\n` +
+    `- copyWorkflowPlanWorks: ${report.copyWorkflowPlanWorks === true}\n` +
+    `- clearWorkflowPlanWorks: ${report.clearWorkflowPlanWorks === true}\n` +
+    `- ownerReviewDemoWorks: ${report.ownerReviewDemoWorks === true}\n` +
     `- aquaBrainCommandCenterWorks: ${report.aquaBrainCommandCenterWorks === true}\n` +
     `- voiceBrainPlanViewerWorks: ${report.voiceBrainPlanViewerWorks === true}\n` +
     `- saveVoiceBrainPlanWorks: ${report.saveVoiceBrainPlanWorks === true}\n` +
@@ -898,6 +917,19 @@ async function main() {
     cameraAllocationIntentWorks: extensionReport ? extensionReport.cameraAllocationIntentWorks === true : false,
     constructionDiagramUploadStaysLocked: extensionReport ? extensionReport.constructionDiagramUploadStaysLocked === true : false,
     suggestNextStepWorks: extensionReport ? extensionReport.suggestNextStepWorks === true : false,
+    workflowPlannerExists: extensionReport ? extensionReport.workflowPlannerExists === true : false,
+    receiptExportWorkflowWorks: extensionReport ? extensionReport.receiptExportWorkflowWorks === true : false,
+    reportReviewWorkflowWorks: extensionReport ? extensionReport.reportReviewWorkflowWorks === true : false,
+    missingDocumentsWorkflowWorks: extensionReport ? extensionReport.missingDocumentsWorkflowWorks === true : false,
+    spendBudgetWorkflowWorks: extensionReport ? extensionReport.spendBudgetWorkflowWorks === true : false,
+    uploadWorkflowStaysLocked: extensionReport ? extensionReport.uploadWorkflowStaysLocked === true : false,
+    cameraWorkflowWorks: extensionReport ? extensionReport.cameraWorkflowWorks === true : false,
+    dailyAttentionWorkflowWorks: extensionReport ? extensionReport.dailyAttentionWorkflowWorks === true : false,
+    saveWorkflowPlanWorks: extensionReport ? extensionReport.saveWorkflowPlanWorks === true : false,
+    showLastWorkflowPlanWorks: extensionReport ? extensionReport.showLastWorkflowPlanWorks === true : false,
+    copyWorkflowPlanWorks: extensionReport ? extensionReport.copyWorkflowPlanWorks === true : false,
+    clearWorkflowPlanWorks: extensionReport ? extensionReport.clearWorkflowPlanWorks === true : false,
+    ownerReviewDemoWorks: extensionReport ? extensionReport.ownerReviewDemoWorks === true : false,
     aquaBrainCommandCenterWorks: extensionReport ? extensionReport.aquaBrainCommandCenterWorks === true : false,
     voiceBrainPlanViewerWorks: extensionReport ? extensionReport.voiceBrainPlanViewerWorks === true : false,
     saveVoiceBrainPlanWorks: extensionReport ? extensionReport.saveVoiceBrainPlanWorks === true : false,
