@@ -1,12 +1,12 @@
 {
   "version": "v61R",
-  "timestamp": "2026-06-05T14:07:52.538Z",
+  "timestamp": "2026-06-05T14:32:35.755Z",
   "branch": "work",
-  "commit": "3b7bf38c3ca4d211b31d2b8e9126f39c2ed516ca",
+  "commit": "8f3228b8baa936593f48d72b02becd59c26b4f6c",
   "filesChanged": [
     "aqua-regression-report.json",
     "aqua-regression-report.md",
-    "aqua-v61-regression-test.js"
+    "aqua-v61-extensions.js"
   ],
   "total": 63,
   "passed": 63,
@@ -109,14 +109,14 @@
       "name": "extension regression produced total tests",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 34,
+      "actual": 36,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
       "name": "extension regression passed count present",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 34,
+      "actual": 36,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -633,9 +633,9 @@
   "extensionRegression": {
     "version": "v61R",
     "harnessVersion": "v61L-compatible/v61R",
-    "timestamp": "2026-06-05T14:07:52.092Z",
-    "total": 34,
-    "passed": 34,
+    "timestamp": "2026-06-05T14:32:35.292Z",
+    "total": 36,
+    "passed": 36,
     "failed": 0,
     "failedCommands": [],
     "failures": [],
@@ -1208,6 +1208,41 @@
         "suggestedFix": ""
       },
       {
+        "command": "repeat last action",
+        "expected": "Repeat last action routes previous receipts command",
+        "actual": {
+          "command": "repeat last action",
+          "canonicalIntent": "repeat_last_action_v61s",
+          "module": "Receipts / Receipt Tracker",
+          "normalizedText": "repeat last action",
+          "repeatedIntent": "show_receipts",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "open that",
+        "expected": "Context follow-up reopens previous accounting route",
+        "actual": {
+          "command": "open that",
+          "canonicalIntent": "show_accounting",
+          "module": "Accounting Command / Daily P&L",
+          "normalizedText": "open that",
+          "renderedFallback": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
         "command": "banana test",
         "expected": "Guided fallback",
         "actual": {
@@ -1252,7 +1287,10 @@
     "noBackendNetworkLiveAICalls": true,
     "spokenReadbackAvailable": false,
     "spokenReadbackBrowserUnavailableFallback": true,
-    "spokenReadbackPreferenceKey": "aquaSpokenReadbackV61R"
+    "spokenReadbackPreferenceKey": "aquaSpokenReadbackV61R",
+    "conversationalContextRouterAvailable": true,
+    "repeatLastActionRouterAvailable": true,
+    "conversationalContextStorageKey": "aquaConversationalContextV61S"
   },
   "spokenReadbackAvailable": false,
   "spokenReadbackBrowserUnavailableFallback": true,
