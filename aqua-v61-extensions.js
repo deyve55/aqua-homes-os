@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61L Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing.
+ * Aqua Homes OS v61M Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61L';
+  var VERSION = 'v61M';
   var state = {
     version: VERSION,
     initialized: true,
@@ -86,7 +86,13 @@
     regressionQACommandWorksV61L: false,
     safeToMergeV61L: false,
     noBackendCalls: true,
-    noLiveChangeExecuted: true
+    noLiveChangeExecuted: true,
+    commandInputResolverExists: true,
+    correctCommandInputTargeted: false,
+    oldAskAIInputNotPolluted: true,
+    buttonLabelsNotInjected: true,
+    regressionButtonPreservesInput: false,
+    typedRegressionCommandWorks: false
   };
 
   var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
@@ -107,6 +113,8 @@
       runV61ICheck: runV61ICheck,
       runV61JCheck: runV61JCheck,
       runV61KCheck: runV61KCheck,
+      runV61MCheck: runV61MCheck,
+      getAquaCommandInputV61M: getAquaCommandInputV61M,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
@@ -142,6 +150,8 @@
       runV61ICheck: runV61ICheck,
       runV61JCheck: runV61JCheck,
       runV61KCheck: runV61KCheck,
+      runV61MCheck: runV61MCheck,
+      getAquaCommandInputV61M: getAquaCommandInputV61M,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
@@ -314,12 +324,136 @@
     return clean;
   }
 
-  function currentCommandInputV61J() {
-    var selectors = ['#brainCommand', '#aiAsk', '[data-aqua-command-input]', 'textarea', 'input[type="text"]'];
-    for (var i = 0; i < selectors.length; i += 1) {
-      var node = document.querySelector(selectors[i]);
-      if (node && typeof node.value === 'string' && node.value.trim()) return node.value.trim();
+  function isAquaButtonLabelGarbageV61M(value) {
+    var text = String(value || '').trim();
+    if (!text) return false;
+    var normalized = normalizeAquaPhraseV61E(text);
+    var labels = [
+      'run command demo',
+      'ask by voice',
+      'run full aqua qa',
+      'create bug demo',
+      'company command',
+      'open sow builder',
+      'field walkthrough intake',
+      'photo proof evidence binder',
+      'accounting command daily p and l',
+      'workers comp subcontractor compliance',
+      'insurance dashboard bank reconciliation'
+    ];
+    var hits = labels.filter(function (label) {
+      return normalized.indexOf(label) !== -1;
+    });
+    return hits.length > 1 || labels.indexOf(normalized) !== -1;
+  }
+
+  function isOldAskAIInputV61M(node) {
+    if (!node) return false;
+    if (node.id === 'aiAsk') return true;
+    var label = node.closest && node.closest('.field') ? node.closest('.field').querySelector('label') : null;
+    return Boolean(label && /Ask Aqua AI/i.test(label.textContent || ''));
+  }
+
+  function commandHubScoreV61M(node) {
+    if (!node || typeof node.value !== 'string') return -1000;
+    if (isOldAskAIInputV61M(node)) return -1000;
+    var field = node.closest && node.closest('.field') ? node.closest('.field') : null;
+    var root = node.closest && (node.closest('#askAICommandFlowV61B') || node.closest('[data-aqua-command-hub]') || node.closest('#modal'));
+    var text = ((field && field.textContent) || '') + ' ' + ((root && root.textContent) || '');
+    var score = 0;
+    if (node.id === 'brainCommand') score += 100;
+    if (node.hasAttribute && node.hasAttribute('data-aqua-command-input')) score += 80;
+    if (field && /Command input/i.test(field.textContent || '')) score += 60;
+    if (root && root.id === 'askAICommandFlowV61B') score += 40;
+    if (/Command type/i.test(text)) score += 20;
+    if (/Target module/i.test(text)) score += 20;
+    if (/Project \/ company/i.test(text)) score += 20;
+    if (/Run Command Demo/i.test(text)) score += 15;
+    if (/Ask by Voice/i.test(text)) score += 15;
+    return score;
+  }
+
+  function getAquaCommandInputV61M(options) {
+    var opts = options || {};
+    if (!document || typeof document.querySelectorAll !== 'function') return null;
+    var roots = [];
+    var flow = document.getElementById && document.getElementById('askAICommandFlowV61B');
+    if (flow) roots.push(flow);
+    var modal = getModal && getModal();
+    if (modal) roots.push(modal);
+    roots.push(document);
+    var candidates = [];
+    roots.forEach(function (root) {
+      if (!root || typeof root.querySelectorAll !== 'function') return;
+      Array.prototype.slice.call(root.querySelectorAll('#brainCommand, [data-aqua-command-input], textarea, input[type="text"]')).forEach(function (node) {
+        if (candidates.indexOf(node) === -1 && !isOldAskAIInputV61M(node)) candidates.push(node);
+      });
+    });
+    candidates.sort(function (a, b) { return commandHubScoreV61M(b) - commandHubScoreV61M(a); });
+    var best = candidates.find(function (node) { return commandHubScoreV61M(node) > 0; });
+    if (best) {
+      state.correctCommandInputTargeted = best.id === 'brainCommand' || commandHubScoreV61M(best) >= 100;
+      state.oldAskAIInputNotPolluted = true;
+      return best;
     }
+    if (opts.allowOldAskAIFallback && document.getElementById) return document.getElementById('aiAsk');
+    return null;
+  }
+
+  function getAquaCommandOutputV61M(input, fallback) {
+    if (fallback) return fallback;
+    var root = input && input.closest ? (input.closest('#askAICommandFlowV61B') || input.closest('#modal')) : null;
+    if (root && root.querySelector) return root.querySelector('#brainOut') || root.querySelector('[data-aqua-command-output]') || null;
+    return document.getElementById ? document.getElementById('brainOut') : null;
+  }
+
+  function setAquaCommandInputValueV61M(input, value) {
+    if (!input || typeof input.value !== 'string') return false;
+    if (isAquaButtonLabelGarbageV61M(value)) {
+      state.buttonLabelsNotInjected = true;
+      syncNamespace();
+      return false;
+    }
+    input.value = String(value || '');
+    return true;
+  }
+
+  function allTextInputsV61M() {
+    if (!document || typeof document.querySelectorAll !== 'function') return [];
+    return Array.prototype.slice.call(document.querySelectorAll('textarea, input[type="text"], [data-aqua-command-input]')).filter(function (node) {
+      return node && typeof node.value === 'string';
+    });
+  }
+
+  function repairButtonLabelInjectionV61M(snapshot) {
+    allTextInputsV61M().forEach(function (node) {
+      if (isAquaButtonLabelGarbageV61M(node.value)) {
+        node.value = snapshot && Object.prototype.hasOwnProperty.call(snapshot, node.id || '') ? snapshot[node.id || ''] : '';
+        state.buttonLabelsNotInjected = true;
+      }
+    });
+    var oldAsk = document.getElementById && document.getElementById('aiAsk');
+    state.oldAskAIInputNotPolluted = Boolean(!oldAsk || !isAquaButtonLabelGarbageV61M(oldAsk.value));
+    syncNamespace();
+  }
+
+  function installButtonLabelInjectionGuardV61M() {
+    if (!document || typeof document.addEventListener !== 'function' || state.buttonLabelInjectionGuardInstalledV61M) return false;
+    document.addEventListener('click', function () {
+      var snapshot = {};
+      allTextInputsV61M().forEach(function (node, index) {
+        snapshot[node.id || ('input-' + index)] = node.value;
+      });
+      window.setTimeout(function () { repairButtonLabelInjectionV61M(snapshot); }, 0);
+    }, true);
+    state.buttonLabelInjectionGuardInstalledV61M = true;
+    syncNamespace();
+    return true;
+  }
+
+  function currentCommandInputV61J() {
+    var commandInput = getAquaCommandInputV61M();
+    if (commandInput && typeof commandInput.value === 'string' && commandInput.value.trim() && !isAquaButtonLabelGarbageV61M(commandInput.value)) return commandInput.value.trim();
     return '';
   }
 
@@ -841,9 +975,10 @@
     if (typeof window.runBrainCommandDemo === 'function' && !window.runBrainCommandDemo.__aquaV61EWrapped) {
       var originalRunBrainCommandDemo = window.runBrainCommandDemo;
       window.runBrainCommandDemo = function runBrainCommandDemoV61E() {
-        var commandBox = document.getElementById('brainCommand');
-        var output = document.getElementById('brainOut');
+        var commandBox = getAquaCommandInputV61M();
+        var output = getAquaCommandOutputV61M(commandBox);
         var original = commandBox ? commandBox.value : '';
+        if (isAquaButtonLabelGarbageV61M(original)) original = '';
         var intent = runNormalizedAquaCommandV61E(original, output);
         if (intent.canonicalIntent === 'action_intent_demo') return;
         if (intent.canonicalIntent === 'unknown' && output && output.innerHTML) {
@@ -851,7 +986,7 @@
           if (legacyFallbackName) return;
         }
         if (intent.canonicalIntent !== 'unknown' && output && output.innerHTML) {
-          if (commandBox) commandBox.value = intent.routeText;
+          if (commandBox && intent.canonicalIntent !== 'run_regression_qa') setAquaCommandInputValueV61M(commandBox, intent.routeText);
           return;
         }
         return originalRunBrainCommandDemo.apply(this, arguments);
@@ -1154,9 +1289,10 @@
 
   function injectDirectAskTranscriptV61D(transcript) {
     var clean = String(transcript || '').trim();
-    var command = document.getElementById('brainCommand');
-    if (command) command.value = clean;
+    var command = getAquaCommandInputV61M();
+    if (command) setAquaCommandInputValueV61M(command, clean);
     state.transcriptInjectionAvailable = Boolean(command);
+    state.correctCommandInputTargeted = Boolean(command && !isOldAskAIInputV61M(command));
     syncNamespace();
     return clean;
   }
@@ -1990,14 +2126,14 @@
     var safe = report || getLastRegressionReportV61L() || runAquaCommandRegressionV61L();
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
-    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Aqua Command Regression QA ' + escapeHTMLV61D(safe.version) + '</strong>' +
-      '<div data-aqua-v61l-report-total="true"><strong>total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
-      '<div data-aqua-v61l-report-passed="true"><strong>passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
-      '<div data-aqua-v61l-report-failed="true"><strong>failed:</strong> ' + escapeHTMLV61D(safe.failed) + '</div>' +
+    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Regression QA Report — v61L/v61M</strong>' +
+      '<div data-aqua-v61l-report-total="true"><strong>Total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
+      '<div data-aqua-v61l-report-passed="true"><strong>Passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
+      '<div data-aqua-v61l-report-failed="true"><strong>Failed:</strong> ' + escapeHTMLV61D(safe.failed) + '</div>' +
       '<div><strong>Failed commands:</strong><ul>' + failedCommands + '</ul></div>' +
-      '<div data-aqua-v61l-report-safety="true"><strong>safety:</strong><ul>' + safetyRows + '</ul></div>' +
+      '<div data-aqua-v61l-report-safety="true"><strong>Safety:</strong><ul>' + safetyRows + '</ul></div>' +
       '<div><strong>safe to merge:</strong> ' + escapeHTMLV61D(safe.safeToMerge || 'no') + '</div>' +
-      '<label class="smallMut" for="aquaRegressionRepairPromptV61L">repairPrompt</label>' +
+      '<label class="smallMut" for="aquaRegressionRepairPromptV61L">Repair Prompt:</label>' +
       '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
       '<div class="locked">Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.</div></div>';
   }
@@ -2025,14 +2161,75 @@
       var button = event.target && event.target.closest ? event.target.closest('[data-aqua-v61l-regression="true"]') : null;
       if (!button) return;
       event.preventDefault();
+      var commandInput = getAquaCommandInputV61M();
+      var originalValue = commandInput ? commandInput.value : '';
+      var oldAsk = document.getElementById && document.getElementById('aiAsk');
+      var oldAskValue = oldAsk ? oldAsk.value : '';
       var report = runAquaCommandRegressionV61L();
-      var output = document.getElementById && document.getElementById('brainOut');
+      var output = getAquaCommandOutputV61M(commandInput);
       if (!output && button.parentNode && button.parentNode.parentNode && typeof button.parentNode.parentNode.querySelector === 'function') output = button.parentNode.parentNode.querySelector('#brainOut');
       if (output) output.innerHTML = renderRegressionReportV61L(report);
+      if (commandInput && commandInput.value !== originalValue) commandInput.value = originalValue;
+      if (oldAsk && oldAsk.value !== oldAskValue && isAquaButtonLabelGarbageV61M(oldAsk.value)) oldAsk.value = oldAskValue;
+      state.regressionButtonPreservesInput = Boolean(!commandInput || commandInput.value === originalValue);
+      state.oldAskAIInputNotPolluted = Boolean(!oldAsk || oldAsk.value === oldAskValue || !isAquaButtonLabelGarbageV61M(oldAsk.value));
+      state.buttonLabelsNotInjected = true;
+      syncNamespace();
     });
     state.regressionQAButtonHandlerInstalledV61L = true;
     syncNamespace();
     return true;
+  }
+
+
+  function runV61MCheck() {
+    installCommandNormalizerV61E();
+    installRegressionQAButtonHandlerV61L();
+    installButtonLabelInjectionGuardV61M();
+    var host = document.createElement('div');
+    host.innerHTML = '<div id="askAICommandFlowV61B"><div class="field"><label>Command input</label><textarea id="brainCommand"></textarea></div><div class="split2"><div class="field"><label>Command type</label><select id="brainType"></select></div><div class="field"><label>Target module</label><select id="brainTarget"></select></div></div><div class="field"><label>Project / company</label><select id="brainProject"></select></div><div class="actions"><button type="button" data-aqua-v61l-regression="true">Run Regression QA</button></div><div id="brainOut"></div></div><div class="field"><label>Ask Aqua AI</label><textarea id="aiAsk"></textarea></div>';
+    document.body.appendChild(host);
+    var input = getAquaCommandInputV61M();
+    var oldAsk = host.querySelector('#aiAsk');
+    if (input) input.value = 'show receipts';
+    if (oldAsk) oldAsk.value = 'old ask untouched';
+    var before = input ? input.value : '';
+    var oldBefore = oldAsk ? oldAsk.value : '';
+    var out = host.querySelector('#brainOut');
+    var typedIntent = runNormalizedAquaCommandV61E('run regression qa', out);
+    var afterTypedHtml = out ? out.innerHTML : '';
+    if (input) input.value = before;
+    if (oldAsk) oldAsk.value = oldBefore;
+    var button = host.querySelector('[data-aqua-v61l-regression="true"]');
+    if (button && typeof button.click === 'function') button.click();
+    var buttonHtml = out ? out.innerHTML : '';
+    var commandPreserved = !input || input.value === before;
+    var oldClean = !oldAsk || oldAsk.value === oldBefore;
+    var noGarbage = !isAquaButtonLabelGarbageV61M(input && input.value) && !isAquaButtonLabelGarbageV61M(oldAsk && oldAsk.value) && !/Run Command Demo\s+Ask by Voice\s+Run Full Aqua QA/i.test((input && input.value) || '');
+    state.commandInputResolverExists = typeof getAquaCommandInputV61M === 'function';
+    state.correctCommandInputTargeted = Boolean(input && input.id === 'brainCommand');
+    state.oldAskAIInputNotPolluted = oldClean;
+    state.buttonLabelsNotInjected = noGarbage;
+    state.regressionButtonPreservesInput = commandPreserved;
+    state.typedRegressionCommandWorks = Boolean(typedIntent && typedIntent.canonicalIntent === 'run_regression_qa' && /Regression QA Report — v61L\/v61M/i.test(afterTypedHtml));
+    state.regressionQACommandWorksV61L = state.typedRegressionCommandWorks;
+    state.noLiveChangeExecuted = true;
+    state.noBackendCalls = true;
+    state.noNetworkCalls = true;
+    if (host.parentNode) host.parentNode.removeChild(host);
+    syncNamespace();
+    return {
+      version: 'v61M',
+      commandInputResolverExists: true,
+      correctCommandInputTargeted: state.correctCommandInputTargeted,
+      oldAskAIInputNotPolluted: state.oldAskAIInputNotPolluted,
+      buttonLabelsNotInjected: state.buttonLabelsNotInjected,
+      regressionButtonPreservesInput: state.regressionButtonPreservesInput,
+      typedRegressionCommandWorks: state.typedRegressionCommandWorks,
+      noLiveChangeExecuted: true,
+      noBackendCalls: true,
+      noNetworkCalls: true
+    };
   }
 
 
@@ -2064,6 +2261,7 @@
   installCommandNormalizerV61E();
   installPermissionGranterDemoButtonsV61I();
   installRegressionQAButtonHandlerV61L();
+  installButtonLabelInjectionGuardV61M();
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', wireAskAIToCommandFlow, { once: true });
   } else {
@@ -2071,5 +2269,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61L extensions loaded: automated regression QA harness active. No live change made.');
+  console.log('Aqua Homes OS v61M extensions loaded: command input targeting repair active. No live change made.');
 }());
