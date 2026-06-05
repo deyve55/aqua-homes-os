@@ -1,10 +1,10 @@
-# Aqua Homes OS v61Z Regression Report
+# Aqua Homes OS v62A Regression Report
 
-- Timestamp: 2026-06-05T17:55:19.622Z
+- Timestamp: 2026-06-05T20:31:29.562Z
 - Branch: work
-- Commit: dd02986846d5ebc832efb10f7bceef64584d5750
-- Total tests: 213
-- Passed: 213
+- Commit: 039f22c7a6ed679f0e446539e80f3f8c0eddfa0b
+- Total tests: 221
+- Passed: 221
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -32,6 +32,13 @@
 - cameraAllocationIntentWorks: true
 - constructionDiagramUploadStaysLocked: true
 - suggestNextStepWorks: true
+- aquaBrainCommandCenterWorks: true
+- voiceBrainPlanViewerWorks: true
+- saveVoiceBrainPlanWorks: true
+- showLastVoiceBrainPlanWorks: true
+- clearVoiceBrainPlanWorks: true
+- copyToolPlanWorks: true
+- permissionExplanationWorks: true
 - appNavigationModeWorks: true
 - automationStatusModeWorks: true
 - permissionedActionModeWorks: true
@@ -73,8 +80,6 @@
 ## Files Changed
 - aqua-regression-report.json
 - aqua-regression-report.md
-- aqua-v61-extensions.js
-- aqua-v61-regression-test.js
 
 ## Failed Commands / Checks
 - None
@@ -113,9 +118,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v61Z
-- Total: 83
-- Passed: 83
+- Version: v62A
+- Total: 97
+- Passed: 97
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
