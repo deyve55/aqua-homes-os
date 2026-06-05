@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62C';
+const VERSION = 'v62D';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -280,6 +280,7 @@ function checkStaticFiles() {
   addCheck('v61Z voice brain mode route exists', /voice_brain_tool_plan/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v62C command center strings exist', (/Aqua Brain Command Center — v62A/.test(extension) || /Aqua Brain Command Center — v62C/.test(extension)) && /aquaVoiceBrainPlansV62A/.test(extension) && /Save Voice Brain Plan/.test(extension) && /Copy Tool Plan Text/.test(extension), { layer: 'voice-brain-v62a', fileToFix: EXTENSION });
   addCheck('v62C visual route bridge strings exist', /openAquaBrainVisualRouteV62C/.test(extension) && /aqua-v62c-focused-section/.test(extension) && /Opened and focused:/.test(extension), { layer: 'visual-route-v62c', fileToFix: EXTENSION });
+  addCheck('v62D live in-app regression runner strings exist', /runLiveInAppRegressionReportV62D/.test(extension) && /data-aqua-v62d-live-regression/.test(extension) && /aquaRegressionReportSyncV62D/.test(extension), { layer: 'live-in-app-regression-v62d', fileToFix: EXTENSION });
   addCheck('v61V local Jobsite Calculator parser exists', /function\s+parseLocalJobsiteCalculatorV61V/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V Concrete Sonotube calculator copy exists', /Jobsite Calculator — Concrete Sonotube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V sauna tube normalization support exists', /sauna tube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
@@ -324,7 +325,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62C', extensionReport.version === 'v62C', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62D', extensionReport.version === 'v62D', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
     addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
@@ -471,6 +472,10 @@ function runExtensionRegression() {
     ['visualRouteBridgeV62CWorks','visualRouteFocusMarkerV62CWorks','visualRouteReadbackBoundV62CWorks','allVoiceBrainPlansHaveVisualRouteV62C','hendersonReportVisualFocusWorks','hendersonReceiptsVisualFocusWorks','accountantExportVisualFocusWorks','plumbingSpendVisualFocusWorks','cameraAllocationVisualFocusWorks','missingDocumentsVisualFocusWorks','uploadRequestVisualFocusWorks','nextActionVisualFocusWorks'].forEach((flag) => {
       addCheck(`v62C ${flag} is true`, extensionReport[flag] === true, { layer: 'visual-route-v62c', actual: extensionReport[flag], fileToFix: EXTENSION });
     });
+    addCheck('v62D live in-app runner function exists', typeof api.runLiveInAppRegressionReportV62D === 'function', { layer: 'live-in-app-regression-v62d', fileToFix: EXTENSION });
+    const liveReport = typeof api.runLiveInAppRegressionReportV62D === 'function' ? api.runLiveInAppRegressionReportV62D() : null;
+    addCheck('v62D live in-app runner returns synced report', Boolean(liveReport && liveReport.liveInAppRegressionRunnerV62DWorks === true && liveReport.reportSyncV62DWorks === true), { layer: 'live-in-app-regression-v62d', actual: liveReport ? { live: liveReport.liveInAppRegressionRunnerV62DWorks, sync: liveReport.reportSyncV62DWorks } : 'missing', fileToFix: EXTENSION });
+    addCheck('v62D report sync uses local storage key only', Boolean(liveReport && liveReport.inAppReportSyncV62D && liveReport.inAppReportSyncV62D.storageKey === 'aquaRegressionReportSyncV62D' && liveReport.inAppReportSyncV62D.noNetworkCalls === true), { layer: 'live-in-app-regression-v62d', actual: liveReport && liveReport.inAppReportSyncV62D, fileToFix: EXTENSION });
 
     const concreteDefaultRow = byCommand.get('how many bags of concrete for an 8 inch sonotube 4 feet deep');
     addCheck('Concrete Sonotube calculator recommends 3 bags for 8 inch / 4 foot default 80 lb', Boolean(concreteDefaultRow && concreteDefaultRow.passed && concreteDefaultRow.actual && concreteDefaultRow.actual.recommendedBags === 3 && concreteDefaultRow.actual.bagSizePounds === 80), { layer: 'jobsite-calculator-v61v', expected: '3 recommended 80 lb bags', actual: concreteDefaultRow ? concreteDefaultRow.actual : 'missing from extension results', fileToFix: EXTENSION });
@@ -749,6 +754,9 @@ function markdown(report) {
     `- visualRouteBridgeV62CWorks: ${report.visualRouteBridgeV62CWorks === true}\n` +
     `- visualRouteFocusMarkerV62CWorks: ${report.visualRouteFocusMarkerV62CWorks === true}\n` +
     `- visualRouteReadbackBoundV62CWorks: ${report.visualRouteReadbackBoundV62CWorks === true}\n` +
+    `- liveInAppRegressionRunnerV62DWorks: ${report.liveInAppRegressionRunnerV62DWorks === true}\n` +
+    `- reportSyncV62DWorks: ${report.reportSyncV62DWorks === true}\n` +
+    `- reportSyncNoNetworkV62D: ${report.reportSyncNoNetworkV62D === true}\n` +
     `- allVoiceBrainPlansHaveVisualRouteV62C: ${report.allVoiceBrainPlansHaveVisualRouteV62C === true}\n` +
     `- hendersonReportVisualFocusWorks: ${report.hendersonReportVisualFocusWorks === true}\n` +
     `- hendersonReceiptsVisualFocusWorks: ${report.hendersonReceiptsVisualFocusWorks === true}\n` +
@@ -879,6 +887,10 @@ async function main() {
     visualRouteBridgeV62CWorks: extensionReport ? extensionReport.visualRouteBridgeV62CWorks === true : false,
     visualRouteFocusMarkerV62CWorks: extensionReport ? extensionReport.visualRouteFocusMarkerV62CWorks === true : false,
     visualRouteReadbackBoundV62CWorks: extensionReport ? extensionReport.visualRouteReadbackBoundV62CWorks === true : false,
+    liveInAppRegressionRunnerV62DWorks: extensionReport ? extensionReport.liveInAppRegressionRunnerV62DWorks === true : false,
+    reportSyncV62DWorks: extensionReport ? extensionReport.reportSyncV62DWorks === true : false,
+    reportSyncNoNetworkV62D: extensionReport ? extensionReport.reportSyncNoNetworkV62D === true : false,
+    reportSyncStorageKeyV62D: extensionReport ? extensionReport.reportSyncStorageKeyV62D || 'aquaRegressionReportSyncV62D' : 'aquaRegressionReportSyncV62D',
     allVoiceBrainPlansHaveVisualRouteV62C: extensionReport ? extensionReport.allVoiceBrainPlansHaveVisualRouteV62C === true : false,
     hendersonReportVisualFocusWorks: extensionReport ? extensionReport.hendersonReportVisualFocusWorks === true : false,
     hendersonReceiptsVisualFocusWorks: extensionReport ? extensionReport.hendersonReceiptsVisualFocusWorks === true : false,

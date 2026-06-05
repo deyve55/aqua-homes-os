@@ -1,10 +1,10 @@
-# Aqua Homes OS v62C Regression Report
+# Aqua Homes OS v62D Regression Report
 
-- Timestamp: 2026-06-05T21:06:13.689Z
+- Timestamp: 2026-06-05T22:49:57.617Z
 - Branch: work
-- Commit: 14a2fab26a33885187bd86dba4e2e52334d49173
-- Total tests: 236
-- Passed: 236
+- Commit: b2879106cd5cb030c263f7fe6d52e09f3e663c6a
+- Total tests: 240
+- Passed: 240
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -42,6 +42,9 @@
 - visualRouteBridgeV62CWorks: true
 - visualRouteFocusMarkerV62CWorks: true
 - visualRouteReadbackBoundV62CWorks: true
+- liveInAppRegressionRunnerV62DWorks: true
+- reportSyncV62DWorks: true
+- reportSyncNoNetworkV62D: true
 - allVoiceBrainPlansHaveVisualRouteV62C: true
 - hendersonReportVisualFocusWorks: true
 - hendersonReceiptsVisualFocusWorks: true
@@ -132,7 +135,7 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62C
+- Version: v62D
 - Total: 97
 - Passed: 97
 - Failed: 0

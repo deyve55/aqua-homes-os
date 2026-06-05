@@ -1,16 +1,16 @@
 {
-  "version": "v62C",
-  "timestamp": "2026-06-05T21:06:13.689Z",
+  "version": "v62D",
+  "timestamp": "2026-06-05T22:49:57.617Z",
   "branch": "work",
-  "commit": "14a2fab26a33885187bd86dba4e2e52334d49173",
+  "commit": "b2879106cd5cb030c263f7fe6d52e09f3e663c6a",
   "filesChanged": [
     "aqua-regression-report.json",
     "aqua-regression-report.md",
     "aqua-v61-extensions.js",
     "aqua-v61-regression-test.js"
   ],
-  "total": 236,
-  "passed": 236,
+  "total": 240,
+  "passed": 240,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -164,6 +164,12 @@
       "name": "v62C visual route bridge strings exist",
       "passed": true,
       "layer": "visual-route-v62c",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62D live in-app regression runner strings exist",
+      "passed": true,
+      "layer": "live-in-app-regression-v62d",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -381,10 +387,10 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "extension regression version is v62C",
+      "name": "extension regression version is v62D",
       "passed": true,
       "layer": "extension-regression",
-      "actual": "v62C",
+      "actual": "v62D",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -4073,6 +4079,42 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "v62D live in-app runner function exists",
+      "passed": true,
+      "layer": "live-in-app-regression-v62d",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62D live in-app runner returns synced report",
+      "passed": true,
+      "layer": "live-in-app-regression-v62d",
+      "actual": {
+        "live": true,
+        "sync": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v62D report sync uses local storage key only",
+      "passed": true,
+      "layer": "live-in-app-regression-v62d",
+      "actual": {
+        "synced": true,
+        "source": "live-in-app-runner",
+        "syncedAt": "2026-06-05T22:49:57.113Z",
+        "storageKey": "aquaRegressionReportSyncV62D",
+        "generatedReports": [
+          "aqua-regression-report.json",
+          "aqua-regression-report.md"
+        ],
+        "noBackendCalls": true,
+        "noNetworkCalls": true,
+        "noExternalAIAPICalls": true,
+        "noLiveRecordChanges": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "Concrete Sonotube calculator recommends 3 bags for 8 inch / 4 foot default 80 lb",
       "passed": true,
       "layer": "jobsite-calculator-v61v",
@@ -5698,9 +5740,9 @@
     "reason": "Playwright/browser not available"
   },
   "extensionRegression": {
-    "version": "v62C",
-    "harnessVersion": "v61L-compatible/v62C",
-    "timestamp": "2026-06-05T21:06:13.201Z",
+    "version": "v62D",
+    "harnessVersion": "v61L-compatible/v62D",
+    "timestamp": "2026-06-05T22:49:57.033Z",
     "total": 97,
     "passed": 97,
     "failed": 0,
@@ -10720,6 +10762,10 @@
     "visualRouteBridgeV62CWorks": true,
     "visualRouteFocusMarkerV62CWorks": true,
     "visualRouteReadbackBoundV62CWorks": true,
+    "liveInAppRegressionRunnerV62DWorks": true,
+    "reportSyncV62DWorks": true,
+    "reportSyncStorageKeyV62D": "aquaRegressionReportSyncV62D",
+    "reportSyncNoNetworkV62D": true,
     "allVoiceBrainPlansHaveVisualRouteV62C": true,
     "hendersonReportVisualFocusWorks": true,
     "hendersonReceiptsVisualFocusWorks": true,
@@ -10772,7 +10818,21 @@
     "homeDesignUntouched": true,
     "routingStillWorks": true,
     "automationStillWorks": true,
-    "noBackendNetworkLiveAI": true
+    "noBackendNetworkLiveAI": true,
+    "inAppReportSyncV62D": {
+      "synced": true,
+      "source": "local-regression-save",
+      "syncedAt": "2026-06-05T22:49:57.035Z",
+      "storageKey": "aquaRegressionReportSyncV62D",
+      "generatedReports": [
+        "aqua-regression-report.json",
+        "aqua-regression-report.md"
+      ],
+      "noBackendCalls": true,
+      "noNetworkCalls": true,
+      "noExternalAIAPICalls": true,
+      "noLiveRecordChanges": true
+    }
   },
   "askModeRouterWorks": true,
   "appNavigationModeWorks": true,
@@ -10809,6 +10869,10 @@
   "visualRouteBridgeV62CWorks": true,
   "visualRouteFocusMarkerV62CWorks": true,
   "visualRouteReadbackBoundV62CWorks": true,
+  "liveInAppRegressionRunnerV62DWorks": true,
+  "reportSyncV62DWorks": true,
+  "reportSyncNoNetworkV62D": true,
+  "reportSyncStorageKeyV62D": "aquaRegressionReportSyncV62D",
   "allVoiceBrainPlansHaveVisualRouteV62C": true,
   "hendersonReportVisualFocusWorks": true,
   "hendersonReceiptsVisualFocusWorks": true,
