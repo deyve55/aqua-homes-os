@@ -1,10 +1,10 @@
-# Aqua Homes OS v62F Regression Report
+# Aqua Homes OS v62G Regression Report
 
-- Timestamp: 2026-06-05T23:16:29.656Z
+- Timestamp: 2026-06-05T23:32:33.597Z
 - Branch: work
-- Commit: 5c4aa3de8d760fc6fc0b463dd338d62a541e8827
-- Total tests: 265
-- Passed: 265
+- Commit: 89a9b5909656eda875cfab861f3275df1c75071b
+- Total tests: 277
+- Passed: 277
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -45,6 +45,16 @@
 - copyWorkflowPlanWorks: true
 - clearWorkflowPlanWorks: true
 - ownerReviewDemoWorks: true
+- workflowMemoryExists: true
+- activeWorkflowSaved: true
+- followUpContinuationWorks: true
+- exportPacketFollowUpWorks: true
+- approvalFollowUpWorks: true
+- ownerReviewDemoFollowUpWorks: true
+- readbackFollowUpWorks: true
+- spendPivotUsesActiveProject: true
+- clearActiveWorkflowWorks: true
+- noContextFollowUpHandled: true
 - aquaBrainCommandCenterWorks: true
 - voiceBrainPlanViewerWorks: true
 - saveVoiceBrainPlanWorks: true
@@ -117,10 +127,10 @@
 - noPaymentPayrollBankAccountingExport: true
 
 ## Files Changed
-- aqua-regression-report.json
-- aqua-regression-report.md
 - aqua-v61-extensions.js
 - aqua-v61-regression-test.js
+- aqua-regression-report.json
+- aqua-regression-report.md
 
 ## Failed Commands / Checks
 - None
@@ -159,9 +169,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62F
-- Total: 114
-- Passed: 114
+- Version: v62G
+- Total: 122
+- Passed: 122
 - Failed: 0
 
 ## Copyable Codex Repair Prompt

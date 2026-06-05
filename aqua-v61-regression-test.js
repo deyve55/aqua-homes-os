@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62F';
+const VERSION = 'v62G';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -284,6 +284,8 @@ function checkStaticFiles() {
   addCheck('v62D live in-app regression runner strings exist', /runLiveInAppRegressionReportV62D/.test(extension) && /data-aqua-v62d-live-regression/.test(extension) && /aquaRegressionReportSyncV62D/.test(extension), { layer: 'live-in-app-regression-v62d', fileToFix: EXTENSION });
   addCheck('v62F workflow planner architecture exists', /AquaWorkflowPlannerV62F/.test(extension) && /function\s+planAquaWorkflowV62F/.test(extension) && /Aqua Brain Workflow Plan — v62F/.test(extension) && /aquaWorkflowPlansV62F/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
   addCheck('v62F workflow report flags exist', /receiptExportWorkflowWorks/.test(extension) && /uploadWorkflowStaysLocked/.test(extension) && /ownerReviewDemoWorks/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
+  addCheck('v62G workflow memory architecture exists', /AquaWorkflowMemoryV62G/.test(extension) && /function\s+continueAquaWorkflowV62G/.test(extension) && /Aqua Brain Workflow Continuation — v62G/.test(extension) && /aquaActiveWorkflowV62G/.test(extension), { layer: 'workflow-memory-v62g', fileToFix: EXTENSION });
+  addCheck('v62G workflow memory report flags exist', /workflowMemoryExists/.test(extension) && /followUpContinuationWorks/.test(extension) && /spendPivotUsesActiveProject/.test(extension), { layer: 'workflow-memory-v62g', fileToFix: EXTENSION });
   addCheck('v61V local Jobsite Calculator parser exists', /function\s+parseLocalJobsiteCalculatorV61V/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V Concrete Sonotube calculator copy exists', /Jobsite Calculator — Concrete Sonotube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V sauna tube normalization support exists', /sauna tube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
@@ -328,7 +330,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62F', extensionReport.version === 'v62F', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62G', extensionReport.version === 'v62G', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
     addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
@@ -489,7 +491,7 @@ function runExtensionRegression() {
     addCheck('v62D live in-app runner returns synced report', Boolean(liveReport && liveReport.liveInAppRegressionRunnerV62DWorks === true && liveReport.reportSyncV62DWorks === true), { layer: 'live-in-app-regression-v62d', actual: liveReport ? { live: liveReport.liveInAppRegressionRunnerV62DWorks, sync: liveReport.reportSyncV62DWorks } : 'missing', fileToFix: EXTENSION });
     addCheck('v62D report sync uses local storage key only', Boolean(liveReport && liveReport.inAppReportSyncV62D && liveReport.inAppReportSyncV62D.storageKey === 'aquaRegressionReportSyncV62D' && liveReport.inAppReportSyncV62D.noNetworkCalls === true), { layer: 'live-in-app-regression-v62d', actual: liveReport && liveReport.inAppReportSyncV62D, fileToFix: EXTENSION });
 
-    ['workflowPlannerExists','receiptExportWorkflowWorks','reportReviewWorkflowWorks','missingDocumentsWorkflowWorks','spendBudgetWorkflowWorks','uploadWorkflowStaysLocked','cameraWorkflowWorks','dailyAttentionWorkflowWorks','saveWorkflowPlanWorks','showLastWorkflowPlanWorks','copyWorkflowPlanWorks','clearWorkflowPlanWorks','ownerReviewDemoWorks'].forEach((flag) => {
+    ['workflowPlannerExists','receiptExportWorkflowWorks','reportReviewWorkflowWorks','missingDocumentsWorkflowWorks','spendBudgetWorkflowWorks','uploadWorkflowStaysLocked','cameraWorkflowWorks','dailyAttentionWorkflowWorks','saveWorkflowPlanWorks','showLastWorkflowPlanWorks','copyWorkflowPlanWorks','clearWorkflowPlanWorks','ownerReviewDemoWorks','workflowMemoryExists','activeWorkflowSaved','followUpContinuationWorks','exportPacketFollowUpWorks','approvalFollowUpWorks','ownerReviewDemoFollowUpWorks','readbackFollowUpWorks','spendPivotUsesActiveProject','clearActiveWorkflowWorks','noContextFollowUpHandled'].forEach((flag) => {
       addCheck(`v62F ${flag} is true`, extensionReport[flag] === true, { layer: 'workflow-planner-v62f', actual: extensionReport[flag], fileToFix: EXTENSION });
     });
 
@@ -773,6 +775,16 @@ function markdown(report) {
     `- copyWorkflowPlanWorks: ${report.copyWorkflowPlanWorks === true}\n` +
     `- clearWorkflowPlanWorks: ${report.clearWorkflowPlanWorks === true}\n` +
     `- ownerReviewDemoWorks: ${report.ownerReviewDemoWorks === true}\n` +
+    `- workflowMemoryExists: ${report.workflowMemoryExists === true}\n` +
+    `- activeWorkflowSaved: ${report.activeWorkflowSaved === true}\n` +
+    `- followUpContinuationWorks: ${report.followUpContinuationWorks === true}\n` +
+    `- exportPacketFollowUpWorks: ${report.exportPacketFollowUpWorks === true}\n` +
+    `- approvalFollowUpWorks: ${report.approvalFollowUpWorks === true}\n` +
+    `- ownerReviewDemoFollowUpWorks: ${report.ownerReviewDemoFollowUpWorks === true}\n` +
+    `- readbackFollowUpWorks: ${report.readbackFollowUpWorks === true}\n` +
+    `- spendPivotUsesActiveProject: ${report.spendPivotUsesActiveProject === true}\n` +
+    `- clearActiveWorkflowWorks: ${report.clearActiveWorkflowWorks === true}\n` +
+    `- noContextFollowUpHandled: ${report.noContextFollowUpHandled === true}\n` +
     `- aquaBrainCommandCenterWorks: ${report.aquaBrainCommandCenterWorks === true}\n` +
     `- voiceBrainPlanViewerWorks: ${report.voiceBrainPlanViewerWorks === true}\n` +
     `- saveVoiceBrainPlanWorks: ${report.saveVoiceBrainPlanWorks === true}\n` +
@@ -930,6 +942,16 @@ async function main() {
     copyWorkflowPlanWorks: extensionReport ? extensionReport.copyWorkflowPlanWorks === true : false,
     clearWorkflowPlanWorks: extensionReport ? extensionReport.clearWorkflowPlanWorks === true : false,
     ownerReviewDemoWorks: extensionReport ? extensionReport.ownerReviewDemoWorks === true : false,
+    workflowMemoryExists: extensionReport ? extensionReport.workflowMemoryExists === true : false,
+    activeWorkflowSaved: extensionReport ? extensionReport.activeWorkflowSaved === true : false,
+    followUpContinuationWorks: extensionReport ? extensionReport.followUpContinuationWorks === true : false,
+    exportPacketFollowUpWorks: extensionReport ? extensionReport.exportPacketFollowUpWorks === true : false,
+    approvalFollowUpWorks: extensionReport ? extensionReport.approvalFollowUpWorks === true : false,
+    ownerReviewDemoFollowUpWorks: extensionReport ? extensionReport.ownerReviewDemoFollowUpWorks === true : false,
+    readbackFollowUpWorks: extensionReport ? extensionReport.readbackFollowUpWorks === true : false,
+    spendPivotUsesActiveProject: extensionReport ? extensionReport.spendPivotUsesActiveProject === true : false,
+    clearActiveWorkflowWorks: extensionReport ? extensionReport.clearActiveWorkflowWorks === true : false,
+    noContextFollowUpHandled: extensionReport ? extensionReport.noContextFollowUpHandled === true : false,
     aquaBrainCommandCenterWorks: extensionReport ? extensionReport.aquaBrainCommandCenterWorks === true : false,
     voiceBrainPlanViewerWorks: extensionReport ? extensionReport.voiceBrainPlanViewerWorks === true : false,
     saveVoiceBrainPlanWorks: extensionReport ? extensionReport.saveVoiceBrainPlanWorks === true : false,
