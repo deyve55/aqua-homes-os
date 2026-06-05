@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61E Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing.
+ * Aqua Homes OS v61F Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61E';
+  var VERSION = 'v61F';
   var state = {
     version: VERSION,
     initialized: true,
@@ -38,7 +38,13 @@
     commandNormalizerAvailable: true,
     actionIntentDemoAvailable: true,
     noLiveActionExecuted: true,
-    localModuleFallbackAvailable: true
+    localModuleFallbackAvailable: true,
+    visualModuleRouterExists: true,
+    receiptsOpenVisualWorks: false,
+    accountingOpenVisualWorks: false,
+    approvalQueueOpenVisualWorks: false,
+    projectFoldersOpenVisualWorks: false,
+    actionIntentPanelWorks: false
   };
 
   function mergeNamespace() {
@@ -49,8 +55,11 @@
       runV61CCheck: runV61CCheck,
       runV61DCheck: runV61DCheck,
       runV61ECheck: runV61ECheck,
+      runV61FCheck: runV61FCheck,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
+      openVisualModuleV61F: openVisualModuleV61F,
+      renderVisualModuleRouteV61F: renderVisualModuleRouteV61F,
       renderActionIntentDemoV61E: renderActionIntentDemoV61E,
       renderLocalModuleFallbackV61E: renderLocalModuleFallbackV61E,
       localModuleFallbackTextV61E: localModuleFallbackTextV61E,
@@ -71,8 +80,11 @@
       runV61CCheck: runV61CCheck,
       runV61DCheck: runV61DCheck,
       runV61ECheck: runV61ECheck,
+      runV61FCheck: runV61FCheck,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
+      openVisualModuleV61F: openVisualModuleV61F,
+      renderVisualModuleRouteV61F: renderVisualModuleRouteV61F,
       renderActionIntentDemoV61E: renderActionIntentDemoV61E,
       renderLocalModuleFallbackV61E: renderLocalModuleFallbackV61E,
       localModuleFallbackTextV61E: localModuleFallbackTextV61E,
@@ -143,9 +155,9 @@
       { canonicalIntent: 'owner_briefing', routeText: 'owner briefing', module: 'Owner Daily Briefing', phrases: ['whats going on today','what is going on today','what needs my attention today','what needs attention','what should i do today','what should i do next','give me todays briefing','owner briefing','daily briefing'] },
       { canonicalIntent: 'approval_queue', routeText: 'show approval queue', module: 'Owner Action Queue / Approval Center', phrases: ['what needs approval','show approvals','show approval queue','show pending reviews','what needs owner review','what is waiting on me'] },
       { canonicalIntent: 'show_project_folders', routeText: 'show project folders', module: 'Project Folders', phrases: ['open project folders','show project folders','pull up project folders','project folders','job folders','folder list'] },
-      { canonicalIntent: 'show_sow', routeText: 'show sow', module: 'SOW Builder / Scope of Work', phrases: ['show sow','open sow','scope of work','pull up scope','open scope','show scope','sow builder'] },
+      { canonicalIntent: 'show_sow', routeText: 'show sow', module: 'SOW Builder / Scope of Work', phrases: ['show sow','open sow','open scope of work','scope of work','pull up scope','open scope','show scope','sow builder'] },
       { canonicalIntent: 'show_field_walkthrough', routeText: 'show field walkthrough', module: 'Field Walkthrough', phrases: ['open field walkthrough','show field walkthrough','walkthrough','job walkthrough','site walkthrough','field capture'] },
-      { canonicalIntent: 'show_evidence', routeText: 'show photo proof', module: 'Photo Proof / Evidence Binder', phrases: ['show proof','show photo proof','open evidence','evidence binder','source proof','photos','job photos'] },
+      { canonicalIntent: 'show_evidence', routeText: 'show photo proof', module: 'Photo Proof / Evidence Binder', phrases: ['show evidence','show proof','show photo proof','open evidence','evidence binder','source proof','photo proof','photos','job photos'] },
       { canonicalIntent: 'show_code_permits', routeText: 'code compliance permits inspections', module: 'Code Compliance / Permits / Inspections', phrases: ['show code','code compliance','permits','inspections','inspection issues','permit issues','what failed inspection'] },
       { canonicalIntent: 'show_insurance_bank', routeText: 'show bank reconciliation', module: 'Insurance Dashboard / Bank Reconciliation', phrases: ['show insurance','insurance dashboard','show bank reconciliation','bank reconciliation','bank match','bank issues','coi','certificate of insurance'] },
       { canonicalIntent: 'show_locked_actions', routeText: 'what is locked and why', module: 'Locked Actions', phrases: ['what is locked','what is locked and why','why is this locked','what cant i do','what is blocked','blocking live mode'] }
@@ -188,15 +200,72 @@
     return null;
   }
 
+  function visualRouteConfigsV61F() {
+    return {
+      show_receipts: { module: 'Receipts / Receipt Tracker', openKey: 'receipts', readbackCommand: 'Show Receipts', project: 'Harborview Residence', items: '4 demo receipts', review: '4', locked: 'OCR, Upload, Accounting Export, Bank Sync, Payment, Payroll, Backend', rows: [['Harborview Residence', '4 receipts staged', 'Needs owner review'], ['Vendor / amount', 'Local demo placeholders', 'No OCR/upload/export'], ['Accounting link', 'Coding preview only', 'Ledger posting locked']] },
+      show_accounting: { module: 'Accounting Command / Daily P&L', openKey: 'accountingcommandv60m', readbackCommand: 'Show Daily P&L', project: 'Harborview Residence', items: 'Daily P&L demo cards', review: 'Accounting queue', locked: 'Accounting Export, Ledger Posting, Bank Sync, Payment, Payroll, Backend', rows: [['Daily P&L', 'Revenue/material/labor preview', 'CPA review locked'], ['Receipts', 'Uncoded demo receipts', 'Export locked'], ['Bank match', 'Reconciliation placeholders', 'Bank sync locked']] },
+      owner_briefing: { module: 'Owner Daily Briefing', openKey: 'brainhub', readbackCommand: 'Owner briefing', project: 'Aqua Homes Parent', items: 'Daily owner attention summary', review: 'Receipts, code, insurance, accounting, SOW, field proof', locked: 'Live AI, Backend, Export, Sharing, Payment, Payroll, Bank Sync', rows: [['Owner priorities', 'Review today\'s local demo risks', 'No external action'], ['Receipts / bank', 'Mismatches and owner flags', 'Review only'], ['Code / insurance / SOW', 'Proof and compliance placeholders', 'Locked']] },
+      approval_queue: { module: 'Owner Action Queue / Approval Center', openKey: 'brainhub', readbackCommand: 'Show approval queue', project: 'Aqua Homes Parent', items: 'Approval center visual cards', review: 'Pending owner reviews', locked: 'Approval, Payment, Export, Customer Sharing, Backend', rows: [['Owner Action Queue', 'Approval cards rendered locally', 'No approvals executed'], ['High priority', 'Receipt/code/insurance placeholders', 'Permission required'], ['Audit status', 'Future undo/audit required', 'Demo only']] },
+      show_project_folders: { module: 'Project Folders', openKey: 'projectfoldersv60b', readbackCommand: 'Show Project Folders', project: 'Harborview Residence', items: 'Project folder list/cards', review: 'Folder proof and owner-required flags', locked: 'Uploads, Sharing, Export, Backend', rows: [['Harborview Residence', 'Receipts, SOW, evidence, approvals', 'Local folder'], ['Source proof', 'Photos / audit placeholders', 'Sharing locked'], ['Accounting links', 'Receipt and bank proof placeholders', 'Export locked']] },
+      show_sow: { module: 'SOW Builder / Scope of Work', openKey: 'sow', readbackCommand: 'Show SOW', project: 'Harborview Residence', items: 'SOW builder demo rows', review: 'Scope notes and change-order triggers', locked: 'Customer Sending, Export, Live AI Pricing, Backend', rows: [['SOW Builder', 'Scope sections and inclusions', 'Draft only'], ['Change order trigger', 'Owner/admin review placeholder', 'No send/export'], ['Source proof', 'Linked field walkthrough/evidence', 'Local only']] },
+      show_field_walkthrough: { module: 'Field Walkthrough', openKey: 'fieldwalkv60j', readbackCommand: 'Show Field Walkthrough', project: 'Harborview Residence', items: 'Walkthrough source rows/cards', review: 'Measurements, notes, photos/proof placeholders', locked: 'Camera Upload, AI Measurements, Customer Sharing, Backend', rows: [['Field Walkthrough', 'Jobsite notes and measurement placeholders', 'Capture locked'], ['Photos/proof', 'Evidence binder link', 'No upload/storage'], ['Estimate handoff', 'Future backend required', 'Demo only']] },
+      show_evidence: { module: 'Photo Proof / Evidence Binder', openKey: 'evidencebinderv60k', readbackCommand: 'Show Evidence Binder', project: 'Harborview Residence', items: 'Evidence binder visual rows', review: 'Before/issue/source proof placeholders', locked: 'Upload, Sharing, Export, Backend', rows: [['Photo Proof', 'Before/issue/demo proof rows', 'No upload'], ['Source proof', 'Receipt/SOW/permit links', 'Local only'], ['Audit log', 'Placeholder evidence chain', 'Export locked']] },
+      show_code_permits: { module: 'Code / Permits / Inspections', openKey: 'compliancev60c', readbackCommand: 'Show Code Compliance', project: 'Harborview Residence', items: 'Code, permit, inspection rows', review: 'Correction and inspection issue placeholders', locked: 'Permit Filing, Inspection Scheduling, Upload, Backend', rows: [['Code compliance', 'Jurisdiction and code placeholders', 'Filing locked'], ['Permits', 'Permit requirements and status', 'No live submission'], ['Inspections', 'Correction/failed issue placeholders', 'Scheduling locked']] },
+      show_insurance_bank: { module: 'Insurance Dashboard / Bank Reconciliation', openKey: 'insurancebankv60o', readbackCommand: 'Show Bank Reconciliation', project: 'Harborview Residence', items: 'Insurance and bank reconciliation rows', review: 'COI watch, missing docs, unmatched receipt placeholders', locked: 'Insurance Submission, Bank Sync, Accounting Export, Payment, Backend', rows: [['Insurance Dashboard', 'COI and document placeholders', 'Submission locked'], ['Bank Reconciliation', 'Receipt match placeholders', 'Bank sync locked'], ['Accounting handoff', 'CPA/export placeholders', 'Export locked']] }
+    };
+  }
+
+  function renderVisualRowsV61F(rows) {
+    return '<div class="folderDetailGrid">' + (rows || []).map(function (row) {
+      return '<div class="folderDetailCard"><b>' + escapeHTMLV61D(row[0]) + '</b><span>' + escapeHTMLV61D(row[1]) + '</span><span class="smallMut">' + escapeHTMLV61D(row[2]) + '</span></div>';
+    }).join('') + '</div>';
+  }
+
+  function renderVisualModuleRouteV61F(intent) {
+    var configs = visualRouteConfigsV61F();
+    var config = configs[intent.canonicalIntent];
+    if (!config) return null;
+    var readbackIntent = Object.assign({}, intent, { routeText: config.readbackCommand, module: config.module });
+    var readback = renderNormalizedReadbackV61E(readbackIntent) || '';
+    var openButton = config.openKey ? '<button class="btn small gold" onclick="openModal(&quot;' + escapeHTMLV61D(config.openKey) + '&quot;)">Open Full Local Demo Module</button>' : '';
+    return '<div class="note" data-aqua-v61f-visual-router="true"><strong>Opened Local Demo Module: ' + escapeHTMLV61D(config.module) + '</strong>' +
+      '<div><strong>Opened:</strong> ' + escapeHTMLV61D(config.module) + '</div>' +
+      '<div><strong>Project:</strong> ' + escapeHTMLV61D(config.project) + '</div>' +
+      '<div><strong>Items:</strong> ' + escapeHTMLV61D(config.items) + '</div>' +
+      '<div><strong>Needs Review:</strong> ' + escapeHTMLV61D(config.review) + '</div>' +
+      '<div><strong>Locked Actions:</strong> ' + escapeHTMLV61D(config.locked) + '</div>' +
+      '<div class="locked">Local/demo-only. No live AI, backend, OCR, upload, accounting export, bank sync, payment, payroll, sharing, sending, or record change was run.</div>' +
+      '<div class="actions">' + openButton + '</div>' +
+      renderVisualRowsV61F(config.rows) + '</div>' + readback;
+  }
+
+  function openVisualModuleV61F(intent, outputNode) {
+    var html = renderVisualModuleRouteV61F(intent);
+    if (!html) return false;
+    if (outputNode) outputNode.innerHTML = html;
+    state.visualModuleRouterExists = true;
+    if (intent.canonicalIntent === 'show_receipts') state.receiptsOpenVisualWorks = true;
+    if (intent.canonicalIntent === 'show_accounting') state.accountingOpenVisualWorks = true;
+    if (intent.canonicalIntent === 'approval_queue') state.approvalQueueOpenVisualWorks = true;
+    if (intent.canonicalIntent === 'show_project_folders') state.projectFoldersOpenVisualWorks = true;
+    state.noLiveActionExecuted = true;
+    state.noAudioStorage = true;
+    state.noNetworkCalls = true;
+    syncNamespace();
+    return true;
+  }
+
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
     var intent = normalizeAquaCommandV61E(commandText);
     if (intent.canonicalIntent === 'action_intent_demo') {
       state.noLiveActionExecuted = true;
+      state.actionIntentPanelWorks = true;
       if (outputNode) outputNode.innerHTML = renderActionIntentDemoV61E(intent);
       syncNamespace();
       return intent;
     }
     if (intent.canonicalIntent !== 'unknown') {
+      if (openVisualModuleV61F(intent, outputNode)) return intent;
       var html = renderNormalizedReadbackV61E(intent);
       if (html && outputNode) outputNode.innerHTML = html;
     } else if (outputNode && intent.normalizedText) {
@@ -323,7 +392,7 @@
     var flow = document.createElement('div');
     flow.id = 'askAICommandFlowV61B';
     flow.setAttribute('data-aqua-version', VERSION);
-    flow.setAttribute('data-direct-ask-voice', 'v61E');
+    flow.setAttribute('data-direct-ask-voice', 'v61F');
     flow.appendChild(readyMessageNode());
 
     var parts = getBrainHubPartsFromExistingRenderer() || buildFallbackCommandFlow();
@@ -696,6 +765,48 @@
     };
   }
 
+
+  function runV61FCheck() {
+    installCommandNormalizerV61E();
+    var host = document.createElement('div');
+    var receipts = runNormalizedAquaCommandV61E('pull up receipts', host);
+    var receiptsHtml = host.innerHTML;
+    host.innerHTML = '';
+    var accounting = runNormalizedAquaCommandV61E('pull up accountant', host);
+    var accountingHtml = host.innerHTML;
+    host.innerHTML = '';
+    var approvals = runNormalizedAquaCommandV61E('what needs approval', host);
+    var approvalsHtml = host.innerHTML;
+    host.innerHTML = '';
+    var folders = runNormalizedAquaCommandV61E('show project folders', host);
+    var foldersHtml = host.innerHTML;
+    host.innerHTML = '';
+    var action = runNormalizedAquaCommandV61E('code this receipt to materials', host);
+    var actionHtml = host.innerHTML;
+    state.visualModuleRouterExists = true;
+    state.receiptsOpenVisualWorks = receipts.canonicalIntent === 'show_receipts' && /Opened Local Demo Module: Receipts \/ Receipt Tracker/.test(receiptsHtml);
+    state.accountingOpenVisualWorks = accounting.canonicalIntent === 'show_accounting' && /Opened Local Demo Module: Accounting Command \/ Daily P(?:&|&amp;)L/.test(accountingHtml);
+    state.approvalQueueOpenVisualWorks = approvals.canonicalIntent === 'approval_queue' && /Opened Local Demo Module: Owner Action Queue \/ Approval Center/.test(approvalsHtml);
+    state.projectFoldersOpenVisualWorks = folders.canonicalIntent === 'show_project_folders' && /Opened Local Demo Module: Project Folders/.test(foldersHtml);
+    state.actionIntentPanelWorks = action.canonicalIntent === 'action_intent_demo' && /permission required/i.test(actionHtml) && /no live change made/i.test(actionHtml);
+    state.noLiveActionExecuted = true;
+    state.noAudioStorage = true;
+    state.noNetworkCalls = true;
+    syncNamespace();
+    return {
+      version: 'v61F',
+      visualModuleRouterExists: true,
+      receiptsOpenVisualWorks: state.receiptsOpenVisualWorks,
+      accountingOpenVisualWorks: state.accountingOpenVisualWorks,
+      approvalQueueOpenVisualWorks: state.approvalQueueOpenVisualWorks,
+      projectFoldersOpenVisualWorks: state.projectFoldersOpenVisualWorks,
+      actionIntentPanelWorks: state.actionIntentPanelWorks,
+      noLiveActionExecuted: true,
+      noAudioStorage: true,
+      noNetworkCalls: true
+    };
+  }
+
   function runV61CCheck() {
     return runV61DCheck();
   }
@@ -729,5 +840,5 @@
   }
   window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61E extensions loaded: natural voice command router active with one-shot local voice capture.');
+  console.log('Aqua Homes OS v61F extensions loaded: Visual Module Open Router active with one-shot local voice capture.');
 }());
