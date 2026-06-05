@@ -1,17 +1,17 @@
 {
-  "version": "v61N",
-  "timestamp": "2026-06-05T13:13:43.800Z",
+  "version": "v61P",
+  "timestamp": "2026-06-05T13:49:43.841Z",
   "branch": "work",
-  "commit": "a955cb80061cb0d082c993979e2d7f6ba2885ede",
+  "commit": "b42afdb02fa56214809119e9fcc8d48392a18aea",
   "filesChanged": [
-    "aqua-v61-extensions.js",
     ".github/workflows/aqua-regression.yml",
     "aqua-regression-report.json",
     "aqua-regression-report.md",
+    "aqua-v61-extensions.js",
     "aqua-v61-regression-test.js"
   ],
-  "total": 42,
-  "passed": 42,
+  "total": 44,
+  "passed": 44,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -56,6 +56,7 @@
       "name": "no conflict markers exist",
       "passed": true,
       "layer": "static-file-safety",
+      "actual": [],
       "fileToFix": "repository files"
     },
     {
@@ -110,6 +111,13 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "extension regression has repairPrompt when failures exist",
+      "passed": true,
+      "layer": "extension-regression",
+      "actual": "No repair needed.",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "extension regression safety flags pass",
       "passed": true,
       "layer": "extension-regression",
@@ -129,6 +137,13 @@
       "passed": true,
       "layer": "extension-regression",
       "actual": 0,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression safeToMerge is true",
+      "passed": true,
+      "layer": "extension-regression",
+      "actual": true,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -413,9 +428,9 @@
     "reason": "Playwright/browser not available"
   },
   "extensionRegression": {
-    "version": "v61N",
-    "harnessVersion": "v61L-compatible/v61N",
-    "timestamp": "2026-06-05T13:13:43.722Z",
+    "version": "v61P",
+    "harnessVersion": "v61L-compatible/v61P",
+    "timestamp": "2026-06-05T13:49:43.793Z",
     "total": 27,
     "passed": 27,
     "failed": 0,
@@ -909,6 +924,7 @@
     },
     "repairPrompt": "No repair needed.",
     "safeToMerge": true,
+    "mergeRecommendation": "MERGE_ALLOWED",
     "noLiveRecordChanges": true,
     "noBackendNetworkLiveAICalls": true
   },
@@ -917,5 +933,7 @@
     "aqua-regression-report.md"
   ],
   "safeToMerge": true,
-  "repairPrompt": "No repair needed."
+  "mergeRecommendation": "MERGE_ALLOWED",
+  "repairPrompt": "No repair needed.",
+  "gateViolations": []
 }
