@@ -1,10 +1,10 @@
-# Aqua Homes OS v62A Regression Report
+# Aqua Homes OS v62C Regression Report
 
-- Timestamp: 2026-06-05T20:31:29.562Z
+- Timestamp: 2026-06-05T21:06:13.689Z
 - Branch: work
-- Commit: 039f22c7a6ed679f0e446539e80f3f8c0eddfa0b
-- Total tests: 221
-- Passed: 221
+- Commit: 14a2fab26a33885187bd86dba4e2e52334d49173
+- Total tests: 236
+- Passed: 236
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -39,6 +39,18 @@
 - clearVoiceBrainPlanWorks: true
 - copyToolPlanWorks: true
 - permissionExplanationWorks: true
+- visualRouteBridgeV62CWorks: true
+- visualRouteFocusMarkerV62CWorks: true
+- visualRouteReadbackBoundV62CWorks: true
+- allVoiceBrainPlansHaveVisualRouteV62C: true
+- hendersonReportVisualFocusWorks: true
+- hendersonReceiptsVisualFocusWorks: true
+- accountantExportVisualFocusWorks: true
+- plumbingSpendVisualFocusWorks: true
+- cameraAllocationVisualFocusWorks: true
+- missingDocumentsVisualFocusWorks: true
+- uploadRequestVisualFocusWorks: true
+- nextActionVisualFocusWorks: true
 - appNavigationModeWorks: true
 - automationStatusModeWorks: true
 - permissionedActionModeWorks: true
@@ -80,6 +92,8 @@
 ## Files Changed
 - aqua-regression-report.json
 - aqua-regression-report.md
+- aqua-v61-extensions.js
+- aqua-v61-regression-test.js
 
 ## Failed Commands / Checks
 - None
@@ -118,7 +132,7 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62A
+- Version: v62C
 - Total: 97
 - Passed: 97
 - Failed: 0
