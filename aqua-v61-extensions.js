@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61U Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation.
+ * Aqua Homes OS v61V Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61U';
+  var VERSION = 'v61V';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -17,6 +17,12 @@
     permissionedActionModeWorks: false,
     generalAskLockedWorks: false,
     unknownFallbackWorks: false,
+    jobsiteCalculatorV61VAvailable: true,
+    jobsiteCalculatorWorks: false,
+    concreteSonotubeCalculatorWorks: false,
+    sonotubeEightInchFourFoot80lbReturnsThreeBags: false,
+    saunaTubeNormalizesToSonotube: false,
+    unsupportedGeneralAskRemainsLockedV61V: false,
     noApiKeysInFrontend: true,
     initialized: true,
     askAIHookInstalled: false,
@@ -161,6 +167,8 @@
       runAquaCommandRegressionV61R: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61T: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61U: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61V: runAquaCommandRegressionV61L,
+      parseLocalJobsiteCalculatorV61V: parseLocalJobsiteCalculatorV61V,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       classifyAquaAskModeV61U: classifyAquaAskModeV61U,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
@@ -211,6 +219,9 @@
       runAquaCommandRegressionV61P: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61R: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61T: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61U: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61V: runAquaCommandRegressionV61L,
+      parseLocalJobsiteCalculatorV61V: parseLocalJobsiteCalculatorV61V,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -449,6 +460,71 @@
     ];
   }
 
+
+  function parseLocalJobsiteCalculatorV61V(originalText, normalizedText) {
+    var original = String(originalText || '').trim();
+    var symbolUnitsText = original.replace(/(\d+(?:\.\d+)?)\s*"/g, '$1 inch').replace(/(\d+(?:\.\d+)?)\s*'/g, '$1 feet');
+    var q = String(normalizedText || normalizeAquaPhraseV61E(symbolUnitsText)).trim();
+    if (symbolUnitsText !== original) q = normalizeAquaPhraseV61E(symbolUnitsText + ' ' + q);
+    if (!q) return null;
+    var hasConcrete = /\b(concrete|bags?|bag|pour|footing|sonotube|sono tube|sauna tube|tube)\b/.test(q);
+    var hasTube = /\b(sonotube|sono tube|sauna tube|tube|round footing)\b/.test(q);
+    if (!hasConcrete || !hasTube) return null;
+    var diameterMatch = q.match(/\b(\d+(?:\.\d+)?)\s*(?:inch|inches|in)\b/);
+    var depthMatch = q.match(/\b(\d+(?:\.\d+)?)\s*(?:foot|feet|ft)\b/);
+    var bagMatch = q.match(/\b(50|60|80)\s*(?:lb|lbs|pound|pounds)\b/);
+    var diameterInches = diameterMatch ? Number(diameterMatch[1]) : NaN;
+    var depthFeet = depthMatch ? Number(depthMatch[1]) : NaN;
+    var bagSize = bagMatch ? Number(bagMatch[1]) : 80;
+    if (!Number.isFinite(diameterInches) || diameterInches <= 0 || !Number.isFinite(depthFeet) || depthFeet <= 0) return null;
+    var yields = { 50: 0.375, 60: 0.45, 80: 0.60 };
+    var diameterFeet = diameterInches / 12;
+    var radiusFeet = diameterFeet / 2;
+    var volumeCubicFeet = Math.PI * radiusFeet * radiusFeet * depthFeet;
+    var exactBags = volumeCubicFeet / yields[bagSize];
+    var recommendedBags = Math.ceil(exactBags);
+    return {
+      canonicalIntent: 'local_calculator_available',
+      routeText: original,
+      originalText: original,
+      normalizedText: q,
+      module: 'General Ask / Jobsite Calculator',
+      calculator: 'Concrete Sonotube',
+      localCalculatorAvailable: true,
+      diameterInches: diameterInches,
+      depthFeet: depthFeet,
+      bagSizePounds: bagSize,
+      bagYieldCubicFeet: yields[bagSize],
+      defaultBagSizeUsed: !bagMatch,
+      diameterFeet: diameterFeet,
+      radiusFeet: radiusFeet,
+      volumeCubicFeet: volumeCubicFeet,
+      exactBags: exactBags,
+      recommendedBags: recommendedBags,
+      shape: 'round tube / cylinder',
+      normalizedTubeTerm: /\bsauna tube\b/.test(q) ? 'Sonotube' : 'Sonotube'
+    };
+  }
+
+  function formatNumberV61V(value) {
+    return Number(value || 0).toFixed(2).replace(/\.00$/, '');
+  }
+
+  function renderConcreteSonotubeCalculatorV61V(intent) {
+    var safe = intent || {};
+    var defaultText = safe.defaultBagSizeUsed ? '<div>Bag size was not specified, so this local estimate defaults to 80 lb bags.</div>' : '';
+    return '<div class="note" data-aqua-v61v-jobsite-calculator="true" data-aqua-v61v-concrete-sonotube="true"><strong>Jobsite Calculator — Concrete Sonotube</strong>' +
+      askModeBadgeV61U('general_ask_locked') +
+      '<div class="smallMut"><strong>Route:</strong> general_ask_locked / local_calculator_available</div>' +
+      '<div><strong>Detected:</strong></div>' +
+      '<ul><li>Diameter: ' + escapeHTMLV61D(formatNumberV61V(safe.diameterInches)) + ' inches</li><li>Depth: ' + escapeHTMLV61D(formatNumberV61V(safe.depthFeet)) + ' feet</li><li>Shape: round tube / cylinder</li></ul>' +
+      defaultText +
+      '<div><strong>Calculation:</strong></div>' +
+      '<ul><li>Volume: about ' + escapeHTMLV61D(formatNumberV61V(safe.volumeCubicFeet)) + ' cubic feet</li><li>' + escapeHTMLV61D(safe.bagSizePounds) + ' lb bags: about ' + escapeHTMLV61D(formatNumberV61V(safe.exactBags)) + ' bags</li><li>Recommended purchase: ' + escapeHTMLV61D(safe.recommendedBags) + ' bags</li></ul>' +
+      '<div><strong>Safety note:</strong><br>This is a local estimate. Verify tube size, depth, waste, base conditions, and local code/inspection requirements before pouring.</div>' +
+      '<div class="locked"><strong>Safety locks:</strong><br>Local calculator only<br>No internet/search/API call<br>No live job/accounting record changed<br>No backend calls<br>No external AI/API calls<br>No API keys in frontend<br>No payment, payroll, bank, or accounting export action<br>No sensitive data stored</div></div>';
+  }
+
   function generalAskLockedPhraseMatchesV61U(normalized) {
     var q = String(normalized || '').trim();
     if (!q) return false;
@@ -466,6 +542,8 @@
     if (action) return { mode: 'permissioned_action', originalText: original, normalizedText: action.normalizedText || q, routeHint: action };
     var appRoute = appNavigationPhraseGroupsV61U().find(function (group) { return phraseMatchesV61E(q, group.phrases); });
     if (appRoute) return { mode: 'app_navigation', originalText: original, normalizedText: q, routeHint: appRoute };
+    var localCalculator = parseLocalJobsiteCalculatorV61V(original, q);
+    if (localCalculator) return { mode: 'general_ask_locked', originalText: original, normalizedText: q, routeHint: localCalculator };
     if (generalAskLockedPhraseMatchesV61U(q)) return { mode: 'general_ask_locked', originalText: original, normalizedText: q, routeHint: { canonicalIntent: 'general_ask_locked', routeText: original, module: 'General Ask / Jobsite Calculator' } };
     return { mode: 'unknown_fallback', originalText: original, normalizedText: q, routeHint: { canonicalIntent: 'unknown', routeText: original, module: 'Guided fallback' } };
   }
@@ -532,7 +610,9 @@
     var askMode = classifyAquaAskModeV61U(original);
     state.askModeRouterWorks = true;
     if (askMode.mode === 'general_ask_locked') {
+      var calcIntent = parseLocalJobsiteCalculatorV61V(original, q);
       state.generalAskLockedWorks = true;
+      if (calcIntent) return withAskModeV61U(calcIntent, askMode.mode);
       return withAskModeV61U({ canonicalIntent: 'general_ask_locked', routeText: original, originalText: original, normalizedText: q, module: 'General Ask / Jobsite Calculator' }, askMode.mode);
     }
     if (askMode.mode === 'unknown_fallback') state.unknownFallbackWorks = true;
@@ -1364,6 +1444,20 @@
       state.noLiveChangeExecuted = true;
       state.noBackendCalls = true;
       state.noNetworkCalls = true;
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'local_calculator_available') {
+      if (outputNode) outputNode.innerHTML = renderConcreteSonotubeCalculatorV61V(intent);
+      state.jobsiteCalculatorWorks = true;
+      state.concreteSonotubeCalculatorWorks = true;
+      state.sonotubeEightInchFourFoot80lbReturnsThreeBags = intent.diameterInches === 8 && intent.depthFeet === 4 && intent.bagSizePounds === 80 && intent.recommendedBags === 3;
+      state.saunaTubeNormalizesToSonotube = /sauna tube/.test(intent.normalizedText || '') ? intent.normalizedTubeTerm === 'Sonotube' : state.saunaTubeNormalizesToSonotube;
+      state.noLiveActionExecuted = true;
+      state.noLiveChangeExecuted = true;
+      state.noBackendCalls = true;
+      state.noNetworkCalls = true;
+      state.noApiKeysInFrontend = true;
       syncNamespace();
       return intent;
     }
@@ -2534,7 +2628,12 @@
       { command: 'voice on', expected: 'Voice preference on', intent: 'voice_on_v61r', module: /Spoken Readback/i, html: /Voice on|enabled locally/i, noFallback: true },
       { command: 'repeat last action', contextCommand: 'show receipts', expected: 'Repeat last action routes previous receipts command', intent: 'repeat_last_action_v61s', module: /Receipts \/ Receipt Tracker/i, html: /Repeated last local action|Receipts/i, repeatedIntent: /show_receipts/i },
       { command: 'open that', contextCommand: 'show accounting', expected: 'Context follow-up reopens previous accounting route', intent: 'show_accounting', module: /Accounting Command \/ Daily P&L/i, html: /Accounting Command|Daily P&L|Fallback local demo panel/i },
-      { command: 'how many bags of concrete for an 8 inch sonotube 4 feet deep', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
+      { command: 'how many bags of concrete for an 8 inch sonotube 4 feet deep', expected: 'Jobsite Calculator — Concrete Sonotube defaults to 80 lb and recommends 3 bags', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Sonotube|Recommended purchase: 3 bags|No internet\/search\/API call/i, noFallback: true, jobsiteCalculator: true, concreteSonotubeCalculator: true, recommendedBags: 3, bagSizePounds: 80 },
+      { command: 'how many 80 pound bags for an 8 inch sonotube 4 feet deep', expected: 'Concrete Sonotube calculator 80 lb recommends 3 bags', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Sonotube|80 lb bags: about 2\.33 bags|Recommended purchase: 3 bags/i, noFallback: true, jobsiteCalculator: true, concreteSonotubeCalculator: true, recommendedBags: 3, bagSizePounds: 80 },
+      { command: 'how many 60 pound bags for an 8 inch sonotube 4 feet deep', expected: 'Concrete Sonotube calculator 60 lb rounds up to 4 bags', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Sonotube|60 lb bags: about 3\.10 bags|Recommended purchase: 4 bags/i, noFallback: true, jobsiteCalculator: true, concreteSonotubeCalculator: true, recommendedBags: 4, bagSizePounds: 60 },
+      { command: 'concrete for 8 inch sauna tube 4 ft deep', expected: 'Concrete Sonotube calculator normalizes sauna tube to Sonotube', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Sonotube|Recommended purchase: 3 bags/i, noFallback: true, jobsiteCalculator: true, concreteSonotubeCalculator: true, recommendedBags: 3, bagSizePounds: 80, normalizedTubeTerm: 'Sonotube' },
+      { command: '8 inch tube 4 feet deep concrete bags', expected: 'Concrete tube calculator shorthand recommends 3 bags', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Sonotube|Recommended purchase: 3 bags/i, noFallback: true, jobsiteCalculator: true, concreteSonotubeCalculator: true, recommendedBags: 3, bagSizePounds: 80 },
+      { command: "how many bags for 8\" sonotube 4' deep", expected: 'Concrete Sonotube calculator supports inch and foot symbols', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Sonotube|Recommended purchase: 3 bags/i, noFallback: true, jobsiteCalculator: true, concreteSonotubeCalculator: true, recommendedBags: 3, bagSizePounds: 80 },
       { command: 'how many sheets of drywall for this room', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
       { command: 'what does this code term mean', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
       { command: 'how many gallons of paint do I need', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
@@ -2624,6 +2723,13 @@
       renderedAutomationReport: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i.test(html),
       renderedPermissionGate: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i.test(html),
       renderedGeneralAskLocked: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i.test(html),
+      renderedJobsiteCalculator: /Jobsite Calculator — Concrete Sonotube|data-aqua-v61v-jobsite-calculator/i.test(html),
+      renderedConcreteSonotubeCalculator: /Jobsite Calculator — Concrete Sonotube|data-aqua-v61v-concrete-sonotube/i.test(html),
+      recommendedBags: intent && intent.recommendedBags,
+      bagSizePounds: intent && intent.bagSizePounds,
+      exactBags: intent && intent.exactBags,
+      volumeCubicFeet: intent && intent.volumeCubicFeet,
+      normalizedTubeTerm: intent && intent.normalizedTubeTerm,
       askMode: intent && intent.askMode,
       renderedDraftQueue: /Draft Change Queue/i.test(html),
       noLiveChangeText: /No live record changed|No Live Change Made|No live AI, backend|No backend, network, or live AI/i.test(html)
@@ -2640,6 +2746,11 @@
     if (testCase.automationRoute && !actual.renderedAutomationReport) errors.push('Expected automation report viewer to render before fallback/context/module routing.');
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
     if (testCase.lockedGeneralAsk && !actual.renderedGeneralAskLocked) errors.push('Expected locked General Ask / Jobsite Calculator placeholder, but it did not render.');
+    if (testCase.jobsiteCalculator && !actual.renderedJobsiteCalculator) errors.push('Expected local Jobsite Calculator, but it did not render.');
+    if (testCase.concreteSonotubeCalculator && !actual.renderedConcreteSonotubeCalculator) errors.push('Expected Concrete Sonotube calculator, but it did not render.');
+    if (typeof testCase.recommendedBags === 'number' && actual.recommendedBags !== testCase.recommendedBags) errors.push('Expected recommended bags ' + testCase.recommendedBags + ' but got ' + actual.recommendedBags + '.');
+    if (typeof testCase.bagSizePounds === 'number' && actual.bagSizePounds !== testCase.bagSizePounds) errors.push('Expected bag size ' + testCase.bagSizePounds + ' but got ' + actual.bagSizePounds + '.');
+    if (testCase.normalizedTubeTerm && actual.normalizedTubeTerm !== testCase.normalizedTubeTerm) errors.push('Expected normalized tube term ' + testCase.normalizedTubeTerm + ' but got ' + (actual.normalizedTubeTerm || 'none') + '.');
     if (!testCase.fallback && /payment|payroll|bank sync|accounting export/i.test(html) && !/locked|No live|No backend|export locked|Payment, Payroll, Backend/i.test(html)) errors.push('Safety lock wording missing for sensitive action references.');
     return {
       command: testCase.command,
@@ -2688,8 +2799,8 @@
   function placeholderRegressionReportV61T() {
     var safety = regressionSafetyV61L();
     return {
-      version: 'v61U',
-      harnessVersion: 'v61L-compatible/v61U',
+      version: 'v61V',
+      harnessVersion: 'v61L-compatible/v61V',
       timestamp: new Date().toISOString(),
       total: 0,
       passed: 0,
@@ -2740,8 +2851,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61U',
-      harnessVersion: 'v61L-compatible/v61U',
+      version: 'v61V',
+      harnessVersion: 'v61L-compatible/v61V',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -2770,7 +2881,12 @@
       appNavigationModeWorks: results.some(function (result) { return result.command === 'pull up receipts' && result.passed && result.actual.askMode === 'app_navigation'; }) && results.some(function (result) { return result.command === 'what needs approval' && result.passed && result.actual.askMode === 'app_navigation'; }),
       automationStatusModeWorks: results.some(function (result) { return result.command === 'show automation report' && result.passed && result.actual.askMode === 'automation_status'; }) && results.some(function (result) { return result.command === 'run regression qa' && result.passed && result.actual.askMode === 'automation_status'; }),
       permissionedActionModeWorks: results.some(function (result) { return result.command === 'code this receipt to materials' && result.passed && result.actual.askMode === 'permissioned_action'; }),
-      generalAskLockedWorks: results.filter(function (result) { return /concrete|drywall|code term|paint/i.test(result.command); }).every(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedGeneralAskLocked; }),
+      generalAskLockedWorks: results.filter(function (result) { return /drywall|code term|paint/i.test(result.command); }).every(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedGeneralAskLocked; }),
+      jobsiteCalculatorWorks: results.filter(function (result) { return /concrete|sonotube|sauna tube|tube.*concrete/i.test(result.command); }).some(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedJobsiteCalculator; }),
+      concreteSonotubeCalculatorWorks: results.filter(function (result) { return /sonotube|sauna tube|tube/i.test(result.command) && /concrete|bags?/i.test(result.command); }).every(function (result) { return result.passed && result.actual.renderedConcreteSonotubeCalculator; }),
+      sonotubeEightInchFourFoot80lbReturnsThreeBags: results.some(function (result) { return result.command === 'how many bags of concrete for an 8 inch sonotube 4 feet deep' && result.passed && result.actual.recommendedBags === 3 && result.actual.bagSizePounds === 80; }),
+      saunaTubeNormalizesToSonotube: results.some(function (result) { return /sauna tube/i.test(result.command) && result.passed && result.actual.normalizedTubeTerm === 'Sonotube'; }),
+      unsupportedGeneralAskRemainsLocked: results.filter(function (result) { return /drywall|code term|paint/i.test(result.command); }).every(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedGeneralAskLocked; }),
       unknownFallbackWorks: results.some(function (result) { return result.command === 'banana test' && result.passed && result.actual.askMode === 'unknown_fallback'; }),
       noNetworkCalls: true,
       noApiKeysInFrontend: true,
@@ -2788,6 +2904,11 @@
     state.automationStatusModeWorks = report.automationStatusModeWorks;
     state.permissionedActionModeWorks = report.permissionedActionModeWorks;
     state.generalAskLockedWorks = report.generalAskLockedWorks;
+    state.jobsiteCalculatorWorks = report.jobsiteCalculatorWorks;
+    state.concreteSonotubeCalculatorWorks = report.concreteSonotubeCalculatorWorks;
+    state.sonotubeEightInchFourFoot80lbReturnsThreeBags = report.sonotubeEightInchFourFoot80lbReturnsThreeBags;
+    state.saunaTubeNormalizesToSonotube = report.saunaTubeNormalizesToSonotube;
+    state.unsupportedGeneralAskRemainsLockedV61V = report.unsupportedGeneralAskRemainsLocked;
     state.unknownFallbackWorks = report.unknownFallbackWorks;
     state.noApiKeysInFrontend = report.noApiKeysInFrontend;
     state.noLiveActionExecuted = true;
@@ -2815,6 +2936,8 @@
       '<div><strong>safeToMerge:</strong> ' + escapeHTMLV61D(safe.safeToMerge || 'no') + '</div>' +
       '<div><strong>mergeRecommendation:</strong> ' + escapeHTMLV61D(safe.mergeRecommendation || (safe.safeToMerge === true ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED')) + '</div>' +
       '<div><strong>askModeRouterWorks:</strong> ' + escapeHTMLV61D(String(safe.askModeRouterWorks === true)) + '</div>' +
+      '<div><strong>jobsiteCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.jobsiteCalculatorWorks === true)) + '</div>' +
+      '<div><strong>concreteSonotubeCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.concreteSonotubeCalculatorWorks === true)) + '</div>' +
       '<div><strong>noApiKeysInFrontend:</strong> ' + escapeHTMLV61D(String(safe.noApiKeysInFrontend === true)) + '</div>' +
       '<label class="smallMut" for="aquaRegressionRepairPromptV61L">repairPrompt:</label>' +
       '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
@@ -2998,5 +3121,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61U extensions loaded: Ask AI mode router foundation active. No live change made.');
+  console.log('Aqua Homes OS v61V extensions loaded: local Jobsite Calculator foundation active. No live change made.');
 }());
