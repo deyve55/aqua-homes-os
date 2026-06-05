@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61K Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair.
+ * Aqua Homes OS v61L Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61K';
+  var VERSION = 'v61L';
   var state = {
     version: VERSION,
     initialized: true,
@@ -88,6 +88,7 @@
 
   var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
   var PERMISSION_GRANTER_KEY_V61I = 'aquaPermissionGranterV61I';
+  var REGRESSION_REPORT_KEY_V61L = 'aquaRegressionReportV61L';
 
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
@@ -103,6 +104,8 @@
       runV61ICheck: runV61ICheck,
       runV61JCheck: runV61JCheck,
       runV61KCheck: runV61KCheck,
+      runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
+      getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
@@ -136,6 +139,8 @@
       runV61ICheck: runV61ICheck,
       runV61JCheck: runV61JCheck,
       runV61KCheck: runV61KCheck,
+      runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
+      getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
@@ -314,6 +319,7 @@
 
   function activeOutputNodeV61J(panel) {
     if (panel && panel.parentNode) return panel.parentNode;
+    if (!document || typeof document.getElementById !== 'function') return null;
     return document.getElementById('brainOut') || document.getElementById('aiOut') || null;
   }
 
@@ -960,6 +966,7 @@
   }
 
   function getModal() {
+    if (!document || typeof document.getElementById !== 'function') return null;
     return document.getElementById('modal');
   }
 
@@ -1008,7 +1015,7 @@
       '<div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Show Receipts"></textarea></div>',
       '<div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div>',
       '<div class="field"><label>Project / company</label><select id="brainProject"><option>Aqua Homes Parent</option><option>Main Brain</option></select></div>',
-      '<div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="startVoiceAskV60U()">Ask by Voice</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button></div>',
+      '<div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="startVoiceAskV60U()">Ask by Voice</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small" data-aqua-v61l-regression="true" type="button">Run Regression QA</button></div>',
       '<div id="voiceAskAreaV60U" class="field"><div class="smallMut"><strong>Browser voice input / demo only</strong> • Push-to-talk only • No always listening • No audio stored • Backend locked</div><div id="voiceAskStatusV60U" class="note"><strong>Browser requires one more tap for microphone safety.</strong><div class="smallMut">Tap once to start voice. This is push-to-talk only. No always listening. No audio stored.</div><div class="smallMut">Voice rough draft — final one-tap/native flow planned.</div></div></div>',
       '<div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked. Try: What needs my attention today?, Owner briefing, Show approval queue, Show receipts, Show Project Folders, Show Bank Reconciliation, or Run full Aqua QA.</div></div>'
     ].join('');
@@ -1044,6 +1051,7 @@
     appendPart(flow, parts.actions);
     appendPart(flow, parts.voice);
     appendPart(flow, parts.output);
+    ensureRegressionQAButtonV61L(flow);
 
     var aiOut = modal.querySelector('#aiOut');
     if (aiOut && aiOut.parentNode) aiOut.parentNode.insertBefore(flow, aiOut.nextSibling);
@@ -1774,6 +1782,201 @@
   }
 
 
+  function regressionCommandCasesV61L() {
+    return [
+      { command: 'pull up receipts', expected: 'Receipts / Receipt Tracker', intent: 'show_receipts', module: /Receipts \/ Receipt Tracker/i, html: /Receipts \/ Receipt Tracker/i },
+      { command: 'pull up accountant', expected: 'Accounting / Daily P&L', intent: 'show_accounting', module: /Accounting Command \/ Daily P&L/i, html: /Accounting Command \/ Daily P(?:&|&amp;)L|Daily P(?:&|&amp;)L/i },
+      { command: 'how are my numbers', expected: 'Accounting / Daily P&L', intent: 'show_accounting', module: /Accounting Command \/ Daily P&L/i, html: /Accounting Command \/ Daily P(?:&|&amp;)L|Daily P(?:&|&amp;)L/i },
+      { command: 'what’s going on today', expected: 'Owner Daily Briefing', intent: 'owner_briefing', module: /Owner Daily Briefing/i, html: /Owner Daily Briefing|Owner briefing/i },
+      { command: 'what needs approval', expected: 'Owner Action Queue', intent: 'approval_queue', module: /Owner Action Queue|Approval Center/i, html: /Owner Action Queue|Approval Center|approval queue/i },
+      { command: 'show SOW', expected: 'SOW Builder', intent: 'show_sow', module: /SOW Builder \/ Scope of Work/i, html: /SOW Builder|Scope of Work/i },
+      { command: 'show insurer', expected: 'Insurance / Bank Reconciliation', intent: 'show_insurance_bank', module: /Insurance Dashboard \/ Bank Reconciliation/i, html: /Insurance Dashboard|Bank Reconciliation/i },
+      { command: 'show insurance', expected: 'Insurance / Bank Reconciliation', intent: 'show_insurance_bank', module: /Insurance Dashboard \/ Bank Reconciliation/i, html: /Insurance Dashboard|Bank Reconciliation/i },
+      { command: 'code this receipt to materials', expected: 'Permission Required / Action Intent Demo', intent: 'action_intent_demo', module: /Receipts \/ Receipt Tracker/i, html: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i, value: /materials/i },
+      { command: 'code this receipt to coldest', expected: 'Permission Required / Action Intent Demo', intent: 'action_intent_demo', module: /Receipts \/ Receipt Tracker/i, html: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i },
+      { command: 'cold this receipt to framing', expected: 'Permission Required / Action Intent Demo; cold normalized to code', intent: 'action_intent_demo', module: /Receipts \/ Receipt Tracker/i, html: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i, normalized: /code this receipt to framing/i, value: /framing/i, voiceVariant: true },
+      { command: 'call this receipt to framing', expected: 'Permission Required / Action Intent Demo; call normalized to code', intent: 'action_intent_demo', module: /Receipts \/ Receipt Tracker/i, html: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i, normalized: /code this receipt to framing/i, value: /framing/i, voiceVariant: true },
+      { command: 'code just received to framing', expected: 'Permission Required / Action Intent Demo; received normalized to receipt', intent: 'action_intent_demo', module: /Receipts \/ Receipt Tracker/i, html: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i, normalized: /code this receipt to framing/i, value: /framing/i, voiceVariant: true },
+      { command: 'code this received to framing', expected: 'Permission Required / Action Intent Demo; received normalized to receipt', intent: 'action_intent_demo', module: /Receipts \/ Receipt Tracker/i, html: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i, normalized: /code this receipt to framing/i, value: /framing/i, voiceVariant: true },
+      { command: 'clear current demo action', expected: 'Clear current demo action without fallback', intent: 'clear_current_demo_action', module: /Permission Granter/i, html: /Current demo action cleared/i, noFallback: true },
+      { command: 'clear draft queue demo', expected: 'Clear draft queue without fallback', intent: 'clear_draft_queue_demo', module: /Draft Change Queue/i, html: /Draft queue demo cleared/i, noFallback: true },
+      { command: 'clear draft queued demo', expected: 'Clear draft queue voice variant without fallback', intent: 'clear_draft_queue_demo', module: /Draft Change Queue/i, html: /Draft queue demo cleared/i, noFallback: true, voiceVariant: true },
+      { command: 'clear draft Q demo', expected: 'Clear draft queue voice variant without fallback', intent: 'clear_draft_queue_demo', module: /Draft Change Queue/i, html: /Draft queue demo cleared/i, noFallback: true, voiceVariant: true },
+      { command: 'clear draft cute demo', expected: 'Clear draft queue voice variant without fallback', intent: 'clear_draft_queue_demo', module: /Draft Change Queue/i, html: /Draft queue demo cleared/i, noFallback: true, voiceVariant: true },
+      { command: 'Claire draft queue demo', expected: 'Clear draft queue voice variant without fallback', intent: 'clear_draft_queue_demo', module: /Draft Change Queue/i, html: /Draft queue demo cleared/i, noFallback: true, voiceVariant: true },
+      { command: 'start new demo change', expected: 'Start new demo change without fallback', intent: 'start_new_demo_change', module: /Permission Granter/i, html: /Started new demo change/i, noFallback: true },
+      { command: 'show draft changes', expected: 'Draft Change Queue', intent: 'show_draft_change_queue', module: /Draft Change Queue/i, html: /Draft Change Queue/i },
+      { command: 'show prepared changes', expected: 'Draft Change Queue prepared filter', intent: 'show_draft_change_queue', module: /Draft Change Queue/i, html: /Draft Change Queue/i },
+      { command: 'show pending edits', expected: 'Draft Change Queue', intent: 'show_draft_change_queue', module: /Draft Change Queue/i, html: /Draft Change Queue/i },
+      { command: 'show change queue', expected: 'Draft Change Queue', intent: 'show_draft_change_queue', module: /Draft Change Queue/i, html: /Draft Change Queue/i },
+      { command: 'show approved demo changes', expected: 'Draft Change Queue approved demo filter', intent: 'show_draft_change_queue', module: /Draft Change Queue/i, html: /Draft Change Queue/i },
+      { command: 'banana test', expected: 'Guided fallback', intent: 'unknown', module: /Guided fallback/i, html: /Fallback local demo panel/i, fallback: true }
+    ];
+  }
+
+  function regressionSafetyV61L() {
+    return {
+      noLiveRecordChanges: true,
+      noBackendCalls: true,
+      noNetworkCalls: true,
+      noLiveAI: true,
+      noPaymentPayrollBankExport: true,
+      noAudioStored: true,
+      noAlwaysListening: true
+    };
+  }
+
+  function createRegressionHostV61L() {
+    return { innerHTML: '' };
+  }
+
+  function runRegressionCaseV61L(testCase) {
+    var host = createRegressionHostV61L();
+    var intent = runNormalizedAquaCommandV61E(testCase.command, host);
+    var html = String(host.innerHTML || '');
+    var actual = {
+      command: testCase.command,
+      canonicalIntent: intent && intent.canonicalIntent,
+      module: intent && (intent.module || intent.targetModule || ''),
+      normalizedText: intent && intent.normalizedText,
+      requestedValue: intent && intent.requestedValue,
+      renderedFallback: /Fallback local demo panel/i.test(html),
+      renderedPermissionGate: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i.test(html),
+      renderedDraftQueue: /Draft Change Queue/i.test(html),
+      noLiveChangeText: /No live record changed|No Live Change Made|No live AI, backend|No backend, network, or live AI/i.test(html)
+    };
+    var errors = [];
+    if (!intent || intent.canonicalIntent !== testCase.intent) errors.push('Expected intent ' + testCase.intent + ' but got ' + (actual.canonicalIntent || 'none') + '.');
+    if (testCase.module && !testCase.module.test(actual.module)) errors.push('Expected module matching ' + testCase.module + ' but got ' + (actual.module || 'none') + '.');
+    if (testCase.html && !testCase.html.test(html)) errors.push('Expected rendered output matching ' + testCase.html + '.');
+    if (testCase.normalized && !testCase.normalized.test(actual.normalizedText || '')) errors.push('Expected normalized transcript matching ' + testCase.normalized + ' but got ' + (actual.normalizedText || 'none') + '.');
+    if (testCase.value && !testCase.value.test(actual.requestedValue || '')) errors.push('Expected requested value matching ' + testCase.value + ' but got ' + (actual.requestedValue || 'none') + '.');
+    if (testCase.noFallback && actual.renderedFallback) errors.push('Expected command to bypass fallback, but fallback rendered.');
+    if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
+    if (!testCase.fallback && /payment|payroll|bank sync|accounting export/i.test(html) && !/locked|No live|No backend|export locked|Payment, Payroll, Backend/i.test(html)) errors.push('Safety lock wording missing for sensitive action references.');
+    return {
+      command: testCase.command,
+      expected: testCase.expected,
+      actual: actual,
+      passed: errors.length === 0,
+      errors: errors,
+      suggestedFix: errors.length ? suggestedRegressionFixV61L(testCase, actual) : ''
+    };
+  }
+
+  function suggestedRegressionFixV61L(testCase, actual) {
+    if (testCase.intent === 'action_intent_demo') return 'Update normalizeReceiptActionTranscriptV61K/detectActionIntentV61E so this transcript routes to the Permission Granter action-intent demo before fallback.';
+    if (testCase.intent === 'clear_draft_queue_demo' || testCase.intent === 'clear_current_demo_action' || testCase.intent === 'start_new_demo_change') return 'Update detectDemoStateCommandV61K so demo-state voice variants are recognized before action/fallback routing.';
+    if (testCase.intent === 'show_draft_change_queue') return 'Update the show_draft_change_queue phrase list and renderDraftChangeQueueV61J handoff.';
+    if (testCase.intent === 'unknown') return 'Verify unknown commands still render renderLocalModuleFallbackV61E.';
+    return 'Update normalizeAquaCommandV61E phrase groups or visual route config for this command.';
+  }
+
+  function buildRepairPromptV61L(failures) {
+    if (!failures.length) return 'No repair needed.';
+    return ['Codex repair task: Fix Aqua Homes OS v61L automated command regression failures in aqua-v61-extensions.js only unless absolutely necessary.', 'Do not redesign, do not rewrite AH_v54I-3.html, do not activate backend/live AI, do not execute live record changes, and do not connect payment/payroll/bank/accounting export.', 'Failures:'].concat(failures.map(function (failure, index) {
+      return (index + 1) + '. Failed command: "' + failure.command + '"\n   Expected result: ' + failure.expected + '\n   Actual result: ' + JSON.stringify(failure.actual) + '\n   Suggested fix: ' + failure.suggestedFix;
+    })).concat(['Safety reminder: keep all tests local/demo-only; preserve no live records changed, no backend calls, no network calls, no live AI/API calls, no audio storage, no always-listening, and no payment/payroll/bank/accounting export.']).join('\n');
+  }
+
+  function saveRegressionReportV61L(report) {
+    try {
+      window.localStorage.setItem(REGRESSION_REPORT_KEY_V61L, JSON.stringify(report));
+    } catch (error) {
+      report.storageWarning = 'localStorage unavailable; report returned but not saved.';
+    }
+    return report;
+  }
+
+  function getLastRegressionReportV61L() {
+    try {
+      var raw = window.localStorage.getItem(REGRESSION_REPORT_KEY_V61L);
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function runAquaCommandRegressionV61L() {
+    var cases = regressionCommandCasesV61L();
+    var results = cases.map(runRegressionCaseV61L);
+    var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
+      return {
+        command: result.command,
+        expected: result.expected,
+        actual: result.actual,
+        errors: result.errors,
+        suggestedFix: result.suggestedFix
+      };
+    });
+    var report = {
+      version: 'v61L',
+      timestamp: new Date().toISOString(),
+      total: cases.length,
+      passed: cases.length - failures.length,
+      failed: failures.length,
+      failures: failures,
+      safety: regressionSafetyV61L(),
+      repairPrompt: buildRepairPromptV61L(failures)
+    };
+    state.regressionHarnessV61LAvailable = true;
+    state.lastRegressionReportV61L = report;
+    state.noLiveActionExecuted = true;
+    state.noLiveChangeExecuted = true;
+    state.noBackendCalls = true;
+    state.noNetworkCalls = true;
+    state.noAudioStorage = true;
+    syncNamespace();
+    return saveRegressionReportV61L(report);
+  }
+
+  function renderRegressionReportV61L(report) {
+    var safe = report || getLastRegressionReportV61L() || runAquaCommandRegressionV61L();
+    var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
+    var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
+    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Aqua Command Regression QA ' + escapeHTMLV61D(safe.version) + '</strong>' +
+      '<div>Total tests: <strong>' + escapeHTMLV61D(safe.total) + '</strong></div>' +
+      '<div>Passed: <strong>' + escapeHTMLV61D(safe.passed) + '</strong></div>' +
+      '<div>Failed: <strong>' + escapeHTMLV61D(safe.failed) + '</strong></div>' +
+      '<div><strong>Failed commands:</strong><ul>' + failedCommands + '</ul></div>' +
+      '<div><strong>Safety status:</strong><ul>' + safetyRows + '</ul></div>' +
+      '<label class="smallMut" for="aquaRegressionRepairPromptV61L">Copyable repair prompt</label>' +
+      '<textarea id="aquaRegressionRepairPromptV61L" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
+      '<div class="locked">Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export.</div></div>';
+  }
+
+  function ensureRegressionQAButtonV61L(root) {
+    var scope = root || document;
+    if (!scope || typeof scope.querySelector !== 'function') return false;
+    if (scope.querySelector('[data-aqua-v61l-regression="true"]')) return true;
+    var actions = scope.querySelector('.actions');
+    if (!actions || typeof document.createElement !== 'function') return false;
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn small';
+    button.setAttribute('data-aqua-v61l-regression', 'true');
+    button.textContent = 'Run Regression QA';
+    actions.appendChild(button);
+    return true;
+  }
+
+  function installRegressionQAButtonHandlerV61L() {
+    if (!document || typeof document.addEventListener !== 'function' || state.regressionQAButtonHandlerInstalledV61L) return false;
+    document.addEventListener('click', function (event) {
+      var button = event.target && event.target.closest ? event.target.closest('[data-aqua-v61l-regression="true"]') : null;
+      if (!button) return;
+      event.preventDefault();
+      var report = runAquaCommandRegressionV61L();
+      var output = document.getElementById && document.getElementById('brainOut');
+      if (!output && button.parentNode && button.parentNode.parentNode && typeof button.parentNode.parentNode.querySelector === 'function') output = button.parentNode.parentNode.querySelector('#brainOut');
+      if (output) output.innerHTML = renderRegressionReportV61L(report);
+    });
+    state.regressionQAButtonHandlerInstalledV61L = true;
+    syncNamespace();
+    return true;
+  }
+
+
   function runV61CCheck() {
     return runV61DCheck();
   }
@@ -1801,12 +2004,13 @@
   mergeNamespace();
   installCommandNormalizerV61E();
   installPermissionGranterDemoButtonsV61I();
+  installRegressionQAButtonHandlerV61L();
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', wireAskAIToCommandFlow, { once: true });
   } else {
     wireAskAIToCommandFlow();
   }
-  window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
+  if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61K extensions loaded: voice synonym router repair active. No live change made.');
+  console.log('Aqua Homes OS v61L extensions loaded: automated regression QA harness active. No live change made.');
 }());
