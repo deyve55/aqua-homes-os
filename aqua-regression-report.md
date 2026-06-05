@@ -1,10 +1,10 @@
-# Aqua Homes OS v61V Regression Report
+# Aqua Homes OS v61W Regression Report
 
-- Timestamp: 2026-06-05T16:08:04.353Z
+- Timestamp: 2026-06-05T16:25:40.802Z
 - Branch: work
-- Commit: 81647f8d14df49dcddd477ee42383101e1f4447f
-- Total tests: 110
-- Passed: 110
+- Commit: 09eedb9c8fa83c056c898e44bab46c4fe74cc8d5
+- Total tests: 135
+- Passed: 135
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -21,6 +21,13 @@
 - generalAskLockedWorks: true
 - jobsiteCalculatorWorks: true
 - concreteSonotubeCalculatorWorks: true
+- paintCalculatorWorks: true
+- drywallCalculatorWorks: true
+- flooringCalculatorWorks: true
+- studCalculatorWorks: true
+- concreteSlabCalculatorWorks: true
+- needMoreInformationWorks: true
+- unsupportedGeneralAskRemainsLocked: true
 - sonotubeEightInchFourFoot80lbReturnsThreeBags: true
 - saunaTubeNormalizesToSonotube: true
 - unknownFallbackWorks: true
@@ -69,9 +76,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v61V
-- Total: 53
-- Passed: 53
+- Version: v61W
+- Total: 59
+- Passed: 59
 - Failed: 0
 
 ## Copyable Codex Repair Prompt

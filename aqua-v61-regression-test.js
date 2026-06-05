@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v61V';
+const VERSION = 'v61W';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -278,6 +278,12 @@ function checkStaticFiles() {
   addCheck('v61V Concrete Sonotube calculator copy exists', /Jobsite Calculator — Concrete Sonotube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V sauna tube normalization support exists', /sauna tube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V concreteSonotubeCalculatorWorks report flag exists', /concreteSonotubeCalculatorWorks/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
+  addCheck('v61W Paint Gallons calculator copy exists', /Jobsite Calculator — Paint Gallons/.test(extension), { layer: 'jobsite-calculator-v61w', fileToFix: EXTENSION });
+  addCheck('v61W Drywall Sheets calculator copy exists', /Jobsite Calculator — Drywall Sheets/.test(extension), { layer: 'jobsite-calculator-v61w', fileToFix: EXTENSION });
+  addCheck('v61W Flooring Square Footage calculator copy exists', /Jobsite Calculator — Flooring Square Footage/.test(extension), { layer: 'jobsite-calculator-v61w', fileToFix: EXTENSION });
+  addCheck('v61W Wall Stud Count calculator copy exists', /Jobsite Calculator — Wall Stud Count/.test(extension), { layer: 'jobsite-calculator-v61w', fileToFix: EXTENSION });
+  addCheck('v61W Concrete Slab calculator copy exists', /Jobsite Calculator — Concrete Slab/.test(extension), { layer: 'jobsite-calculator-v61w', fileToFix: EXTENSION });
+  addCheck('v61W needMoreInformationWorks report flag exists', /needMoreInformationWorks/.test(extension), { layer: 'jobsite-calculator-v61w', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -300,7 +306,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v61V', extensionReport.version === 'v61V', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v61W', extensionReport.version === 'v61W', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('extension regression includes spoken readback availability or fallback flag', extensionReport.spokenReadbackAvailable === true || extensionReport.spokenReadbackBrowserUnavailableFallback === true, { layer: 'spoken-readback-v61r', actual: { available: extensionReport.spokenReadbackAvailable, fallback: extensionReport.spokenReadbackBrowserUnavailableFallback }, fileToFix: EXTENSION });
     addCheck('extension regression spoken preference key is aquaSpokenReadbackV61R', extensionReport.spokenReadbackPreferenceKey === 'aquaSpokenReadbackV61R', { layer: 'spoken-readback-v61r', actual: extensionReport.spokenReadbackPreferenceKey, fileToFix: EXTENSION });
     addCheck('automationCommandRoutesBeforeFallback is true', extensionReport.automationCommandRoutesBeforeFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandRoutesBeforeFallback, fileToFix: EXTENSION });
@@ -314,6 +320,12 @@ function runExtensionRegression() {
     addCheck('generalAskLockedWorks is true', extensionReport.generalAskLockedWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.generalAskLockedWorks, fileToFix: EXTENSION });
     addCheck('jobsiteCalculatorWorks is true', extensionReport.jobsiteCalculatorWorks === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.jobsiteCalculatorWorks, fileToFix: EXTENSION });
     addCheck('concreteSonotubeCalculatorWorks is true', extensionReport.concreteSonotubeCalculatorWorks === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.concreteSonotubeCalculatorWorks, fileToFix: EXTENSION });
+    addCheck('paintCalculatorWorks is true', extensionReport.paintCalculatorWorks === true, { layer: 'jobsite-calculator-v61w', actual: extensionReport.paintCalculatorWorks, fileToFix: EXTENSION });
+    addCheck('drywallCalculatorWorks is true', extensionReport.drywallCalculatorWorks === true, { layer: 'jobsite-calculator-v61w', actual: extensionReport.drywallCalculatorWorks, fileToFix: EXTENSION });
+    addCheck('flooringCalculatorWorks is true', extensionReport.flooringCalculatorWorks === true, { layer: 'jobsite-calculator-v61w', actual: extensionReport.flooringCalculatorWorks, fileToFix: EXTENSION });
+    addCheck('studCalculatorWorks is true', extensionReport.studCalculatorWorks === true, { layer: 'jobsite-calculator-v61w', actual: extensionReport.studCalculatorWorks, fileToFix: EXTENSION });
+    addCheck('concreteSlabCalculatorWorks is true', extensionReport.concreteSlabCalculatorWorks === true, { layer: 'jobsite-calculator-v61w', actual: extensionReport.concreteSlabCalculatorWorks, fileToFix: EXTENSION });
+    addCheck('needMoreInformationWorks is true', extensionReport.needMoreInformationWorks === true, { layer: 'jobsite-calculator-v61w', actual: extensionReport.needMoreInformationWorks, fileToFix: EXTENSION });
     addCheck('8 inch / 4 foot / 80 lb returns 3 recommended bags', extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags, fileToFix: EXTENSION });
     addCheck('sauna tube normalizes to Sonotube', extensionReport.saunaTubeNormalizesToSonotube === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.saunaTubeNormalizesToSonotube, fileToFix: EXTENSION });
     addCheck('unsupported General Ask remains locked', extensionReport.unsupportedGeneralAskRemainsLocked === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.unsupportedGeneralAskRemainsLocked, fileToFix: EXTENSION });
@@ -364,9 +376,15 @@ function runExtensionRegression() {
       ['how many 60 pound bags for an 8 inch sonotube 4 feet deep', 'general_ask_locked'],
       ['concrete for 8 inch sauna tube 4 ft deep', 'general_ask_locked'],
       ['8 inch tube 4 feet deep concrete bags', 'general_ask_locked'],
+      ['how many gallons of paint for 1200 square feet', 'general_ask_locked'],
+      ['how many sheets of drywall for a 12 by 12 room 8 foot ceiling', 'general_ask_locked'],
+      ['flooring for 12 by 15 room', 'general_ask_locked'],
+      ['how many studs for a 16 foot wall', 'general_ask_locked'],
+      ['concrete for 10 by 12 slab 4 inches thick', 'general_ask_locked'],
+      ['how many gallons of paint', 'general_ask_locked'],
+      ['what is the best paint brand today', 'general_ask_locked'],
       ['how many sheets of drywall for this room', 'general_ask_locked'],
       ['what does this code term mean', 'general_ask_locked'],
-      ['how many gallons of paint do I need', 'general_ask_locked'],
       ['pull up receipts', 'app_navigation'],
       ['show automation report', 'automation_status'],
       ['run regression qa', 'automation_status'],
@@ -375,7 +393,7 @@ function runExtensionRegression() {
       ['banana test', 'unknown_fallback']
     ].forEach(([command, mode]) => {
       const row = byCommand.get(command);
-      addCheck(`v61V Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.askMode === mode), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+      addCheck(`v61W Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.askMode === mode), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     const concreteDefaultRow = byCommand.get('how many bags of concrete for an 8 inch sonotube 4 feet deep');
@@ -384,6 +402,21 @@ function runExtensionRegression() {
     addCheck('Concrete Sonotube calculator rounds 60 lb version to 4 bags', Boolean(concrete60Row && concrete60Row.passed && concrete60Row.actual && concrete60Row.actual.recommendedBags === 4 && concrete60Row.actual.bagSizePounds === 60), { layer: 'jobsite-calculator-v61v', expected: '4 recommended 60 lb bags', actual: concrete60Row ? concrete60Row.actual : 'missing from extension results', fileToFix: EXTENSION });
     const saunaRow = byCommand.get('concrete for 8 inch sauna tube 4 ft deep');
     addCheck('sauna tube calculator row normalizes to Sonotube', Boolean(saunaRow && saunaRow.passed && saunaRow.actual && saunaRow.actual.normalizedTubeTerm === 'Sonotube'), { layer: 'jobsite-calculator-v61v', expected: 'Sonotube', actual: saunaRow ? saunaRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+
+    const paintRow = byCommand.get('how many gallons of paint for 1200 square feet');
+    addCheck('Paint Gallons calculator recommends 7 gallons', Boolean(paintRow && paintRow.passed && paintRow.actual && paintRow.actual.recommendedGallons === 7), { layer: 'jobsite-calculator-v61w', expected: '7 gallons', actual: paintRow ? paintRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const drywallRow = byCommand.get('how many sheets of drywall for a 12 by 12 room 8 foot ceiling');
+    addCheck('Drywall Sheets calculator recommends 14 4x8 sheets', Boolean(drywallRow && drywallRow.passed && drywallRow.actual && drywallRow.actual.recommendedSheets === 14), { layer: 'jobsite-calculator-v61w', expected: '14 4x8 sheets', actual: drywallRow ? drywallRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const flooringRow = byCommand.get('flooring for 12 by 15 room');
+    addCheck('Flooring calculator recommends 198 square feet', Boolean(flooringRow && flooringRow.passed && flooringRow.actual && flooringRow.actual.recommendedSquareFeet === 198), { layer: 'jobsite-calculator-v61w', expected: '198 square feet', actual: flooringRow ? flooringRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const studsRow = byCommand.get('how many studs for a 16 foot wall');
+    addCheck('Wall Stud Count calculator recommends 15 studs', Boolean(studsRow && studsRow.passed && studsRow.actual && studsRow.actual.recommendedStuds === 15), { layer: 'jobsite-calculator-v61w', expected: '15 studs', actual: studsRow ? studsRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const slabRow = byCommand.get('concrete for 10 by 12 slab 4 inches thick');
+    addCheck('Concrete Slab calculator estimates about 1.48 yd and 1.63 yd with 10% waste', Boolean(slabRow && slabRow.passed && slabRow.actual && Math.abs(slabRow.actual.cubicYards - 1.48) < 0.01 && Math.abs(slabRow.actual.waste10CubicYards - 1.63) < 0.01), { layer: 'jobsite-calculator-v61w', expected: '1.48 yd / 1.63 yd with waste', actual: slabRow ? slabRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const missingPaintRow = byCommand.get('how many gallons of paint');
+    addCheck('Missing paint values show Need More Information instead of fallback', Boolean(missingPaintRow && missingPaintRow.passed && missingPaintRow.actual && missingPaintRow.actual.renderedNeedMoreInformation), { layer: 'jobsite-calculator-v61w', expected: 'Need More Information', actual: missingPaintRow ? missingPaintRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const bestPaintRow = byCommand.get('what is the best paint brand today');
+    addCheck('Unsupported general ask remains locked with no external API/search', Boolean(bestPaintRow && bestPaintRow.passed && bestPaintRow.actual && bestPaintRow.actual.renderedGeneralAskLocked), { layer: 'jobsite-calculator-v61w', expected: 'locked placeholder', actual: bestPaintRow ? bestPaintRow.actual : 'missing from extension results', fileToFix: EXTENSION });
 
     const permissionRow = byCommand.get('code this receipt to materials');
     addCheck('receipt coding routes to Permission Granter', Boolean(permissionRow && permissionRow.passed && permissionRow.actual && permissionRow.actual.renderedPermissionGate), { layer: 'permission-draft-safety', expected: 'Permission Granter demo gate', actual: permissionRow && permissionRow.actual, fileToFix: EXTENSION });
@@ -576,6 +609,13 @@ function markdown(report) {
     `- generalAskLockedWorks: ${report.extensionRegression && report.extensionRegression.generalAskLockedWorks === true}\n` +
     `- jobsiteCalculatorWorks: ${report.extensionRegression && report.extensionRegression.jobsiteCalculatorWorks === true}\n` +
     `- concreteSonotubeCalculatorWorks: ${report.extensionRegression && report.extensionRegression.concreteSonotubeCalculatorWorks === true}\n` +
+    `- paintCalculatorWorks: ${report.extensionRegression && report.extensionRegression.paintCalculatorWorks === true}\n` +
+    `- drywallCalculatorWorks: ${report.extensionRegression && report.extensionRegression.drywallCalculatorWorks === true}\n` +
+    `- flooringCalculatorWorks: ${report.extensionRegression && report.extensionRegression.flooringCalculatorWorks === true}\n` +
+    `- studCalculatorWorks: ${report.extensionRegression && report.extensionRegression.studCalculatorWorks === true}\n` +
+    `- concreteSlabCalculatorWorks: ${report.extensionRegression && report.extensionRegression.concreteSlabCalculatorWorks === true}\n` +
+    `- needMoreInformationWorks: ${report.extensionRegression && report.extensionRegression.needMoreInformationWorks === true}\n` +
+    `- unsupportedGeneralAskRemainsLocked: ${report.extensionRegression && report.extensionRegression.unsupportedGeneralAskRemainsLocked === true}\n` +
     `- sonotubeEightInchFourFoot80lbReturnsThreeBags: ${report.extensionRegression && report.extensionRegression.sonotubeEightInchFourFoot80lbReturnsThreeBags === true}\n` +
     `- saunaTubeNormalizesToSonotube: ${report.extensionRegression && report.extensionRegression.saunaTubeNormalizesToSonotube === true}\n` +
     `- unknownFallbackWorks: ${report.extensionRegression && report.extensionRegression.unknownFallbackWorks === true}\n` +
@@ -636,6 +676,13 @@ async function main() {
     generalAskLockedWorks: extensionReport ? extensionReport.generalAskLockedWorks === true : false,
     jobsiteCalculatorWorks: extensionReport ? extensionReport.jobsiteCalculatorWorks === true : false,
     concreteSonotubeCalculatorWorks: extensionReport ? extensionReport.concreteSonotubeCalculatorWorks === true : false,
+    paintCalculatorWorks: extensionReport ? extensionReport.paintCalculatorWorks === true : false,
+    drywallCalculatorWorks: extensionReport ? extensionReport.drywallCalculatorWorks === true : false,
+    flooringCalculatorWorks: extensionReport ? extensionReport.flooringCalculatorWorks === true : false,
+    studCalculatorWorks: extensionReport ? extensionReport.studCalculatorWorks === true : false,
+    concreteSlabCalculatorWorks: extensionReport ? extensionReport.concreteSlabCalculatorWorks === true : false,
+    needMoreInformationWorks: extensionReport ? extensionReport.needMoreInformationWorks === true : false,
+    unsupportedGeneralAskRemainsLocked: extensionReport ? extensionReport.unsupportedGeneralAskRemainsLocked === true : false,
     sonotubeEightInchFourFoot80lbReturnsThreeBags: extensionReport ? extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags === true : false,
     unknownFallbackWorks: extensionReport ? extensionReport.unknownFallbackWorks === true : false,
     noNetworkCalls: extensionReport ? extensionReport.noNetworkCalls === true : false,
