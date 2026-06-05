@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62D';
+const VERSION = 'v62E';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -279,7 +279,8 @@ function checkStaticFiles() {
   addCheck('v61Z voice brain tool registry exists', /function\s+voiceBrainToolRegistryV61Z/.test(extension) && /openProjectReport/.test(extension) && /findProjectReceipts/.test(extension) && /prepareAccountantExportDemo/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain mode route exists', /voice_brain_tool_plan/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v62C command center strings exist', (/Aqua Brain Command Center — v62A/.test(extension) || /Aqua Brain Command Center — v62C/.test(extension)) && /aquaVoiceBrainPlansV62A/.test(extension) && /Save Voice Brain Plan/.test(extension) && /Copy Tool Plan Text/.test(extension), { layer: 'voice-brain-v62a', fileToFix: EXTENSION });
-  addCheck('v62C visual route bridge strings exist', /openAquaBrainVisualRouteV62C/.test(extension) && /aqua-v62c-focused-section/.test(extension) && /Opened and focused:/.test(extension), { layer: 'visual-route-v62c', fileToFix: EXTENSION });
+  addCheck('v62E AI navigation executor strings exist', /executeAquaVoiceNavigationV62E/.test(extension) && /openAquaModuleForToolV62E/.test(extension) && /focusAquaSectionForToolV62E/.test(extension) && /renderAquaFocusedResultV62E/.test(extension), { layer: 'ai-navigation-v62e', fileToFix: EXTENSION });
+  addCheck('v62E focused route marker strings exist', /aqua-v62e-focused-route/.test(extension) && /Focused by Aqua Brain/.test(extension) && /Opened and focused:/.test(extension), { layer: 'ai-navigation-v62e', fileToFix: EXTENSION });
   addCheck('v62D live in-app regression runner strings exist', /runLiveInAppRegressionReportV62D/.test(extension) && /data-aqua-v62d-live-regression/.test(extension) && /aquaRegressionReportSyncV62D/.test(extension), { layer: 'live-in-app-regression-v62d', fileToFix: EXTENSION });
   addCheck('v61V local Jobsite Calculator parser exists', /function\s+parseLocalJobsiteCalculatorV61V/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
   addCheck('v61V Concrete Sonotube calculator copy exists', /Jobsite Calculator — Concrete Sonotube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
@@ -325,7 +326,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62D', extensionReport.version === 'v62D', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62E', extensionReport.version === 'v62E', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
     addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
@@ -426,13 +427,16 @@ function runExtensionRegression() {
       ['how many sheets of drywall for this room', 'general_ask_locked'],
       ['what does this code term mean', 'general_ask_locked'],
       ['pull up receipts', 'app_navigation'],
-      ['pull up the report for the Henderson house staircase', 'voice_brain_tool_plan'],
+      ['what is the Henderson report', 'voice_brain_tool_plan'],
+      ['pull up the Henderson staircase report', 'voice_brain_tool_plan'],
       ['look up all receipts for the Henderson house from Home Depot', 'voice_brain_tool_plan'],
+      ['show Home Depot receipts for Henderson', 'voice_brain_tool_plan'],
       ['prepare those Home Depot receipts for accountant export', 'voice_brain_tool_plan'],
+      ['how much have we spent on Henderson plumbing', 'voice_brain_tool_plan'],
       ['how much money did we spend on Henderson house plumbing', 'voice_brain_tool_plan'],
       ['were the cameras allocated to the right Henderson jobsite', 'voice_brain_tool_plan'],
       ['upload that construction diagram to the Henderson files', 'voice_brain_tool_plan'],
-      ['what documents are missing', 'voice_brain_tool_plan'],
+      ['what documents are missing for Henderson', 'voice_brain_tool_plan'],
       ['what should I do next', 'voice_brain_tool_plan'],
       ['show automation report', 'automation_status'],
       ['run regression qa', 'automation_status'],
@@ -445,13 +449,16 @@ function runExtensionRegression() {
     });
 
     [
-      ['pull up the report for the Henderson house staircase', 'openProjectReport'],
+      ['what is the Henderson report', 'openProjectReport'],
+      ['pull up the Henderson staircase report', 'openProjectReport'],
       ['look up all receipts for the Henderson house from Home Depot', 'findProjectReceipts'],
+      ['show Home Depot receipts for Henderson', 'findProjectReceipts'],
       ['prepare those Home Depot receipts for accountant export', 'prepareAccountantExportDemo'],
+      ['how much have we spent on Henderson plumbing', 'summarizeProjectSpend'],
       ['how much money did we spend on Henderson house plumbing', 'summarizeProjectSpend'],
       ['were the cameras allocated to the right Henderson jobsite', 'checkJobsiteCameraAllocationDemo'],
       ['upload that construction diagram to the Henderson files', 'uploadFileToProjectDemo'],
-      ['what documents are missing', 'showMissingDocumentsDemo'],
+      ['what documents are missing for Henderson', 'showMissingDocumentsDemo'],
       ['what should I do next', 'suggestNextStep']
     ].forEach(([command, tool]) => {
       const row = byCommand.get(command);
@@ -469,8 +476,11 @@ function runExtensionRegression() {
     addCheck('v62A Clear Voice Brain Plan works', extensionReport.clearVoiceBrainPlanWorks === true, { layer: 'voice-brain-v62a', actual: extensionReport.clearVoiceBrainPlanWorks, fileToFix: EXTENSION });
     addCheck('v62A Copy Tool Plan works', extensionReport.copyToolPlanWorks === true, { layer: 'voice-brain-v62a', actual: extensionReport.copyToolPlanWorks, fileToFix: EXTENSION });
     addCheck('v62A permission explanation works', extensionReport.permissionExplanationWorks === true, { layer: 'voice-brain-v62a', actual: extensionReport.permissionExplanationWorks, fileToFix: EXTENSION });
-    ['visualRouteBridgeV62CWorks','visualRouteFocusMarkerV62CWorks','visualRouteReadbackBoundV62CWorks','allVoiceBrainPlansHaveVisualRouteV62C','hendersonReportVisualFocusWorks','hendersonReceiptsVisualFocusWorks','accountantExportVisualFocusWorks','plumbingSpendVisualFocusWorks','cameraAllocationVisualFocusWorks','missingDocumentsVisualFocusWorks','uploadRequestVisualFocusWorks','nextActionVisualFocusWorks'].forEach((flag) => {
-      addCheck(`v62C ${flag} is true`, extensionReport[flag] === true, { layer: 'visual-route-v62c', actual: extensionReport[flag], fileToFix: EXTENSION });
+    ['visualRouteBridgeV62CWorks','visualRouteFocusMarkerV62CWorks','visualRouteReadbackBoundV62CWorks','allVoiceBrainPlansHaveVisualRouteV62C'].forEach((flag) => {
+      addCheck(`v62C compatibility ${flag} is true`, extensionReport[flag] === true, { layer: 'visual-route-v62c', actual: extensionReport[flag], fileToFix: EXTENSION });
+    });
+    ['aiNavigationExecutorWorks','visualFocusExecutorWorks','focusedRouteMarkerWorks','hendersonReportNavigationWorks','hendersonStaircaseNavigationWorks','hendersonReceiptsNavigationWorks','hendersonPlumbingSpendNavigationWorks','missingDocumentsNavigationWorks','cameraAllocationNavigationWorks','accountantExportNavigationLocked','uploadNavigationLocked'].forEach((flag) => {
+      addCheck(`v62E ${flag} is true`, extensionReport[flag] === true, { layer: 'ai-navigation-v62e', actual: extensionReport[flag], fileToFix: EXTENSION });
     });
     addCheck('v62D live in-app runner function exists', typeof api.runLiveInAppRegressionReportV62D === 'function', { layer: 'live-in-app-regression-v62d', fileToFix: EXTENSION });
     const liveReport = typeof api.runLiveInAppRegressionReportV62D === 'function' ? api.runLiveInAppRegressionReportV62D() : null;
@@ -757,6 +767,17 @@ function markdown(report) {
     `- liveInAppRegressionRunnerV62DWorks: ${report.liveInAppRegressionRunnerV62DWorks === true}\n` +
     `- reportSyncV62DWorks: ${report.reportSyncV62DWorks === true}\n` +
     `- reportSyncNoNetworkV62D: ${report.reportSyncNoNetworkV62D === true}\n` +
+    `- aiNavigationExecutorWorks: ${report.aiNavigationExecutorWorks === true}\n` +
+    `- visualFocusExecutorWorks: ${report.visualFocusExecutorWorks === true}\n` +
+    `- focusedRouteMarkerWorks: ${report.focusedRouteMarkerWorks === true}\n` +
+    `- hendersonReportNavigationWorks: ${report.hendersonReportNavigationWorks === true}\n` +
+    `- hendersonStaircaseNavigationWorks: ${report.hendersonStaircaseNavigationWorks === true}\n` +
+    `- hendersonReceiptsNavigationWorks: ${report.hendersonReceiptsNavigationWorks === true}\n` +
+    `- hendersonPlumbingSpendNavigationWorks: ${report.hendersonPlumbingSpendNavigationWorks === true}\n` +
+    `- missingDocumentsNavigationWorks: ${report.missingDocumentsNavigationWorks === true}\n` +
+    `- cameraAllocationNavigationWorks: ${report.cameraAllocationNavigationWorks === true}\n` +
+    `- accountantExportNavigationLocked: ${report.accountantExportNavigationLocked === true}\n` +
+    `- uploadNavigationLocked: ${report.uploadNavigationLocked === true}\n` +
     `- allVoiceBrainPlansHaveVisualRouteV62C: ${report.allVoiceBrainPlansHaveVisualRouteV62C === true}\n` +
     `- hendersonReportVisualFocusWorks: ${report.hendersonReportVisualFocusWorks === true}\n` +
     `- hendersonReceiptsVisualFocusWorks: ${report.hendersonReceiptsVisualFocusWorks === true}\n` +
@@ -890,6 +911,17 @@ async function main() {
     liveInAppRegressionRunnerV62DWorks: extensionReport ? extensionReport.liveInAppRegressionRunnerV62DWorks === true : false,
     reportSyncV62DWorks: extensionReport ? extensionReport.reportSyncV62DWorks === true : false,
     reportSyncNoNetworkV62D: extensionReport ? extensionReport.reportSyncNoNetworkV62D === true : false,
+    aiNavigationExecutorWorks: extensionReport ? extensionReport.aiNavigationExecutorWorks === true : false,
+    visualFocusExecutorWorks: extensionReport ? extensionReport.visualFocusExecutorWorks === true : false,
+    focusedRouteMarkerWorks: extensionReport ? extensionReport.focusedRouteMarkerWorks === true : false,
+    hendersonReportNavigationWorks: extensionReport ? extensionReport.hendersonReportNavigationWorks === true : false,
+    hendersonStaircaseNavigationWorks: extensionReport ? extensionReport.hendersonStaircaseNavigationWorks === true : false,
+    hendersonReceiptsNavigationWorks: extensionReport ? extensionReport.hendersonReceiptsNavigationWorks === true : false,
+    hendersonPlumbingSpendNavigationWorks: extensionReport ? extensionReport.hendersonPlumbingSpendNavigationWorks === true : false,
+    missingDocumentsNavigationWorks: extensionReport ? extensionReport.missingDocumentsNavigationWorks === true : false,
+    cameraAllocationNavigationWorks: extensionReport ? extensionReport.cameraAllocationNavigationWorks === true : false,
+    accountantExportNavigationLocked: extensionReport ? extensionReport.accountantExportNavigationLocked === true : false,
+    uploadNavigationLocked: extensionReport ? extensionReport.uploadNavigationLocked === true : false,
     reportSyncStorageKeyV62D: extensionReport ? extensionReport.reportSyncStorageKeyV62D || 'aquaRegressionReportSyncV62D' : 'aquaRegressionReportSyncV62D',
     allVoiceBrainPlansHaveVisualRouteV62C: extensionReport ? extensionReport.allVoiceBrainPlansHaveVisualRouteV62C === true : false,
     hendersonReportVisualFocusWorks: extensionReport ? extensionReport.hendersonReportVisualFocusWorks === true : false,
