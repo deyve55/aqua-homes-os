@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61I Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate.
+ * Aqua Homes OS v61J Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61I';
+  var VERSION = 'v61J';
   var state = {
     version: VERSION,
     initialized: true,
@@ -62,8 +62,17 @@
     permissionGranterButtonsWork: false,
     permissionGranterStorageKey: 'aquaPermissionGranterV61I',
     noLiveRecordChangeV61I: true,
-    noBackendNetworkLiveAIV61I: true
+    noBackendNetworkLiveAIV61I: true,
+    draftChangeQueueV61JAvailable: true,
+    draftChangeQueuePanelWorks: false,
+    draftChangeQueueButtonsWork: false,
+    draftChangeQueueCommandsWork: false,
+    draftChangeQueueStorageKey: 'aquaDraftChangeQueueV61J',
+    noLiveRecordChangeV61J: true,
+    noBackendNetworkLiveAIV61J: true
   };
+
+  var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
 
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
@@ -77,6 +86,7 @@
       runV61GCheck: runV61GCheck,
       runV61HCheck: runV61HCheck,
       runV61ICheck: runV61ICheck,
+      runV61JCheck: runV61JCheck,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
@@ -84,6 +94,7 @@
       renderVisualModuleRouteV61F: renderVisualModuleRouteV61F,
       renderActionIntentDemoV61E: renderActionIntentDemoV61E,
       renderPermissionGranterV61I: renderPermissionGranterV61I,
+      renderDraftChangeQueueV61J: renderDraftChangeQueueV61J,
       renderLocalModuleFallbackV61E: renderLocalModuleFallbackV61E,
       localModuleFallbackTextV61E: localModuleFallbackTextV61E,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
@@ -107,6 +118,7 @@
       runV61GCheck: runV61GCheck,
       runV61HCheck: runV61HCheck,
       runV61ICheck: runV61ICheck,
+      runV61JCheck: runV61JCheck,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
@@ -114,6 +126,7 @@
       renderVisualModuleRouteV61F: renderVisualModuleRouteV61F,
       renderActionIntentDemoV61E: renderActionIntentDemoV61E,
       renderPermissionGranterV61I: renderPermissionGranterV61I,
+      renderDraftChangeQueueV61J: renderDraftChangeQueueV61J,
       renderLocalModuleFallbackV61E: renderLocalModuleFallbackV61E,
       localModuleFallbackTextV61E: localModuleFallbackTextV61E,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
@@ -165,6 +178,7 @@
     return {
       canonicalIntent: 'action_intent_demo',
       routeText: 'action_intent_demo',
+      originalText: original,
       detectedAction: receiptAction ? 'receipt coding / categorization / review' : (original || normalized),
       targetModule: target,
       requestedValue: requested || 'not clear from transcript',
@@ -189,6 +203,7 @@
       { canonicalIntent: 'show_evidence', routeText: 'show photo proof', module: 'Photo Proof / Evidence Binder', phrases: ['show evidence','show proof','show photo proof','open evidence','evidence binder','source proof','photo proof','photos','job photos'] },
       { canonicalIntent: 'show_code_permits', routeText: 'code compliance permits inspections', module: 'Code Compliance / Permits / Inspections', phrases: ['show code','code compliance','permits','inspections','inspection issues','permit issues','what failed inspection'] },
       { canonicalIntent: 'show_insurance_bank', routeText: 'show bank reconciliation', module: 'Insurance Dashboard / Bank Reconciliation', phrases: ['show insurer','show insurance','open insurance','pull up insurance','insurance dashboard','show insurance dashboard','show bank reconciliation','bank reconciliation','show bank','bank match','bank issues','coi','certificate of insurance'] },
+      { canonicalIntent: 'show_draft_change_queue', routeText: 'show draft changes', module: 'Draft Change Queue', phrases: ['show draft changes','show prepared changes','show pending edits','show change queue','what changes are waiting','what changes are waiting?','show approved demo changes'] },
       { canonicalIntent: 'show_locked_actions', routeText: 'what is locked and why', module: 'Locked Actions', phrases: ['what is locked','what is locked and why','why is this locked','what cant i do','what is blocked','blocking live mode'] }
     ];
     var route = groups.find(function (group) { return phraseMatchesV61E(q, group.phrases); });
@@ -239,8 +254,152 @@
     return record;
   }
 
+  function draftQueueCommandFieldV61J(intent) {
+    var safe = intent || {};
+    if (/receipt/i.test(safe.targetModule || '') || /receipt/i.test(safe.detectedAction || '')) return 'Receipt category / job-cost code';
+    if (/accounting|p&l|ledger|bank/i.test(safe.targetModule || '')) return 'Accounting demo field';
+    if (/sow|scope/i.test(safe.targetModule || '')) return 'Scope / change-order demo field';
+    if (/approval|owner/i.test(safe.targetModule || '')) return 'Owner/Admin approval demo field';
+    return 'Local demo field placeholder';
+  }
+
+  function draftQueueCurrentValueV61J(intent) {
+    var safe = intent || {};
+    if (/receipt/i.test(safe.targetModule || '') || /materials/i.test(safe.requestedValue || '')) return 'uncoded receipt placeholder';
+    return 'unchanged local demo value placeholder';
+  }
+
+  function draftQueueProposedValueV61J(intent) {
+    var safe = intent || {};
+    return safe.requestedValue || safe.detectedAction || 'proposed demo value placeholder';
+  }
+
+  function createDraftChangeIdV61J() {
+    return 'DCQ-v61J-' + new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14) + '-' + Math.floor(Math.random() * 900 + 100);
+  }
+
+  function readDraftChangeQueueV61J() {
+    try {
+      var parsed = JSON.parse(window.localStorage.getItem(DRAFT_CHANGE_QUEUE_KEY_V61J) || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function writeDraftChangeQueueV61J(queue) {
+    try {
+      window.localStorage.setItem(DRAFT_CHANGE_QUEUE_KEY_V61J, JSON.stringify(queue || []));
+    } catch (error) {
+      state.draftChangeQueueStorageWarning = 'localStorage unavailable in this browser context';
+    }
+    state.noLiveActionExecuted = true;
+    state.noLiveRecordChangeV61I = true;
+    state.noLiveRecordChangeV61J = true;
+    state.noBackendNetworkLiveAIV61I = true;
+    state.noBackendNetworkLiveAIV61J = true;
+    syncNamespace();
+  }
+
+  function draftChangeRecordV61J(intent, status) {
+    var safe = intent || {};
+    return {
+      version: 'v61J',
+      id: safe.draftChangeId || createDraftChangeIdV61J(),
+      detectedCommand: safe.originalText || safe.detectedAction || 'Action-style command',
+      detectedAction: safe.detectedAction || 'Action-style command',
+      targetModule: safe.targetModule || 'Local/demo module',
+      fieldToChange: draftQueueCommandFieldV61J(safe),
+      currentDemoValue: draftQueueCurrentValueV61J(safe),
+      proposedValue: draftQueueProposedValueV61J(safe),
+      status: status || 'prepared',
+      ownerAdminPermissionStatus: status === 'approved demo' ? 'Owner/Admin demo-approved locally' : 'Owner/Admin permission required before any future live change',
+      auditPlaceholder: 'Audit placeholder only — future backend audit required',
+      undoPlaceholder: 'Undo placeholder only — no live record to undo',
+      noLiveChangeMade: 'No Live Change Made',
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  function upsertDraftChangeQueueV61J(intent, status) {
+    var record = draftChangeRecordV61J(intent, status || 'prepared');
+    var queue = readDraftChangeQueueV61J();
+    var existingIndex = -1;
+    for (var i = 0; i < queue.length; i += 1) {
+      if (queue[i] && queue[i].id === record.id) existingIndex = i;
+    }
+    if (existingIndex >= 0) queue[existingIndex] = Object.assign({}, queue[existingIndex], record);
+    else queue.unshift(record);
+    writeDraftChangeQueueV61J(queue);
+    state.draftChangeQueueV61JAvailable = true;
+    return record;
+  }
+
+  function updateDraftChangeStatusV61J(id, status) {
+    var queue = readDraftChangeQueueV61J();
+    var changed = false;
+    queue = queue.map(function (item) {
+      if (!item || item.id !== id) return item;
+      changed = true;
+      return Object.assign({}, item, {
+        status: status,
+        ownerAdminPermissionStatus: status === 'approved demo' ? 'Owner/Admin demo-approved locally' : (status === 'cancelled' ? 'Owner/Admin permission cancelled locally' : 'Owner/Admin permission required before any future live change'),
+        noLiveChangeMade: 'No Live Change Made',
+        updatedAt: new Date().toISOString()
+      });
+    });
+    if (changed) writeDraftChangeQueueV61J(queue);
+    return changed;
+  }
+
+  function renderDraftChangeQueueRowsV61J(queue) {
+    if (!queue.length) {
+      return '<div class="note"><strong>No draft changes waiting.</strong><div class="smallMut">Prepare an action command like “code this receipt to materials” to add a local/demo draft change. No Live Change Made.</div></div>';
+    }
+    return '<div class="folderDetailGrid">' + queue.map(function (item) {
+      return '<div class="folderDetailCard" data-aqua-v61j-draft-id="' + escapeHTMLV61D(item.id) + '">' +
+        '<b>Draft Change ID: ' + escapeHTMLV61D(item.id) + '</b>' +
+        '<span><strong>Detected command:</strong> ' + escapeHTMLV61D(item.detectedCommand) + '</span>' +
+        '<span><strong>Target module:</strong> ' + escapeHTMLV61D(item.targetModule) + '</span>' +
+        '<span><strong>Field to change:</strong> ' + escapeHTMLV61D(item.fieldToChange) + '</span>' +
+        '<span><strong>Current/demo value placeholder:</strong> ' + escapeHTMLV61D(item.currentDemoValue) + '</span>' +
+        '<span><strong>Proposed value:</strong> ' + escapeHTMLV61D(item.proposedValue) + '</span>' +
+        '<span><strong>Status:</strong> ' + escapeHTMLV61D(item.status) + '</span>' +
+        '<span><strong>Owner/Admin permission status:</strong> ' + escapeHTMLV61D(item.ownerAdminPermissionStatus) + '</span>' +
+        '<span><strong>Audit placeholder:</strong> ' + escapeHTMLV61D(item.auditPlaceholder) + '</span>' +
+        '<span><strong>Undo placeholder:</strong> ' + escapeHTMLV61D(item.undoPlaceholder) + '</span>' +
+        '<span class="locked"><strong>No Live Change Made</strong></span>' +
+        '<span class="actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">' +
+        '<button type="button" class="btn small gold" data-aqua-v61j-queue-action="ready" data-aqua-v61j-draft-id="' + escapeHTMLV61D(item.id) + '">Mark Ready for Future Backend</button>' +
+        '<button type="button" class="btn small" data-aqua-v61j-queue-action="revert" data-aqua-v61j-draft-id="' + escapeHTMLV61D(item.id) + '">Revert Demo Change</button>' +
+        '<button type="button" class="btn small" data-aqua-v61j-queue-action="before-after" data-aqua-v61j-draft-id="' + escapeHTMLV61D(item.id) + '">View Before / After</button>' +
+        '<button type="button" class="btn small" data-aqua-v61j-queue-action="audit" data-aqua-v61j-draft-id="' + escapeHTMLV61D(item.id) + '">View Audit Trail Placeholder</button>' +
+        '</span>' +
+        '<span class="smallMut" data-aqua-v61j-row-status="' + escapeHTMLV61D(item.id) + '">Local/demo queue only. No backend, network, live AI, or real record update.</span>' +
+        '</div>';
+    }).join('') + '</div>';
+  }
+
+  function renderDraftChangeQueueV61J(filterStatus) {
+    var queue = readDraftChangeQueueV61J();
+    if (filterStatus === 'prepared') queue = queue.filter(function (item) { return item.status === 'prepared'; });
+    if (filterStatus === 'approved demo') queue = queue.filter(function (item) { return item.status === 'approved demo'; });
+    state.draftChangeQueuePanelWorks = true;
+    state.noLiveActionExecuted = true;
+    state.noLiveRecordChangeV61J = true;
+    state.noBackendNetworkLiveAIV61J = true;
+    syncNamespace();
+    return '<div class="note" data-aqua-v61j-draft-change-queue="true"><strong>Draft Change Queue</strong>' +
+      '<div><strong>Storage key:</strong> ' + DRAFT_CHANGE_QUEUE_KEY_V61J + '</div>' +
+      '<div><strong>Mode:</strong> local/demo draft queue only — No Live Change Made.</div>' +
+      '<div class="locked">No live record changes occur. No backend calls. No network calls. No live AI calls. Accounting export, payment, payroll, and bank connections remain locked.</div>' +
+      renderDraftChangeQueueRowsV61J(queue) + '</div>';
+  }
+
   function renderPermissionGranterV61I(intent) {
     var safe = intent || {};
+    var draftRecord = upsertDraftChangeQueueV61J(safe, 'prepared');
+    safe.draftChangeId = draftRecord.id;
     savePermissionGranterDemoV61I(safe, 'permission required');
     state.permissionGranterPanelWorks = true;
     state.actionIntentPanelWorks = true;
@@ -252,8 +411,9 @@
       '<div><strong>Detected action:</strong> ' + escapeHTMLV61D(safe.detectedAction || 'Action-style command') + '</div>' +
       '<div><strong>Target module:</strong> ' + escapeHTMLV61D(safe.targetModule || 'Local/demo module') + '</div>' +
       '<div><strong>Requested category/value:</strong> ' + escapeHTMLV61D(safe.requestedValue || 'not clear from transcript') + '</div>' +
+      '<div><strong>Draft Change Queue:</strong> Added prepared draft ' + escapeHTMLV61D(draftRecord.id) + ' to aquaDraftChangeQueueV61J. No Live Change Made.</div>' +
       '<div><strong>Status:</strong> Permission required / No live change made</div>' +
-      '<div class="actions" data-aqua-v61i-demo-buttons="true" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;visibility:visible;opacity:1">' +
+      '<div class="actions" data-aqua-v61i-demo-buttons="true" data-aqua-v61j-draft-id="' + escapeHTMLV61D(draftRecord.id) + '" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;visibility:visible;opacity:1">' +
       '<button type="button" class="btn small gold" data-aqua-v61i-action="prepare">Prepare Change</button>' +
       '<button type="button" class="btn small primary" data-aqua-v61i-action="approve-demo">Owner Approve Demo</button>' +
       '<button type="button" class="btn small" data-aqua-v61i-action="cancel">Cancel</button>' +
@@ -446,6 +606,16 @@
       syncNamespace();
       return intent;
     }
+    if (intent.canonicalIntent === 'show_draft_change_queue') {
+      var filterStatus = /approved demo/.test(intent.normalizedText || '') ? 'approved demo' : (/prepared/.test(intent.normalizedText || '') ? 'prepared' : '');
+      if (outputNode) outputNode.innerHTML = renderDraftChangeQueueV61J(filterStatus);
+      state.draftChangeQueueCommandsWork = true;
+      state.noLiveActionExecuted = true;
+      state.noLiveRecordChangeV61J = true;
+      state.noBackendNetworkLiveAIV61J = true;
+      syncNamespace();
+      return intent;
+    }
     if (intent.canonicalIntent !== 'unknown') {
       if (openVisualModuleV61F(intent, outputNode)) return intent;
       var html = renderNormalizedReadbackV61E(intent);
@@ -524,17 +694,46 @@
       var record = savePermissionGranterDemoV61I({}, localStatusMap[action] || 'prepared');
       record.buttonAction = action;
       record.localDemoStatus = localStatusMap[action] || 'prepared';
+      var draftId = panel ? panel.querySelector('[data-aqua-v61j-draft-id]') : null;
+      var targetDraftId = draftId ? draftId.getAttribute('data-aqua-v61j-draft-id') : '';
+      if (targetDraftId && action !== 'audit') updateDraftChangeStatusV61J(targetDraftId, localStatusMap[action] || 'prepared');
       try {
         window.localStorage.setItem('aquaPermissionGranterV61I', JSON.stringify(record));
       } catch (error) {
         record.storageWarning = 'localStorage unavailable in this browser context';
       }
-      if (statusNode) statusNode.textContent = (labelMap[action] || labelMap.prepare) + ' Local demo state key: aquaPermissionGranterV61I.';
+      if (statusNode) statusNode.textContent = (labelMap[action] || labelMap.prepare) + ' Local demo state key: aquaPermissionGranterV61I. Draft Change Queue key: aquaDraftChangeQueueV61J.';
       if (auditNode && action === 'audit') auditNode.hidden = false;
       state.permissionGranterButtonsWork = true;
       state.noLiveActionExecuted = true;
       state.noLiveRecordChangeV61I = true;
       state.noBackendNetworkLiveAIV61I = true;
+      syncNamespace();
+    });
+    document.addEventListener('click', function (event) {
+      var button = event.target && event.target.closest ? event.target.closest('[data-aqua-v61j-queue-action]') : null;
+      if (!button) return;
+      event.preventDefault();
+      var action = button.getAttribute('data-aqua-v61j-queue-action') || 'before-after';
+      var id = button.getAttribute('data-aqua-v61j-draft-id') || '';
+      var rowStatus = document.querySelector('[data-aqua-v61j-row-status="' + id + '"]');
+      var message = 'Local/demo queue action only. No Live Change Made.';
+      if (action === 'ready') {
+        updateDraftChangeStatusV61J(id, 'approved demo');
+        message = 'Marked ready for future backend locally. No backend call. No Live Change Made.';
+      } else if (action === 'revert') {
+        updateDraftChangeStatusV61J(id, 'cancelled');
+        message = 'Reverted demo change locally. No live record changed. No Live Change Made.';
+      } else if (action === 'before-after') {
+        message = 'Before / After placeholder: current demo value → proposed value. No Live Change Made.';
+      } else if (action === 'audit') {
+        message = 'Audit Trail Placeholder viewed locally. No backend, network, or live AI call. No Live Change Made.';
+      }
+      if (rowStatus) rowStatus.textContent = message;
+      state.draftChangeQueueButtonsWork = true;
+      state.noLiveActionExecuted = true;
+      state.noLiveRecordChangeV61J = true;
+      state.noBackendNetworkLiveAIV61J = true;
       syncNamespace();
     });
     state.permissionGranterButtonHandlerInstalled = true;
@@ -1152,6 +1351,69 @@
     };
   }
 
+  function runV61JCheck() {
+    installCommandNormalizerV61E();
+    installPermissionGranterDemoButtonsV61I();
+    try {
+      window.localStorage.removeItem(DRAFT_CHANGE_QUEUE_KEY_V61J);
+    } catch (error) {
+      state.draftChangeQueueStorageWarning = 'localStorage unavailable in this browser context';
+    }
+    var host = document.createElement('div');
+    var action = runNormalizedAquaCommandV61E('code this receipt to materials', host);
+    var actionHtml = host.innerHTML;
+    host.innerHTML = '';
+    var showDraft = runNormalizedAquaCommandV61E('show draft changes', host);
+    var draftHtml = host.innerHTML;
+    host.innerHTML = '';
+    var showPrepared = runNormalizedAquaCommandV61E('show prepared changes', host);
+    var preparedHtml = host.innerHTML;
+    host.innerHTML = '';
+    var showPending = runNormalizedAquaCommandV61E('show pending edits', host);
+    var pendingHtml = host.innerHTML;
+    host.innerHTML = '';
+    var showQueue = runNormalizedAquaCommandV61E('show change queue', host);
+    var queueHtml = host.innerHTML;
+    host.innerHTML = '';
+    var waiting = runNormalizedAquaCommandV61E('what changes are waiting?', host);
+    var waitingHtml = host.innerHTML;
+    host.innerHTML = '';
+    var approved = upsertDraftChangeQueueV61J(Object.assign({}, action, { draftChangeId: readDraftChangeQueueV61J()[0] && readDraftChangeQueueV61J()[0].id }), 'approved demo');
+    var showApproved = runNormalizedAquaCommandV61E('show approved demo changes', host);
+    var approvedHtml = host.innerHTML;
+    host.innerHTML = '';
+    var banana = runNormalizedAquaCommandV61E('banana test', host);
+    var bananaHtml = host.innerHTML;
+    var combinedQueueHtml = [draftHtml, preparedHtml, pendingHtml, queueHtml, waitingHtml, approvedHtml].join(' ');
+    state.draftChangeQueuePanelWorks = /Draft Change Queue/i.test(combinedQueueHtml) && /Draft Change ID/i.test(combinedQueueHtml) && /No Live Change Made/i.test(combinedQueueHtml);
+    state.draftChangeQueueCommandsWork = showDraft.canonicalIntent === 'show_draft_change_queue' && showPrepared.canonicalIntent === 'show_draft_change_queue' && showPending.canonicalIntent === 'show_draft_change_queue' && showQueue.canonicalIntent === 'show_draft_change_queue' && waiting.canonicalIntent === 'show_draft_change_queue' && showApproved.canonicalIntent === 'show_draft_change_queue';
+    state.draftChangeQueueButtonsWork = /Mark Ready for Future Backend/i.test(combinedQueueHtml) && /Revert Demo Change/i.test(combinedQueueHtml) && /View Before \/ After/i.test(combinedQueueHtml) && /View Audit Trail Placeholder/i.test(combinedQueueHtml);
+    state.receiptActionIntentWorks = action.canonicalIntent === 'action_intent_demo' && /aquaDraftChangeQueueV61J/i.test(actionHtml);
+    state.unknownFallbackStillWorks = banana.canonicalIntent === 'unknown' && /Fallback local demo panel/i.test(bananaHtml);
+    state.noLiveActionExecuted = true;
+    state.noLiveRecordChangeV61I = true;
+    state.noLiveRecordChangeV61J = true;
+    state.noBackendNetworkLiveAIV61I = true;
+    state.noBackendNetworkLiveAIV61J = true;
+    state.noAudioStorage = true;
+    state.noNetworkCalls = true;
+    syncNamespace();
+    return {
+      version: 'v61J',
+      storageKey: DRAFT_CHANGE_QUEUE_KEY_V61J,
+      preparedActionAddedToQueue: action.canonicalIntent === 'action_intent_demo' && readDraftChangeQueueV61J().length > 0,
+      approvedDemoActionCanAppearInQueue: approved && approved.status === 'approved demo' && /approved demo/i.test(approvedHtml),
+      queueCommandsWork: state.draftChangeQueueCommandsWork,
+      demoButtonsExist: state.draftChangeQueueButtonsWork,
+      bananaFallbackStillWorks: state.unknownFallbackStillWorks,
+      noLiveActionExecuted: true,
+      noLiveRecordChange: true,
+      noBackendNetworkLiveAI: true,
+      noAudioStorage: true,
+      noNetworkCalls: true
+    };
+  }
+
   function runV61CCheck() {
     return runV61DCheck();
   }
@@ -1186,5 +1448,5 @@
   }
   window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61I extensions loaded: Permission Granter / Action Intent Demo Gate active. No live change made.');
+  console.log('Aqua Homes OS v61J extensions loaded: Permission Granter / Draft Change Queue demo active. No live change made.');
 }());
