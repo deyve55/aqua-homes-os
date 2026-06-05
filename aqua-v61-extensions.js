@@ -83,7 +83,10 @@
     badTranscriptNotSavedAsValue: false,
     demoStateCommandsRunBeforeFallback: false,
     noBackendCalls: true,
-    noLiveChangeExecuted: true
+    noLiveChangeExecuted: true,
+    regressionQAButtonRendererAvailableV61L: false,
+    regressionQATypedCommandFallbackAvailableV61L: false,
+    regressionQARenderBrainHubPatchedV61L: false
   };
 
   var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
@@ -106,6 +109,7 @@
       runV61KCheck: runV61KCheck,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
+      renderRegressionReportV61L: renderRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
@@ -141,6 +145,7 @@
       runV61KCheck: runV61KCheck,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
+      renderRegressionReportV61L: renderRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
@@ -255,6 +260,10 @@
     };
   }
 
+  function isRegressionQACommandV61L(normalizedText) {
+    return ['run regression qa', 'run qa regression', 'run command regression', 'test app'].indexOf(String(normalizedText || '').trim()) !== -1;
+  }
+
   function normalizeAquaCommandV61E(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
@@ -262,6 +271,15 @@
     if (demoState) return demoState;
     var action = detectActionIntentV61E(original, q);
     if (action) return action;
+    if (isRegressionQACommandV61L(q)) {
+      return {
+        canonicalIntent: 'run_regression_qa',
+        routeText: 'run regression qa',
+        module: 'Aqua Command Regression QA',
+        originalText: original,
+        normalizedText: q
+      };
+    }
     var groups = [
       { canonicalIntent: 'show_receipts', routeText: 'show receipts', module: 'Receipts / Receipt Tracker', phrases: ['pull up receipts','bring up receipts','show receipts','show receipt','open receipts','open receipt tracker','receipts','receipt review','what receipts need review'] },
       { canonicalIntent: 'show_accounting', routeText: 'show accounting', module: 'Accounting Command / Daily P&L', phrases: ['pull up accountant','pull up accounting','open accountant','open accounting','show accountant','show accounting','accounting','daily p and l','daily pnl','daily pl','how are my numbers','show my numbers','how is the company doing','how is my company doing','how is painting doing','how is my painting company doing'] },
@@ -762,6 +780,17 @@
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
     var intent = normalizeAquaCommandV61E(commandText);
+    if (intent.canonicalIntent === 'run_regression_qa') {
+      var report = runAquaCommandRegressionV61L();
+      if (outputNode) outputNode.innerHTML = renderRegressionReportV61L(report);
+      state.regressionQATypedCommandFallbackAvailableV61L = true;
+      state.noLiveActionExecuted = true;
+      state.noLiveChangeExecuted = true;
+      state.noBackendCalls = true;
+      state.noNetworkCalls = true;
+      syncNamespace();
+      return intent;
+    }
     if (intent.canonicalIntent === 'clear_draft_queue_demo') {
       clearDraftQueueDemoV61J(outputNode);
       if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61k-clear-draft-queue="true"><strong>Draft queue demo cleared.</strong><div>Current command was not changed.</div><div class="locked">No live record changed. No backend, network, or live AI call was made.</div></div>';
@@ -1052,6 +1081,7 @@
     appendPart(flow, parts.voice);
     appendPart(flow, parts.output);
     ensureRegressionQAButtonV61L(flow);
+    repairVisibleRegressionQAButtonsV61L(getModal());
 
     var aiOut = modal.querySelector('#aiOut');
     if (aiOut && aiOut.parentNode) aiOut.parentNode.insertBefore(flow, aiOut.nextSibling);
@@ -1301,9 +1331,11 @@
       var result = originalOpenModal.apply(this, arguments);
       if (key === 'ai') {
         exposeAskAICommandFlow();
+        repairVisibleRegressionQAButtonsV61L(getModal());
         ensureTapToStartVoiceFallbackV61D();
         afterModalPaint(function () {
           exposeAskAICommandFlow();
+          repairVisibleRegressionQAButtonsV61L(getModal());
           ensureTapToStartVoiceFallbackV61D();
         });
       }
@@ -1324,6 +1356,7 @@
     var observer = new MutationObserver(function () {
       if (isAskAIModalOpen()) {
         exposeAskAICommandFlow();
+        repairVisibleRegressionQAButtonsV61L(getModal());
         ensureTapToStartVoiceFallbackV61D();
       }
     });
@@ -1335,6 +1368,8 @@
 
   function wireAskAIToCommandFlow() {
     installCommandNormalizerV61E();
+    patchBrainHubRendererForRegressionQAV61L();
+    repairVisibleRegressionQAButtonsV61L(document);
     installPermissionGranterDemoButtonsV61I();
     var wrapped = wrapOpenModal();
     var directHook = installDirectAskButtonHookV61D();
@@ -1343,6 +1378,7 @@
     state.directAskButtonHookInstalled = Boolean(directHook || state.directAskButtonHookInstalled);
     if (isAskAIModalOpen()) {
       exposeAskAICommandFlow();
+      repairVisibleRegressionQAButtonsV61L(getModal());
       ensureTapToStartVoiceFallbackV61D();
     }
     syncNamespace();
@@ -1352,6 +1388,7 @@
   function runV61DCheck() {
     if (isAskAIModalOpen()) {
       exposeAskAICommandFlow();
+      repairVisibleRegressionQAButtonsV61L(getModal());
       ensureTapToStartVoiceFallbackV61D();
     }
     state.askAIHookInstalled = Boolean(state.askAIHookInstalled || state.directAskButtonHookInstalled || state.wrappedOpenModal || state.observerInstalled);
@@ -1536,6 +1573,8 @@
 
   function runV61ICheck() {
     installCommandNormalizerV61E();
+    patchBrainHubRendererForRegressionQAV61L();
+    repairVisibleRegressionQAButtonsV61L(document);
     installPermissionGranterDemoButtonsV61I();
     var host = document.createElement('div');
     var receiptMaterials = runNormalizedAquaCommandV61E('code this receipt to materials', host);
@@ -1579,6 +1618,8 @@
 
   function runV61JCheck() {
     installCommandNormalizerV61E();
+    patchBrainHubRendererForRegressionQAV61L();
+    repairVisibleRegressionQAButtonsV61L(document);
     installPermissionGranterDemoButtonsV61I();
     try {
       window.localStorage.removeItem(DRAFT_CHANGE_QUEUE_KEY_V61J);
@@ -1674,6 +1715,8 @@
 
   function runV61KCheck() {
     installCommandNormalizerV61E();
+    patchBrainHubRendererForRegressionQAV61L();
+    repairVisibleRegressionQAButtonsV61L(document);
     installPermissionGranterDemoButtonsV61I();
     try {
       window.localStorage.removeItem(DRAFT_CHANGE_QUEUE_KEY_V61J);
@@ -1935,12 +1978,13 @@
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
     return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Aqua Command Regression QA ' + escapeHTMLV61D(safe.version) + '</strong>' +
+      '<div>Version: <strong>' + escapeHTMLV61D(safe.version) + '</strong></div>' +
       '<div>Total tests: <strong>' + escapeHTMLV61D(safe.total) + '</strong></div>' +
       '<div>Passed: <strong>' + escapeHTMLV61D(safe.passed) + '</strong></div>' +
       '<div>Failed: <strong>' + escapeHTMLV61D(safe.failed) + '</strong></div>' +
       '<div><strong>Failed commands:</strong><ul>' + failedCommands + '</ul></div>' +
       '<div><strong>Safety status:</strong><ul>' + safetyRows + '</ul></div>' +
-      '<label class="smallMut" for="aquaRegressionRepairPromptV61L">Copyable repair prompt</label>' +
+      '<label class="smallMut" for="aquaRegressionRepairPromptV61L">Repair prompt</label>' +
       '<textarea id="aquaRegressionRepairPromptV61L" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
       '<div class="locked">Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export.</div></div>';
   }
@@ -1948,7 +1992,11 @@
   function ensureRegressionQAButtonV61L(root) {
     var scope = root || document;
     if (!scope || typeof scope.querySelector !== 'function') return false;
-    if (scope.querySelector('[data-aqua-v61l-regression="true"]')) return true;
+    if (scope.querySelector('[data-aqua-v61l-regression="true"]')) {
+      state.regressionQAButtonRendererAvailableV61L = true;
+      syncNamespace();
+      return true;
+    }
     var actions = scope.querySelector('.actions');
     if (!actions || typeof document.createElement !== 'function') return false;
     var button = document.createElement('button');
@@ -1956,8 +2004,68 @@
     button.className = 'btn small';
     button.setAttribute('data-aqua-v61l-regression', 'true');
     button.textContent = 'Run Regression QA';
-    actions.appendChild(button);
+    var voiceButton = Array.prototype.slice.call(actions.querySelectorAll('button')).find(function (candidate) { return /Ask by Voice/i.test(candidate.textContent || ''); });
+    var fullQAButton = Array.prototype.slice.call(actions.querySelectorAll('button')).find(function (candidate) { return /Run Full Aqua QA/i.test(candidate.textContent || ''); });
+    if (fullQAButton && fullQAButton.nextSibling) actions.insertBefore(button, fullQAButton.nextSibling);
+    else if (fullQAButton) actions.appendChild(button);
+    else if (voiceButton && voiceButton.nextSibling) actions.insertBefore(button, voiceButton.nextSibling);
+    else actions.appendChild(button);
+    state.regressionQAButtonRendererAvailableV61L = true;
+    syncNamespace();
     return true;
+  }
+
+  function regressionQAButtonMarkupV61L() {
+    return '<button class="btn small gold" data-aqua-v61l-regression="true" type="button">Run Regression QA</button>';
+  }
+
+  function patchBrainHubRendererForRegressionQAV61L() {
+    if (typeof window.renderBrainHub !== 'function') return false;
+    if (window.renderBrainHub.__aquaV61LRegressionPatched) return true;
+    var originalRenderBrainHub = window.renderBrainHub;
+    window.renderBrainHub = function renderBrainHubV61LRegression() {
+      var html = String(originalRenderBrainHub.apply(this, arguments) || '');
+      if (/data-aqua-v61l-regression=/.test(html) || /Run Regression QA/.test(html)) return html;
+      var button = regressionQAButtonMarkupV61L();
+      var fullQAPattern = /(<button[^>]*>Run Full Aqua QA<\/button>)/i;
+      if (fullQAPattern.test(html)) return html.replace(fullQAPattern, '$1' + button);
+      var voicePattern = /(<button[^>]*>Ask by Voice<\/button>)/i;
+      if (voicePattern.test(html)) return html.replace(voicePattern, '$1' + button);
+      var actionsPattern = /(<div class="actions">)/i;
+      if (actionsPattern.test(html)) return html.replace(actionsPattern, '$1' + button);
+      return html;
+    };
+    window.renderBrainHub.__aquaV61LRegressionPatched = true;
+    window.renderBrainHub.__aquaV61LRegressionOriginal = originalRenderBrainHub;
+    state.regressionQARenderBrainHubPatchedV61L = true;
+    state.regressionQAButtonRendererAvailableV61L = true;
+    syncNamespace();
+    return true;
+  }
+
+  function repairVisibleRegressionQAButtonsV61L(root) {
+    var scope = root || document;
+    if (!scope || typeof scope.querySelectorAll !== 'function') return false;
+    var inserted = false;
+    Array.prototype.slice.call(scope.querySelectorAll('.actions')).forEach(function (actions) {
+      var text = actions.textContent || '';
+      if (/Run Command Demo/i.test(text) && /Ask by Voice/i.test(text) && /Run Full Aqua QA/i.test(text) && !actions.querySelector('[data-aqua-v61l-regression="true"]')) {
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = regressionQAButtonMarkupV61L();
+        var button = wrapper.firstChild;
+        var fullQAButton = Array.prototype.slice.call(actions.querySelectorAll('button')).find(function (candidate) { return /Run Full Aqua QA/i.test(candidate.textContent || ''); });
+        if (fullQAButton && fullQAButton.nextSibling) actions.insertBefore(button, fullQAButton.nextSibling);
+        else if (fullQAButton) actions.appendChild(button);
+        else actions.appendChild(button);
+        inserted = true;
+      }
+    });
+    if (inserted || (scope.querySelector && scope.querySelector('[data-aqua-v61l-regression="true"]'))) {
+      state.regressionQAButtonRendererAvailableV61L = true;
+      syncNamespace();
+      return true;
+    }
+    return false;
   }
 
   function installRegressionQAButtonHandlerV61L() {
@@ -1984,6 +2092,7 @@
   function runV61BCheck() {
     if (isAskAIModalOpen()) {
       exposeAskAICommandFlow();
+      repairVisibleRegressionQAButtonsV61L(getModal());
       ensureTapToStartVoiceFallbackV61D();
     }
     state.askAIHookInstalled = Boolean(state.askAIHookInstalled || state.wrappedOpenModal || state.observerInstalled);
@@ -2003,6 +2112,8 @@
 
   mergeNamespace();
   installCommandNormalizerV61E();
+  patchBrainHubRendererForRegressionQAV61L();
+  repairVisibleRegressionQAButtonsV61L(document);
   installPermissionGranterDemoButtonsV61I();
   installRegressionQAButtonHandlerV61L();
   if (document.readyState === 'loading') {
