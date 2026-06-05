@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61W Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1.
+ * Aqua Homes OS v61X Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61W';
+  var VERSION = 'v61X';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -19,6 +19,15 @@
     unknownFallbackWorks: false,
     jobsiteCalculatorV61VAvailable: true,
     jobsiteCalculatorV61WAvailable: true,
+    calculatorDraftsV61XAvailable: true,
+    calculatorDraftsWork: false,
+    saveCalculationDraftWorks: false,
+    showSavedCalculationsWorks: false,
+    clearSavedCalculationsWorks: false,
+    addToEstimateDraftLockedWorks: false,
+    noLiveEstimateCreated: true,
+    noCustomerExport: true,
+    currentCalculatorResultV61X: null,
     jobsiteCalculatorWorks: false,
     concreteSonotubeCalculatorWorks: false,
     paintCalculatorWorks: false,
@@ -151,6 +160,7 @@
   var REGRESSION_REPORT_KEY_V61L = 'aquaRegressionReportV61L';
   var SPOKEN_READBACK_KEY_V61R = 'aquaSpokenReadbackV61R';
   var CONVERSATIONAL_CONTEXT_KEY_V61S = 'aquaConversationalContextV61S';
+  var CALCULATOR_DRAFTS_KEY_V61X = 'aquaCalculatorDraftsV61X';
 
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
@@ -177,6 +187,11 @@
       runAquaCommandRegressionV61U: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61V: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61W: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61X: runAquaCommandRegressionV61L,
+      readCalculatorDraftsV61X: readCalculatorDraftsV61X,
+      saveCurrentCalculatorDraftV61X: saveCurrentCalculatorDraftV61X,
+      clearCalculatorDraftsV61X: clearCalculatorDraftsV61X,
+      installCalculatorDraftButtonHandlerV61X: installCalculatorDraftButtonHandlerV61X,
       parseLocalJobsiteCalculatorV61V: parseLocalJobsiteCalculatorV61V,
       parseLocalJobsiteCalculatorV61W: parseLocalJobsiteCalculatorV61V,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
@@ -232,6 +247,11 @@
       runAquaCommandRegressionV61U: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61V: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61W: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61X: runAquaCommandRegressionV61L,
+      readCalculatorDraftsV61X: readCalculatorDraftsV61X,
+      saveCurrentCalculatorDraftV61X: saveCurrentCalculatorDraftV61X,
+      clearCalculatorDraftsV61X: clearCalculatorDraftsV61X,
+      installCalculatorDraftButtonHandlerV61X: installCalculatorDraftButtonHandlerV61X,
       parseLocalJobsiteCalculatorV61V: parseLocalJobsiteCalculatorV61V,
       parseLocalJobsiteCalculatorV61W: parseLocalJobsiteCalculatorV61V,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
@@ -345,7 +365,7 @@
     var canonical = intent && intent.canonicalIntent;
     if (!canonical || canonical === 'unknown' || canonical === 'repeat_last_action_v61s' || canonical === 'context_missing_v61s') return false;
     if (/^(?:speak_summary_v61r|read_report_v61r|stop_speaking_v61r|voice_off_v61r|voice_on_v61r|run_regression_qa|show_automation_report_v61t)$/.test(canonical)) return false;
-    if (/^(?:clear_draft_queue_demo|clear_current_demo_action|start_new_demo_change)$/.test(canonical)) return false;
+    if (/^(?:clear_draft_queue_demo|clear_current_demo_action|start_new_demo_change|save_calculation_draft_v61x|show_calculator_drafts_v61x|clear_calculator_drafts_v61x|add_to_estimate_draft_v61x)$/.test(canonical)) return false;
     return true;
   }
 
@@ -454,6 +474,24 @@
     return null;
   }
 
+
+
+  function detectCalculatorDraftCommandV61X(original, normalized) {
+    var q = String(normalized || '').trim();
+    if (phraseMatchesV61E(q, ['save calculation draft', 'save this calculation'])) {
+      return { canonicalIntent: 'save_calculation_draft_v61x', routeText: 'save calculation draft', originalText: original, normalizedText: q, module: 'Calculator Drafts / Estimate Prep' };
+    }
+    if (phraseMatchesV61E(q, ['show saved calculations', 'show calculator drafts'])) {
+      return { canonicalIntent: 'show_calculator_drafts_v61x', routeText: 'show calculator drafts', originalText: original, normalizedText: q, module: 'Calculator Drafts / Estimate Prep' };
+    }
+    if (phraseMatchesV61E(q, ['clear saved calculations', 'clear calculation drafts'])) {
+      return { canonicalIntent: 'clear_calculator_drafts_v61x', routeText: 'clear calculation drafts', originalText: original, normalizedText: q, module: 'Calculator Drafts / Estimate Prep' };
+    }
+    if (phraseMatchesV61E(q, ['add to estimate draft', 'add this to estimate', 'add this to SOW draft'])) {
+      return { canonicalIntent: 'add_to_estimate_draft_v61x', routeText: 'add to estimate draft', originalText: original, normalizedText: q, module: 'Estimate Draft Placeholder' };
+    }
+    return null;
+  }
 
   function appNavigationPhraseGroupsV61U() {
     return [
@@ -696,6 +734,170 @@
     return Number(value || 0).toFixed(2).replace(/\.00$/, '');
   }
 
+
+  function supportedCalculatorDraftTypeV61X(calculator) {
+    return /^(Concrete Sonotube|Paint Gallons|Drywall Sheets|Flooring Square Footage|Wall Stud Count|Concrete Slab)$/.test(String(calculator || ''));
+  }
+
+  function cloneSafeCalculatorIntentV61X(intent) {
+    var safe = {};
+    Object.keys(intent || {}).forEach(function (key) {
+      var value = intent[key];
+      if (typeof value === 'number' || typeof value === 'string' || typeof value === 'boolean') safe[key] = value;
+    });
+    return safe;
+  }
+
+  function calculatorResultSummaryV61X(intent) {
+    var safe = intent || {};
+    if (safe.calculator === 'Concrete Sonotube') return 'Concrete Sonotube: recommended ' + safe.recommendedBags + ' bags for ' + formatNumberV61V(safe.diameterInches) + ' inch x ' + formatNumberV61V(safe.depthFeet) + ' foot tube.';
+    if (safe.calculator === 'Paint Gallons') return 'Paint Gallons: recommended ' + safe.recommendedGallons + ' gallons for ' + formatNumberV61V(safe.squareFeet) + ' square feet and ' + safe.coats + ' coats.';
+    if (safe.calculator === 'Drywall Sheets') return 'Drywall Sheets: recommended ' + safe.recommendedSheets + ' ' + safe.sheetSize + ' sheets for about ' + formatNumberV61V(safe.wallArea) + ' sq ft.';
+    if (safe.calculator === 'Flooring Square Footage') return 'Flooring Square Footage: recommended ' + safe.recommendedSquareFeet + ' sq ft including ' + formatNumberV61V(safe.wastePercent) + '% waste.';
+    if (safe.calculator === 'Wall Stud Count') return 'Wall Stud Count: recommended ' + safe.recommendedStuds + ' studs for a ' + formatNumberV61V(safe.wallFeet) + ' foot wall.';
+    if (safe.calculator === 'Concrete Slab') return 'Concrete Slab: ' + Number(safe.cubicYards || 0).toFixed(2) + ' cubic yards; ' + Number(safe.waste10CubicYards || 0).toFixed(2) + ' cubic yards with 10% waste.';
+    return 'Local jobsite calculator result.';
+  }
+
+  function calculatorRecommendedAmountV61X(intent) {
+    var safe = intent || {};
+    if (safe.calculator === 'Concrete Sonotube') return String(safe.recommendedBags) + ' bags';
+    if (safe.calculator === 'Paint Gallons') return String(safe.recommendedGallons) + ' gallons';
+    if (safe.calculator === 'Drywall Sheets') return String(safe.recommendedSheets) + ' ' + safe.sheetSize + ' sheets';
+    if (safe.calculator === 'Flooring Square Footage') return String(safe.recommendedSquareFeet) + ' sq ft';
+    if (safe.calculator === 'Wall Stud Count') return String(safe.recommendedStuds) + ' studs';
+    if (safe.calculator === 'Concrete Slab') return Number(safe.waste10CubicYards || 0).toFixed(2) + ' cubic yards with 10% waste';
+    return 'Review required';
+  }
+
+  function calculatorSafetyNoteV61X() {
+    return 'Local/demo-only calculator draft. Verify inputs, site conditions, waste, code, and owner review before future estimate/SOW use. No live estimate, customer export, backend, or accounting action.';
+  }
+
+  function setCurrentCalculatorResultV61X(intent) {
+    if (intent && intent.canonicalIntent === 'local_calculator_available' && supportedCalculatorDraftTypeV61X(intent.calculator)) {
+      state.currentCalculatorResultV61X = cloneSafeCalculatorIntentV61X(intent);
+      state.currentCalculatorResultV61X.resultSummary = calculatorResultSummaryV61X(intent);
+      state.currentCalculatorResultV61X.recommendedAmount = calculatorRecommendedAmountV61X(intent);
+      state.calculatorDraftsWork = true;
+    }
+    syncNamespace();
+  }
+
+  function renderCalculatorDraftActionsV61X(intent) {
+    if (!intent || !supportedCalculatorDraftTypeV61X(intent.calculator)) return '';
+    return '<div class="actions" data-aqua-v61x-calculator-draft-actions="true" style="margin-top:10px">' +
+      '<button type="button" class="btn small gold" data-aqua-v61x-save-calculation-draft="true">Save Calculation Draft</button>' +
+      '<button type="button" class="btn small" data-aqua-v61x-show-calculator-drafts="true">Show Saved Calculations</button>' +
+      '<button type="button" class="btn small" data-aqua-v61x-clear-calculator-drafts="true">Clear Saved Calculation Drafts</button>' +
+      '<button type="button" class="btn small" data-aqua-v61x-add-estimate-draft="true">Add to Estimate Draft Placeholder</button>' +
+      '</div><div class="smallMut" data-aqua-v61x-draft-safe-copy="true">Calculator draft actions are local/demo-only. No live estimate, no customer export, no backend, no accounting.</div>';
+  }
+
+  function readCalculatorDraftsV61X() {
+    try {
+      var raw = window.localStorage.getItem(CALCULATOR_DRAFTS_KEY_V61X);
+      var parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter(function (item) { return item && item.status === 'draft/local demo only'; }) : [];
+    } catch (error) {
+      state.calculatorDraftStorageWarningV61X = 'localStorage unavailable for calculator drafts';
+      return [];
+    }
+  }
+
+  function writeCalculatorDraftsV61X(drafts) {
+    try {
+      window.localStorage.setItem(CALCULATOR_DRAFTS_KEY_V61X, JSON.stringify((drafts || []).slice(-25)));
+      return true;
+    } catch (error) {
+      state.calculatorDraftStorageWarningV61X = 'localStorage unavailable for calculator drafts';
+      return false;
+    }
+  }
+
+  function buildCalculatorDraftRecordV61X(intent) {
+    var safe = intent || state.currentCalculatorResultV61X || null;
+    if (!safe || !supportedCalculatorDraftTypeV61X(safe.calculator)) return null;
+    return {
+      draftCalculationId: 'calc-draft-v61x-' + Date.now(),
+      calculatorType: String(safe.calculator || ''),
+      originalQuestion: String(safe.originalText || safe.routeText || '').slice(0, 240),
+      detectedValues: cloneSafeCalculatorIntentV61X(safe),
+      resultSummary: String(safe.resultSummary || calculatorResultSummaryV61X(safe)).slice(0, 360),
+      recommendedAmount: String(safe.recommendedAmount || calculatorRecommendedAmountV61X(safe)).slice(0, 120),
+      safetyNote: calculatorSafetyNoteV61X(),
+      timestamp: new Date().toISOString(),
+      status: 'draft/local demo only'
+    };
+  }
+
+  function saveCurrentCalculatorDraftV61X() {
+    var record = buildCalculatorDraftRecordV61X();
+    if (!record) return null;
+    var drafts = readCalculatorDraftsV61X();
+    drafts.push(record);
+    if (!writeCalculatorDraftsV61X(drafts)) return null;
+    state.calculatorDraftsWork = true;
+    state.saveCalculationDraftWorks = true;
+    state.noLiveEstimateCreated = true;
+    state.noCustomerExport = true;
+    state.noBackendCalls = true;
+    state.noNetworkCalls = true;
+    state.noApiKeysInFrontend = true;
+    syncNamespace();
+    return record;
+  }
+
+  function clearCalculatorDraftsV61X() {
+    try { window.localStorage.removeItem(CALCULATOR_DRAFTS_KEY_V61X); } catch (error) { state.calculatorDraftStorageWarningV61X = 'localStorage unavailable while clearing calculator drafts'; }
+    state.currentCalculatorResultV61X = null;
+    state.clearSavedCalculationsWorks = true;
+    state.noLiveEstimateCreated = true;
+    state.noCustomerExport = true;
+    syncNamespace();
+    return true;
+  }
+
+  function renderNoCurrentCalculatorDraftV61X() {
+    return '<div class="note" data-aqua-v61x-no-current-calculation="true"><strong>No current calculator result found.</strong><div>No current calculator result found. Run a local jobsite calculator first.</div><div class="locked">Local/demo-only. No backend, network, external AI/API call, live estimate, customer export, accounting export, payment, payroll, bank, or live record change.</div></div>';
+  }
+
+  function renderSavedCalculatorDraftsV61X() {
+    var drafts = readCalculatorDraftsV61X();
+    var rows = drafts.length ? drafts.map(function (draft) {
+      return '<div class="note" data-aqua-v61x-calculator-draft-row="true"><strong>Draft Calculation ID:</strong> ' + escapeHTMLV61D(draft.draftCalculationId) +
+        '<div><strong>Calculator Type:</strong> ' + escapeHTMLV61D(draft.calculatorType) + '</div>' +
+        '<div><strong>Original Question:</strong> ' + escapeHTMLV61D(draft.originalQuestion) + '</div>' +
+        '<div><strong>Result Summary:</strong> ' + escapeHTMLV61D(draft.resultSummary) + '</div>' +
+        '<div><strong>Recommended Amount:</strong> ' + escapeHTMLV61D(draft.recommendedAmount) + '</div>' +
+        '<div><strong>Status:</strong> Draft only / Local demo</div>' +
+        '<div><strong>Safety:</strong> No live estimate, no customer export, no backend, no accounting</div></div>';
+    }).join('') : '<div>No saved calculator drafts yet.</div>';
+    state.showSavedCalculationsWorks = true;
+    state.calculatorDraftsWork = true;
+    syncNamespace();
+    return '<div class="note" data-aqua-v61x-calculator-drafts-panel="true"><strong>Calculator Drafts / Estimate Prep — Local Demo</strong>' + rows + '<div class="locked">Safety: No live estimate, no customer export, no backend, no accounting. Demo/local-only calculation notes.</div></div>';
+  }
+
+  function renderSavedCalculatorDraftConfirmationV61X(record) {
+    if (!record) return renderNoCurrentCalculatorDraftV61X();
+    return '<div class="note" data-aqua-v61x-save-confirmation="true"><strong>Save Calculation Draft</strong><div>Saved local/demo calculator draft: ' + escapeHTMLV61D(record.draftCalculationId) + '</div><div><strong>Calculator Type:</strong> ' + escapeHTMLV61D(record.calculatorType) + '</div><div><strong>Result Summary:</strong> ' + escapeHTMLV61D(record.resultSummary) + '</div><div><strong>Recommended Amount:</strong> ' + escapeHTMLV61D(record.recommendedAmount) + '</div><div class="locked">Status: draft/local demo only. No live estimate created. No customer export. No backend. No accounting/export/payment action.</div></div>';
+  }
+
+  function renderClearCalculatorDraftsV61X() {
+    clearCalculatorDraftsV61X();
+    return '<div class="note" data-aqua-v61x-clear-calculator-drafts="true"><strong>Clear Saved Calculation Drafts</strong><div>Local/demo calculator drafts were cleared only from ' + escapeHTMLV61D(CALCULATOR_DRAFTS_KEY_V61X) + '.</div><div class="locked">No live estimate, customer export, backend, accounting, payment, payroll, bank, or live job record changed.</div></div>';
+  }
+
+  function renderEstimateDraftPlaceholderV61X() {
+    if (!state.currentCalculatorResultV61X) return renderNoCurrentCalculatorDraftV61X();
+    state.addToEstimateDraftLockedWorks = true;
+    state.noLiveEstimateCreated = true;
+    state.noCustomerExport = true;
+    syncNamespace();
+    return '<div class="note" data-aqua-v61x-estimate-draft-placeholder="true"><strong>Estimate Draft Placeholder</strong><div>This calculation can be prepared for future estimate/SOW review, but no live estimate was created.</div><ul><li>Demo Data Only</li><li>Estimate Draft Locked</li><li>Customer Export Locked</li><li>Backend Locked</li><li>Accounting Export Locked</li><li>Owner Review Required</li><li>No Live Change Made</li></ul><div class="locked">No live estimate created. No customer export. No backend, network, external AI/API, accounting export, payment, payroll, bank, or live record change.</div></div>';
+  }
+
   function renderConcreteSonotubeCalculatorV61V(intent) {
     var safe = intent || {};
     var defaultText = safe.defaultBagSizeUsed ? '<div>Bag size was not specified, so this local estimate defaults to 80 lb bags.</div>' : '';
@@ -707,7 +909,7 @@
       defaultText +
       '<div><strong>Calculation:</strong></div>' +
       '<ul><li>Volume: about ' + escapeHTMLV61D(formatNumberV61V(safe.volumeCubicFeet)) + ' cubic feet</li><li>' + escapeHTMLV61D(safe.bagSizePounds) + ' lb bags: about ' + escapeHTMLV61D(formatNumberV61V(safe.exactBags)) + ' bags</li><li>Recommended purchase: ' + escapeHTMLV61D(safe.recommendedBags) + ' bags</li></ul>' +
-      '<div><strong>Safety note:</strong><br>This is a local estimate. Verify tube size, depth, waste, base conditions, and local code/inspection requirements before pouring.</div>' +
+      '<div><strong>Safety note:</strong><br>This is a local estimate. Verify tube size, depth, waste, base conditions, and local code/inspection requirements before pouring.</div>' + renderCalculatorDraftActionsV61X(safe) +
       '<div class="locked"><strong>Safety locks:</strong><br>Local calculator only<br>No internet/search/API call<br>No live job/accounting record changed<br>No backend calls<br>No external AI/API calls<br>No API keys in frontend<br>No payment, payroll, bank, or accounting export action<br>No sensitive data stored</div></div>';
   }
 
@@ -735,7 +937,7 @@
       '<div><strong>Formula/assumptions:</strong> paintGallons = ceil((squareFeet × coats) / coveragePerGallon); default coverage 350 sq ft/gallon/coat; default 2 coats unless stated.</div>' +
       '<div><strong>Estimated gallons:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.estimatedGallons)) + '</div>' +
       '<div><strong>Recommended purchase:</strong> ' + escapeHTMLV61D(safe.recommendedGallons) + ' gallons</div>' +
-      '<div><strong>Safety note:</strong><br>Local estimate only. Actual coverage depends on surface texture, primer, color change, product, sprayer/roller waste, and manufacturer coverage.</div>' + safetyLocksHTMLV61W() + '</div>';
+      '<div><strong>Safety note:</strong><br>Local estimate only. Actual coverage depends on surface texture, primer, color change, product, sprayer/roller waste, and manufacturer coverage.</div>' + renderCalculatorDraftActionsV61X(safe) + safetyLocksHTMLV61W() + '</div>';
   }
 
   function renderDrywallSheetsCalculatorV61W(intent) {
@@ -748,7 +950,7 @@
       '<div><strong>Sheet size:</strong> ' + escapeHTMLV61D(safe.sheetSize) + '</div>' +
       '<div><strong>Formula/assumptions:</strong> room wall area = perimeter × ceiling height; sheet area = ' + escapeHTMLV61D(safe.sheetArea) + ' sq ft; default waste = 10%; round up sheets.</div>' +
       '<div><strong>Recommended purchase:</strong> ' + escapeHTMLV61D(safe.recommendedSheets) + ' ' + escapeHTMLV61D(safe.sheetSize) + ' sheets</div>' +
-      '<div><strong>Safety note:</strong><br>Local estimate only. Verify openings, ceiling drywall, layout, cuts, fire-rated assemblies, moisture board, and waste.</div>' + safetyLocksHTMLV61W() + '</div>';
+      '<div><strong>Safety note:</strong><br>Local estimate only. Verify openings, ceiling drywall, layout, cuts, fire-rated assemblies, moisture board, and waste.</div>' + renderCalculatorDraftActionsV61X(safe) + safetyLocksHTMLV61W() + '</div>';
   }
 
   function renderFlooringCalculatorV61W(intent) {
@@ -760,7 +962,7 @@
       '<div><strong>Waste:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.wastePercent)) + '%</div>' +
       '<div><strong>Formula/assumptions:</strong> area = length × width; default waste = 10% unless stated; recommended purchase = base area × (1 + waste%).</div>' +
       '<div><strong>Recommended purchase:</strong> ' + escapeHTMLV61D(safe.recommendedSquareFeet) + ' sq ft</div>' +
-      '<div><strong>Safety note:</strong><br>Local estimate only. Verify layout direction, pattern, stair nosing, transitions, closets, cuts, and manufacturer waste recommendation.</div>' + safetyLocksHTMLV61W() + '</div>';
+      '<div><strong>Safety note:</strong><br>Local estimate only. Verify layout direction, pattern, stair nosing, transitions, closets, cuts, and manufacturer waste recommendation.</div>' + renderCalculatorDraftActionsV61X(safe) + safetyLocksHTMLV61W() + '</div>';
   }
 
   function renderWallStudCalculatorV61W(intent) {
@@ -772,7 +974,7 @@
       '<div><strong>Formula/assumptions:</strong> wallInches = wallFeet × 12; spaces = ceil(wallInches / spacingInches); studs = spaces + 1; recommended = studs + 2 extra end/backup allowance.</div>' +
       '<div><strong>Base studs:</strong> ' + escapeHTMLV61D(safe.baseStuds) + '</div>' +
       '<div><strong>Recommended purchase:</strong> ' + escapeHTMLV61D(safe.recommendedStuds) + ' studs</div>' +
-      '<div><strong>Safety note:</strong><br>Local estimate only. Add studs for corners, intersections, doors, windows, blocking, backing, firestopping, and waste.</div>' + safetyLocksHTMLV61W() + '</div>';
+      '<div><strong>Safety note:</strong><br>Local estimate only. Add studs for corners, intersections, doors, windows, blocking, backing, firestopping, and waste.</div>' + renderCalculatorDraftActionsV61X(safe) + safetyLocksHTMLV61W() + '</div>';
   }
 
   function renderConcreteSlabCalculatorV61W(intent) {
@@ -785,7 +987,7 @@
       '<div><strong>Volume:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.volumeCubicFeet)) + ' cubic feet</div>' +
       '<div><strong>Concrete:</strong> ' + escapeHTMLV61D(Number(safe.cubicYards || 0).toFixed(2)) + ' cubic yards</div>' +
       '<div><strong>Suggested order with 10% waste:</strong> ' + escapeHTMLV61D(Number(safe.waste10CubicYards || 0).toFixed(2)) + ' cubic yards</div>' +
-      '<div><strong>Safety note:</strong><br>Local estimate only. Verify subbase, reinforcement, forms, pump/buggy loss, slump, local code, frost depth, and structural requirements.</div>' + safetyLocksHTMLV61W() + '</div>';
+      '<div><strong>Safety note:</strong><br>Local estimate only. Verify subbase, reinforcement, forms, pump/buggy loss, slump, local code, frost depth, and structural requirements.</div>' + renderCalculatorDraftActionsV61X(safe) + safetyLocksHTMLV61W() + '</div>';
   }
 
   function renderJobsiteCalculatorV61W(intent) {
@@ -895,6 +1097,8 @@
       state.automationStatusModeWorks = true;
       return withAskModeV61U(automation, askMode.mode);
     }
+    var calculatorDraft = detectCalculatorDraftCommandV61X(original, q);
+    if (calculatorDraft) return withAskModeV61U(calculatorDraft, askMode.mode);
     var demoState = detectDemoStateCommandV61K(original, q);
     if (demoState) return withAskModeV61U(demoState, askMode.mode);
     if (phraseMatchesV61E(q, ['speak summary', 'read this back'])) {
@@ -1090,6 +1294,43 @@
     state.spokenReadbackControlsInsertedV61R = true;
     state.speakSummaryButtonExistsV61R = true;
     state.stopSpeakingButtonExistsV61R = true;
+    syncNamespace();
+    return true;
+  }
+
+
+  function calculatorDraftOutputNodeV61X(button) {
+    if (document && typeof document.getElementById === 'function') {
+      var brainOut = document.getElementById('brainOut');
+      if (brainOut) return brainOut;
+    }
+    var card = button && button.closest ? button.closest('.note') : null;
+    return card || null;
+  }
+
+  function installCalculatorDraftButtonHandlerV61X() {
+    if (state.calculatorDraftButtonHandlerInstalledV61X || !document || typeof document.addEventListener !== 'function') return true;
+    document.addEventListener('click', function (event) {
+      var target = event.target;
+      var saveButton = target && target.closest ? target.closest('[data-aqua-v61x-save-calculation-draft="true"]') : null;
+      var showButton = target && target.closest ? target.closest('[data-aqua-v61x-show-calculator-drafts="true"]') : null;
+      var clearButton = target && target.closest ? target.closest('[data-aqua-v61x-clear-calculator-drafts="true"]') : null;
+      var estimateButton = target && target.closest ? target.closest('[data-aqua-v61x-add-estimate-draft="true"]') : null;
+      var button = saveButton || showButton || clearButton || estimateButton;
+      if (!button) return;
+      var output = calculatorDraftOutputNodeV61X(button);
+      if (!output) return;
+      if (saveButton) output.innerHTML = renderSavedCalculatorDraftConfirmationV61X(saveCurrentCalculatorDraftV61X());
+      if (showButton) output.innerHTML = renderSavedCalculatorDraftsV61X();
+      if (clearButton) output.innerHTML = renderClearCalculatorDraftsV61X();
+      if (estimateButton) output.innerHTML = renderEstimateDraftPlaceholderV61X();
+      state.noLiveEstimateCreated = true;
+      state.noCustomerExport = true;
+      state.noBackendCalls = true;
+      state.noNetworkCalls = true;
+      syncNamespace();
+    });
+    state.calculatorDraftButtonHandlerInstalledV61X = true;
     syncNamespace();
     return true;
   }
@@ -1721,8 +1962,27 @@
       syncNamespace();
       return intent;
     }
+    if (intent.canonicalIntent === 'save_calculation_draft_v61x') {
+      var draftRecord = saveCurrentCalculatorDraftV61X();
+      if (outputNode) outputNode.innerHTML = renderSavedCalculatorDraftConfirmationV61X(draftRecord);
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'show_calculator_drafts_v61x') {
+      if (outputNode) outputNode.innerHTML = renderSavedCalculatorDraftsV61X();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'clear_calculator_drafts_v61x') {
+      if (outputNode) outputNode.innerHTML = renderClearCalculatorDraftsV61X();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'add_to_estimate_draft_v61x') {
+      if (outputNode) outputNode.innerHTML = renderEstimateDraftPlaceholderV61X();
+      return intent;
+    }
     if (intent.canonicalIntent === 'local_calculator_available' || intent.canonicalIntent === 'local_calculator_need_more_information') {
       if (outputNode) outputNode.innerHTML = renderJobsiteCalculatorV61W(intent);
+      setCurrentCalculatorResultV61X(intent);
       state.jobsiteCalculatorWorks = true;
       if (intent.calculator === 'Concrete Sonotube') state.concreteSonotubeCalculatorWorks = true;
       if (intent.calculator === 'Paint Gallons') state.paintCalculatorWorks = true;
@@ -2918,7 +3178,14 @@
       { command: 'how many sheets of drywall for a 12 by 12 room 8 foot ceiling', expected: 'Drywall Sheets calculator recommends 14 4x8 sheets', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Drywall Sheets|Recommended purchase:<\/strong> 14 4x8 sheets|No internet\/search\/API call/i, noFallback: true, jobsiteCalculator: true, drywallCalculator: true, recommendedSheets: 14 },
       { command: 'flooring for 12 by 15 room', expected: 'Flooring calculator recommends 198 square feet', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Flooring Square Footage|Recommended purchase:<\/strong> 198 sq ft|No internet\/search\/API call/i, noFallback: true, jobsiteCalculator: true, flooringCalculator: true, recommendedSquareFeet: 198 },
       { command: 'how many studs for a 16 foot wall', expected: 'Wall Stud Count calculator recommends 15 studs', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Wall Stud Count|Recommended purchase:<\/strong> 15 studs|No internet\/search\/API call/i, noFallback: true, jobsiteCalculator: true, studCalculator: true, recommendedStuds: 15 },
-      { command: 'concrete for 10 by 12 slab 4 inches thick', expected: 'Concrete Slab calculator estimates 1.48 yards and 1.63 yards with 10% waste', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Slab|Concrete:<\/strong> 1\.48 cubic yards|Suggested order with 10% waste:<\/strong> 1\.63 cubic yards/i, noFallback: true, jobsiteCalculator: true, concreteSlabCalculator: true, cubicYardsApprox: 1.48, waste10CubicYardsApprox: 1.63 },
+      { command: 'concrete for 10 by 12 slab 4 inches thick', expected: 'Concrete Slab calculator estimates 1.48 yards and 1.63 yards with 10% waste', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Slab|Concrete:<\/strong> 1\.48 cubic yards|Suggested order with 10% waste:<\/strong> 1\.63 cubic yards/i, noFallback: true, jobsiteCalculator: true, concreteSlabCalculator: true, calculatorDraftActions: true, cubicYardsApprox: 1.48, waste10CubicYardsApprox: 1.63 },
+      { command: 'save calculation draft', expected: 'Save Calculation Draft stores latest concrete slab calculator draft locally', intent: 'save_calculation_draft_v61x', module: /Calculator Drafts \/ Estimate Prep/i, html: /Save Calculation Draft|Concrete Slab|draft\/local demo only|No live estimate created/i, noFallback: true, saveCalculationDraft: true },
+      { command: 'how many gallons of paint for 1200 square feet', expected: 'Paint Gallons calculator recommends 7 gallons before draft save', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Paint Gallons|Recommended purchase:<\/strong> 7 gallons|Save Calculation Draft/i, noFallback: true, jobsiteCalculator: true, paintCalculator: true, calculatorDraftActions: true, recommendedGallons: 7 },
+      { command: 'save this calculation', expected: 'Save Calculation Draft stores latest paint calculator draft locally', intent: 'save_calculation_draft_v61x', module: /Calculator Drafts \/ Estimate Prep/i, html: /Save Calculation Draft|Paint Gallons|draft\/local demo only|No live estimate created/i, noFallback: true, saveCalculationDraft: true },
+      { command: 'show saved calculations', expected: 'Saved calculator drafts panel displays concrete and paint drafts', intent: 'show_calculator_drafts_v61x', module: /Calculator Drafts \/ Estimate Prep/i, html: /Calculator Drafts \/ Estimate Prep — Local Demo|Concrete Slab|Paint Gallons|Draft only \/ Local demo/i, noFallback: true, showCalculatorDrafts: true },
+      { command: 'add to estimate draft', expected: 'Estimate Draft Placeholder stays locked and demo-only', intent: 'add_to_estimate_draft_v61x', module: /Estimate Draft Placeholder/i, html: /Estimate Draft Placeholder|Estimate Draft Locked|Customer Export Locked|No Live Change Made/i, noFallback: true, addEstimateDraftPlaceholder: true },
+      { command: 'clear saved calculations', expected: 'Clear Saved Calculation Drafts clears local demo drafts only', intent: 'clear_calculator_drafts_v61x', module: /Calculator Drafts \/ Estimate Prep/i, html: /Clear Saved Calculation Drafts|aquaCalculatorDraftsV61X|No live estimate/i, noFallback: true, clearCalculatorDrafts: true },
+      { command: 'save calculation draft', expected: 'Save Calculation Draft without active calculator result asks user to run calculator first', intent: 'save_calculation_draft_v61x', module: /Calculator Drafts \/ Estimate Prep/i, html: /No current calculator result found\. Run a local jobsite calculator first\./i, noFallback: true, noCurrentCalculation: true },
       { command: 'how many gallons of paint', expected: 'Need More Information for missing paint square footage', intent: 'local_calculator_need_more_information', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Need More Information|square footage to paint|No internet\/API call was made/i, noFallback: true, jobsiteCalculator: true, needMoreInformation: true },
       { command: 'what is the best paint brand today', expected: 'Unsupported General Ask remains locked with no API/search', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
       { command: 'how many sheets of drywall for this room', expected: 'Need More Information for missing drywall room dimensions and ceiling height', intent: 'local_calculator_need_more_information', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Need More Information|ceiling height|No internet\/API call was made/i, noFallback: true, jobsiteCalculator: true, needMoreInformation: true },
@@ -3016,6 +3283,12 @@
       renderedFlooringCalculator: /Jobsite Calculator — Flooring Square Footage|data-aqua-v61w-flooring/i.test(html),
       renderedStudCalculator: /Jobsite Calculator — Wall Stud Count|data-aqua-v61w-wall-stud-count/i.test(html),
       renderedConcreteSlabCalculator: /Jobsite Calculator — Concrete Slab|data-aqua-v61w-concrete-slab/i.test(html),
+      renderedCalculatorDraftActions: /Save Calculation Draft|data-aqua-v61x-calculator-draft-actions/i.test(html),
+      renderedCalculatorDraftsPanel: /Calculator Drafts \/ Estimate Prep — Local Demo|data-aqua-v61x-calculator-drafts-panel/i.test(html),
+      renderedSaveCalculationDraft: /Save Calculation Draft|data-aqua-v61x-save-confirmation/i.test(html),
+      renderedClearCalculatorDrafts: /Clear Saved Calculation Drafts|data-aqua-v61x-clear-calculator-drafts/i.test(html),
+      renderedEstimateDraftPlaceholder: /Estimate Draft Placeholder|data-aqua-v61x-estimate-draft-placeholder/i.test(html),
+      renderedNoCurrentCalculation: /No current calculator result found\. Run a local jobsite calculator first\./i.test(html),
       recommendedGallons: intent && intent.recommendedGallons,
       recommendedSheets: intent && intent.recommendedSheets,
       recommendedSquareFeet: intent && intent.recommendedSquareFeet,
@@ -3052,6 +3325,12 @@
     if (testCase.studCalculator && !actual.renderedStudCalculator) errors.push('Expected Wall Stud Count calculator, but it did not render.');
     if (testCase.concreteSlabCalculator && !actual.renderedConcreteSlabCalculator) errors.push('Expected Concrete Slab calculator, but it did not render.');
     if (testCase.concreteSonotubeCalculator && !actual.renderedConcreteSonotubeCalculator) errors.push('Expected Concrete Sonotube calculator, but it did not render.');
+    if (testCase.calculatorDraftActions && !actual.renderedCalculatorDraftActions) errors.push('Expected calculator draft action buttons, but they did not render.');
+    if (testCase.saveCalculationDraft && !actual.renderedSaveCalculationDraft) errors.push('Expected Save Calculation Draft confirmation, but it did not render.');
+    if (testCase.showCalculatorDrafts && !actual.renderedCalculatorDraftsPanel) errors.push('Expected saved calculator drafts panel, but it did not render.');
+    if (testCase.clearCalculatorDrafts && !actual.renderedClearCalculatorDrafts) errors.push('Expected clear saved calculation drafts panel, but it did not render.');
+    if (testCase.addEstimateDraftPlaceholder && !actual.renderedEstimateDraftPlaceholder) errors.push('Expected locked estimate draft placeholder, but it did not render.');
+    if (testCase.noCurrentCalculation && !actual.renderedNoCurrentCalculation) errors.push('Expected no-current-calculation message, but it did not render.');
     if (typeof testCase.recommendedGallons === 'number' && actual.recommendedGallons !== testCase.recommendedGallons) errors.push('Expected recommended gallons ' + testCase.recommendedGallons + ' but got ' + actual.recommendedGallons + '.');
     if (typeof testCase.recommendedSheets === 'number' && actual.recommendedSheets !== testCase.recommendedSheets) errors.push('Expected recommended sheets ' + testCase.recommendedSheets + ' but got ' + actual.recommendedSheets + '.');
     if (typeof testCase.recommendedSquareFeet === 'number' && actual.recommendedSquareFeet !== testCase.recommendedSquareFeet) errors.push('Expected recommended square feet ' + testCase.recommendedSquareFeet + ' but got ' + actual.recommendedSquareFeet + '.');
@@ -3109,8 +3388,8 @@
   function placeholderRegressionReportV61T() {
     var safety = regressionSafetyV61L();
     return {
-      version: 'v61W',
-      harnessVersion: 'v61L-compatible/v61W',
+      version: 'v61X',
+      harnessVersion: 'v61L-compatible/v61X',
       timestamp: new Date().toISOString(),
       total: 0,
       passed: 0,
@@ -3161,8 +3440,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61W',
-      harnessVersion: 'v61L-compatible/v61W',
+      version: 'v61X',
+      harnessVersion: 'v61L-compatible/v61X',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -3199,6 +3478,13 @@
       flooringCalculatorWorks: results.some(function (result) { return result.command === 'flooring for 12 by 15 room' && result.passed && result.actual.renderedFlooringCalculator && result.actual.recommendedSquareFeet === 198; }),
       studCalculatorWorks: results.some(function (result) { return result.command === 'how many studs for a 16 foot wall' && result.passed && result.actual.renderedStudCalculator && result.actual.recommendedStuds === 15; }),
       concreteSlabCalculatorWorks: results.some(function (result) { return result.command === 'concrete for 10 by 12 slab 4 inches thick' && result.passed && result.actual.renderedConcreteSlabCalculator && Math.abs(result.actual.cubicYards - 1.48) < 0.01 && Math.abs(result.actual.waste10CubicYards - 1.63) < 0.01; }),
+      calculatorDraftsWork: results.some(function (result) { return result.command === 'show saved calculations' && result.passed && result.actual.renderedCalculatorDraftsPanel; }),
+      saveCalculationDraftWorks: results.filter(function (result) { return /save (calculation draft|this calculation)/i.test(result.command); }).some(function (result) { return result.passed && result.actual.renderedSaveCalculationDraft; }),
+      showSavedCalculationsWorks: results.some(function (result) { return result.command === 'show saved calculations' && result.passed && result.actual.renderedCalculatorDraftsPanel; }),
+      clearSavedCalculationsWorks: results.some(function (result) { return result.command === 'clear saved calculations' && result.passed && result.actual.renderedClearCalculatorDrafts; }),
+      addToEstimateDraftLockedWorks: results.some(function (result) { return result.command === 'add to estimate draft' && result.passed && result.actual.renderedEstimateDraftPlaceholder; }),
+      noLiveEstimateCreated: true,
+      noCustomerExport: true,
       needMoreInformationWorks: results.some(function (result) { return result.command === 'how many gallons of paint' && result.passed && result.actual.renderedNeedMoreInformation; }),
       sonotubeEightInchFourFoot80lbReturnsThreeBags: results.some(function (result) { return result.command === 'how many bags of concrete for an 8 inch sonotube 4 feet deep' && result.passed && result.actual.recommendedBags === 3 && result.actual.bagSizePounds === 80; }),
       saunaTubeNormalizesToSonotube: results.some(function (result) { return /sauna tube/i.test(result.command) && result.passed && result.actual.normalizedTubeTerm === 'Sonotube'; }),
@@ -3227,6 +3513,13 @@
     state.flooringCalculatorWorks = report.flooringCalculatorWorks;
     state.studCalculatorWorks = report.studCalculatorWorks;
     state.concreteSlabCalculatorWorks = report.concreteSlabCalculatorWorks;
+    state.calculatorDraftsWork = report.calculatorDraftsWork;
+    state.saveCalculationDraftWorks = report.saveCalculationDraftWorks;
+    state.showSavedCalculationsWorks = report.showSavedCalculationsWorks;
+    state.clearSavedCalculationsWorks = report.clearSavedCalculationsWorks;
+    state.addToEstimateDraftLockedWorks = report.addToEstimateDraftLockedWorks;
+    state.noLiveEstimateCreated = true;
+    state.noCustomerExport = true;
     state.needMoreInformationWorks = report.needMoreInformationWorks;
     state.unsupportedGeneralAskRemainsLocked = report.unsupportedGeneralAskRemainsLocked;
     state.sonotubeEightInchFourFoot80lbReturnsThreeBags = report.sonotubeEightInchFourFoot80lbReturnsThreeBags;
@@ -3442,6 +3735,7 @@
   installCommandNormalizerV61E();
   installPermissionGranterDemoButtonsV61I();
   installSpokenReadbackButtonHandlerV61R();
+  installCalculatorDraftButtonHandlerV61X();
   installRegressionQAButtonHandlerV61L();
   installButtonLabelInjectionGuardV61M();
   if (document.readyState === 'loading') {
@@ -3451,5 +3745,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61W extensions loaded: Jobsite Calculator Expansion Pack 1 active. No live change made.');
+  console.log('Aqua Homes OS v61X extensions loaded: Calculator Report / Save-to-Estimate Draft Foundation active. No live estimate created.');
 }());

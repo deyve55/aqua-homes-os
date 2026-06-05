@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v61W';
+const VERSION = 'v61X';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -284,6 +284,10 @@ function checkStaticFiles() {
   addCheck('v61W Wall Stud Count calculator copy exists', /Jobsite Calculator — Wall Stud Count/.test(extension), { layer: 'jobsite-calculator-v61w', fileToFix: EXTENSION });
   addCheck('v61W Concrete Slab calculator copy exists', /Jobsite Calculator — Concrete Slab/.test(extension), { layer: 'jobsite-calculator-v61w', fileToFix: EXTENSION });
   addCheck('v61W needMoreInformationWorks report flag exists', /needMoreInformationWorks/.test(extension), { layer: 'jobsite-calculator-v61w', fileToFix: EXTENSION });
+  addCheck('v61X calculator draft storage key exists', /aquaCalculatorDraftsV61X/.test(extension), { layer: 'calculator-drafts-v61x', fileToFix: EXTENSION });
+  addCheck('v61X Save Calculation Draft action exists', /Save Calculation Draft/.test(extension) && /save_calculation_draft_v61x/.test(extension), { layer: 'calculator-drafts-v61x', fileToFix: EXTENSION });
+  addCheck('v61X Calculator Drafts panel exists', /Calculator Drafts \/ Estimate Prep — Local Demo/.test(extension), { layer: 'calculator-drafts-v61x', fileToFix: EXTENSION });
+  addCheck('v61X Estimate Draft Placeholder lock exists', /Estimate Draft Placeholder/.test(extension) && /Estimate Draft Locked/.test(extension), { layer: 'calculator-drafts-v61x', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -306,7 +310,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v61W', extensionReport.version === 'v61W', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v61X', extensionReport.version === 'v61X', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('extension regression includes spoken readback availability or fallback flag', extensionReport.spokenReadbackAvailable === true || extensionReport.spokenReadbackBrowserUnavailableFallback === true, { layer: 'spoken-readback-v61r', actual: { available: extensionReport.spokenReadbackAvailable, fallback: extensionReport.spokenReadbackBrowserUnavailableFallback }, fileToFix: EXTENSION });
     addCheck('extension regression spoken preference key is aquaSpokenReadbackV61R', extensionReport.spokenReadbackPreferenceKey === 'aquaSpokenReadbackV61R', { layer: 'spoken-readback-v61r', actual: extensionReport.spokenReadbackPreferenceKey, fileToFix: EXTENSION });
     addCheck('automationCommandRoutesBeforeFallback is true', extensionReport.automationCommandRoutesBeforeFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandRoutesBeforeFallback, fileToFix: EXTENSION });
@@ -326,6 +330,13 @@ function runExtensionRegression() {
     addCheck('studCalculatorWorks is true', extensionReport.studCalculatorWorks === true, { layer: 'jobsite-calculator-v61w', actual: extensionReport.studCalculatorWorks, fileToFix: EXTENSION });
     addCheck('concreteSlabCalculatorWorks is true', extensionReport.concreteSlabCalculatorWorks === true, { layer: 'jobsite-calculator-v61w', actual: extensionReport.concreteSlabCalculatorWorks, fileToFix: EXTENSION });
     addCheck('needMoreInformationWorks is true', extensionReport.needMoreInformationWorks === true, { layer: 'jobsite-calculator-v61w', actual: extensionReport.needMoreInformationWorks, fileToFix: EXTENSION });
+    addCheck('calculatorDraftsWork is true', extensionReport.calculatorDraftsWork === true, { layer: 'calculator-drafts-v61x', actual: extensionReport.calculatorDraftsWork, fileToFix: EXTENSION });
+    addCheck('saveCalculationDraftWorks is true', extensionReport.saveCalculationDraftWorks === true, { layer: 'calculator-drafts-v61x', actual: extensionReport.saveCalculationDraftWorks, fileToFix: EXTENSION });
+    addCheck('showSavedCalculationsWorks is true', extensionReport.showSavedCalculationsWorks === true, { layer: 'calculator-drafts-v61x', actual: extensionReport.showSavedCalculationsWorks, fileToFix: EXTENSION });
+    addCheck('clearSavedCalculationsWorks is true', extensionReport.clearSavedCalculationsWorks === true, { layer: 'calculator-drafts-v61x', actual: extensionReport.clearSavedCalculationsWorks, fileToFix: EXTENSION });
+    addCheck('addToEstimateDraftLockedWorks is true', extensionReport.addToEstimateDraftLockedWorks === true, { layer: 'calculator-drafts-v61x', actual: extensionReport.addToEstimateDraftLockedWorks, fileToFix: EXTENSION });
+    addCheck('noLiveEstimateCreated is true', extensionReport.noLiveEstimateCreated === true, { layer: 'calculator-drafts-v61x', actual: extensionReport.noLiveEstimateCreated, fileToFix: EXTENSION });
+    addCheck('noCustomerExport is true', extensionReport.noCustomerExport === true, { layer: 'calculator-drafts-v61x', actual: extensionReport.noCustomerExport, fileToFix: EXTENSION });
     addCheck('8 inch / 4 foot / 80 lb returns 3 recommended bags', extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags, fileToFix: EXTENSION });
     addCheck('sauna tube normalizes to Sonotube', extensionReport.saunaTubeNormalizesToSonotube === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.saunaTubeNormalizesToSonotube, fileToFix: EXTENSION });
     addCheck('unsupported General Ask remains locked', extensionReport.unsupportedGeneralAskRemainsLocked === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.unsupportedGeneralAskRemainsLocked, fileToFix: EXTENSION });
@@ -393,7 +404,7 @@ function runExtensionRegression() {
       ['banana test', 'unknown_fallback']
     ].forEach(([command, mode]) => {
       const row = byCommand.get(command);
-      addCheck(`v61W Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.askMode === mode), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+      addCheck(`v61X Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.askMode === mode), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     const concreteDefaultRow = byCommand.get('how many bags of concrete for an 8 inch sonotube 4 feet deep');
@@ -413,6 +424,19 @@ function runExtensionRegression() {
     addCheck('Wall Stud Count calculator recommends 15 studs', Boolean(studsRow && studsRow.passed && studsRow.actual && studsRow.actual.recommendedStuds === 15), { layer: 'jobsite-calculator-v61w', expected: '15 studs', actual: studsRow ? studsRow.actual : 'missing from extension results', fileToFix: EXTENSION });
     const slabRow = byCommand.get('concrete for 10 by 12 slab 4 inches thick');
     addCheck('Concrete Slab calculator estimates about 1.48 yd and 1.63 yd with 10% waste', Boolean(slabRow && slabRow.passed && slabRow.actual && Math.abs(slabRow.actual.cubicYards - 1.48) < 0.01 && Math.abs(slabRow.actual.waste10CubicYards - 1.63) < 0.01), { layer: 'jobsite-calculator-v61w', expected: '1.48 yd / 1.63 yd with waste', actual: slabRow ? slabRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const saveDraftRows = (extensionReport.results || []).filter((row) => row.command === 'save calculation draft');
+    const saveDraftRow = saveDraftRows.find((row) => row.actual && row.actual.renderedSaveCalculationDraft);
+    const noCurrentDraftRow = saveDraftRows.find((row) => row.actual && row.actual.renderedNoCurrentCalculation);
+    addCheck('v61X save calculation draft stores local demo draft', Boolean(saveDraftRow && saveDraftRow.passed), { layer: 'calculator-drafts-v61x', expected: 'saved local draft', actual: saveDraftRow ? saveDraftRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const saveThisRow = byCommand.get('save this calculation');
+    addCheck('v61X save this calculation stores Paint Gallons draft', Boolean(saveThisRow && saveThisRow.passed && saveThisRow.actual && saveThisRow.actual.renderedSaveCalculationDraft), { layer: 'calculator-drafts-v61x', expected: 'saved paint draft', actual: saveThisRow ? saveThisRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const showDraftsRow = byCommand.get('show saved calculations');
+    addCheck('v61X show saved calculations displays drafts', Boolean(showDraftsRow && showDraftsRow.passed && showDraftsRow.actual && showDraftsRow.actual.renderedCalculatorDraftsPanel), { layer: 'calculator-drafts-v61x', expected: 'calculator drafts panel', actual: showDraftsRow ? showDraftsRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const addEstimateDraftRow = byCommand.get('add to estimate draft');
+    addCheck('v61X add to estimate draft is locked placeholder only', Boolean(addEstimateDraftRow && addEstimateDraftRow.passed && addEstimateDraftRow.actual && addEstimateDraftRow.actual.renderedEstimateDraftPlaceholder), { layer: 'calculator-drafts-v61x', expected: 'locked estimate draft placeholder', actual: addEstimateDraftRow ? addEstimateDraftRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const clearDraftsRow = byCommand.get('clear saved calculations');
+    addCheck('v61X clear saved calculations clears local demo drafts only', Boolean(clearDraftsRow && clearDraftsRow.passed && clearDraftsRow.actual && clearDraftsRow.actual.renderedClearCalculatorDrafts), { layer: 'calculator-drafts-v61x', expected: 'clear calculator drafts panel', actual: clearDraftsRow ? clearDraftsRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    addCheck('v61X save without active calculator asks to run calculator first', Boolean(noCurrentDraftRow && noCurrentDraftRow.passed), { layer: 'calculator-drafts-v61x', expected: 'No current calculator result found', actual: noCurrentDraftRow ? noCurrentDraftRow.actual : 'missing from extension results', fileToFix: EXTENSION });
     const missingPaintRow = byCommand.get('how many gallons of paint');
     addCheck('Missing paint values show Need More Information instead of fallback', Boolean(missingPaintRow && missingPaintRow.passed && missingPaintRow.actual && missingPaintRow.actual.renderedNeedMoreInformation), { layer: 'jobsite-calculator-v61w', expected: 'Need More Information', actual: missingPaintRow ? missingPaintRow.actual : 'missing from extension results', fileToFix: EXTENSION });
     const bestPaintRow = byCommand.get('what is the best paint brand today');
@@ -615,11 +639,23 @@ function markdown(report) {
     `- studCalculatorWorks: ${report.extensionRegression && report.extensionRegression.studCalculatorWorks === true}\n` +
     `- concreteSlabCalculatorWorks: ${report.extensionRegression && report.extensionRegression.concreteSlabCalculatorWorks === true}\n` +
     `- needMoreInformationWorks: ${report.extensionRegression && report.extensionRegression.needMoreInformationWorks === true}\n` +
+    `- calculatorDraftsWork: ${report.calculatorDraftsWork === true}\n` +
+    `- saveCalculationDraftWorks: ${report.saveCalculationDraftWorks === true}\n` +
+    `- showSavedCalculationsWorks: ${report.showSavedCalculationsWorks === true}\n` +
+    `- clearSavedCalculationsWorks: ${report.clearSavedCalculationsWorks === true}\n` +
+    `- addToEstimateDraftLockedWorks: ${report.addToEstimateDraftLockedWorks === true}\n` +
+    `- noLiveEstimateCreated: ${report.noLiveEstimateCreated === true}\n` +
+    `- noCustomerExport: ${report.noCustomerExport === true}\n` +
     `- unsupportedGeneralAskRemainsLocked: ${report.extensionRegression && report.extensionRegression.unsupportedGeneralAskRemainsLocked === true}\n` +
     `- sonotubeEightInchFourFoot80lbReturnsThreeBags: ${report.extensionRegression && report.extensionRegression.sonotubeEightInchFourFoot80lbReturnsThreeBags === true}\n` +
     `- saunaTubeNormalizesToSonotube: ${report.extensionRegression && report.extensionRegression.saunaTubeNormalizesToSonotube === true}\n` +
     `- unknownFallbackWorks: ${report.extensionRegression && report.extensionRegression.unknownFallbackWorks === true}\n` +
-    `- noApiKeysInFrontend: ${report.extensionRegression && report.extensionRegression.noApiKeysInFrontend === true}\n\n` +
+    `- noBackendCalls: ${report.noBackendCalls === true}\n` +
+    `- noNetworkCalls: ${report.noNetworkCalls === true}\n` +
+    `- noExternalAIApiCalls: ${report.noExternalAIApiCalls === true}\n` +
+    `- noApiKeysInFrontend: ${report.extensionRegression && report.extensionRegression.noApiKeysInFrontend === true}\n` +
+    `- noLiveRecordChanges: ${report.noLiveRecordChanges === true}\n` +
+    `- noPaymentPayrollBankAccountingExport: ${report.noPaymentPayrollBankAccountingExport === true}\n\n` +
     `## Files Changed\n${changedRows}\n\n` +
     `## Failed Commands / Checks\n${failedRows}\n\n` +
     `## Safety Status\n${safetyRows}\n\n` +
@@ -685,9 +721,19 @@ async function main() {
     unsupportedGeneralAskRemainsLocked: extensionReport ? extensionReport.unsupportedGeneralAskRemainsLocked === true : false,
     sonotubeEightInchFourFoot80lbReturnsThreeBags: extensionReport ? extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags === true : false,
     unknownFallbackWorks: extensionReport ? extensionReport.unknownFallbackWorks === true : false,
+    calculatorDraftsWork: extensionReport ? extensionReport.calculatorDraftsWork === true : false,
+    saveCalculationDraftWorks: extensionReport ? extensionReport.saveCalculationDraftWorks === true : false,
+    showSavedCalculationsWorks: extensionReport ? extensionReport.showSavedCalculationsWorks === true : false,
+    clearSavedCalculationsWorks: extensionReport ? extensionReport.clearSavedCalculationsWorks === true : false,
+    addToEstimateDraftLockedWorks: extensionReport ? extensionReport.addToEstimateDraftLockedWorks === true : false,
+    noLiveEstimateCreated: extensionReport ? extensionReport.noLiveEstimateCreated === true : false,
+    noCustomerExport: extensionReport ? extensionReport.noCustomerExport === true : false,
+    noBackendCalls: safetyStatus.noBackendCalls === true,
     noNetworkCalls: extensionReport ? extensionReport.noNetworkCalls === true : false,
+    noExternalAIApiCalls: safetyStatus.noLiveAIApiCalls === true,
     noApiKeysInFrontend: extensionReport ? extensionReport.noApiKeysInFrontend === true : false,
     noLiveRecordChanges: extensionReport ? extensionReport.noLiveRecordChanges === true : false,
+    noPaymentPayrollBankAccountingExport: safetyStatus.noPayment === true && safetyStatus.noPayroll === true && safetyStatus.noBankSync === true && safetyStatus.noAccountingExport === true,
     spokenReadbackAvailable: extensionReport ? extensionReport.spokenReadbackAvailable === true : false,
     spokenReadbackBrowserUnavailableFallback: extensionReport ? extensionReport.spokenReadbackBrowserUnavailableFallback === true : true,
     gateSelfTest,
