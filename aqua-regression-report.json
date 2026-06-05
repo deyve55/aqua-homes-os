@@ -1,15 +1,15 @@
 {
-  "version": "v61Q",
-  "timestamp": "2026-06-05T13:58:15.267Z",
+  "version": "v61R",
+  "timestamp": "2026-06-05T14:07:52.538Z",
   "branch": "work",
-  "commit": "7c5250a83707f4d3410e92059368c29e58ec85bd",
+  "commit": "3b7bf38c3ca4d211b31d2b8e9126f39c2ed516ca",
   "filesChanged": [
     "aqua-regression-report.json",
     "aqua-regression-report.md",
     "aqua-v61-regression-test.js"
   ],
-  "total": 47,
-  "passed": 47,
+  "total": 63,
+  "passed": 63,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -64,6 +64,36 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "v61R speech readback function exists",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61R Speak Summary button exists",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61R Stop Speaking button exists",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61R spoken readback uses safe local preference key only",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61R spoken readback browser fallback copy exists",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "AquaV61Extensions exists",
       "passed": true,
       "layer": "extension-regression",
@@ -79,14 +109,14 @@
       "name": "extension regression produced total tests",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 27,
+      "actual": 34,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
       "name": "extension regression passed count present",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 27,
+      "actual": 34,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -126,7 +156,8 @@
         "noLiveAI": true,
         "noPaymentPayrollBankExport": true,
         "noAudioStored": true,
-        "noAlwaysListening": true
+        "noAlwaysListening": true,
+        "noExternalTTSApiCalls": true
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -142,6 +173,149 @@
       "passed": true,
       "layer": "extension-regression",
       "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression version is v61R",
+      "passed": true,
+      "layer": "extension-regression",
+      "actual": "v61R",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression includes spoken readback availability or fallback flag",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "actual": {
+        "available": false,
+        "fallback": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "extension regression spoken preference key is aquaSpokenReadbackV61R",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "actual": "aquaSpokenReadbackV61R",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "spoken readback typed command routes: speak summary",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "expected": "recognized local spoken readback route",
+      "actual": {
+        "command": "speak summary",
+        "canonicalIntent": "speak_summary_v61r",
+        "module": "Spoken Readback",
+        "normalizedText": "speak summary",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "spoken readback typed command routes: read this back",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "expected": "recognized local spoken readback route",
+      "actual": {
+        "command": "read this back",
+        "canonicalIntent": "speak_summary_v61r",
+        "module": "Spoken Readback",
+        "normalizedText": "read this back",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "spoken readback typed command routes: read report",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "expected": "recognized local spoken readback route",
+      "actual": {
+        "command": "read report",
+        "canonicalIntent": "read_report_v61r",
+        "module": "Spoken Readback",
+        "normalizedText": "read report",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "spoken readback typed command routes: stop speaking",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "expected": "recognized local spoken readback route",
+      "actual": {
+        "command": "stop speaking",
+        "canonicalIntent": "stop_speaking_v61r",
+        "module": "Spoken Readback",
+        "normalizedText": "stop speaking",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "spoken readback typed command routes: mute voice",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "expected": "recognized local spoken readback route",
+      "actual": {
+        "command": "mute voice",
+        "canonicalIntent": "stop_speaking_v61r",
+        "module": "Spoken Readback",
+        "normalizedText": "mute voice",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "spoken readback typed command routes: voice off",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "expected": "recognized local spoken readback route",
+      "actual": {
+        "command": "voice off",
+        "canonicalIntent": "voice_off_v61r",
+        "module": "Spoken Readback",
+        "normalizedText": "voice off",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "spoken readback typed command routes: voice on",
+      "passed": true,
+      "layer": "spoken-readback-v61r",
+      "expected": "recognized local spoken readback route",
+      "actual": {
+        "command": "voice on",
+        "canonicalIntent": "voice_on_v61r",
+        "module": "Spoken Readback",
+        "normalizedText": "voice on",
+        "renderedFallback": false,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -397,6 +571,12 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "safety gate: noExternalTTSApiCalls",
+      "passed": true,
+      "layer": "safety-gate",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "merge gate self-test: fake passing report allows merge",
       "passed": true,
       "layer": "merge-gate-self-test",
@@ -443,18 +623,19 @@
     "noAccountingExport": true,
     "noCustomerSharingExport": true,
     "noAudioStorage": true,
-    "noAlwaysListening": true
+    "noAlwaysListening": true,
+    "noExternalTTSApiCalls": true
   },
   "browserVisualTest": {
     "status": "skipped",
     "reason": "Playwright/browser not available"
   },
   "extensionRegression": {
-    "version": "v61P",
-    "harnessVersion": "v61L-compatible/v61P",
-    "timestamp": "2026-06-05T13:58:14.965Z",
-    "total": 27,
-    "passed": 27,
+    "version": "v61R",
+    "harnessVersion": "v61L-compatible/v61R",
+    "timestamp": "2026-06-05T14:07:52.092Z",
+    "total": 34,
+    "passed": 34,
     "failed": 0,
     "failedCommands": [],
     "failures": [],
@@ -908,6 +1089,125 @@
         "suggestedFix": ""
       },
       {
+        "command": "speak summary",
+        "expected": "Speak current summary",
+        "actual": {
+          "command": "speak summary",
+          "canonicalIntent": "speak_summary_v61r",
+          "module": "Spoken Readback",
+          "normalizedText": "speak summary",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "read this back",
+        "expected": "Read current summary",
+        "actual": {
+          "command": "read this back",
+          "canonicalIntent": "speak_summary_v61r",
+          "module": "Spoken Readback",
+          "normalizedText": "read this back",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "read report",
+        "expected": "Read automation report summary",
+        "actual": {
+          "command": "read report",
+          "canonicalIntent": "read_report_v61r",
+          "module": "Spoken Readback",
+          "normalizedText": "read report",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "stop speaking",
+        "expected": "Stop speech synthesis",
+        "actual": {
+          "command": "stop speaking",
+          "canonicalIntent": "stop_speaking_v61r",
+          "module": "Spoken Readback",
+          "normalizedText": "stop speaking",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "mute voice",
+        "expected": "Mute voice command stops speech",
+        "actual": {
+          "command": "mute voice",
+          "canonicalIntent": "stop_speaking_v61r",
+          "module": "Spoken Readback",
+          "normalizedText": "mute voice",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "voice off",
+        "expected": "Voice preference off",
+        "actual": {
+          "command": "voice off",
+          "canonicalIntent": "voice_off_v61r",
+          "module": "Spoken Readback",
+          "normalizedText": "voice off",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "voice on",
+        "expected": "Voice preference on",
+        "actual": {
+          "command": "voice on",
+          "canonicalIntent": "voice_on_v61r",
+          "module": "Spoken Readback",
+          "normalizedText": "voice on",
+          "renderedFallback": false,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
         "command": "banana test",
         "expected": "Guided fallback",
         "actual": {
@@ -932,7 +1232,8 @@
       "noLiveAI": true,
       "noPaymentPayrollBankExport": true,
       "noAudioStored": true,
-      "noAlwaysListening": true
+      "noAlwaysListening": true,
+      "noExternalTTSApiCalls": true
     },
     "permissionDraftSafety": {
       "noLiveRecordChangeOccurs": true,
@@ -948,8 +1249,13 @@
     "safeToMerge": true,
     "mergeRecommendation": "MERGE_ALLOWED",
     "noLiveRecordChanges": true,
-    "noBackendNetworkLiveAICalls": true
+    "noBackendNetworkLiveAICalls": true,
+    "spokenReadbackAvailable": false,
+    "spokenReadbackBrowserUnavailableFallback": true,
+    "spokenReadbackPreferenceKey": "aquaSpokenReadbackV61R"
   },
+  "spokenReadbackAvailable": false,
+  "spokenReadbackBrowserUnavailableFallback": true,
   "gateSelfTest": {
     "passingReportAllowsMerge": true,
     "failingReportBlocksMerge": true,
