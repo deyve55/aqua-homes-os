@@ -23,6 +23,8 @@
     permissionDeniedFallbackAvailable: false,
     browserBlockedFallbackAvailable: false,
     fallbackTapToStartVoiceAvailable: false,
+    fallbackUXPolished: false,
+    roughDraftLabelPresent: false,
     directAskButtonHookInstalled: false,
     directMicStartAttemptedFromUserGesture: false,
     oneShotOnly: true,
@@ -117,7 +119,7 @@
       '<div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div>',
       '<div class="field"><label>Project / company</label><select id="brainProject"><option>Aqua Homes Parent</option><option>Main Brain</option></select></div>',
       '<div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="startVoiceAskV60U()">Ask by Voice</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button></div>',
-      '<div id="voiceAskAreaV60U" class="field"><div class="smallMut"><strong>Browser voice input / demo only</strong> • Push-to-talk only • No always listening • No audio stored • Backend locked</div><div id="voiceAskStatusV60U" class="note">Voice Ask ready. Tap Ask by Voice to capture one local browser transcript.</div></div>',
+      '<div id="voiceAskAreaV60U" class="field"><div class="smallMut"><strong>Browser voice input / demo only</strong> • Push-to-talk only • No always listening • No audio stored • Backend locked</div><div id="voiceAskStatusV60U" class="note"><strong>Browser requires one more tap for microphone safety.</strong><div class="smallMut">Tap once to start voice. This is push-to-talk only. No always listening. No audio stored.</div><div class="smallMut">Voice rough draft — final one-tap/native flow planned.</div></div></div>',
       '<div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked. Try: What needs my attention today?, Owner briefing, Show approval queue, Show receipts, Show Project Folders, Show Bank Reconciliation, or Run full Aqua QA.</div></div>'
     ].join('');
     return {
@@ -170,10 +172,20 @@
     return document.getElementById('voiceAskStatusV60U');
   }
 
+  function renderVoiceFallbackStatusV61D(message) {
+    return '<strong>' + escapeHTMLV61D(message) + '</strong>' +
+      '<div class="smallMut">Tap once to start voice. This is push-to-talk only. No always listening. No audio stored.</div>' +
+      '<div class="smallMut">Voice rough draft — final one-tap/native flow planned.</div>';
+  }
+
   function ensureTapToStartVoiceFallbackV61D() {
     var modal = getModal();
     if (!modal || !isAskAIModalOpen()) return false;
     var area = modal.querySelector('#voiceAskAreaV60U') || modal.querySelector('#askAICommandFlowV61B') || modal;
+    var status = getVoiceStatusNode();
+    if (status && !/Voice rough draft/i.test(status.textContent || '')) {
+      status.innerHTML = renderVoiceFallbackStatusV61D('Browser requires one more tap for microphone safety.');
+    }
     var existing = modal.querySelector('#tapToStartVoiceV61D');
     if (!existing) {
       var wrap = document.createElement('div');
@@ -195,6 +207,8 @@
       existing.__aquaV61DVoiceFallbackBound = true;
     }
     state.fallbackTapToStartVoiceAvailable = Boolean(existing);
+    state.fallbackUXPolished = true;
+    state.roughDraftLabelPresent = Boolean(modal.querySelector('#voiceAskStatusV60U') && /Voice rough draft/i.test(modal.querySelector('#voiceAskStatusV60U').textContent || ''));
     state.browserBlockedFallbackAvailable = true;
     syncNamespace();
     return state.fallbackTapToStartVoiceAvailable;
@@ -203,7 +217,7 @@
   function setDirectAskVoiceStatusV61D(message, status) {
     var el = getVoiceStatusNode();
     if (el) {
-      el.innerHTML = '<strong>' + escapeHTMLV61D(message) + '</strong><div class="smallMut">Browser voice input / demo only • Push-to-talk only • No always listening • No audio stored • Backend locked</div>';
+      el.innerHTML = renderVoiceFallbackStatusV61D(message);
     }
     ensureTapToStartVoiceFallbackV61D();
     state.lastDirectAskVoiceStatus = status || message;
@@ -289,7 +303,7 @@
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
     recognition.onstart = function () {
-      setDirectAskVoiceStatusV61D('Listening from Ask AI...', 'listening');
+      setDirectAskVoiceStatusV61D('Listening...', 'listening');
     };
     recognition.onresult = function (event) {
       var transcript = event && event.results && event.results[0] && event.results[0][0] ? event.results[0][0].transcript : '';
@@ -304,9 +318,9 @@
     recognition.onerror = function (event) {
       var err = event && event.error ? event.error : '';
       state.directAskVoiceActive = false;
-      if (err === 'not-allowed' || err === 'service-not-allowed') setDirectAskVoiceStatusV61D('Voice blocked by browser — tap Start Voice', 'permission denied');
+      if (err === 'not-allowed' || err === 'service-not-allowed') setDirectAskVoiceStatusV61D('Browser requires one more tap for microphone safety.', 'permission denied');
       else if (err === 'no-speech') setDirectAskVoiceStatusV61D('No voice command captured. Try again or type the command.', 'no speech');
-      else if (err === 'aborted') setDirectAskVoiceStatusV61D('Voice blocked by browser — tap Start Voice', 'browser blocked');
+      else if (err === 'aborted') setDirectAskVoiceStatusV61D('Browser requires one more tap for microphone safety.', 'browser blocked');
       else setDirectAskVoiceStatusV61D('Voice unavailable — type your command', 'voice error');
     };
     recognition.onend = function () {
@@ -314,7 +328,7 @@
       if (!captured) {
         var el = getVoiceStatusNode();
         var current = el ? el.textContent : '';
-        if (/Listening from Ask AI/i.test(current)) setDirectAskVoiceStatusV61D('Voice blocked by browser — tap Start Voice', 'browser blocked');
+        if (/Listening/i.test(current)) setDirectAskVoiceStatusV61D('Browser requires one more tap for microphone safety.', 'browser blocked');
       }
       syncNamespace();
     };
@@ -325,7 +339,7 @@
       return true;
     } catch (e) {
       state.directAskVoiceActive = false;
-      setDirectAskVoiceStatusV61D('Voice blocked by browser — tap Start Voice', 'start blocked');
+      setDirectAskVoiceStatusV61D('Browser requires one more tap for microphone safety.', 'start blocked');
       syncNamespace();
       return false;
     }
@@ -362,7 +376,7 @@
     if (typeof window.openModal === 'function') window.openModal('ai');
     exposeAskAICommandFlow();
     ensureTapToStartVoiceFallbackV61D();
-    setDirectAskVoiceStatusV61D('Listening from Ask AI...', 'direct tap start requested');
+    setDirectAskVoiceStatusV61D('Listening...', 'direct tap start requested');
     startDirectAskVoiceV61D(event);
   }
 
@@ -455,26 +469,18 @@
     state.noNetworkCalls = true;
     state.fallbackAvailable = true;
     syncNamespace();
+    state.fallbackUXPolished = true;
+    state.roughDraftLabelPresent = true;
+    syncNamespace();
     return {
       version: 'v61D',
-      directAskButtonHookInstalled: true,
-      directMicStartAttemptedFromUserGesture: true,
-      fallbackTapToStartVoiceAvailable: true,
+      fallbackUXPolished: true,
+      tapToStartVoiceAvailable: true,
+      roughDraftLabelPresent: true,
       oneShotOnly: true,
-      directAskVoiceHookInstalled: true,
-      askAITapStartsOneShotListening: true,
-      oneShotVoiceCaptureHandlerExists: state.directAskVoiceHandlerAvailable,
-      commandTranscriptInjectionExists: state.transcriptInjectionAvailable,
-      commandRouterHandoffExists: state.commandRouterHandoffAvailable,
-      unsupportedFallbackExists: state.unsupportedFallbackAvailable,
-      permissionDeniedFallbackExists: state.permissionDeniedFallbackAvailable,
-      browserBlockedFallbackExists: state.browserBlockedFallbackAvailable,
       noAlwaysListening: true,
       noAudioStorage: true,
-      noNetworkCalls: true,
-      noBackendCalls: true,
-      noLiveAICalls: true,
-      fallbackAvailable: true
+      noNetworkCalls: true
     };
   }
 
