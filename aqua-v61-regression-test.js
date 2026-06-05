@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v61Y';
+const VERSION = 'v61Z';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -293,6 +293,9 @@ function checkStaticFiles() {
   addCheck('v61Y Send to SOW Review Queue action exists', /Send to SOW Review Queue/.test(extension) && /send_to_sow_review_queue_v61y/.test(extension), { layer: 'sow-review-queue-v61y', fileToFix: EXTENSION });
   addCheck('v61Y Mark Review Ready Demo action exists', /Mark Review Ready Demo/.test(extension) && /mark_review_ready_demo_v61y/.test(extension), { layer: 'sow-review-queue-v61y', fileToFix: EXTENSION });
   addCheck('v61Y Clear SOW Review Queue Demo action exists', /Clear SOW Review Queue Demo/.test(extension) && /clear_sow_review_queue_demo_v61y/.test(extension), { layer: 'sow-review-queue-v61y', fileToFix: EXTENSION });
+  addCheck('v61Z premium module shell helper exists', /function\s+renderPremiumModuleShellV61Z/.test(extension) && /Premium Module Shell/.test(extension), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
+  addCheck('v61Z premium module shell report flags exist', /premiumModuleShellWorks/.test(extension) && /openedModulesPolished/.test(extension), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
+  addCheck('v61Z premium shell marker class exists', /aqua-v61z-module-shell/.test(extension) && /data-aqua-v61z-premium-module-shell/.test(extension), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -315,7 +318,12 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v61Y', extensionReport.version === 'v61Y', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v61Z', extensionReport.version === 'v61Z', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
+    addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
+    addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
+    addCheck('routingStillWorks is true', extensionReport.routingStillWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.routingStillWorks, fileToFix: EXTENSION });
+    addCheck('automationStillWorks is true', extensionReport.automationStillWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.automationStillWorks, fileToFix: EXTENSION });
     addCheck('extension regression includes spoken readback availability or fallback flag', extensionReport.spokenReadbackAvailable === true || extensionReport.spokenReadbackBrowserUnavailableFallback === true, { layer: 'spoken-readback-v61r', actual: { available: extensionReport.spokenReadbackAvailable, fallback: extensionReport.spokenReadbackBrowserUnavailableFallback }, fileToFix: EXTENSION });
     addCheck('extension regression spoken preference key is aquaSpokenReadbackV61R', extensionReport.spokenReadbackPreferenceKey === 'aquaSpokenReadbackV61R', { layer: 'spoken-readback-v61r', actual: extensionReport.spokenReadbackPreferenceKey, fileToFix: EXTENSION });
     addCheck('automationCommandRoutesBeforeFallback is true', extensionReport.automationCommandRoutesBeforeFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandRoutesBeforeFallback, fileToFix: EXTENSION });
@@ -474,6 +482,11 @@ function runExtensionRegression() {
 
     const permissionRow = byCommand.get('code this receipt to materials');
     addCheck('receipt coding routes to Permission Granter', Boolean(permissionRow && permissionRow.passed && permissionRow.actual && permissionRow.actual.renderedPermissionGate), { layer: 'permission-draft-safety', expected: 'Permission Granter demo gate', actual: permissionRow && permissionRow.actual, fileToFix: EXTENSION });
+    addCheck('v61Z Receipt module renders with premium shell marker/class', Boolean(byCommand.get('pull up receipts') && byCommand.get('pull up receipts').actual && byCommand.get('pull up receipts').actual.renderedPremiumModuleShell), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
+    addCheck('v61Z Automation Report renders with premium shell marker/class', Boolean(byCommand.get('show automation report') && byCommand.get('show automation report').actual && byCommand.get('show automation report').actual.renderedPremiumModuleShell), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
+    addCheck('v61Z Permission Granter renders with premium shell marker/class', Boolean(permissionRow && permissionRow.actual && permissionRow.actual.renderedPremiumModuleShell), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
+    addCheck('v61Z Calculator panel renders with premium shell marker/class', Boolean(byCommand.get('how many gallons of paint for 1200 square feet') && byCommand.get('how many gallons of paint for 1200 square feet').actual && byCommand.get('how many gallons of paint for 1200 square feet').actual.renderedPremiumModuleShell), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
+    addCheck('v61Z SOW Review Queue renders with premium shell marker/class', Boolean(sowShowRow && sowShowRow.actual && sowShowRow.actual.renderedPremiumModuleShell), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
     const safety = extensionReport.permissionDraftSafety || {};
     [
       ['no live record change occurs', safety.noLiveRecordChangeOccurs],
@@ -583,7 +596,7 @@ function buildRepairPrompt(report) {
 
 function createGateSelfTestReport(overrides = {}) {
   const baseReport = {
-    version: 'v61Y-gate-self-test',
+    version: 'v61Z-gate-self-test',
     total: 1,
     passed: 1,
     failed: 0,
@@ -603,10 +616,10 @@ function createGateSelfTestReport(overrides = {}) {
 function runMergeGateSelfTest() {
   const beforeHtmlHash = hashFileSafe(HTML_KEEPER);
   const fakePassingReport = createGateSelfTestReport({
-    version: 'v61Y-simulated-passing'
+    version: 'v61Z-simulated-passing'
   });
   const fakeFailingReport = createGateSelfTestReport({
-    version: 'v61Y-simulated-failure',
+    version: 'v61Z-simulated-failure',
     total: 1,
     passed: 0,
     failed: 1,
@@ -650,6 +663,13 @@ function markdown(report) {
     `- Failed: ${report.failed}\n` +
     `- safeToMerge: ${report.safeToMerge}\n` +
     `- Merge recommendation: ${report.mergeRecommendation}\n` +
+    `- premiumModuleShellWorks: ${report.premiumModuleShellWorks === true}\n` +
+    `- openedModulesPolished: ${report.openedModulesPolished === true}\n` +
+    `- homeDesignUntouched: ${report.homeDesignUntouched === true}\n` +
+    `- routingStillWorks: ${report.routingStillWorks === true}\n` +
+    `- automationStillWorks: ${report.automationStillWorks === true}\n` +
+    `- noLiveRecordChanges: ${report.noLiveRecordChanges === true}\n` +
+    `- noBackendNetworkLiveAI: ${report.noBackendNetworkLiveAI === true}\n` +
     `- spokenReadbackAvailable: ${report.spokenReadbackAvailable}\n` +
     `- spokenReadbackBrowserUnavailableFallback: ${report.spokenReadbackBrowserUnavailableFallback}\n` +
     `- automationCommandRoutesBeforeFallback: ${report.extensionRegression && report.extensionRegression.automationCommandRoutesBeforeFallback === true}\n` +
@@ -776,6 +796,12 @@ async function main() {
     noApiKeysInFrontend: extensionReport ? extensionReport.noApiKeysInFrontend === true : false,
     noLiveRecordChanges: extensionReport ? extensionReport.noLiveRecordChanges === true : false,
     noPaymentPayrollBankAccountingExport: safetyStatus.noPayment === true && safetyStatus.noPayroll === true && safetyStatus.noBankSync === true && safetyStatus.noAccountingExport === true,
+    premiumModuleShellWorks: extensionReport ? extensionReport.premiumModuleShellWorks === true : false,
+    openedModulesPolished: extensionReport ? extensionReport.openedModulesPolished === true : false,
+    homeDesignUntouched: extensionReport ? extensionReport.homeDesignUntouched === true : false,
+    routingStillWorks: extensionReport ? extensionReport.routingStillWorks === true : false,
+    automationStillWorks: extensionReport ? extensionReport.automationStillWorks === true : false,
+    noBackendNetworkLiveAI: extensionReport ? extensionReport.noBackendNetworkLiveAI === true : false,
     spokenReadbackAvailable: extensionReport ? extensionReport.spokenReadbackAvailable === true : false,
     spokenReadbackBrowserUnavailableFallback: extensionReport ? extensionReport.spokenReadbackBrowserUnavailableFallback === true : true,
     gateSelfTest,

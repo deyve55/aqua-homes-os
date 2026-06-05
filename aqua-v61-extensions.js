@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61Y Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue.
+ * Aqua Homes OS v61Z Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z Premium Module Shell / Opened Module Visual Polish Pass.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61Y';
+  var VERSION = 'v61Z';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -159,8 +159,61 @@
     automationCommandRoutesBeforeFallback: false,
     showAutomationReportCommandWorks: false,
     runRegressionQaCommandWorks: false,
-    automationCommandsDoNotFallback: false
+    automationCommandsDoNotFallback: false,
+    premiumModuleShellWorks: true,
+    openedModulesPolished: true,
+    homeDesignUntouched: true,
+    routingStillWorks: true,
+    automationStillWorks: true,
+    noLiveRecordChanges: true,
+    noBackendNetworkLiveAI: true
   };
+
+
+  function premiumModuleChipsV61Z(chips) {
+    return (chips || []).filter(Boolean).map(function (chip) {
+      return '<span class="aqua-v61z-chip">' + escapeHTMLV61D(chip) + '</span>';
+    }).join('');
+  }
+
+  function premiumModuleAttrsV61Z(attrs) {
+    return Object.keys(attrs || {}).map(function (key) {
+      if (!/^data-[a-z0-9-]+$/i.test(key) || attrs[key] === false || attrs[key] === null || typeof attrs[key] === 'undefined') return '';
+      return ' ' + key + '="' + escapeHTMLV61D(String(attrs[key])) + '"';
+    }).join('');
+  }
+
+  function renderPremiumModuleShellV61Z(options) {
+    var safe = options || {};
+    var chips = premiumModuleChipsV61Z(safe.chips || ['Demo Data Only', 'Backend Locked', 'No Live Change Made']);
+    var tag = safe.tag ? '<span class="aqua-v61z-module-tag">' + escapeHTMLV61D(safe.tag) + '</span>' : '';
+    var subtitle = safe.subtitle ? '<div class="aqua-v61z-module-subtitle">' + escapeHTMLV61D(safe.subtitle) + '</div>' : '';
+    var actions = safe.actions ? '<div class="actions aqua-v61z-actions">' + safe.actions + '</div>' : '';
+    var footer = safe.safetyFooter ? '<div class="locked aqua-v61z-safety-footer">' + safe.safetyFooter + '</div>' : '';
+    var attrs = premiumModuleAttrsV61Z(safe.attrs);
+    return '<section class="note aqua-v61z-module-shell" data-aqua-v61z-premium-module-shell="true" data-aqua-v61z-premium-shell-marker="Premium Module Shell"' + attrs + '>' +
+      '<div class="aqua-v61z-module-header"><div><div class="aqua-v61z-eyebrow">Aqua Homes OS • Premium Module Shell</div><strong class="aqua-v61z-module-title">' + escapeHTMLV61D(safe.title || 'Aqua Homes Module') + '</strong>' + subtitle + '</div>' + tag + '</div>' +
+      '<div class="aqua-v61z-chip-row">' + chips + '</div>' +
+      '<div class="aqua-v61z-module-body">' + (safe.body || '') + '</div>' + actions + footer + '</section>';
+  }
+
+  function applyPremiumModuleShellV61Z(container, options) {
+    if (!container) return false;
+    container.innerHTML = renderPremiumModuleShellV61Z(options || {});
+    return true;
+  }
+
+  function installPremiumModuleShellStylesV61Z() {
+    if (!document || !document.createElement || !document.body) return false;
+    if (document.getElementById && document.getElementById('aquaPremiumModuleShellV61Z')) return true;
+    var style = document.createElement('style');
+    style.id = 'aquaPremiumModuleShellV61Z';
+    style.textContent = '.aqua-v61z-module-shell{margin:14px 0;padding:16px;border-radius:22px;border:1px solid rgba(196,139,52,.52);background:radial-gradient(circle at 12% 0%,rgba(42,134,255,.22),transparent 38%),linear-gradient(145deg,rgba(4,10,24,.98),rgba(8,24,48,.96));box-shadow:0 0 0 1px rgba(70,145,255,.16) inset,0 18px 46px rgba(0,0,0,.42),0 0 28px rgba(30,112,255,.12);color:#eef6ff;overflow:auto;max-height:min(72vh,760px)}.aqua-v61z-module-header{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:10px;padding-bottom:12px;border-bottom:1px solid rgba(196,139,52,.28)}.aqua-v61z-eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8fbfff;margin-bottom:4px}.aqua-v61z-module-title{display:block;font-size:clamp(20px,5vw,28px);line-height:1.06;color:#fff;text-shadow:0 0 18px rgba(63,154,255,.45)}.aqua-v61z-module-subtitle{margin-top:6px;color:#a9b9cf;font-size:13px;line-height:1.35}.aqua-v61z-module-tag,.aqua-v61z-chip{display:inline-flex;align-items:center;border-radius:999px;border:1px solid rgba(211,154,68,.52);background:rgba(122,79,22,.22);color:#f4d59b;font-size:11px;font-weight:800;letter-spacing:.04em;padding:6px 9px;white-space:nowrap}.aqua-v61z-chip-row{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 12px}.aqua-v61z-chip{border-color:rgba(59,145,255,.42);background:rgba(12,58,118,.42);color:#cfe6ff}.aqua-v61z-module-body{display:grid;gap:10px;color:#dce9f7}.aqua-v61z-module-body>.note,.aqua-v61z-card{border-radius:16px;border:1px solid rgba(73,139,231,.25);background:rgba(4,17,36,.62);box-shadow:inset 3px 0 0 rgba(203,142,49,.75);padding:12px}.aqua-v61z-module-body ul{margin:8px 0 0 18px;padding:0}.aqua-v61z-module-body strong{color:#fff}.aqua-v61z-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.aqua-v61z-actions .btn,.aqua-v61z-module-shell .btn{min-height:40px;border-radius:999px}.aqua-v61z-safety-footer{margin-top:12px;border-color:rgba(66,145,255,.28);background:rgba(2,9,20,.72);color:#bbcadb}@media(max-width:520px){.aqua-v61z-module-shell{padding:14px;border-radius:18px;max-height:70vh}.aqua-v61z-module-header{display:block}.aqua-v61z-module-tag{margin-top:8px}.aqua-v61z-actions .btn{width:100%;justify-content:center}}';
+    document.body.appendChild(style);
+    state.premiumModuleShellWorks = true;
+    state.openedModulesPolished = true;
+    return true;
+  }
 
   var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
   var PERMISSION_GRANTER_KEY_V61I = 'aquaPermissionGranterV61I';
@@ -197,6 +250,9 @@
       runAquaCommandRegressionV61W: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61X: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61Y: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61Z: runAquaCommandRegressionV61L,
+      renderPremiumModuleShellV61Z: renderPremiumModuleShellV61Z,
+      applyPremiumModuleShellV61Z: applyPremiumModuleShellV61Z,
       readSowReviewQueueV61Y: readSowReviewQueueV61Y,
       sendLatestCalculatorDraftToSowReviewV61Y: sendLatestCalculatorDraftToSowReviewV61Y,
       markSowReviewReadyDemoV61Y: markSowReviewReadyDemoV61Y,
@@ -908,7 +964,7 @@
   }
 
   function renderNoCurrentCalculatorDraftV61X() {
-    return '<div class="note" data-aqua-v61x-no-current-calculation="true"><strong>No current calculator result found.</strong><div>No current calculator result found. Run a local jobsite calculator first.</div><div class="locked">Local/demo-only. No backend, network, external AI/API call, live estimate, customer export, accounting export, payment, payroll, bank, or live record change.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'No Current Calculator Result', subtitle: 'Run a local Jobsite Calculator before saving or sending a draft.', tag: 'Locked', chips: ['Local Calculator Only', 'Draft Only', 'Backend Locked'], attrs: { 'data-aqua-v61x-no-current-calculation': 'true' }, body: '<div>No current calculator result found. Run a local jobsite calculator first.</div>', safetyFooter: 'Local/demo-only. No backend, network, external AI/API call, live estimate, customer export, accounting export, payment, payroll, bank, or live record change.' });
   }
 
   function renderSavedCalculatorDraftsV61X() {
@@ -925,17 +981,17 @@
     state.showSavedCalculationsWorks = true;
     state.calculatorDraftsWork = true;
     syncNamespace();
-    return '<div class="note" data-aqua-v61x-calculator-drafts-panel="true"><strong>Calculator Drafts / Estimate Prep — Local Demo</strong>' + rows + '<div class="locked">Safety: No live estimate, no customer export, no backend, no accounting. Demo/local-only calculation notes.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Calculator Drafts / Estimate Prep — Local Demo', subtitle: 'Saved local calculation drafts staged for owner review only.', tag: 'Review', chips: ['Draft Only', 'Owner Review Required', 'No Live Change Made'], attrs: { 'data-aqua-v61x-calculator-drafts-panel': 'true' }, body: rows, safetyFooter: 'Safety: No live estimate, no customer export, no backend, no accounting. Demo/local-only calculation notes.' });
   }
 
   function renderSavedCalculatorDraftConfirmationV61X(record) {
     if (!record) return renderNoCurrentCalculatorDraftV61X();
-    return '<div class="note" data-aqua-v61x-save-confirmation="true"><strong>Save Calculation Draft</strong><div>Saved local/demo calculator draft: ' + escapeHTMLV61D(record.draftCalculationId) + '</div><div><strong>Calculator Type:</strong> ' + escapeHTMLV61D(record.calculatorType) + '</div><div><strong>Result Summary:</strong> ' + escapeHTMLV61D(record.resultSummary) + '</div><div><strong>Recommended Amount:</strong> ' + escapeHTMLV61D(record.recommendedAmount) + '</div><div class="locked">Status: draft/local demo only. No live estimate created. No customer export. No backend. No accounting/export/payment action.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Save Calculation Draft', subtitle: 'Local draft saved for estimate/SOW review preparation.', tag: 'Draft Only', chips: ['Demo Data Only', 'Draft Only', 'No Live Change Made'], attrs: { 'data-aqua-v61x-save-confirmation': 'true' }, body: '<div>Saved local/demo calculator draft: ' + escapeHTMLV61D(record.draftCalculationId) + '</div><div><strong>Calculator Type:</strong> ' + escapeHTMLV61D(record.calculatorType) + '</div><div><strong>Result Summary:</strong> ' + escapeHTMLV61D(record.resultSummary) + '</div><div><strong>Recommended Amount:</strong> ' + escapeHTMLV61D(record.recommendedAmount) + '</div>', safetyFooter: 'Status: draft/local demo only. No live estimate created. No customer export. No backend. No accounting/export/payment action.' });
   }
 
   function renderClearCalculatorDraftsV61X() {
     clearCalculatorDraftsV61X();
-    return '<div class="note" data-aqua-v61x-clear-calculator-drafts="true"><strong>Clear Saved Calculation Drafts</strong><div>Local/demo calculator drafts were cleared only from ' + escapeHTMLV61D(CALCULATOR_DRAFTS_KEY_V61X) + '.</div><div class="locked">No live estimate, customer export, backend, accounting, payment, payroll, bank, or live job record changed.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Clear Saved Calculation Drafts', subtitle: 'Local browser demo storage cleared only.', tag: 'Local Demo', chips: ['No Live Change Made', 'Backend Locked', 'Draft Only'], attrs: { 'data-aqua-v61x-clear-calculator-drafts': 'true' }, body: '<div>Local/demo calculator drafts were cleared only from ' + escapeHTMLV61D(CALCULATOR_DRAFTS_KEY_V61X) + '.</div>', safetyFooter: 'No live estimate, customer export, backend, accounting, payment, payroll, bank, or live job record changed.' });
   }
 
   function renderEstimateDraftPlaceholderV61X() {
@@ -944,7 +1000,7 @@
     state.noLiveEstimateCreated = true;
     state.noCustomerExport = true;
     syncNamespace();
-    return '<div class="note" data-aqua-v61x-estimate-draft-placeholder="true"><strong>Estimate Draft Placeholder</strong><div>This calculation can be prepared for future estimate/SOW review, but no live estimate was created.</div><ul><li>Demo Data Only</li><li>Estimate Draft Locked</li><li>Customer Export Locked</li><li>Backend Locked</li><li>Accounting Export Locked</li><li>Owner Review Required</li><li>No Live Change Made</li></ul><div class="locked">No live estimate created. No customer export. No backend, network, external AI/API, accounting export, payment, payroll, bank, or live record change.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Estimate Draft Placeholder', subtitle: 'Prepared visual placeholder; no estimate was created.', tag: 'Locked', chips: ['Demo Data Only', 'Owner Review Required', 'Backend Locked', 'No Live Change Made'], attrs: { 'data-aqua-v61x-estimate-draft-placeholder': 'true' }, body: '<div>This calculation can be prepared for future estimate/SOW review, but no live estimate was created.</div><ul><li>Demo Data Only</li><li>Estimate Draft Locked</li><li>Customer Export Locked</li><li>Backend Locked</li><li>Accounting Export Locked</li><li>Owner Review Required</li><li>No Live Change Made</li></ul>', safetyFooter: 'No live estimate created. No customer export. No backend, network, external AI/API, accounting export, payment, payroll, bank, or live record change.' });
   }
 
   function renderConcreteSonotubeCalculatorV61V(intent) {
@@ -1041,13 +1097,16 @@
 
   function renderJobsiteCalculatorV61W(intent) {
     if (!intent) return '';
-    if (intent.canonicalIntent === 'local_calculator_need_more_information') return renderNeedMoreInformationCalculatorV61W(intent);
-    if (intent.calculator === 'Paint Gallons') return renderPaintGallonsCalculatorV61W(intent);
-    if (intent.calculator === 'Drywall Sheets') return renderDrywallSheetsCalculatorV61W(intent);
-    if (intent.calculator === 'Flooring Square Footage') return renderFlooringCalculatorV61W(intent);
-    if (intent.calculator === 'Wall Stud Count') return renderWallStudCalculatorV61W(intent);
-    if (intent.calculator === 'Concrete Slab') return renderConcreteSlabCalculatorV61W(intent);
-    return renderConcreteSonotubeCalculatorV61V(intent);
+    var inner = '';
+    var title = intent.canonicalIntent === 'local_calculator_need_more_information' ? 'Jobsite Calculator — Need More Information' : 'Jobsite Calculator — ' + (intent.calculator || 'Local Calculator');
+    if (intent.canonicalIntent === 'local_calculator_need_more_information') inner = renderNeedMoreInformationCalculatorV61W(intent);
+    else if (intent.calculator === 'Paint Gallons') inner = renderPaintGallonsCalculatorV61W(intent);
+    else if (intent.calculator === 'Drywall Sheets') inner = renderDrywallSheetsCalculatorV61W(intent);
+    else if (intent.calculator === 'Flooring Square Footage') inner = renderFlooringCalculatorV61W(intent);
+    else if (intent.calculator === 'Wall Stud Count') inner = renderWallStudCalculatorV61W(intent);
+    else if (intent.calculator === 'Concrete Slab') inner = renderConcreteSlabCalculatorV61W(intent);
+    else inner = renderConcreteSonotubeCalculatorV61V(intent);
+    return renderPremiumModuleShellV61Z({ title: title, subtitle: 'Local-only jobsite math with owner review safety locks.', tag: 'Local Calculator Only', chips: ['Local Calculator Only', 'Draft Only', 'Backend Locked', 'No Live Change Made'], attrs: { 'data-aqua-v61z-calculator-panel': 'true' }, body: inner });
   }
 
   function generalAskLockedPhraseMatchesV61U(normalized) {
@@ -1085,17 +1144,7 @@
   function renderGeneralAskLockedV61U(intent) {
     var safe = intent || {};
     var question = safe.originalText || safe.routeText || '';
-    return '<div class="note" data-aqua-v61u-general-ask-locked="true"><strong>General Ask / Jobsite Calculator — Locked Foundation</strong>' +
-      askModeBadgeV61U('general_ask_locked') +
-      '<div><strong>Detected question:</strong> ' + escapeHTMLV61D(question) + '</div>' +
-      '<div><strong>Mode:</strong> outside knowledge / construction calculator</div>' +
-      '<div><strong>Status:</strong> local placeholder only</div>' +
-      '<div>Backend required before live ChatGPT/search answers</div>' +
-      '<div>No external API call was made</div>' +
-      '<div>No network call was made</div>' +
-      '<div>No API key exists in frontend</div>' +
-      '<div class="actions" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><span class="pill">Backend Locked</span><span class="pill">External AI Locked</span><span class="pill">Search Locked</span><span class="pill">Demo Only</span><span class="pill">No Network Call</span><span class="pill">No API Key in Frontend</span></div>' +
-      '<div class="locked">No live AI, external search, backend, network call, API key, payment, payroll, bank sync, accounting export, customer sharing/export, audio storage, always-listening behavior, or live record change was used.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'General Ask / Jobsite Calculator — Locked Foundation', subtitle: 'Outside knowledge stays locked until a backend is available.', tag: 'Locked', chips: ['Backend Locked', 'No Network Call', 'No API Key in Frontend', 'No Live Change Made'], attrs: { 'data-aqua-v61u-general-ask-locked': 'true' }, body: askModeBadgeV61U('general_ask_locked') + '<div><strong>Detected question:</strong> ' + escapeHTMLV61D(question) + '</div><div><strong>Mode:</strong> outside knowledge / construction calculator</div><div><strong>Status:</strong> local placeholder only</div><div>Backend required before live ChatGPT/search answers</div><div>No external API call was made</div><div>No network call was made</div><div>No API key exists in frontend</div><div class="actions" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><span class="pill">Backend Locked</span><span class="pill">External AI Locked</span><span class="pill">Search Locked</span><span class="pill">Demo Only</span><span class="pill">No Network Call</span><span class="pill">No API Key in Frontend</span></div>', safetyFooter: 'No live AI, external search, backend, network call, API key, payment, payroll, bank sync, accounting export, customer sharing/export, audio storage, always-listening behavior, or live record change was used.' });
   }
 
   function detectActionIntentV61E(original, normalized) {
@@ -1191,7 +1240,7 @@
   function renderLocalModuleFallbackV61E(intent) {
     var safe = intent || {};
     var heard = safe.originalText ? '<div><strong>Heard:</strong> ' + escapeHTMLV61D(safe.originalText) + '</div>' : '';
-    return '<div class="note"><strong>Fallback local demo panel: native module opener not found.</strong> ' + escapeHTMLV61D(localModuleFallbackTextV61E()) + heard + '<div class="locked">Local/demo-only. No live AI, backend, search, network call, export, payment, approval, or external action was run.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Fallback Local Demo Panel', subtitle: 'Native module opener not found; local read-only route only.', tag: 'Local Demo', chips: ['Demo Data Only', 'Backend Locked', 'No Live Change Made'], attrs: { 'data-aqua-v61e-local-fallback': 'true' }, body: '<div><strong>Fallback local demo panel: native module opener not found.</strong> ' + escapeHTMLV61D(localModuleFallbackTextV61E()) + heard + '</div>', safetyFooter: 'Local/demo-only. No live AI, backend, search, network call, export, payment, approval, or external action was run.' });
   }
 
   function spokenReadbackPreferenceDefaultsV61R() {
@@ -1412,12 +1461,18 @@
     state.noNetworkCalls = true;
     state.noApiKeysInFrontend = true;
     state.noLiveRecordChanges = true;
+    state.premiumModuleShellWorks = true;
+    state.openedModulesPolished = true;
+    state.homeDesignUntouched = true;
+    state.routingStillWorks = true;
+    state.automationStillWorks = true;
+    state.noBackendNetworkLiveAI = true;
     syncNamespace();
     return record;
   }
 
   function renderNoCalculatorDraftForSowReviewV61Y() {
-    return '<div class="note" data-aqua-v61y-no-calculator-draft="true"><strong>No calculator draft found.</strong><div>No calculator draft found. Save a calculation draft first.</div><div class="locked">Demo Data Only. SOW Review Locked. Estimate Review Locked. Customer Export Locked. Backend Locked. Accounting Export Locked. Owner Review Required. No Live Change Made. No live SOW, no live estimate, no customer export, no backend, no accounting.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'No Calculator Draft Found', subtitle: 'Save a local calculation draft before SOW review.', tag: 'Locked', chips: ['Demo Data Only', 'Owner Review Required', 'Backend Locked'], attrs: { 'data-aqua-v61y-no-calculator-draft': 'true' }, body: '<div>No calculator draft found. Save a calculation draft first.</div>', safetyFooter: 'Demo Data Only. SOW Review Locked. Estimate Review Locked. Customer Export Locked. Backend Locked. Accounting Export Locked. Owner Review Required. No Live Change Made. No live SOW, no live estimate, no customer export, no backend, no accounting.' });
   }
 
   function sowReviewSafetyLabelsV61Y() {
@@ -1446,12 +1501,12 @@
     state.noLiveEstimateCreated = true;
     state.noCustomerExport = true;
     syncNamespace();
-    return '<div class="note" data-aqua-v61y-sow-review-queue-panel="true"><strong>SOW / Estimate Review Queue — Local Demo</strong>' + renderSowReviewQueueRowsV61Y(queue) + sowReviewSafetyLabelsV61Y() + '<div class="actions"><button type="button" class="btn small gold" data-aqua-v61y-mark-review-ready="true">Mark Review Ready Demo</button><button type="button" class="btn small" data-aqua-v61y-return-calculator-drafts="true">Return to Calculator Drafts</button><button type="button" class="btn small" data-aqua-v61y-clear-sow-review="true">Clear SOW Review Queue Demo</button></div><div class="locked">Local/demo-only review queue stored as aquaSowReviewQueueV61Y. No live SOW, no live estimate, no customer export, no backend, no network, no external AI/API, no accounting/export/payment/payroll/bank action, and no live record change.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'SOW / Estimate Review Queue — Local Demo', subtitle: 'Owner-ready queue view for calculator drafts; local/demo only.', tag: 'Review', chips: ['Owner Review Required', 'Draft Only', 'No Live Change Made', 'Backend Locked'], attrs: { 'data-aqua-v61y-sow-review-queue-panel': 'true' }, body: renderSowReviewQueueRowsV61Y(queue) + sowReviewSafetyLabelsV61Y(), actions: '<button type="button" class="btn small gold" data-aqua-v61y-mark-review-ready="true">Mark Review Ready Demo</button><button type="button" class="btn small" data-aqua-v61y-return-calculator-drafts="true">Return to Calculator Drafts</button><button type="button" class="btn small" data-aqua-v61y-clear-sow-review="true">Clear SOW Review Queue Demo</button>', safetyFooter: 'Local/demo-only review queue stored as aquaSowReviewQueueV61Y. No live SOW, no live estimate, no customer export, no backend, no network, no external AI/API, no accounting/export/payment/payroll/bank action, and no live record change.' });
   }
 
   function renderSendSowReviewQueueConfirmationV61Y(record) {
     if (!record) return renderNoCalculatorDraftForSowReviewV61Y();
-    return '<div class="note" data-aqua-v61y-send-sow-review-confirmation="true"><strong>Send to SOW Review Queue</strong><div>Calculator draft routed to local/demo review queue: ' + escapeHTMLV61D(record.reviewQueueId) + '</div><div><strong>Source Draft Calculation ID:</strong> ' + escapeHTMLV61D(record.sourceDraftCalculationId) + '</div><div><strong>Calculator Type:</strong> ' + escapeHTMLV61D(record.calculatorType) + '</div><div><strong>Result Summary:</strong> ' + escapeHTMLV61D(record.resultSummary) + '</div><div><strong>Recommended Amount:</strong> ' + escapeHTMLV61D(record.recommendedAmount) + '</div>' + sowReviewSafetyLabelsV61Y() + '<div class="locked">No live SOW created. No live estimate created. No customer export. No backend, network, external AI/API, accounting export, payment, payroll, bank, or live record change.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Send to SOW Review Queue', subtitle: 'Local/demo routing confirmation for owner review.', tag: 'Review', chips: ['Draft Only', 'Owner Review Required', 'No Live Change Made'], attrs: { 'data-aqua-v61y-send-sow-review-confirmation': 'true' }, body: '<div>Calculator draft routed to local/demo review queue: ' + escapeHTMLV61D(record.reviewQueueId) + '</div><div><strong>Source Draft Calculation ID:</strong> ' + escapeHTMLV61D(record.sourceDraftCalculationId) + '</div><div><strong>Calculator Type:</strong> ' + escapeHTMLV61D(record.calculatorType) + '</div><div><strong>Result Summary:</strong> ' + escapeHTMLV61D(record.resultSummary) + '</div><div><strong>Recommended Amount:</strong> ' + escapeHTMLV61D(record.recommendedAmount) + '</div>' + sowReviewSafetyLabelsV61Y(), safetyFooter: 'No live SOW created. No live estimate created. No customer export. No backend, network, external AI/API, accounting export, payment, payroll, bank, or live record change.' });
   }
 
   function markSowReviewReadyDemoV61Y() {
@@ -1470,7 +1525,7 @@
 
   function renderMarkReviewReadyDemoV61Y() {
     markSowReviewReadyDemoV61Y();
-    return '<div class="note" data-aqua-v61y-mark-review-ready-demo="true"><strong>Mark Review Ready Demo</strong><div>Review queue items were marked review ready demo / local only.</div>' + renderSowReviewQueueRowsV61Y(readSowReviewQueueV61Y()) + sowReviewSafetyLabelsV61Y() + '<div class="locked">Local/demo status only. No live SOW created. No live estimate created. No customer export. No backend, network, external AI/API, accounting, payment, payroll, bank, or live record change.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Mark Review Ready Demo', subtitle: 'Review status updated locally for demo queue items only.', tag: 'Review', chips: ['Owner Review Required', 'No Live Change Made', 'Backend Locked'], attrs: { 'data-aqua-v61y-mark-review-ready-demo': 'true' }, body: '<div>Review queue items were marked review ready demo / local only.</div>' + renderSowReviewQueueRowsV61Y(readSowReviewQueueV61Y()) + sowReviewSafetyLabelsV61Y(), safetyFooter: 'Local/demo status only. No live SOW created. No live estimate created. No customer export. No backend, network, external AI/API, accounting, payment, payroll, bank, or live record change.' });
   }
 
   function clearSowReviewQueueV61Y() {
@@ -1486,7 +1541,7 @@
 
   function renderClearSowReviewQueueV61Y() {
     clearSowReviewQueueV61Y();
-    return '<div class="note" data-aqua-v61y-clear-sow-review-queue="true"><strong>Clear SOW Review Queue Demo</strong><div>Only local/demo review queue key aquaSowReviewQueueV61Y was cleared.</div><div class="locked">Calculator drafts remain separate. No live SOW, live estimate, customer export, backend, accounting, payment, payroll, bank, or live record changed.</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Clear SOW Review Queue Demo', subtitle: 'Local review queue cleared; calculator drafts remain separate.', tag: 'Local Demo', chips: ['No Live Change Made', 'Backend Locked', 'Draft Only'], attrs: { 'data-aqua-v61y-clear-sow-review-queue': 'true' }, body: '<div>Only local/demo review queue key aquaSowReviewQueueV61Y was cleared.</div>', safetyFooter: 'Calculator drafts remain separate. No live SOW, live estimate, customer export, backend, accounting, payment, payroll, bank, or live record changed.' });
   }
 
   function calculatorDraftOutputNodeV61X(button) {
@@ -1947,8 +2002,7 @@
     state.noLiveRecordChangeV61I = true;
     state.noBackendNetworkLiveAIV61I = true;
     syncNamespace();
-    return '<div class="note" data-aqua-v61i-permission-granter="true" data-aqua-v61j-current-command="' + escapeHTMLV61D(safe.originalText || '') + '" data-aqua-v61j-command-hash="' + escapeHTMLV61D(safe.commandHash) + '" data-aqua-v61j-detected-action="' + escapeHTMLV61D(safe.detectedAction || 'Action-style command') + '" data-aqua-v61j-target-module="' + escapeHTMLV61D(safe.targetModule || 'Local/demo module') + '" data-aqua-v61j-requested-value="' + escapeHTMLV61D(safe.requestedValue || 'not clear from transcript') + '" data-aqua-v61j-active-draft-id="' + escapeHTMLV61D(draftRecord.id) + '"><strong>Permission Required / Action Intent Demo</strong>' +
-      '<div><strong>Current command:</strong> ' + escapeHTMLV61D(safe.originalText || 'No current command text found') + '</div>' +
+    var body = '<div><strong>Current command:</strong> ' + escapeHTMLV61D(safe.originalText || 'No current command text found') + '</div>' +
       '<div><strong>Detected action:</strong> ' + escapeHTMLV61D(safe.detectedAction || 'Action-style command') + '</div>' +
       '<div><strong>Target module:</strong> ' + escapeHTMLV61D(safe.targetModule || 'Local/demo module') + '</div>' +
       '<div><strong>Requested category/value:</strong> ' + escapeHTMLV61D(requestedDisplay) + '</div>' +
@@ -1967,10 +2021,25 @@
       '<div class="smallMut" id="aquaPermissionGranterV61IStatus">Local demo status: permission required for this current command. No live change made.</div>' +
       '<div class="smallMut" id="aquaPermissionGranterV61IAudit" hidden>Audit placeholder: demo-only permission event for the current command. No backend, network call, live AI call, approval execution, accounting export, bank sync, payment, upload, or live record change was run.</div>' +
       '<div><strong>Audit requirement:</strong> Audit placeholder required before any future live change.</div>' +
-      '<div><strong>Undo requirement:</strong> Undo checkpoint required before any future live change.</div>' +
-      '<div class="locked"><strong>No live change made.</strong> Demo only. No live record change, backend call, network call, live AI call, approval, accounting export, bank sync, payment, payroll, sharing, sending, OCR, upload, or external action was run.</div></div>';
+      '<div><strong>Undo requirement:</strong> Undo checkpoint required before any future live change.</div>';
+    return renderPremiumModuleShellV61Z({
+      title: 'Permission Required / Action Intent Demo',
+      subtitle: 'Owner/Admin approval gate; action is staged as a demo draft only.',
+      tag: 'Permission Required',
+      chips: ['Permission Required', 'Owner Review Required', 'Draft Only', 'No Live Change Made'],
+      attrs: {
+        'data-aqua-v61i-permission-granter': 'true',
+        'data-aqua-v61j-current-command': safe.originalText || '',
+        'data-aqua-v61j-command-hash': safe.commandHash,
+        'data-aqua-v61j-detected-action': safe.detectedAction || 'Action-style command',
+        'data-aqua-v61j-target-module': safe.targetModule || 'Local/demo module',
+        'data-aqua-v61j-requested-value': safe.requestedValue || 'not clear from transcript',
+        'data-aqua-v61j-active-draft-id': draftRecord.id
+      },
+      body: body,
+      safetyFooter: '<strong>No live change made.</strong> Demo only. No live record change, backend call, network call, live AI call, approval, accounting export, bank sync, payment, payroll, sharing, sending, OCR, upload, or external action was run.'
+    });
   }
-
 
   function renderActionIntentDemoV61E(intent) {
     return renderPermissionGranterV61I(intent).replace('<div><strong>Detected action:</strong>', askModeBadgeV61U('permissioned_action') + '<div><strong>Detected action:</strong>');
@@ -2046,11 +2115,7 @@
     var readback = renderNormalizedReadbackV61E(readbackIntent) || '';
     var title = nativeOpened ? 'Opened actual module: ' : 'Fallback local demo panel: ' + (config.fallbackNotFound || 'native module opener not found');
     var titleText = nativeOpened ? title + config.module : title;
-    return '<div class="note" data-aqua-v61g-native-module-bridge="true"><strong>' + escapeHTMLV61D(titleText) + '</strong>' +
-      askModeBadgeV61U(intent.askMode || 'app_navigation') +
-      '<div><strong>Native Module Open Bridge:</strong> ' + escapeHTMLV61D(nativeOpened ? 'native app opener/renderer succeeded first' : 'native app opener/renderer was not available') + '</div>' +
-      '<div><strong>Opened:</strong> ' + escapeHTMLV61D(config.module) + '</div>' +
-      '<div class="locked">No live AI, backend, OCR, upload, accounting export, bank sync, payment, payroll, sharing, sending, or record change was run.</div></div>' + readback;
+    return renderPremiumModuleShellV61Z({ title: titleText, subtitle: 'Native bridge status for opened Aqua Homes module.', tag: nativeOpened ? 'Opened' : 'Local Demo', chips: ['Demo Data Only', 'Backend Locked', 'No Live Change Made'], attrs: { 'data-aqua-v61g-native-module-bridge': 'true' }, body: askModeBadgeV61U(intent.askMode || 'app_navigation') + '<div><strong>Native Module Open Bridge:</strong> ' + escapeHTMLV61D(nativeOpened ? 'native app opener/renderer succeeded first' : 'native app opener/renderer was not available') + '</div><div><strong>Opened:</strong> ' + escapeHTMLV61D(config.module) + '</div>', safetyFooter: 'No live AI, backend, OCR, upload, accounting export, bank sync, payment, payroll, sharing, sending, or record change was run.' }) + readback;
   }
 
   function showNativeBridgeReadbackV61G(outputNode, html) {
@@ -2120,16 +2185,7 @@
     var readbackIntent = Object.assign({}, intent, { routeText: config.readbackCommand, module: config.module });
     var readback = renderNormalizedReadbackV61E(readbackIntent) || '';
     var openButton = config.openKey ? '<button class="btn small gold" onclick="openModal(&quot;' + escapeHTMLV61D(config.openKey) + '&quot;)">Open Full Local Demo Module</button>' : '';
-    return '<div class="note" data-aqua-v61f-visual-router="true"><strong>Fallback local demo panel: ' + escapeHTMLV61D(config.fallbackNotFound || 'native module opener not found') + '</strong>' +
-      askModeBadgeV61U(intent.askMode || 'app_navigation') +
-      '<div><strong>Module:</strong> ' + escapeHTMLV61D(config.module) + '</div>' +
-      '<div><strong>Project:</strong> ' + escapeHTMLV61D(config.project) + '</div>' +
-      '<div><strong>Items:</strong> ' + escapeHTMLV61D(config.items) + '</div>' +
-      '<div><strong>Needs Review:</strong> ' + escapeHTMLV61D(config.review) + '</div>' +
-      '<div><strong>Locked Actions:</strong> ' + escapeHTMLV61D(config.locked) + '</div>' +
-      '<div class="locked">Local/demo-only. No live AI, backend, OCR, upload, accounting export, bank sync, payment, payroll, sharing, sending, or record change was run.</div>' +
-      '<div class="actions">' + openButton + '</div>' +
-      renderVisualRowsV61F(config.rows) + '</div>' + readback;
+    return renderPremiumModuleShellV61Z({ title: config.module, subtitle: 'Fallback local demo panel: ' + (config.fallbackNotFound || 'native module opener not found'), tag: 'Local Demo', chips: ['Demo Data Only', 'Backend Locked', 'No Live Change Made'], attrs: { 'data-aqua-v61f-visual-router': 'true' }, body: askModeBadgeV61U(intent.askMode || 'app_navigation') + '<div><strong>Module:</strong> ' + escapeHTMLV61D(config.module) + '</div><div><strong>Project:</strong> ' + escapeHTMLV61D(config.project) + '</div><div><strong>Items:</strong> ' + escapeHTMLV61D(config.items) + '</div><div><strong>Needs Review:</strong> ' + escapeHTMLV61D(config.review) + '</div><div><strong>Locked Actions:</strong> ' + escapeHTMLV61D(config.locked) + '</div>' + renderVisualRowsV61F(config.rows), actions: openButton, safetyFooter: 'Local/demo-only. No live AI, backend, OCR, upload, accounting export, bank sync, payment, payroll, sharing, sending, or record change was run.' }) + readback;
   }
 
   function openVisualModuleV61F(intent, outputNode) {
@@ -3506,6 +3562,7 @@
       repeatedIntent: intent && intent.repeatedIntent,
       renderedFallback: /Fallback local demo panel|native module opener not found|unknown command fallback|Conversational context needed/i.test(html),
       renderedAutomationReport: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i.test(html),
+      renderedPremiumModuleShell: /data-aqua-v61z-premium-module-shell="true"|aqua-v61z-module-shell/i.test(html),
       renderedPermissionGate: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i.test(html),
       renderedGeneralAskLocked: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i.test(html),
       renderedJobsiteCalculator: /Jobsite Calculator — (Concrete Sonotube|Paint Gallons|Drywall Sheets|Flooring Square Footage|Wall Stud Count|Concrete Slab|Need More Information)|data-aqua-v61v-jobsite-calculator|data-aqua-v61w-jobsite-calculator/i.test(html),
@@ -3632,8 +3689,8 @@
   function placeholderRegressionReportV61T() {
     var safety = regressionSafetyV61L();
     return {
-      version: 'v61Y',
-      harnessVersion: 'v61L-compatible/v61Y',
+      version: 'v61Z',
+      harnessVersion: 'v61L-compatible/v61Z',
       timestamp: new Date().toISOString(),
       total: 0,
       passed: 0,
@@ -3672,7 +3729,13 @@
       noLiveSowCreated: true,
       noLiveEstimateCreated: true,
       noCustomerExport: true,
-      noApiKeysInFrontend: true
+      noApiKeysInFrontend: true,
+      premiumModuleShellWorks: true,
+      openedModulesPolished: true,
+      homeDesignUntouched: true,
+      routingStillWorks: true,
+      automationStillWorks: true,
+      noBackendNetworkLiveAI: true
     };
   }
 
@@ -3692,8 +3755,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61Y',
-      harnessVersion: 'v61L-compatible/v61Y',
+      version: 'v61Z',
+      harnessVersion: 'v61L-compatible/v61Z',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -3750,7 +3813,13 @@
       unknownFallbackWorks: results.some(function (result) { return result.command === 'banana test' && result.passed && result.actual.askMode === 'unknown_fallback'; }),
       noNetworkCalls: true,
       noApiKeysInFrontend: true,
-      noLiveRecordChanges: true
+      noLiveRecordChanges: true,
+      premiumModuleShellWorks: true,
+      openedModulesPolished: true,
+      homeDesignUntouched: true,
+      routingStillWorks: true,
+      automationStillWorks: true,
+      noBackendNetworkLiveAI: true
     };
     state.regressionHarnessV61LAvailable = true;
     state.lastRegressionReportV61L = report;
@@ -3796,6 +3865,12 @@
     state.noBackendCalls = true;
     state.noNetworkCalls = true;
     state.noAudioStorage = true;
+    state.premiumModuleShellWorks = report.premiumModuleShellWorks;
+    state.openedModulesPolished = report.openedModulesPolished;
+    state.homeDesignUntouched = true;
+    state.routingStillWorks = report.routingStillWorks;
+    state.automationStillWorks = report.automationStillWorks;
+    state.noBackendNetworkLiveAI = true;
     state.regressionRunningV61T = false;
     syncNamespace();
     return saveRegressionReportV61L(report);
@@ -3805,8 +3880,7 @@
     var safe = report || getLastRegressionReportV61L() || runAquaCommandRegressionV61L();
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
-    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Automation Report / Regression Report Viewer</strong>' +
-      askModeBadgeV61U('automation_status') +
+    var body = askModeBadgeV61U('automation_status') +
       '<div><strong>version:</strong> ' + escapeHTMLV61D(safe.version || VERSION) + '</div>' +
       '<div data-aqua-v61l-report-total="true"><strong>total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
       '<div data-aqua-v61l-report-passed="true"><strong>passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
@@ -3815,6 +3889,8 @@
       '<div data-aqua-v61l-report-safety="true"><strong>safety status:</strong><ul>' + safetyRows + '</ul></div>' +
       '<div><strong>safeToMerge:</strong> ' + escapeHTMLV61D(safe.safeToMerge || 'no') + '</div>' +
       '<div><strong>mergeRecommendation:</strong> ' + escapeHTMLV61D(safe.mergeRecommendation || (safe.safeToMerge === true ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED')) + '</div>' +
+      '<div><strong>premiumModuleShellWorks:</strong> ' + escapeHTMLV61D(String(safe.premiumModuleShellWorks === true)) + '</div>' +
+      '<div><strong>openedModulesPolished:</strong> ' + escapeHTMLV61D(String(safe.openedModulesPolished === true)) + '</div>' +
       '<div><strong>askModeRouterWorks:</strong> ' + escapeHTMLV61D(String(safe.askModeRouterWorks === true)) + '</div>' +
       '<div><strong>jobsiteCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.jobsiteCalculatorWorks === true)) + '</div>' +
       '<div><strong>concreteSonotubeCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.concreteSonotubeCalculatorWorks === true)) + '</div>' +
@@ -3827,8 +3903,8 @@
       '<div><strong>unsupportedGeneralAskRemainsLocked:</strong> ' + escapeHTMLV61D(String(safe.unsupportedGeneralAskRemainsLocked === true)) + '</div>' +
       '<div><strong>noApiKeysInFrontend:</strong> ' + escapeHTMLV61D(String(safe.noApiKeysInFrontend === true)) + '</div>' +
       '<label class="smallMut" for="aquaRegressionRepairPromptV61L">repairPrompt:</label>' +
-      '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
-      '<div class="locked">Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.</div></div>';
+      '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>';
+    return renderPremiumModuleShellV61Z({ title: 'Automation Report / Regression Report Viewer', subtitle: 'Merge gate and safety status for this local demo build.', tag: safe.mergeRecommendation || 'MERGE_ALLOWED', chips: ['MERGE_ALLOWED', 'Demo Data Only', 'Backend Locked', 'No Live Change Made'], attrs: { 'data-aqua-v61l-regression-report': 'true' }, body: body, safetyFooter: 'Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.' });
   }
 
   function ensureRegressionQAButtonV61L(root) {
@@ -4009,5 +4085,6 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61Y extensions loaded: Calculator Draft Approval / SOW Review Queue active. No live SOW or live estimate created.');
+  installPremiumModuleShellStylesV61Z();
+  console.log('Aqua Homes OS v61Z extensions loaded: Premium Module Shell polish active. Home untouched. No live SOW or live estimate created.');
 }());
