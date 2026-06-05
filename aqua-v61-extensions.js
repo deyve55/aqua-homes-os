@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61B Modular Extension Loader
- * Wires the main Ask AI modal to the existing local Brain command / voice flow.
- * Protected Home visuals untouched. No live AI, backend, network, auto-mic, or audio storage.
+ * Aqua Homes OS v61C Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture.
+ * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61B';
+  var VERSION = 'v61C';
   var state = {
     version: VERSION,
     initialized: true,
@@ -14,10 +14,21 @@
     askAIReadyInserted: false,
     commandControlsInserted: false,
     voiceButtonAvailable: false,
-    noAutoMicStart: true,
+    directAskVoiceHookInstalled: false,
+    askAITapStartsOneShotListening: false,
+    directAskVoiceHandlerAvailable: false,
+    transcriptInjectionAvailable: false,
+    commandRouterHandoffAvailable: false,
+    unsupportedFallbackAvailable: false,
+    permissionDeniedFallbackAvailable: false,
+    browserBlockedFallbackAvailable: false,
+    noAlwaysListening: true,
+    noAutoMicStart: false,
     noAudioStorage: true,
     noNetworkCalls: true,
-    wrappedOpenModal: false
+    wrappedOpenModal: false,
+    directAskVoiceActive: false,
+    directAskVoiceStartedForOpen: false
   };
 
   function mergeNamespace() {
@@ -25,8 +36,11 @@
     window.AquaV61Extensions = Object.assign(previous, state, {
       version: VERSION,
       runV61BCheck: runV61BCheck,
+      runV61CCheck: runV61CCheck,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
-      exposeAskAICommandFlow: exposeAskAICommandFlow
+      exposeAskAICommandFlow: exposeAskAICommandFlow,
+      directAskVoiceV61C: directAskVoiceV61C,
+      startDirectAskVoiceV61C: startDirectAskVoiceV61C
     });
     return window.AquaV61Extensions;
   }
@@ -36,8 +50,11 @@
     Object.assign(window.AquaV61Extensions, state, {
       version: VERSION,
       runV61BCheck: runV61BCheck,
+      runV61CCheck: runV61CCheck,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
-      exposeAskAICommandFlow: exposeAskAICommandFlow
+      exposeAskAICommandFlow: exposeAskAICommandFlow,
+      directAskVoiceV61C: directAskVoiceV61C,
+      startDirectAskVoiceV61C: startDirectAskVoiceV61C
     });
     return window.AquaV61Extensions;
   }
@@ -117,6 +134,7 @@
     var flow = document.createElement('div');
     flow.id = 'askAICommandFlowV61B';
     flow.setAttribute('data-aqua-version', VERSION);
+    flow.setAttribute('data-direct-ask-voice', 'v61C');
     flow.appendChild(readyMessageNode());
 
     var parts = getBrainHubPartsFromExistingRenderer() || buildFallbackCommandFlow();
@@ -140,22 +158,167 @@
     return state.commandControlsInserted;
   }
 
+  function getVoiceStatusNode() {
+    return document.getElementById('voiceAskStatusV60U');
+  }
+
+  function setDirectAskVoiceStatusV61C(message, status) {
+    var el = getVoiceStatusNode();
+    if (el) {
+      el.innerHTML = '<strong>' + escapeHTMLV61C(message) + '</strong><div class="smallMut">Browser voice input / demo only • Push-to-talk only • No always listening • No audio stored • Backend locked</div>';
+    }
+    state.lastDirectAskVoiceStatus = status || message;
+    syncNamespace();
+  }
+
+  function escapeHTMLV61C(value) {
+    if (typeof window.esc === 'function') return window.esc(value);
+    return String(value == null ? '' : value).replace(/[&<>"]/g, function (char) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[char];
+    });
+  }
+
+  function getVoiceRecognitionConstructorV61C() {
+    if (typeof window.getVoiceRecognitionConstructorV60U === 'function') return window.getVoiceRecognitionConstructorV60U();
+    return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  }
+
+  function injectDirectAskTranscriptV61C(transcript) {
+    var clean = String(transcript || '').trim();
+    var command = document.getElementById('brainCommand');
+    if (command) command.value = clean;
+    state.transcriptInjectionAvailable = Boolean(command);
+    syncNamespace();
+    return clean;
+  }
+
+  function handoffDirectAskCommandV61C() {
+    state.commandRouterHandoffAvailable = typeof window.runBrainCommandDemo === 'function';
+    syncNamespace();
+    if (state.commandRouterHandoffAvailable) window.runBrainCommandDemo();
+    else setDirectAskVoiceStatusV61C('Voice command captured. Tap Run Command Demo to continue.', 'router unavailable');
+    return state.commandRouterHandoffAvailable;
+  }
+
+  function directAskVoiceV61C() {
+    return startDirectAskVoiceV61C();
+  }
+
+  function startDirectAskVoiceV61C() {
+    state.directAskVoiceHandlerAvailable = true;
+    state.directAskVoiceHookInstalled = true;
+    state.askAITapStartsOneShotListening = true;
+    state.unsupportedFallbackAvailable = true;
+    state.permissionDeniedFallbackAvailable = true;
+    state.browserBlockedFallbackAvailable = true;
+    state.noAlwaysListening = true;
+    state.noAudioStorage = true;
+    state.noNetworkCalls = true;
+
+    if (!isAskAIModalOpen()) {
+      syncNamespace();
+      return false;
+    }
+    exposeAskAICommandFlow();
+    if (state.directAskVoiceActive) {
+      syncNamespace();
+      return false;
+    }
+
+    var Recognition = getVoiceRecognitionConstructorV61C();
+    if (!Recognition) {
+      setDirectAskVoiceStatusV61C('Voice input unavailable in this browser. Type your command or tap Ask by Voice if available.', 'unsupported-browser fallback');
+      syncNamespace();
+      return false;
+    }
+
+    var recognition;
+    try {
+      recognition = new Recognition();
+    } catch (e) {
+      setDirectAskVoiceStatusV61C('Voice input unavailable. Type your command or tap Ask by Voice.', 'recognition constructor failed');
+      syncNamespace();
+      return false;
+    }
+
+    var captured = false;
+    state.directAskVoiceActive = true;
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onstart = function () {
+      setDirectAskVoiceStatusV61C('Listening from Ask AI...', 'listening');
+    };
+    recognition.onresult = function (event) {
+      var transcript = event && event.results && event.results[0] && event.results[0][0] ? event.results[0][0].transcript : '';
+      var clean = injectDirectAskTranscriptV61C(transcript);
+      if (clean) {
+        captured = true;
+        setDirectAskVoiceStatusV61C('Voice command captured', 'captured');
+        try { recognition.stop(); } catch (e) {}
+        handoffDirectAskCommandV61C();
+      }
+    };
+    recognition.onerror = function (event) {
+      var err = event && event.error ? event.error : '';
+      state.directAskVoiceActive = false;
+      if (err === 'not-allowed' || err === 'service-not-allowed') setDirectAskVoiceStatusV61C('Microphone permission denied. Type your command instead.', 'permission denied');
+      else if (err === 'no-speech') setDirectAskVoiceStatusV61C('No voice command captured. Try again or type the command.', 'no speech');
+      else if (err === 'aborted') setDirectAskVoiceStatusV61C('Tap Ask by Voice to continue. Browser requires a second tap.', 'browser blocked');
+      else setDirectAskVoiceStatusV61C('Voice input unavailable. Type your command or tap Ask by Voice.', 'voice error');
+    };
+    recognition.onend = function () {
+      state.directAskVoiceActive = false;
+      if (!captured) {
+        var el = getVoiceStatusNode();
+        var current = el ? el.textContent : '';
+        if (/Listening from Ask AI/i.test(current)) setDirectAskVoiceStatusV61C('Tap Ask by Voice to continue. Browser requires a second tap.', 'browser blocked');
+      }
+      syncNamespace();
+    };
+
+    try {
+      recognition.start();
+      syncNamespace();
+      return true;
+    } catch (e) {
+      state.directAskVoiceActive = false;
+      setDirectAskVoiceStatusV61C('Tap Ask by Voice to continue. Browser requires a second tap.', 'start blocked');
+      syncNamespace();
+      return false;
+    }
+  }
+
   function afterModalPaint(fn) {
     window.setTimeout(fn, 0);
     window.setTimeout(fn, 80);
   }
 
   function wrapOpenModal() {
-    if (typeof window.openModal !== 'function' || window.openModal.__aquaV61BWrapped) return false;
+    if (typeof window.openModal !== 'function' || window.openModal.__aquaV61CWrapped) return false;
     var originalOpenModal = window.openModal;
-    function openModalV61B(key) {
+    function openModalV61C(key) {
       var result = originalOpenModal.apply(this, arguments);
-      if (key === 'ai') afterModalPaint(exposeAskAICommandFlow);
+      if (key === 'ai') {
+        state.directAskVoiceStartedForOpen = false;
+        if (exposeAskAICommandFlow()) {
+          state.directAskVoiceStartedForOpen = startDirectAskVoiceV61C();
+        }
+        afterModalPaint(function () {
+          exposeAskAICommandFlow();
+          if (!state.directAskVoiceStartedForOpen && isAskAIModalOpen()) {
+            state.directAskVoiceStartedForOpen = startDirectAskVoiceV61C();
+          }
+        });
+      }
       return result;
     }
-    openModalV61B.__aquaV61BWrapped = true;
-    openModalV61B.__aquaV61BOriginal = originalOpenModal;
-    window.openModal = openModalV61B;
+    openModalV61C.__aquaV61CWrapped = true;
+    openModalV61C.__aquaV61BWrapped = true;
+    openModalV61C.__aquaV61COriginal = originalOpenModal;
+    openModalV61C.__aquaV61BOriginal = originalOpenModal;
+    window.openModal = openModalV61C;
     state.wrappedOpenModal = true;
     return true;
   }
@@ -181,6 +344,40 @@
     return state.askAIHookInstalled;
   }
 
+  function runV61CCheck() {
+    if (isAskAIModalOpen()) exposeAskAICommandFlow();
+    state.askAIHookInstalled = Boolean(state.askAIHookInstalled || state.wrappedOpenModal || state.observerInstalled);
+    state.directAskVoiceHookInstalled = Boolean(state.directAskVoiceHookInstalled || state.wrappedOpenModal);
+    state.directAskVoiceHandlerAvailable = typeof startDirectAskVoiceV61C === 'function';
+    state.transcriptInjectionAvailable = typeof injectDirectAskTranscriptV61C === 'function';
+    state.commandRouterHandoffAvailable = typeof handoffDirectAskCommandV61C === 'function' && typeof window.runBrainCommandDemo === 'function';
+    state.unsupportedFallbackAvailable = true;
+    state.permissionDeniedFallbackAvailable = true;
+    state.browserBlockedFallbackAvailable = true;
+    state.noAlwaysListening = true;
+    state.noAudioStorage = true;
+    state.noNetworkCalls = true;
+    state.fallbackAvailable = true;
+    syncNamespace();
+    return {
+      version: 'v61C',
+      directAskVoiceHookInstalled: state.directAskVoiceHookInstalled,
+      askAITapStartsOneShotListening: true,
+      oneShotVoiceCaptureHandlerExists: state.directAskVoiceHandlerAvailable,
+      commandTranscriptInjectionExists: state.transcriptInjectionAvailable,
+      commandRouterHandoffExists: state.commandRouterHandoffAvailable,
+      unsupportedFallbackExists: state.unsupportedFallbackAvailable,
+      permissionDeniedFallbackExists: state.permissionDeniedFallbackAvailable,
+      browserBlockedFallbackExists: state.browserBlockedFallbackAvailable,
+      noAlwaysListening: true,
+      noAudioStorage: true,
+      noNetworkCalls: true,
+      noBackendCalls: true,
+      noLiveAICalls: true,
+      fallbackAvailable: true
+    };
+  }
+
   function runV61BCheck() {
     if (isAskAIModalOpen()) exposeAskAICommandFlow();
     state.askAIHookInstalled = Boolean(state.askAIHookInstalled || state.wrappedOpenModal || state.observerInstalled);
@@ -191,7 +388,8 @@
     return {
       version: VERSION,
       askAIHookInstalled: state.askAIHookInstalled,
-      noAutoMicStart: true,
+      directAskVoiceHookInstalled: state.directAskVoiceHookInstalled,
+      noAlwaysListening: true,
       noAudioStorage: true,
       noNetworkCalls: true
     };
@@ -205,5 +403,5 @@
   }
   window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61B extensions loaded: Ask AI modal wired to local command / voice flow.');
+  console.log('Aqua Homes OS v61C extensions loaded: Ask AI modal wired to direct one-shot local voice command capture.');
 }());
