@@ -1,19 +1,17 @@
-# Aqua Homes OS v61P Regression Report
+# Aqua Homes OS v61Q Regression Report
 
-- Timestamp: 2026-06-05T13:49:43.841Z
+- Timestamp: 2026-06-05T13:58:15.267Z
 - Branch: work
-- Commit: b42afdb02fa56214809119e9fcc8d48392a18aea
-- Total tests: 44
-- Passed: 44
+- Commit: 7c5250a83707f4d3410e92059368c29e58ec85bd
+- Total tests: 47
+- Passed: 47
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
 
 ## Files Changed
-- .github/workflows/aqua-regression.yml
 - aqua-regression-report.json
 - aqua-regression-report.md
-- aqua-v61-extensions.js
 - aqua-v61-regression-test.js
 
 ## Failed Commands / Checks
@@ -40,6 +38,16 @@
 
 ## Merge Recommendation
 MERGE_ALLOWED
+
+## Gate Self-Test
+- passingReportAllowsMerge: PASS
+- failingReportBlocksMerge: PASS
+- simulatedFailureDoesNotModifyApp: PASS
+- fakePassingRecommendation: MERGE_ALLOWED
+- fakeFailingRecommendation: MERGE_BLOCKED
+
+## Gate Violations
+- None
 
 ## Extension Regression Summary
 - Version: v61P

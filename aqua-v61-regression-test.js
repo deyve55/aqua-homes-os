@@ -5,13 +5,28 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const childProcess = require('child_process');
+const crypto = require('crypto');
 
-const VERSION = 'v61P';
+const VERSION = 'v61Q';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
 const JSON_REPORT = 'aqua-regression-report.json';
 const MD_REPORT = 'aqua-regression-report.md';
+const MERGE_ALLOWED = 'MERGE_ALLOWED';
+const MERGE_BLOCKED = 'MERGE_BLOCKED';
+const REQUIRED_SAFETY_FLAGS = [
+  'noBackendCalls',
+  'noNetworkCalls',
+  'noLiveAIApiCalls',
+  'noPayment',
+  'noPayroll',
+  'noBankSync',
+  'noAccountingExport',
+  'noCustomerSharingExport',
+  'noAudioStorage',
+  'noAlwaysListening'
+];
 
 const checks = [];
 const skipped = [];
@@ -71,6 +86,68 @@ function trackedTextFiles() {
 function filesWithConflictMarkers() {
   const conflictPattern = /^(<<<<<<<|=======|>>>>>>>) /m;
   return trackedTextFiles().filter((file) => conflictPattern.test(readFileSafe(file)));
+}
+
+function hashFileSafe(file) {
+  const content = readFileSafe(file);
+  return crypto.createHash('sha256').update(content).digest('hex');
+}
+
+function requiredSafetyFlagsPass(report) {
+  const safetyStatus = report && report.safetyStatus ? report.safetyStatus : {};
+  return REQUIRED_SAFETY_FLAGS.every((flag) => safetyStatus[flag] === true);
+}
+
+function optionalSafetyGroupsPass(report) {
+  const groups = [
+    report && report.safety,
+    report && report.extensionRegression && report.extensionRegression.safety,
+    report && report.extensionRegression && report.extensionRegression.permissionDraftSafety
+  ].filter(Boolean);
+  return groups.every((group) => Object.values(group).every((value) => value === true));
+}
+
+function reportHasConflictMarkers(report) {
+  const conflictFiles = report && Array.isArray(report.conflictMarkerFiles) ? report.conflictMarkerFiles : [];
+  return report && (report.hasConflictMarkers === true || report.noConflictMarkers === false || conflictFiles.length > 0);
+}
+
+function reportHasProtectedVisualRewrite(report) {
+  return report && (
+    report.protectedVisualFileRewritten === true ||
+    report.unexpectedProtectedFileRewrite === true ||
+    report.protectedVisualFileUnchanged === false
+  );
+}
+
+function evaluateAquaMergeGate(report) {
+  if (!report || typeof report !== 'object') return MERGE_BLOCKED;
+
+  const failed = Number(report.failed);
+  if (!Number.isFinite(failed) || failed > 0) return MERGE_BLOCKED;
+  if (report.safeToMerge !== true) return MERGE_BLOCKED;
+  if (!requiredSafetyFlagsPass(report)) return MERGE_BLOCKED;
+  if (!optionalSafetyGroupsPass(report)) return MERGE_BLOCKED;
+  if (reportHasConflictMarkers(report)) return MERGE_BLOCKED;
+  if (reportHasProtectedVisualRewrite(report)) return MERGE_BLOCKED;
+
+  return MERGE_ALLOWED;
+}
+
+function collectGateViolations(report) {
+  const gateViolations = [];
+  const failed = Number(report && report.failed);
+  if (!Number.isFinite(failed)) gateViolations.push('failed count is missing');
+  if (Number.isFinite(failed) && failed > 0) gateViolations.push('failed > 0');
+  if (!report || report.safeToMerge !== true) gateViolations.push('safeToMerge !== true');
+  if (!requiredSafetyFlagsPass(report)) gateViolations.push('required safety flags are false');
+  if (!optionalSafetyGroupsPass(report)) gateViolations.push('extension safety flags are false');
+  if (reportHasConflictMarkers(report)) gateViolations.push('conflict markers exist');
+  if (reportHasProtectedVisualRewrite(report)) gateViolations.push('protected visual file appears unexpectedly rewritten');
+  if (Number.isFinite(failed) && failed > 0 && (!report || typeof report.repairPrompt !== 'string' || report.repairPrompt.trim().length === 0 || report.repairPrompt === 'No repair needed.')) {
+    gateViolations.push('repairPrompt is missing on failure');
+  }
+  return Array.from(new Set(gateViolations));
 }
 
 function makeElement(tagName = 'div') {
@@ -325,7 +402,7 @@ function buildRepairPrompt(report) {
   return [
     '# Copyable Codex Repair Prompt',
     '',
-    'Fix Aqua Homes OS v61P automation gate failures. Do not redesign. Do not touch Home layout. Do not rewrite AH_v54I-3.html unless absolutely necessary and explicitly explain why.',
+    `Fix Aqua Homes OS ${VERSION} automation gate failures. Do not redesign. Do not touch Home layout. Do not rewrite AH_v54I-3.html unless absolutely necessary and explicitly explain why.`,
     '',
     ...rows,
     '',
@@ -334,11 +411,66 @@ function buildRepairPrompt(report) {
   ].join('\n');
 }
 
+function createGateSelfTestReport(overrides = {}) {
+  const baseReport = {
+    version: 'v61Q-gate-self-test',
+    total: 1,
+    passed: 1,
+    failed: 0,
+    failures: [],
+    safeToMerge: true,
+    repairPrompt: 'No repair needed.',
+    safetyStatus: Object.fromEntries(REQUIRED_SAFETY_FLAGS.map((flag) => [flag, true])),
+    noConflictMarkers: true,
+    conflictMarkerFiles: [],
+    protectedVisualFileUnchanged: true,
+    protectedVisualFileRewritten: false,
+    unexpectedProtectedFileRewrite: false
+  };
+  return { ...baseReport, ...overrides };
+}
+
+function runMergeGateSelfTest() {
+  const beforeHtmlHash = hashFileSafe(HTML_KEEPER);
+  const fakePassingReport = createGateSelfTestReport({
+    version: 'v61Q-simulated-passing'
+  });
+  const fakeFailingReport = createGateSelfTestReport({
+    version: 'v61Q-simulated-failure',
+    total: 1,
+    passed: 0,
+    failed: 1,
+    failures: [{ command: 'simulated failure', expected: 'pass', actual: 'fail' }],
+    failedCommands: ['simulated failure'],
+    safeToMerge: false,
+    repairPrompt: 'Simulated repair prompt'
+  });
+  const passingRecommendation = evaluateAquaMergeGate(fakePassingReport);
+  const failingRecommendation = evaluateAquaMergeGate(fakeFailingReport);
+  const afterHtmlHash = hashFileSafe(HTML_KEEPER);
+
+  const gateSelfTest = {
+    passingReportAllowsMerge: passingRecommendation === MERGE_ALLOWED,
+    failingReportBlocksMerge: failingRecommendation === MERGE_BLOCKED,
+    simulatedFailureDoesNotModifyApp: beforeHtmlHash === afterHtmlHash,
+    fakePassingRecommendation: passingRecommendation,
+    fakeFailingRecommendation: failingRecommendation
+  };
+
+  addCheck('merge gate self-test: fake passing report allows merge', gateSelfTest.passingReportAllowsMerge, { layer: 'merge-gate-self-test', expected: MERGE_ALLOWED, actual: passingRecommendation, fileToFix: 'aqua-v61-regression-test.js' });
+  addCheck('merge gate self-test: fake failing report blocks merge', gateSelfTest.failingReportBlocksMerge, { layer: 'merge-gate-self-test', expected: MERGE_BLOCKED, actual: failingRecommendation, fileToFix: 'aqua-v61-regression-test.js' });
+  addCheck('merge gate self-test: simulated failure does not modify app', gateSelfTest.simulatedFailureDoesNotModifyApp, { layer: 'merge-gate-self-test', expected: beforeHtmlHash, actual: afterHtmlHash, fileToFix: HTML_KEEPER });
+
+  return gateSelfTest;
+}
+
 function markdown(report) {
   const safetyRows = Object.entries(report.safetyStatus).length ? Object.entries(report.safetyStatus).map(([key, value]) => `- ${key}: ${value ? 'PASS' : 'FAIL'}`).join('\n') : '- None';
   const skippedRows = report.skippedTests.length ? report.skippedTests.map((item) => `- ${item.name}: ${item.reason}`).join('\n') : '- None';
   const failedRows = report.failedCommands.length ? report.failedCommands.map((name) => `- ${name}`).join('\n') : '- None';
   const changedRows = report.filesChanged.length ? report.filesChanged.map((name) => `- ${name}`).join('\n') : '- None';
+  const gateRows = report.gateViolations && report.gateViolations.length ? report.gateViolations.map((name) => `- ${name}`).join('\n') : '- None';
+  const gateSelfTest = report.gateSelfTest || {};
   return `# Aqua Homes OS ${report.version} Regression Report\n\n` +
     `- Timestamp: ${report.timestamp}\n` +
     `- Branch: ${report.branch || 'unavailable'}\n` +
@@ -354,6 +486,13 @@ function markdown(report) {
     `## Browser Visual Test\n- Status: ${report.browserVisualTest.status}\n- Reason: ${report.browserVisualTest.reason || 'n/a'}\n${report.browserVisualTest.screenshotPath ? `- Screenshot: ${report.browserVisualTest.screenshotPath}\n` : ''}\n` +
     `## Skipped Tests\n${skippedRows}\n\n` +
     `## Merge Recommendation\n${report.mergeRecommendation}\n\n` +
+    `## Gate Self-Test\n` +
+    `- passingReportAllowsMerge: ${gateSelfTest.passingReportAllowsMerge === true ? 'PASS' : 'FAIL'}\n` +
+    `- failingReportBlocksMerge: ${gateSelfTest.failingReportBlocksMerge === true ? 'PASS' : 'FAIL'}\n` +
+    `- simulatedFailureDoesNotModifyApp: ${gateSelfTest.simulatedFailureDoesNotModifyApp === true ? 'PASS' : 'FAIL'}\n` +
+    `- fakePassingRecommendation: ${gateSelfTest.fakePassingRecommendation || 'unavailable'}\n` +
+    `- fakeFailingRecommendation: ${gateSelfTest.fakeFailingRecommendation || 'unavailable'}\n\n` +
+    `## Gate Violations\n${gateRows}\n\n` +
     `## Extension Regression Summary\n` +
     `- Version: ${report.extensionRegression && report.extensionRegression.version ? report.extensionRegression.version : 'unavailable'}\n` +
     `- Total: ${report.extensionRegression && report.extensionRegression.total ? report.extensionRegression.total : 0}\n` +
@@ -368,7 +507,10 @@ async function main() {
   runExtensionRegression();
   await runBrowserVisualTestIfAvailable();
   const safetyStatus = runSafetyGate();
-  const changed = Array.from(new Set(runGit(['diff', '--name-only'], '').split('\n').concat(runGit(['ls-files', '--others', '--exclude-standard'], '').split('\n')).map((name) => name.trim()).filter(Boolean)));
+  const gateSelfTest = runMergeGateSelfTest();
+  const conflictMarkerFiles = filesWithConflictMarkers();
+  const htmlGitStatus = runGit(['status', '--short', '--', HTML_KEEPER]);
+  const changed = Array.from(new Set(runGit(['diff', '--name-only'], '').split('\n').concat(runGit(['ls-files', '--others', '--exclude-standard'], '').split('\n'), [JSON_REPORT, MD_REPORT]).map((name) => name.trim()).filter(Boolean)));
   const workflowExists = fileExists('.github/workflows/aqua-regression.yml');
   addCheck('GitHub Action exists', workflowExists, { layer: 'github-action', fileToFix: '.github/workflows/aqua-regression.yml' });
 
@@ -387,21 +529,23 @@ async function main() {
     safetyStatus,
     browserVisualTest,
     extensionRegression: extensionReport,
+    gateSelfTest,
+    noConflictMarkers: conflictMarkerFiles.length === 0,
+    hasConflictMarkers: conflictMarkerFiles.length > 0,
+    conflictMarkerFiles,
+    protectedVisualFileUnchanged: htmlGitStatus === '',
+    protectedVisualFileRewritten: htmlGitStatus !== '',
+    unexpectedProtectedFileRewrite: htmlGitStatus !== '',
+    protectedVisualFileStatus: htmlGitStatus || 'unchanged',
     generatedReports: [JSON_REPORT, MD_REPORT],
     safeToMerge: false,
     mergeRecommendation: 'MERGE_BLOCKED',
     repairPrompt: ''
   };
-  report.safeToMerge = report.failed === 0 && Object.values(safetyStatus).every(Boolean) && (!extensionReport || (Number(extensionReport.failed) === 0 && extensionReport.safeToMerge === true));
+  report.safeToMerge = report.failed === 0 && requiredSafetyFlagsPass(report) && optionalSafetyGroupsPass(report) && !reportHasConflictMarkers(report) && !reportHasProtectedVisualRewrite(report) && (!extensionReport || (Number(extensionReport.failed) === 0 && extensionReport.safeToMerge === true));
   report.repairPrompt = buildRepairPrompt(report);
-  const gateViolations = [];
-  if (report.failed > 0) gateViolations.push('failed > 0');
-  if (report.safeToMerge !== true) gateViolations.push('safeToMerge !== true');
-  if (extensionReport && extensionReport.safeToMerge !== true) gateViolations.push('extension safeToMerge !== true');
-  if (!Object.values(safetyStatus).every(Boolean)) gateViolations.push('safety flags are false');
-  if (report.failed > 0 && (typeof report.repairPrompt !== 'string' || report.repairPrompt.trim().length === 0 || report.repairPrompt === 'No repair needed.')) gateViolations.push('repairPrompt is missing on failure');
-  report.gateViolations = Array.from(new Set(gateViolations));
-  report.mergeRecommendation = report.gateViolations.length === 0 ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED';
+  report.gateViolations = collectGateViolations(report);
+  report.mergeRecommendation = evaluateAquaMergeGate(report);
 
   fs.writeFileSync(rel(JSON_REPORT), JSON.stringify(report, null, 2) + '\n');
   fs.writeFileSync(rel(MD_REPORT), markdown(report));

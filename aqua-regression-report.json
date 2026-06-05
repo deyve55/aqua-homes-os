@@ -1,17 +1,15 @@
 {
-  "version": "v61P",
-  "timestamp": "2026-06-05T13:49:43.841Z",
+  "version": "v61Q",
+  "timestamp": "2026-06-05T13:58:15.267Z",
   "branch": "work",
-  "commit": "b42afdb02fa56214809119e9fcc8d48392a18aea",
+  "commit": "7c5250a83707f4d3410e92059368c29e58ec85bd",
   "filesChanged": [
-    ".github/workflows/aqua-regression.yml",
     "aqua-regression-report.json",
     "aqua-regression-report.md",
-    "aqua-v61-extensions.js",
     "aqua-v61-regression-test.js"
   ],
-  "total": 44,
-  "passed": 44,
+  "total": 47,
+  "passed": 47,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -399,6 +397,30 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "merge gate self-test: fake passing report allows merge",
+      "passed": true,
+      "layer": "merge-gate-self-test",
+      "expected": "MERGE_ALLOWED",
+      "actual": "MERGE_ALLOWED",
+      "fileToFix": "aqua-v61-regression-test.js"
+    },
+    {
+      "name": "merge gate self-test: fake failing report blocks merge",
+      "passed": true,
+      "layer": "merge-gate-self-test",
+      "expected": "MERGE_BLOCKED",
+      "actual": "MERGE_BLOCKED",
+      "fileToFix": "aqua-v61-regression-test.js"
+    },
+    {
+      "name": "merge gate self-test: simulated failure does not modify app",
+      "passed": true,
+      "layer": "merge-gate-self-test",
+      "expected": "0175107de8222241dfc09a84d34d2d60d286dfc9bc8b69d07ce8a0f1a285a38b",
+      "actual": "0175107de8222241dfc09a84d34d2d60d286dfc9bc8b69d07ce8a0f1a285a38b",
+      "fileToFix": "AH_v54I-3.html"
+    },
+    {
       "name": "GitHub Action exists",
       "passed": true,
       "layer": "github-action",
@@ -430,7 +452,7 @@
   "extensionRegression": {
     "version": "v61P",
     "harnessVersion": "v61L-compatible/v61P",
-    "timestamp": "2026-06-05T13:49:43.793Z",
+    "timestamp": "2026-06-05T13:58:14.965Z",
     "total": 27,
     "passed": 27,
     "failed": 0,
@@ -928,6 +950,20 @@
     "noLiveRecordChanges": true,
     "noBackendNetworkLiveAICalls": true
   },
+  "gateSelfTest": {
+    "passingReportAllowsMerge": true,
+    "failingReportBlocksMerge": true,
+    "simulatedFailureDoesNotModifyApp": true,
+    "fakePassingRecommendation": "MERGE_ALLOWED",
+    "fakeFailingRecommendation": "MERGE_BLOCKED"
+  },
+  "noConflictMarkers": true,
+  "hasConflictMarkers": false,
+  "conflictMarkerFiles": [],
+  "protectedVisualFileUnchanged": true,
+  "protectedVisualFileRewritten": false,
+  "unexpectedProtectedFileRewrite": false,
+  "protectedVisualFileStatus": "unchanged",
   "generatedReports": [
     "aqua-regression-report.json",
     "aqua-regression-report.md"
