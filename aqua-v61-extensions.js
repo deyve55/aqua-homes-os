@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61N Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata.
+ * Aqua Homes OS v61P Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61N';
+  var VERSION = 'v61P';
   var state = {
     version: VERSION,
     initialized: true,
@@ -118,6 +118,7 @@
       getAquaCommandInputV61M: getAquaCommandInputV61M,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61N: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61P: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -156,6 +157,7 @@
       getAquaCommandInputV61M: getAquaCommandInputV61M,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61N: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61P: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -2115,8 +2117,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61N',
-      harnessVersion: 'v61L-compatible/v61N',
+      version: 'v61P',
+      harnessVersion: 'v61L-compatible/v61P',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -2128,6 +2130,7 @@
       permissionDraftSafety: permissionDraftSafetyV61N(),
       repairPrompt: buildRepairPromptV61L(failures),
       safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? true : false,
+      mergeRecommendation: failures.length === 0 && regressionSafetyPassesV61L(safety) ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED',
       noLiveRecordChanges: true,
       noBackendNetworkLiveAICalls: true
     };
@@ -2147,13 +2150,14 @@
     var safe = report || getLastRegressionReportV61L() || runAquaCommandRegressionV61L();
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
-    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Regression QA Report — v61L/v61M/v61N</strong>' +
+    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Regression QA Report — v61L/v61M/v61N/v61P</strong>' +
       '<div data-aqua-v61l-report-total="true"><strong>Total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
       '<div data-aqua-v61l-report-passed="true"><strong>Passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
       '<div data-aqua-v61l-report-failed="true"><strong>Failed:</strong> ' + escapeHTMLV61D(safe.failed) + '</div>' +
       '<div><strong>Failed commands:</strong><ul>' + failedCommands + '</ul></div>' +
       '<div data-aqua-v61l-report-safety="true"><strong>Safety:</strong><ul>' + safetyRows + '</ul></div>' +
       '<div><strong>safe to merge:</strong> ' + escapeHTMLV61D(safe.safeToMerge || 'no') + '</div>' +
+      '<div><strong>merge recommendation:</strong> ' + escapeHTMLV61D(safe.mergeRecommendation || (safe.safeToMerge === true ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED')) + '</div>' +
       '<label class="smallMut" for="aquaRegressionRepairPromptV61L">Repair Prompt:</label>' +
       '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
       '<div class="locked">Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.</div></div>';
@@ -2290,5 +2294,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61N extensions loaded: automation gate metadata active. No live change made.');
+  console.log('Aqua Homes OS v61P extensions loaded: automation gate hardening active. No live change made.');
 }());

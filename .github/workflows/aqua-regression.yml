@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   aqua-regression:
-    name: Aqua v61N regression
+    name: Aqua v61P regression
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,6 +24,9 @@ jobs:
         run: node --check aqua-v61-extensions.js
 
       - name: Run Aqua regression gate
+        if: always()
+        id: aqua_gate
+        continue-on-error: true
         run: node aqua-v61-regression-test.js
 
       - name: Upload Aqua regression reports
@@ -35,3 +38,8 @@ jobs:
             aqua-regression-report.json
             aqua-regression-report.md
           if-no-files-found: warn
+
+      - name: Fail workflow if merge is blocked
+        if: always()
+        run: |
+          node -e "const fs=require('fs'); const report=JSON.parse(fs.readFileSync('aqua-regression-report.json','utf8')); if (report.mergeRecommendation !== 'MERGE_ALLOWED' || report.safeToMerge !== true) { console.error('Merge blocked by Aqua regression gate:', report.mergeRecommendation, 'safeToMerge=' + report.safeToMerge); process.exit(1); } console.log('Merge allowed by Aqua regression gate.');"

@@ -6,7 +6,7 @@ const path = require('path');
 const vm = require('vm');
 const childProcess = require('child_process');
 
-const VERSION = 'v61N';
+const VERSION = 'v61P';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -52,6 +52,25 @@ function readFileSafe(file) {
 
 function fileExists(file) {
   return fs.existsSync(rel(file));
+}
+
+function trackedTextFiles() {
+  return runGit(['ls-files'], '').split('\n').map((name) => name.trim()).filter(Boolean).filter((name) => {
+    const filePath = rel(name);
+    try {
+      const stat = fs.statSync(filePath);
+      if (!stat.isFile() || stat.size > 1024 * 1024) return false;
+      const buffer = fs.readFileSync(filePath);
+      return !buffer.includes(0);
+    } catch (error) {
+      return false;
+    }
+  });
+}
+
+function filesWithConflictMarkers() {
+  const conflictPattern = /^(<<<<<<<|=======|>>>>>>>) /m;
+  return trackedTextFiles().filter((file) => conflictPattern.test(readFileSafe(file)));
 }
 
 function makeElement(tagName = 'div') {
@@ -159,8 +178,8 @@ function checkStaticFiles() {
   addCheck('docs/index.html routes to AH_v54I-3.html', /AH_v54I-3\.html/.test(docsIndex), { layer: 'static-file-safety', fileToFix: 'docs/index.html' });
   const htmlGitStatus = runGit(['status', '--short', '--', HTML_KEEPER]);
   addCheck(`${HTML_KEEPER} was not rewritten in working tree`, htmlGitStatus === '', { layer: 'static-file-safety', actual: htmlGitStatus || 'unchanged', fileToFix: HTML_KEEPER });
-  const conflictPattern = /^(<<<<<<<|=======|>>>>>>>) /m;
-  addCheck('no conflict markers exist', !conflictPattern.test([html, extension, index, docsIndex].join('\n')), { layer: 'static-file-safety', fileToFix: 'repository files' });
+  const conflictFiles = filesWithConflictMarkers();
+  addCheck('no conflict markers exist', conflictFiles.length === 0, { layer: 'static-file-safety', actual: conflictFiles, fileToFix: conflictFiles[0] || 'repository files' });
   try {
     childProcess.execFileSync(process.execPath, ['--check', rel(EXTENSION)], { cwd: ROOT, stdio: 'pipe' });
     addCheck(`no syntax errors in ${EXTENSION}`, true, { layer: 'static-file-safety', fileToFix: EXTENSION });
@@ -185,8 +204,10 @@ function runExtensionRegression() {
     addCheck('extension regression failed count present', Number.isFinite(Number(extensionReport.failed)), { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression has failed command names', Array.isArray(extensionReport.failedCommands) || Array.isArray(extensionReport.failures), { layer: 'extension-regression', fileToFix: EXTENSION });
     addCheck('extension regression has repairPrompt', typeof extensionReport.repairPrompt === 'string' && extensionReport.repairPrompt.length > 0, { layer: 'extension-regression', fileToFix: EXTENSION });
+    addCheck('extension regression has repairPrompt when failures exist', Number(extensionReport.failed) === 0 || (typeof extensionReport.repairPrompt === 'string' && extensionReport.repairPrompt.trim().length > 0 && extensionReport.repairPrompt !== 'No repair needed.'), { layer: 'extension-regression', actual: extensionReport.repairPrompt, fileToFix: EXTENSION });
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
+    addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
     const failuresList = extensionReport.failures || [];
     failuresList.forEach((failure) => addCheck(`extension command passes: ${failure.command}`, false, { layer: 'extension-regression', expected: failure.expected, actual: failure.actual, fileToFix: EXTENSION }));
 
@@ -304,7 +325,7 @@ function buildRepairPrompt(report) {
   return [
     '# Copyable Codex Repair Prompt',
     '',
-    'Fix Aqua Homes OS v61N automation gate failures. Do not redesign. Do not touch Home layout. Do not rewrite AH_v54I-3.html unless absolutely necessary and explicitly explain why.',
+    'Fix Aqua Homes OS v61P automation gate failures. Do not redesign. Do not touch Home layout. Do not rewrite AH_v54I-3.html unless absolutely necessary and explicitly explain why.',
     '',
     ...rows,
     '',
@@ -314,7 +335,7 @@ function buildRepairPrompt(report) {
 }
 
 function markdown(report) {
-  const safetyRows = Object.entries(report.safetyStatus).map(([key, value]) => `- ${key}: ${value ? 'PASS' : 'FAIL'}`).join('\n');
+  const safetyRows = Object.entries(report.safetyStatus).length ? Object.entries(report.safetyStatus).map(([key, value]) => `- ${key}: ${value ? 'PASS' : 'FAIL'}`).join('\n') : '- None';
   const skippedRows = report.skippedTests.length ? report.skippedTests.map((item) => `- ${item.name}: ${item.reason}`).join('\n') : '- None';
   const failedRows = report.failedCommands.length ? report.failedCommands.map((name) => `- ${name}`).join('\n') : '- None';
   const changedRows = report.filesChanged.length ? report.filesChanged.map((name) => `- ${name}`).join('\n') : '- None';
@@ -325,12 +346,14 @@ function markdown(report) {
     `- Total tests: ${report.total}\n` +
     `- Passed: ${report.passed}\n` +
     `- Failed: ${report.failed}\n` +
-    `- safeToMerge: ${report.safeToMerge}\n\n` +
+    `- safeToMerge: ${report.safeToMerge}\n` +
+    `- Merge recommendation: ${report.mergeRecommendation}\n\n` +
     `## Files Changed\n${changedRows}\n\n` +
     `## Failed Commands / Checks\n${failedRows}\n\n` +
     `## Safety Status\n${safetyRows}\n\n` +
     `## Browser Visual Test\n- Status: ${report.browserVisualTest.status}\n- Reason: ${report.browserVisualTest.reason || 'n/a'}\n${report.browserVisualTest.screenshotPath ? `- Screenshot: ${report.browserVisualTest.screenshotPath}\n` : ''}\n` +
     `## Skipped Tests\n${skippedRows}\n\n` +
+    `## Merge Recommendation\n${report.mergeRecommendation}\n\n` +
     `## Extension Regression Summary\n` +
     `- Version: ${report.extensionRegression && report.extensionRegression.version ? report.extensionRegression.version : 'unavailable'}\n` +
     `- Total: ${report.extensionRegression && report.extensionRegression.total ? report.extensionRegression.total : 0}\n` +
@@ -366,16 +389,25 @@ async function main() {
     extensionRegression: extensionReport,
     generatedReports: [JSON_REPORT, MD_REPORT],
     safeToMerge: false,
+    mergeRecommendation: 'MERGE_BLOCKED',
     repairPrompt: ''
   };
-  report.safeToMerge = report.failed === 0 && Object.values(safetyStatus).every(Boolean) && (!extensionReport || Number(extensionReport.failed) === 0);
+  report.safeToMerge = report.failed === 0 && Object.values(safetyStatus).every(Boolean) && (!extensionReport || (Number(extensionReport.failed) === 0 && extensionReport.safeToMerge === true));
   report.repairPrompt = buildRepairPrompt(report);
+  const gateViolations = [];
+  if (report.failed > 0) gateViolations.push('failed > 0');
+  if (report.safeToMerge !== true) gateViolations.push('safeToMerge !== true');
+  if (extensionReport && extensionReport.safeToMerge !== true) gateViolations.push('extension safeToMerge !== true');
+  if (!Object.values(safetyStatus).every(Boolean)) gateViolations.push('safety flags are false');
+  if (report.failed > 0 && (typeof report.repairPrompt !== 'string' || report.repairPrompt.trim().length === 0 || report.repairPrompt === 'No repair needed.')) gateViolations.push('repairPrompt is missing on failure');
+  report.gateViolations = Array.from(new Set(gateViolations));
+  report.mergeRecommendation = report.gateViolations.length === 0 ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED';
 
   fs.writeFileSync(rel(JSON_REPORT), JSON.stringify(report, null, 2) + '\n');
   fs.writeFileSync(rel(MD_REPORT), markdown(report));
 
-  console.log(`Aqua ${VERSION} regression: ${report.passed}/${report.total} passed; failed=${report.failed}; safeToMerge=${report.safeToMerge}`);
-  process.exit(report.safeToMerge ? 0 : 1);
+  console.log(`Aqua ${VERSION} regression: ${report.passed}/${report.total} passed; failed=${report.failed}; safeToMerge=${report.safeToMerge}; mergeRecommendation=${report.mergeRecommendation}`);
+  process.exit(report.mergeRecommendation === 'MERGE_ALLOWED' ? 0 : 1);
 }
 
 main().catch((error) => {
@@ -391,6 +423,8 @@ main().catch((error) => {
     safetyStatus: {},
     browserVisualTest,
     safeToMerge: false,
+    mergeRecommendation: 'MERGE_BLOCKED',
+    gateViolations: ['aqua-v61-regression-test.js crashed'],
     repairPrompt: '# Copyable Codex Repair Prompt\n\nFix aqua-v61-regression-test.js crash. Do not redesign. Keep all safety locks.'
   };
   fs.writeFileSync(rel(JSON_REPORT), JSON.stringify(report, null, 2) + '\n');
