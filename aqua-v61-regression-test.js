@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v61U';
+const VERSION = 'v61V';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -274,6 +274,10 @@ function checkStaticFiles() {
   addCheck('v61U Ask AI mode classifier exists', /function\s+classifyAquaAskModeV61U/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
   addCheck('v61U General Ask locked placeholder exists', /General Ask \/ Jobsite Calculator — Locked Foundation/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
   addCheck('v61U noApiKeysInFrontend report flag exists', /noApiKeysInFrontend/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
+  addCheck('v61V local Jobsite Calculator parser exists', /function\s+parseLocalJobsiteCalculatorV61V/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
+  addCheck('v61V Concrete Sonotube calculator copy exists', /Jobsite Calculator — Concrete Sonotube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
+  addCheck('v61V sauna tube normalization support exists', /sauna tube/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
+  addCheck('v61V concreteSonotubeCalculatorWorks report flag exists', /concreteSonotubeCalculatorWorks/.test(extension), { layer: 'jobsite-calculator-v61v', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -296,7 +300,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v61U', extensionReport.version === 'v61U', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v61V', extensionReport.version === 'v61V', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('extension regression includes spoken readback availability or fallback flag', extensionReport.spokenReadbackAvailable === true || extensionReport.spokenReadbackBrowserUnavailableFallback === true, { layer: 'spoken-readback-v61r', actual: { available: extensionReport.spokenReadbackAvailable, fallback: extensionReport.spokenReadbackBrowserUnavailableFallback }, fileToFix: EXTENSION });
     addCheck('extension regression spoken preference key is aquaSpokenReadbackV61R', extensionReport.spokenReadbackPreferenceKey === 'aquaSpokenReadbackV61R', { layer: 'spoken-readback-v61r', actual: extensionReport.spokenReadbackPreferenceKey, fileToFix: EXTENSION });
     addCheck('automationCommandRoutesBeforeFallback is true', extensionReport.automationCommandRoutesBeforeFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandRoutesBeforeFallback, fileToFix: EXTENSION });
@@ -308,6 +312,11 @@ function runExtensionRegression() {
     addCheck('automationStatusModeWorks is true', extensionReport.automationStatusModeWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.automationStatusModeWorks, fileToFix: EXTENSION });
     addCheck('permissionedActionModeWorks is true', extensionReport.permissionedActionModeWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.permissionedActionModeWorks, fileToFix: EXTENSION });
     addCheck('generalAskLockedWorks is true', extensionReport.generalAskLockedWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.generalAskLockedWorks, fileToFix: EXTENSION });
+    addCheck('jobsiteCalculatorWorks is true', extensionReport.jobsiteCalculatorWorks === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.jobsiteCalculatorWorks, fileToFix: EXTENSION });
+    addCheck('concreteSonotubeCalculatorWorks is true', extensionReport.concreteSonotubeCalculatorWorks === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.concreteSonotubeCalculatorWorks, fileToFix: EXTENSION });
+    addCheck('8 inch / 4 foot / 80 lb returns 3 recommended bags', extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags, fileToFix: EXTENSION });
+    addCheck('sauna tube normalizes to Sonotube', extensionReport.saunaTubeNormalizesToSonotube === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.saunaTubeNormalizesToSonotube, fileToFix: EXTENSION });
+    addCheck('unsupported General Ask remains locked', extensionReport.unsupportedGeneralAskRemainsLocked === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.unsupportedGeneralAskRemainsLocked, fileToFix: EXTENSION });
     addCheck('unknownFallbackWorks is true', extensionReport.unknownFallbackWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.unknownFallbackWorks, fileToFix: EXTENSION });
     addCheck('noApiKeysInFrontend is true', extensionReport.noApiKeysInFrontend === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.noApiKeysInFrontend, fileToFix: EXTENSION });
     const failuresList = extensionReport.failures || [];
@@ -351,6 +360,10 @@ function runExtensionRegression() {
 
     [
       ['how many bags of concrete for an 8 inch sonotube 4 feet deep', 'general_ask_locked'],
+      ['how many 80 pound bags for an 8 inch sonotube 4 feet deep', 'general_ask_locked'],
+      ['how many 60 pound bags for an 8 inch sonotube 4 feet deep', 'general_ask_locked'],
+      ['concrete for 8 inch sauna tube 4 ft deep', 'general_ask_locked'],
+      ['8 inch tube 4 feet deep concrete bags', 'general_ask_locked'],
       ['how many sheets of drywall for this room', 'general_ask_locked'],
       ['what does this code term mean', 'general_ask_locked'],
       ['how many gallons of paint do I need', 'general_ask_locked'],
@@ -362,8 +375,15 @@ function runExtensionRegression() {
       ['banana test', 'unknown_fallback']
     ].forEach(([command, mode]) => {
       const row = byCommand.get(command);
-      addCheck(`v61U Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.askMode === mode), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+      addCheck(`v61V Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.askMode === mode), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
+
+    const concreteDefaultRow = byCommand.get('how many bags of concrete for an 8 inch sonotube 4 feet deep');
+    addCheck('Concrete Sonotube calculator recommends 3 bags for 8 inch / 4 foot default 80 lb', Boolean(concreteDefaultRow && concreteDefaultRow.passed && concreteDefaultRow.actual && concreteDefaultRow.actual.recommendedBags === 3 && concreteDefaultRow.actual.bagSizePounds === 80), { layer: 'jobsite-calculator-v61v', expected: '3 recommended 80 lb bags', actual: concreteDefaultRow ? concreteDefaultRow.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const concrete60Row = byCommand.get('how many 60 pound bags for an 8 inch sonotube 4 feet deep');
+    addCheck('Concrete Sonotube calculator rounds 60 lb version to 4 bags', Boolean(concrete60Row && concrete60Row.passed && concrete60Row.actual && concrete60Row.actual.recommendedBags === 4 && concrete60Row.actual.bagSizePounds === 60), { layer: 'jobsite-calculator-v61v', expected: '4 recommended 60 lb bags', actual: concrete60Row ? concrete60Row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    const saunaRow = byCommand.get('concrete for 8 inch sauna tube 4 ft deep');
+    addCheck('sauna tube calculator row normalizes to Sonotube', Boolean(saunaRow && saunaRow.passed && saunaRow.actual && saunaRow.actual.normalizedTubeTerm === 'Sonotube'), { layer: 'jobsite-calculator-v61v', expected: 'Sonotube', actual: saunaRow ? saunaRow.actual : 'missing from extension results', fileToFix: EXTENSION });
 
     const permissionRow = byCommand.get('code this receipt to materials');
     addCheck('receipt coding routes to Permission Granter', Boolean(permissionRow && permissionRow.passed && permissionRow.actual && permissionRow.actual.renderedPermissionGate), { layer: 'permission-draft-safety', expected: 'Permission Granter demo gate', actual: permissionRow && permissionRow.actual, fileToFix: EXTENSION });
@@ -476,7 +496,7 @@ function buildRepairPrompt(report) {
 
 function createGateSelfTestReport(overrides = {}) {
   const baseReport = {
-    version: 'v61U-gate-self-test',
+    version: 'v61V-gate-self-test',
     total: 1,
     passed: 1,
     failed: 0,
@@ -496,10 +516,10 @@ function createGateSelfTestReport(overrides = {}) {
 function runMergeGateSelfTest() {
   const beforeHtmlHash = hashFileSafe(HTML_KEEPER);
   const fakePassingReport = createGateSelfTestReport({
-    version: 'v61U-simulated-passing'
+    version: 'v61V-simulated-passing'
   });
   const fakeFailingReport = createGateSelfTestReport({
-    version: 'v61U-simulated-failure',
+    version: 'v61V-simulated-failure',
     total: 1,
     passed: 0,
     failed: 1,
@@ -554,6 +574,10 @@ function markdown(report) {
     `- automationStatusModeWorks: ${report.extensionRegression && report.extensionRegression.automationStatusModeWorks === true}\n` +
     `- permissionedActionModeWorks: ${report.extensionRegression && report.extensionRegression.permissionedActionModeWorks === true}\n` +
     `- generalAskLockedWorks: ${report.extensionRegression && report.extensionRegression.generalAskLockedWorks === true}\n` +
+    `- jobsiteCalculatorWorks: ${report.extensionRegression && report.extensionRegression.jobsiteCalculatorWorks === true}\n` +
+    `- concreteSonotubeCalculatorWorks: ${report.extensionRegression && report.extensionRegression.concreteSonotubeCalculatorWorks === true}\n` +
+    `- sonotubeEightInchFourFoot80lbReturnsThreeBags: ${report.extensionRegression && report.extensionRegression.sonotubeEightInchFourFoot80lbReturnsThreeBags === true}\n` +
+    `- saunaTubeNormalizesToSonotube: ${report.extensionRegression && report.extensionRegression.saunaTubeNormalizesToSonotube === true}\n` +
     `- unknownFallbackWorks: ${report.extensionRegression && report.extensionRegression.unknownFallbackWorks === true}\n` +
     `- noApiKeysInFrontend: ${report.extensionRegression && report.extensionRegression.noApiKeysInFrontend === true}\n\n` +
     `## Files Changed\n${changedRows}\n\n` +
@@ -610,6 +634,9 @@ async function main() {
     automationStatusModeWorks: extensionReport ? extensionReport.automationStatusModeWorks === true : false,
     permissionedActionModeWorks: extensionReport ? extensionReport.permissionedActionModeWorks === true : false,
     generalAskLockedWorks: extensionReport ? extensionReport.generalAskLockedWorks === true : false,
+    jobsiteCalculatorWorks: extensionReport ? extensionReport.jobsiteCalculatorWorks === true : false,
+    concreteSonotubeCalculatorWorks: extensionReport ? extensionReport.concreteSonotubeCalculatorWorks === true : false,
+    sonotubeEightInchFourFoot80lbReturnsThreeBags: extensionReport ? extensionReport.sonotubeEightInchFourFoot80lbReturnsThreeBags === true : false,
     unknownFallbackWorks: extensionReport ? extensionReport.unknownFallbackWorks === true : false,
     noNetworkCalls: extensionReport ? extensionReport.noNetworkCalls === true : false,
     noApiKeysInFrontend: extensionReport ? extensionReport.noApiKeysInFrontend === true : false,

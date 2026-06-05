@@ -1,16 +1,16 @@
 {
-  "version": "v61U",
-  "timestamp": "2026-06-05T15:47:22.423Z",
+  "version": "v61V",
+  "timestamp": "2026-06-05T16:08:04.353Z",
   "branch": "work",
-  "commit": "1a4f65c067d3be214dd82edcfd3e66ff016146c7",
+  "commit": "81647f8d14df49dcddd477ee42383101e1f4447f",
   "filesChanged": [
     "aqua-regression-report.json",
     "aqua-regression-report.md",
     "aqua-v61-extensions.js",
     "aqua-v61-regression-test.js"
   ],
-  "total": 94,
-  "passed": 94,
+  "total": 110,
+  "passed": 110,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -131,6 +131,30 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "v61V local Jobsite Calculator parser exists",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61V Concrete Sonotube calculator copy exists",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61V sauna tube normalization support exists",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61V concreteSonotubeCalculatorWorks report flag exists",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "AquaV61Extensions exists",
       "passed": true,
       "layer": "extension-regression",
@@ -146,14 +170,14 @@
       "name": "extension regression produced total tests",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 48,
+      "actual": 53,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
       "name": "extension regression passed count present",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 48,
+      "actual": 53,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -213,10 +237,10 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "extension regression version is v61U",
+      "name": "extension regression version is v61V",
       "passed": true,
       "layer": "extension-regression",
-      "actual": "v61U",
+      "actual": "v61V",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -300,6 +324,41 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "jobsiteCalculatorWorks is true",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "concreteSonotubeCalculatorWorks is true",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "8 inch / 4 foot / 80 lb returns 3 recommended bags",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "sauna tube normalizes to Sonotube",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "unsupported General Ask remains locked",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "unknownFallbackWorks is true",
       "passed": true,
       "layer": "ask-mode-router-v61u",
@@ -327,6 +386,8 @@
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -347,6 +408,8 @@
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -367,6 +430,8 @@
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -387,6 +452,8 @@
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -407,6 +474,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -427,6 +496,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -447,6 +518,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -467,6 +540,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -487,6 +562,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -507,6 +584,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -527,6 +606,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -548,6 +629,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "permissioned_action",
         "renderedDraftQueue": true,
         "noLiveChangeText": true
@@ -569,6 +652,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "permissioned_action",
         "renderedDraftQueue": true,
         "noLiveChangeText": true
@@ -590,6 +675,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "permissioned_action",
         "renderedDraftQueue": true,
         "noLiveChangeText": true
@@ -610,6 +697,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -630,6 +719,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -650,6 +741,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -670,6 +763,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "app_navigation",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -690,6 +785,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "app_navigation",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -697,19 +794,26 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: how many bags of concrete for an 8 inch sonotube 4 feet deep",
+      "name": "v61V Ask AI mode routes: how many bags of concrete for an 8 inch sonotube 4 feet deep",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "general_ask_locked",
       "actual": {
         "command": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
-        "canonicalIntent": "general_ask_locked",
+        "canonicalIntent": "local_calculator_available",
         "module": "General Ask / Jobsite Calculator",
         "normalizedText": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
         "renderedFallback": false,
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
-        "renderedGeneralAskLocked": true,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": true,
+        "renderedConcreteSonotubeCalculator": true,
+        "recommendedBags": 3,
+        "bagSizePounds": 80,
+        "exactBags": 2.3271056693257726,
+        "volumeCubicFeet": 1.3962634015954634,
+        "normalizedTubeTerm": "Sonotube",
         "askMode": "general_ask_locked",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -717,7 +821,115 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: how many sheets of drywall for this room",
+      "name": "v61V Ask AI mode routes: how many 80 pound bags for an 8 inch sonotube 4 feet deep",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "general_ask_locked",
+      "actual": {
+        "command": "how many 80 pound bags for an 8 inch sonotube 4 feet deep",
+        "canonicalIntent": "local_calculator_available",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "how many 80 pound bags for an 8 inch sonotube 4 feet deep",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": true,
+        "renderedConcreteSonotubeCalculator": true,
+        "recommendedBags": 3,
+        "bagSizePounds": 80,
+        "exactBags": 2.3271056693257726,
+        "volumeCubicFeet": 1.3962634015954634,
+        "normalizedTubeTerm": "Sonotube",
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61V Ask AI mode routes: how many 60 pound bags for an 8 inch sonotube 4 feet deep",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "general_ask_locked",
+      "actual": {
+        "command": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
+        "canonicalIntent": "local_calculator_available",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": true,
+        "renderedConcreteSonotubeCalculator": true,
+        "recommendedBags": 4,
+        "bagSizePounds": 60,
+        "exactBags": 3.10280755910103,
+        "volumeCubicFeet": 1.3962634015954634,
+        "normalizedTubeTerm": "Sonotube",
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61V Ask AI mode routes: concrete for 8 inch sauna tube 4 ft deep",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "general_ask_locked",
+      "actual": {
+        "command": "concrete for 8 inch sauna tube 4 ft deep",
+        "canonicalIntent": "local_calculator_available",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "concrete for 8 inch sauna tube 4 ft deep",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": true,
+        "renderedConcreteSonotubeCalculator": true,
+        "recommendedBags": 3,
+        "bagSizePounds": 80,
+        "exactBags": 2.3271056693257726,
+        "volumeCubicFeet": 1.3962634015954634,
+        "normalizedTubeTerm": "Sonotube",
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61V Ask AI mode routes: 8 inch tube 4 feet deep concrete bags",
+      "passed": true,
+      "layer": "ask-mode-router-v61u",
+      "expected": "general_ask_locked",
+      "actual": {
+        "command": "8 inch tube 4 feet deep concrete bags",
+        "canonicalIntent": "local_calculator_available",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "8 inch tube 4 feet deep concrete bags",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": true,
+        "renderedConcreteSonotubeCalculator": true,
+        "recommendedBags": 3,
+        "bagSizePounds": 80,
+        "exactBags": 2.3271056693257726,
+        "volumeCubicFeet": 1.3962634015954634,
+        "normalizedTubeTerm": "Sonotube",
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61V Ask AI mode routes: how many sheets of drywall for this room",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "general_ask_locked",
@@ -730,6 +942,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": true,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "general_ask_locked",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -737,7 +951,7 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: what does this code term mean",
+      "name": "v61V Ask AI mode routes: what does this code term mean",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "general_ask_locked",
@@ -750,6 +964,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": true,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "general_ask_locked",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -757,7 +973,7 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: how many gallons of paint do I need",
+      "name": "v61V Ask AI mode routes: how many gallons of paint do I need",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "general_ask_locked",
@@ -770,6 +986,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": true,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "general_ask_locked",
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -777,7 +995,7 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: pull up receipts",
+      "name": "v61V Ask AI mode routes: pull up receipts",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "app_navigation",
@@ -790,6 +1008,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "app_navigation",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -797,7 +1017,7 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: show automation report",
+      "name": "v61V Ask AI mode routes: show automation report",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "automation_status",
@@ -810,6 +1030,8 @@
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -817,7 +1039,7 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: run regression qa",
+      "name": "v61V Ask AI mode routes: run regression qa",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "automation_status",
@@ -830,6 +1052,8 @@
         "renderedAutomationReport": true,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "automation_status",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -837,7 +1061,7 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: code this receipt to materials",
+      "name": "v61V Ask AI mode routes: code this receipt to materials",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "permissioned_action",
@@ -851,6 +1075,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "permissioned_action",
         "renderedDraftQueue": true,
         "noLiveChangeText": true
@@ -858,7 +1084,7 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: what needs approval",
+      "name": "v61V Ask AI mode routes: what needs approval",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "app_navigation",
@@ -871,6 +1097,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "app_navigation",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -878,7 +1106,7 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "v61U Ask AI mode routes: banana test",
+      "name": "v61V Ask AI mode routes: banana test",
       "passed": true,
       "layer": "ask-mode-router-v61u",
       "expected": "unknown_fallback",
@@ -891,9 +1119,92 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "unknown_fallback",
         "renderedDraftQueue": false,
         "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "Concrete Sonotube calculator recommends 3 bags for 8 inch / 4 foot default 80 lb",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "expected": "3 recommended 80 lb bags",
+      "actual": {
+        "command": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
+        "canonicalIntent": "local_calculator_available",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": true,
+        "renderedConcreteSonotubeCalculator": true,
+        "recommendedBags": 3,
+        "bagSizePounds": 80,
+        "exactBags": 2.3271056693257726,
+        "volumeCubicFeet": 1.3962634015954634,
+        "normalizedTubeTerm": "Sonotube",
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "Concrete Sonotube calculator rounds 60 lb version to 4 bags",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "expected": "4 recommended 60 lb bags",
+      "actual": {
+        "command": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
+        "canonicalIntent": "local_calculator_available",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": true,
+        "renderedConcreteSonotubeCalculator": true,
+        "recommendedBags": 4,
+        "bagSizePounds": 60,
+        "exactBags": 3.10280755910103,
+        "volumeCubicFeet": 1.3962634015954634,
+        "normalizedTubeTerm": "Sonotube",
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "sauna tube calculator row normalizes to Sonotube",
+      "passed": true,
+      "layer": "jobsite-calculator-v61v",
+      "expected": "Sonotube",
+      "actual": {
+        "command": "concrete for 8 inch sauna tube 4 ft deep",
+        "canonicalIntent": "local_calculator_available",
+        "module": "General Ask / Jobsite Calculator",
+        "normalizedText": "concrete for 8 inch sauna tube 4 ft deep",
+        "renderedFallback": false,
+        "renderedAutomationReport": false,
+        "renderedPermissionGate": false,
+        "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": true,
+        "renderedConcreteSonotubeCalculator": true,
+        "recommendedBags": 3,
+        "bagSizePounds": 80,
+        "exactBags": 2.3271056693257726,
+        "volumeCubicFeet": 1.3962634015954634,
+        "normalizedTubeTerm": "Sonotube",
+        "askMode": "general_ask_locked",
+        "renderedDraftQueue": false,
+        "noLiveChangeText": false
       },
       "fileToFix": "aqua-v61-extensions.js"
     },
@@ -912,6 +1223,8 @@
         "renderedAutomationReport": false,
         "renderedPermissionGate": true,
         "renderedGeneralAskLocked": false,
+        "renderedJobsiteCalculator": false,
+        "renderedConcreteSonotubeCalculator": false,
         "askMode": "permissioned_action",
         "renderedDraftQueue": true,
         "noLiveChangeText": true
@@ -1074,11 +1387,11 @@
     "reason": "Playwright/browser not available"
   },
   "extensionRegression": {
-    "version": "v61U",
-    "harnessVersion": "v61L-compatible/v61U",
-    "timestamp": "2026-06-05T15:47:21.977Z",
-    "total": 48,
-    "passed": 48,
+    "version": "v61V",
+    "harnessVersion": "v61L-compatible/v61V",
+    "timestamp": "2026-06-05T16:08:03.936Z",
+    "total": 53,
+    "passed": 53,
     "failed": 0,
     "failedCommands": [],
     "failures": [],
@@ -1095,6 +1408,8 @@
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1115,6 +1430,8 @@
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1135,6 +1452,8 @@
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1155,6 +1474,8 @@
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1175,6 +1496,8 @@
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1195,6 +1518,8 @@
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1215,6 +1540,8 @@
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1235,6 +1562,8 @@
           "renderedAutomationReport": true,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "automation_status",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1255,6 +1584,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1275,6 +1606,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1295,6 +1628,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1315,6 +1650,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1335,6 +1672,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1355,6 +1694,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1375,6 +1716,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1395,6 +1738,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1416,6 +1761,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1437,6 +1784,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1458,6 +1807,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1479,6 +1830,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1500,6 +1853,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1521,6 +1876,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "permissioned_action",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1541,6 +1898,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1561,6 +1920,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1581,6 +1942,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1601,6 +1964,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1621,6 +1986,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1641,6 +2008,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1661,6 +2030,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1681,6 +2052,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1701,6 +2074,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1721,6 +2096,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1741,6 +2118,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1761,6 +2140,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1781,6 +2162,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1801,6 +2184,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1821,6 +2206,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1841,6 +2228,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1861,6 +2250,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1881,6 +2272,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1901,6 +2294,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1922,6 +2317,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1942,6 +2339,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "app_navigation",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1952,16 +2351,158 @@
       },
       {
         "command": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
-        "expected": "General Ask / Jobsite Calculator locked placeholder",
+        "expected": "Jobsite Calculator — Concrete Sonotube defaults to 80 lb and recommends 3 bags",
         "actual": {
           "command": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
-          "canonicalIntent": "general_ask_locked",
+          "canonicalIntent": "local_calculator_available",
           "module": "General Ask / Jobsite Calculator",
           "normalizedText": "how many bags of concrete for an 8 inch sonotube 4 feet deep",
           "renderedFallback": false,
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
-          "renderedGeneralAskLocked": true,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": true,
+          "renderedConcreteSonotubeCalculator": true,
+          "recommendedBags": 3,
+          "bagSizePounds": 80,
+          "exactBags": 2.3271056693257726,
+          "volumeCubicFeet": 1.3962634015954634,
+          "normalizedTubeTerm": "Sonotube",
+          "askMode": "general_ask_locked",
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "how many 80 pound bags for an 8 inch sonotube 4 feet deep",
+        "expected": "Concrete Sonotube calculator 80 lb recommends 3 bags",
+        "actual": {
+          "command": "how many 80 pound bags for an 8 inch sonotube 4 feet deep",
+          "canonicalIntent": "local_calculator_available",
+          "module": "General Ask / Jobsite Calculator",
+          "normalizedText": "how many 80 pound bags for an 8 inch sonotube 4 feet deep",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": true,
+          "renderedConcreteSonotubeCalculator": true,
+          "recommendedBags": 3,
+          "bagSizePounds": 80,
+          "exactBags": 2.3271056693257726,
+          "volumeCubicFeet": 1.3962634015954634,
+          "normalizedTubeTerm": "Sonotube",
+          "askMode": "general_ask_locked",
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
+        "expected": "Concrete Sonotube calculator 60 lb rounds up to 4 bags",
+        "actual": {
+          "command": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
+          "canonicalIntent": "local_calculator_available",
+          "module": "General Ask / Jobsite Calculator",
+          "normalizedText": "how many 60 pound bags for an 8 inch sonotube 4 feet deep",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": true,
+          "renderedConcreteSonotubeCalculator": true,
+          "recommendedBags": 4,
+          "bagSizePounds": 60,
+          "exactBags": 3.10280755910103,
+          "volumeCubicFeet": 1.3962634015954634,
+          "normalizedTubeTerm": "Sonotube",
+          "askMode": "general_ask_locked",
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "concrete for 8 inch sauna tube 4 ft deep",
+        "expected": "Concrete Sonotube calculator normalizes sauna tube to Sonotube",
+        "actual": {
+          "command": "concrete for 8 inch sauna tube 4 ft deep",
+          "canonicalIntent": "local_calculator_available",
+          "module": "General Ask / Jobsite Calculator",
+          "normalizedText": "concrete for 8 inch sauna tube 4 ft deep",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": true,
+          "renderedConcreteSonotubeCalculator": true,
+          "recommendedBags": 3,
+          "bagSizePounds": 80,
+          "exactBags": 2.3271056693257726,
+          "volumeCubicFeet": 1.3962634015954634,
+          "normalizedTubeTerm": "Sonotube",
+          "askMode": "general_ask_locked",
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "8 inch tube 4 feet deep concrete bags",
+        "expected": "Concrete tube calculator shorthand recommends 3 bags",
+        "actual": {
+          "command": "8 inch tube 4 feet deep concrete bags",
+          "canonicalIntent": "local_calculator_available",
+          "module": "General Ask / Jobsite Calculator",
+          "normalizedText": "8 inch tube 4 feet deep concrete bags",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": true,
+          "renderedConcreteSonotubeCalculator": true,
+          "recommendedBags": 3,
+          "bagSizePounds": 80,
+          "exactBags": 2.3271056693257726,
+          "volumeCubicFeet": 1.3962634015954634,
+          "normalizedTubeTerm": "Sonotube",
+          "askMode": "general_ask_locked",
+          "renderedDraftQueue": false,
+          "noLiveChangeText": false
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "how many bags for 8\" sonotube 4' deep",
+        "expected": "Concrete Sonotube calculator supports inch and foot symbols",
+        "actual": {
+          "command": "how many bags for 8\" sonotube 4' deep",
+          "canonicalIntent": "local_calculator_available",
+          "module": "General Ask / Jobsite Calculator",
+          "normalizedText": "how many bags for 8 inch sonotube 4 feet deep how many bags for 8 sonotube 4 deep",
+          "renderedFallback": false,
+          "renderedAutomationReport": false,
+          "renderedPermissionGate": false,
+          "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": true,
+          "renderedConcreteSonotubeCalculator": true,
+          "recommendedBags": 3,
+          "bagSizePounds": 80,
+          "exactBags": 2.3271056693257726,
+          "volumeCubicFeet": 1.3962634015954634,
+          "normalizedTubeTerm": "Sonotube",
           "askMode": "general_ask_locked",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1982,6 +2523,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": true,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "general_ask_locked",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -2002,6 +2545,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": true,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "general_ask_locked",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -2022,6 +2567,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": true,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "general_ask_locked",
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -2042,6 +2589,8 @@
           "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedGeneralAskLocked": false,
+          "renderedJobsiteCalculator": false,
+          "renderedConcreteSonotubeCalculator": false,
           "askMode": "unknown_fallback",
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -2091,6 +2640,11 @@
     "automationStatusModeWorks": true,
     "permissionedActionModeWorks": true,
     "generalAskLockedWorks": true,
+    "jobsiteCalculatorWorks": true,
+    "concreteSonotubeCalculatorWorks": true,
+    "sonotubeEightInchFourFoot80lbReturnsThreeBags": true,
+    "saunaTubeNormalizesToSonotube": true,
+    "unsupportedGeneralAskRemainsLocked": true,
     "unknownFallbackWorks": true,
     "noNetworkCalls": true,
     "noApiKeysInFrontend": true
@@ -2100,6 +2654,9 @@
   "automationStatusModeWorks": true,
   "permissionedActionModeWorks": true,
   "generalAskLockedWorks": true,
+  "jobsiteCalculatorWorks": true,
+  "concreteSonotubeCalculatorWorks": true,
+  "sonotubeEightInchFourFoot80lbReturnsThreeBags": true,
   "unknownFallbackWorks": true,
   "noNetworkCalls": true,
   "noApiKeysInFrontend": true,
