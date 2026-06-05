@@ -1,6 +1,6 @@
 /*
  * Aqua Homes OS v61L Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export.
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
@@ -82,6 +82,9 @@
     receivedToReceiptCorrectionWorks: false,
     badTranscriptNotSavedAsValue: false,
     demoStateCommandsRunBeforeFallback: false,
+    regressionHarnessV61LAvailable: true,
+    regressionQACommandWorksV61L: false,
+    safeToMergeV61L: false,
     noBackendCalls: true,
     noLiveChangeExecuted: true
   };
@@ -260,6 +263,9 @@
     var q = normalizeAquaPhraseV61E(original);
     var demoState = detectDemoStateCommandV61K(original, q);
     if (demoState) return demoState;
+    if (phraseMatchesV61E(q, ['run regression qa', 'run regression quality assurance', 'run command regression qa', 'command regression qa', 'regression qa'])) {
+      return { canonicalIntent: 'run_regression_qa', routeText: 'run regression qa', originalText: original, normalizedText: q, module: 'Aqua Command Regression QA' };
+    }
     var action = detectActionIntentV61E(original, q);
     if (action) return action;
     var groups = [
@@ -796,6 +802,18 @@
       syncNamespace();
       return intent;
     }
+    if (intent.canonicalIntent === 'run_regression_qa') {
+      var regressionReport = runAquaCommandRegressionV61L();
+      if (outputNode) outputNode.innerHTML = renderRegressionReportV61L(regressionReport);
+      state.regressionQACommandWorksV61L = true;
+      state.noLiveActionExecuted = true;
+      state.noLiveChangeExecuted = true;
+      state.noBackendCalls = true;
+      state.noNetworkCalls = true;
+      state.noAudioStorage = true;
+      syncNamespace();
+      return intent;
+    }
     if (intent.canonicalIntent === 'show_draft_change_queue') {
       var filterStatus = /approved demo/.test(intent.normalizedText || '') ? 'approved demo' : (/prepared/.test(intent.normalizedText || '') ? 'prepared' : '');
       if (outputNode) outputNode.innerHTML = renderDraftChangeQueueV61J(filterStatus);
@@ -1015,7 +1033,7 @@
       '<div class="field"><label>Command input</label><textarea id="brainCommand" placeholder="Example: Show Receipts"></textarea></div>',
       '<div class="split2"><div class="field"><label>Command type</label><select id="brainType"><option>Draft</option><option>Summarize</option><option>Create Record</option><option>Bug Report</option><option>Route Later</option></select></div><div class="field"><label>Target module</label><select id="brainTarget"><option>Main Brain</option><option>Projects</option><option>Receipts</option><option>Approvals</option><option>Maintenance</option><option>Bug Capture</option></select></div></div>',
       '<div class="field"><label>Project / company</label><select id="brainProject"><option>Aqua Homes Parent</option><option>Main Brain</option></select></div>',
-      '<div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="startVoiceAskV60U()">Ask by Voice</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small" data-aqua-v61l-regression="true" type="button">Run Regression QA</button></div>',
+      '<div class="actions"><button class="btn primary small" onclick="runBrainCommandDemo()">Run Command Demo</button><button class="btn small gold" onclick="startVoiceAskV60U()">Ask by Voice</button><button class="btn small gold" onclick="runAquaFullQAV60E()">Run Full Aqua QA</button><button class="btn small gold" data-aqua-v61l-regression="true" type="button" style="visibility:visible;opacity:1">Run Regression QA</button></div>',
       '<div id="voiceAskAreaV60U" class="field"><div class="smallMut"><strong>Browser voice input / demo only</strong> • Push-to-talk only • No always listening • No audio stored • Backend locked</div><div id="voiceAskStatusV60U" class="note"><strong>Browser requires one more tap for microphone safety.</strong><div class="smallMut">Tap once to start voice. This is push-to-talk only. No always listening. No audio stored.</div><div class="smallMut">Voice rough draft — final one-tap/native flow planned.</div></div></div>',
       '<div id="brainOut" class="field"><div class="note">Response/output placeholder. Commands stay local and safety-locked. Try: What needs my attention today?, Owner briefing, Show approval queue, Show receipts, Show Project Folders, Show Bank Reconciliation, or Run full Aqua QA.</div></div>'
     ].join('');
@@ -1826,13 +1844,46 @@
     };
   }
 
+  function regressionStorageSnapshotV61L() {
+    var snapshot = {};
+    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I].forEach(function (key) {
+      try {
+        snapshot[key] = window.localStorage.getItem(key);
+      } catch (error) {
+        snapshot[key] = null;
+      }
+    });
+    return snapshot;
+  }
+
+  function restoreRegressionStorageSnapshotV61L(snapshot) {
+    Object.keys(snapshot || {}).forEach(function (key) {
+      try {
+        if (snapshot[key] === null || typeof snapshot[key] === 'undefined') window.localStorage.removeItem(key);
+        else window.localStorage.setItem(key, snapshot[key]);
+      } catch (error) {
+        state.regressionStorageWarningV61L = 'localStorage unavailable while restoring demo QA snapshot';
+      }
+    });
+  }
+
+  function regressionSafetyPassesV61L(safety) {
+    return Object.keys(safety || {}).every(function (key) { return safety[key] === true; });
+  }
+
   function createRegressionHostV61L() {
     return { innerHTML: '' };
   }
 
   function runRegressionCaseV61L(testCase) {
+    var snapshot = regressionStorageSnapshotV61L();
     var host = createRegressionHostV61L();
-    var intent = runNormalizedAquaCommandV61E(testCase.command, host);
+    var intent;
+    try {
+      intent = runNormalizedAquaCommandV61E(testCase.command, host);
+    } finally {
+      restoreRegressionStorageSnapshotV61L(snapshot);
+    }
     var html = String(host.innerHTML || '');
     var actual = {
       command: testCase.command,
@@ -1909,6 +1960,7 @@
         suggestedFix: result.suggestedFix
       };
     });
+    var safety = regressionSafetyV61L();
     var report = {
       version: 'v61L',
       timestamp: new Date().toISOString(),
@@ -1916,11 +1968,15 @@
       passed: cases.length - failures.length,
       failed: failures.length,
       failures: failures,
-      safety: regressionSafetyV61L(),
-      repairPrompt: buildRepairPromptV61L(failures)
+      safety: safety,
+      repairPrompt: buildRepairPromptV61L(failures),
+      safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? 'yes' : 'no',
+      noLiveRecordChanges: true,
+      noBackendNetworkLiveAICalls: true
     };
     state.regressionHarnessV61LAvailable = true;
     state.lastRegressionReportV61L = report;
+    state.safeToMergeV61L = report.safeToMerge === 'yes';
     state.noLiveActionExecuted = true;
     state.noLiveChangeExecuted = true;
     state.noBackendCalls = true;
@@ -1935,14 +1991,15 @@
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
     return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Aqua Command Regression QA ' + escapeHTMLV61D(safe.version) + '</strong>' +
-      '<div>Total tests: <strong>' + escapeHTMLV61D(safe.total) + '</strong></div>' +
-      '<div>Passed: <strong>' + escapeHTMLV61D(safe.passed) + '</strong></div>' +
-      '<div>Failed: <strong>' + escapeHTMLV61D(safe.failed) + '</strong></div>' +
+      '<div data-aqua-v61l-report-total="true"><strong>total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
+      '<div data-aqua-v61l-report-passed="true"><strong>passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
+      '<div data-aqua-v61l-report-failed="true"><strong>failed:</strong> ' + escapeHTMLV61D(safe.failed) + '</div>' +
       '<div><strong>Failed commands:</strong><ul>' + failedCommands + '</ul></div>' +
-      '<div><strong>Safety status:</strong><ul>' + safetyRows + '</ul></div>' +
-      '<label class="smallMut" for="aquaRegressionRepairPromptV61L">Copyable repair prompt</label>' +
-      '<textarea id="aquaRegressionRepairPromptV61L" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
-      '<div class="locked">Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export.</div></div>';
+      '<div data-aqua-v61l-report-safety="true"><strong>safety:</strong><ul>' + safetyRows + '</ul></div>' +
+      '<div><strong>safe to merge:</strong> ' + escapeHTMLV61D(safe.safeToMerge || 'no') + '</div>' +
+      '<label class="smallMut" for="aquaRegressionRepairPromptV61L">repairPrompt</label>' +
+      '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
+      '<div class="locked">Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.</div></div>';
   }
 
   function ensureRegressionQAButtonV61L(root) {
@@ -1953,8 +2010,10 @@
     if (!actions || typeof document.createElement !== 'function') return false;
     var button = document.createElement('button');
     button.type = 'button';
-    button.className = 'btn small';
+    button.className = 'btn small gold';
     button.setAttribute('data-aqua-v61l-regression', 'true');
+    button.style.visibility = 'visible';
+    button.style.opacity = '1';
     button.textContent = 'Run Regression QA';
     actions.appendChild(button);
     return true;
