@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62A Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish.
+ * Aqua Homes OS v62C Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62A';
+  var VERSION = 'v62C';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -188,7 +188,20 @@
     showLastVoiceBrainPlanWorks: false,
     clearVoiceBrainPlanWorks: false,
     copyToolPlanWorks: false,
-    permissionExplanationWorks: false
+    permissionExplanationWorks: false,
+    visualRouteBridgeV62CAvailable: true,
+    visualRouteBridgeV62CWorks: false,
+    visualRouteFocusMarkerV62CWorks: false,
+    visualRouteReadbackBoundV62CWorks: false,
+    allVoiceBrainPlansHaveVisualRouteV62C: false,
+    hendersonReportVisualFocusWorks: false,
+    hendersonReceiptsVisualFocusWorks: false,
+    accountantExportVisualFocusWorks: false,
+    plumbingSpendVisualFocusWorks: false,
+    cameraAllocationVisualFocusWorks: false,
+    missingDocumentsVisualFocusWorks: false,
+    uploadRequestVisualFocusWorks: false,
+    nextActionVisualFocusWorks: false
   };
 
 
@@ -211,12 +224,12 @@
 
   function voiceBrainVisualRouteMapV61Z() {
     return {
-      openProjectReport: 'Project Folders / Project Reports placeholder',
-      findProjectReceipts: 'Receipts / Receipt Tracker filtered placeholder',
-      summarizeProjectSpend: 'Accounting Command / Daily P&L cost summary placeholder',
-      prepareAccountantExportDemo: 'Receipts / Accountant Export Prep locked placeholder',
-      uploadFileToProjectDemo: 'Project Folders / File Upload locked placeholder',
-      checkJobsiteCameraAllocationDemo: 'Jobsite Camera / Inventory Allocation locked placeholder',
+      openProjectReport: 'Project Reports / Henderson house / Staircase report placeholder',
+      findProjectReceipts: 'Receipts / Receipt Tracker / Henderson house / Home Depot filtered placeholder',
+      summarizeProjectSpend: 'Accounting / Daily P&L / Henderson house / Plumbing spend placeholder',
+      prepareAccountantExportDemo: 'Permission Granter / Accountant Export Demo / Home Depot receipts',
+      uploadFileToProjectDemo: 'Permission Granter / Upload Request Demo / Henderson files',
+      checkJobsiteCameraAllocationDemo: 'Jobsite Camera Allocation / Henderson jobsite placeholder',
       openSowReviewQueue: 'SOW / Estimate Review Queue',
       openReceiptTracker: 'Receipts / Receipt Tracker',
       openAccountingDailyPL: 'Accounting Command / Daily P&L',
@@ -224,11 +237,11 @@
       openCalculatorDrafts: 'Calculator Drafts / Estimate Prep',
       openPermissionGranter: 'Permission Granter',
       explainCurrentModule: 'Current module explanation placeholder',
-      suggestNextStep: 'Owner Daily Briefing / Next Step local demo',
+      suggestNextStep: 'Owner Action Queue / Next Recommended Action',
       showBudgetRiskDemo: 'Accounting Command / Budget Risk locked placeholder',
       showEmployeeTimeDemo: 'Employee Time / Timecards locked placeholder',
       showPayablesDemo: 'Accounting Command / Payables locked placeholder',
-      showMissingDocumentsDemo: 'Project Documents / Missing Docs locked placeholder',
+      showMissingDocumentsDemo: 'Missing Documents / Project Document Review placeholder',
       diagnoseJobFileDemo: 'Project Files / Job File Diagnostic locked placeholder'
     };
   }
@@ -547,9 +560,11 @@
   function renderVoiceBrainToolPlanV61Z(plan) {
     var safe = plan || {};
     var tool = safe.tool || voiceBrainToolRegistryV61Z()[safe.selectedTool] || {};
+    var visualFocusResultV62C = focusAquaToolPlanSectionV62C(safe);
+    var visualFocusHtmlV62C = visualFocusResultV62C.html || '';
     var handlerResult = tool.handler ? tool.handler(safe) : localDemoToolHandlerV61Z(safe.selectedTool, safe);
     writeVoiceBrainContextV61Z(safe);
-    rememberSpokenSummaryV61R(safe.spokenResponseDraft, 'voice brain tool plan');
+    rememberSpokenSummaryV61R(safe.spokenResponseDraft, 'voice brain visual route focus');
     state.voiceBrainToolRegistryExists = Object.keys(voiceBrainToolRegistryV61Z()).length >= 14;
     state.voiceBrainIntentClassifierWorks = true;
     state.hendersonReportIntentWorks = safe.voiceBrainIntent === 'project_report_lookup' && safe.selectedTool === 'openProjectReport' ? true : state.hendersonReportIntentWorks;
@@ -581,7 +596,8 @@
     var lockChips = (safe.safetyLocks || []).filter(function (label) { return /Locked|Required|No Live Change Made|No Network|No external|No API|No audio/i.test(label); }).slice(0, 8).map(function (label) { return '<span>' + escapeHTMLV61D(label) + '</span>'; }).join('');
     var section = function (title, html, extraClass) { return '<section class="aqua-v62a-section ' + (extraClass || '') + '"><h4>' + escapeHTMLV61D(title) + '</h4><div>' + html + '</div></section>'; };
     var body = '<div class="aqua-v62a-panel" data-aqua-v62a-command-center="true">' + askModeBadgeV61U('voice_brain_tool_plan') +
-      '<div class="aqua-v62a-hero"><div><div class="aqua-v62a-kicker">LOCAL / DEMO TOOL PLAN</div><h3>Aqua Brain Command Center — v62A</h3><p>No backend, network, external AI/API, upload, export, audio storage, or live record change runs here.</p></div><div class="aqua-v62a-lock-row">' + lockChips + '</div></div>' +
+      '<div class="aqua-v62a-hero"><div><div class="aqua-v62a-kicker">LOCAL / DEMO TOOL PLAN</div><h3>Aqua Brain Command Center — v62C</h3><p>No backend, network, external AI/API, upload, export, audio storage, or live record change runs here.</p></div><div class="aqua-v62a-lock-row">' + lockChips + '</div></div>' +
+      visualFocusHtmlV62C +
       section('Heard Command', '<p>' + escapeHTMLV61D(safe.originalText || '') + '</p>') +
       section('Detected Intent', '<code>' + escapeHTMLV61D(safe.voiceBrainIntent || '') + '</code>') +
       section('Extracted Details', renderExtractedEntitiesV61Z(safe.extractedEntities)) +
@@ -593,7 +609,123 @@
       section('What Requires Backend / Approval', '<ul class="aqua-v62a-detail-list">' + requiresApproval.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul>') +
       section('Next Recommended Action', '<strong>' + escapeHTMLV61D(safe.nextRecommendedStep || '') + '</strong>') +
       '<div class="aqua-v62a-copy-block"><strong>Local handler result:</strong> ' + escapeHTMLV61D(handlerResult.message) + '</div>' + renderVoiceBrainPlanActionsV62A() + '</div>';
-    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Command Center — v62A', subtitle: 'Premium local/demo tool plan viewer for future real AI integration. No live action runs.', tag: 'Command Center', chips: ['Backend Locked', 'Demo Only', 'No Live Change Made', 'No Audio Storage'], attrs: { 'data-aqua-v61z-voice-brain-tool-plan': 'true', 'data-aqua-v62a-command-center': 'true' }, body: body, safetyFooter: 'Permission Required for sensitive actions. Owner Approval Required. Accounting Export Locked when relevant. Upload Locked when relevant. Backend Locked. No Network Call. No External AI/API Call. No Live Change Made. No Audio Storage.' });
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Command Center — v62C', subtitle: 'AI Visual Route / Section Focus Bridge for future real AI integration. No live action runs.', tag: 'Command Center', chips: ['Backend Locked', 'Demo Only', 'No Live Change Made', 'No Audio Storage'], attrs: { 'data-aqua-v61z-voice-brain-tool-plan': 'true', 'data-aqua-v62a-command-center': 'true' }, body: body, safetyFooter: 'Permission Required for sensitive actions. Owner Approval Required. Accounting Export Locked when relevant. Upload Locked when relevant. Backend Locked. No Network Call. No External AI/API Call. No Live Change Made. No Audio Storage.' });
+  }
+
+
+  function deriveAquaBrainVisualRouteV62C(toolPlan) {
+    var safe = toolPlan || {};
+    var entities = safe.extractedEntities || {};
+    var selectedTool = safe.selectedTool || safe.toolName || '';
+    var moduleText = safe.module || (safe.tool && safe.tool.visualRoute) || 'Aqua Brain Command Center / Local Demo Focus';
+    var moduleParts = String(moduleText).split('/').map(function (part) { return part.trim(); }).filter(Boolean);
+    var base = {
+      moduleName: moduleParts[0] || 'Aqua Brain Command Center',
+      sectionName: moduleParts.slice(1).join(' / ') || 'Local Demo Focus',
+      projectName: entities.project || '',
+      vendorName: entities.vendor || '',
+      tradeName: entities.trade || '',
+      reportTopic: entities.reportTopic || '',
+      fileType: entities.fileType || '',
+      highlightLabel: 'Focused by Aqua Brain',
+      statusLines: ['Backend Locked', 'No live action was run'],
+      openedFocusLabel: moduleText,
+      panelTitle: (moduleParts[0] || 'Aqua Brain') + ' Focus — Local Demo',
+      openKey: '',
+      spokenSummary: 'You are now looking at the focused ' + moduleText + ' local demo section. Backend and live actions remain locked.'
+    };
+    var project = entities.project || (/henderson/i.test(safe.originalText || safe.routeText || '') ? 'Henderson house' : '');
+    if (selectedTool === 'openProjectReport') {
+      base.moduleName = 'Project Reports'; base.sectionName = 'Henderson house / Staircase'; base.projectName = project || 'Henderson house'; base.reportTopic = entities.reportTopic || 'Staircase'; base.openedFocusLabel = 'Project Reports / Henderson house / Staircase'; base.panelTitle = 'Project Report Focus — Local Demo'; base.openKey = 'projectfoldersv60b'; base.statusLines = ['Status: backend project report index required', 'No live file was opened'];
+      base.spokenSummary = 'You are now looking at the Henderson house Staircase project report focus. This is a local demo placeholder until the backend project report index is connected. No live file was opened.';
+    } else if (selectedTool === 'findProjectReceipts') {
+      base.moduleName = 'Receipts'; base.sectionName = 'Henderson house / Home Depot'; base.projectName = project || 'Henderson house'; base.vendorName = entities.vendor || 'Home Depot'; base.openedFocusLabel = 'Receipts / Henderson house / Home Depot'; base.panelTitle = 'Receipt Tracker Focus — Local Demo'; base.openKey = 'receipts'; base.statusLines = ['Status: backend receipt index required', 'No live receipt search, OCR, export, or accounting action was run'];
+      base.spokenSummary = 'You are now looking at Henderson house Home Depot receipt results. This is a local demo placeholder until the backend receipt index is connected. No export or accounting action has run.';
+    } else if (selectedTool === 'prepareAccountantExportDemo') {
+      base.moduleName = 'Permission Granter'; base.sectionName = 'Accountant Export Demo'; base.projectName = project || 'Henderson house'; base.vendorName = entities.vendor || 'Home Depot'; base.openedFocusLabel = 'Permission Granter / Accountant Export Demo'; base.panelTitle = 'Accountant Export Demo Focus — Local Demo'; base.openKey = 'brainhub'; base.statusLines = ['Accounting Export Locked', 'Backend Locked', 'Owner/Accounting Approval Required', 'No Live Export'];
+      base.spokenSummary = 'You are now looking at the locked accountant export demo for Home Depot receipts. Accounting export is locked, backend is locked, owner and accounting approval are required, and no live export ran.';
+    } else if (selectedTool === 'summarizeProjectSpend') {
+      base.moduleName = 'Accounting'; base.sectionName = 'Henderson house / Plumbing'; base.projectName = project || 'Henderson house'; base.tradeName = entities.trade || 'Plumbing'; base.openedFocusLabel = 'Accounting / Henderson house / Plumbing'; base.panelTitle = 'Project Spend Focus — Local Demo'; base.openKey = 'accountingcommandv60m'; base.statusLines = ['Status: backend accounting index required', 'No live accounting query was run'];
+      base.spokenSummary = 'You are now looking at Henderson house Plumbing spend focus. This is a local demo placeholder until the backend accounting index is connected. No live accounting query was run.';
+    } else if (selectedTool === 'checkJobsiteCameraAllocationDemo') {
+      base.moduleName = 'Jobsite Cameras'; base.sectionName = 'Henderson jobsite'; base.projectName = entities.project || 'Henderson'; base.openedFocusLabel = 'Jobsite Cameras / Henderson jobsite'; base.panelTitle = 'Camera Allocation Focus — Local Demo'; base.statusLines = ['Project/jobsite: Henderson', 'Status: camera/photo allocation backend required', 'No live camera data was accessed'];
+      base.spokenSummary = 'You are now looking at the Henderson jobsite camera allocation focus. This is a local demo placeholder until the camera and photo allocation backend is connected. No live camera data was accessed.';
+    } else if (selectedTool === 'showMissingDocumentsDemo') {
+      base.moduleName = 'Documents'; base.sectionName = 'Missing Documents Review'; base.openedFocusLabel = 'Documents / Missing Documents Review'; base.panelTitle = 'Missing Documents Focus — Local Demo'; base.openKey = 'projectfoldersv60b'; base.statusLines = ['Status: backend document index required', 'No live storage scan, upload, share, or file change was run'];
+      base.spokenSummary = 'You are now looking at the missing documents review focus. This is a local demo placeholder until the backend document index is connected. No live storage scan or customer sharing ran.';
+    } else if (selectedTool === 'uploadFileToProjectDemo') {
+      base.moduleName = 'Permission Granter'; base.sectionName = 'Upload Request Demo'; base.projectName = project || 'Henderson house'; base.fileType = entities.fileType || 'construction diagram'; base.openedFocusLabel = 'Permission Granter / Upload Request Demo'; base.panelTitle = 'Upload Request Demo Focus — Local Demo'; base.openKey = 'brainhub'; base.statusLines = ['Upload Locked', 'Backend Locked', 'Owner Approval Required', 'No Live Upload'];
+      base.spokenSummary = 'You are now looking at the locked Henderson construction diagram upload request demo. Upload is locked, backend is locked, owner approval is required, and no live upload ran.';
+    } else if (selectedTool === 'suggestNextStep') {
+      base.moduleName = 'Owner Review'; base.sectionName = 'Next Recommended Action'; base.openedFocusLabel = 'Owner Review / Next Recommended Action'; base.panelTitle = 'Owner Action Queue Focus — Local Demo'; base.openKey = 'brainhub'; base.statusLines = ['Next recommended local demo action: review automation report, SOW drafts, and receipt coding items', 'No live task, approval, customer sharing, export, or record change was run'];
+      base.spokenSummary = 'You are now looking at the owner review next recommended action focus. Based on local demo state, start with the automation report, then SOW drafts, then receipt coding items. No live task was changed.';
+    }
+    return base;
+  }
+
+  function renderAquaBrainVisualRouteFocusV62C(route) {
+    var safe = route || deriveAquaBrainVisualRouteV62C({});
+    var details = [
+      ['Project', safe.projectName],
+      ['Vendor', safe.vendorName],
+      ['Trade/category', safe.tradeName],
+      ['Report/topic', safe.reportTopic],
+      ['File type', safe.fileType]
+    ].filter(function (row) { return row[1]; }).map(function (row) { return '<li><span>' + escapeHTMLV61D(row[0]) + ':</span> <strong>' + escapeHTMLV61D(row[1]) + '</strong></li>'; }).join('');
+    var statuses = (safe.statusLines || []).map(function (line) { return '<li>' + escapeHTMLV61D(line) + '</li>'; }).join('');
+    return '<section class="aqua-v62a-section aqua-v62c-focused-section" tabindex="-1" data-aqua-v62c-focused-section="true" aria-label="Focused by Aqua Brain">' +
+      '<div class="aqua-v62c-focus-chip">' + escapeHTMLV61D(safe.highlightLabel || 'Focused by Aqua Brain') + '</div>' +
+      '<h4>' + escapeHTMLV61D(safe.panelTitle || 'Aqua Brain Focus — Local Demo') + '</h4>' +
+      '<pre class="aqua-v62c-opened-marker">Opened and focused:\n' + escapeHTMLV61D(safe.openedFocusLabel || (safe.moduleName + ' / ' + safe.sectionName)) + '</pre>' +
+      '<div><strong>Module:</strong> ' + escapeHTMLV61D(safe.moduleName || '') + '</div>' +
+      '<div><strong>Section:</strong> ' + escapeHTMLV61D(safe.sectionName || '') + '</div>' +
+      (details ? '<ul class="aqua-v62a-detail-list">' + details + '</ul>' : '') +
+      '<ul class="aqua-v62a-detail-list aqua-v62c-status-list">' + statuses + '</ul>' +
+      '<blockquote>“' + escapeHTMLV61D(safe.spokenSummary || '') + '”</blockquote>' +
+      '</section>';
+  }
+
+  function openAquaBrainVisualRouteV62C(route, outputNode) {
+    var safe = route || deriveAquaBrainVisualRouteV62C({});
+    if (safe.openKey && typeof window.openModal === 'function') {
+      try { window.openModal(safe.openKey); } catch (error) {}
+    }
+    var html = renderAquaBrainVisualRouteFocusV62C(safe);
+    if (outputNode) {
+      outputNode.innerHTML = html;
+      var focused = outputNode.querySelector && outputNode.querySelector('[data-aqua-v62c-focused-section="true"]');
+      if (focused) {
+        try { focused.classList && focused.classList.add('aqua-v62c-focused-section'); } catch (error) {}
+        try { focused.scrollIntoView && focused.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (error) {}
+        try { focused.focus && focused.focus({ preventScroll: true }); } catch (error) {}
+      }
+    }
+    state.visualRouteBridgeV62CWorks = true;
+    state.visualRouteFocusMarkerV62CWorks = true;
+    state.visualRouteReadbackBoundV62CWorks = true;
+    syncNamespace();
+    return { opened: true, route: safe, html: html, openedFocusLabel: safe.openedFocusLabel, spokenSummary: safe.spokenSummary };
+  }
+
+  function focusAquaToolPlanSectionV62C(toolPlan, outputNode) {
+    var route = deriveAquaBrainVisualRouteV62C(toolPlan || {});
+    var result = openAquaBrainVisualRouteV62C(route, null);
+    if (toolPlan) {
+      toolPlan.visualRouteV62C = route;
+      toolPlan.visualRoute = route.openedFocusLabel;
+      toolPlan.module = route.openedFocusLabel;
+      toolPlan.spokenResponseDraft = route.spokenSummary;
+    }
+    state.hendersonReportVisualFocusWorks = toolPlan && toolPlan.selectedTool === 'openProjectReport' ? true : state.hendersonReportVisualFocusWorks;
+    state.hendersonReceiptsVisualFocusWorks = toolPlan && toolPlan.selectedTool === 'findProjectReceipts' ? true : state.hendersonReceiptsVisualFocusWorks;
+    state.accountantExportVisualFocusWorks = toolPlan && toolPlan.selectedTool === 'prepareAccountantExportDemo' ? true : state.accountantExportVisualFocusWorks;
+    state.plumbingSpendVisualFocusWorks = toolPlan && toolPlan.selectedTool === 'summarizeProjectSpend' ? true : state.plumbingSpendVisualFocusWorks;
+    state.cameraAllocationVisualFocusWorks = toolPlan && toolPlan.selectedTool === 'checkJobsiteCameraAllocationDemo' ? true : state.cameraAllocationVisualFocusWorks;
+    state.missingDocumentsVisualFocusWorks = toolPlan && toolPlan.selectedTool === 'showMissingDocumentsDemo' ? true : state.missingDocumentsVisualFocusWorks;
+    state.uploadRequestVisualFocusWorks = toolPlan && toolPlan.selectedTool === 'uploadFileToProjectDemo' ? true : state.uploadRequestVisualFocusWorks;
+    state.nextActionVisualFocusWorks = toolPlan && toolPlan.selectedTool === 'suggestNextStep' ? true : state.nextActionVisualFocusWorks;
+    syncNamespace();
+    return result;
   }
 
   function createAquaVoiceBrainV61Z() {
@@ -611,7 +743,9 @@
       spokenResponseDraftMap: spokenResponseDraftsV61Z,
       safetyAuditEnvelope: voiceBrainSafetyEnvelopeV61Z(),
       futureBackendLiveAIPlaceholders: { backendConnector: 'locked/demo placeholder only', liveAIConnector: 'locked/demo placeholder only', uploadConnector: 'locked/demo placeholder only', exportConnector: 'locked/demo placeholder only' },
-      renderToolPlan: renderVoiceBrainToolPlanV61Z
+      renderToolPlan: renderVoiceBrainToolPlanV61Z,
+      openAquaBrainVisualRouteV62C: openAquaBrainVisualRouteV62C,
+      focusAquaToolPlanSectionV62C: focusAquaToolPlanSectionV62C
     };
   }
 
@@ -654,7 +788,7 @@
     if (document.getElementById && document.getElementById('aquaPremiumModuleShellV61Z')) return true;
     var style = document.createElement('style');
     style.id = 'aquaPremiumModuleShellV61Z';
-    style.textContent = '.aqua-v61z-module-shell{margin:14px 0;padding:16px;border-radius:22px;border:1px solid rgba(196,139,52,.52);background:radial-gradient(circle at 12% 0%,rgba(42,134,255,.22),transparent 38%),linear-gradient(145deg,rgba(4,10,24,.98),rgba(8,24,48,.96));box-shadow:0 0 0 1px rgba(70,145,255,.16) inset,0 18px 46px rgba(0,0,0,.42),0 0 28px rgba(30,112,255,.12);color:#eef6ff;overflow:auto;max-height:min(72vh,760px)}.aqua-v61z-module-header{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:10px;padding-bottom:12px;border-bottom:1px solid rgba(196,139,52,.28)}.aqua-v61z-eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8fbfff;margin-bottom:4px}.aqua-v61z-module-title{display:block;font-size:clamp(20px,5vw,28px);line-height:1.06;color:#fff;text-shadow:0 0 18px rgba(63,154,255,.45)}.aqua-v61z-module-subtitle{margin-top:6px;color:#a9b9cf;font-size:13px;line-height:1.35}.aqua-v61z-module-tag,.aqua-v61z-chip{display:inline-flex;align-items:center;border-radius:999px;border:1px solid rgba(211,154,68,.52);background:rgba(122,79,22,.22);color:#f4d59b;font-size:11px;font-weight:800;letter-spacing:.04em;padding:6px 9px;white-space:nowrap}.aqua-v61z-chip-row{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 12px}.aqua-v61z-chip{border-color:rgba(59,145,255,.42);background:rgba(12,58,118,.42);color:#cfe6ff}.aqua-v61z-module-body{display:grid;gap:10px;color:#dce9f7}.aqua-v61z-module-body>.note,.aqua-v61z-card{border-radius:16px;border:1px solid rgba(73,139,231,.25);background:rgba(4,17,36,.62);box-shadow:inset 3px 0 0 rgba(203,142,49,.75);padding:12px}.aqua-v61z-module-body ul{margin:8px 0 0 18px;padding:0}.aqua-v61z-module-body strong{color:#fff}.aqua-v61z-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.aqua-v61z-actions .btn,.aqua-v61z-module-shell .btn{min-height:40px;border-radius:999px}.aqua-v61z-safety-footer{margin-top:12px;border-color:rgba(66,145,255,.28);background:rgba(2,9,20,.72);color:#bbcadb}@media(max-width:520px){.aqua-v61z-module-shell{padding:14px;border-radius:18px;max-height:70vh}.aqua-v61z-module-header{display:block}.aqua-v61z-module-tag{margin-top:8px}.aqua-v61z-actions .btn{width:100%;justify-content:center}}.aqua-v62a-panel{display:grid;gap:12px}.aqua-v62a-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;padding:14px;border-radius:18px;background:radial-gradient(circle at top left,rgba(40,145,255,.24),transparent 42%),linear-gradient(135deg,rgba(1,7,18,.96),rgba(9,24,48,.92));border:1px solid rgba(64,149,255,.32);box-shadow:inset 0 0 0 1px rgba(218,159,67,.14),0 0 24px rgba(29,114,255,.12)}.aqua-v62a-kicker{color:#d8a85b;font-size:10px;font-weight:900;letter-spacing:.18em}.aqua-v62a-hero h3{margin:3px 0 5px;color:#fff;font-size:clamp(22px,5vw,32px);text-shadow:0 0 22px rgba(60,151,255,.48)}.aqua-v62a-hero p{margin:0;color:#b9cce0}.aqua-v62a-section{padding:12px;border-radius:16px;border:1px solid rgba(71,141,232,.28);background:linear-gradient(180deg,rgba(6,18,38,.78),rgba(3,10,22,.72));box-shadow:inset 3px 0 0 rgba(202,142,50,.86)}.aqua-v62a-section h4{margin:0 0 8px;color:#f6d59a;font-size:12px;text-transform:uppercase;letter-spacing:.12em}.aqua-v62a-section p{margin:0 0 5px}.aqua-v62a-section code{color:#dff0ff;background:rgba(45,124,229,.18);border:1px solid rgba(85,158,255,.25);border-radius:10px;padding:4px 7px}.aqua-v62a-section blockquote{margin:0;padding:10px 12px;border-left:3px solid #c9903d;background:rgba(201,144,61,.09);border-radius:12px;color:#eef7ff}.aqua-v62a-detail-list{margin:0;padding:0;list-style:none;display:grid;gap:6px}.aqua-v62a-detail-list li{padding:8px 10px;border-radius:12px;background:rgba(2,11,26,.5);border:1px solid rgba(81,151,238,.18)}.aqua-v62a-detail-list span{color:#99b8d8}.aqua-v62a-lock-row{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}.aqua-v62a-lock-row span{display:inline-flex;padding:6px 8px;border-radius:999px;border:1px solid rgba(211,154,68,.48);background:rgba(120,77,18,.24);color:#f3d39a;font-size:11px;font-weight:800}.aqua-v62a-actions{display:flex;flex-wrap:wrap;gap:8px}.aqua-v62a-action-output,.aqua-v62a-copy-block{border-radius:14px;border:1px dashed rgba(91,165,255,.35);background:rgba(2,9,20,.58);padding:10px;color:#d9eaff;white-space:pre-wrap}.aqua-v62a-muted{color:#a9bbcf}@media(max-width:620px){.aqua-v62a-hero{grid-template-columns:1fr}.aqua-v62a-actions .btn{width:100%}}';
+    style.textContent = '.aqua-v61z-module-shell{margin:14px 0;padding:16px;border-radius:22px;border:1px solid rgba(196,139,52,.52);background:radial-gradient(circle at 12% 0%,rgba(42,134,255,.22),transparent 38%),linear-gradient(145deg,rgba(4,10,24,.98),rgba(8,24,48,.96));box-shadow:0 0 0 1px rgba(70,145,255,.16) inset,0 18px 46px rgba(0,0,0,.42),0 0 28px rgba(30,112,255,.12);color:#eef6ff;overflow:auto;max-height:min(72vh,760px)}.aqua-v61z-module-header{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:10px;padding-bottom:12px;border-bottom:1px solid rgba(196,139,52,.28)}.aqua-v61z-eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8fbfff;margin-bottom:4px}.aqua-v61z-module-title{display:block;font-size:clamp(20px,5vw,28px);line-height:1.06;color:#fff;text-shadow:0 0 18px rgba(63,154,255,.45)}.aqua-v61z-module-subtitle{margin-top:6px;color:#a9b9cf;font-size:13px;line-height:1.35}.aqua-v61z-module-tag,.aqua-v61z-chip{display:inline-flex;align-items:center;border-radius:999px;border:1px solid rgba(211,154,68,.52);background:rgba(122,79,22,.22);color:#f4d59b;font-size:11px;font-weight:800;letter-spacing:.04em;padding:6px 9px;white-space:nowrap}.aqua-v61z-chip-row{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 12px}.aqua-v61z-chip{border-color:rgba(59,145,255,.42);background:rgba(12,58,118,.42);color:#cfe6ff}.aqua-v61z-module-body{display:grid;gap:10px;color:#dce9f7}.aqua-v61z-module-body>.note,.aqua-v61z-card{border-radius:16px;border:1px solid rgba(73,139,231,.25);background:rgba(4,17,36,.62);box-shadow:inset 3px 0 0 rgba(203,142,49,.75);padding:12px}.aqua-v61z-module-body ul{margin:8px 0 0 18px;padding:0}.aqua-v61z-module-body strong{color:#fff}.aqua-v61z-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.aqua-v61z-actions .btn,.aqua-v61z-module-shell .btn{min-height:40px;border-radius:999px}.aqua-v61z-safety-footer{margin-top:12px;border-color:rgba(66,145,255,.28);background:rgba(2,9,20,.72);color:#bbcadb}@media(max-width:520px){.aqua-v61z-module-shell{padding:14px;border-radius:18px;max-height:70vh}.aqua-v61z-module-header{display:block}.aqua-v61z-module-tag{margin-top:8px}.aqua-v61z-actions .btn{width:100%;justify-content:center}}.aqua-v62a-panel{display:grid;gap:12px}.aqua-v62a-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;padding:14px;border-radius:18px;background:radial-gradient(circle at top left,rgba(40,145,255,.24),transparent 42%),linear-gradient(135deg,rgba(1,7,18,.96),rgba(9,24,48,.92));border:1px solid rgba(64,149,255,.32);box-shadow:inset 0 0 0 1px rgba(218,159,67,.14),0 0 24px rgba(29,114,255,.12)}.aqua-v62a-kicker{color:#d8a85b;font-size:10px;font-weight:900;letter-spacing:.18em}.aqua-v62a-hero h3{margin:3px 0 5px;color:#fff;font-size:clamp(22px,5vw,32px);text-shadow:0 0 22px rgba(60,151,255,.48)}.aqua-v62a-hero p{margin:0;color:#b9cce0}.aqua-v62a-section{padding:12px;border-radius:16px;border:1px solid rgba(71,141,232,.28);background:linear-gradient(180deg,rgba(6,18,38,.78),rgba(3,10,22,.72));box-shadow:inset 3px 0 0 rgba(202,142,50,.86)}.aqua-v62a-section h4{margin:0 0 8px;color:#f6d59a;font-size:12px;text-transform:uppercase;letter-spacing:.12em}.aqua-v62a-section p{margin:0 0 5px}.aqua-v62a-section code{color:#dff0ff;background:rgba(45,124,229,.18);border:1px solid rgba(85,158,255,.25);border-radius:10px;padding:4px 7px}.aqua-v62a-section blockquote{margin:0;padding:10px 12px;border-left:3px solid #c9903d;background:rgba(201,144,61,.09);border-radius:12px;color:#eef7ff}.aqua-v62c-focused-section{position:relative;border-color:rgba(64,170,255,.82)!important;box-shadow:0 0 0 1px rgba(64,170,255,.34) inset,0 0 26px rgba(42,145,255,.30),inset 4px 0 0 rgba(214,157,61,.95)!important;outline:2px solid rgba(67,160,255,.34);scroll-margin:90px}.aqua-v62c-focus-chip{display:inline-flex;width:max-content;margin:0 0 8px;padding:5px 9px;border-radius:999px;border:1px solid rgba(223,166,73,.72);background:linear-gradient(135deg,rgba(126,80,23,.92),rgba(34,93,158,.72));color:#ffe6ad;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.aqua-v62c-opened-marker{white-space:pre-wrap;margin:0 0 10px;padding:10px 12px;border-radius:14px;border:1px solid rgba(83,168,255,.45);background:rgba(5,18,40,.86);color:#eaf6ff;font-weight:900}.aqua-v62c-status-list{margin-top:8px}.aqua-v62a-detail-list{margin:0;padding:0;list-style:none;display:grid;gap:6px}.aqua-v62a-detail-list li{padding:8px 10px;border-radius:12px;background:rgba(2,11,26,.5);border:1px solid rgba(81,151,238,.18)}.aqua-v62a-detail-list span{color:#99b8d8}.aqua-v62a-lock-row{display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}.aqua-v62a-lock-row span{display:inline-flex;padding:6px 8px;border-radius:999px;border:1px solid rgba(211,154,68,.48);background:rgba(120,77,18,.24);color:#f3d39a;font-size:11px;font-weight:800}.aqua-v62a-actions{display:flex;flex-wrap:wrap;gap:8px}.aqua-v62a-action-output,.aqua-v62a-copy-block{border-radius:14px;border:1px dashed rgba(91,165,255,.35);background:rgba(2,9,20,.58);padding:10px;color:#d9eaff;white-space:pre-wrap}.aqua-v62a-muted{color:#a9bbcf}@media(max-width:620px){.aqua-v62a-hero{grid-template-columns:1fr}.aqua-v62a-actions .btn{width:100%}}';
     document.body.appendChild(style);
     state.premiumModuleShellWorks = true;
     state.openedModulesPolished = true;
@@ -708,6 +842,8 @@
       renderVoiceBrainPlanViewerV62A: renderVoiceBrainPlanViewerV62A,
       handleVoiceBrainPlanActionV62A: handleVoiceBrainPlanActionV62A,
       readVoiceBrainPlansV62A: readVoiceBrainPlansV62A,
+      openAquaBrainVisualRouteV62C: openAquaBrainVisualRouteV62C,
+      focusAquaToolPlanSectionV62C: focusAquaToolPlanSectionV62C,
       readVoiceBrainContextV61Z: readVoiceBrainContextV61Z,
       renderPremiumModuleShellV61Z: renderPremiumModuleShellV61Z,
       applyPremiumModuleShellV61Z: applyPremiumModuleShellV61Z,
@@ -3907,19 +4043,19 @@
 
   function regressionCommandCasesV61L() {
     return [
-      { command: 'pull up the report for the Henderson house staircase', expected: 'Aqua Brain Command Center v62A / openProjectReport', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_report_lookup', tool: 'openProjectReport', module: /Project Folders \/ Project Reports/i, html: /Aqua Brain Command Center — v62A|openProjectReport|Henderson house|staircase/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
-      { command: 'look up all receipts for the Henderson house from Home Depot', expected: 'Aqua Brain Command Center v62A / findProjectReceipts', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_vendor_receipt_lookup', tool: 'findProjectReceipts', module: /Receipts \/ Receipt Tracker/i, html: /Aqua Brain Command Center — v62A|findProjectReceipts|Henderson house|Home Depot|No export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Receipt Database Required|No Live Export/ },
-      { command: 'prepare those Home Depot receipts for accountant export', expected: 'Aqua Brain Command Center v62A / prepareAccountantExportDemo locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'prepare_accountant_export', tool: 'prepareAccountantExportDemo', permissionLevel: 'accounting_approval_required', module: /Accountant Export Prep/i, html: /Aqua Brain Command Center — v62A|prepareAccountantExportDemo|Permission Required|Accounting Export Locked|No export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Permission Required.*Accounting Export Locked|Accounting Export Locked.*Permission Required/ },
-      { command: 'how much money did we spend on Henderson house plumbing', expected: 'Aqua Brain Command Center v62A / summarizeProjectSpend backend locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_cost_summary', tool: 'summarizeProjectSpend', module: /Accounting Command \/ Daily P&L/i, html: /Aqua Brain Command Center — v62A|summarizeProjectSpend|Henderson house|plumbing|Accounting Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Backend Locked/ },
-      { command: 'were the cameras allocated to the right Henderson jobsite', expected: 'Aqua Brain Command Center v62A / checkJobsiteCameraAllocationDemo backend locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'jobsite_camera_allocation_check', tool: 'checkJobsiteCameraAllocationDemo', module: /Camera \/ Inventory Allocation/i, html: /Aqua Brain Command Center — v62A|checkJobsiteCameraAllocationDemo|Henderson jobsite|Camera Inventory Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Backend Locked/ },
-      { command: 'upload that construction diagram to the Henderson files', expected: 'Aqua Brain Command Center v62A / uploadFileToProjectDemo upload locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_file_upload_request', tool: 'uploadFileToProjectDemo', permissionLevel: 'owner_approval_required', module: /File Upload locked placeholder/i, html: /Aqua Brain Command Center — v62A|uploadFileToProjectDemo|construction diagram|Upload Locked|No file was stored or uploaded/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, safetyLock: /Upload Locked/ },
-      { command: 'what should I do next', expected: 'Aqua Brain Command Center v62A / suggestNextStep', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'suggest_next_step', tool: 'suggestNextStep', module: /Owner Daily Briefing \/ Next Step/i, html: /Aqua Brain Command Center — v62A|suggestNextStep|local demo state|No live task was changed/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
-      { command: 'what is over budget', expected: 'Aqua Brain Command Center v62A / budget risk locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'budget_risk_lookup', tool: 'showBudgetRiskDemo', module: /Budget Risk/i, html: /Aqua Brain Command Center — v62A|showBudgetRiskDemo|Accounting Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
-      { command: 'what budget is about to go over', expected: 'Aqua Brain Command Center v62A / budget risk locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'budget_risk_lookup', tool: 'showBudgetRiskDemo', module: /Budget Risk/i, html: /Aqua Brain Command Center — v62A|showBudgetRiskDemo|Accounting Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
-      { command: 'show employee time', expected: 'Aqua Brain Command Center v62A / employee time locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'employee_time_lookup', tool: 'showEmployeeTimeDemo', module: /Employee Time/i, html: /Aqua Brain Command Center — v62A|showEmployeeTimeDemo|Payroll\/Time Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
-      { command: 'show payables', expected: 'Aqua Brain Command Center v62A / payables locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'payables_lookup', tool: 'showPayablesDemo', module: /Payables/i, html: /Aqua Brain Command Center — v62A|showPayablesDemo|No Payment Action/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
-      { command: 'what documents are missing', expected: 'Aqua Brain Command Center v62A / missing documents locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'missing_documents_lookup', tool: 'showMissingDocumentsDemo', module: /Missing Docs/i, html: /Aqua Brain Command Center — v62A|showMissingDocumentsDemo|Document Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
-      { command: 'diagnose this job file', expected: 'Aqua Brain Command Center v62A / job file diagnostic locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'diagnose_job_file', tool: 'diagnoseJobFileDemo', module: /Job File Diagnostic/i, html: /Aqua Brain Command Center — v62A|diagnoseJobFileDemo|Project File Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
+      { command: 'pull up the report for the Henderson house staircase', expected: 'Aqua Brain Command Center v62A / openProjectReport', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_report_lookup', tool: 'openProjectReport', module: /Project Reports \/ Henderson house \/ Staircase/i, html: /Opened and focused:[\s\S]*Project Reports \/ Henderson house \/ Staircase|Project Report Focus — Local Demo/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Project Reports \/ Henderson house \/ Staircase/i },
+      { command: 'look up all receipts for the Henderson house from Home Depot', expected: 'Aqua Brain Command Center v62A / findProjectReceipts', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_vendor_receipt_lookup', tool: 'findProjectReceipts', module: /Receipts \/ Henderson house \/ Home Depot/i, html: /Opened and focused:[\s\S]*Receipts \/ Henderson house \/ Home Depot|Receipt Tracker Focus — Local Demo|No export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Receipts \/ Henderson house \/ Home Depot/i, safetyLock: /Receipt Database Required|No Live Export/ },
+      { command: 'prepare those Home Depot receipts for accountant export', expected: 'Aqua Brain Command Center v62A / prepareAccountantExportDemo locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'prepare_accountant_export', tool: 'prepareAccountantExportDemo', permissionLevel: 'accounting_approval_required', module: /Permission Granter \/ Accountant Export Demo/i, html: /Opened and focused:[\s\S]*Permission Granter \/ Accountant Export Demo|Accounting Export Locked[\s\S]*Backend Locked[\s\S]*Owner\/Accounting Approval Required[\s\S]*No Live Export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Permission Granter \/ Accountant Export Demo/i, safetyLock: /Permission Required.*Accounting Export Locked|Accounting Export Locked.*Permission Required/ },
+      { command: 'how much money did we spend on Henderson house plumbing', expected: 'Aqua Brain Command Center v62A / summarizeProjectSpend backend locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_cost_summary', tool: 'summarizeProjectSpend', module: /Accounting \/ Henderson house \/ Plumbing/i, html: /Opened and focused:[\s\S]*Accounting \/ Henderson house \/ Plumbing|Project Spend Focus — Local Demo|backend accounting index required|No live accounting query was run/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Accounting \/ Henderson house \/ Plumbing/i, safetyLock: /Backend Locked/ },
+      { command: 'were the cameras allocated to the right Henderson jobsite', expected: 'Aqua Brain Command Center v62A / checkJobsiteCameraAllocationDemo backend locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'jobsite_camera_allocation_check', tool: 'checkJobsiteCameraAllocationDemo', module: /Jobsite Cameras \/ Henderson jobsite/i, html: /Opened and focused:[\s\S]*Jobsite Cameras \/ Henderson jobsite|Camera Allocation Focus — Local Demo|camera\/photo allocation backend required|No live camera data was accessed/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Jobsite Cameras \/ Henderson jobsite/i, safetyLock: /Backend Locked/ },
+      { command: 'upload that construction diagram to the Henderson files', expected: 'Aqua Brain Command Center v62A / uploadFileToProjectDemo upload locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_file_upload_request', tool: 'uploadFileToProjectDemo', permissionLevel: 'owner_approval_required', module: /Permission Granter \/ Upload Request Demo/i, html: /Opened and focused:[\s\S]*Permission Granter \/ Upload Request Demo|Upload Locked[\s\S]*Backend Locked[\s\S]*Owner Approval Required[\s\S]*No Live Upload/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Permission Granter \/ Upload Request Demo/i, safetyLock: /Upload Locked/ },
+      { command: 'what should I do next', expected: 'Aqua Brain Command Center v62A / suggestNextStep', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'suggest_next_step', tool: 'suggestNextStep', module: /Owner Review \/ Next Recommended Action/i, html: /Opened and focused:[\s\S]*Owner Review \/ Next Recommended Action|Owner Action Queue Focus — Local Demo|No live task/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Owner Review \/ Next Recommended Action/i },
+      { command: 'what is over budget', expected: 'Aqua Brain Command Center v62A / budget risk locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'budget_risk_lookup', tool: 'showBudgetRiskDemo', module: /Budget Risk/i, html: /Aqua Brain Command Center — v62C|showBudgetRiskDemo|Accounting Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
+      { command: 'what budget is about to go over', expected: 'Aqua Brain Command Center v62A / budget risk locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'budget_risk_lookup', tool: 'showBudgetRiskDemo', module: /Budget Risk/i, html: /Aqua Brain Command Center — v62C|showBudgetRiskDemo|Accounting Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
+      { command: 'show employee time', expected: 'Aqua Brain Command Center v62A / employee time locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'employee_time_lookup', tool: 'showEmployeeTimeDemo', module: /Employee Time/i, html: /Aqua Brain Command Center — v62C|showEmployeeTimeDemo|Payroll\/Time Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
+      { command: 'show payables', expected: 'Aqua Brain Command Center v62A / payables locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'payables_lookup', tool: 'showPayablesDemo', module: /Payables/i, html: /Aqua Brain Command Center — v62C|showPayablesDemo|No Payment Action/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
+      { command: 'what documents are missing', expected: 'Aqua Brain Command Center v62A / missing documents locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'missing_documents_lookup', tool: 'showMissingDocumentsDemo', module: /Documents \/ Missing Documents Review/i, html: /Opened and focused:[\s\S]*Documents \/ Missing Documents Review|Missing Documents Focus — Local Demo|backend document index required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Documents \/ Missing Documents Review/i },
+      { command: 'diagnose this job file', expected: 'Aqua Brain Command Center v62A / job file diagnostic locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'diagnose_job_file', tool: 'diagnoseJobFileDemo', module: /Job File Diagnostic/i, html: /Aqua Brain Command Center — v62C|diagnoseJobFileDemo|Project File Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
       { command: 'show last voice brain plan', expected: 'Voice Brain plan viewer', intent: 'voice_brain_plan_viewer_v62a', mode: 'voice_brain_tool_plan', module: /Aqua Brain Command Center/i, html: /Show Last Voice Brain Plan|data-aqua-v62a-voice-brain-plan-viewer/i, noFallback: true },
       { command: 'show last aqua brain plan', expected: 'Voice Brain plan viewer alias', intent: 'voice_brain_plan_viewer_v62a', mode: 'voice_brain_tool_plan', module: /Aqua Brain Command Center/i, html: /Show Last Voice Brain Plan|data-aqua-v62a-voice-brain-plan-viewer/i, noFallback: true },
       { command: 'save voice brain plan', expected: 'Save Voice Brain Plan local demo', intent: 'voice_brain_plan_viewer_v62a', mode: 'voice_brain_tool_plan', module: /Aqua Brain Command Center/i, html: /Show Last Voice Brain Plan|data-aqua-v62a-voice-brain-plan-viewer/i, noFallback: true },
@@ -4125,8 +4261,10 @@
       renderedNoCalculatorDraftForSowReview: /No calculator draft found\. Save a calculation draft first\./i.test(html),
       noLiveSowEstimateCustomerAccountingText: /No live SOW|no live estimate|no customer export|no backend|no accounting/i.test(html),
       noLiveChangeText: /No live record changed|No Live Change Made|No live AI, backend|No backend, network, or live AI/i.test(html),
-      renderedVoiceBrainToolPlan: /Aqua Brain Command Center — v62A|data-aqua-v62a-command-center|data-aqua-v61z-voice-brain-tool-plan/i.test(html),
-      renderedAquaBrainCommandCenter: /Aqua Brain Command Center — v62A|data-aqua-v62a-command-center/i.test(html),
+      renderedVoiceBrainToolPlan: /Aqua Brain Command Center — v62A|Aqua Brain Command Center — v62C|data-aqua-v62a-command-center|data-aqua-v61z-voice-brain-tool-plan/i.test(html),
+      renderedAquaBrainCommandCenter: /Aqua Brain Command Center — v62A|Aqua Brain Command Center — v62C|data-aqua-v62a-command-center/i.test(html),
+      renderedVisualRouteFocusV62C: /data-aqua-v62c-focused-section="true"|aqua-v62c-focused-section|Focused by Aqua Brain/i.test(html),
+      openedFocusLabelV62C: ((html.match(/Opened and focused:\s*([^<]+)/i) || [])[1] || '').trim(),
       renderedVoiceBrainPlanViewer: /data-aqua-v62a-voice-brain-plan-viewer|data-aqua-v62a-plan-viewer/i.test(html),
       renderedCopyToolPlanText: /Copy Tool Plan Text|Copyable text block|textarea/i.test(html),
       voiceBrainIntent: intent && intent.voiceBrainIntent,
@@ -4153,6 +4291,8 @@
     if (testCase.permissionLevel && actual.permissionLevel !== testCase.permissionLevel) errors.push('Expected permission level ' + testCase.permissionLevel + ' but got ' + (actual.permissionLevel || 'none') + '.');
     if (testCase.safetyLock && !(actual.safetyLocks || []).join(' ').match(testCase.safetyLock)) errors.push('Expected safety lock matching ' + testCase.safetyLock + '.');
     if (testCase.spokenDraft && !actual.spokenResponseDraft) errors.push('Expected spoken response draft.');
+    if (testCase.visualFocus && !actual.renderedVisualRouteFocusV62C) errors.push('Expected v62C focused visual route section.');
+    if (testCase.openedFocus && !(actual.openedFocusLabelV62C || '').match(testCase.openedFocus)) errors.push('Expected Opened and focused marker matching ' + testCase.openedFocus + ' but got ' + (actual.openedFocusLabelV62C || 'none') + '.');
     if (testCase.automationRoute && !actual.renderedAutomationReport) errors.push('Expected automation report viewer to render before fallback/context/module routing.');
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
     if (testCase.lockedGeneralAsk && !actual.renderedGeneralAskLocked) errors.push('Expected locked General Ask / Jobsite Calculator placeholder, but it did not render.');
@@ -4234,8 +4374,8 @@
   function placeholderRegressionReportV61T() {
     var safety = regressionSafetyV61L();
     return {
-      version: 'v62A',
-      harnessVersion: 'v61L-compatible/v62A',
+      version: 'v62C',
+      harnessVersion: 'v61L-compatible/v62C',
       timestamp: new Date().toISOString(),
       total: 0,
       passed: 0,
@@ -4329,8 +4469,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v62A',
-      harnessVersion: 'v61L-compatible/v62A',
+      version: 'v62C',
+      harnessVersion: 'v61L-compatible/v62C',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -4367,6 +4507,18 @@
       clearVoiceBrainPlanWorks: results.some(function (result) { return result.command === 'clear voice brain plan demo' && result.passed; }),
       copyToolPlanWorks: results.some(function (result) { return result.command === 'copy tool plan' && result.passed && result.actual && result.actual.renderedCopyToolPlanText; }),
       permissionExplanationWorks: results.some(function (result) { return result.command === 'what requires approval' && result.passed; }),
+      visualRouteBridgeV62CWorks: results.filter(function (result) { return result.actual && result.actual.canonicalIntent === 'voice_brain_tool_plan'; }).every(function (result) { return result.actual.renderedVisualRouteFocusV62C; }),
+      visualRouteFocusMarkerV62CWorks: results.some(function (result) { return result.actual && result.actual.renderedVisualRouteFocusV62C; }),
+      visualRouteReadbackBoundV62CWorks: results.filter(function (result) { return result.actual && result.actual.canonicalIntent === 'voice_brain_tool_plan'; }).every(function (result) { return /You are now looking at/i.test(result.actual.spokenResponseDraft || ''); }),
+      allVoiceBrainPlansHaveVisualRouteV62C: results.filter(function (result) { return result.actual && result.actual.canonicalIntent === 'voice_brain_tool_plan'; }).every(function (result) { return result.actual.renderedVisualRouteFocusV62C && result.actual.openedFocusLabelV62C; }),
+      hendersonReportVisualFocusWorks: results.some(function (result) { return result.command === 'pull up the report for the Henderson house staircase' && result.passed && /Project Reports \/ Henderson house \/ Staircase/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      hendersonReceiptsVisualFocusWorks: results.some(function (result) { return result.command === 'look up all receipts for the Henderson house from Home Depot' && result.passed && /Receipts \/ Henderson house \/ Home Depot/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      accountantExportVisualFocusWorks: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && /Permission Granter \/ Accountant Export Demo/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      plumbingSpendVisualFocusWorks: results.some(function (result) { return result.command === 'how much money did we spend on Henderson house plumbing' && result.passed && /Accounting \/ Henderson house \/ Plumbing/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      cameraAllocationVisualFocusWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && /Jobsite Cameras \/ Henderson jobsite/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      missingDocumentsVisualFocusWorks: results.some(function (result) { return result.command === 'what documents are missing' && result.passed && /Documents \/ Missing Documents Review/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      uploadRequestVisualFocusWorks: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && /Permission Granter \/ Upload Request Demo/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      nextActionVisualFocusWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && /Owner Review \/ Next Recommended Action/i.test(result.actual.openedFocusLabelV62C || ''); }),
       noExternalAIAPICalls: true,
       noAudioStorage: true,
       automationCommandRoutesBeforeFallback: results.filter(function (result) { return result.command === 'show automation report' || result.command === 'show regression report' || result.command === 'automation status' || result.command === 'run regression qa'; }).every(function (result) { return result.passed && result.actual && result.actual.renderedFallback === false; }),
@@ -4472,6 +4624,18 @@
     state.cameraAllocationIntentWorks = report.cameraAllocationIntentWorks;
     state.constructionDiagramUploadStaysLocked = report.constructionDiagramUploadStaysLocked;
     state.suggestNextStepWorks = report.suggestNextStepWorks;
+    state.visualRouteBridgeV62CWorks = report.visualRouteBridgeV62CWorks;
+    state.visualRouteFocusMarkerV62CWorks = report.visualRouteFocusMarkerV62CWorks;
+    state.visualRouteReadbackBoundV62CWorks = report.visualRouteReadbackBoundV62CWorks;
+    state.allVoiceBrainPlansHaveVisualRouteV62C = report.allVoiceBrainPlansHaveVisualRouteV62C;
+    state.hendersonReportVisualFocusWorks = report.hendersonReportVisualFocusWorks;
+    state.hendersonReceiptsVisualFocusWorks = report.hendersonReceiptsVisualFocusWorks;
+    state.accountantExportVisualFocusWorks = report.accountantExportVisualFocusWorks;
+    state.plumbingSpendVisualFocusWorks = report.plumbingSpendVisualFocusWorks;
+    state.cameraAllocationVisualFocusWorks = report.cameraAllocationVisualFocusWorks;
+    state.missingDocumentsVisualFocusWorks = report.missingDocumentsVisualFocusWorks;
+    state.uploadRequestVisualFocusWorks = report.uploadRequestVisualFocusWorks;
+    state.nextActionVisualFocusWorks = report.nextActionVisualFocusWorks;
     state.noExternalAIAPICalls = true;
     state.regressionRunningV61T = false;
     syncNamespace();
@@ -4697,5 +4861,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62A extensions loaded: Premium Module Shell polish active. Home untouched. No live SOW or live estimate created.');
+  console.log('Aqua Homes OS v62C extensions loaded: Visual Route / Section Focus Bridge active. Home untouched. No live backend, upload, export, SOW, or estimate created.');
 }());
