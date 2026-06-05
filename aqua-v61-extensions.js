@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61D Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture.
+ * Aqua Homes OS v61E Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61D';
+  var VERSION = 'v61E';
   var state = {
     version: VERSION,
     initialized: true,
@@ -34,7 +34,10 @@
     noNetworkCalls: true,
     wrappedOpenModal: false,
     directAskVoiceActive: false,
-    directAskVoiceStartedForOpen: false
+    directAskVoiceStartedForOpen: false,
+    commandNormalizerAvailable: true,
+    actionIntentDemoAvailable: true,
+    noLiveActionExecuted: true
   };
 
   function mergeNamespace() {
@@ -44,6 +47,10 @@
       runV61BCheck: runV61BCheck,
       runV61CCheck: runV61CCheck,
       runV61DCheck: runV61DCheck,
+      runV61ECheck: runV61ECheck,
+      normalizeAquaCommandV61E: normalizeAquaCommandV61E,
+      runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
+      renderActionIntentDemoV61E: renderActionIntentDemoV61E,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
       exposeAskAICommandFlow: exposeAskAICommandFlow,
       directAskVoiceV61D: directAskVoiceV61D,
@@ -60,6 +67,10 @@
       runV61BCheck: runV61BCheck,
       runV61CCheck: runV61CCheck,
       runV61DCheck: runV61DCheck,
+      runV61ECheck: runV61ECheck,
+      normalizeAquaCommandV61E: normalizeAquaCommandV61E,
+      runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
+      renderActionIntentDemoV61E: renderActionIntentDemoV61E,
       wireAskAIToCommandFlow: wireAskAIToCommandFlow,
       exposeAskAICommandFlow: exposeAskAICommandFlow,
       directAskVoiceV61D: directAskVoiceV61D,
@@ -67,6 +78,149 @@
       startDirectAskVoiceV61C: startDirectAskVoiceV61D
     });
     return window.AquaV61Extensions;
+  }
+
+
+  function normalizeAquaPhraseV61E(commandText) {
+    return String(commandText || '')
+      .toLowerCase()
+      .replace(/[’']/g, '')
+      .replace(/&/g, ' and ')
+      .replace(/\bp\s*and\s*l\b/g, 'p and l')
+      .replace(/\bs\s*o\s*w\b/g, 'sow')
+      .replace(/[^a-z0-9 ]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function phraseMatchesV61E(normalized, phrases) {
+    return phrases.some(function (phrase) {
+      var clean = normalizeAquaPhraseV61E(phrase);
+      return normalized === clean || normalized.indexOf(clean) !== -1;
+    });
+  }
+
+  function detectActionIntentV61E(original, normalized) {
+    var actionMatch = normalized.match(/^(?:please\s+)?(code|categorize|mark|change|update|move|approve|set|review)\b(?:\s+this|\s+that|\s+the)?(?:\s+item|\s+receipt|\s+amount|\s+record)?(?:\s+as|\s+to)?\s*([a-z0-9 ]*)/);
+    if (!actionMatch) return null;
+    if (/\b(show|open|pull up|bring up) code\b/.test(normalized)) return null;
+    var target = 'General local/demo module';
+    if (/receipt|materials|material|vendor|expense/.test(normalized)) target = 'Receipts / Receipt Tracker';
+    else if (/approval|approve|owner review/.test(normalized)) target = 'Owner Action Queue / Approval Center';
+    else if (/amount|number|account|bank|ledger|p and l|accounting/.test(normalized)) target = 'Accounting Command / Daily P&L';
+    else if (/sow|scope/.test(normalized)) target = 'SOW Builder / Scope of Work';
+    var requested = '';
+    var amount = normalized.match(/\b(?:to|as)\s*\$?([0-9]+(?:\.[0-9]{1,2})?)\b/);
+    if (amount) requested = '$' + amount[1];
+    else if (/materials?/.test(normalized)) requested = 'materials';
+    else if (/reviewed/.test(normalized)) requested = 'reviewed';
+    else if (/owner approval|owner review/.test(normalized)) requested = 'owner approval';
+    else if (actionMatch[2]) requested = actionMatch[2].trim();
+    return {
+      canonicalIntent: 'action_intent_demo',
+      routeText: 'action_intent_demo',
+      detectedAction: original || normalized,
+      targetModule: target,
+      requestedValue: requested || 'not clear from transcript',
+      permissionGate: 'Permission Granter + owner approval required',
+      undoAuditRequirement: 'Future live mode must create an undo checkpoint and audit trail before any record change.'
+    };
+  }
+
+  function normalizeAquaCommandV61E(commandText) {
+    var original = String(commandText || '').trim();
+    var q = normalizeAquaPhraseV61E(original);
+    var action = detectActionIntentV61E(original, q);
+    if (action) return action;
+    var groups = [
+      { canonicalIntent: 'show_receipts', routeText: 'show receipts', module: 'Receipts / Receipt Tracker', phrases: ['pull up receipts','bring up receipts','show receipts','show receipt','open receipts','open receipt tracker','receipts','receipt review','what receipts need review'] },
+      { canonicalIntent: 'show_accounting', routeText: 'show accounting', module: 'Accounting Command / Daily P&L', phrases: ['pull up accountant','pull up accounting','open accountant','open accounting','show accountant','show accounting','accounting','daily p and l','daily pnl','daily pl','how are my numbers','show my numbers','how is the company doing','how is my company doing','how is painting doing','how is my painting company doing'] },
+      { canonicalIntent: 'owner_briefing', routeText: 'owner briefing', module: 'Owner Daily Briefing', phrases: ['whats going on today','what is going on today','what needs my attention today','what needs attention','what should i do today','what should i do next','give me todays briefing','owner briefing','daily briefing'] },
+      { canonicalIntent: 'approval_queue', routeText: 'show approval queue', module: 'Owner Action Queue / Approval Center', phrases: ['what needs approval','show approvals','show approval queue','show pending reviews','what needs owner review','what is waiting on me'] },
+      { canonicalIntent: 'show_project_folders', routeText: 'show project folders', module: 'Project Folders', phrases: ['open project folders','show project folders','pull up project folders','project folders','job folders','folder list'] },
+      { canonicalIntent: 'show_sow', routeText: 'show sow', module: 'SOW Builder / Scope of Work', phrases: ['show sow','open sow','scope of work','pull up scope','open scope','show scope','sow builder'] },
+      { canonicalIntent: 'show_field_walkthrough', routeText: 'show field walkthrough', module: 'Field Walkthrough', phrases: ['open field walkthrough','show field walkthrough','walkthrough','job walkthrough','site walkthrough','field capture'] },
+      { canonicalIntent: 'show_evidence', routeText: 'show photo proof', module: 'Photo Proof / Evidence Binder', phrases: ['show proof','show photo proof','open evidence','evidence binder','source proof','photos','job photos'] },
+      { canonicalIntent: 'show_code_permits', routeText: 'code compliance permits inspections', module: 'Code Compliance / Permits / Inspections', phrases: ['show code','code compliance','permits','inspections','inspection issues','permit issues','what failed inspection'] },
+      { canonicalIntent: 'show_insurance_bank', routeText: 'show bank reconciliation', module: 'Insurance Dashboard / Bank Reconciliation', phrases: ['show insurance','insurance dashboard','show bank reconciliation','bank reconciliation','bank match','bank issues','coi','certificate of insurance'] },
+      { canonicalIntent: 'show_locked_actions', routeText: 'what is locked and why', module: 'Locked Actions', phrases: ['what is locked','what is locked and why','why is this locked','what cant i do','what is blocked','blocking live mode'] }
+    ];
+    var route = groups.find(function (group) { return phraseMatchesV61E(q, group.phrases); });
+    if (route) return Object.assign({ originalText: original, normalizedText: q }, route);
+    return { canonicalIntent: 'unknown', routeText: original, module: 'Guided fallback', originalText: original, normalizedText: q };
+  }
+
+  function renderActionIntentDemoV61E(intent) {
+    var safe = intent || {};
+    return '<div class="note"><strong>Action intent detected.</strong> This is demo-only until Permission Granter is active. I can prepare this change for owner approval, but I will not modify live records yet.' +
+      '<div><strong>Action detected:</strong> ' + escapeHTMLV61D(safe.detectedAction || 'Action-style command') + '</div>' +
+      '<div><strong>Target module:</strong> ' + escapeHTMLV61D(safe.targetModule || 'Local/demo module') + '</div>' +
+      '<div><strong>Requested value/category:</strong> ' + escapeHTMLV61D(safe.requestedValue || 'not clear from transcript') + '</div>' +
+      '<div><strong>Status:</strong> permission required — no live change made</div>' +
+      '<div><strong>Required future permission gate:</strong> ' + escapeHTMLV61D(safe.permissionGate || 'Permission Granter + owner approval required') + '</div>' +
+      '<div><strong>Undo/audit requirement:</strong> ' + escapeHTMLV61D(safe.undoAuditRequirement || 'Future live mode must create an undo checkpoint and audit trail before any record change.') + '</div>' +
+      '<div><strong>Next step:</strong> wait for Permission Granter module.</div></div>';
+  }
+
+  function renderNormalizedReadbackV61E(intent) {
+    if (intent.canonicalIntent === 'owner_briefing' && typeof window.aquaOwnerBriefing === 'function') return window.aquaOwnerBriefing(intent.routeText);
+    if (intent.canonicalIntent === 'approval_queue' && typeof window.renderOwnerActionQueueV60T === 'function') return window.renderOwnerActionQueueV60T(intent.routeText);
+    if (typeof window.buildBrainReadbackV60P === 'function') {
+      var readback = window.buildBrainReadbackV60P(intent.routeText);
+      if (readback) return readback;
+    }
+    return null;
+  }
+
+  function runNormalizedAquaCommandV61E(commandText, outputNode) {
+    var intent = normalizeAquaCommandV61E(commandText);
+    if (intent.canonicalIntent === 'action_intent_demo') {
+      state.noLiveActionExecuted = true;
+      if (outputNode) outputNode.innerHTML = renderActionIntentDemoV61E(intent);
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent !== 'unknown') {
+      var html = renderNormalizedReadbackV61E(intent);
+      if (html && outputNode) outputNode.innerHTML = html;
+    }
+    return intent;
+  }
+
+  function installCommandNormalizerV61E() {
+    if (state.commandNormalizerInstalled) return true;
+    if (typeof window.runBrainCommandDemo === 'function' && !window.runBrainCommandDemo.__aquaV61EWrapped) {
+      var originalRunBrainCommandDemo = window.runBrainCommandDemo;
+      window.runBrainCommandDemo = function runBrainCommandDemoV61E() {
+        var commandBox = document.getElementById('brainCommand');
+        var output = document.getElementById('brainOut');
+        var original = commandBox ? commandBox.value : '';
+        var intent = runNormalizedAquaCommandV61E(original, output);
+        if (intent.canonicalIntent === 'action_intent_demo') return;
+        if (intent.canonicalIntent !== 'unknown' && output && output.innerHTML) {
+          if (commandBox) commandBox.value = intent.routeText;
+          return;
+        }
+        return originalRunBrainCommandDemo.apply(this, arguments);
+      };
+      window.runBrainCommandDemo.__aquaV61EWrapped = true;
+      window.runBrainCommandDemo.__aquaV61EOriginal = originalRunBrainCommandDemo;
+    }
+    if (typeof window.runAI === 'function' && !window.runAI.__aquaV61EWrapped) {
+      var originalRunAI = window.runAI;
+      window.runAI = function runAIV61E() {
+        var ask = document.getElementById('aiAsk');
+        var output = document.getElementById('aiOut');
+        var intent = runNormalizedAquaCommandV61E(ask ? ask.value : '', output);
+        if (intent.canonicalIntent !== 'unknown') return;
+        return originalRunAI.apply(this, arguments);
+      };
+      window.runAI.__aquaV61EWrapped = true;
+      window.runAI.__aquaV61EOriginal = originalRunAI;
+    }
+    state.commandNormalizerInstalled = true;
+    syncNamespace();
+    return true;
   }
 
   function getModal() {
@@ -144,7 +298,7 @@
     var flow = document.createElement('div');
     flow.id = 'askAICommandFlowV61B';
     flow.setAttribute('data-aqua-version', VERSION);
-    flow.setAttribute('data-direct-ask-voice', 'v61D');
+    flow.setAttribute('data-direct-ask-voice', 'v61E');
     flow.appendChild(readyMessageNode());
 
     var parts = getBrainHubPartsFromExistingRenderer() || buildFallbackCommandFlow();
@@ -436,6 +590,7 @@
   }
 
   function wireAskAIToCommandFlow() {
+    installCommandNormalizerV61E();
     var wrapped = wrapOpenModal();
     var directHook = installDirectAskButtonHookV61D();
     var observed = installObserver();
@@ -484,6 +639,34 @@
     };
   }
 
+
+  function runV61ECheck() {
+    installCommandNormalizerV61E();
+    var receipts = normalizeAquaCommandV61E('pull up receipts');
+    var accounting = normalizeAquaCommandV61E('how are my numbers');
+    var owner = normalizeAquaCommandV61E('what’s going on today');
+    var approvals = normalizeAquaCommandV61E('what needs approval');
+    var action = normalizeAquaCommandV61E('code this receipt to materials');
+    state.noAlwaysListening = true;
+    state.noAudioStorage = true;
+    state.noNetworkCalls = true;
+    state.noLiveActionExecuted = true;
+    syncNamespace();
+    return {
+      version: 'v61E',
+      normalizerExists: typeof normalizeAquaCommandV61E === 'function',
+      receiptsIntentWorks: receipts.canonicalIntent === 'show_receipts',
+      accountingIntentWorks: accounting.canonicalIntent === 'show_accounting',
+      ownerBriefingIntentWorks: owner.canonicalIntent === 'owner_briefing',
+      approvalQueueIntentWorks: approvals.canonicalIntent === 'approval_queue',
+      actionIntentDetected: action.canonicalIntent === 'action_intent_demo',
+      noLiveActionExecuted: true,
+      noAlwaysListening: true,
+      noAudioStorage: true,
+      noNetworkCalls: true
+    };
+  }
+
   function runV61CCheck() {
     return runV61DCheck();
   }
@@ -509,6 +692,7 @@
   }
 
   mergeNamespace();
+  installCommandNormalizerV61E();
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', wireAskAIToCommandFlow, { once: true });
   } else {
@@ -516,5 +700,5 @@
   }
   window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61D extensions loaded: Ask AI modal wired to direct one-shot local voice command capture.');
+  console.log('Aqua Homes OS v61E extensions loaded: natural voice command router active with one-shot local voice capture.');
 }());
