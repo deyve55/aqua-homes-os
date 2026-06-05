@@ -1,15 +1,23 @@
 /*
- * Aqua Homes OS v61T Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair.
+ * Aqua Homes OS v61U Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61T';
+  var VERSION = 'v61U';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
+    askModeRouterV61UAvailable: true,
+    askModeRouterWorks: false,
+    appNavigationModeWorks: false,
+    automationStatusModeWorks: false,
+    permissionedActionModeWorks: false,
+    generalAskLockedWorks: false,
+    unknownFallbackWorks: false,
+    noApiKeysInFrontend: true,
     initialized: true,
     askAIHookInstalled: false,
     askAIReadyInserted: false,
@@ -152,7 +160,9 @@
       runAquaCommandRegressionV61P: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61R: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61T: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61U: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
+      classifyAquaAskModeV61U: classifyAquaAskModeV61U,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
       openVisualModuleV61F: openVisualModuleV61F,
@@ -421,6 +431,70 @@
     return null;
   }
 
+
+  function appNavigationPhraseGroupsV61U() {
+    return [
+      { canonicalIntent: 'show_receipts', routeText: 'show receipts', module: 'Receipts / Receipt Tracker', phrases: ['pull up receipts','bring up receipts','show receipts','show receipt','open receipts','open receipt tracker','receipts','receipt review','what receipts need review'] },
+      { canonicalIntent: 'show_accounting', routeText: 'show accounting', module: 'Accounting Command / Daily P&L', phrases: ['pull up accountant','pull up accounting','open accountant','open accounting','show accountant','show accounting','accounting','daily p and l','daily pnl','daily pl','how are my numbers','show my numbers','how is the company doing','how is my company doing','how is painting doing','how is my painting company doing'] },
+      { canonicalIntent: 'owner_briefing', routeText: 'owner briefing', module: 'Owner Daily Briefing', phrases: ['whats going on today','what is going on today','what needs my attention today','what needs attention','what should i do today','what should i do next','give me todays briefing','owner briefing','daily briefing'] },
+      { canonicalIntent: 'approval_queue', routeText: 'show approval queue', module: 'Owner Action Queue / Approval Center', phrases: ['what needs approval','show approvals','show approval queue','show owner action queue','show pending reviews','what needs owner review','what is waiting on me'] },
+      { canonicalIntent: 'show_project_folders', routeText: 'show project folders', module: 'Project Folders', phrases: ['open project folders','show project folders','pull up project folders','project folders','job folders','folder list'] },
+      { canonicalIntent: 'show_sow', routeText: 'show sow', module: 'SOW Builder / Scope of Work', phrases: ['show sow','open sow','pull up sow','show scope','open scope','scope of work','sow builder','pull up scope of work','open scope of work','pull up scope'] },
+      { canonicalIntent: 'show_field_walkthrough', routeText: 'show field walkthrough', module: 'Field Walkthrough', phrases: ['open field walkthrough','show field walkthrough','open walkthrough','walkthrough','job walkthrough','site walkthrough','field capture'] },
+      { canonicalIntent: 'show_evidence', routeText: 'show photo proof', module: 'Photo Proof / Evidence Binder', phrases: ['show evidence','show proof','show photo proof','open evidence','evidence binder','source proof','photo proof','photos','job photos'] },
+      { canonicalIntent: 'show_code_permits', routeText: 'code compliance permits inspections', module: 'Code Compliance / Permits / Inspections', phrases: ['show code','code compliance','permits','inspections','inspection issues','permit issues','what failed inspection'] },
+      { canonicalIntent: 'show_insurance_bank', routeText: 'show bank reconciliation', module: 'Insurance Dashboard / Bank Reconciliation', phrases: ['show insurer','show insurance','open insurance','pull up insurance','insurance dashboard','show insurance dashboard','show bank reconciliation','bank reconciliation','show bank','bank match','bank issues','coi','certificate of insurance'] },
+      { canonicalIntent: 'show_draft_change_queue', routeText: 'show draft changes', module: 'Draft Change Queue', phrases: ['show draft changes','show prepared changes','show pending edits','show change queue','what changes are waiting','what changes are waiting?','show approved demo changes'] },
+      { canonicalIntent: 'show_locked_actions', routeText: 'what is locked and why', module: 'Locked Actions', phrases: ['what is locked','what is locked and why','why is this locked','what cant i do','what is blocked','blocking live mode'] }
+    ];
+  }
+
+  function generalAskLockedPhraseMatchesV61U(normalized) {
+    var q = String(normalized || '').trim();
+    if (!q) return false;
+    if (/\b(how many|how much|what does|what is the difference|what is|how do i calculate|how do you calculate|calculate|estimate)\b/.test(q) && /\b(concrete|sonotube|drywall|sheetrock|code term|paint|gallons?|studs?|stair stringers?|type s|type n|mortar|bags?)\b/.test(q)) return true;
+    if (/\b(difference between type s and type n mortar|bags of concrete|sheets of drywall|gallons of paint|calculate stair stringers|code term mean)\b/.test(q)) return true;
+    return false;
+  }
+
+  function classifyAquaAskModeV61U(commandText) {
+    var original = String(commandText || '').trim();
+    var q = normalizeAquaPhraseV61E(original);
+    var automation = detectAutomationReportCommandV61T(original, q);
+    if (automation) return { mode: 'automation_status', originalText: original, normalizedText: q, routeHint: automation };
+    var action = detectActionIntentV61E(original, q);
+    if (action) return { mode: 'permissioned_action', originalText: original, normalizedText: action.normalizedText || q, routeHint: action };
+    var appRoute = appNavigationPhraseGroupsV61U().find(function (group) { return phraseMatchesV61E(q, group.phrases); });
+    if (appRoute) return { mode: 'app_navigation', originalText: original, normalizedText: q, routeHint: appRoute };
+    if (generalAskLockedPhraseMatchesV61U(q)) return { mode: 'general_ask_locked', originalText: original, normalizedText: q, routeHint: { canonicalIntent: 'general_ask_locked', routeText: original, module: 'General Ask / Jobsite Calculator' } };
+    return { mode: 'unknown_fallback', originalText: original, normalizedText: q, routeHint: { canonicalIntent: 'unknown', routeText: original, module: 'Guided fallback' } };
+  }
+
+  function withAskModeV61U(intent, mode) {
+    return Object.assign({ askMode: mode || 'unknown_fallback' }, intent || {});
+  }
+
+  function askModeBadgeV61U(mode) {
+    if (!mode) return '';
+    return '<div class="smallMut" data-aqua-v61u-mode="' + escapeHTMLV61D(mode) + '"><strong>Ask AI Mode:</strong> ' + escapeHTMLV61D(mode) + '</div>';
+  }
+
+  function renderGeneralAskLockedV61U(intent) {
+    var safe = intent || {};
+    var question = safe.originalText || safe.routeText || '';
+    return '<div class="note" data-aqua-v61u-general-ask-locked="true"><strong>General Ask / Jobsite Calculator — Locked Foundation</strong>' +
+      askModeBadgeV61U('general_ask_locked') +
+      '<div><strong>Detected question:</strong> ' + escapeHTMLV61D(question) + '</div>' +
+      '<div><strong>Mode:</strong> outside knowledge / construction calculator</div>' +
+      '<div><strong>Status:</strong> local placeholder only</div>' +
+      '<div>Backend required before live ChatGPT/search answers</div>' +
+      '<div>No external API call was made</div>' +
+      '<div>No network call was made</div>' +
+      '<div>No API key exists in frontend</div>' +
+      '<div class="actions" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><span class="pill">Backend Locked</span><span class="pill">External AI Locked</span><span class="pill">Search Locked</span><span class="pill">Demo Only</span><span class="pill">No Network Call</span><span class="pill">No API Key in Frontend</span></div>' +
+      '<div class="locked">No live AI, external search, backend, network call, API key, payment, payroll, bank sync, accounting export, customer sharing/export, audio storage, always-listening behavior, or live record change was used.</div></div>';
+  }
+
   function detectActionIntentV61E(original, normalized) {
     var routedNormalized = normalizeReceiptActionTranscriptV61K(normalized);
     var actionMatch = routedNormalized.match(/^(?:please\s+)?(code|categorize|mark|change|update|move|approve|set|review|put)\b(?:\s+(?:this|that|the|just))?(?:\s+(?:item|receipt|amount|record))?(?:\s+(?:as|to|under))?\s*([a-z0-9 ]*)/);
@@ -455,46 +529,49 @@
   function normalizeAquaCommandV61E(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
+    var askMode = classifyAquaAskModeV61U(original);
+    state.askModeRouterWorks = true;
+    if (askMode.mode === 'general_ask_locked') {
+      state.generalAskLockedWorks = true;
+      return withAskModeV61U({ canonicalIntent: 'general_ask_locked', routeText: original, originalText: original, normalizedText: q, module: 'General Ask / Jobsite Calculator' }, askMode.mode);
+    }
+    if (askMode.mode === 'unknown_fallback') state.unknownFallbackWorks = true;
     var automation = detectAutomationReportCommandV61T(original, q);
-    if (automation) return automation;
+    if (automation) {
+      state.automationStatusModeWorks = true;
+      return withAskModeV61U(automation, askMode.mode);
+    }
     var demoState = detectDemoStateCommandV61K(original, q);
-    if (demoState) return demoState;
+    if (demoState) return withAskModeV61U(demoState, askMode.mode);
     if (phraseMatchesV61E(q, ['speak summary', 'read this back'])) {
-      return { canonicalIntent: 'speak_summary_v61r', routeText: 'speak summary', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+      return withAskModeV61U({ canonicalIntent: 'speak_summary_v61r', routeText: 'speak summary', originalText: original, normalizedText: q, module: 'Spoken Readback' }, askMode.mode);
     }
     if (phraseMatchesV61E(q, ['read report'])) {
-      return { canonicalIntent: 'read_report_v61r', routeText: 'read report', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+      return withAskModeV61U({ canonicalIntent: 'read_report_v61r', routeText: 'read report', originalText: original, normalizedText: q, module: 'Spoken Readback' }, askMode.mode);
     }
     if (phraseMatchesV61E(q, ['stop speaking', 'mute voice'])) {
-      return { canonicalIntent: 'stop_speaking_v61r', routeText: 'stop speaking', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+      return withAskModeV61U({ canonicalIntent: 'stop_speaking_v61r', routeText: 'stop speaking', originalText: original, normalizedText: q, module: 'Spoken Readback' }, askMode.mode);
     }
     if (phraseMatchesV61E(q, ['voice off'])) {
-      return { canonicalIntent: 'voice_off_v61r', routeText: 'voice off', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+      return withAskModeV61U({ canonicalIntent: 'voice_off_v61r', routeText: 'voice off', originalText: original, normalizedText: q, module: 'Spoken Readback' }, askMode.mode);
     }
     if (phraseMatchesV61E(q, ['voice on'])) {
-      return { canonicalIntent: 'voice_on_v61r', routeText: 'voice on', originalText: original, normalizedText: q, module: 'Spoken Readback' };
+      return withAskModeV61U({ canonicalIntent: 'voice_on_v61r', routeText: 'voice on', originalText: original, normalizedText: q, module: 'Spoken Readback' }, askMode.mode);
     }
     var conversational = detectConversationalContextCommandV61S(original, q);
-    if (conversational) return conversational;
+    if (conversational) return withAskModeV61U(conversational, askMode.mode);
     var action = detectActionIntentV61E(original, q);
-    if (action) return action;
-    var groups = [
-      { canonicalIntent: 'show_receipts', routeText: 'show receipts', module: 'Receipts / Receipt Tracker', phrases: ['pull up receipts','bring up receipts','show receipts','show receipt','open receipts','open receipt tracker','receipts','receipt review','what receipts need review'] },
-      { canonicalIntent: 'show_accounting', routeText: 'show accounting', module: 'Accounting Command / Daily P&L', phrases: ['pull up accountant','pull up accounting','open accountant','open accounting','show accountant','show accounting','accounting','daily p and l','daily pnl','daily pl','how are my numbers','show my numbers','how is the company doing','how is my company doing','how is painting doing','how is my painting company doing'] },
-      { canonicalIntent: 'owner_briefing', routeText: 'owner briefing', module: 'Owner Daily Briefing', phrases: ['whats going on today','what is going on today','what needs my attention today','what needs attention','what should i do today','what should i do next','give me todays briefing','owner briefing','daily briefing'] },
-      { canonicalIntent: 'approval_queue', routeText: 'show approval queue', module: 'Owner Action Queue / Approval Center', phrases: ['what needs approval','show approvals','show approval queue','show owner action queue','show pending reviews','what needs owner review','what is waiting on me'] },
-      { canonicalIntent: 'show_project_folders', routeText: 'show project folders', module: 'Project Folders', phrases: ['open project folders','show project folders','pull up project folders','project folders','job folders','folder list'] },
-      { canonicalIntent: 'show_sow', routeText: 'show sow', module: 'SOW Builder / Scope of Work', phrases: ['show sow','open sow','pull up sow','show scope','open scope','scope of work','sow builder','pull up scope of work','open scope of work','pull up scope'] },
-      { canonicalIntent: 'show_field_walkthrough', routeText: 'show field walkthrough', module: 'Field Walkthrough', phrases: ['open field walkthrough','show field walkthrough','open walkthrough','walkthrough','job walkthrough','site walkthrough','field capture'] },
-      { canonicalIntent: 'show_evidence', routeText: 'show photo proof', module: 'Photo Proof / Evidence Binder', phrases: ['show evidence','show proof','show photo proof','open evidence','evidence binder','source proof','photo proof','photos','job photos'] },
-      { canonicalIntent: 'show_code_permits', routeText: 'code compliance permits inspections', module: 'Code Compliance / Permits / Inspections', phrases: ['show code','code compliance','permits','inspections','inspection issues','permit issues','what failed inspection'] },
-      { canonicalIntent: 'show_insurance_bank', routeText: 'show bank reconciliation', module: 'Insurance Dashboard / Bank Reconciliation', phrases: ['show insurer','show insurance','open insurance','pull up insurance','insurance dashboard','show insurance dashboard','show bank reconciliation','bank reconciliation','show bank','bank match','bank issues','coi','certificate of insurance'] },
-      { canonicalIntent: 'show_draft_change_queue', routeText: 'show draft changes', module: 'Draft Change Queue', phrases: ['show draft changes','show prepared changes','show pending edits','show change queue','what changes are waiting','what changes are waiting?','show approved demo changes'] },
-      { canonicalIntent: 'show_locked_actions', routeText: 'what is locked and why', module: 'Locked Actions', phrases: ['what is locked','what is locked and why','why is this locked','what cant i do','what is blocked','blocking live mode'] }
-    ];
+    if (action) {
+      state.permissionedActionModeWorks = true;
+      return withAskModeV61U(action, askMode.mode);
+    }
+    var groups = appNavigationPhraseGroupsV61U();
     var route = groups.find(function (group) { return phraseMatchesV61E(q, group.phrases); });
-    if (route) return Object.assign({ originalText: original, normalizedText: q }, route);
-    return { canonicalIntent: 'unknown', routeText: original, module: 'Guided fallback', originalText: original, normalizedText: q };
+    if (route) {
+      state.appNavigationModeWorks = true;
+      return withAskModeV61U(Object.assign({ originalText: original, normalizedText: q }, route), askMode.mode);
+    }
+    return withAskModeV61U({ canonicalIntent: 'unknown', routeText: original, module: 'Guided fallback', originalText: original, normalizedText: q }, askMode.mode);
   }
 
 
@@ -1100,7 +1177,7 @@
 
 
   function renderActionIntentDemoV61E(intent) {
-    return renderPermissionGranterV61I(intent);
+    return renderPermissionGranterV61I(intent).replace('<div><strong>Detected action:</strong>', askModeBadgeV61U('permissioned_action') + '<div><strong>Detected action:</strong>');
   }
 
   function renderNormalizedReadbackV61E(intent) {
@@ -1174,6 +1251,7 @@
     var title = nativeOpened ? 'Opened actual module: ' : 'Fallback local demo panel: ' + (config.fallbackNotFound || 'native module opener not found');
     var titleText = nativeOpened ? title + config.module : title;
     return '<div class="note" data-aqua-v61g-native-module-bridge="true"><strong>' + escapeHTMLV61D(titleText) + '</strong>' +
+      askModeBadgeV61U(intent.askMode || 'app_navigation') +
       '<div><strong>Native Module Open Bridge:</strong> ' + escapeHTMLV61D(nativeOpened ? 'native app opener/renderer succeeded first' : 'native app opener/renderer was not available') + '</div>' +
       '<div><strong>Opened:</strong> ' + escapeHTMLV61D(config.module) + '</div>' +
       '<div class="locked">No live AI, backend, OCR, upload, accounting export, bank sync, payment, payroll, sharing, sending, or record change was run.</div></div>' + readback;
@@ -1247,6 +1325,7 @@
     var readback = renderNormalizedReadbackV61E(readbackIntent) || '';
     var openButton = config.openKey ? '<button class="btn small gold" onclick="openModal(&quot;' + escapeHTMLV61D(config.openKey) + '&quot;)">Open Full Local Demo Module</button>' : '';
     return '<div class="note" data-aqua-v61f-visual-router="true"><strong>Fallback local demo panel: ' + escapeHTMLV61D(config.fallbackNotFound || 'native module opener not found') + '</strong>' +
+      askModeBadgeV61U(intent.askMode || 'app_navigation') +
       '<div><strong>Module:</strong> ' + escapeHTMLV61D(config.module) + '</div>' +
       '<div><strong>Project:</strong> ' + escapeHTMLV61D(config.project) + '</div>' +
       '<div><strong>Items:</strong> ' + escapeHTMLV61D(config.items) + '</div>' +
@@ -1285,6 +1364,17 @@
       state.noLiveChangeExecuted = true;
       state.noBackendCalls = true;
       state.noNetworkCalls = true;
+      syncNamespace();
+      return intent;
+    }
+    if (intent.canonicalIntent === 'general_ask_locked') {
+      if (outputNode) outputNode.innerHTML = renderGeneralAskLockedV61U(intent);
+      state.generalAskLockedWorks = true;
+      state.noLiveActionExecuted = true;
+      state.noLiveChangeExecuted = true;
+      state.noBackendCalls = true;
+      state.noNetworkCalls = true;
+      state.noApiKeysInFrontend = true;
       syncNamespace();
       return intent;
     }
@@ -1424,7 +1514,7 @@
       if (html && outputNode) outputNode.innerHTML = html;
       rememberConversationalContextV61S(intent);
     } else if (outputNode && intent.normalizedText) {
-      outputNode.innerHTML = renderLocalModuleFallbackV61E(intent);
+      outputNode.innerHTML = askModeBadgeV61U(intent.askMode || 'unknown_fallback') + renderLocalModuleFallbackV61E(intent);
       state.localModuleFallbackAvailable = true;
       syncNamespace();
     }
@@ -2444,7 +2534,11 @@
       { command: 'voice on', expected: 'Voice preference on', intent: 'voice_on_v61r', module: /Spoken Readback/i, html: /Voice on|enabled locally/i, noFallback: true },
       { command: 'repeat last action', contextCommand: 'show receipts', expected: 'Repeat last action routes previous receipts command', intent: 'repeat_last_action_v61s', module: /Receipts \/ Receipt Tracker/i, html: /Repeated last local action|Receipts/i, repeatedIntent: /show_receipts/i },
       { command: 'open that', contextCommand: 'show accounting', expected: 'Context follow-up reopens previous accounting route', intent: 'show_accounting', module: /Accounting Command \/ Daily P&L/i, html: /Accounting Command|Daily P&L|Fallback local demo panel/i },
-      { command: 'banana test', expected: 'Guided fallback', intent: 'unknown', module: /Guided fallback/i, html: /Fallback local demo panel/i, fallback: true }
+      { command: 'how many bags of concrete for an 8 inch sonotube 4 feet deep', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
+      { command: 'how many sheets of drywall for this room', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
+      { command: 'what does this code term mean', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
+      { command: 'how many gallons of paint do I need', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
+      { command: 'banana test', expected: 'Guided fallback', intent: 'unknown', mode: 'unknown_fallback', module: /Guided fallback/i, html: /Fallback local demo panel/i, fallback: true }
     ];
   }
 
@@ -2529,11 +2623,14 @@
       renderedFallback: /Fallback local demo panel|native module opener not found|unknown command fallback|Conversational context needed/i.test(html),
       renderedAutomationReport: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i.test(html),
       renderedPermissionGate: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i.test(html),
+      renderedGeneralAskLocked: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i.test(html),
+      askMode: intent && intent.askMode,
       renderedDraftQueue: /Draft Change Queue/i.test(html),
       noLiveChangeText: /No live record changed|No Live Change Made|No live AI, backend|No backend, network, or live AI/i.test(html)
     };
     var errors = [];
     if (!intent || intent.canonicalIntent !== testCase.intent) errors.push('Expected intent ' + testCase.intent + ' but got ' + (actual.canonicalIntent || 'none') + '.');
+    if (testCase.mode && actual.askMode !== testCase.mode) errors.push('Expected Ask AI mode ' + testCase.mode + ' but got ' + (actual.askMode || 'none') + '.');
     if (testCase.module && !testCase.module.test(actual.module)) errors.push('Expected module matching ' + testCase.module + ' but got ' + (actual.module || 'none') + '.');
     if (testCase.html && !testCase.html.test(html)) errors.push('Expected rendered output matching ' + testCase.html + '.');
     if (testCase.normalized && !testCase.normalized.test(actual.normalizedText || '')) errors.push('Expected normalized transcript matching ' + testCase.normalized + ' but got ' + (actual.normalizedText || 'none') + '.');
@@ -2542,6 +2639,7 @@
     if (testCase.noFallback && actual.renderedFallback) errors.push('Expected command to bypass fallback, but fallback rendered.');
     if (testCase.automationRoute && !actual.renderedAutomationReport) errors.push('Expected automation report viewer to render before fallback/context/module routing.');
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
+    if (testCase.lockedGeneralAsk && !actual.renderedGeneralAskLocked) errors.push('Expected locked General Ask / Jobsite Calculator placeholder, but it did not render.');
     if (!testCase.fallback && /payment|payroll|bank sync|accounting export/i.test(html) && !/locked|No live|No backend|export locked|Payment, Payroll, Backend/i.test(html)) errors.push('Safety lock wording missing for sensitive action references.');
     return {
       command: testCase.command,
@@ -2590,8 +2688,8 @@
   function placeholderRegressionReportV61T() {
     var safety = regressionSafetyV61L();
     return {
-      version: 'v61T',
-      harnessVersion: 'v61L-compatible/v61T',
+      version: 'v61U',
+      harnessVersion: 'v61L-compatible/v61U',
       timestamp: new Date().toISOString(),
       total: 0,
       passed: 0,
@@ -2615,7 +2713,14 @@
       automationCommandRoutesBeforeFallback: true,
       showAutomationReportCommandWorks: true,
       runRegressionQaCommandWorks: true,
-      automationCommandsDoNotFallback: true
+      automationCommandsDoNotFallback: true,
+      askModeRouterWorks: true,
+      appNavigationModeWorks: true,
+      automationStatusModeWorks: true,
+      permissionedActionModeWorks: true,
+      generalAskLockedWorks: true,
+      unknownFallbackWorks: true,
+      noApiKeysInFrontend: true
     };
   }
 
@@ -2635,8 +2740,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61T',
-      harnessVersion: 'v61L-compatible/v61T',
+      version: 'v61U',
+      harnessVersion: 'v61L-compatible/v61U',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -2660,7 +2765,16 @@
       automationCommandRoutesBeforeFallback: results.filter(function (result) { return result.command === 'show automation report' || result.command === 'show regression report' || result.command === 'automation status' || result.command === 'run regression qa'; }).every(function (result) { return result.passed && result.actual && result.actual.renderedFallback === false; }),
       showAutomationReportCommandWorks: results.some(function (result) { return result.command === 'show automation report' && result.passed; }),
       runRegressionQaCommandWorks: results.some(function (result) { return result.command === 'run regression qa' && result.passed; }),
-      automationCommandsDoNotFallback: results.filter(function (result) { return result.actual && (/automation|regression|qa|test app/i.test(result.command)); }).every(function (result) { return result.actual.renderedFallback === false; })
+      automationCommandsDoNotFallback: results.filter(function (result) { return result.actual && (/automation|regression|qa|test app/i.test(result.command)); }).every(function (result) { return result.actual.renderedFallback === false; }),
+      askModeRouterWorks: results.every(function (result) { return result.actual && result.actual.askMode; }),
+      appNavigationModeWorks: results.some(function (result) { return result.command === 'pull up receipts' && result.passed && result.actual.askMode === 'app_navigation'; }) && results.some(function (result) { return result.command === 'what needs approval' && result.passed && result.actual.askMode === 'app_navigation'; }),
+      automationStatusModeWorks: results.some(function (result) { return result.command === 'show automation report' && result.passed && result.actual.askMode === 'automation_status'; }) && results.some(function (result) { return result.command === 'run regression qa' && result.passed && result.actual.askMode === 'automation_status'; }),
+      permissionedActionModeWorks: results.some(function (result) { return result.command === 'code this receipt to materials' && result.passed && result.actual.askMode === 'permissioned_action'; }),
+      generalAskLockedWorks: results.filter(function (result) { return /concrete|drywall|code term|paint/i.test(result.command); }).every(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedGeneralAskLocked; }),
+      unknownFallbackWorks: results.some(function (result) { return result.command === 'banana test' && result.passed && result.actual.askMode === 'unknown_fallback'; }),
+      noNetworkCalls: true,
+      noApiKeysInFrontend: true,
+      noLiveRecordChanges: true
     };
     state.regressionHarnessV61LAvailable = true;
     state.lastRegressionReportV61L = report;
@@ -2669,6 +2783,13 @@
     state.showAutomationReportCommandWorks = report.showAutomationReportCommandWorks;
     state.runRegressionQaCommandWorks = report.runRegressionQaCommandWorks;
     state.automationCommandsDoNotFallback = report.automationCommandsDoNotFallback;
+    state.askModeRouterWorks = report.askModeRouterWorks;
+    state.appNavigationModeWorks = report.appNavigationModeWorks;
+    state.automationStatusModeWorks = report.automationStatusModeWorks;
+    state.permissionedActionModeWorks = report.permissionedActionModeWorks;
+    state.generalAskLockedWorks = report.generalAskLockedWorks;
+    state.unknownFallbackWorks = report.unknownFallbackWorks;
+    state.noApiKeysInFrontend = report.noApiKeysInFrontend;
     state.noLiveActionExecuted = true;
     state.noLiveChangeExecuted = true;
     state.noBackendCalls = true;
@@ -2684,6 +2805,7 @@
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
     return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Automation Report / Regression Report Viewer</strong>' +
+      askModeBadgeV61U('automation_status') +
       '<div><strong>version:</strong> ' + escapeHTMLV61D(safe.version || VERSION) + '</div>' +
       '<div data-aqua-v61l-report-total="true"><strong>total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
       '<div data-aqua-v61l-report-passed="true"><strong>passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
@@ -2692,6 +2814,8 @@
       '<div data-aqua-v61l-report-safety="true"><strong>safety status:</strong><ul>' + safetyRows + '</ul></div>' +
       '<div><strong>safeToMerge:</strong> ' + escapeHTMLV61D(safe.safeToMerge || 'no') + '</div>' +
       '<div><strong>mergeRecommendation:</strong> ' + escapeHTMLV61D(safe.mergeRecommendation || (safe.safeToMerge === true ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED')) + '</div>' +
+      '<div><strong>askModeRouterWorks:</strong> ' + escapeHTMLV61D(String(safe.askModeRouterWorks === true)) + '</div>' +
+      '<div><strong>noApiKeysInFrontend:</strong> ' + escapeHTMLV61D(String(safe.noApiKeysInFrontend === true)) + '</div>' +
       '<label class="smallMut" for="aquaRegressionRepairPromptV61L">repairPrompt:</label>' +
       '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
       '<div class="locked">Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.</div></div>';
@@ -2874,5 +2998,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61T extensions loaded: automation command routing priority repair active. No live change made.');
+  console.log('Aqua Homes OS v61U extensions loaded: Ask AI mode router foundation active. No live change made.');
 }());
