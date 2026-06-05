@@ -1,15 +1,16 @@
 {
-  "version": "v61R",
-  "timestamp": "2026-06-05T14:32:35.755Z",
+  "version": "v61T",
+  "timestamp": "2026-06-05T14:56:54.169Z",
   "branch": "work",
-  "commit": "8f3228b8baa936593f48d72b02becd59c26b4f6c",
+  "commit": "26692d38c8c954e11dfbad80ed869f30e4671165",
   "filesChanged": [
     "aqua-regression-report.json",
     "aqua-regression-report.md",
-    "aqua-v61-extensions.js"
+    "aqua-v61-extensions.js",
+    "aqua-v61-regression-test.js"
   ],
-  "total": 63,
-  "passed": 63,
+  "total": 74,
+  "passed": 74,
   "failed": 0,
   "failedCommands": [],
   "checks": [
@@ -94,6 +95,24 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "v61T automation report command phrase exists",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61T automation routing priority flag exists",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "v61T show automation report flag exists",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "AquaV61Extensions exists",
       "passed": true,
       "layer": "extension-regression",
@@ -109,14 +128,14 @@
       "name": "extension regression produced total tests",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 36,
+      "actual": 44,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
       "name": "extension regression passed count present",
       "passed": true,
       "layer": "extension-regression",
-      "actual": 36,
+      "actual": 44,
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -176,10 +195,10 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
-      "name": "extension regression version is v61R",
+      "name": "extension regression version is v61T",
       "passed": true,
       "layer": "extension-regression",
-      "actual": "v61R",
+      "actual": "v61T",
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
@@ -200,6 +219,106 @@
       "fileToFix": "aqua-v61-extensions.js"
     },
     {
+      "name": "automationCommandRoutesBeforeFallback is true",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "showAutomationReportCommandWorks is true",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "runRegressionQaCommandWorks is true",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "automationCommandsDoNotFallback is true",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "actual": true,
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "automation command routes before fallback: show automation report",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "expected": "Automation Report / Regression Report Viewer without fallback",
+      "actual": {
+        "command": "show automation report",
+        "canonicalIntent": "show_automation_report_v61t",
+        "module": "Automation Report / Regression Report Viewer",
+        "normalizedText": "show automation report",
+        "renderedFallback": false,
+        "renderedAutomationReport": true,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "automation command routes before fallback: show regression report",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "expected": "Automation Report / Regression Report Viewer without fallback",
+      "actual": {
+        "command": "show regression report",
+        "canonicalIntent": "show_automation_report_v61t",
+        "module": "Automation Report / Regression Report Viewer",
+        "normalizedText": "show regression report",
+        "renderedFallback": false,
+        "renderedAutomationReport": true,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "automation command routes before fallback: automation status",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "expected": "Automation Report / Regression Report Viewer without fallback",
+      "actual": {
+        "command": "automation status",
+        "canonicalIntent": "show_automation_report_v61t",
+        "module": "Automation Report / Regression Report Viewer",
+        "normalizedText": "automation status",
+        "renderedFallback": false,
+        "renderedAutomationReport": true,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
+      "name": "automation command routes before fallback: run regression qa",
+      "passed": true,
+      "layer": "automation-routing-v61t",
+      "expected": "Automation Report / Regression Report Viewer without fallback",
+      "actual": {
+        "command": "run regression qa",
+        "canonicalIntent": "run_regression_qa",
+        "module": "Automation Report / Regression Report Viewer",
+        "normalizedText": "run regression qa",
+        "renderedFallback": false,
+        "renderedAutomationReport": true,
+        "renderedPermissionGate": false,
+        "renderedDraftQueue": false,
+        "noLiveChangeText": true
+      },
+      "fileToFix": "aqua-v61-extensions.js"
+    },
+    {
       "name": "spoken readback typed command routes: speak summary",
       "passed": true,
       "layer": "spoken-readback-v61r",
@@ -210,6 +329,7 @@
         "module": "Spoken Readback",
         "normalizedText": "speak summary",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -227,6 +347,7 @@
         "module": "Spoken Readback",
         "normalizedText": "read this back",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -244,6 +365,7 @@
         "module": "Spoken Readback",
         "normalizedText": "read report",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -261,6 +383,7 @@
         "module": "Spoken Readback",
         "normalizedText": "stop speaking",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -278,6 +401,7 @@
         "module": "Spoken Readback",
         "normalizedText": "mute voice",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -295,6 +419,7 @@
         "module": "Spoken Readback",
         "normalizedText": "voice off",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -312,6 +437,7 @@
         "module": "Spoken Readback",
         "normalizedText": "voice on",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": false
@@ -330,6 +456,7 @@
         "normalizedText": "code this receipt to framing",
         "requestedValue": "framing",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": true,
         "renderedDraftQueue": true,
         "noLiveChangeText": true
@@ -348,6 +475,7 @@
         "normalizedText": "code this receipt to framing",
         "requestedValue": "framing",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": true,
         "renderedDraftQueue": true,
         "noLiveChangeText": true
@@ -366,6 +494,7 @@
         "normalizedText": "code this receipt to framing",
         "requestedValue": "framing",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": true,
         "renderedDraftQueue": true,
         "noLiveChangeText": true
@@ -383,6 +512,7 @@
         "module": "Draft Change Queue",
         "normalizedText": "clear draft q demo",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -400,6 +530,7 @@
         "module": "Draft Change Queue",
         "normalizedText": "clear draft cute demo",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -417,6 +548,7 @@
         "module": "Draft Change Queue",
         "normalizedText": "claire draft queue demo",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -434,6 +566,7 @@
         "module": "Accounting Command / Daily P&L",
         "normalizedText": "pull up accountant",
         "renderedFallback": true,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -451,6 +584,7 @@
         "module": "Owner Daily Briefing",
         "normalizedText": "whats going on today",
         "renderedFallback": true,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": false,
         "renderedDraftQueue": false,
         "noLiveChangeText": true
@@ -469,6 +603,7 @@
         "normalizedText": "code this receipt to materials",
         "requestedValue": "materials",
         "renderedFallback": false,
+        "renderedAutomationReport": false,
         "renderedPermissionGate": true,
         "renderedDraftQueue": true,
         "noLiveChangeText": true
@@ -631,15 +766,159 @@
     "reason": "Playwright/browser not available"
   },
   "extensionRegression": {
-    "version": "v61R",
-    "harnessVersion": "v61L-compatible/v61R",
-    "timestamp": "2026-06-05T14:32:35.292Z",
-    "total": 36,
-    "passed": 36,
+    "version": "v61T",
+    "harnessVersion": "v61L-compatible/v61T",
+    "timestamp": "2026-06-05T14:56:53.735Z",
+    "total": 44,
+    "passed": 44,
     "failed": 0,
     "failedCommands": [],
     "failures": [],
     "results": [
+      {
+        "command": "show automation report",
+        "expected": "Automation Report / Regression Report Viewer",
+        "actual": {
+          "command": "show automation report",
+          "canonicalIntent": "show_automation_report_v61t",
+          "module": "Automation Report / Regression Report Viewer",
+          "normalizedText": "show automation report",
+          "renderedFallback": false,
+          "renderedAutomationReport": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show regression report",
+        "expected": "Automation Report / Regression Report Viewer",
+        "actual": {
+          "command": "show regression report",
+          "canonicalIntent": "show_automation_report_v61t",
+          "module": "Automation Report / Regression Report Viewer",
+          "normalizedText": "show regression report",
+          "renderedFallback": false,
+          "renderedAutomationReport": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "automation status",
+        "expected": "Automation Report / Regression Report Viewer",
+        "actual": {
+          "command": "automation status",
+          "canonicalIntent": "show_automation_report_v61t",
+          "module": "Automation Report / Regression Report Viewer",
+          "normalizedText": "automation status",
+          "renderedFallback": false,
+          "renderedAutomationReport": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "run regression qa",
+        "expected": "Run regression and show updated Automation Report",
+        "actual": {
+          "command": "run regression qa",
+          "canonicalIntent": "run_regression_qa",
+          "module": "Automation Report / Regression Report Viewer",
+          "normalizedText": "run regression qa",
+          "renderedFallback": false,
+          "renderedAutomationReport": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "show qa report",
+        "expected": "Automation Report / Regression Report Viewer",
+        "actual": {
+          "command": "show qa report",
+          "canonicalIntent": "show_automation_report_v61t",
+          "module": "Automation Report / Regression Report Viewer",
+          "normalizedText": "show qa report",
+          "renderedFallback": false,
+          "renderedAutomationReport": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "run qa regression",
+        "expected": "Run regression and show updated Automation Report",
+        "actual": {
+          "command": "run qa regression",
+          "canonicalIntent": "run_regression_qa",
+          "module": "Automation Report / Regression Report Viewer",
+          "normalizedText": "run qa regression",
+          "renderedFallback": false,
+          "renderedAutomationReport": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "run command regression",
+        "expected": "Run regression and show updated Automation Report",
+        "actual": {
+          "command": "run command regression",
+          "canonicalIntent": "run_regression_qa",
+          "module": "Automation Report / Regression Report Viewer",
+          "normalizedText": "run command regression",
+          "renderedFallback": false,
+          "renderedAutomationReport": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
+      {
+        "command": "test app",
+        "expected": "Run regression and show updated Automation Report",
+        "actual": {
+          "command": "test app",
+          "canonicalIntent": "run_regression_qa",
+          "module": "Automation Report / Regression Report Viewer",
+          "normalizedText": "test app",
+          "renderedFallback": false,
+          "renderedAutomationReport": true,
+          "renderedPermissionGate": false,
+          "renderedDraftQueue": false,
+          "noLiveChangeText": true
+        },
+        "passed": true,
+        "errors": [],
+        "suggestedFix": ""
+      },
       {
         "command": "pull up receipts",
         "expected": "Receipts / Receipt Tracker",
@@ -649,6 +928,7 @@
           "module": "Receipts / Receipt Tracker",
           "normalizedText": "pull up receipts",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -666,6 +946,7 @@
           "module": "Accounting Command / Daily P&L",
           "normalizedText": "pull up accountant",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -683,6 +964,7 @@
           "module": "Accounting Command / Daily P&L",
           "normalizedText": "how are my numbers",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -700,6 +982,7 @@
           "module": "Owner Daily Briefing",
           "normalizedText": "whats going on today",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -717,6 +1000,7 @@
           "module": "Owner Action Queue / Approval Center",
           "normalizedText": "what needs approval",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -734,6 +1018,7 @@
           "module": "SOW Builder / Scope of Work",
           "normalizedText": "show sow",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -751,6 +1036,7 @@
           "module": "Insurance Dashboard / Bank Reconciliation",
           "normalizedText": "show insurer",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -768,6 +1054,7 @@
           "module": "Insurance Dashboard / Bank Reconciliation",
           "normalizedText": "show insurance",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -786,6 +1073,7 @@
           "normalizedText": "code this receipt to materials",
           "requestedValue": "materials",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -804,6 +1092,7 @@
           "normalizedText": "code this receipt to coldest",
           "requestedValue": "unclear — owner must confirm",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -822,6 +1111,7 @@
           "normalizedText": "code this receipt to framing",
           "requestedValue": "framing",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -840,6 +1130,7 @@
           "normalizedText": "code this receipt to framing",
           "requestedValue": "framing",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -858,6 +1149,7 @@
           "normalizedText": "code this receipt to framing",
           "requestedValue": "framing",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -876,6 +1168,7 @@
           "normalizedText": "code this receipt to framing",
           "requestedValue": "framing",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": true,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -893,6 +1186,7 @@
           "module": "Permission Granter",
           "normalizedText": "clear current demo action",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -910,6 +1204,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "clear draft queue demo",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -927,6 +1222,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "clear draft queued demo",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -944,6 +1240,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "clear draft q demo",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -961,6 +1258,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "clear draft cute demo",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -978,6 +1276,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "claire draft queue demo",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -995,6 +1294,7 @@
           "module": "Permission Granter",
           "normalizedText": "start new demo change",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1012,6 +1312,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "show draft changes",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1029,6 +1330,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "show prepared changes",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1046,6 +1348,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "show pending edits",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1063,6 +1366,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "show change queue",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1080,6 +1384,7 @@
           "module": "Draft Change Queue",
           "normalizedText": "show approved demo changes",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": true,
           "noLiveChangeText": true
@@ -1097,6 +1402,7 @@
           "module": "Spoken Readback",
           "normalizedText": "speak summary",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1114,6 +1420,7 @@
           "module": "Spoken Readback",
           "normalizedText": "read this back",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1131,6 +1438,7 @@
           "module": "Spoken Readback",
           "normalizedText": "read report",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1148,6 +1456,7 @@
           "module": "Spoken Readback",
           "normalizedText": "stop speaking",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1165,6 +1474,7 @@
           "module": "Spoken Readback",
           "normalizedText": "mute voice",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1182,6 +1492,7 @@
           "module": "Spoken Readback",
           "normalizedText": "voice off",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1199,6 +1510,7 @@
           "module": "Spoken Readback",
           "normalizedText": "voice on",
           "renderedFallback": false,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": false
@@ -1217,6 +1529,7 @@
           "normalizedText": "repeat last action",
           "repeatedIntent": "show_receipts",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1234,6 +1547,7 @@
           "module": "Accounting Command / Daily P&L",
           "normalizedText": "open that",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1251,6 +1565,7 @@
           "module": "Guided fallback",
           "normalizedText": "banana test",
           "renderedFallback": true,
+          "renderedAutomationReport": false,
           "renderedPermissionGate": false,
           "renderedDraftQueue": false,
           "noLiveChangeText": true
@@ -1290,7 +1605,11 @@
     "spokenReadbackPreferenceKey": "aquaSpokenReadbackV61R",
     "conversationalContextRouterAvailable": true,
     "repeatLastActionRouterAvailable": true,
-    "conversationalContextStorageKey": "aquaConversationalContextV61S"
+    "conversationalContextStorageKey": "aquaConversationalContextV61S",
+    "automationCommandRoutesBeforeFallback": true,
+    "showAutomationReportCommandWorks": true,
+    "runRegressionQaCommandWorks": true,
+    "automationCommandsDoNotFallback": true
   },
   "spokenReadbackAvailable": false,
   "spokenReadbackBrowserUnavailableFallback": true,

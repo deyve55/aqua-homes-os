@@ -1,20 +1,25 @@
-# Aqua Homes OS v61R Regression Report
+# Aqua Homes OS v61T Regression Report
 
-- Timestamp: 2026-06-05T14:32:35.755Z
+- Timestamp: 2026-06-05T14:56:54.169Z
 - Branch: work
-- Commit: 8f3228b8baa936593f48d72b02becd59c26b4f6c
-- Total tests: 63
-- Passed: 63
+- Commit: 26692d38c8c954e11dfbad80ed869f30e4671165
+- Total tests: 74
+- Passed: 74
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
 - spokenReadbackAvailable: false
 - spokenReadbackBrowserUnavailableFallback: true
+- automationCommandRoutesBeforeFallback: true
+- showAutomationReportCommandWorks: true
+- runRegressionQaCommandWorks: true
+- automationCommandsDoNotFallback: true
 
 ## Files Changed
 - aqua-regression-report.json
 - aqua-regression-report.md
 - aqua-v61-extensions.js
+- aqua-v61-regression-test.js
 
 ## Failed Commands / Checks
 - None
@@ -53,9 +58,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v61R
-- Total: 36
-- Passed: 36
+- Version: v61T
+- Total: 44
+- Passed: 44
 - Failed: 0
 
 ## Copyable Codex Repair Prompt

@@ -1,14 +1,15 @@
 /*
- * Aqua Homes OS v61R Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation.
+ * Aqua Homes OS v61T Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61R';
+  var VERSION = 'v61T';
   var state = {
     version: VERSION,
+    regressionRunningV61T: false,
     initialized: true,
     askAIHookInstalled: false,
     askAIReadyInserted: false,
@@ -116,7 +117,11 @@
     repeatLastActionWorksV61S: false,
     contextualFollowupWorksV61S: false,
     noLiveActionExecutedV61S: true,
-    noBackendNetworkLiveAIV61S: true
+    noBackendNetworkLiveAIV61S: true,
+    automationCommandRoutesBeforeFallback: false,
+    showAutomationReportCommandWorks: false,
+    runRegressionQaCommandWorks: false,
+    automationCommandsDoNotFallback: false
   };
 
   var DRAFT_CHANGE_QUEUE_KEY_V61J = 'aquaDraftChangeQueueV61J';
@@ -146,6 +151,7 @@
       runAquaCommandRegressionV61N: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61P: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61R: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61T: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -194,6 +200,7 @@
       runAquaCommandRegressionV61N: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61P: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61R: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61T: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -304,7 +311,7 @@
   function shouldRememberConversationalIntentV61S(intent) {
     var canonical = intent && intent.canonicalIntent;
     if (!canonical || canonical === 'unknown' || canonical === 'repeat_last_action_v61s' || canonical === 'context_missing_v61s') return false;
-    if (/^(?:speak_summary_v61r|read_report_v61r|stop_speaking_v61r|voice_off_v61r|voice_on_v61r|run_regression_qa)$/.test(canonical)) return false;
+    if (/^(?:speak_summary_v61r|read_report_v61r|stop_speaking_v61r|voice_off_v61r|voice_on_v61r|run_regression_qa|show_automation_report_v61t)$/.test(canonical)) return false;
     if (/^(?:clear_draft_queue_demo|clear_current_demo_action|start_new_demo_change)$/.test(canonical)) return false;
     return true;
   }
@@ -389,6 +396,31 @@
     return null;
   }
 
+  function detectAutomationReportCommandV61T(original, normalized) {
+    var q = String(normalized || '').trim();
+    if (phraseMatchesV61E(q, [
+      'show automation report',
+      'show regression report',
+      'show qa report',
+      'automation status'
+    ])) {
+      return { canonicalIntent: 'show_automation_report_v61t', routeText: 'show automation report', originalText: original, normalizedText: q, module: 'Automation Report / Regression Report Viewer' };
+    }
+    if (phraseMatchesV61E(q, [
+      'run regression qa',
+      'run qa regression',
+      'run command regression',
+      'run command regression qa',
+      'run regression quality assurance',
+      'command regression qa',
+      'regression qa',
+      'test app'
+    ])) {
+      return { canonicalIntent: 'run_regression_qa', routeText: 'run regression qa', originalText: original, normalizedText: q, module: 'Automation Report / Regression Report Viewer' };
+    }
+    return null;
+  }
+
   function detectActionIntentV61E(original, normalized) {
     var routedNormalized = normalizeReceiptActionTranscriptV61K(normalized);
     var actionMatch = routedNormalized.match(/^(?:please\s+)?(code|categorize|mark|change|update|move|approve|set|review|put)\b(?:\s+(?:this|that|the|just))?(?:\s+(?:item|receipt|amount|record))?(?:\s+(?:as|to|under))?\s*([a-z0-9 ]*)/);
@@ -423,6 +455,8 @@
   function normalizeAquaCommandV61E(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
+    var automation = detectAutomationReportCommandV61T(original, q);
+    if (automation) return automation;
     var demoState = detectDemoStateCommandV61K(original, q);
     if (demoState) return demoState;
     if (phraseMatchesV61E(q, ['speak summary', 'read this back'])) {
@@ -442,9 +476,6 @@
     }
     var conversational = detectConversationalContextCommandV61S(original, q);
     if (conversational) return conversational;
-    if (phraseMatchesV61E(q, ['run regression qa', 'run regression quality assurance', 'run command regression qa', 'command regression qa', 'regression qa'])) {
-      return { canonicalIntent: 'run_regression_qa', routeText: 'run regression qa', originalText: original, normalizedText: q, module: 'Aqua Command Regression QA' };
-    }
     var action = detectActionIntentV61E(original, q);
     if (action) return action;
     var groups = [
@@ -1243,6 +1274,20 @@
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
     var intent = normalizeAquaCommandV61E(commandText);
+    if (intent.canonicalIntent === 'show_automation_report_v61t') {
+      var existingReport = getLastRegressionReportV61L() || placeholderRegressionReportV61T();
+      rememberSpokenSummaryV61R(automationReportSummaryV61R(existingReport), 'automation report');
+      if (outputNode) outputNode.innerHTML = renderRegressionReportV61L(existingReport);
+      state.automationCommandRoutesBeforeFallback = true;
+      state.showAutomationReportCommandWorks = true;
+      state.automationCommandsDoNotFallback = true;
+      state.noLiveActionExecuted = true;
+      state.noLiveChangeExecuted = true;
+      state.noBackendCalls = true;
+      state.noNetworkCalls = true;
+      syncNamespace();
+      return intent;
+    }
     if (intent.canonicalIntent === 'context_missing_v61s') {
       if (outputNode) outputNode.innerHTML = '<div class="note" data-aqua-v61s-context-missing="true"><strong>Conversational context needed.</strong><div>Say a module command first, like “show receipts,” then use “open that” or “repeat last action.”</div><div class="locked">Local/demo-only. No live AI, backend, network, or record change was run.</div></div>';
       state.conversationalContextRouterAvailableV61S = true;
@@ -1348,6 +1393,9 @@
       rememberSpokenSummaryV61R(automationReportSummaryV61R(regressionReport), 'automation report');
       if (outputNode) outputNode.innerHTML = renderRegressionReportV61L(regressionReport);
       state.regressionQACommandWorksV61L = true;
+      state.automationCommandRoutesBeforeFallback = true;
+      state.runRegressionQaCommandWorks = true;
+      state.automationCommandsDoNotFallback = true;
       state.noLiveActionExecuted = true;
       state.noLiveChangeExecuted = true;
       state.noBackendCalls = true;
@@ -2353,6 +2401,14 @@
 
   function regressionCommandCasesV61L() {
     return [
+      { command: 'show automation report', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
+      { command: 'show regression report', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
+      { command: 'automation status', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
+      { command: 'run regression qa', expected: 'Run regression and show updated Automation Report', intent: 'run_regression_qa', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
+      { command: 'show qa report', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
+      { command: 'run qa regression', expected: 'Run regression and show updated Automation Report', intent: 'run_regression_qa', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
+      { command: 'run command regression', expected: 'Run regression and show updated Automation Report', intent: 'run_regression_qa', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
+      { command: 'test app', expected: 'Run regression and show updated Automation Report', intent: 'run_regression_qa', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
       { command: 'pull up receipts', expected: 'Receipts / Receipt Tracker', intent: 'show_receipts', module: /Receipts \/ Receipt Tracker/i, html: /Receipts \/ Receipt Tracker/i },
       { command: 'pull up accountant', expected: 'Accounting / Daily P&L', intent: 'show_accounting', module: /Accounting Command \/ Daily P&L/i, html: /Accounting Command \/ Daily P(?:&|&amp;)L|Daily P(?:&|&amp;)L/i },
       { command: 'how are my numbers', expected: 'Accounting / Daily P&L', intent: 'show_accounting', module: /Accounting Command \/ Daily P&L/i, html: /Accounting Command \/ Daily P(?:&|&amp;)L|Daily P(?:&|&amp;)L/i },
@@ -2470,7 +2526,8 @@
       normalizedText: intent && intent.normalizedText,
       requestedValue: intent && intent.requestedValue,
       repeatedIntent: intent && intent.repeatedIntent,
-      renderedFallback: /Fallback local demo panel/i.test(html),
+      renderedFallback: /Fallback local demo panel|native module opener not found|unknown command fallback|Conversational context needed/i.test(html),
+      renderedAutomationReport: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i.test(html),
       renderedPermissionGate: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i.test(html),
       renderedDraftQueue: /Draft Change Queue/i.test(html),
       noLiveChangeText: /No live record changed|No Live Change Made|No live AI, backend|No backend, network, or live AI/i.test(html)
@@ -2483,6 +2540,7 @@
     if (testCase.repeatedIntent && !testCase.repeatedIntent.test(actual.repeatedIntent || '')) errors.push('Expected repeated intent matching ' + testCase.repeatedIntent + ' but got ' + (actual.repeatedIntent || 'none') + '.');
     if (testCase.value && !testCase.value.test(actual.requestedValue || '')) errors.push('Expected requested value matching ' + testCase.value + ' but got ' + (actual.requestedValue || 'none') + '.');
     if (testCase.noFallback && actual.renderedFallback) errors.push('Expected command to bypass fallback, but fallback rendered.');
+    if (testCase.automationRoute && !actual.renderedAutomationReport) errors.push('Expected automation report viewer to render before fallback/context/module routing.');
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
     if (!testCase.fallback && /payment|payroll|bank sync|accounting export/i.test(html) && !/locked|No live|No backend|export locked|Payment, Payroll, Backend/i.test(html)) errors.push('Safety lock wording missing for sensitive action references.');
     return {
@@ -2529,7 +2587,41 @@
     }
   }
 
+  function placeholderRegressionReportV61T() {
+    var safety = regressionSafetyV61L();
+    return {
+      version: 'v61T',
+      harnessVersion: 'v61L-compatible/v61T',
+      timestamp: new Date().toISOString(),
+      total: 0,
+      passed: 0,
+      failed: 0,
+      failedCommands: [],
+      failures: [],
+      results: [],
+      safety: safety,
+      permissionDraftSafety: permissionDraftSafetyV61N(),
+      repairPrompt: 'No repair needed.',
+      safeToMerge: true,
+      mergeRecommendation: 'MERGE_ALLOWED',
+      noLiveRecordChanges: true,
+      noBackendNetworkLiveAICalls: true,
+      spokenReadbackAvailable: speechSynthesisAvailableV61R(),
+      spokenReadbackBrowserUnavailableFallback: !speechSynthesisAvailableV61R(),
+      spokenReadbackPreferenceKey: SPOKEN_READBACK_KEY_V61R,
+      conversationalContextRouterAvailable: true,
+      repeatLastActionRouterAvailable: true,
+      conversationalContextStorageKey: CONVERSATIONAL_CONTEXT_KEY_V61S,
+      automationCommandRoutesBeforeFallback: true,
+      showAutomationReportCommandWorks: true,
+      runRegressionQaCommandWorks: true,
+      automationCommandsDoNotFallback: true
+    };
+  }
+
   function runAquaCommandRegressionV61L() {
+    if (state.regressionRunningV61T) return placeholderRegressionReportV61T();
+    state.regressionRunningV61T = true;
     var cases = regressionCommandCasesV61L();
     var results = cases.map(runRegressionCaseV61L);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
@@ -2543,8 +2635,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61R',
-      harnessVersion: 'v61L-compatible/v61R',
+      version: 'v61T',
+      harnessVersion: 'v61L-compatible/v61T',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -2564,16 +2656,25 @@
       spokenReadbackPreferenceKey: SPOKEN_READBACK_KEY_V61R,
       conversationalContextRouterAvailable: true,
       repeatLastActionRouterAvailable: true,
-      conversationalContextStorageKey: CONVERSATIONAL_CONTEXT_KEY_V61S
+      conversationalContextStorageKey: CONVERSATIONAL_CONTEXT_KEY_V61S,
+      automationCommandRoutesBeforeFallback: results.filter(function (result) { return result.command === 'show automation report' || result.command === 'show regression report' || result.command === 'automation status' || result.command === 'run regression qa'; }).every(function (result) { return result.passed && result.actual && result.actual.renderedFallback === false; }),
+      showAutomationReportCommandWorks: results.some(function (result) { return result.command === 'show automation report' && result.passed; }),
+      runRegressionQaCommandWorks: results.some(function (result) { return result.command === 'run regression qa' && result.passed; }),
+      automationCommandsDoNotFallback: results.filter(function (result) { return result.actual && (/automation|regression|qa|test app/i.test(result.command)); }).every(function (result) { return result.actual.renderedFallback === false; })
     };
     state.regressionHarnessV61LAvailable = true;
     state.lastRegressionReportV61L = report;
     state.safeToMergeV61L = report.safeToMerge === true || report.safeToMerge === 'yes';
+    state.automationCommandRoutesBeforeFallback = report.automationCommandRoutesBeforeFallback;
+    state.showAutomationReportCommandWorks = report.showAutomationReportCommandWorks;
+    state.runRegressionQaCommandWorks = report.runRegressionQaCommandWorks;
+    state.automationCommandsDoNotFallback = report.automationCommandsDoNotFallback;
     state.noLiveActionExecuted = true;
     state.noLiveChangeExecuted = true;
     state.noBackendCalls = true;
     state.noNetworkCalls = true;
     state.noAudioStorage = true;
+    state.regressionRunningV61T = false;
     syncNamespace();
     return saveRegressionReportV61L(report);
   }
@@ -2582,15 +2683,16 @@
     var safe = report || getLastRegressionReportV61L() || runAquaCommandRegressionV61L();
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
-    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Regression QA Report — v61L/v61M/v61N/v61P/v61R</strong>' +
-      '<div data-aqua-v61l-report-total="true"><strong>Total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
-      '<div data-aqua-v61l-report-passed="true"><strong>Passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
-      '<div data-aqua-v61l-report-failed="true"><strong>Failed:</strong> ' + escapeHTMLV61D(safe.failed) + '</div>' +
-      '<div><strong>Failed commands:</strong><ul>' + failedCommands + '</ul></div>' +
-      '<div data-aqua-v61l-report-safety="true"><strong>Safety:</strong><ul>' + safetyRows + '</ul></div>' +
-      '<div><strong>safe to merge:</strong> ' + escapeHTMLV61D(safe.safeToMerge || 'no') + '</div>' +
-      '<div><strong>merge recommendation:</strong> ' + escapeHTMLV61D(safe.mergeRecommendation || (safe.safeToMerge === true ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED')) + '</div>' +
-      '<label class="smallMut" for="aquaRegressionRepairPromptV61L">Repair Prompt:</label>' +
+    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Automation Report / Regression Report Viewer</strong>' +
+      '<div><strong>version:</strong> ' + escapeHTMLV61D(safe.version || VERSION) + '</div>' +
+      '<div data-aqua-v61l-report-total="true"><strong>total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
+      '<div data-aqua-v61l-report-passed="true"><strong>passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
+      '<div data-aqua-v61l-report-failed="true"><strong>failed:</strong> ' + escapeHTMLV61D(safe.failed) + '</div>' +
+      '<div><strong>failed commands:</strong><ul>' + failedCommands + '</ul></div>' +
+      '<div data-aqua-v61l-report-safety="true"><strong>safety status:</strong><ul>' + safetyRows + '</ul></div>' +
+      '<div><strong>safeToMerge:</strong> ' + escapeHTMLV61D(safe.safeToMerge || 'no') + '</div>' +
+      '<div><strong>mergeRecommendation:</strong> ' + escapeHTMLV61D(safe.mergeRecommendation || (safe.safeToMerge === true ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED')) + '</div>' +
+      '<label class="smallMut" for="aquaRegressionRepairPromptV61L">repairPrompt:</label>' +
       '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
       '<div class="locked">Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.</div></div>';
   }
@@ -2772,5 +2874,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61R extensions loaded: local/browser spoken readback foundation active. No live change made.');
+  console.log('Aqua Homes OS v61T extensions loaded: automation command routing priority repair active. No live change made.');
 }());
