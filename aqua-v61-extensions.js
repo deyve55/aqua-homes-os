@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61V Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation.
+ * Aqua Homes OS v61W Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61V';
+  var VERSION = 'v61W';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -18,8 +18,16 @@
     generalAskLockedWorks: false,
     unknownFallbackWorks: false,
     jobsiteCalculatorV61VAvailable: true,
+    jobsiteCalculatorV61WAvailable: true,
     jobsiteCalculatorWorks: false,
     concreteSonotubeCalculatorWorks: false,
+    paintCalculatorWorks: false,
+    drywallCalculatorWorks: false,
+    flooringCalculatorWorks: false,
+    studCalculatorWorks: false,
+    concreteSlabCalculatorWorks: false,
+    needMoreInformationWorks: false,
+    unsupportedGeneralAskRemainsLocked: false,
     sonotubeEightInchFourFoot80lbReturnsThreeBags: false,
     saunaTubeNormalizesToSonotube: false,
     unsupportedGeneralAskRemainsLockedV61V: false,
@@ -168,7 +176,9 @@
       runAquaCommandRegressionV61T: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61U: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61V: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61W: runAquaCommandRegressionV61L,
       parseLocalJobsiteCalculatorV61V: parseLocalJobsiteCalculatorV61V,
+      parseLocalJobsiteCalculatorV61W: parseLocalJobsiteCalculatorV61V,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       classifyAquaAskModeV61U: classifyAquaAskModeV61U,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
@@ -221,7 +231,9 @@
       runAquaCommandRegressionV61T: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61U: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61V: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61W: runAquaCommandRegressionV61L,
       parseLocalJobsiteCalculatorV61V: parseLocalJobsiteCalculatorV61V,
+      parseLocalJobsiteCalculatorV61W: parseLocalJobsiteCalculatorV61V,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -463,10 +475,191 @@
 
   function parseLocalJobsiteCalculatorV61V(originalText, normalizedText) {
     var original = String(originalText || '').trim();
-    var symbolUnitsText = original.replace(/(\d+(?:\.\d+)?)\s*"/g, '$1 inch').replace(/(\d+(?:\.\d+)?)\s*'/g, '$1 feet');
+    var symbolUnitsText = original
+      .replace(/(\d+(?:\.\d+)?)\s*"/g, '$1 inch')
+      .replace(/(\d+(?:\.\d+)?)\s*'/g, '$1 feet')
+      .replace(/(\d+(?:\.\d+)?)\s*[xX]\s*(\d+(?:\.\d+)?)/g, '$1 by $2');
     var q = String(normalizedText || normalizeAquaPhraseV61E(symbolUnitsText)).trim();
     if (symbolUnitsText !== original) q = normalizeAquaPhraseV61E(symbolUnitsText + ' ' + q);
     if (!q) return null;
+
+    var paintIntent = parsePaintGallonsCalculatorV61W(original, q);
+    if (paintIntent) return paintIntent;
+    var drywallIntent = parseDrywallSheetsCalculatorV61W(original, q);
+    if (drywallIntent) return drywallIntent;
+    var flooringIntent = parseFlooringCalculatorV61W(original, q);
+    if (flooringIntent) return flooringIntent;
+    var studIntent = parseWallStudCalculatorV61W(original, q);
+    if (studIntent) return studIntent;
+    var slabIntent = parseConcreteSlabCalculatorV61W(original, q);
+    if (slabIntent) return slabIntent;
+    return parseConcreteSonotubeCalculatorV61V(original, q);
+  }
+
+  function baseJobsiteIntentV61W(original, q, calculator) {
+    return {
+      canonicalIntent: 'local_calculator_available',
+      routeText: original,
+      originalText: original,
+      normalizedText: q,
+      module: 'General Ask / Jobsite Calculator',
+      calculator: calculator,
+      localCalculatorAvailable: true
+    };
+  }
+
+  function needMoreInformationIntentV61W(original, q, calculator, missingValues) {
+    return Object.assign(baseJobsiteIntentV61W(original, q, calculator), {
+      canonicalIntent: 'local_calculator_need_more_information',
+      calculator: 'Need More Information',
+      requestedCalculator: calculator,
+      missingValues: missingValues || []
+    });
+  }
+
+  function parseFirstSquareFeetV61W(q) {
+    var match = q.match(/\b(\d+(?:\.\d+)?)\s*(?:square\s*feet|sq\s*ft|sqft)\b/);
+    return match ? Number(match[1]) : NaN;
+  }
+
+  function parseRoomDimensionsV61W(q) {
+    var match = q.match(/\b(\d+(?:\.\d+)?)\s*(?:feet|foot|ft)?\s*(?:by|x)\s*(\d+(?:\.\d+)?)\s*(?:feet|foot|ft)?\b/);
+    if (!match) return null;
+    return { lengthFeet: Number(match[1]), widthFeet: Number(match[2]) };
+  }
+
+  function parseWastePercentV61W(q, defaultPercent) {
+    var match = q.match(/\b(\d+(?:\.\d+)?)\s*(?:percent|%)\s*waste\b/) || q.match(/\bwaste\s*(?:of|at|is)?\s*(\d+(?:\.\d+)?)\s*(?:percent|%)\b/);
+    return match ? Number(match[1]) : defaultPercent;
+  }
+
+  function parsePaintGallonsCalculatorV61W(original, q) {
+    if (!/\b(paint|gallons? of paint|paint coverage)\b/.test(q)) return null;
+    if (/\b(best|brand|today|recommend|which)\b/.test(q) && !/\b(how many|how much|gallons?|coverage|square|sqft|sq ft)\b/.test(q)) return null;
+    var squareFeet = parseFirstSquareFeetV61W(q);
+    if (!Number.isFinite(squareFeet) || squareFeet <= 0) return needMoreInformationIntentV61W(original, q, 'Paint Gallons', ['square footage to paint']);
+    var coatsMatch = q.match(/\b(1|2)\s*coats?\b/);
+    var coats = coatsMatch ? Number(coatsMatch[1]) : 2;
+    var coverage = 350;
+    var estimatedGallons = (squareFeet * coats) / coverage;
+    var recommendedGallons = Math.ceil(estimatedGallons);
+    return Object.assign(baseJobsiteIntentV61W(original, q, 'Paint Gallons'), {
+      squareFeet: squareFeet,
+      coats: coats,
+      coveragePerGallon: coverage,
+      estimatedGallons: estimatedGallons,
+      recommendedGallons: recommendedGallons
+    });
+  }
+
+  function parseDrywallSheetsCalculatorV61W(original, q) {
+    if (!/\b(drywall|sheetrock|sheets?)\b/.test(q) || /\bflooring\b/.test(q)) return null;
+    var sheetMatch = q.match(/\b4\s*(?:by|x)\s*(8|12)\b/);
+    var sheetLength = sheetMatch ? Number(sheetMatch[1]) : 8;
+    var sheetSize = '4x' + sheetLength;
+    var sheetArea = 4 * sheetLength;
+    var wastePercent = 10;
+    var squareFeet = parseFirstSquareFeetV61W(q);
+    var dims = parseRoomDimensionsV61W(q);
+    var ceilingMatch = q.match(/\b(\d+(?:\.\d+)?)\s*(?:feet|foot|ft)\s*(?:ceiling|ceilings?)\b/) || q.match(/\bceiling\s*(?:height)?\s*(\d+(?:\.\d+)?)\s*(?:feet|foot|ft)\b/);
+    var ceilingHeight = ceilingMatch ? Number(ceilingMatch[1]) : NaN;
+    if (Number.isFinite(squareFeet) && squareFeet > 0) {
+      var sqftSheets = Math.ceil((squareFeet * (1 + wastePercent / 100)) / sheetArea);
+      return Object.assign(baseJobsiteIntentV61W(original, q, 'Drywall Sheets'), {
+        inputSquareFeet: squareFeet,
+        wallArea: squareFeet,
+        wastePercent: wastePercent,
+        sheetSize: sheetSize,
+        sheetArea: sheetArea,
+        recommendedSheets: sqftSheets
+      });
+    }
+    if (!dims) return needMoreInformationIntentV61W(original, q, 'Drywall Sheets', ['room length and width or wall square footage', 'ceiling height']);
+    if (!Number.isFinite(ceilingHeight) || ceilingHeight <= 0) return needMoreInformationIntentV61W(original, q, 'Drywall Sheets', ['ceiling height']);
+    var perimeter = (dims.lengthFeet + dims.widthFeet) * 2;
+    var wallArea = perimeter * ceilingHeight;
+    var recommendedSheets = Math.ceil((wallArea * (1 + wastePercent / 100)) / sheetArea);
+    return Object.assign(baseJobsiteIntentV61W(original, q, 'Drywall Sheets'), {
+      lengthFeet: dims.lengthFeet,
+      widthFeet: dims.widthFeet,
+      ceilingHeightFeet: ceilingHeight,
+      perimeterFeet: perimeter,
+      wallArea: wallArea,
+      wastePercent: wastePercent,
+      sheetSize: sheetSize,
+      sheetArea: sheetArea,
+      recommendedSheets: recommendedSheets
+    });
+  }
+
+  function parseFlooringCalculatorV61W(original, q) {
+    if (!/\bflooring\b/.test(q)) return null;
+    var wastePercent = parseWastePercentV61W(q, 10);
+    var squareFeet = parseFirstSquareFeetV61W(q);
+    var dims = parseRoomDimensionsV61W(q);
+    var baseArea = Number.isFinite(squareFeet) && squareFeet > 0 ? squareFeet : NaN;
+    if ((!Number.isFinite(baseArea) || baseArea <= 0) && dims) baseArea = dims.lengthFeet * dims.widthFeet;
+    if (!Number.isFinite(baseArea) || baseArea <= 0) return needMoreInformationIntentV61W(original, q, 'Flooring Square Footage', ['room length and width or base square footage']);
+    var recommendedSquareFeet = Math.ceil(Number((baseArea * (1 + wastePercent / 100)).toFixed(6)));
+    return Object.assign(baseJobsiteIntentV61W(original, q, 'Flooring Square Footage'), {
+      lengthFeet: dims && dims.lengthFeet,
+      widthFeet: dims && dims.widthFeet,
+      baseArea: baseArea,
+      wastePercent: wastePercent,
+      recommendedSquareFeet: recommendedSquareFeet
+    });
+  }
+
+  function parseWallStudCalculatorV61W(original, q) {
+    if (!/\b(studs?|wall framing)\b/.test(q)) return null;
+    var wallMatch = q.match(/\b(\d+(?:\.\d+)?)\s*(?:feet|foot|ft)\s*wall\b/) || q.match(/\bwall\s*(?:length)?\s*(\d+(?:\.\d+)?)\s*(?:feet|foot|ft)\b/) || q.match(/\bfor\s*(?:a\s*)?(\d+(?:\.\d+)?)\s*(?:feet|foot|ft)\b/);
+    var wallFeet = wallMatch ? Number(wallMatch[1]) : NaN;
+    if (!Number.isFinite(wallFeet) || wallFeet <= 0) return needMoreInformationIntentV61W(original, q, 'Wall Stud Count', ['wall length in feet']);
+    var spacingMatch = q.match(/\b(16|24)\s*(?:inch|inches|in)\s*(?:on\s*center|oc|o\s*c)\b/);
+    var spacingInches = spacingMatch ? Number(spacingMatch[1]) : 16;
+    var wallInches = wallFeet * 12;
+    var spaces = Math.ceil(wallInches / spacingInches);
+    var baseStuds = spaces + 1;
+    var recommendedStuds = baseStuds + 2;
+    return Object.assign(baseJobsiteIntentV61W(original, q, 'Wall Stud Count'), {
+      wallFeet: wallFeet,
+      spacingInches: spacingInches,
+      wallInches: wallInches,
+      spaces: spaces,
+      baseStuds: baseStuds,
+      recommendedStuds: recommendedStuds
+    });
+  }
+
+  function parseConcreteSlabCalculatorV61W(original, q) {
+    if (!/\b(concrete|yards?|slab)\b/.test(q) || /\b(sonotube|sono tube|sauna tube|tube|bags?|bag)\b/.test(q)) return null;
+    var hasSlabWords = /\b(slab|yards?|concrete)\b/.test(q) && /\b(thick|inch|inches|in)\b/.test(q);
+    if (!hasSlabWords) return null;
+    var dims = parseRoomDimensionsV61W(q);
+    var thicknessMatch = q.match(/\b(\d+(?:\.\d+)?)\s*(?:inch|inches|in)\s*(?:thick|thickness)?\b/) || q.match(/\bby\s*(\d+(?:\.\d+)?)\s*(?:inch|inches|in)\b/);
+    var missing = [];
+    if (!dims) missing.push('slab length and width in feet');
+    if (!thicknessMatch) missing.push('slab thickness in inches');
+    if (missing.length) return needMoreInformationIntentV61W(original, q, 'Concrete Slab', missing);
+    var thicknessInches = Number(thicknessMatch[1]);
+    var areaSqFt = dims.lengthFeet * dims.widthFeet;
+    var thicknessFeet = thicknessInches / 12;
+    var cubicFeet = areaSqFt * thicknessFeet;
+    var cubicYards = cubicFeet / 27;
+    var waste10CubicYards = cubicYards * 1.10;
+    return Object.assign(baseJobsiteIntentV61W(original, q, 'Concrete Slab'), {
+      lengthFeet: dims.lengthFeet,
+      widthFeet: dims.widthFeet,
+      thicknessInches: thicknessInches,
+      areaSqFt: areaSqFt,
+      thicknessFeet: thicknessFeet,
+      volumeCubicFeet: cubicFeet,
+      cubicYards: cubicYards,
+      waste10CubicYards: waste10CubicYards
+    });
+  }
+
+  function parseConcreteSonotubeCalculatorV61V(original, q) {
     var hasConcrete = /\b(concrete|bags?|bag|pour|footing|sonotube|sono tube|sauna tube|tube)\b/.test(q);
     var hasTube = /\b(sonotube|sono tube|sauna tube|tube|round footing)\b/.test(q);
     if (!hasConcrete || !hasTube) return null;
@@ -483,14 +676,7 @@
     var volumeCubicFeet = Math.PI * radiusFeet * radiusFeet * depthFeet;
     var exactBags = volumeCubicFeet / yields[bagSize];
     var recommendedBags = Math.ceil(exactBags);
-    return {
-      canonicalIntent: 'local_calculator_available',
-      routeText: original,
-      originalText: original,
-      normalizedText: q,
-      module: 'General Ask / Jobsite Calculator',
-      calculator: 'Concrete Sonotube',
-      localCalculatorAvailable: true,
+    return Object.assign(baseJobsiteIntentV61W(original, q, 'Concrete Sonotube'), {
       diameterInches: diameterInches,
       depthFeet: depthFeet,
       bagSizePounds: bagSize,
@@ -503,7 +689,7 @@
       recommendedBags: recommendedBags,
       shape: 'round tube / cylinder',
       normalizedTubeTerm: /\bsauna tube\b/.test(q) ? 'Sonotube' : 'Sonotube'
-    };
+    });
   }
 
   function formatNumberV61V(value) {
@@ -523,6 +709,94 @@
       '<ul><li>Volume: about ' + escapeHTMLV61D(formatNumberV61V(safe.volumeCubicFeet)) + ' cubic feet</li><li>' + escapeHTMLV61D(safe.bagSizePounds) + ' lb bags: about ' + escapeHTMLV61D(formatNumberV61V(safe.exactBags)) + ' bags</li><li>Recommended purchase: ' + escapeHTMLV61D(safe.recommendedBags) + ' bags</li></ul>' +
       '<div><strong>Safety note:</strong><br>This is a local estimate. Verify tube size, depth, waste, base conditions, and local code/inspection requirements before pouring.</div>' +
       '<div class="locked"><strong>Safety locks:</strong><br>Local calculator only<br>No internet/search/API call<br>No live job/accounting record changed<br>No backend calls<br>No external AI/API calls<br>No API keys in frontend<br>No payment, payroll, bank, or accounting export action<br>No sensitive data stored</div></div>';
+  }
+
+  function safetyLocksHTMLV61W() {
+    return '<div class="locked"><strong>Safety locks:</strong><br>Local calculator only<br>No internet/search/API call<br>No live job/accounting record changed<br>No backend call<br>No external AI/API calls<br>No API keys in frontend<br>No payment, payroll, bank, or accounting export action<br>No sensitive data stored</div>';
+  }
+
+  function renderNeedMoreInformationCalculatorV61W(intent) {
+    var safe = intent || {};
+    var missing = (safe.missingValues || []).map(function (value) { return '<li>' + escapeHTMLV61D(value) + '</li>'; }).join('');
+    return '<div class="note" data-aqua-v61w-jobsite-calculator="true" data-aqua-v61w-need-more-information="true"><strong>Jobsite Calculator — Need More Information</strong>' +
+      askModeBadgeV61U('general_ask_locked') +
+      '<div>I can calculate this locally, but I need:</div><ul>' + (missing || '<li>required calculator values</li>') + '</ul>' +
+      '<div><strong>Requested calculator:</strong> ' + escapeHTMLV61D(safe.requestedCalculator || 'Jobsite Calculator') + '</div>' +
+      '<div>No internet/API call was made.</div>' + safetyLocksHTMLV61W() + '</div>';
+  }
+
+  function renderPaintGallonsCalculatorV61W(intent) {
+    var safe = intent || {};
+    return '<div class="note" data-aqua-v61w-jobsite-calculator="true" data-aqua-v61w-paint-gallons="true"><strong>Jobsite Calculator — Paint Gallons</strong>' +
+      askModeBadgeV61U('general_ask_locked') +
+      '<div><strong>Detected area:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.squareFeet)) + ' square feet</div>' +
+      '<div><strong>Coats:</strong> ' + escapeHTMLV61D(safe.coats) + '</div>' +
+      '<div><strong>Coverage:</strong> ' + escapeHTMLV61D(safe.coveragePerGallon) + ' sq ft per gallon</div>' +
+      '<div><strong>Formula/assumptions:</strong> paintGallons = ceil((squareFeet × coats) / coveragePerGallon); default coverage 350 sq ft/gallon/coat; default 2 coats unless stated.</div>' +
+      '<div><strong>Estimated gallons:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.estimatedGallons)) + '</div>' +
+      '<div><strong>Recommended purchase:</strong> ' + escapeHTMLV61D(safe.recommendedGallons) + ' gallons</div>' +
+      '<div><strong>Safety note:</strong><br>Local estimate only. Actual coverage depends on surface texture, primer, color change, product, sprayer/roller waste, and manufacturer coverage.</div>' + safetyLocksHTMLV61W() + '</div>';
+  }
+
+  function renderDrywallSheetsCalculatorV61W(intent) {
+    var safe = intent || {};
+    var detected = Number.isFinite(safe.lengthFeet) ? '<div><strong>Detected room:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.lengthFeet)) + ' ft x ' + escapeHTMLV61D(formatNumberV61V(safe.widthFeet)) + ' ft</div><div><strong>Ceiling height:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.ceilingHeightFeet)) + ' ft</div>' : '<div><strong>Detected area:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.inputSquareFeet || safe.wallArea)) + ' square feet</div>';
+    return '<div class="note" data-aqua-v61w-jobsite-calculator="true" data-aqua-v61w-drywall-sheets="true"><strong>Jobsite Calculator — Drywall Sheets</strong>' +
+      askModeBadgeV61U('general_ask_locked') + detected +
+      '<div><strong>Wall area:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.wallArea)) + ' sq ft</div>' +
+      '<div><strong>Waste:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.wastePercent)) + '%</div>' +
+      '<div><strong>Sheet size:</strong> ' + escapeHTMLV61D(safe.sheetSize) + '</div>' +
+      '<div><strong>Formula/assumptions:</strong> room wall area = perimeter × ceiling height; sheet area = ' + escapeHTMLV61D(safe.sheetArea) + ' sq ft; default waste = 10%; round up sheets.</div>' +
+      '<div><strong>Recommended purchase:</strong> ' + escapeHTMLV61D(safe.recommendedSheets) + ' ' + escapeHTMLV61D(safe.sheetSize) + ' sheets</div>' +
+      '<div><strong>Safety note:</strong><br>Local estimate only. Verify openings, ceiling drywall, layout, cuts, fire-rated assemblies, moisture board, and waste.</div>' + safetyLocksHTMLV61W() + '</div>';
+  }
+
+  function renderFlooringCalculatorV61W(intent) {
+    var safe = intent || {};
+    var detected = Number.isFinite(safe.lengthFeet) ? '<div><strong>Detected room:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.lengthFeet)) + ' ft x ' + escapeHTMLV61D(formatNumberV61V(safe.widthFeet)) + ' ft</div>' : '<div><strong>Detected area:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.baseArea)) + ' square feet</div>';
+    return '<div class="note" data-aqua-v61w-jobsite-calculator="true" data-aqua-v61w-flooring="true"><strong>Jobsite Calculator — Flooring Square Footage</strong>' +
+      askModeBadgeV61U('general_ask_locked') + detected +
+      '<div><strong>Base area:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.baseArea)) + ' sq ft</div>' +
+      '<div><strong>Waste:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.wastePercent)) + '%</div>' +
+      '<div><strong>Formula/assumptions:</strong> area = length × width; default waste = 10% unless stated; recommended purchase = base area × (1 + waste%).</div>' +
+      '<div><strong>Recommended purchase:</strong> ' + escapeHTMLV61D(safe.recommendedSquareFeet) + ' sq ft</div>' +
+      '<div><strong>Safety note:</strong><br>Local estimate only. Verify layout direction, pattern, stair nosing, transitions, closets, cuts, and manufacturer waste recommendation.</div>' + safetyLocksHTMLV61W() + '</div>';
+  }
+
+  function renderWallStudCalculatorV61W(intent) {
+    var safe = intent || {};
+    return '<div class="note" data-aqua-v61w-jobsite-calculator="true" data-aqua-v61w-wall-stud-count="true"><strong>Jobsite Calculator — Wall Stud Count</strong>' +
+      askModeBadgeV61U('general_ask_locked') +
+      '<div><strong>Detected wall length:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.wallFeet)) + ' ft</div>' +
+      '<div><strong>Spacing:</strong> ' + escapeHTMLV61D(safe.spacingInches) + ' inches on center</div>' +
+      '<div><strong>Formula/assumptions:</strong> wallInches = wallFeet × 12; spaces = ceil(wallInches / spacingInches); studs = spaces + 1; recommended = studs + 2 extra end/backup allowance.</div>' +
+      '<div><strong>Base studs:</strong> ' + escapeHTMLV61D(safe.baseStuds) + '</div>' +
+      '<div><strong>Recommended purchase:</strong> ' + escapeHTMLV61D(safe.recommendedStuds) + ' studs</div>' +
+      '<div><strong>Safety note:</strong><br>Local estimate only. Add studs for corners, intersections, doors, windows, blocking, backing, firestopping, and waste.</div>' + safetyLocksHTMLV61W() + '</div>';
+  }
+
+  function renderConcreteSlabCalculatorV61W(intent) {
+    var safe = intent || {};
+    return '<div class="note" data-aqua-v61w-jobsite-calculator="true" data-aqua-v61w-concrete-slab="true"><strong>Jobsite Calculator — Concrete Slab</strong>' +
+      askModeBadgeV61U('general_ask_locked') +
+      '<div><strong>Detected slab:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.lengthFeet)) + ' ft x ' + escapeHTMLV61D(formatNumberV61V(safe.widthFeet)) + ' ft</div>' +
+      '<div><strong>Thickness:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.thicknessInches)) + ' inches</div>' +
+      '<div><strong>Formula/assumptions:</strong> areaSqFt = lengthFt × widthFt; thicknessFt = thicknessInches / 12; cubicFeet = areaSqFt × thicknessFt; cubicYards = cubicFeet / 27.</div>' +
+      '<div><strong>Volume:</strong> ' + escapeHTMLV61D(formatNumberV61V(safe.volumeCubicFeet)) + ' cubic feet</div>' +
+      '<div><strong>Concrete:</strong> ' + escapeHTMLV61D(Number(safe.cubicYards || 0).toFixed(2)) + ' cubic yards</div>' +
+      '<div><strong>Suggested order with 10% waste:</strong> ' + escapeHTMLV61D(Number(safe.waste10CubicYards || 0).toFixed(2)) + ' cubic yards</div>' +
+      '<div><strong>Safety note:</strong><br>Local estimate only. Verify subbase, reinforcement, forms, pump/buggy loss, slump, local code, frost depth, and structural requirements.</div>' + safetyLocksHTMLV61W() + '</div>';
+  }
+
+  function renderJobsiteCalculatorV61W(intent) {
+    if (!intent) return '';
+    if (intent.canonicalIntent === 'local_calculator_need_more_information') return renderNeedMoreInformationCalculatorV61W(intent);
+    if (intent.calculator === 'Paint Gallons') return renderPaintGallonsCalculatorV61W(intent);
+    if (intent.calculator === 'Drywall Sheets') return renderDrywallSheetsCalculatorV61W(intent);
+    if (intent.calculator === 'Flooring Square Footage') return renderFlooringCalculatorV61W(intent);
+    if (intent.calculator === 'Wall Stud Count') return renderWallStudCalculatorV61W(intent);
+    if (intent.calculator === 'Concrete Slab') return renderConcreteSlabCalculatorV61W(intent);
+    return renderConcreteSonotubeCalculatorV61V(intent);
   }
 
   function generalAskLockedPhraseMatchesV61U(normalized) {
@@ -1447,11 +1721,17 @@
       syncNamespace();
       return intent;
     }
-    if (intent.canonicalIntent === 'local_calculator_available') {
-      if (outputNode) outputNode.innerHTML = renderConcreteSonotubeCalculatorV61V(intent);
+    if (intent.canonicalIntent === 'local_calculator_available' || intent.canonicalIntent === 'local_calculator_need_more_information') {
+      if (outputNode) outputNode.innerHTML = renderJobsiteCalculatorV61W(intent);
       state.jobsiteCalculatorWorks = true;
-      state.concreteSonotubeCalculatorWorks = true;
-      state.sonotubeEightInchFourFoot80lbReturnsThreeBags = intent.diameterInches === 8 && intent.depthFeet === 4 && intent.bagSizePounds === 80 && intent.recommendedBags === 3;
+      if (intent.calculator === 'Concrete Sonotube') state.concreteSonotubeCalculatorWorks = true;
+      if (intent.calculator === 'Paint Gallons') state.paintCalculatorWorks = true;
+      if (intent.calculator === 'Drywall Sheets') state.drywallCalculatorWorks = true;
+      if (intent.calculator === 'Flooring Square Footage') state.flooringCalculatorWorks = true;
+      if (intent.calculator === 'Wall Stud Count') state.studCalculatorWorks = true;
+      if (intent.calculator === 'Concrete Slab') state.concreteSlabCalculatorWorks = true;
+      if (intent.canonicalIntent === 'local_calculator_need_more_information') state.needMoreInformationWorks = true;
+      state.sonotubeEightInchFourFoot80lbReturnsThreeBags = intent.calculator === 'Concrete Sonotube' && intent.diameterInches === 8 && intent.depthFeet === 4 && intent.bagSizePounds === 80 && intent.recommendedBags === 3;
       state.saunaTubeNormalizesToSonotube = /sauna tube/.test(intent.normalizedText || '') ? intent.normalizedTubeTerm === 'Sonotube' : state.saunaTubeNormalizesToSonotube;
       state.noLiveActionExecuted = true;
       state.noLiveChangeExecuted = true;
@@ -2634,9 +2914,15 @@
       { command: 'concrete for 8 inch sauna tube 4 ft deep', expected: 'Concrete Sonotube calculator normalizes sauna tube to Sonotube', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Sonotube|Recommended purchase: 3 bags/i, noFallback: true, jobsiteCalculator: true, concreteSonotubeCalculator: true, recommendedBags: 3, bagSizePounds: 80, normalizedTubeTerm: 'Sonotube' },
       { command: '8 inch tube 4 feet deep concrete bags', expected: 'Concrete tube calculator shorthand recommends 3 bags', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Sonotube|Recommended purchase: 3 bags/i, noFallback: true, jobsiteCalculator: true, concreteSonotubeCalculator: true, recommendedBags: 3, bagSizePounds: 80 },
       { command: "how many bags for 8\" sonotube 4' deep", expected: 'Concrete Sonotube calculator supports inch and foot symbols', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Sonotube|Recommended purchase: 3 bags/i, noFallback: true, jobsiteCalculator: true, concreteSonotubeCalculator: true, recommendedBags: 3, bagSizePounds: 80 },
-      { command: 'how many sheets of drywall for this room', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
+      { command: 'how many gallons of paint for 1200 square feet', expected: 'Paint Gallons calculator recommends 7 gallons', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Paint Gallons|Recommended purchase:<\/strong> 7 gallons|No internet\/search\/API call/i, noFallback: true, jobsiteCalculator: true, paintCalculator: true, recommendedGallons: 7 },
+      { command: 'how many sheets of drywall for a 12 by 12 room 8 foot ceiling', expected: 'Drywall Sheets calculator recommends 14 4x8 sheets', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Drywall Sheets|Recommended purchase:<\/strong> 14 4x8 sheets|No internet\/search\/API call/i, noFallback: true, jobsiteCalculator: true, drywallCalculator: true, recommendedSheets: 14 },
+      { command: 'flooring for 12 by 15 room', expected: 'Flooring calculator recommends 198 square feet', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Flooring Square Footage|Recommended purchase:<\/strong> 198 sq ft|No internet\/search\/API call/i, noFallback: true, jobsiteCalculator: true, flooringCalculator: true, recommendedSquareFeet: 198 },
+      { command: 'how many studs for a 16 foot wall', expected: 'Wall Stud Count calculator recommends 15 studs', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Wall Stud Count|Recommended purchase:<\/strong> 15 studs|No internet\/search\/API call/i, noFallback: true, jobsiteCalculator: true, studCalculator: true, recommendedStuds: 15 },
+      { command: 'concrete for 10 by 12 slab 4 inches thick', expected: 'Concrete Slab calculator estimates 1.48 yards and 1.63 yards with 10% waste', intent: 'local_calculator_available', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Concrete Slab|Concrete:<\/strong> 1\.48 cubic yards|Suggested order with 10% waste:<\/strong> 1\.63 cubic yards/i, noFallback: true, jobsiteCalculator: true, concreteSlabCalculator: true, cubicYardsApprox: 1.48, waste10CubicYardsApprox: 1.63 },
+      { command: 'how many gallons of paint', expected: 'Need More Information for missing paint square footage', intent: 'local_calculator_need_more_information', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Need More Information|square footage to paint|No internet\/API call was made/i, noFallback: true, jobsiteCalculator: true, needMoreInformation: true },
+      { command: 'what is the best paint brand today', expected: 'Unsupported General Ask remains locked with no API/search', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
+      { command: 'how many sheets of drywall for this room', expected: 'Need More Information for missing drywall room dimensions and ceiling height', intent: 'local_calculator_need_more_information', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /Jobsite Calculator — Need More Information|ceiling height|No internet\/API call was made/i, noFallback: true, jobsiteCalculator: true, needMoreInformation: true },
       { command: 'what does this code term mean', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
-      { command: 'how many gallons of paint do I need', expected: 'General Ask / Jobsite Calculator locked placeholder', intent: 'general_ask_locked', mode: 'general_ask_locked', module: /General Ask \/ Jobsite Calculator/i, html: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i, noFallback: true, lockedGeneralAsk: true },
       { command: 'banana test', expected: 'Guided fallback', intent: 'unknown', mode: 'unknown_fallback', module: /Guided fallback/i, html: /Fallback local demo panel/i, fallback: true }
     ];
   }
@@ -2723,7 +3009,19 @@
       renderedAutomationReport: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i.test(html),
       renderedPermissionGate: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i.test(html),
       renderedGeneralAskLocked: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i.test(html),
-      renderedJobsiteCalculator: /Jobsite Calculator — Concrete Sonotube|data-aqua-v61v-jobsite-calculator/i.test(html),
+      renderedJobsiteCalculator: /Jobsite Calculator — (Concrete Sonotube|Paint Gallons|Drywall Sheets|Flooring Square Footage|Wall Stud Count|Concrete Slab|Need More Information)|data-aqua-v61v-jobsite-calculator|data-aqua-v61w-jobsite-calculator/i.test(html),
+      renderedNeedMoreInformation: /Jobsite Calculator — Need More Information|data-aqua-v61w-need-more-information/i.test(html),
+      renderedPaintCalculator: /Jobsite Calculator — Paint Gallons|data-aqua-v61w-paint-gallons/i.test(html),
+      renderedDrywallCalculator: /Jobsite Calculator — Drywall Sheets|data-aqua-v61w-drywall-sheets/i.test(html),
+      renderedFlooringCalculator: /Jobsite Calculator — Flooring Square Footage|data-aqua-v61w-flooring/i.test(html),
+      renderedStudCalculator: /Jobsite Calculator — Wall Stud Count|data-aqua-v61w-wall-stud-count/i.test(html),
+      renderedConcreteSlabCalculator: /Jobsite Calculator — Concrete Slab|data-aqua-v61w-concrete-slab/i.test(html),
+      recommendedGallons: intent && intent.recommendedGallons,
+      recommendedSheets: intent && intent.recommendedSheets,
+      recommendedSquareFeet: intent && intent.recommendedSquareFeet,
+      recommendedStuds: intent && intent.recommendedStuds,
+      cubicYards: intent && intent.cubicYards,
+      waste10CubicYards: intent && intent.waste10CubicYards,
       renderedConcreteSonotubeCalculator: /Jobsite Calculator — Concrete Sonotube|data-aqua-v61v-concrete-sonotube/i.test(html),
       recommendedBags: intent && intent.recommendedBags,
       bagSizePounds: intent && intent.bagSizePounds,
@@ -2747,7 +3045,19 @@
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
     if (testCase.lockedGeneralAsk && !actual.renderedGeneralAskLocked) errors.push('Expected locked General Ask / Jobsite Calculator placeholder, but it did not render.');
     if (testCase.jobsiteCalculator && !actual.renderedJobsiteCalculator) errors.push('Expected local Jobsite Calculator, but it did not render.');
+    if (testCase.needMoreInformation && !actual.renderedNeedMoreInformation) errors.push('Expected Need More Information calculator, but it did not render.');
+    if (testCase.paintCalculator && !actual.renderedPaintCalculator) errors.push('Expected Paint Gallons calculator, but it did not render.');
+    if (testCase.drywallCalculator && !actual.renderedDrywallCalculator) errors.push('Expected Drywall Sheets calculator, but it did not render.');
+    if (testCase.flooringCalculator && !actual.renderedFlooringCalculator) errors.push('Expected Flooring Square Footage calculator, but it did not render.');
+    if (testCase.studCalculator && !actual.renderedStudCalculator) errors.push('Expected Wall Stud Count calculator, but it did not render.');
+    if (testCase.concreteSlabCalculator && !actual.renderedConcreteSlabCalculator) errors.push('Expected Concrete Slab calculator, but it did not render.');
     if (testCase.concreteSonotubeCalculator && !actual.renderedConcreteSonotubeCalculator) errors.push('Expected Concrete Sonotube calculator, but it did not render.');
+    if (typeof testCase.recommendedGallons === 'number' && actual.recommendedGallons !== testCase.recommendedGallons) errors.push('Expected recommended gallons ' + testCase.recommendedGallons + ' but got ' + actual.recommendedGallons + '.');
+    if (typeof testCase.recommendedSheets === 'number' && actual.recommendedSheets !== testCase.recommendedSheets) errors.push('Expected recommended sheets ' + testCase.recommendedSheets + ' but got ' + actual.recommendedSheets + '.');
+    if (typeof testCase.recommendedSquareFeet === 'number' && actual.recommendedSquareFeet !== testCase.recommendedSquareFeet) errors.push('Expected recommended square feet ' + testCase.recommendedSquareFeet + ' but got ' + actual.recommendedSquareFeet + '.');
+    if (typeof testCase.recommendedStuds === 'number' && actual.recommendedStuds !== testCase.recommendedStuds) errors.push('Expected recommended studs ' + testCase.recommendedStuds + ' but got ' + actual.recommendedStuds + '.');
+    if (typeof testCase.cubicYardsApprox === 'number' && Math.abs((actual.cubicYards || 0) - testCase.cubicYardsApprox) > 0.01) errors.push('Expected cubic yards about ' + testCase.cubicYardsApprox + ' but got ' + actual.cubicYards + '.');
+    if (typeof testCase.waste10CubicYardsApprox === 'number' && Math.abs((actual.waste10CubicYards || 0) - testCase.waste10CubicYardsApprox) > 0.01) errors.push('Expected 10% waste cubic yards about ' + testCase.waste10CubicYardsApprox + ' but got ' + actual.waste10CubicYards + '.');
     if (typeof testCase.recommendedBags === 'number' && actual.recommendedBags !== testCase.recommendedBags) errors.push('Expected recommended bags ' + testCase.recommendedBags + ' but got ' + actual.recommendedBags + '.');
     if (typeof testCase.bagSizePounds === 'number' && actual.bagSizePounds !== testCase.bagSizePounds) errors.push('Expected bag size ' + testCase.bagSizePounds + ' but got ' + actual.bagSizePounds + '.');
     if (testCase.normalizedTubeTerm && actual.normalizedTubeTerm !== testCase.normalizedTubeTerm) errors.push('Expected normalized tube term ' + testCase.normalizedTubeTerm + ' but got ' + (actual.normalizedTubeTerm || 'none') + '.');
@@ -2799,8 +3109,8 @@
   function placeholderRegressionReportV61T() {
     var safety = regressionSafetyV61L();
     return {
-      version: 'v61V',
-      harnessVersion: 'v61L-compatible/v61V',
+      version: 'v61W',
+      harnessVersion: 'v61L-compatible/v61W',
       timestamp: new Date().toISOString(),
       total: 0,
       passed: 0,
@@ -2851,8 +3161,8 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61V',
-      harnessVersion: 'v61L-compatible/v61V',
+      version: 'v61W',
+      harnessVersion: 'v61L-compatible/v61W',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
@@ -2881,12 +3191,18 @@
       appNavigationModeWorks: results.some(function (result) { return result.command === 'pull up receipts' && result.passed && result.actual.askMode === 'app_navigation'; }) && results.some(function (result) { return result.command === 'what needs approval' && result.passed && result.actual.askMode === 'app_navigation'; }),
       automationStatusModeWorks: results.some(function (result) { return result.command === 'show automation report' && result.passed && result.actual.askMode === 'automation_status'; }) && results.some(function (result) { return result.command === 'run regression qa' && result.passed && result.actual.askMode === 'automation_status'; }),
       permissionedActionModeWorks: results.some(function (result) { return result.command === 'code this receipt to materials' && result.passed && result.actual.askMode === 'permissioned_action'; }),
-      generalAskLockedWorks: results.filter(function (result) { return /drywall|code term|paint/i.test(result.command); }).every(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedGeneralAskLocked; }),
-      jobsiteCalculatorWorks: results.filter(function (result) { return /concrete|sonotube|sauna tube|tube.*concrete/i.test(result.command); }).some(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedJobsiteCalculator; }),
+      generalAskLockedWorks: results.filter(function (result) { return /code term|best paint brand/i.test(result.command); }).every(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedGeneralAskLocked; }),
+      jobsiteCalculatorWorks: results.filter(function (result) { return /concrete|sonotube|sauna tube|tube.*concrete|paint for 1200|drywall for a 12|flooring for 12|studs for a 16|slab 4 inches/i.test(result.command); }).some(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedJobsiteCalculator; }),
       concreteSonotubeCalculatorWorks: results.filter(function (result) { return /sonotube|sauna tube|tube/i.test(result.command) && /concrete|bags?/i.test(result.command); }).every(function (result) { return result.passed && result.actual.renderedConcreteSonotubeCalculator; }),
+      paintCalculatorWorks: results.some(function (result) { return result.command === 'how many gallons of paint for 1200 square feet' && result.passed && result.actual.renderedPaintCalculator && result.actual.recommendedGallons === 7; }),
+      drywallCalculatorWorks: results.some(function (result) { return result.command === 'how many sheets of drywall for a 12 by 12 room 8 foot ceiling' && result.passed && result.actual.renderedDrywallCalculator && result.actual.recommendedSheets === 14; }),
+      flooringCalculatorWorks: results.some(function (result) { return result.command === 'flooring for 12 by 15 room' && result.passed && result.actual.renderedFlooringCalculator && result.actual.recommendedSquareFeet === 198; }),
+      studCalculatorWorks: results.some(function (result) { return result.command === 'how many studs for a 16 foot wall' && result.passed && result.actual.renderedStudCalculator && result.actual.recommendedStuds === 15; }),
+      concreteSlabCalculatorWorks: results.some(function (result) { return result.command === 'concrete for 10 by 12 slab 4 inches thick' && result.passed && result.actual.renderedConcreteSlabCalculator && Math.abs(result.actual.cubicYards - 1.48) < 0.01 && Math.abs(result.actual.waste10CubicYards - 1.63) < 0.01; }),
+      needMoreInformationWorks: results.some(function (result) { return result.command === 'how many gallons of paint' && result.passed && result.actual.renderedNeedMoreInformation; }),
       sonotubeEightInchFourFoot80lbReturnsThreeBags: results.some(function (result) { return result.command === 'how many bags of concrete for an 8 inch sonotube 4 feet deep' && result.passed && result.actual.recommendedBags === 3 && result.actual.bagSizePounds === 80; }),
       saunaTubeNormalizesToSonotube: results.some(function (result) { return /sauna tube/i.test(result.command) && result.passed && result.actual.normalizedTubeTerm === 'Sonotube'; }),
-      unsupportedGeneralAskRemainsLocked: results.filter(function (result) { return /drywall|code term|paint/i.test(result.command); }).every(function (result) { return result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedGeneralAskLocked; }),
+      unsupportedGeneralAskRemainsLocked: results.some(function (result) { return result.command === 'what is the best paint brand today' && result.passed && result.actual.askMode === 'general_ask_locked' && result.actual.renderedGeneralAskLocked; }),
       unknownFallbackWorks: results.some(function (result) { return result.command === 'banana test' && result.passed && result.actual.askMode === 'unknown_fallback'; }),
       noNetworkCalls: true,
       noApiKeysInFrontend: true,
@@ -2906,6 +3222,13 @@
     state.generalAskLockedWorks = report.generalAskLockedWorks;
     state.jobsiteCalculatorWorks = report.jobsiteCalculatorWorks;
     state.concreteSonotubeCalculatorWorks = report.concreteSonotubeCalculatorWorks;
+    state.paintCalculatorWorks = report.paintCalculatorWorks;
+    state.drywallCalculatorWorks = report.drywallCalculatorWorks;
+    state.flooringCalculatorWorks = report.flooringCalculatorWorks;
+    state.studCalculatorWorks = report.studCalculatorWorks;
+    state.concreteSlabCalculatorWorks = report.concreteSlabCalculatorWorks;
+    state.needMoreInformationWorks = report.needMoreInformationWorks;
+    state.unsupportedGeneralAskRemainsLocked = report.unsupportedGeneralAskRemainsLocked;
     state.sonotubeEightInchFourFoot80lbReturnsThreeBags = report.sonotubeEightInchFourFoot80lbReturnsThreeBags;
     state.saunaTubeNormalizesToSonotube = report.saunaTubeNormalizesToSonotube;
     state.unsupportedGeneralAskRemainsLockedV61V = report.unsupportedGeneralAskRemainsLocked;
@@ -2938,6 +3261,13 @@
       '<div><strong>askModeRouterWorks:</strong> ' + escapeHTMLV61D(String(safe.askModeRouterWorks === true)) + '</div>' +
       '<div><strong>jobsiteCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.jobsiteCalculatorWorks === true)) + '</div>' +
       '<div><strong>concreteSonotubeCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.concreteSonotubeCalculatorWorks === true)) + '</div>' +
+      '<div><strong>paintCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.paintCalculatorWorks === true)) + '</div>' +
+      '<div><strong>drywallCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.drywallCalculatorWorks === true)) + '</div>' +
+      '<div><strong>flooringCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.flooringCalculatorWorks === true)) + '</div>' +
+      '<div><strong>studCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.studCalculatorWorks === true)) + '</div>' +
+      '<div><strong>concreteSlabCalculatorWorks:</strong> ' + escapeHTMLV61D(String(safe.concreteSlabCalculatorWorks === true)) + '</div>' +
+      '<div><strong>needMoreInformationWorks:</strong> ' + escapeHTMLV61D(String(safe.needMoreInformationWorks === true)) + '</div>' +
+      '<div><strong>unsupportedGeneralAskRemainsLocked:</strong> ' + escapeHTMLV61D(String(safe.unsupportedGeneralAskRemainsLocked === true)) + '</div>' +
       '<div><strong>noApiKeysInFrontend:</strong> ' + escapeHTMLV61D(String(safe.noApiKeysInFrontend === true)) + '</div>' +
       '<label class="smallMut" for="aquaRegressionRepairPromptV61L">repairPrompt:</label>' +
       '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
@@ -3121,5 +3451,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61V extensions loaded: local Jobsite Calculator foundation active. No live change made.');
+  console.log('Aqua Homes OS v61W extensions loaded: Jobsite Calculator Expansion Pack 1 active. No live change made.');
 }());
