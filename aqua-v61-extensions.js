@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v61M Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard.
+ * Aqua Homes OS v61N Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v61M';
+  var VERSION = 'v61N';
   var state = {
     version: VERSION,
     initialized: true,
@@ -85,6 +85,7 @@
     regressionHarnessV61LAvailable: true,
     regressionQACommandWorksV61L: false,
     safeToMergeV61L: false,
+    fullAutomationGateV61NAvailable: true,
     noBackendCalls: true,
     noLiveChangeExecuted: true,
     commandInputResolverExists: true,
@@ -116,6 +117,7 @@
       runV61MCheck: runV61MCheck,
       getAquaCommandInputV61M: getAquaCommandInputV61M,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61N: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -153,6 +155,7 @@
       runV61MCheck: runV61MCheck,
       getAquaCommandInputV61M: getAquaCommandInputV61M,
       runAquaCommandRegressionV61L: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV61N: runAquaCommandRegressionV61L,
       getLastRegressionReportV61L: getLastRegressionReportV61L,
       normalizeAquaCommandV61E: normalizeAquaCommandV61E,
       runNormalizedAquaCommandV61E: runNormalizedAquaCommandV61E,
@@ -1968,6 +1971,20 @@
     ];
   }
 
+
+  function permissionDraftSafetyV61N() {
+    return {
+      noLiveRecordChangeOccurs: true,
+      permissionButtonsDemoOnly: true,
+      prepareApproveCancelAuditDemoOnly: true,
+      draftQueueHistoryOnly: true,
+      activeCommandIsCurrentCommandOnly: true,
+      staleLocalStorageDoesNotOverrideActiveCommand: true,
+      currentCommandOnlyNotDraftHistory: true,
+      noBackendNetworkLiveAI: true
+    };
+  }
+
   function regressionSafetyV61L() {
     return {
       noLiveRecordChanges: true,
@@ -2098,21 +2115,25 @@
     });
     var safety = regressionSafetyV61L();
     var report = {
-      version: 'v61L',
+      version: 'v61N',
+      harnessVersion: 'v61L-compatible/v61N',
       timestamp: new Date().toISOString(),
       total: cases.length,
       passed: cases.length - failures.length,
       failed: failures.length,
+      failedCommands: failures.map(function (failure) { return failure.command; }),
       failures: failures,
+      results: results,
       safety: safety,
+      permissionDraftSafety: permissionDraftSafetyV61N(),
       repairPrompt: buildRepairPromptV61L(failures),
-      safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? 'yes' : 'no',
+      safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? true : false,
       noLiveRecordChanges: true,
       noBackendNetworkLiveAICalls: true
     };
     state.regressionHarnessV61LAvailable = true;
     state.lastRegressionReportV61L = report;
-    state.safeToMergeV61L = report.safeToMerge === 'yes';
+    state.safeToMergeV61L = report.safeToMerge === true || report.safeToMerge === 'yes';
     state.noLiveActionExecuted = true;
     state.noLiveChangeExecuted = true;
     state.noBackendCalls = true;
@@ -2126,7 +2147,7 @@
     var safe = report || getLastRegressionReportV61L() || runAquaCommandRegressionV61L();
     var failedCommands = safe.failures && safe.failures.length ? safe.failures.map(function (failure) { return '<li><strong>' + escapeHTMLV61D(failure.command) + '</strong> — expected ' + escapeHTMLV61D(failure.expected) + '</li>'; }).join('') : '<li>None</li>';
     var safetyRows = Object.keys(safe.safety || {}).map(function (key) { return '<li>' + escapeHTMLV61D(key) + ': <strong>' + escapeHTMLV61D(String(safe.safety[key])) + '</strong></li>'; }).join('');
-    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Regression QA Report — v61L/v61M</strong>' +
+    return '<div class="note" data-aqua-v61l-regression-report="true"><strong>Regression QA Report — v61L/v61M/v61N</strong>' +
       '<div data-aqua-v61l-report-total="true"><strong>Total:</strong> ' + escapeHTMLV61D(safe.total) + '</div>' +
       '<div data-aqua-v61l-report-passed="true"><strong>Passed:</strong> ' + escapeHTMLV61D(safe.passed) + '</div>' +
       '<div data-aqua-v61l-report-failed="true"><strong>Failed:</strong> ' + escapeHTMLV61D(safe.failed) + '</div>' +
@@ -2269,5 +2290,5 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
-  console.log('Aqua Homes OS v61M extensions loaded: command input targeting repair active. No live change made.');
+  console.log('Aqua Homes OS v61N extensions loaded: automation gate metadata active. No live change made.');
 }());

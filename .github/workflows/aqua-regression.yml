@@ -1,0 +1,37 @@
+name: Aqua Regression Gate
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  aqua-regression:
+    name: Aqua v61N regression
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check extension syntax
+        run: node --check aqua-v61-extensions.js
+
+      - name: Run Aqua regression gate
+        run: node aqua-v61-regression-test.js
+
+      - name: Upload Aqua regression reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aqua-regression-report
+          path: |
+            aqua-regression-report.json
+            aqua-regression-report.md
+          if-no-files-found: warn
