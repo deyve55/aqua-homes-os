@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v63F';
+const VERSION = 'v63G';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -362,6 +362,10 @@ function checkStaticFiles() {
   addCheck('v63F premium module phone acceptance commands exist', /run module phone acceptance/.test(extension) && /show module phone acceptance/.test(extension) && /show opened module phone check/.test(extension) && /show phone module previews/.test(extension) && /show module visual failures/.test(extension) && /copy module phone acceptance/.test(extension), { layer: 'premium-module-phone-acceptance-v63f', fileToFix: EXTENSION });
   addCheck('v63F premium module phone acceptance report flags exist', /modulePhoneAcceptanceExists/.test(extension) && /phoneAcceptancePanelWorks/.test(extension) && /openedModulePreviewSetWorks/.test(extension) && /premiumShellPhoneCheckWorks/.test(extension) && /businessModulePhoneCheckWorks/.test(extension) && /operationalModulePhoneCheckWorks/.test(extension) && /portalFileCabinetPhoneCheckWorks/.test(extension) && /aquaBrainCompatibilityPhoneCheckWorks/.test(extension) && /phoneLayoutChecklistWorks/.test(extension), { layer: 'premium-module-phone-acceptance-v63f', fileToFix: EXTENSION });
   addCheck('v63F premium module phone acceptance storage key exists', /aquaPremiumModulePhoneAcceptanceV63F/.test(extension), { layer: 'premium-module-phone-acceptance-v63f', fileToFix: EXTENSION });
+  addCheck('v63G premium module final keeper namespace exists', /window\.AquaPremiumModuleFinalKeeperV63G/.test(extension) && /function\s+runAquaPremiumModuleFinalQA_V63G/.test(extension) && /function\s+renderAquaPremiumModuleFinalKeeperV63G/.test(extension), { layer: 'premium-module-final-keeper-v63g', fileToFix: EXTENSION });
+  addCheck('v63G premium module final keeper commands exist', /show final module keeper/.test(extension) && /show premium opened module keeper/.test(extension) && /show module recovery handoff/.test(extension) && /copy module recovery handoff/.test(extension) && /show opened module final qa/.test(extension) && /run opened module final qa/.test(extension) && /show visual keeper status/.test(extension) && /show next phase/.test(extension), { layer: 'premium-module-final-keeper-v63g', fileToFix: EXTENSION });
+  addCheck('v63G premium module final keeper report flags exist', /premiumModuleFinalKeeperExists/.test(extension) && /finalKeeperPanelWorks/.test(extension) && /finalVisualQAWorks/.test(extension) && /finalManifestWorks/.test(extension) && /recoveryHandoffWorks/.test(extension) && /copyRecoveryHandoffWorks/.test(extension) && /nextPhaseRecommendationWorks/.test(extension) && /protectedHomeKeeperStillAHv54I3/.test(extension) && /openedModuleKeeperLocked/.test(extension), { layer: 'premium-module-final-keeper-v63g', fileToFix: EXTENSION });
+  addCheck('v63G premium module final keeper storage key exists', /aquaPremiumModuleFinalKeeperV63G/.test(extension), { layer: 'premium-module-final-keeper-v63g', fileToFix: EXTENSION });
   addCheck('v62V-A natural response namespace exists', /window\.AquaNaturalResponsesV62VA/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
   addCheck('v62V-A natural response helpers exist', /function\s+buildAquaGreetingV62VA/.test(extension) && /function\s+buildAquaReadyPromptV62VA/.test(extension) && /function\s+buildAquaCorrectionPhraseV62VA/.test(extension) && /function\s+buildAquaManualFallbackPhraseV62VA/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
   addCheck('v62V-A natural response report flags exist', /naturalResponseTemplatesExist/.test(extension) && /responseTemplateSmokeWorks/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
@@ -424,7 +428,7 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v63F', extensionReport.version === 'v63F', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v63G', extensionReport.version === 'v63G', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
@@ -757,6 +761,11 @@ function runExtensionRegression() {
       addCheck(`v63B required command renders: ${command}`, Boolean(row && row.passed && row.actual && row.actual.renderedPremiumModuleShellV63A), { layer: 'premium-module-detail-polish-v63b', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
     ['receiptDetailPolishWorks','accountingDetailPolishWorks','spendDetailPolishWorks','ownerReviewDetailPolishWorks','accountantExportPlaceholderPolished','premiumReceiptCardsRender','premiumAccountingCardsRender','premiumApprovalCardsRender','premiumExportCardsRender','v63AShellStillWorks','homeDesignUntouched','aiRoutingStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks'].forEach((flag) => addCheck(`v63B ${flag}`, extensionReport[flag] === true, { layer: 'premium-module-detail-polish-v63b', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['premiumModuleFinalKeeperExists','finalKeeperPanelWorks','finalVisualQAWorks','finalManifestWorks','recoveryHandoffWorks','copyRecoveryHandoffWorks','nextPhaseRecommendationWorks','protectedHomeKeeperStillAHv54I3','openedModuleKeeperLocked','aquaBrainCompatibilityStillWorks','phoneAcceptanceStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks'].forEach((flag) => addCheck(`v63G ${flag}`, extensionReport[flag] === true, { layer: 'premium-module-final-keeper-v63g', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['show final module keeper','show premium opened module keeper','show module recovery handoff','copy module recovery handoff','show opened module final qa','run opened module final qa','show visual keeper status','show next phase','show polished receipts','show polished SOW','show polished project folders','show automation report','run regression qa','banana test'].forEach((command) => {
+      const row = byCommand.get(command);
+      addCheck(`v63G required command routes: ${command}`, Boolean(row && row.passed), { layer: 'premium-module-final-keeper-v63g', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    });
     const safety = extensionReport.permissionDraftSafety || {};
     [
       ['no live record change occurs', safety.noLiveRecordChangeOccurs],
@@ -1690,6 +1699,20 @@ async function main() {
     noAudioStorage: safetyStatus.noAudioStorage === true,
     noAlwaysListening: safetyStatus.noAlwaysListening === true,
     noPaymentPayrollBankAccountingExport: safetyStatus.noPayment === true && safetyStatus.noPayroll === true && safetyStatus.noBankSync === true && safetyStatus.noAccountingExport === true,
+    premiumModuleFinalKeeperExists: extensionReport ? extensionReport.premiumModuleFinalKeeperExists === true : false,
+    finalKeeperPanelWorks: extensionReport ? extensionReport.finalKeeperPanelWorks === true : false,
+    finalVisualQAWorks: extensionReport ? extensionReport.finalVisualQAWorks === true : false,
+    finalManifestWorks: extensionReport ? extensionReport.finalManifestWorks === true : false,
+    recoveryHandoffWorks: extensionReport ? extensionReport.recoveryHandoffWorks === true : false,
+    copyRecoveryHandoffWorks: extensionReport ? extensionReport.copyRecoveryHandoffWorks === true : false,
+    nextPhaseRecommendationWorks: extensionReport ? extensionReport.nextPhaseRecommendationWorks === true : false,
+    protectedHomeKeeperStillAHv54I3: extensionReport ? extensionReport.protectedHomeKeeperStillAHv54I3 === true : false,
+    openedModuleKeeperLocked: extensionReport ? extensionReport.openedModuleKeeperLocked === true : false,
+    aquaBrainCompatibilityStillWorks: extensionReport ? extensionReport.aquaBrainCompatibilityStillWorks === true : false,
+    phoneAcceptanceStillWorks: extensionReport ? extensionReport.phoneAcceptanceStillWorks === true : false,
+    automationReportStillWorks: extensionReport ? extensionReport.automationReportStillWorks === true : false,
+    regressionQaStillWorks: extensionReport ? extensionReport.regressionQaStillWorks === true : false,
+    unknownFallbackStillWorks: extensionReport ? extensionReport.unknownFallbackStillWorks === true : false,
     premiumModuleShellExists: extensionReport ? extensionReport.premiumModuleShellExists === true : false,
     premiumModuleShellRenders: extensionReport ? extensionReport.premiumModuleShellRenders === true : false,
     automationReportPolished: extensionReport ? extensionReport.automationReportPolished === true : false,

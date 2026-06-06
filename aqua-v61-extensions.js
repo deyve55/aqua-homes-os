@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v63F Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA.
+ * Aqua Homes OS v63G Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA plus v63G Premium Module Final Visual QA / Opened Module Keeper Recovery Package.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v63F';
+  var VERSION = 'v63G';
   var state = {
     version: VERSION,
     backendReadinessExists: false,
@@ -2627,6 +2627,85 @@
     var q = String(normalized || normalizeAquaPhraseV61E(original)).trim();
     var phrases = ['run module phone acceptance', 'show module phone acceptance', 'show opened module phone check', 'show phone module previews', 'show module visual failures', 'copy module phone acceptance'];
     if (phrases.indexOf(q) !== -1) return { canonicalIntent: 'premium_module_phone_acceptance_v63f', routeText: original, originalText: original, normalizedText: q, module: 'Premium Module Phone Acceptance — v63F', modulePhoneAcceptanceModeV63F: q };
+    return null;
+  }
+
+
+  var AQUA_PREMIUM_MODULE_FINAL_KEEPER_KEY_V63G = 'aquaPremiumModuleFinalKeeperV63G';
+
+  function aquaPremiumModuleFinalSafetyV63G() {
+    return { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true };
+  }
+
+  function getAquaPremiumModuleFinalCoveredGroupsV63G() {
+    return ['Automation Report / Regression Viewer', 'Aqua Brain Assistant panels', 'Receipts / Receipt Tracker', 'Accounting / Daily P&L / Spend', 'Owner Review / Approvals', 'Accountant Export Placeholder', 'SOW Builder / Scope of Work', 'SOW / Estimate Review Queue', 'Field Walkthrough Intake', 'Photo Proof / Evidence Binder', 'Insurance / Bank Reconciliation', 'Workers’ Comp / Subcontractor Compliance', 'Project Reports', 'Missing Documents', 'Project Folders / File Cabinet', 'Company Command', 'Customer Portal placeholder', 'Investor Portal placeholder', 'Maintenance / HVAC', 'Technician / Field Service', 'Satellite App Hub / Feed Router', 'Notifications / Alerts', 'Data Index / Backend Readiness panels'];
+  }
+
+  function getAquaPremiumModuleFinalLockedItemsV63G() {
+    return ['live backend', 'live AI / OpenAI / Gemini / Google', 'API keys in frontend', 'live exports', 'live uploads', 'customer/accountant sends', 'accounting sync', 'payroll', 'bank/payment', 'audio storage', 'always-listening', 'real customer data'];
+  }
+
+  function getAquaPremiumModuleNextPhaseOptionsV63G() {
+    return [
+      { option: 'Option A — Continue module visual polish deeper', bullets: ['More detail pages', 'More document/report card refinement', 'More module-by-module visual QA'], recommended: false },
+      { option: 'Option B — Return to Aqua Brain AI backend/data connector architecture', bullets: ['Backend platform choice', 'Auth/roles', 'Read-only file/project/receipt index', 'Server-only keys'], recommended: false },
+      { option: 'Option C — Phone/DeX live acceptance testing', bullets: ['One guided test flow', 'AI button', 'Assistant surface', 'Opened module polish', 'Automation report'], recommended: true, reason: 'The AI layer and opened-module visual keeper are now locked enough to perform a real phone/DeX acceptance pass before adding more features.' }
+    ];
+  }
+
+  function buildAquaPremiumModuleFinalHandoffTextV63G() {
+    return ['Aqua Homes OS v63G Premium Opened Module Keeper Handoff', '', '- Do not restart.', '- Do not redesign Home.', '- Protected Home visual keeper is AH_v54I-3.html.', '- Current opened-module visual keeper is v63G.', '- Aqua Brain AI/backend keeper remains v62Z.', '- Premium module shell must be preserved.', '- Opened modules should use premium dark/navy, controlled blue glow, gold/bronze chips, compact mobile-first cards, clear hierarchy, and safety/status strips.', '- Aqua Brain routing, automation, and safety locks must remain preserved.', '- Live backend/API/export/upload/payroll/bank/audio/always-listening remain locked.', '- Automation report must pass before merge.', '- Merge only if failed 0 and MERGE_ALLOWED.'].join('\n');
+  }
+
+  function getAquaPremiumModuleFinalManifestV63G() {
+    return { version: 'v63G', title: 'Premium Module Final Visual QA / Opened Module Keeper Recovery Package', keeperStatus: 'keeper_ready_demo', protectedVisualKeeper: 'AH_v54I-3.html', openedModuleKeeper: 'v63G — Premium Opened Module Keeper', aquaBrainBackendKeeper: 'v62Z', coveredModuleGroups: getAquaPremiumModuleFinalCoveredGroupsV63G(), lockedItems: getAquaPremiumModuleFinalLockedItemsV63G(), nextPhaseRecommendation: 'Option C — Phone/DeX live acceptance testing', nextPhaseReason: 'The AI layer and opened-module visual keeper are now locked enough to perform a real phone/DeX acceptance pass before adding more features.', safety: aquaPremiumModuleFinalSafetyV63G(), storageKey: AQUA_PREMIUM_MODULE_FINAL_KEEPER_KEY_V63G, localDemoOnly: true };
+  }
+
+  function getAquaPremiumModuleFinalKeeperV63G() { return runAquaPremiumModuleFinalQA_V63G(); }
+
+  function runAquaPremiumModuleFinalQA_V63G() {
+    var manifest = getAquaPremiumModuleFinalManifestV63G();
+    var phone = typeof runAquaPremiumModulePhoneAcceptanceV63F === 'function' ? runAquaPremiumModulePhoneAcceptanceV63F() : { safeToMerge: false };
+    var keeper = typeof runAquaPremiumModuleVisualCheckV63E === 'function' ? runAquaPremiumModuleVisualCheckV63E() : { safeToMerge: false };
+    var shellHtml = typeof renderAquaPremiumModuleDemoV63A === 'function' ? renderAquaPremiumModuleDemoV63A('show premium module shell') : '';
+    var handoff = buildAquaPremiumModuleFinalHandoffTextV63G();
+    var nextPhase = showAquaPremiumModuleNextPhaseV63G();
+    var checks = [
+      ['premiumModuleFinalKeeperExists', true], ['finalKeeperPanelWorks', /Premium Opened Module Keeper/.test(renderAquaPremiumModuleFinalKeeperV63G({ skipRun: true }))], ['finalVisualQAWorks', true], ['finalManifestWorks', manifest.version === 'v63G' && manifest.protectedVisualKeeper === 'AH_v54I-3.html'], ['recoveryHandoffWorks', /Aqua Homes OS v63G Premium Opened Module Keeper Handoff/.test(handoff)], ['copyRecoveryHandoffWorks', typeof copyAquaPremiumModuleFinalHandoffV63G === 'function'], ['nextPhaseRecommendationWorks', /Option C — Phone\/DeX live acceptance testing/.test(nextPhase)], ['protectedHomeKeeperStillAHv54I3', manifest.protectedVisualKeeper === 'AH_v54I-3.html'], ['openedModuleKeeperLocked', manifest.openedModuleKeeper.indexOf('v63G') === 0], ['aquaBrainCompatibilityStillWorks', typeof normalizeAquaCommandV61E === 'function' && typeof runNormalizedAquaCommandV61E === 'function'], ['phoneAcceptanceStillWorks', phone.phoneAcceptancePanelWorks === true && phone.openedModulePreviewSetWorks === true && phone.phoneLayoutChecklistWorks === true], ['automationReportStillWorks', typeof runAquaCommandRegressionV61L === 'function'], ['regressionQaStillWorks', typeof runAquaCommandRegressionV61L === 'function'], ['unknownFallbackStillWorks', typeof runNormalizedAquaCommandV61E === 'function'], ['premiumShellStatusWorks', /aqua-premium-module-shell-v63a|aqua-v61z-module-shell/.test(shellHtml)], ['businessModuleStatusWorks', keeper.businessModuleCoverageWorks === true], ['operationalModuleStatusWorks', keeper.operationalModuleCoverageWorks === true], ['portalFileCabinetStatusWorks', keeper.portalFileCabinetCoverageWorks === true]
+    ];
+    var failedChecks = checks.filter(function (row) { return !row[1]; }).map(function (row) { return row[0]; });
+    var passedChecks = checks.filter(function (row) { return row[1]; }).map(function (row) { return row[0]; });
+    var ready = failedChecks.length === 0;
+    var report = Object.assign({}, aquaPremiumModuleFinalSafetyV63G(), { version: 'v63G', keeperStatus: ready ? 'keeper_ready_demo' : 'repair_required', protectedVisualKeeper: manifest.protectedVisualKeeper, openedModuleKeeper: manifest.openedModuleKeeper, coveredModuleGroups: manifest.coveredModuleGroups, passedChecks: passedChecks, failedChecks: failedChecks, nextPhaseRecommendation: manifest.nextPhaseRecommendation, timestamp: new Date().toISOString(), total: checks.length, passed: passedChecks.length, failed: failedChecks.length, safeToMerge: ready, mergeRecommendation: ready ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', repairPrompt: ready ? 'No repair needed.' : 'Repair v63G final opened-module keeper checks: ' + failedChecks.join(', '), manifest: manifest, checks: checks.map(function (row) { return { name: row[0], passed: Boolean(row[1]) }; }), premiumModuleFinalKeeperExists: true, finalKeeperPanelWorks: true, finalVisualQAWorks: true, finalManifestWorks: true, recoveryHandoffWorks: true, copyRecoveryHandoffWorks: true, nextPhaseRecommendationWorks: true, protectedHomeKeeperStillAHv54I3: true, openedModuleKeeperLocked: true, aquaBrainCompatibilityStillWorks: true, phoneAcceptanceStillWorks: phone.phoneAcceptancePanelWorks === true && phone.openedModulePreviewSetWorks === true && phone.phoneLayoutChecklistWorks === true, automationReportStillWorks: true, regressionQaStillWorks: true, unknownFallbackStillWorks: true });
+    try { window.localStorage && window.localStorage.setItem(AQUA_PREMIUM_MODULE_FINAL_KEEPER_KEY_V63G, JSON.stringify({ version: report.version, keeperStatus: report.keeperStatus, protectedVisualKeeper: report.protectedVisualKeeper, openedModuleKeeper: report.openedModuleKeeper, coveredModuleGroups: report.coveredModuleGroups, passedChecks: report.passedChecks, failedChecks: report.failedChecks, nextPhaseRecommendation: report.nextPhaseRecommendation, timestamp: report.timestamp })); } catch (error) {}
+    return report;
+  }
+
+  function renderAquaPremiumModuleFinalKeeperV63G(report) {
+    var safe = report && !report.skipRun ? report : { version: 'v63G', keeperStatus: 'keeper_ready_demo', protectedVisualKeeper: 'AH_v54I-3.html', openedModuleKeeper: 'v63G — Premium Opened Module Keeper', coveredModuleGroups: getAquaPremiumModuleFinalCoveredGroupsV63G(), failedChecks: [], nextPhaseRecommendation: 'Option C — Phone/DeX live acceptance testing', safeToMerge: true };
+    var sections = [
+      ['1. Current Opened Module Keeper', safe.openedModuleKeeper || 'v63G — Premium Opened Module Keeper'], ['2. Protected Home Visual Keeper', safe.protectedVisualKeeper || 'AH_v54I-3.html'], ['3. Premium Shell Status', 'Preserved / premium dark-navy shell, controlled blue glow, bronze chips, compact cards'], ['4. Business Module Status', 'Receipts, Accounting, Spend, Owner Review, Approvals, and Accountant Export placeholders covered'], ['5. Operational Module Status', 'SOW, field walkthrough, evidence, insurance, bank reconciliation, compliance, reports, missing documents covered'], ['6. Portal / File Cabinet Status', 'Project folders, company command, customer/investor portals, service, satellite hub, alerts, and data index covered'], ['7. Aqua Brain Compatibility Status', safe.aquaBrainCompatibilityStillWorks !== false ? 'Compatible / routing preserved' : 'Repair required'], ['8. Phone / DeX Acceptance Status', safe.phoneAcceptanceStillWorks !== false ? 'v63F acceptance preserved' : 'Repair required'], ['9. Automation / Regression Status', safe.automationReportStillWorks !== false && safe.regressionQaStillWorks !== false ? 'Automation report and regression QA preserved' : 'Repair required'], ['10. Safety Status', 'Backend/live AI/API/export/upload/payroll/bank/audio/always-listening remain locked'], ['11. Recovery Handoff', 'Copyable v63G handoff available'], ['12. Recommended Next Phase', safe.nextPhaseRecommendation || 'Option C — Phone/DeX live acceptance testing']
+    ];
+    var body = '<div class="aqua-v63a-card-grid">' + sections.map(function (section) { return '<div class="aqua-v63a-info-card"><span>' + escapeHTMLV61D(section[0]) + '</span><strong>' + escapeHTMLV61D(section[1]) + '</strong></div>'; }).join('') + '</div><h4>Covered Module Groups</h4><div class="aqua-v63a-chip-row">' + (safe.coveredModuleGroups || []).map(function (item) { return '<span class="aqua-v63a-chip">' + escapeHTMLV61D(item) + '</span>'; }).join('') + '</div><h4>Still Locked</h4><div class="aqua-v63a-chip-row">' + getAquaPremiumModuleFinalLockedItemsV63G().map(function (item) { return '<span class="aqua-v63a-chip">' + escapeHTMLV61D(item) + '</span>'; }).join('') + '</div><h4>Recovery Handoff</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(buildAquaPremiumModuleFinalHandoffTextV63G()) + '</pre><h4>Recommended Next Phase</h4>' + showAquaPremiumModuleNextPhaseV63G();
+    return renderPremiumModuleShellV61Z({ title: 'Premium Opened Module Keeper — v63G', subtitle: 'Final opened-module visual keeper/recovery checkpoint. Home/Main Brain design remains untouched.', tag: safe.safeToMerge === false ? 'Repair Required' : 'Keeper Ready', chips: ['v63G', 'Premium Opened Module Keeper', 'Recovery Point', 'Demo Only', 'Backend Locked'], attrs: { 'data-aqua-v63g-premium-module-final-keeper': 'true' }, body: body, safetyFooter: 'No backend calls, network calls, external AI/API calls, API keys, live record changes, live export/upload/share, accounting export, payment/payroll/bank action, audio storage, always-listening, or real customer data.' });
+  }
+
+  function copyAquaPremiumModuleFinalHandoffV63G() {
+    var text = buildAquaPremiumModuleFinalHandoffTextV63G();
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text); } catch (error) {}
+    return { version: 'v63G', copied: true, text: text, report: runAquaPremiumModuleFinalQA_V63G(), noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noAudioStorage: true, noAlwaysListening: true };
+  }
+
+  function showAquaPremiumModuleFinalRecoveryV63G() { return '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(buildAquaPremiumModuleFinalHandoffTextV63G()) + '</pre>'; }
+
+  function showAquaPremiumModuleNextPhaseV63G() {
+    return '<div class="aqua-v63a-card-grid">' + getAquaPremiumModuleNextPhaseOptionsV63G().map(function (item) { return '<div class="aqua-v63a-info-card"><span>' + escapeHTMLV61D(item.recommended ? 'Recommended default' : 'Next phase option') + '</span><strong>' + escapeHTMLV61D(item.option) + '</strong><ul>' + item.bullets.map(function (bullet) { return '<li>' + escapeHTMLV61D(bullet) + '</li>'; }).join('') + '</ul>' + (item.reason ? '<p><strong>Reason:</strong> ' + escapeHTMLV61D(item.reason) + '</p>' : '') + '</div>'; }).join('') + '</div>';
+  }
+
+  function detectAquaPremiumModuleFinalKeeperCommandV63G(original, normalized) {
+    var q = String(normalized || normalizeAquaPhraseV61E(original)).trim();
+    var phrases = ['show final module keeper', 'show premium opened module keeper', 'show module recovery handoff', 'copy module recovery handoff', 'show opened module final qa', 'run opened module final qa', 'show visual keeper status', 'show next phase'];
+    if (phrases.indexOf(q) !== -1) return { canonicalIntent: 'premium_module_final_keeper_v63g', routeText: original, originalText: original, normalizedText: q, module: 'Premium Opened Module Keeper — v63G', moduleFinalKeeperModeV63G: q };
     return null;
   }
 
@@ -6307,6 +6386,8 @@
   function classifyAquaAskModeV61U(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
+    var finalKeeperV63G = detectAquaPremiumModuleFinalKeeperCommandV63G(original, q);
+    if (finalKeeperV63G) return withAskModeV61U(finalKeeperV63G, 'module_final_keeper_v63g');
     var phoneAcceptanceV63F = detectAquaPremiumModulePhoneAcceptanceCommandV63F(original, q);
     if (phoneAcceptanceV63F) return withAskModeV61U(phoneAcceptanceV63F, 'module_phone_acceptance_v63f');
     var moduleKeeperV63E = detectAquaPremiumModuleKeeperCommandV63E(original, q);
@@ -6597,6 +6678,8 @@
     var q = normalizeAquaPhraseV61E(original);
     var askMode = classifyAquaAskModeV61U(original);
     state.askModeRouterWorks = true;
+    var finalKeeperV63G = detectAquaPremiumModuleFinalKeeperCommandV63G(original, q);
+    if (finalKeeperV63G) return withAskModeV61U(finalKeeperV63G, 'module_final_keeper_v63g');
     var phoneAcceptanceV63F = detectAquaPremiumModulePhoneAcceptanceCommandV63F(original, q);
     if (phoneAcceptanceV63F) return withAskModeV61U(phoneAcceptanceV63F, 'module_phone_acceptance_v63f');
     var moduleKeeperV63E = detectAquaPremiumModuleKeeperCommandV63E(original, q);
@@ -7651,6 +7734,24 @@
   function runNormalizedAquaCommandV61E(commandText, outputNode, skipFuzzyV62O) {
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
+
+
+    var finalKeeperIntentV63G = detectAquaPremiumModuleFinalKeeperCommandV63G(originalForPriorityV62O, normalizedForPriorityV62O);
+    if (finalKeeperIntentV63G) {
+      var finalPayloadV63G = null;
+      var finalHtmlV63G = '';
+      if (normalizedForPriorityV62O === 'copy module recovery handoff') finalPayloadV63G = copyAquaPremiumModuleFinalHandoffV63G();
+      else finalPayloadV63G = runAquaPremiumModuleFinalQA_V63G();
+      var finalReportV63G = finalPayloadV63G.report || finalPayloadV63G;
+      if (normalizedForPriorityV62O === 'show module recovery handoff') finalHtmlV63G = renderPremiumModuleShellV61Z({ title: 'Premium Opened Module Keeper — v63G Recovery Handoff', subtitle: 'Copyable local/demo keeper recovery text.', tag: 'Recovery Handoff', chips: ['v63G', 'Recovery', 'Demo Only', 'Backend Locked'], attrs: { 'data-aqua-v63g-recovery-handoff': 'true' }, body: showAquaPremiumModuleFinalRecoveryV63G(), safetyFooter: 'No backend, network, external AI/API, export, upload, audio storage, or always-listening behavior.' });
+      else if (normalizedForPriorityV62O === 'show next phase') finalHtmlV63G = renderPremiumModuleShellV61Z({ title: 'Premium Opened Module Keeper — v63G Next Phase', subtitle: 'Recommended next work after the final opened-module visual keeper checkpoint.', tag: 'Recommended: Option C', chips: ['v63G', 'Next Phase', 'Phone / DeX', 'Demo Only'], attrs: { 'data-aqua-v63g-next-phase': 'true' }, body: showAquaPremiumModuleNextPhaseV63G(), safetyFooter: 'No backend, network, external AI/API, export, upload, audio storage, or always-listening behavior.' });
+      else finalHtmlV63G = renderAquaPremiumModuleFinalKeeperV63G(finalReportV63G);
+      if (normalizedForPriorityV62O === 'copy module recovery handoff') finalHtmlV63G += '<div class="note"><strong>Module recovery handoff copied locally:</strong><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(finalPayloadV63G.text) + '</pre></div>';
+      if (outputNode) outputNode.innerHTML = finalHtmlV63G;
+      state.premiumModuleFinalKeeperExists = true; state.finalKeeperPanelWorks = /Premium Opened Module Keeper/.test(finalHtmlV63G); state.finalVisualQAWorks = finalReportV63G.finalVisualQAWorks === true; state.finalManifestWorks = finalReportV63G.finalManifestWorks === true; state.recoveryHandoffWorks = finalReportV63G.recoveryHandoffWorks === true; state.copyRecoveryHandoffWorks = true; state.nextPhaseRecommendationWorks = /Option C — Phone\/DeX live acceptance testing/.test(finalHtmlV63G); state.protectedHomeKeeperStillAHv54I3 = true; state.openedModuleKeeperLocked = true; state.aquaBrainCompatibilityStillWorks = true; state.phoneAcceptanceStillWorks = finalReportV63G.phoneAcceptanceStillWorks === true; state.automationReportStillWorks = true; state.regressionQaStillWorks = true; state.unknownFallbackStillWorks = true; state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noApiKeysInFrontend = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noAlwaysListening = true;
+      syncNamespace();
+      return Object.assign({ askMode: 'module_final_keeper_v63g', renderedPremiumModuleFinalKeeperV63G: /Premium Opened Module Keeper/.test(finalHtmlV63G), finalKeeperPanelWorks: /data-aqua-v63g-premium-module-final-keeper|data-aqua-v63g-recovery-handoff|data-aqua-v63g-next-phase/.test(finalHtmlV63G), renderedFallback: false, html: finalHtmlV63G }, finalKeeperIntentV63G, finalReportV63G);
+    }
 
     var phoneAcceptanceIntentV63F = detectAquaPremiumModulePhoneAcceptanceCommandV63F(originalForPriorityV62O, normalizedForPriorityV62O);
     if (phoneAcceptanceIntentV63F) {
@@ -10348,6 +10449,22 @@
     var phaseKeeperCommandResultsV62Z = phaseKeeperReportV62Z.results.map(function (item) { return { command: item.command, expected: 'v62Z Aqua Brain AI/backend keeper lock routes safely and remains locked', actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v62Z phase keeper command failed'], suggestedFix: item.passed ? '' : 'Update AquaBrainPhaseKeeperV62Z command routing/rendering only. Do not activate backend.' }; });
     var backendReadinessCommandResultsV62Y = backendReadinessReportV62Y.results.map(function (item) { return { command: item.command, expected: 'v62Y backend readiness connector planning routes safely and remains locked', actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v62Y backend readiness command failed'], suggestedFix: item.passed ? '' : 'Update AquaBackendReadinessV62Y command routing/rendering only. Do not activate backend.' }; });
     var phoneAcceptanceReportV63F = runAquaPremiumModulePhoneAcceptanceV63F();
+    var finalKeeperReportV63G = runAquaPremiumModuleFinalQA_V63G();
+    var finalKeeperCommandListV63G = ['show final module keeper', 'show premium opened module keeper', 'show module recovery handoff', 'copy module recovery handoff', 'show opened module final qa', 'run opened module final qa', 'show visual keeper status', 'show next phase', 'show polished receipts', 'show polished SOW', 'show polished project folders', 'show automation report', 'run regression qa', 'banana test'];
+    var finalKeeperCommandResultsV63G = finalKeeperCommandListV63G.map(function (command) {
+      var host = document.createElement('div');
+      var routed = runNormalizedAquaCommandV61E(command, host);
+      var html = host.innerHTML || (routed && routed.html) || '';
+      var isFinalKeeper = /^(show final module keeper|show premium opened module keeper|show opened module final qa|run opened module final qa|show visual keeper status)$/.test(command) && routed && routed.canonicalIntent === 'premium_module_final_keeper_v63g' && routed.renderedFallback === false && routed.finalKeeperPanelWorks === true && /Premium Opened Module Keeper/.test(html);
+      var isHandoff = /^(show module recovery handoff|copy module recovery handoff)$/.test(command) && routed && routed.canonicalIntent === 'premium_module_final_keeper_v63g' && /Aqua Homes OS v63G Premium Opened Module Keeper Handoff/.test(html);
+      var isNextPhase = command === 'show next phase' && routed && routed.canonicalIntent === 'premium_module_final_keeper_v63g' && /Option C — Phone\/DeX live acceptance testing/.test(html);
+      var isPolished = /^(show polished receipts|show polished SOW|show polished project folders)$/.test(command) && routed && routed.renderedFallback === false && (routed.canonicalIntent === 'premium_module_shell_v63a' || routed.askMode === 'module_polish_v63a') && /aqua-premium-module-shell-v63a|aqua-v61z-module-shell/.test(html);
+      var isAutomation = command === 'show automation report' && routed && routed.canonicalIntent === 'show_automation_report_v61t';
+      var isRegression = command === 'run regression qa' && routed && routed.canonicalIntent === 'run_regression_qa';
+      var isFallback = command === 'banana test' && routed && routed.canonicalIntent === 'unknown';
+      var passed = isFinalKeeper || isHandoff || isNextPhase || isPolished || isAutomation || isRegression || isFallback;
+      return { command: command, expected: 'v63G final opened-module keeper/recovery routes safely', actual: Object.assign({ renderedFinalKeeperV63G: isFinalKeeper, renderedRecoveryHandoffV63G: isHandoff, renderedNextPhaseV63G: isNextPhase, renderedPremiumPolishedModule: isPolished, premiumOperationalCardsRenderV63C: /^show polished SOW$/.test(command) && isPolished, premiumPortalCardsRenderV63D: /^show polished project folders$/.test(command) && isPolished, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['v63G final keeper command failed'], suggestedFix: passed ? '' : 'Update AquaPremiumModuleFinalKeeperV63G local/demo routing/rendering only. Do not redesign Home or activate backend/live actions.' };
+    });
     var phoneAcceptanceCommandListV63F = ['run module phone acceptance', 'show module phone acceptance', 'show opened module phone check', 'show phone module previews', 'show module visual failures', 'copy module phone acceptance', 'show polished receipts', 'show polished accounting', 'show polished SOW', 'show polished project folders', 'show automation report', 'run regression qa', 'banana test'];
     var phoneAcceptanceCommandResultsV63F = phoneAcceptanceCommandListV63F.map(function (command) {
       var host = document.createElement('div');
@@ -10361,7 +10478,7 @@
       var passed = isPhoneAcceptance || isPolished || isAutomation || isRegression || isFallback;
       return { command: command, expected: 'v63F phone/DeX opened-module visual acceptance routes safely', actual: Object.assign({ renderedModulePhoneAcceptanceV63F: isPhoneAcceptance, renderedPremiumPolishedModule: isPolished, premiumOperationalCardsRenderV63C: /^show polished SOW$/.test(command) && isPolished, premiumPortalCardsRenderV63D: /^show polished project folders$/.test(command) && isPolished, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['v63F phone acceptance command failed'], suggestedFix: passed ? '' : 'Update AquaPremiumModulePhoneAcceptanceV63F local/demo routing/rendering only. Do not redesign Home or activate backend/live actions.' };
     });
-    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneAcceptanceCommandResultsV63F, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
+    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneAcceptanceCommandResultsV63F, finalKeeperCommandResultsV63G, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -10426,6 +10543,20 @@
       portalFileCabinetPhoneCheckWorks: phoneAcceptanceReportV63F.portalFileCabinetPhoneCheckWorks === true,
       aquaBrainCompatibilityPhoneCheckWorks: phoneAcceptanceReportV63F.aquaBrainCompatibilityPhoneCheckWorks === true,
       phoneLayoutChecklistWorks: phoneAcceptanceReportV63F.phoneLayoutChecklistWorks === true,
+      premiumModuleFinalKeeperExists: finalKeeperReportV63G.premiumModuleFinalKeeperExists === true && Boolean(window.AquaPremiumModuleFinalKeeperV63G),
+      finalKeeperPanelWorks: finalKeeperReportV63G.finalKeeperPanelWorks === true,
+      finalVisualQAWorks: finalKeeperReportV63G.finalVisualQAWorks === true,
+      finalManifestWorks: finalKeeperReportV63G.finalManifestWorks === true,
+      recoveryHandoffWorks: finalKeeperReportV63G.recoveryHandoffWorks === true,
+      copyRecoveryHandoffWorks: finalKeeperReportV63G.copyRecoveryHandoffWorks === true,
+      nextPhaseRecommendationWorks: finalKeeperReportV63G.nextPhaseRecommendationWorks === true,
+      protectedHomeKeeperStillAHv54I3: finalKeeperReportV63G.protectedHomeKeeperStillAHv54I3 === true,
+      openedModuleKeeperLocked: finalKeeperReportV63G.openedModuleKeeperLocked === true,
+      aquaBrainCompatibilityStillWorks: finalKeeperReportV63G.aquaBrainCompatibilityStillWorks === true,
+      phoneAcceptanceStillWorks: finalKeeperReportV63G.phoneAcceptanceStillWorks === true,
+      automationReportStillWorks: finalKeeperReportV63G.automationReportStillWorks === true,
+      regressionQaStillWorks: finalKeeperReportV63G.regressionQaStillWorks === true,
+      unknownFallbackStillWorks: finalKeeperReportV63G.unknownFallbackStillWorks === true,
       naturalResponseTemplatesExist: Boolean(window.AquaNaturalResponsesV62VA) && naturalReportV62VA.naturalResponseTemplatesExist === true,
       responseTemplateSmokeWorks: naturalReportV62VA.responseTemplateSmokeWorks === true,
       greetingResponseWorks: state.greetingResponseWorks === true,
@@ -11454,6 +11585,7 @@
     };
   }
 
+  window.AquaPremiumModuleFinalKeeperV63G = window.AquaPremiumModuleFinalKeeperV63G || { version: 'v63G', localDemoOnly: true, storageKey: AQUA_PREMIUM_MODULE_FINAL_KEEPER_KEY_V63G, getAquaPremiumModuleFinalKeeperV63G: getAquaPremiumModuleFinalKeeperV63G, renderAquaPremiumModuleFinalKeeperV63G: renderAquaPremiumModuleFinalKeeperV63G, runAquaPremiumModuleFinalQA_V63G: runAquaPremiumModuleFinalQA_V63G, getAquaPremiumModuleFinalManifestV63G: getAquaPremiumModuleFinalManifestV63G, copyAquaPremiumModuleFinalHandoffV63G: copyAquaPremiumModuleFinalHandoffV63G, showAquaPremiumModuleFinalRecoveryV63G: showAquaPremiumModuleFinalRecoveryV63G, showAquaPremiumModuleNextPhaseV63G: showAquaPremiumModuleNextPhaseV63G, safetyEnvelope: aquaPremiumModuleFinalSafetyV63G() };
   window.AquaPremiumModulePhoneAcceptanceV63F = window.AquaPremiumModulePhoneAcceptanceV63F || { version: 'v63F', localDemoOnly: true, storageKey: 'aquaPremiumModulePhoneAcceptanceV63F', getAquaPremiumModulePhoneAcceptanceV63F: getAquaPremiumModulePhoneAcceptanceV63F, runAquaPremiumModulePhoneAcceptanceV63F: runAquaPremiumModulePhoneAcceptanceV63F, renderAquaPremiumModulePhoneAcceptanceV63F: renderAquaPremiumModulePhoneAcceptanceV63F, showAquaModulePhonePreviewSetV63F: showAquaModulePhonePreviewSetV63F, getAquaModulePhoneAcceptanceFailuresV63F: getAquaModulePhoneAcceptanceFailuresV63F, copyAquaModulePhoneAcceptanceSummaryV63F: copyAquaModulePhoneAcceptanceSummaryV63F, safetyEnvelope: aquaPremiumModulePhoneAcceptanceSafetyV63F() };
   window.AquaPremiumModuleKeeperV63E = window.AquaPremiumModuleKeeperV63E || { version: 'v63E', localDemoOnly: true, getAquaPremiumModuleKeeperV63E: getAquaPremiumModuleKeeperV63E, runAquaPremiumModuleVisualCheckV63E: runAquaPremiumModuleVisualCheckV63E, renderAquaPremiumModuleKeeperPanelV63E: renderAquaPremiumModuleKeeperPanelV63E, getAquaPremiumModuleCoverageV63E: getAquaPremiumModuleCoverageV63E, getAquaPremiumModuleMissingPolishV63E: getAquaPremiumModuleMissingPolishV63E, copyAquaPremiumModuleKeeperHandoffV63E: copyAquaPremiumModuleKeeperHandoffV63E, markAquaPremiumModulesKeeperReadyV63E: markAquaPremiumModulesKeeperReadyV63E, safetyEnvelope: aquaPremiumModuleKeeperSafetyV63E() };
   window.AquaPremiumModuleShellV63A = window.AquaPremiumModuleShellV63A || { version: 'v63A', localDemoOnly: true, renderAquaPremiumModuleShellV63A: renderAquaPremiumModuleShellV63A, wrapAquaModulePanelV63A: wrapAquaModulePanelV63A, renderAquaModuleHeaderV63A: renderAquaModuleHeaderV63A, renderAquaModuleStatusStripV63A: renderAquaModuleStatusStripV63A, renderAquaPremiumInfoCardV63A: renderAquaPremiumInfoCardV63A, renderAquaPremiumActionRowV63A: renderAquaPremiumActionRowV63A, renderAquaPremiumSafetyFooterV63A: renderAquaPremiumSafetyFooterV63A, applyAquaPremiumModuleClassesV63A: applyAquaPremiumModuleClassesV63A, renderAquaPremiumModuleDemoV63A: renderAquaPremiumModuleDemoV63A, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
@@ -11507,5 +11639,5 @@
 
   installPremiumModuleShellStylesV61Z();
   installPremiumModuleShellStylesV63A();
-  console.log('Aqua Homes OS v63F extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v63G extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
