@@ -1,10 +1,10 @@
-# Aqua Homes OS v62T Regression Report
+# Aqua Homes OS v62U Regression Report
 
-- Timestamp: 2026-06-06T18:04:45.576Z
+- Timestamp: 2026-06-06T18:23:28.550Z
 - Branch: work
-- Commit: a1eea38c9f255f07e912c63903b71b792e303319
-- Total tests: 499
-- Passed: 499
+- Commit: 1726961ecd4a45314462f74a61f20b9d39d5bfd4
+- Total tests: 527
+- Passed: 527
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -16,6 +16,21 @@
 - noLiveRecordChanges: true
 - noAudioStorage: true
 - noBackendNetworkLiveAI: true
+- conversationScenariosExist: true
+- conversationScenarioRunnerWorks: true
+- allConversationScenariosPass: true
+- hendersonReceiptExportScenarioWorks: true
+- hendersonReportReviewScenarioWorks: true
+- spendBudgetScenarioWorks: true
+- cameraPhotoScenarioWorks: true
+- uploadDiagramScenarioStaysLocked: true
+- voiceMishearConversationWorks: true
+- missingInputClarificationScenarioWorks: true
+- manualFallbackConversationWorks: true
+- responseQualityTemplatesWork: true
+- contextContinuityWorks: true
+- visualRoutesOpenDuringScenarios: true
+- permissionGatesShowDuringScenarios: true
 - toolGatewayContractExists: true
 - toolRequestEnvelopeWorks: true
 - toolResponseEnvelopeWorks: true
@@ -275,9 +290,6 @@
 ## Files Changed
 - aqua-regression-report.json
 - aqua-regression-report.md
-- aqua-v61-extensions.js
-- aqua-v61-regression-test.js
-- aqua-brain-live-ux-smoke-v62t.md
 
 ## Failed Commands / Checks
 - None
@@ -317,9 +329,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62T
-- Total: 302
-- Passed: 302
+- Version: v62U
+- Total: 320
+- Passed: 320
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
