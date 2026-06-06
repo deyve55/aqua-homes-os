@@ -1,10 +1,10 @@
-# Aqua Homes OS v62H Regression Report
+# Aqua Homes OS v62I Regression Report
 
-- Timestamp: 2026-06-05T23:44:17.394Z
+- Timestamp: 2026-06-05T23:57:50.033Z
 - Branch: work
-- Commit: c1512c61b2718b487f340decaa3f1965ceb2483e
-- Total tests: 300
-- Passed: 300
+- Commit: b5ac7dc53bfbe55a49bfea04d6170280b8f3292d
+- Total tests: 314
+- Passed: 314
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -63,6 +63,15 @@
 - manualFallbackWorks: true
 - continueUsesWorkflowMemory: true
 - permissionQuestionVoiceStateWorks: true
+- voiceSessionControllerExists: true
+- aquaSessionPanelWorks: true
+- startSessionWorks: true
+- activeProjectContextWorks: true
+- missingInputFollowUpWorks: true
+- accountantExportContextWorks: true
+- continueSessionWorks: true
+- cancelSessionWorks: true
+- manualModeWorks: true
 - aquaBrainCommandCenterWorks: true
 - voiceBrainPlanViewerWorks: true
 - saveVoiceBrainPlanWorks: true
@@ -177,9 +186,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62H
-- Total: 135
-- Passed: 135
+- Version: v62I
+- Total: 140
+- Passed: 140
 - Failed: 0
 
 ## Copyable Codex Repair Prompt

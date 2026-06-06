@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62H';
+const VERSION = 'v62I';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -333,7 +333,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62H', extensionReport.version === 'v62H', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62I', extensionReport.version === 'v62I', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
     addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
@@ -500,6 +500,13 @@ function runExtensionRegression() {
 
     ['voiceInteractionControllerExists','voiceStatePanelWorks','voiceOnOffWorks','repeatLastResponseWorks','stopSpeakingWorks','manualFallbackWorks','continueUsesWorkflowMemory','permissionQuestionVoiceStateWorks'].forEach((flag) => {
       addCheck(`v62H ${flag} is true`, extensionReport[flag] === true, { layer: 'voice-interaction-v62h', actual: extensionReport[flag], fileToFix: EXTENSION });
+    });
+    ['voiceSessionControllerExists','aquaSessionPanelWorks','startSessionWorks','activeProjectContextWorks','missingInputFollowUpWorks','accountantExportContextWorks','continueSessionWorks','cancelSessionWorks','manualModeWorks'].forEach((flag) => {
+      addCheck(`v62I ${flag} is true`, extensionReport[flag] === true, { layer: 'voice-session-v62i', actual: extensionReport[flag], fileToFix: EXTENSION });
+    });
+    ['v62I sequence 1 session project receipts','v62I sequence 2 missing input follow-up','v62I sequence 3 accountant export locked','v62I sequence 4 continue cancel','v62I sequence 5 manual fallback'].forEach((command) => {
+      const row = (extensionReport.results || []).find((result) => result.command === command);
+      addCheck(`v62I session regression: ${command}`, Boolean(row && row.passed), { layer: 'voice-session-v62i', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
     ['voice on','voice off','repeat last response','stop speaking','continue','cancel / clear context','manual controls','read it back after active workflow','what needs approval after active workflow','look up all receipts for Henderson from Home Depot and prepare them for accountant export','show automation report','banana test'].forEach((command) => {
       const row = (extensionReport.results || []).find((result) => result.command === command);
@@ -812,6 +819,15 @@ function markdown(report) {
 ` +
     `- permissionQuestionVoiceStateWorks: ${report.permissionQuestionVoiceStateWorks === true}
 ` +
+    `- voiceSessionControllerExists: ${report.voiceSessionControllerExists === true}\n` +
+    `- aquaSessionPanelWorks: ${report.aquaSessionPanelWorks === true}\n` +
+    `- startSessionWorks: ${report.startSessionWorks === true}\n` +
+    `- activeProjectContextWorks: ${report.activeProjectContextWorks === true}\n` +
+    `- missingInputFollowUpWorks: ${report.missingInputFollowUpWorks === true}\n` +
+    `- accountantExportContextWorks: ${report.accountantExportContextWorks === true}\n` +
+    `- continueSessionWorks: ${report.continueSessionWorks === true}\n` +
+    `- cancelSessionWorks: ${report.cancelSessionWorks === true}\n` +
+    `- manualModeWorks: ${report.manualModeWorks === true}\n` +
     `- aquaBrainCommandCenterWorks: ${report.aquaBrainCommandCenterWorks === true}\n` +
     `- voiceBrainPlanViewerWorks: ${report.voiceBrainPlanViewerWorks === true}\n` +
     `- saveVoiceBrainPlanWorks: ${report.saveVoiceBrainPlanWorks === true}\n` +
@@ -987,6 +1003,15 @@ async function main() {
     manualFallbackWorks: extensionReport ? extensionReport.manualFallbackWorks === true : false,
     continueUsesWorkflowMemory: extensionReport ? extensionReport.continueUsesWorkflowMemory === true : false,
     permissionQuestionVoiceStateWorks: extensionReport ? extensionReport.permissionQuestionVoiceStateWorks === true : false,
+    voiceSessionControllerExists: extensionReport ? extensionReport.voiceSessionControllerExists === true : false,
+    aquaSessionPanelWorks: extensionReport ? extensionReport.aquaSessionPanelWorks === true : false,
+    startSessionWorks: extensionReport ? extensionReport.startSessionWorks === true : false,
+    activeProjectContextWorks: extensionReport ? extensionReport.activeProjectContextWorks === true : false,
+    missingInputFollowUpWorks: extensionReport ? extensionReport.missingInputFollowUpWorks === true : false,
+    accountantExportContextWorks: extensionReport ? extensionReport.accountantExportContextWorks === true : false,
+    continueSessionWorks: extensionReport ? extensionReport.continueSessionWorks === true : false,
+    cancelSessionWorks: extensionReport ? extensionReport.cancelSessionWorks === true : false,
+    manualModeWorks: extensionReport ? extensionReport.manualModeWorks === true : false,
     aquaBrainCommandCenterWorks: extensionReport ? extensionReport.aquaBrainCommandCenterWorks === true : false,
     voiceBrainPlanViewerWorks: extensionReport ? extensionReport.voiceBrainPlanViewerWorks === true : false,
     saveVoiceBrainPlanWorks: extensionReport ? extensionReport.saveVoiceBrainPlanWorks === true : false,
