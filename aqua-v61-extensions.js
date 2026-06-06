@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62K Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor.
+ * Aqua Homes OS v62L Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62K';
+  var VERSION = 'v62L';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -49,6 +49,15 @@
     unsupportedGeneralAskRemainsLockedV61V: false,
     noApiKeysInFrontend: true,
     initialized: true,
+    backendBoundaryExists: true,
+    serverOnlyKeyPolicyWorks: false,
+    backendEndpointMapWorks: false,
+    rolePermissionPlanWorks: false,
+    voiceRealtimeBoundaryWorks: false,
+    deploymentChecklistWorks: false,
+    openAiKeyQuestionStaysLocked: false,
+    chatgptConnectionQuestionStaysLocked: false,
+    liveVoiceQuestionStaysLocked: false,
     workflowPlannerExists: true,
     receiptExportWorkflowWorks: false,
     reportReviewWorkflowWorks: false,
@@ -2007,6 +2016,164 @@
     return window.AquaToolGatewayContractV62J;
   }
 
+
+
+  function createAquaBackendBoundaryV62L() {
+    var forbiddenFrontendSecrets = [
+      'OpenAI API keys',
+      'Google API keys',
+      'Gemini API keys',
+      'accounting provider keys',
+      'payroll provider keys',
+      'bank tokens',
+      'email/SMS provider secrets',
+      'storage bucket secrets',
+      'database credentials',
+      'customer export credentials',
+      'OPENAI_API_KEY',
+      'GOOGLE_API_KEY',
+      'GEMINI_API_KEY',
+      'SECRET_KEY',
+      'PRIVATE_KEY',
+      'access_token',
+      'refresh_token',
+      'client_secret',
+      'sk- prefix values'
+    ];
+    var backendEndpoints = [
+      { method: 'POST', path: '/api/aqua/voice/session', purpose: 'Create short-lived, user-approved realtime voice session token through backend only.', status: 'placeholder_only' },
+      { method: 'POST', path: '/api/aqua/tools/execute', purpose: 'Execute approved backend tool after auth, permissions, audit, risk, and undo checks.', status: 'placeholder_only' },
+      { method: 'POST', path: '/api/aqua/tools/prepare-action', purpose: 'Prepare a proposed action envelope without mutating live records.', status: 'placeholder_only' },
+      { method: 'POST', path: '/api/aqua/permissions/request', purpose: 'Request owner/accounting/admin approval for locked actions.', status: 'placeholder_only' },
+      { method: 'POST', path: '/api/aqua/permissions/approve', purpose: 'Record future approval server-side after required role checks.', status: 'placeholder_only' },
+      { method: 'GET', path: '/api/aqua/projects/:projectId/status', purpose: 'Read project status from future backend index.', status: 'placeholder_only' },
+      { method: 'GET', path: '/api/aqua/projects/:projectId/reports', purpose: 'Read project reports from future backend index.', status: 'placeholder_only' },
+      { method: 'GET', path: '/api/aqua/projects/:projectId/receipts', purpose: 'Read receipt index through future backend permission scope.', status: 'placeholder_only' },
+      { method: 'GET', path: '/api/aqua/projects/:projectId/spend', purpose: 'Read financial summary through future backend/accounting gate.', status: 'placeholder_only' },
+      { method: 'GET', path: '/api/aqua/projects/:projectId/missing-documents', purpose: 'Read missing document checklist from backend index.', status: 'placeholder_only' },
+      { method: 'GET', path: '/api/aqua/projects/:projectId/cameras', purpose: 'Read camera/jobsite mapping from backend index.', status: 'placeholder_only' },
+      { method: 'POST', path: '/api/aqua/projects/:projectId/files/prepare-upload', purpose: 'Prepare secure upload target after auth, scan, and approval gates.', status: 'placeholder_only' },
+      { method: 'POST', path: '/api/aqua/exports/accountant/prepare', purpose: 'Prepare accountant export packet for approval only.', status: 'placeholder_only' },
+      { method: 'POST', path: '/api/aqua/exports/accountant/approve', purpose: 'Approve accountant export server-side after accounting/owner gates.', status: 'placeholder_only' },
+      { method: 'POST', path: '/api/aqua/audit/log', purpose: 'Write immutable audit event before/after tool gateway decisions.', status: 'placeholder_only' },
+      { method: 'POST', path: '/api/aqua/undo/checkpoint', purpose: 'Create rollback checkpoint before any future live mutation.', status: 'placeholder_only' }
+    ];
+    var roles = ['owner_admin', 'accounting_admin', 'project_manager', 'field_worker', 'subcontractor', 'customer_viewer', 'investor_viewer', 'service_technician', 'read_only_auditor'];
+    var permissionLevels = ['read_demo', 'read_project', 'read_financial_summary', 'prepare_action', 'approve_export', 'approve_upload', 'approve_accounting_sync', 'approve_payroll', 'approve_payment', 'backend_admin_enablement'];
+    var rolePermissionMap = {
+      owner_admin: ['read_demo', 'read_project', 'read_financial_summary', 'prepare_action', 'approve_export', 'approve_upload', 'approve_accounting_sync', 'approve_payroll', 'approve_payment', 'backend_admin_enablement'],
+      accounting_admin: ['read_demo', 'read_project', 'read_financial_summary', 'prepare_action', 'approve_export', 'approve_accounting_sync'],
+      project_manager: ['read_demo', 'read_project', 'read_financial_summary', 'prepare_action', 'approve_upload'],
+      field_worker: ['read_demo', 'read_project', 'prepare_action'],
+      subcontractor: ['read_demo', 'read_project'],
+      customer_viewer: ['read_demo', 'read_project'],
+      investor_viewer: ['read_demo', 'read_project', 'read_financial_summary'],
+      service_technician: ['read_demo', 'read_project', 'prepare_action'],
+      read_only_auditor: ['read_demo', 'read_project', 'read_financial_summary']
+    };
+    var actionRules = [
+      'field_worker cannot export accounting',
+      'customer_viewer cannot see payroll/accounting internal data',
+      'investor_viewer cannot see payroll by default',
+      'accounting_admin required for accountant export',
+      'owner_admin required for backend enablement',
+      'owner_admin required for live tool execution activation'
+    ];
+    var voiceRealtimePath = [
+      'User taps/speaks to app.',
+      'Frontend starts a user-approved voice session.',
+      'Secure backend creates short-lived session token.',
+      'Realtime voice layer connects through backend-approved session.',
+      'AI requests tool execution through backend gateway.',
+      'Backend checks auth, permissions, risk, audit, undo.',
+      'Frontend receives visual route + spoken response.',
+      'Live action remains locked until approval.'
+    ];
+    return {
+      version: 'v62L',
+      name: 'Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan',
+      localDemoOnly: true,
+      currentStatus: ['frontend demo only', 'backend locked', 'no live AI connected'],
+      serverOnlySecretBoundary: 'All future AI/provider/accounting/payroll/bank/storage/database secrets must terminate at the backend. The public frontend may request only short-lived backend-approved session artifacts.',
+      noFrontendKeyPolicy: { forbiddenFrontendSecrets: forbiddenFrontendSecrets, allowedLocations: ['secure backend environment variables', 'server-side secret manager', 'deployment platform protected secrets'], forbiddenLocations: ['public GitHub Pages HTML/JS', 'frontend source bundles', 'browser localStorage/sessionStorage', 'client-side config JSON'] },
+      environmentVariablePlan: ['AQUA_OPENAI_API_KEY stored server-side only', 'AQUA_GOOGLE_API_KEY stored server-side only', 'AQUA_GEMINI_API_KEY stored server-side only', 'AQUA_ACCOUNTING_PROVIDER_SECRET stored server-side only', 'AQUA_PAYROLL_PROVIDER_SECRET stored server-side only', 'AQUA_BANK_TOKEN_SECRET stored server-side only', 'AQUA_EMAIL_SMS_PROVIDER_SECRET stored server-side only', 'AQUA_STORAGE_BUCKET_SECRET stored server-side only', 'AQUA_DATABASE_URL stored server-side only', 'AQUA_CUSTOMER_EXPORT_SECRET stored server-side only'],
+      backendEndpointMap: backendEndpoints,
+      authSessionPlan: ['Authenticated backend session required before project data reads.', 'CSRF/session binding required for browser calls.', 'Short-lived realtime token minted only after user-approved microphone flow.', 'Frontend never receives provider master credentials.'],
+      rolePermissionPlan: { roles: roles, permissionLevels: permissionLevels, rolePermissionMap: rolePermissionMap, actionRules: actionRules },
+      toolExecutionBoundary: ['Frontend may prepare/display request envelope only.', 'Backend owns tool execution.', 'Auth/session, role, permission, risk, audit, undo, and approval checks must pass server-side.', 'Live tool execution activation requires owner_admin approval.'],
+      realtimeVoiceBoundary: { path: voiceRealtimePath, rules: ['no always-listening', 'no audio storage', 'user-approved microphone flow', 'short-lived backend session token placeholder only'] },
+      fileUploadBoundary: ['Frontend may ask backend to prepare upload.', 'Backend validates auth, role, project scope, file metadata, malware scan, storage policy, audit, and approval.', 'No direct public frontend storage bucket secret.'],
+      exportAccountingBoundary: ['Accountant export prepare/approve split.', 'accounting_admin required for accountant export.', 'owner_admin may be required for final activation.', 'No customer/accountant export from frontend.'],
+      auditUndoBoundary: ['Audit every request envelope, permission decision, approval decision, and result summary.', 'Create undo checkpoint before any future write/export/upload/sync.', 'Dry-run/audit placeholders only in v62L.'],
+      deploymentReadinessChecklist: ['backend required', 'auth required', 'database required', 'file storage required', 'audit/undo required', 'owner approval required']
+    };
+  }
+
+  function renderListV62L(items) {
+    return '<ul>' + (items || []).map(function (item) { return '<li>' + escapeHTMLV61D(String(item)) + '</li>'; }).join('') + '</ul>';
+  }
+
+  function renderEndpointRowsV62L(endpoints) {
+    return '<div class="folderDetailGrid">' + (endpoints || []).map(function (endpoint) {
+      return '<div class="folderDetailCard"><b>' + escapeHTMLV61D(endpoint.method + ' ' + endpoint.path) + '</b><span>' + escapeHTMLV61D(endpoint.purpose) + '</span><span class="smallMut">placeholder only — no fetch calls, no backend calls</span></div>';
+    }).join('') + '</div>';
+  }
+
+  function renderRolePermissionRowsV62L(plan) {
+    var map = (plan && plan.rolePermissionMap) || {};
+    return '<div class="folderDetailGrid">' + Object.keys(map).map(function (role) {
+      return '<div class="folderDetailCard"><b>' + escapeHTMLV61D(role) + '</b><span>' + escapeHTMLV61D(map[role].join(', ')) + '</span></div>';
+    }).join('') + '</div>' + renderListV62L((plan && plan.actionRules) || []);
+  }
+
+  function backendBoundarySafetyAnswerV62L(question) {
+    if (question === 'openai_key') return 'No. Do not put OpenAI/API keys in the frontend. Future keys must be stored server-side only. A secure backend and environment secret manager are required first.';
+    if (question === 'chatgpt') return 'Not live yet. The tool gateway and backend boundary are being prepared first. Live ChatGPT/OpenAI connection requires server-side keys, auth, permission gates, audit logs, and owner approval.';
+    if (question === 'live_voice') return 'Not live yet. Current voice is local/browser demo only. Realtime voice requires secure backend session tokens and user-approved microphone flow.';
+    return '';
+  }
+
+  function renderAquaBackendBoundaryPanelV62L(intent) {
+    var boundary = window.AquaBackendBoundaryV62L || createAquaBackendBoundaryV62L();
+    var question = intent && intent.boundaryQuestionV62L;
+    var answer = backendBoundarySafetyAnswerV62L(question);
+    var status = '<div class="aqua-v62a-section" data-aqua-v62l-current-status="true"><h4>1. Current Status</h4>' + renderListV62L(boundary.currentStatus) + '</div>';
+    var keys = '<div class="aqua-v62a-section" data-aqua-v62l-server-only-keys="true"><h4>2. Server-Only Keys</h4><p><strong>frontend keys forbidden</strong> — backend env required.</p><p>Frontend must never contain:</p>' + renderListV62L(boundary.noFrontendKeyPolicy.forbiddenFrontendSecrets) + '<p>All future keys must live only in secure backend environment variables, server-side secret manager, or deployment platform protected secrets — never in public GitHub Pages HTML/JS.</p></div>';
+    var endpoints = '<div class="aqua-v62a-section" data-aqua-v62l-backend-endpoints="true"><h4>3. Future Backend Endpoints</h4>' + renderEndpointRowsV62L(boundary.backendEndpointMap) + '</div>';
+    var roles = '<div class="aqua-v62a-section" data-aqua-v62l-role-permissions="true"><h4>4. Roles / Permissions</h4><p><strong>Permission levels:</strong> ' + escapeHTMLV61D(boundary.rolePermissionPlan.permissionLevels.join(', ')) + '</p>' + renderRolePermissionRowsV62L(boundary.rolePermissionPlan) + '</div>';
+    var liveGate = '<div class="aqua-v62a-section" data-aqua-v62l-live-tool-gate="true"><h4>5. Live Tool Execution Gate</h4>' + renderListV62L(['request envelope', 'permission check', 'audit log', 'undo checkpoint', 'approval required']) + '<p><strong>Live action remains locked.</strong> Backend owns execution after owner_admin enablement.</p></div>';
+    var voice = '<div class="aqua-v62a-section" data-aqua-v62l-voice-boundary="true"><h4>6. Voice / Realtime Boundary</h4>' + renderListV62L(boundary.realtimeVoiceBoundary.path) + '<p><strong>session token placeholder</strong> — no always-listening, no audio storage.</p></div>';
+    var checklist = '<div class="aqua-v62a-section" data-aqua-v62l-deployment-checklist="true"><h4>7. Deployment Readiness Checklist</h4>' + renderListV62L(boundary.deploymentReadinessChecklist) + '</div>';
+    var answerHtml = answer ? '<div class="note" data-aqua-v62l-locked-answer="true"><strong>Locked answer:</strong><div>' + escapeHTMLV61D(answer) + '</div></div>' : '';
+    state.backendBoundaryExists = true;
+    state.serverOnlyKeyPolicyWorks = true;
+    state.backendEndpointMapWorks = true;
+    state.rolePermissionPlanWorks = true;
+    state.voiceRealtimeBoundaryWorks = true;
+    state.deploymentChecklistWorks = true;
+    if (question === 'openai_key') state.openAiKeyQuestionStaysLocked = true;
+    if (question === 'chatgpt') state.chatgptConnectionQuestionStaysLocked = true;
+    if (question === 'live_voice') state.liveVoiceQuestionStaysLocked = true;
+    state.noApiKeysInFrontend = true;
+    state.noBackendCalls = true;
+    state.noNetworkCalls = true;
+    state.noExternalAIAPICalls = true;
+    state.noLiveRecordChanges = true;
+    state.noAudioStorage = true;
+    state.noAlwaysListening = true;
+    syncNamespace();
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Backend Boundary — v62L', subtitle: 'Real backend boundary / server-only key vault plan. Planning only; no live connection.', tag: 'Backend Locked', chips: ['Server-Only Keys', 'No Frontend Secrets', 'No Backend Calls', 'No Live AI', 'No Audio Storage'], attrs: { 'data-aqua-v62l-backend-boundary': 'true' }, body: answerHtml + '<div class="aqua-v62a-panel">' + status + keys + endpoints + roles + liveGate + voice + checklist + '</div>', safetyFooter: 'Planning/demo only. No backend calls, no network calls, no external AI/API calls, no API keys in frontend, no live record changes, no uploads, no sends, no exports, no customer/accountant export, no payment/payroll/bank/accounting export, no audio storage, no always-listening.' });
+  }
+
+  function detectAquaBackendBoundaryCommandV62L(original, normalized) {
+    var q = String(normalized || '').trim();
+    if (phraseMatchesV61E(q, ['can we add openai key now'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: 'can we add openai key now', originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L', boundaryQuestionV62L: 'openai_key' };
+    if (phraseMatchesV61E(q, ['can we connect chatgpt now'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: 'can we connect chatgpt now', originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L', boundaryQuestionV62L: 'chatgpt' };
+    if (phraseMatchesV61E(q, ['can aqua use live voice now'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: 'can aqua use live voice now', originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L', boundaryQuestionV62L: 'live_voice' };
+    if (phraseMatchesV61E(q, ['show backend boundary', 'show key vault plan', 'show server key plan', 'show api key safety', 'show backend endpoints', 'show role permissions', 'show voice backend plan', 'show realtime boundary', 'show deployment checklist'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: q, originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L' };
+    return null;
+  }
+
   function detectToolGatewayCommandV62J(original, normalized) {
     var q = String(normalized || '').trim();
     if (/^(show )?(secure )?tool gateway$/.test(q) || /^show backend tool contract$/.test(q) || /^show tool contract$/.test(q) || /^show permission map$/.test(q) || /^show risk map$/.test(q) || /^show approval routes$/.test(q) || /^show blocked frontend actions$/.test(q) || /^show backend readiness$/.test(q)) {
@@ -2280,6 +2447,9 @@
       runAquaCommandRegressionV61Y: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61Z: runAquaCommandRegressionV61L,
       classifyVoiceBrainIntentV61Z: classifyVoiceBrainIntentV61Z,
+      createAquaBackendBoundaryV62L: createAquaBackendBoundaryV62L,
+      renderAquaBackendBoundaryPanelV62L: renderAquaBackendBoundaryPanelV62L,
+      detectAquaBackendBoundaryCommandV62L: detectAquaBackendBoundaryCommandV62L,
       renderVoiceBrainToolPlanV61Z: renderVoiceBrainToolPlanV61Z,
       saveVoiceBrainPlanV62A: saveVoiceBrainPlanV62A,
       showLastVoiceBrainPlanV62A: showLastVoiceBrainPlanV62A,
@@ -2347,7 +2517,10 @@
       clearAquaActiveWorkflowV62G: clearAquaActiveWorkflowV62G,
       continueAquaWorkflowV62G: continueAquaWorkflowV62G,
       classifyAquaFollowUpV62G: classifyAquaFollowUpV62G,
-      renderAquaWorkflowContinuationV62G: renderAquaWorkflowContinuationV62G
+      renderAquaWorkflowContinuationV62G: renderAquaWorkflowContinuationV62G,
+      createAquaBackendBoundaryV62L: createAquaBackendBoundaryV62L,
+      renderAquaBackendBoundaryPanelV62L: renderAquaBackendBoundaryPanelV62L,
+      detectAquaBackendBoundaryCommandV62L: detectAquaBackendBoundaryCommandV62L
     });
     window.AquaVoiceBrainV61Z = createAquaVoiceBrainV61Z();
     window.AquaWorkflowPlannerV62F = { version: VERSION, localDemoOnly: true, storageKey: WORKFLOW_PLAN_KEY_V62F, planAquaWorkflowV62F: planAquaWorkflowV62F, renderAquaWorkflowPlanV62F: renderAquaWorkflowPlanV62F, executeAquaWorkflowStepDemoV62F: executeAquaWorkflowStepDemoV62F, saveAquaWorkflowPlanV62F: saveAquaWorkflowPlanV62F, showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F, clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F, copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F, markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F,
@@ -3246,6 +3419,8 @@
   function classifyAquaAskModeV61U(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
+    var boundary = detectAquaBackendBoundaryCommandV62L(original, q);
+    if (boundary) return { mode: 'backend_boundary_v62l', originalText: original, normalizedText: q, routeHint: boundary };
     var automation = detectAutomationReportCommandV61T(original, q);
     if (automation) return { mode: 'automation_status', originalText: original, normalizedText: q, routeHint: automation };
     if (typeof isAquaSessionCommandV62I === 'function' && isAquaSessionCommandV62I(original)) return { mode: 'voice_session_v62i', originalText: original, normalizedText: q, routeHint: { canonicalIntent: 'aqua_voice_session_v62i', module: 'Aqua Brain Session — v62I' } };
@@ -3312,6 +3487,8 @@
     var q = normalizeAquaPhraseV61E(original);
     var askMode = classifyAquaAskModeV61U(original);
     state.askModeRouterWorks = true;
+    var boundary = detectAquaBackendBoundaryCommandV62L(original, q);
+    if (boundary) return withAskModeV61U(boundary, 'backend_boundary_v62l');
     var gateway = detectToolGatewayCommandV62J(original, q);
     if (gateway) return withAskModeV61U(gateway, 'backend_readiness');
     var workflowContinuation = continueAquaWorkflowV62G(original);
@@ -4346,6 +4523,13 @@
   }
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
+    var boundaryIntentV62L = detectAquaBackendBoundaryCommandV62L(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
+    if (boundaryIntentV62L) {
+      window.AquaBackendBoundaryV62L = window.AquaBackendBoundaryV62L || createAquaBackendBoundaryV62L();
+      var htmlV62L = renderAquaBackendBoundaryPanelV62L(boundaryIntentV62L);
+      if (outputNode) outputNode.innerHTML = htmlV62L;
+      return Object.assign({ askMode: 'backend_boundary_v62l', renderedBackendBoundaryV62L: /Aqua Brain Backend Boundary — v62L/.test(htmlV62L), renderedFallback: false, html: htmlV62L }, boundaryIntentV62L);
+    }
     var dryRunIntentV62K = classifyAquaToolCommandV62K(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
     if (dryRunIntentV62K) {
       ensureAquaToolGatewayRuntimeV62K();
@@ -5622,6 +5806,17 @@
 
   function regressionCommandCasesV61L() {
     return [
+      { command: 'show backend boundary', expected: 'v62L backend boundary panel renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /Current Status[\s\S]*backend locked[\s\S]*Server-Only Keys/i, noFallback: true, backendBoundaryV62L: true },
+      { command: 'show key vault plan', expected: 'v62L key vault plan renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /frontend keys forbidden[\s\S]*backend env required[\s\S]*server-side secret manager/i, noFallback: true, backendBoundaryV62L: true, serverOnlyKeyPolicyV62L: true },
+      { command: 'show api key safety', expected: 'v62L API key safety renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /Do not put OpenAI|OpenAI API keys|Frontend must never contain/i, noFallback: true, backendBoundaryV62L: true, serverOnlyKeyPolicyV62L: true },
+      { command: 'show backend endpoints', expected: 'v62L backend endpoint placeholders render', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /POST \/api\/aqua\/voice\/session[\s\S]*POST \/api\/aqua\/tools\/execute[\s\S]*POST \/api\/aqua\/undo\/checkpoint/i, noFallback: true, backendBoundaryV62L: true, backendEndpointMapV62L: true },
+      { command: 'show role permissions', expected: 'v62L role and permission map renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /owner_admin[\s\S]*accounting_admin[\s\S]*field_worker cannot export accounting/i, noFallback: true, backendBoundaryV62L: true, rolePermissionPlanV62L: true },
+      { command: 'show voice backend plan', expected: 'v62L voice backend plan renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /Voice \/ Realtime Boundary[\s\S]*short-lived session token[\s\S]*no audio storage/i, noFallback: true, backendBoundaryV62L: true, voiceRealtimeBoundaryV62L: true },
+      { command: 'show realtime boundary', expected: 'v62L realtime boundary renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /Realtime voice layer connects through backend-approved session[\s\S]*Live action remains locked until approval/i, noFallback: true, backendBoundaryV62L: true, voiceRealtimeBoundaryV62L: true },
+      { command: 'show deployment checklist', expected: 'v62L deployment checklist renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /Deployment Readiness Checklist[\s\S]*backend required[\s\S]*owner approval required/i, noFallback: true, backendBoundaryV62L: true, deploymentChecklistV62L: true },
+      { command: 'can we add openai key now', expected: 'v62L OpenAI key question remains locked', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /No\. Do not put OpenAI\/API keys in the frontend[\s\S]*server-side only[\s\S]*environment secret manager/i, noFallback: true, backendBoundaryV62L: true, openAiKeyLockedV62L: true },
+      { command: 'can we connect chatgpt now', expected: 'v62L ChatGPT connection question remains locked', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /Not live yet[\s\S]*server-side keys[\s\S]*owner approval/i, noFallback: true, backendBoundaryV62L: true, chatgptLockedV62L: true },
+      { command: 'can aqua use live voice now', expected: 'v62L live voice question remains locked', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /Not live yet[\s\S]*local\/browser demo only[\s\S]*secure backend session tokens/i, noFallback: true, backendBoundaryV62L: true, liveVoiceLockedV62L: true },
       { command: 'show tool gateway', expected: 'v62J secure tool gateway panel renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /backend locked \/ contract only|Tool request envelope summary|Blocked frontend actions/i, noFallback: true, toolGatewayV62J: true },
       { command: 'show secure tool gateway', expected: 'v62J secure gateway alias renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Tool response envelope summary|Tool contract count/i, noFallback: true, toolGatewayV62J: true },
       { command: 'show backend tool contract', expected: 'v62J backend tool contract renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /20<\/strong> locked future backend tools|frontend execution allowed/i, noFallback: true, toolGatewayV62J: true },
@@ -5921,6 +6116,15 @@
       renderedFocusedRouteMarkerV62E: /data-aqua-v62e-focused-route="true"|aqua-v62e-focused-route|Focused by Aqua Brain/i.test(html),
       renderedSecureToolGatewayV62J: /Aqua Brain Secure Tool Gateway — v62J|data-aqua-v62j-secure-tool-gateway/i.test(html),
       renderedToolGatewayDryRunV62K: /Aqua Tool Gateway Dry Run — v62K|data-aqua-v62k-tool-dry-run/i.test(html),
+      renderedBackendBoundaryV62L: /Aqua Brain Backend Boundary — v62L|data-aqua-v62l-backend-boundary/i.test(html),
+      serverOnlyKeyPolicyV62L: /frontend keys forbidden|server-side secret manager|backend env required/i.test(html),
+      backendEndpointMapV62L: /POST \/api\/aqua\/voice\/session|POST \/api\/aqua\/tools\/execute|POST \/api\/aqua\/undo\/checkpoint/i.test(html),
+      rolePermissionPlanV62L: /owner_admin|accounting_admin|field_worker cannot export accounting/i.test(html),
+      voiceRealtimeBoundaryV62L: /Voice \/ Realtime Boundary|short-lived session token|backend-approved session/i.test(html),
+      deploymentChecklistV62L: /Deployment Readiness Checklist|backend required|owner approval required/i.test(html),
+      openAiKeyLockedV62L: /No\. Do not put OpenAI\/API keys in the frontend/i.test(html),
+      chatgptLockedV62L: /Not live yet[\s\S]*Live ChatGPT\/OpenAI connection/i.test(html),
+      liveVoiceLockedV62L: /Not live yet[\s\S]*Realtime voice requires secure backend session tokens/i.test(html),
       toolNameV62K: intent && intent.toolName,
       lockedExportV62K: /Live Export Locked|live export locked/i.test(html) && /no accountant export|no export/i.test(html),
       lockedUploadV62K: /Live Upload Locked|live upload locked/i.test(html) && /no file upload|no upload/i.test(html),
@@ -5988,6 +6192,15 @@
     if (testCase.spokenDraft && !actual.spokenResponseDraft) errors.push('Expected spoken response draft.');
     if (testCase.visualFocus && !actual.renderedVisualRouteFocusV62C) errors.push('Expected v62C focused visual route section.');
     if (testCase.openedFocus && !(actual.openedFocusLabelV62C || '').match(testCase.openedFocus)) errors.push('Expected Opened and focused marker matching ' + testCase.openedFocus + ' but got ' + (actual.openedFocusLabelV62C || 'none') + '.');
+    if (testCase.backendBoundaryV62L && !actual.renderedBackendBoundaryV62L) errors.push('Expected v62L backend boundary panel, but it did not render.');
+    if (testCase.serverOnlyKeyPolicyV62L && !actual.serverOnlyKeyPolicyV62L) errors.push('Expected v62L server-only key policy, but it did not render.');
+    if (testCase.backendEndpointMapV62L && !actual.backendEndpointMapV62L) errors.push('Expected v62L backend endpoint map, but it did not render.');
+    if (testCase.rolePermissionPlanV62L && !actual.rolePermissionPlanV62L) errors.push('Expected v62L role/permission plan, but it did not render.');
+    if (testCase.voiceRealtimeBoundaryV62L && !actual.voiceRealtimeBoundaryV62L) errors.push('Expected v62L voice/realtime boundary, but it did not render.');
+    if (testCase.deploymentChecklistV62L && !actual.deploymentChecklistV62L) errors.push('Expected v62L deployment checklist, but it did not render.');
+    if (testCase.openAiKeyLockedV62L && !actual.openAiKeyLockedV62L) errors.push('Expected v62L OpenAI/API key question to stay locked.');
+    if (testCase.chatgptLockedV62L && !actual.chatgptLockedV62L) errors.push('Expected v62L ChatGPT question to stay locked.');
+    if (testCase.liveVoiceLockedV62L && !actual.liveVoiceLockedV62L) errors.push('Expected v62L live voice question to stay locked.');
     if (testCase.toolGatewayV62J && !actual.renderedSecureToolGatewayV62J) errors.push('Expected v62J secure tool gateway panel, but it did not render.');
     if (testCase.frontendBlockRulesV62J && !actual.renderedFrontendBlockRulesV62J) errors.push('Expected v62J frontend block rules, but they did not render.');
     if (testCase.gatewayQuestionLockedV62J && !actual.gatewayQuestionLockedV62J) errors.push('Expected v62J permission question to remain locked.');
@@ -6386,6 +6599,15 @@
       riskMapWorks: state.riskMapWorks === true,
       approvalRoutesWork: state.approvalRoutesWork === true,
       frontendBlockRulesWork: state.frontendBlockRulesWork === true,
+      backendBoundaryExists: Boolean(window.AquaBackendBoundaryV62L) && results.some(function (result) { return result.command === 'show backend boundary' && result.passed && result.actual.renderedBackendBoundaryV62L; }),
+      serverOnlyKeyPolicyWorks: results.some(function (result) { return (result.command === 'show key vault plan' || result.command === 'show api key safety') && result.passed && result.actual.serverOnlyKeyPolicyV62L; }),
+      backendEndpointMapWorks: results.some(function (result) { return result.command === 'show backend endpoints' && result.passed && result.actual.backendEndpointMapV62L; }),
+      rolePermissionPlanWorks: results.some(function (result) { return result.command === 'show role permissions' && result.passed && result.actual.rolePermissionPlanV62L; }),
+      voiceRealtimeBoundaryWorks: results.some(function (result) { return (result.command === 'show voice backend plan' || result.command === 'show realtime boundary') && result.passed && result.actual.voiceRealtimeBoundaryV62L; }),
+      deploymentChecklistWorks: results.some(function (result) { return result.command === 'show deployment checklist' && result.passed && result.actual.deploymentChecklistV62L; }),
+      openAiKeyQuestionStaysLocked: results.some(function (result) { return result.command === 'can we add openai key now' && result.passed && result.actual.openAiKeyLockedV62L; }),
+      chatgptConnectionQuestionStaysLocked: results.some(function (result) { return result.command === 'can we connect chatgpt now' && result.passed && result.actual.chatgptLockedV62L; }),
+      liveVoiceQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua use live voice now' && result.passed && result.actual.liveVoiceLockedV62L; }),
       exportQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua export yet' && result.passed && result.actual.gatewayQuestionLockedV62J; }),
       uploadQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua upload yet' && result.passed && result.actual.gatewayQuestionLockedV62J; }),
       chatgptConnectionQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua connect to chatgpt yet' && result.passed && result.actual.gatewayQuestionLockedV62J; }),
@@ -6874,6 +7096,7 @@
   }
 
   ensureToolGatewayContractV62J();
+  window.AquaBackendBoundaryV62L = window.AquaBackendBoundaryV62L || createAquaBackendBoundaryV62L();
   ensureAquaToolGatewayRuntimeV62K();
   mergeNamespace();
   installCommandNormalizerV61E();
@@ -6890,5 +7113,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62K extensions loaded: secure tool gateway mock runtime active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62L extensions loaded: backend boundary and server-only key vault plan active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());

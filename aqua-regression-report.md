@@ -1,10 +1,10 @@
-# Aqua Homes OS v62K Regression Report
+# Aqua Homes OS v62L Regression Report
 
-- Timestamp: 2026-06-06T01:00:46.864Z
+- Timestamp: 2026-06-06T14:31:54.650Z
 - Branch: work
-- Commit: 7d1753beefa3ed69408e4c4be7a9e45020fd8854
-- Total tests: 314
-- Passed: 314
+- Commit: 964435b5c5d8ec9f282088e9ed854546d2202169
+- Total tests: 329
+- Passed: 329
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -24,6 +24,15 @@
 - riskMapWorks: true
 - approvalRoutesWork: true
 - frontendBlockRulesWork: true
+- backendBoundaryExists: true
+- serverOnlyKeyPolicyWorks: true
+- backendEndpointMapWorks: true
+- rolePermissionPlanWorks: true
+- voiceRealtimeBoundaryWorks: true
+- deploymentChecklistWorks: true
+- openAiKeyQuestionStaysLocked: true
+- chatgptConnectionQuestionStaysLocked: true
+- liveVoiceQuestionStaysLocked: true
 - exportQuestionStaysLocked: true
 - uploadQuestionStaysLocked: true
 - chatgptConnectionQuestionStaysLocked: true
@@ -169,6 +178,7 @@
 - aqua-regression-report.md
 - aqua-v61-extensions.js
 - aqua-v61-regression-test.js
+- aqua-backend-boundary-v62l.md
 
 ## Failed Commands / Checks
 - None
@@ -185,6 +195,7 @@
 - noAudioStorage: PASS
 - noAlwaysListening: PASS
 - noExternalTTSApiCalls: PASS
+- noApiKeysInFrontend: PASS
 
 ## Browser Visual Test
 - Status: skipped
@@ -207,9 +218,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62K
-- Total: 163
-- Passed: 163
+- Version: v62L
+- Total: 174
+- Passed: 174
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
