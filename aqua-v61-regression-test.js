@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62K';
+const VERSION = 'v62L';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -282,6 +282,10 @@ function checkStaticFiles() {
   addCheck('v62E AI navigation executor strings exist', /executeAquaVoiceNavigationV62E/.test(extension) && /openAquaModuleForToolV62E/.test(extension) && /focusAquaSectionForToolV62E/.test(extension) && /renderAquaFocusedResultV62E/.test(extension), { layer: 'ai-navigation-v62e', fileToFix: EXTENSION });
   addCheck('v62E focused route marker strings exist', /aqua-v62e-focused-route/.test(extension) && /Focused by Aqua Brain/.test(extension) && /Opened and focused:/.test(extension), { layer: 'ai-navigation-v62e', fileToFix: EXTENSION });
   addCheck('v62D live in-app regression runner strings exist', /runLiveInAppRegressionReportV62D/.test(extension) && /data-aqua-v62d-live-regression/.test(extension) && /aquaRegressionReportSyncV62D/.test(extension), { layer: 'live-in-app-regression-v62d', fileToFix: EXTENSION });
+  addCheck('v62L backend boundary architecture exists', /window\.AquaBackendBoundaryV62L|function\s+createAquaBackendBoundaryV62L/.test(extension) && /Aqua Brain Backend Boundary — v62L/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
+  addCheck('v62L server-only key policy strings exist', /serverOnlyKeyPolicyWorks/.test(extension) && /Frontend must never contain/.test(extension) && /secure backend environment variables/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
+  addCheck('v62L backend endpoint map strings exist', /backendEndpointMapWorks/.test(extension) && /path: '\/api\/aqua\/voice\/session'|\/api\/aqua\/voice\/session/.test(extension) && /path: '\/api\/aqua\/tools\/execute'|\/api\/aqua\/tools\/execute/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
+  addCheck('v62L role permission plan strings exist', /rolePermissionPlanWorks/.test(extension) && /owner_admin/.test(extension) && /field_worker cannot export accounting/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
   addCheck('v62F workflow planner architecture exists', /AquaWorkflowPlannerV62F/.test(extension) && /function\s+planAquaWorkflowV62F/.test(extension) && /Aqua Brain Workflow Plan — v62F/.test(extension) && /aquaWorkflowPlansV62F/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
   addCheck('v62F workflow report flags exist', /receiptExportWorkflowWorks/.test(extension) && /uploadWorkflowStaysLocked/.test(extension) && /ownerReviewDemoWorks/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
   addCheck('v62G workflow memory architecture exists', /AquaWorkflowMemoryV62G/.test(extension) && /function\s+continueAquaWorkflowV62G/.test(extension) && /Aqua Brain Workflow Continuation — v62G/.test(extension) && /aquaActiveWorkflowV62G/.test(extension), { layer: 'workflow-memory-v62g', fileToFix: EXTENSION });
@@ -333,7 +337,16 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62K', extensionReport.version === 'v62K', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62L', extensionReport.version === 'v62L', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('v62L backendBoundaryExists is true', extensionReport.backendBoundaryExists === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendBoundaryExists, fileToFix: EXTENSION });
+    addCheck('v62L serverOnlyKeyPolicyWorks is true', extensionReport.serverOnlyKeyPolicyWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.serverOnlyKeyPolicyWorks, fileToFix: EXTENSION });
+    addCheck('v62L backendEndpointMapWorks is true', extensionReport.backendEndpointMapWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendEndpointMapWorks, fileToFix: EXTENSION });
+    addCheck('v62L rolePermissionPlanWorks is true', extensionReport.rolePermissionPlanWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.rolePermissionPlanWorks, fileToFix: EXTENSION });
+    addCheck('v62L voiceRealtimeBoundaryWorks is true', extensionReport.voiceRealtimeBoundaryWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.voiceRealtimeBoundaryWorks, fileToFix: EXTENSION });
+    addCheck('v62L deploymentChecklistWorks is true', extensionReport.deploymentChecklistWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.deploymentChecklistWorks, fileToFix: EXTENSION });
+    addCheck('v62L OpenAI key question stays locked', extensionReport.openAiKeyQuestionStaysLocked === true, { layer: 'backend-boundary-v62l', actual: extensionReport.openAiKeyQuestionStaysLocked, fileToFix: EXTENSION });
+    addCheck('v62L ChatGPT connection question stays locked', extensionReport.chatgptConnectionQuestionStaysLocked === true, { layer: 'backend-boundary-v62l', actual: extensionReport.chatgptConnectionQuestionStaysLocked, fileToFix: EXTENSION });
+    addCheck('v62L live voice question stays locked', extensionReport.liveVoiceQuestionStaysLocked === true, { layer: 'backend-boundary-v62l', actual: extensionReport.liveVoiceQuestionStaysLocked, fileToFix: EXTENSION });
     addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
     addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
@@ -635,6 +648,39 @@ async function runBrowserVisualTestIfAvailable() {
   }
 }
 
+
+function scanFrontendForSecretsV62L() {
+  const frontendFiles = [HTML_KEEPER, EXTENSION, 'index.html', 'docs/index.html'].filter(fileExists);
+  const risky = [
+    { label: 'sk-', pattern: /sk-[A-Za-z0-9_-]{8,}/g },
+    { label: 'OPENAI_API_KEY', pattern: /OPENAI_API_KEY/g },
+    { label: 'GOOGLE_API_KEY', pattern: /GOOGLE_API_KEY/g },
+    { label: 'GEMINI_API_KEY', pattern: /GEMINI_API_KEY/g },
+    { label: 'SECRET_KEY', pattern: /SECRET_KEY/g },
+    { label: 'PRIVATE_KEY', pattern: /PRIVATE_KEY/g },
+    { label: 'access_token', pattern: /access_token/g },
+    { label: 'refresh_token', pattern: /refresh_token/g },
+    { label: 'client_secret', pattern: /client_secret/g }
+  ];
+  const findings = [];
+  frontendFiles.forEach((file) => {
+    const text = readFileSafe(file);
+    risky.forEach((rule) => {
+      let match;
+      rule.pattern.lastIndex = 0;
+      while ((match = rule.pattern.exec(text))) {
+        const start = Math.max(0, match.index - 900);
+        const end = Math.min(text.length, match.index + 900);
+        const context = text.slice(start, end);
+        const line = text.slice(0, match.index).split('\n').length;
+        const safeExplanatory = /forbiddenFrontendSecrets|noFrontendKeyPolicy|environmentVariablePlan|Frontend must never contain|server-side only|stored server-side only|API key safety|server-only key/i.test(context);
+        if (!safeExplanatory) findings.push({ file, line, label: rule.label, excerpt: text.slice(Math.max(0, match.index - 80), Math.min(text.length, match.index + 80)) });
+      }
+    });
+  });
+  return { passed: findings.length === 0, findings };
+}
+
 function runSafetyGate() {
   const extension = readFileSafe(EXTENSION);
   const test = readFileSafe('aqua-v61-regression-test.js');
@@ -642,6 +688,7 @@ function runSafetyGate() {
   const executableNetworkPattern = /\b(fetch|XMLHttpRequest|sendBeacon|WebSocket|EventSource|RTCPeerConnection)\s*[\(.]/;
   const liveApiPattern = /(authorization:\s*bearer|sk-[A-Za-z0-9_-]{20,}|api[_-]?key\s*[:=]\s*['"][^'"]+['"]|https?:\/\/api\.)/i;
   const combined = [extension, test, workflow].join('\n');
+  const secretScanV62L = scanFrontendForSecretsV62L();
   const safetyChecks = {
     noBackendCalls: !/backend\s*\(/i.test(combined),
     noNetworkCalls: !executableNetworkPattern.test(extension) && !executableNetworkPattern.test(workflow),
@@ -653,8 +700,10 @@ function runSafetyGate() {
     noCustomerSharingExport: !/customer\s*(sharing|export)\s*\(/i.test(extension),
     noAudioStorage: !/MediaRecorder|new\s+Blob\s*\([^)]*audio|audio\/webm|audio\/mpeg|audio\/wav/i.test(extension),
     noAlwaysListening: !/continuous\s*=\s*true/i.test(extension),
-    noExternalTTSApiCalls: !/https?:\/\/|fetch\s*\(|XMLHttpRequest|sendBeacon/i.test(extension)
+    noExternalTTSApiCalls: !/https?:\/\/|fetch\s*\(|XMLHttpRequest|sendBeacon/i.test(extension),
+    noApiKeysInFrontend: secretScanV62L.passed === true
   };
+  addCheck('v62L frontend secret scan allows only explanatory server-only policy strings', secretScanV62L.passed === true, { layer: 'backend-boundary-v62l', actual: secretScanV62L.findings, fileToFix: EXTENSION });
   Object.entries(safetyChecks).forEach(([name, value]) => addCheck(`safety gate: ${name}`, value === true, { layer: 'safety-gate', fileToFix: EXTENSION }));
   return safetyChecks;
 }
@@ -772,6 +821,24 @@ function markdown(report) {
     `- riskMapWorks: ${report.riskMapWorks === true}\n` +
     `- approvalRoutesWork: ${report.approvalRoutesWork === true}\n` +
     `- frontendBlockRulesWork: ${report.frontendBlockRulesWork === true}\n` +
+    `- backendBoundaryExists: ${report.backendBoundaryExists === true}
+` +
+    `- serverOnlyKeyPolicyWorks: ${report.serverOnlyKeyPolicyWorks === true}
+` +
+    `- backendEndpointMapWorks: ${report.backendEndpointMapWorks === true}
+` +
+    `- rolePermissionPlanWorks: ${report.rolePermissionPlanWorks === true}
+` +
+    `- voiceRealtimeBoundaryWorks: ${report.voiceRealtimeBoundaryWorks === true}
+` +
+    `- deploymentChecklistWorks: ${report.deploymentChecklistWorks === true}
+` +
+    `- openAiKeyQuestionStaysLocked: ${report.openAiKeyQuestionStaysLocked === true}
+` +
+    `- chatgptConnectionQuestionStaysLocked: ${report.chatgptConnectionQuestionStaysLocked === true}
+` +
+    `- liveVoiceQuestionStaysLocked: ${report.liveVoiceQuestionStaysLocked === true}
+` +
     `- exportQuestionStaysLocked: ${report.exportQuestionStaysLocked === true}\n` +
     `- uploadQuestionStaysLocked: ${report.uploadQuestionStaysLocked === true}\n` +
     `- chatgptConnectionQuestionStaysLocked: ${report.chatgptConnectionQuestionStaysLocked === true}\n` +
@@ -1099,13 +1166,22 @@ async function main() {
     markReviewReadyDemoWorks: extensionReport ? extensionReport.markReviewReadyDemoWorks === true : false,
     clearSowReviewQueueWorks: extensionReport ? extensionReport.clearSowReviewQueueWorks === true : false,
     noLiveSowCreated: extensionReport ? extensionReport.noLiveSowCreated === true : false,
+    backendBoundaryExists: extensionReport ? extensionReport.backendBoundaryExists === true : false,
+    serverOnlyKeyPolicyWorks: extensionReport ? extensionReport.serverOnlyKeyPolicyWorks === true : false,
+    backendEndpointMapWorks: extensionReport ? extensionReport.backendEndpointMapWorks === true : false,
+    rolePermissionPlanWorks: extensionReport ? extensionReport.rolePermissionPlanWorks === true : false,
+    voiceRealtimeBoundaryWorks: extensionReport ? extensionReport.voiceRealtimeBoundaryWorks === true : false,
+    deploymentChecklistWorks: extensionReport ? extensionReport.deploymentChecklistWorks === true : false,
+    openAiKeyQuestionStaysLocked: extensionReport ? extensionReport.openAiKeyQuestionStaysLocked === true : false,
+    chatgptConnectionQuestionStaysLocked: extensionReport ? extensionReport.chatgptConnectionQuestionStaysLocked === true : false,
+    liveVoiceQuestionStaysLocked: extensionReport ? extensionReport.liveVoiceQuestionStaysLocked === true : false,
     noLiveEstimateCreated: extensionReport ? extensionReport.noLiveEstimateCreated === true : false,
     noCustomerExport: extensionReport ? extensionReport.noCustomerExport === true : false,
     noBackendCalls: safetyStatus.noBackendCalls === true,
     noNetworkCalls: extensionReport ? extensionReport.noNetworkCalls === true : false,
     noExternalAIApiCalls: safetyStatus.noLiveAIApiCalls === true,
     noExternalAIAPICalls: safetyStatus.noLiveAIApiCalls === true,
-    noApiKeysInFrontend: extensionReport ? extensionReport.noApiKeysInFrontend === true : false,
+    noApiKeysInFrontend: (extensionReport ? extensionReport.noApiKeysInFrontend === true : false) && safetyStatus.noApiKeysInFrontend === true,
     noLiveRecordChanges: extensionReport ? extensionReport.noLiveRecordChanges === true : false,
     noAudioStorage: safetyStatus.noAudioStorage === true,
     noAlwaysListening: safetyStatus.noAlwaysListening === true,
