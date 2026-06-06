@@ -1,10 +1,10 @@
-# Aqua Homes OS v62O Regression Report
+# Aqua Homes OS v62P Regression Report
 
-- Timestamp: 2026-06-06T16:37:39.615Z
+- Timestamp: 2026-06-06T16:51:48.021Z
 - Branch: work
-- Commit: c2dc5b86e9fd2f084eb92c8d8e6c89ca4b205aff
-- Total tests: 391
-- Passed: 391
+- Commit: ce60aae074f712f4cc846728405966061631fdab
+- Total tests: 413
+- Passed: 413
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -63,6 +63,18 @@
 - approvalAliasWorks: true
 - clarificationForAmbiguousCommandWorks: true
 - automationCommandsStillRouteFirst: true
+- e2eRoutingMatrixExists: true
+- e2eRoutingMatrixRuns: true
+- allE2ERoutesPass: true
+- fuzzyToIntentToRouteChainWorks: true
+- workflowChainWorks: true
+- sessionChainWorks: true
+- visualFocusChainWorks: true
+- readbackChainWorks: true
+- permissionGateChainWorks: true
+- automationRoutePriorityWorks: true
+- unknownFallbackStillWorks: true
+- clarificationPathWorks: true
 - backendSchemaExists: true
 - entityContractsExist: true
 - relationshipMapWorks: true
@@ -230,6 +242,7 @@
 - aqua-regression-report.md
 - aqua-v61-extensions.js
 - aqua-v61-regression-test.js
+- aqua-brain-e2e-speech-routing-v62p.md
 
 ## Failed Commands / Checks
 - None
@@ -269,9 +282,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62O
-- Total: 226
-- Passed: 226
+- Version: v62P
+- Total: 245
+- Passed: 245
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
