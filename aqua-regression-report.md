@@ -1,10 +1,10 @@
-# Aqua Homes OS v62S Regression Report
+# Aqua Homes OS v62T Regression Report
 
-- Timestamp: 2026-06-06T17:51:16.986Z
+- Timestamp: 2026-06-06T18:04:45.576Z
 - Branch: work
-- Commit: faa4dfb3da570cb93629cd663d56e4f6392b4511
-- Total tests: 478
-- Passed: 478
+- Commit: a1eea38c9f255f07e912c63903b71b792e303319
+- Total tests: 499
+- Passed: 499
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -277,6 +277,7 @@
 - aqua-regression-report.md
 - aqua-v61-extensions.js
 - aqua-v61-regression-test.js
+- aqua-brain-live-ux-smoke-v62t.md
 
 ## Failed Commands / Checks
 - None
@@ -316,9 +317,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62S
-- Total: 289
-- Passed: 289
+- Version: v62T
+- Total: 302
+- Passed: 302
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
