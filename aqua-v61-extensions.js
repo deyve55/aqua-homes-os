@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62S Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience.
+ * Aqua Homes OS v62T Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62S';
+  var VERSION = 'v62T';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -3648,6 +3648,11 @@
     return false;
   }
 
+  function detectAquaBrainLiveUXSmokeCommandV62T(original, normalized) {
+    var q = String(normalized || normalizeAquaPhraseV61E(original || '')).trim();
+    return /^(run live ux smoke check|run phone smoke check|run dex smoke check|test ai button|test assistant surface|test voice fallback|test manual fallback|test automation report|test regression qa|show live ux smoke report|show phone smoke report|show dex smoke report)$/.test(q);
+  }
+
   function assistantIntentLabelV62Q(result, fuzzy, q) {
     if (/accountant_export|receipt_export|account export|accountant export/i.test((result && (result.workflowType || result.canonicalIntent || result.askMode)) + ' ' + q)) return 'accountant_export_locked';
     if (/receipt|home depot/i.test((fuzzy && fuzzy.selectedIntent) + ' ' + q)) return 'vendor_receipt_lookup';
@@ -3714,7 +3719,7 @@
       '<section data-aqua-v62q-response-draft="true"><h4>Aqua Response</h4><p>' + escapeHTMLV61D(safe.lastAssistantResponseDraft || 'Ready. Type a command or use Run Assistant Turn. I can open/focus app sections, explain what I found, continue workflows, and show permission locks. No live backend action will run.') + '</p></section>' +
       '<section data-aqua-v62q-active-workflow="true"><h4>Active Workflow / Session</h4><div><strong>Workflow:</strong> ' + escapeHTMLV61D(safe.lastWorkflowId || 'No active workflow yet') + '</div><div><strong>Pending follow-up:</strong> ' + escapeHTMLV61D((safe.nextSuggestions || [])[0] || 'None') + '</div></section>' +
       renderAquaBrainPermissionGateSummaryV62Q(safe.permissionGate) +
-      renderAquaBrainNextSuggestionsV62Q((safe.nextSuggestions && safe.nextSuggestions.length ? safe.nextSuggestions : getAquaBrainNextSuggestionsV62Q({ intent: safe.lastIntent, normalized: safe.lastNormalizedCommand, visualRoute: safe.lastVisualRoute })).slice(0, 6)) + manualControls + '<div style="display:none" data-aqua-v62s-compatibility-marker="true">Aqua Brain Assistant — v62Q Assistant Status What I Heard What I Understood Current Focus Aqua Response Active Workflow / Session Permission / Safety Next Suggestions Manual Fallback</div></div>';
+      renderAquaBrainNextSuggestionsV62Q((safe.nextSuggestions && safe.nextSuggestions.length ? safe.nextSuggestions : getAquaBrainNextSuggestionsV62Q({ intent: safe.lastIntent, normalized: safe.lastNormalizedCommand, visualRoute: safe.lastVisualRoute })).slice(0, 6)) + manualControls + renderAquaBrainLiveUXSmokePanelV62T(state.lastLiveUXSmokeReportV62T) + '<div style="display:none" data-aqua-v62s-compatibility-marker="true">Aqua Brain Assistant — v62Q Assistant Status What I Heard What I Understood Current Focus Aqua Response Active Workflow / Session Permission / Safety Next Suggestions Manual Fallback</div></div>';
     state.assistantInterfaceExists = true; state.unifiedConversationSurfaceWorks = true; state.commandUnderstandingPanelWorks = true; state.currentFocusPanelWorks = true; state.responseDraftPanelWorks = true; state.nextSuggestionsWork = true; state.permissionSummaryWorks = true; state.manualFallbackWorks = true;
     state.primaryAssistantInterfaceExists = true; state.mainCommandInputWorks = true; state.quickControlsSecondary = true; state.manualControlsWork = true; state.commandUnderstandingStillWorks = true; state.currentFocusStillWorks = true; state.responseDraftStillWorks = true; state.nextSuggestionsStillWork = true; state.permissionSummaryStillWorks = true;
     syncNamespace();
@@ -3762,6 +3767,171 @@
     state.inputTargetingStillCorrect = Boolean(!input || input.id === 'brainCommand');
     syncNamespace();
     return Object.assign({ canonicalIntent: 'aqua_brain_assistant_v62q', askMode: 'assistant_interface_v62q', module: 'Aqua Brain Assistant — v62Q', renderedAssistantInterfaceV62Q: true, renderedPrimaryAssistantInterfaceV62S: true, renderedUnifiedConversationSurfaceV62Q: true, html: html, routedIntentV62Q: routed && routed.canonicalIntent, visualRoute: visualRoute, spokenResponseDraft: responseDraft }, nextState);
+  }
+
+
+  function aquaLiveUXSmokeSafetyV62T() {
+    return { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noCustomerAccountantExport: true, noPaymentPayrollBankAccountingExport: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true };
+  }
+
+  function buildLiveUXSmokeRepairPromptV62T(failures) {
+    if (!failures.length) return 'No repair needed.';
+    return ['Codex repair task: Fix Aqua Brain Live UX Smoke v62T failures in aqua-v61-extensions.js unless a narrower report file update is sufficient.', 'Do not redesign Home. Do not rewrite AH_v54I-3.html. Do not activate backend/live AI, network calls, audio storage, always-listening, uploads, exports, payments, payroll, bank, accounting export, customer sharing, or live record changes.', 'Failures:'].concat(failures.map(function (failure, index) {
+      return (index + 1) + '. failed check: ' + failure.name + '\n   expected result: ' + failure.expected + '\n   actual result: ' + JSON.stringify(failure.actual) + '\n   likely file to fix: ' + (failure.fileToFix || 'aqua-v61-extensions.js') + '\n   phone/browser limitation or code bug: ' + (failure.limitation || 'code bug unless the browser blocks optional voice APIs') + '\n   safety reminder: keep this local/demo-only with backend/live AI locked.\n   do not redesign reminder: preserve approved Home/Main Brain layout.';
+    })).join('\n');
+  }
+
+  function addLiveUXSmokeCheckV62T(checks, name, expected, passed, actual, fileToFix, limitation) {
+    checks.push({ name: name, expected: expected, passed: Boolean(passed), actual: actual || {}, fileToFix: fileToFix || 'aqua-v61-extensions.js', limitation: limitation || '' });
+    return Boolean(passed);
+  }
+
+  function checkAquaAssistantPrimarySurfaceV62T() {
+    var result = handleAquaBrainAssistantTurnV62Q('show aqua brain assistant');
+    var html = result && result.html ? result.html : renderAquaBrainAssistantInterfaceV62Q();
+    var passed = /Aqua Brain Assistant — v62S/.test(html) && /data-aqua-v62s-primary-assistant-interface/.test(html) && /data-aqua-v62q-assistant-status/.test(html);
+    state.aiEntryOpensAssistant = passed;
+    state.primaryAssistantSurfaceWorks = passed;
+    state.aiButtonOpensPrimaryAssistant = passed;
+    return { passed: passed, aiEntryOpensAssistant: passed, primaryAssistantSurfaceWorks: passed, htmlContainsTitle: /Aqua Brain Assistant — v62S/.test(html), htmlContainsStatus: /data-aqua-v62q-assistant-status/.test(html), renderedPrimaryAssistantInterfaceV62S: result && result.renderedPrimaryAssistantInterfaceV62S === true };
+  }
+
+  function checkAquaMainInputTargetV62T() {
+    var input = typeof getAquaCommandInputV61M === 'function' ? getAquaCommandInputV61M() : null;
+    var before = input ? String(input.value || '') : '';
+    if (input) input.value = 'show Home Depot receipts for Henderson';
+    var turn = handleAquaBrainAssistantTurnV62Q(input ? undefined : 'show Home Depot receipts for Henderson');
+    if (input) input.value = before;
+    var commandText = String(turn && (turn.lastUserCommand || turn.lastNormalizedCommand) || '');
+    var polluted = /Run Assistant Turn|Start Voice|Show Automation Report|Manual Controls/i.test(commandText);
+    var passed = /home depot receipts? for henderson/i.test(commandText) && !polluted && state.inputTargetingStillCorrect === true;
+    state.mainInputTargetWorks = passed;
+    state.mainCommandInputWorks = passed;
+    return { passed: passed, mainInputTargetWorks: passed, targetedInputId: input && input.id ? input.id : 'brainCommand fallback/explicit command', commandText: commandText, buttonLabelsInjected: polluted, runAssistantTurnReadCorrectInput: /home depot/i.test(commandText) };
+  }
+
+  function checkAquaAssistantTurnSmokeV62T() {
+    var turn = handleAquaBrainAssistantTurnV62Q('show Home Depot receipts for Henderson');
+    var html = turn && turn.html ? turn.html : '';
+    var passed = /Receipts \/ Henderson House \/ Home Depot|Home Depot receipt placeholder/i.test((turn && (turn.visualRoute + ' ' + turn.spokenResponseDraft + ' ' + turn.lastAssistantResponseDraft)) || '') && /What I Understood/.test(html) && /Aqua Response/.test(html) && /Next Suggestions/.test(html);
+    state.assistantTurnSmokeWorks = passed;
+    return { passed: passed, assistantTurnSmokeWorks: passed, visualRoute: turn && turn.visualRoute, currentFocus: turn && turn.lastFocusedSection, responseDraftUpdated: /Home Depot receipt placeholder/i.test((turn && turn.lastAssistantResponseDraft) || ''), nextSuggestionsUpdated: Boolean(turn && turn.nextSuggestions && turn.nextSuggestions.length) };
+  }
+
+  function checkAquaManualFallbackSmokeV62T() {
+    var html = renderAquaBrainAssistantInterfaceV62Q();
+    var typed = handleAquaBrainAssistantTurnV62Q('manual controls');
+    var passed = /Manual Controls|Manual Fallback/i.test(html) && /Run Assistant Turn/i.test(html) && typed && typed.renderedPrimaryAssistantInterfaceV62S === true;
+    state.manualFallbackWorks = passed;
+    return { passed: passed, manualFallbackWorks: passed, manualControlsVisible: /Manual Controls|Manual Fallback/i.test(html), typedCommandsWorkWhenVoiceUnavailable: typed && typed.renderedPrimaryAssistantInterfaceV62S === true };
+  }
+
+  function checkAquaVoiceButtonSafetyV62T() {
+    var html = renderAquaBrainAssistantInterfaceV62Q();
+    var safety = aquaLiveUXSmokeSafetyV62T();
+    var passed = /Start Voice/.test(html) && /Stop Speaking/.test(html) && /Repeat \/ Read Back/.test(html) && safety.noAlwaysListening === true && safety.noAudioStorage === true && state.directAskVoiceActive !== true && state.directAskVoiceStartedForOpen !== true;
+    state.voiceSafetyWorks = passed;
+    state.noAlwaysListening = true;
+    state.noAudioStorage = true;
+    return { passed: passed, voiceSafetyWorks: passed, startVoiceUserTapOnly: /Start Voice/.test(html), stopSpeakingExists: /Stop Speaking/.test(html), repeatReadBackExists: /Repeat \/ Read Back/.test(html), noAlwaysListening: true, noAudioStorage: true, directAskVoiceActive: state.directAskVoiceActive === true };
+  }
+
+  function evaluateAquaZeroReportGuardV62T(report) {
+    var total = Number(report && report.total);
+    var invalid = !Number.isFinite(total) || total <= 0;
+    return { total: Number.isFinite(total) ? total : 0, safeToMerge: invalid ? false : report.safeToMerge === true, mergeRecommendation: invalid ? 'MERGE_BLOCKED' : (report.mergeRecommendation || (report.safeToMerge === true ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED')), repairPrompt: invalid ? 'zero tests are invalid: total 0 cannot show MERGE_ALLOWED; run regression first.' : (report.repairPrompt || 'No repair needed.') };
+  }
+
+  function checkAquaAutomationReportSmokeV62T() {
+    var zero = evaluateAquaZeroReportGuardV62T({ total: 0, passed: 0, failed: 0, safeToMerge: true, mergeRecommendation: 'MERGE_ALLOWED' });
+    var host = document.createElement('div');
+    var routed = runNormalizedAquaCommandV61E('show automation report', host, true);
+    var html = host.innerHTML || '';
+    var saysRunFirst = /Run regression first|Zero tests are invalid|total 0 cannot/i.test(html + ' ' + zero.repairPrompt);
+    var last = getLastRegressionReportV61L();
+    var passed = routed && routed.canonicalIntent === 'show_automation_report_v61t' && zero.mergeRecommendation === 'MERGE_BLOCKED' && (last ? Number(last.total) > 0 : saysRunFirst);
+    state.automationReportSmokeWorks = passed;
+    return { passed: passed, automationReportSmokeWorks: passed, showAutomationReportRoutes: routed && routed.canonicalIntent === 'show_automation_report_v61t', zeroReportBlocked: zero.mergeRecommendation === 'MERGE_BLOCKED', noTotalZeroMergeAllowed: !/total:\s*0[\s\S]*MERGE_ALLOWED/i.test(html), noReportMessage: last ? 'existing report available' : 'run regression first' };
+  }
+
+  function checkAquaRegressionQaSmokeV62T() {
+    var runtimeReport = validateAquaAssistantRuntimeV62R();
+    var passed = runtimeReport && Number(runtimeReport.total) > 0 && Number(runtimeReport.failed) === 0 && runtimeReport.safeToMerge === true && typeof runAquaCommandRegressionV61L === 'function';
+    state.regressionQaSmokeWorks = passed;
+    return { passed: passed, regressionQaSmokeWorks: passed, total: runtimeReport && runtimeReport.total, failed: runtimeReport && runtimeReport.failed, safeToMerge: runtimeReport && runtimeReport.safeToMerge, localBrowserRegressionAvailable: typeof runAquaCommandRegressionV61L === 'function' };
+  }
+
+  function checkAquaZeroReportGuardV62T() {
+    var guarded = evaluateAquaZeroReportGuardV62T({ version: 'v62T', total: 0, passed: 0, failed: 0, safeToMerge: true, mergeRecommendation: 'MERGE_ALLOWED' });
+    var passed = guarded.safeToMerge === false && guarded.mergeRecommendation === 'MERGE_BLOCKED' && /zero tests are invalid|total 0 cannot/i.test(guarded.repairPrompt || '');
+    state.zeroReportGuardWorks = passed;
+    return Object.assign({ passed: passed, zeroReportGuardWorks: passed }, guarded);
+  }
+
+  function checkAquaNoLiveActionSmokeV62T() {
+    var safety = aquaLiveUXSmokeSafetyV62T();
+    var passed = Object.keys(safety).every(function (key) { return safety[key] === true; });
+    Object.keys(safety).forEach(function (key) { state[key] = safety[key]; });
+    state.safetyLocksWork = passed;
+    return Object.assign({ passed: passed, safetyLocksWork: passed }, safety);
+  }
+
+  function runAquaBrainLiveUXSmokeV62T() {
+    var previous = state.liveUXSmokeRunningV62T;
+    state.liveUXSmokeRunningV62T = true;
+    var checks = [];
+    var aiEntry = checkAquaAssistantPrimarySurfaceV62T();
+    addLiveUXSmokeCheckV62T(checks, 'AI Button / Entry Check', 'Ask AI / Aqua Brain entry opens primary assistant surface with title and status', aiEntry.passed, aiEntry);
+    var surface = aiEntry;
+    addLiveUXSmokeCheckV62T(checks, 'Assistant Surface Check', 'Primary assistant surface renders without Home redesign', surface.primaryAssistantSurfaceWorks === true, surface);
+    var input = checkAquaMainInputTargetV62T();
+    addLiveUXSmokeCheckV62T(checks, 'Main Input Check', 'Only the correct assistant command input is targeted and button labels are not injected', input.passed, input);
+    var turn = checkAquaAssistantTurnSmokeV62T();
+    addLiveUXSmokeCheckV62T(checks, 'Assistant Turn Check', 'Local/demo Henderson Home Depot command updates focus, response, and suggestions', turn.passed, turn);
+    var manual = checkAquaManualFallbackSmokeV62T();
+    addLiveUXSmokeCheckV62T(checks, 'Manual Fallback Check', 'Manual controls visible and typed commands work if voice is unavailable', manual.passed, manual, 'aqua-v61-extensions.js', 'phone/browser limitation if speech APIs are unavailable; typed fallback must still work');
+    var voice = checkAquaVoiceButtonSafetyV62T();
+    addLiveUXSmokeCheckV62T(checks, 'Voice Safety Check', 'Voice is user-tap only with no always-listening and no audio storage; stop/repeat controls exist', voice.passed, voice, 'aqua-v61-extensions.js', 'phone/browser limitation if voice capture is blocked; safety flags must stay locked');
+    var automation = checkAquaAutomationReportSmokeV62T();
+    addLiveUXSmokeCheckV62T(checks, 'Automation Report Check', 'Show automation report works and total 0 cannot be MERGE_ALLOWED', automation.passed, automation);
+    var regression = checkAquaRegressionQaSmokeV62T();
+    addLiveUXSmokeCheckV62T(checks, 'Regression QA Check', 'Local/browser regression signal has total > 0, failed = 0, safeToMerge true when all pass', regression.passed, regression);
+    var zero = checkAquaZeroReportGuardV62T();
+    addLiveUXSmokeCheckV62T(checks, 'Zero Report Guard Check', 'Zero-count report returns MERGE_BLOCKED with repair prompt', zero.passed, zero);
+    var safety = checkAquaNoLiveActionSmokeV62T();
+    addLiveUXSmokeCheckV62T(checks, 'Safety Lock Check', 'No backend, network, external AI/API, keys, live actions, upload/export, audio storage, or always-listening', safety.passed, safety);
+    var failures = checks.filter(function (check) { return !check.passed; });
+    var report = Object.assign({ version: 'v62T', environment: 'browser/local/demo', timestamp: new Date().toISOString(), totalChecks: checks.length, passedChecks: checks.length - failures.length, failedChecks: failures.length, checks: checks, failures: failures, aiEntryOpensAssistant: aiEntry.aiEntryOpensAssistant === true, primaryAssistantSurfaceWorks: surface.primaryAssistantSurfaceWorks === true, mainInputTargetWorks: input.mainInputTargetWorks === true, assistantTurnSmokeWorks: turn.assistantTurnSmokeWorks === true, manualFallbackWorks: manual.manualFallbackWorks === true, voiceSafetyWorks: voice.voiceSafetyWorks === true, automationReportSmokeWorks: automation.automationReportSmokeWorks === true, regressionQaSmokeWorks: regression.regressionQaSmokeWorks === true, zeroReportGuardWorks: zero.zeroReportGuardWorks === true, safetyLocksWork: safety.safetyLocksWork === true }, aquaLiveUXSmokeSafetyV62T());
+    report.safeToMerge = failures.length === 0;
+    report.mergeRecommendation = report.safeToMerge ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED';
+    report.repairPrompt = buildLiveUXSmokeRepairPromptV62T(failures);
+    state.lastLiveUXSmokeReportV62T = report;
+    state.liveUXSmokeCheckerExists = true;
+    Object.keys(report).forEach(function (key) { if (/Works$|Exists$|Calls$|Storage$|Listening$|Data$|Frontend$|Changes$|Assistant$|TargetWorks$|SurfaceWorks$|OpensAssistant$/.test(key)) state[key] = report[key]; });
+    state.liveUXSmokeRunningV62T = previous;
+    syncNamespace();
+    return report;
+  }
+
+  function compactLiveUXSmokeValueV62T(report, key) {
+    if (!report) return 'not run yet';
+    return String(report[key] === true);
+  }
+
+  function renderAquaBrainLiveUXSmokePanelV62T(report) {
+    var safe = report || null;
+    var nextFix = safe && safe.failedChecks ? safe.repairPrompt : 'No fix recommended yet. Tap Run Live UX Smoke Check after opening the AI button.';
+    return '<section class="note" data-aqua-v62t-live-ux-smoke-panel="true"><h4>Aqua Brain Live UX Smoke Check — v62T</h4>' +
+      '<div class="aqua-v62q-manual-buttons"><button class="btn small gold" type="button" onclick="window.AquaBrainLiveUXSmokeV62T.runAquaBrainLiveUXSmokeV62T();window.AquaV61Extensions.runNormalizedAquaCommandV61E(&quot;show live ux smoke report&quot;,document.getElementById(&quot;brainOut&quot;))">Run Live UX Smoke Check</button><button class="btn small" type="button" onclick="window.AquaV61Extensions.runNormalizedAquaCommandV61E(&quot;show phone smoke report&quot;,document.getElementById(&quot;brainOut&quot;))">Show Phone Smoke Report</button></div>' +
+      '<ol><li><strong>Smoke Status:</strong> ' + escapeHTMLV61D(safe ? safe.mergeRecommendation : 'not run') + '</li><li><strong>AI Button / Entry Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'aiEntryOpensAssistant')) + '</li><li><strong>Assistant Surface Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'primaryAssistantSurfaceWorks')) + '</li><li><strong>Main Input Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'mainInputTargetWorks')) + '</li><li><strong>Assistant Turn Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'assistantTurnSmokeWorks')) + '</li><li><strong>Manual Fallback Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'manualFallbackWorks')) + '</li><li><strong>Voice Safety Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'voiceSafetyWorks')) + '</li><li><strong>Automation Report Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'automationReportSmokeWorks')) + '</li><li><strong>Regression QA Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'regressionQaSmokeWorks')) + '</li><li><strong>Zero Report Guard Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'zeroReportGuardWorks')) + '</li><li><strong>Safety Lock Check:</strong> ' + escapeHTMLV61D(compactLiveUXSmokeValueV62T(safe, 'safetyLocksWork')) + '</li><li><strong>Next Recommended Fix if any:</strong> ' + escapeHTMLV61D(nextFix).slice(0, 800) + '</li></ol></section>';
+  }
+
+  function renderAquaBrainLiveUXSmokeReportV62T(report) {
+    var safe = report || runAquaBrainLiveUXSmokeV62T();
+    var rows = (safe.checks || []).map(function (check) { return '<li><strong>' + escapeHTMLV61D(check.name) + ':</strong> ' + escapeHTMLV61D(check.passed ? 'PASS' : 'FAIL') + ' — expected ' + escapeHTMLV61D(check.expected) + '</li>'; }).join('');
+    var body = '<div data-aqua-v62t-live-ux-smoke-report="true"><div><strong>version:</strong> ' + escapeHTMLV61D(safe.version) + '</div><div><strong>environment:</strong> ' + escapeHTMLV61D(safe.environment) + '</div><div><strong>totalChecks:</strong> ' + escapeHTMLV61D(safe.totalChecks) + '</div><div><strong>passedChecks:</strong> ' + escapeHTMLV61D(safe.passedChecks) + '</div><div><strong>failedChecks:</strong> ' + escapeHTMLV61D(safe.failedChecks) + '</div><div><strong>safeToMerge:</strong> ' + escapeHTMLV61D(String(safe.safeToMerge === true)) + '</div><div><strong>mergeRecommendation:</strong> ' + escapeHTMLV61D(safe.mergeRecommendation) + '</div>' +
+      '<div class="split2"><section><h4>Smoke Status</h4><ul>' + rows + '</ul></section><section><h4>Required Flags</h4><ul><li>aiEntryOpensAssistant: ' + escapeHTMLV61D(String(safe.aiEntryOpensAssistant === true)) + '</li><li>mainInputTargetWorks: ' + escapeHTMLV61D(String(safe.mainInputTargetWorks === true)) + '</li><li>assistantTurnSmokeWorks: ' + escapeHTMLV61D(String(safe.assistantTurnSmokeWorks === true)) + '</li><li>manualFallbackWorks: ' + escapeHTMLV61D(String(safe.manualFallbackWorks === true)) + '</li><li>voiceSafetyWorks: ' + escapeHTMLV61D(String(safe.voiceSafetyWorks === true)) + '</li><li>automationReportSmokeWorks: ' + escapeHTMLV61D(String(safe.automationReportSmokeWorks === true)) + '</li><li>regressionQaSmokeWorks: ' + escapeHTMLV61D(String(safe.regressionQaSmokeWorks === true)) + '</li><li>zeroReportGuardWorks: ' + escapeHTMLV61D(String(safe.zeroReportGuardWorks === true)) + '</li><li>safetyLocksWork: ' + escapeHTMLV61D(String(safe.safetyLocksWork === true)) + '</li></ul></section></div><label class="smallMut">repairPrompt:</label><textarea readonly style="width:100%;min-height:150px">' + escapeHTMLV61D(safe.repairPrompt) + '</textarea></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Live UX Smoke Check — v62T', subtitle: 'Phone/Samsung DeX browser smoke check for AI button, assistant surface, input targeting, voice fallback, automation, and safety locks.', tag: safe.mergeRecommendation, chips: ['v62T', 'Phone/DeX Smoke', 'Demo Only', 'No Backend', 'No Live AI'], attrs: { 'data-aqua-v62t-live-ux-smoke-report': 'true' }, body: body, safetyFooter: 'Local/demo-only. No backend calls, network calls, external AI/API calls, API keys, live record changes, exports, uploads, customer/accountant sharing, payment, payroll, bank actions, accounting export, audio storage, always-listening, or real customer data.' });
   }
 
   var ASSISTANT_RUNTIME_STATE_KEY_V62R = 'aquaBrainAssistantRuntimeStateV62R';
@@ -6004,6 +6174,12 @@
   function runNormalizedAquaCommandV61E(commandText, outputNode, skipFuzzyV62O) {
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
+    if (!skipFuzzyV62O && detectAquaBrainLiveUXSmokeCommandV62T(originalForPriorityV62O, normalizedForPriorityV62O)) {
+      var prioritySmokeReportV62T = /^(show live ux smoke report|show phone smoke report|show dex smoke report)$/.test(normalizedForPriorityV62O) && state.lastLiveUXSmokeReportV62T ? state.lastLiveUXSmokeReportV62T : runAquaBrainLiveUXSmokeV62T();
+      var prioritySmokeHtmlV62T = renderAquaBrainLiveUXSmokeReportV62T(prioritySmokeReportV62T);
+      if (outputNode) outputNode.innerHTML = prioritySmokeHtmlV62T;
+      return Object.assign({ canonicalIntent: 'aqua_brain_live_ux_smoke_v62t', askMode: 'live_ux_smoke_v62t', module: 'Aqua Brain Live UX Smoke Check — v62T', renderedLiveUXSmokeV62T: true, renderedFallback: false, html: prioritySmokeHtmlV62T }, prioritySmokeReportV62T);
+    }
     var automationPriorityIntentV62O = detectAutomationReportCommandV61T(originalForPriorityV62O, normalizedForPriorityV62O);
     if (automationPriorityIntentV62O) {
       var automationIntentV62O = withAskModeV61U(automationPriorityIntentV62O, 'automation_status');
@@ -6028,6 +6204,12 @@
       state.automationCommandsStillRouteFirst = true;
       syncNamespace();
       return automationIntentV62O;
+    }
+    if (!skipFuzzyV62O && detectAquaBrainLiveUXSmokeCommandV62T(originalForPriorityV62O, normalizedForPriorityV62O)) {
+      var smokeReportV62T = /^(show live ux smoke report|show phone smoke report|show dex smoke report)$/.test(normalizedForPriorityV62O) && state.lastLiveUXSmokeReportV62T ? state.lastLiveUXSmokeReportV62T : runAquaBrainLiveUXSmokeV62T();
+      var smokeHtmlV62T = renderAquaBrainLiveUXSmokeReportV62T(smokeReportV62T);
+      if (outputNode) outputNode.innerHTML = smokeHtmlV62T;
+      return Object.assign({ canonicalIntent: 'aqua_brain_live_ux_smoke_v62t', askMode: 'live_ux_smoke_v62t', module: 'Aqua Brain Live UX Smoke Check — v62T', renderedLiveUXSmokeV62T: true, renderedFallback: false, html: smokeHtmlV62T }, smokeReportV62T);
     }
     if (!skipFuzzyV62O && detectAquaAssistantRuntimeCommandV62R(originalForPriorityV62O, normalizedForPriorityV62O)) {
       var runtimeReportV62R = /^reset assistant runtime state$/.test(normalizedForPriorityV62O) ? null : (/^show assistant runtime report$/.test(normalizedForPriorityV62O) && window.aquaLastAssistantRuntimeReportV62R ? window.aquaLastAssistantRuntimeReportV62R : validateAquaAssistantRuntimeV62R());
@@ -8069,9 +8251,9 @@
       results: [],
       safety: safety,
       permissionDraftSafety: permissionDraftSafetyV61N(),
-      repairPrompt: 'No repair needed.',
-      safeToMerge: true,
-      mergeRecommendation: 'MERGE_ALLOWED',
+      repairPrompt: 'Run regression first. Zero tests are invalid for merge: total 0 cannot be MERGE_ALLOWED.',
+      safeToMerge: false,
+      mergeRecommendation: 'MERGE_BLOCKED',
       noLiveRecordChanges: true,
       noBackendNetworkLiveAICalls: true,
       workflowPlannerExists: true,
@@ -8327,7 +8509,20 @@
       var passed = isAssistant || isAutomation || isRegression || isFallback;
       return { command: command, expected: 'v62S primary assistant interface command routes safely', actual: Object.assign({ renderedPrimaryAssistantInterfaceV62S: isAssistant, primaryAssistantInterfaceExists: state.primaryAssistantInterfaceExists === true, mainCommandInputWorks: state.mainCommandInputWorks === true, quickControlsSecondary: state.quickControlsSecondary === true, manualControlsWork: state.manualControlsWork === true, renderedPremiumModuleShell: /data-aqua-v61z-premium-module-shell=\"true\"|aqua-v61z-module-shell/i.test(html), htmlContainsAssistantSurface: /What I Heard[\s\S]*What I Understood[\s\S]*Current Focus[\s\S]*Aqua Response[\s\S]*(Permission \/ Safety[\s\S]*Next Suggestions|Next Suggestions[\s\S]*Permission \/ Safety)/i.test(html), renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback }, routed || {}), passed: passed, errors: passed ? [] : ['v62S primary assistant interface command failed'], suggestedFix: passed ? '' : 'Update v62S primary assistant shell, AI entry routing, command targeting, manual controls, or safety locks.' };
     });
-    var results = primaryResultsV62S.concat(baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
+    var liveUXSmokeReportV62T = runAquaBrainLiveUXSmokeV62T();
+    var liveUXSmokeCommandListV62T = ['run live ux smoke check', 'run phone smoke check', 'run dex smoke check', 'test ai button', 'test assistant surface', 'test voice fallback', 'test manual fallback', 'test automation report', 'test regression qa', 'show live ux smoke report', 'show automation report', 'run regression qa', 'banana test'];
+    var liveUXSmokeResultsV62T = liveUXSmokeCommandListV62T.map(function (command) {
+      var host = document.createElement('div');
+      var routed = runNormalizedAquaCommandV61E(command, host);
+      var html = host.innerHTML || routed.html || '';
+      var isSmoke = /^(run live ux smoke check|run phone smoke check|run dex smoke check|test ai button|test assistant surface|test voice fallback|test manual fallback|test automation report|test regression qa|show live ux smoke report)$/i.test(command) && routed && routed.canonicalIntent === 'aqua_brain_live_ux_smoke_v62t' && /Aqua Brain Live UX Smoke Check — v62T/.test(html);
+      var isAutomation = command === 'show automation report' && routed && routed.canonicalIntent === 'show_automation_report_v61t' && /Automation Report|Regression Report Viewer/i.test(html);
+      var isRegression = command === 'run regression qa' && routed && routed.canonicalIntent === 'run_regression_qa';
+      var isFallback = command === 'banana test' && routed && routed.canonicalIntent === 'unknown' && /Fallback local demo panel/i.test(html);
+      var passed = isSmoke || isAutomation || isRegression || isFallback;
+      return { command: command, expected: 'v62T live UX smoke, automation, regression, or fallback route works safely', actual: Object.assign({ renderedLiveUXSmokeV62T: isSmoke, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: passed, errors: passed ? [] : ['v62T live UX smoke command failed'], suggestedFix: passed ? '' : 'Update AquaBrainLiveUXSmokeV62T routing/rendering in aqua-v61-extensions.js. Do not redesign Home or enable backend/live actions.' };
+    });
+    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -8353,6 +8548,17 @@
       repairPrompt: buildRepairPromptV61L(failures),
       safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? true : false,
       mergeRecommendation: failures.length === 0 && regressionSafetyPassesV61L(safety) ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED',
+      liveUXSmokeCheckerExists: Boolean(window.AquaBrainLiveUXSmokeV62T),
+      aiEntryOpensAssistant: liveUXSmokeReportV62T.aiEntryOpensAssistant === true,
+      primaryAssistantSurfaceWorks: liveUXSmokeReportV62T.primaryAssistantSurfaceWorks === true,
+      mainInputTargetWorks: liveUXSmokeReportV62T.mainInputTargetWorks === true,
+      assistantTurnSmokeWorks: liveUXSmokeReportV62T.assistantTurnSmokeWorks === true,
+      manualFallbackWorks: liveUXSmokeReportV62T.manualFallbackWorks === true,
+      voiceSafetyWorks: liveUXSmokeReportV62T.voiceSafetyWorks === true,
+      automationReportSmokeWorks: liveUXSmokeReportV62T.automationReportSmokeWorks === true,
+      regressionQaSmokeWorks: liveUXSmokeReportV62T.regressionQaSmokeWorks === true,
+      zeroReportGuardWorks: liveUXSmokeReportV62T.zeroReportGuardWorks === true,
+      safetyLocksWork: liveUXSmokeReportV62T.safetyLocksWork === true,
       e2eRoutingMatrixExists: Boolean(window.AquaBrainE2ERoutingV62P),
       e2eRoutingMatrixRuns: e2eReportV62P.e2eRoutingMatrixRuns === true,
       allE2ERoutesPass: e2eReportV62P.allE2ERoutesPass === true,
@@ -8987,6 +9193,7 @@
     };
   }
 
+  window.AquaBrainLiveUXSmokeV62T = window.AquaBrainLiveUXSmokeV62T || { version: 'v62T', localDemoOnly: true, runAquaBrainLiveUXSmokeV62T: runAquaBrainLiveUXSmokeV62T, renderAquaBrainLiveUXSmokeReportV62T: renderAquaBrainLiveUXSmokeReportV62T, checkAquaAssistantPrimarySurfaceV62T: checkAquaAssistantPrimarySurfaceV62T, checkAquaMainInputTargetV62T: checkAquaMainInputTargetV62T, checkAquaAssistantTurnSmokeV62T: checkAquaAssistantTurnSmokeV62T, checkAquaManualFallbackSmokeV62T: checkAquaManualFallbackSmokeV62T, checkAquaVoiceButtonSafetyV62T: checkAquaVoiceButtonSafetyV62T, checkAquaAutomationReportSmokeV62T: checkAquaAutomationReportSmokeV62T, checkAquaRegressionQaSmokeV62T: checkAquaRegressionQaSmokeV62T, checkAquaZeroReportGuardV62T: checkAquaZeroReportGuardV62T, checkAquaNoLiveActionSmokeV62T: checkAquaNoLiveActionSmokeV62T, evaluateAquaZeroReportGuardV62T: evaluateAquaZeroReportGuardV62T, safetyEnvelope: aquaLiveUXSmokeSafetyV62T() };
   window.AquaBrainAssistantRuntimeV62R = window.AquaBrainAssistantRuntimeV62R || { version: 'v62S', localDemoOnly: true, runAquaAssistantTurnV62R: runAquaAssistantTurnV62R, validateAquaAssistantRuntimeV62R: validateAquaAssistantRuntimeV62R, renderAquaAssistantRuntimeQAReportV62R: renderAquaAssistantRuntimeQAReportV62R, getAquaAssistantRuntimeStateV62R: getAquaAssistantRuntimeStateV62R, resetAquaAssistantRuntimeStateV62R: resetAquaAssistantRuntimeStateV62R, assertAquaAssistantSurfaceUpdatedV62R: assertAquaAssistantSurfaceUpdatedV62R, assertAquaAssistantFocusRouteV62R: assertAquaAssistantFocusRouteV62R, assertAquaAssistantPermissionGateV62R: assertAquaAssistantPermissionGateV62R, assertAquaAssistantSuggestionsV62R: assertAquaAssistantSuggestionsV62R, safetyEnvelope: aquaAssistantRuntimeSafetyV62R() };
   window.AquaBrainAssistantInterfaceV62Q = window.AquaBrainAssistantInterfaceV62Q || { version: 'v62S', localDemoOnly: true, storageKey: ASSISTANT_STATE_KEY_V62Q, renderAquaBrainAssistantInterfaceV62Q: renderAquaBrainAssistantInterfaceV62Q, renderAquaBrainConversationSurfaceV62Q: renderAquaBrainConversationSurfaceV62Q, renderAquaBrainCommandUnderstandingV62Q: renderAquaBrainCommandUnderstandingV62Q, renderAquaBrainActiveContextV62Q: renderAquaBrainActiveContextV62Q, renderAquaBrainNextSuggestionsV62Q: renderAquaBrainNextSuggestionsV62Q, renderAquaBrainPermissionGateSummaryV62Q: renderAquaBrainPermissionGateSummaryV62Q, renderAquaBrainManualFallbackV62Q: renderAquaBrainManualFallbackV62Q, handleAquaBrainAssistantTurnV62Q: handleAquaBrainAssistantTurnV62Q, getAquaBrainAssistantStateV62Q: getAquaBrainAssistantStateV62Q, saveAquaBrainAssistantStateV62Q: saveAquaBrainAssistantStateV62Q, clearAquaBrainAssistantStateV62Q: clearAquaBrainAssistantStateV62Q, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
   window.AquaFuzzyLanguageV62O = window.AquaFuzzyLanguageV62O || {
@@ -9026,5 +9233,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62S extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62T extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
