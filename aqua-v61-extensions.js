@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62I Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation.
+ * Aqua Homes OS v62J Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62I';
+  var VERSION = 'v62J';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -94,6 +94,18 @@
     cancelSessionWorks: false,
     manualModeWorks: false,
     currentAquaVoiceSessionV62I: null,
+    toolGatewayContractExists: false,
+    toolRequestEnvelopeWorks: false,
+    toolResponseEnvelopeWorks: false,
+    toolContractMapWorks: false,
+    permissionMapWorks: false,
+    riskMapWorks: false,
+    approvalRoutesWork: false,
+    frontendBlockRulesWork: false,
+    exportQuestionStaysLocked: false,
+    uploadQuestionStaysLocked: false,
+    chatgptConnectionQuestionStaysLocked: false,
+    toolGatewayPanelWorks: false,
     aiNavigationExecutorWorks: false,
     visualFocusExecutorWorks: false,
     focusedRouteMarkerWorks: false,
@@ -1854,6 +1866,174 @@
   var VOICE_INTERACTION_KEY_V62H = 'aquaVoiceInteractionV62H';
   var VOICE_SESSION_KEY_V62I = 'aquaVoiceSessionV62I';
 
+
+  function toolGatewayContractV62J() {
+    var riskLevelMap = {
+      low_read_demo: 'Local/demo read-only display only; backend still locked for real data.',
+      read_sensitive_backend_required: 'Sensitive company/project data read requires authenticated backend and role check.',
+      prepare_action_demo: 'Frontend may prepare text-only draft summaries; live execution remains locked.',
+      export_locked: 'Customer/accounting/payroll exports are locked until backend permission, audit, and review exist.',
+      upload_locked: 'File uploads are locked until secure storage, malware scanning, and owner approval exist.',
+      financial_locked: 'Spend, payables, budget, accounting, and vendor details require financial backend authorization.',
+      payroll_locked: 'Employee time/payroll data requires payroll authorization and backend-only execution.',
+      bank_locked: 'Bank/payment sync requires bank approval route and backend-only execution.',
+      customer_share_locked: 'Customer-facing report sharing requires customer-share approval and backend audit.',
+      live_action_locked: 'Any live record mutation, approval, send, upload, export, payment, payroll, or sync is locked.'
+    };
+    var approvalRouteMap = {
+      owner_review: { label: 'Owner Review', placeholder: '/backend/approval/owner-review', status: 'locked' },
+      accounting_review: { label: 'Accounting Review', placeholder: '/backend/approval/accounting-review', status: 'locked' },
+      payroll_review: { label: 'Payroll Review', placeholder: '/backend/approval/payroll-review', status: 'locked' },
+      bank_review: { label: 'Bank Review', placeholder: '/backend/approval/bank-review', status: 'locked' },
+      customer_share_review: { label: 'Customer Share Review', placeholder: '/backend/approval/customer-share-review', status: 'locked' },
+      legal_review: { label: 'Legal Review', placeholder: '/backend/approval/legal-review', status: 'locked' },
+      admin_backend_enablement: { label: 'Admin Backend Enablement', placeholder: '/backend/admin/enable-tool-gateway', status: 'locked' }
+    };
+    var permissionRequirementMap = {
+      read_demo: ['authenticated user', 'project access'],
+      read_sensitive: ['authenticated user', 'company membership', 'project role'],
+      accounting_export: ['owner approval', 'accounting approval', 'export packet review'],
+      upload: ['owner approval', 'project file permission', 'secure backend storage'],
+      customer_share: ['owner approval', 'customer-share review'],
+      payroll: ['payroll approval', 'employee time permission'],
+      financial: ['owner approval', 'accounting permission'],
+      live_action: ['owner approval', 'backend execution permission']
+    };
+    var auditRequirementMap = {
+      read_sensitive_backend_required: 'Audit actor, company, project, tool, intent, timestamp, and result summary.',
+      prepare_action_demo: 'Audit future prepared action summary before any approval.',
+      export_locked: 'Audit export packet review, owner/accounting approvers, payload hash, and download event.',
+      upload_locked: 'Audit uploader, file metadata, project route, malware scan status, and approval.',
+      financial_locked: 'Audit financial query, data scope, actor, and accounting permission.',
+      payroll_locked: 'Audit employee-time query scope, payroll approver, and access reason.',
+      customer_share_locked: 'Audit report packet, recipient class, share approval, and send event.',
+      live_action_locked: 'Audit before/after snapshot, approval route, backend executor, and undo checkpoint.'
+    };
+    var undoRequirementMap = {
+      read: 'No mutation; undo not needed, but access audit required for sensitive reads.',
+      prepare: 'Prepared draft can be discarded locally; no live undo because no live change occurred.',
+      export: 'Undo/revert plan required before generating live export packet.',
+      upload: 'Delete/revert storage object checkpoint required before live upload.',
+      send: 'Recall/retraction plan required where possible before customer sharing.',
+      write: 'Before/after checkpoint required before backend write or approval.'
+    };
+    var backendEndpointPlaceholders = {
+      gateway: '/backend/tool-gateway/execute',
+      permissions: '/backend/tool-gateway/permissions/check',
+      approvals: '/backend/tool-gateway/approvals/request',
+      audit: '/backend/tool-gateway/audit/log',
+      undo: '/backend/tool-gateway/undo/checkpoint',
+      files: '/backend/files/project',
+      exports: '/backend/exports/accounting',
+      ai: '/backend/ai/tool-router'
+    };
+    var blockedFrontendActionRules = [
+      'Frontend must never hold API keys.',
+      'Frontend must never call OpenAI/Google/Gemini directly for live tool execution.',
+      'Frontend must never export customer/accounting/payroll data.',
+      'Frontend must never upload files to live storage.',
+      'Frontend must never send emails/texts.',
+      'Frontend must never process payroll.',
+      'Frontend must never sync bank/accounting.',
+      'Frontend must never approve live changes.',
+      'Frontend must never bypass owner approval.',
+      'Frontend must never store audio.',
+      'Frontend must never run always-listening microphone.'
+    ];
+    function contract(toolName, description, readOrWrite, riskLevel, requiredRole, requiredPermissions, approvalRequired, auditRequired, undoRequired) {
+      return { toolName: toolName, description: description, inputSchemaPlaceholder: toolName + 'InputSchemaV1Placeholder', outputSchemaPlaceholder: toolName + 'OutputSchemaV1Placeholder', readOrWrite: readOrWrite, riskLevel: riskLevel, requiredRole: requiredRole, requiredPermissions: requiredPermissions, approvalRequired: approvalRequired, auditRequired: auditRequired, undoRequired: undoRequired, backendRequired: true, liveStatus: 'locked', frontendExecutionAllowed: false };
+    }
+    var toolContracts = {
+      getProjectStatus: contract('getProjectStatus', 'Read current project health/status from future backend.', 'read', 'read_sensitive_backend_required', 'project_member', ['read_sensitive'], false, true, false),
+      getProjectReport: contract('getProjectReport', 'Retrieve project report from future backend.', 'read', 'read_sensitive_backend_required', 'project_member', ['read_sensitive'], false, true, false),
+      searchProjectFiles: contract('searchProjectFiles', 'Search project file metadata through future backend.', 'read', 'read_sensitive_backend_required', 'project_member', ['read_sensitive'], false, true, false),
+      searchReceipts: contract('searchReceipts', 'Search receipt records through future accounting backend.', 'read', 'financial_locked', 'accounting_user', ['financial'], true, true, false),
+      summarizeVendorSpend: contract('summarizeVendorSpend', 'Summarize vendor spend with financial permission.', 'read', 'financial_locked', 'accounting_user', ['financial'], true, true, false),
+      summarizeTradeSpend: contract('summarizeTradeSpend', 'Summarize trade spend and budget risk.', 'read', 'financial_locked', 'accounting_user', ['financial'], true, true, false),
+      prepareAccountantExport: contract('prepareAccountantExport', 'Prepare locked accountant export packet for review.', 'prepare', 'export_locked', 'accounting_user', ['accounting_export'], true, true, true),
+      uploadProjectFile: contract('uploadProjectFile', 'Upload a project file through secure storage only.', 'write', 'upload_locked', 'project_admin', ['upload'], true, true, true),
+      sendCustomerReport: contract('sendCustomerReport', 'Send customer report only after customer-share review.', 'write', 'customer_share_locked', 'owner_admin', ['customer_share'], true, true, true),
+      getEmployeeTime: contract('getEmployeeTime', 'Read employee time data with payroll permission.', 'read', 'payroll_locked', 'payroll_user', ['payroll'], true, true, false),
+      getPayables: contract('getPayables', 'Read payables through accounting backend.', 'read', 'financial_locked', 'accounting_user', ['financial'], true, true, false),
+      checkBudgetRisk: contract('checkBudgetRisk', 'Inspect budget risk through backend financial data.', 'read', 'financial_locked', 'accounting_user', ['financial'], true, true, false),
+      checkCameraAllocation: contract('checkCameraAllocation', 'Inspect camera/jobsite allocation metadata.', 'read', 'read_sensitive_backend_required', 'project_admin', ['read_sensitive'], false, true, false),
+      createSowDraft: contract('createSowDraft', 'Create draft SOW only as backend-reviewed draft.', 'prepare', 'prepare_action_demo', 'project_admin', ['live_action'], true, true, true),
+      createEstimateDraft: contract('createEstimateDraft', 'Create estimate draft only after backend permission.', 'prepare', 'prepare_action_demo', 'project_admin', ['financial', 'live_action'], true, true, true),
+      createChangeOrderDraft: contract('createChangeOrderDraft', 'Create change order draft only after approval gate.', 'prepare', 'prepare_action_demo', 'project_admin', ['live_action'], true, true, true),
+      approvePreparedAction: contract('approvePreparedAction', 'Approve a prepared backend action only through owner route.', 'write', 'live_action_locked', 'owner_admin', ['live_action'], true, true, true),
+      rejectPreparedAction: contract('rejectPreparedAction', 'Reject a prepared backend action with audit note.', 'write', 'live_action_locked', 'owner_admin', ['live_action'], true, true, false),
+      createAuditLogEntry: contract('createAuditLogEntry', 'Create immutable backend audit log entry.', 'write', 'live_action_locked', 'backend_service', ['live_action'], true, true, false),
+      createUndoCheckpoint: contract('createUndoCheckpoint', 'Create backend undo/revert checkpoint before mutation.', 'write', 'live_action_locked', 'backend_service', ['live_action'], true, true, true)
+    };
+    return {
+      version: 'v62J',
+      name: 'Aqua Brain Secure Tool Gateway — v62J',
+      localDemoOnly: true,
+      toolRequestEnvelope: { requestId: 'demo-request-id', toolName: 'futureToolName', intent: 'natural language intent', actorRole: 'owner_admin', companyId: 'demo-company-id', projectId: 'demo-project-id', projectName: 'Demo Project', entities: {}, requestedAction: 'read_or_prepare_only', permissionLevel: 'owner_review_required', riskLevel: 'live_action_locked', requiresOwnerApproval: true, requiresAccountingApproval: false, requiresBackend: true, requiresAuditLog: true, requiresUndoCheckpoint: true, frontendStatus: 'demo_only', liveExecutionAllowed: false, timestamp: 'ISO-8601 timestamp' },
+      toolResponseEnvelope: { requestId: 'demo-request-id', toolName: 'futureToolName', status: 'locked_or_prepared', resultType: 'panel_summary', visualRoute: 'local_demo_panel', spokenResponseDraft: 'Draft response only; no live execution.', preparedActionSummary: 'Prepared summary for approval only.', permissionStatus: 'required_not_granted_in_frontend', auditStatus: 'backend_required', undoStatus: 'backend_checkpoint_required', liveExecutionStatus: 'locked', safetyLabels: ['backend_required', 'frontend_demo_only', 'no_live_execution'], nextRecommendedAction: 'Build authenticated backend gateway with server-side keys and audit logging.', timestamp: 'ISO-8601 timestamp' },
+      permissionRequirementMap: permissionRequirementMap,
+      riskLevelMap: riskLevelMap,
+      auditRequirementMap: auditRequirementMap,
+      undoRequirementMap: undoRequirementMap,
+      approvalRouteMap: approvalRouteMap,
+      backendEndpointPlaceholders: backendEndpointPlaceholders,
+      blockedFrontendActionRules: blockedFrontendActionRules,
+      toolContracts: toolContracts,
+      secureExecutionStatus: { currentStatus: 'backend_locked_contract_only', frontendStatus: 'demo_only', liveExecutionAllowed: false, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true }
+    };
+  }
+
+  function ensureToolGatewayContractV62J() {
+    window.AquaToolGatewayContractV62J = toolGatewayContractV62J();
+    state.toolGatewayContractExists = true;
+    state.toolRequestEnvelopeWorks = Boolean(window.AquaToolGatewayContractV62J.toolRequestEnvelope && window.AquaToolGatewayContractV62J.toolRequestEnvelope.frontendStatus === 'demo_only' && window.AquaToolGatewayContractV62J.toolRequestEnvelope.liveExecutionAllowed === false);
+    state.toolResponseEnvelopeWorks = Boolean(window.AquaToolGatewayContractV62J.toolResponseEnvelope && window.AquaToolGatewayContractV62J.toolResponseEnvelope.liveExecutionStatus === 'locked');
+    state.toolContractMapWorks = Object.keys(window.AquaToolGatewayContractV62J.toolContracts || {}).length === 20 && Object.keys(window.AquaToolGatewayContractV62J.toolContracts || {}).every(function (key) { return window.AquaToolGatewayContractV62J.toolContracts[key].frontendExecutionAllowed === false && window.AquaToolGatewayContractV62J.toolContracts[key].liveStatus === 'locked'; });
+    state.permissionMapWorks = Boolean(window.AquaToolGatewayContractV62J.permissionRequirementMap && window.AquaToolGatewayContractV62J.permissionRequirementMap.accounting_export);
+    state.riskMapWorks = Object.keys(window.AquaToolGatewayContractV62J.riskLevelMap || {}).length === 10;
+    state.approvalRoutesWork = Object.keys(window.AquaToolGatewayContractV62J.approvalRouteMap || {}).length === 7;
+    state.frontendBlockRulesWork = (window.AquaToolGatewayContractV62J.blockedFrontendActionRules || []).length >= 11;
+    return window.AquaToolGatewayContractV62J;
+  }
+
+  function detectToolGatewayCommandV62J(original, normalized) {
+    var q = String(normalized || '').trim();
+    if (/^(show )?(secure )?tool gateway$/.test(q) || /^show backend tool contract$/.test(q) || /^show tool contract$/.test(q) || /^show permission map$/.test(q) || /^show risk map$/.test(q) || /^show approval routes$/.test(q) || /^show blocked frontend actions$/.test(q) || /^show backend readiness$/.test(q)) {
+      return { canonicalIntent: 'secure_tool_gateway_v62j', routeText: original, originalText: original, normalizedText: q, module: 'Aqua Brain Secure Tool Gateway — v62J', gatewayModeV62J: q.replace(/^show /, '') || 'tool gateway' };
+    }
+    if (/^can aqua export yet$/.test(q)) return { canonicalIntent: 'secure_tool_gateway_question_v62j', routeText: original, originalText: original, normalizedText: q, module: 'Aqua Brain Secure Tool Gateway — v62J', gatewayQuestionV62J: 'export' };
+    if (/^can aqua upload yet$/.test(q)) return { canonicalIntent: 'secure_tool_gateway_question_v62j', routeText: original, originalText: original, normalizedText: q, module: 'Aqua Brain Secure Tool Gateway — v62J', gatewayQuestionV62J: 'upload' };
+    if (/^can aqua connect to chatgpt yet$/.test(q)) return { canonicalIntent: 'secure_tool_gateway_question_v62j', routeText: original, originalText: original, normalizedText: q, module: 'Aqua Brain Secure Tool Gateway — v62J', gatewayQuestionV62J: 'chatgpt' };
+    return null;
+  }
+
+  function renderToolGatewayQuestionV62J(question) {
+    if (question === 'export') return '<div class="note" data-aqua-v62j-export-locked="true"><strong>No. Export is locked.</strong><div>Future export requires:</div><ul><li>secure backend</li><li>authenticated owner/accounting permission</li><li>audit log</li><li>undo/revert plan</li><li>export packet review</li><li>no frontend API keys</li></ul></div>';
+    if (question === 'chatgpt') return '<div class="note" data-aqua-v62j-chatgpt-locked="true"><strong>Not live yet.</strong><div>Future ChatGPT/OpenAI-style connection requires:</div><ul><li>secure backend</li><li>server-side API keys only</li><li>tool gateway contract</li><li>permission gate</li><li>audit log</li><li>no API keys in frontend</li></ul></div>';
+    return '<div class="note" data-aqua-v62j-upload-locked="true"><strong>No. Upload is locked.</strong><div>Future upload requires secure backend storage, authenticated owner/project permission, audit log, undo/revert delete plan, file review/scanning, and no frontend API keys.</div></div>';
+  }
+
+  function renderToolGatewayPanelV62J(intent) {
+    var contract = ensureToolGatewayContractV62J();
+    var mode = intent && intent.gatewayModeV62J;
+    var body = '<div class="aqua-v62a-panel" data-aqua-v62j-secure-tool-gateway="true"><div class="aqua-v62a-hero"><div><div class="aqua-v62a-kicker">Backend Readiness / Contract Only</div><h3>Aqua Brain Secure Tool Gateway — v62J</h3><p>Current status: <strong>backend locked / contract only</strong>. Local/demo-only; no backend, network, external AI/API, upload, export, sharing, or live record change is active.</p></div><span class="aqua-v61z-module-tag">Locked</span></div>';
+    if (intent && intent.gatewayQuestionV62J) body += renderToolGatewayQuestionV62J(intent.gatewayQuestionV62J);
+    body += '<div class="aqua-v62a-section"><h4>Tool request envelope summary</h4><p>' + Object.keys(contract.toolRequestEnvelope).map(escapeHTMLV61D).join(', ') + '</p></div>';
+    body += '<div class="aqua-v62a-section"><h4>Tool response envelope summary</h4><p>' + Object.keys(contract.toolResponseEnvelope).map(escapeHTMLV61D).join(', ') + '</p></div>';
+    body += '<div class="aqua-v62a-section"><h4>Tool contract count</h4><p><strong>' + Object.keys(contract.toolContracts).length + '</strong> locked future backend tools. Frontend execution allowed: <strong>false</strong>.</p></div>';
+    body += '<div class="aqua-v62a-section"><h4>Risk levels</h4><p>' + Object.keys(contract.riskLevelMap).map(escapeHTMLV61D).join(', ') + '</p></div>';
+    body += '<div class="aqua-v62a-section"><h4>Approval routes</h4><p>' + Object.keys(contract.approvalRouteMap).map(escapeHTMLV61D).join(', ') + '</p></div>';
+    body += '<div class="aqua-v62a-section"><h4>Blocked frontend actions</h4><ul class="aqua-v62a-detail-list">' + contract.blockedFrontendActionRules.map(function (rule) { return '<li>' + escapeHTMLV61D(rule) + '</li>'; }).join('') + '</ul></div>';
+    if (/permission map/.test(mode || '')) body += '<div class="aqua-v62a-section"><h4>Permission map</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(contract.permissionRequirementMap, null, 2)) + '</pre></div>';
+    if (/risk map/.test(mode || '')) body += '<div class="aqua-v62a-section"><h4>Risk map</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(contract.riskLevelMap, null, 2)) + '</pre></div>';
+    if (/approval routes/.test(mode || '')) body += '<div class="aqua-v62a-section"><h4>Approval route map</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(contract.approvalRouteMap, null, 2)) + '</pre></div>';
+    if (/blocked frontend actions/.test(mode || '')) body += '<div class="aqua-v62a-section"><h4>Frontend block rules detail</h4><p>These rules are contract-level blockers and cannot be bypassed by typed commands.</p></div>';
+    body += '<div class="aqua-v62a-section"><h4>Next backend step</h4><p>Build an authenticated server-side gateway with permission checks, server-side AI/API keys only, audit logging, undo checkpoints, approval routes, and disabled-by-default live execution.</p></div></div>';
+    state.toolGatewayPanelWorks = true;
+    state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noApiKeysInFrontend = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noAlwaysListening = true;
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Secure Tool Gateway — v62J', subtitle: 'Backend readiness contract. Not live integration.', tag: 'Contract Only', chips: ['Backend Locked', 'No Frontend API Keys', 'No Live Execution'], attrs: { 'data-aqua-v62j-secure-tool-gateway-shell': 'true' }, body: body, safetyFooter: 'No backend calls, no network calls, no external AI/API calls, no export, no upload, no customer sharing, no accounting export, no payment/payroll/bank action, no audio storage, no always-listening.' });
+  }
+
   function mergeNamespace() {
     var previous = window.AquaV61Extensions || {};
     window.AquaV61Extensions = Object.assign(previous, state, {
@@ -2080,6 +2260,7 @@
     window.AquaWorkflowPlannerV62F = { version: VERSION, localDemoOnly: true, storageKey: WORKFLOW_PLAN_KEY_V62F, planAquaWorkflowV62F: planAquaWorkflowV62F, renderAquaWorkflowPlanV62F: renderAquaWorkflowPlanV62F, executeAquaWorkflowStepDemoV62F: executeAquaWorkflowStepDemoV62F, saveAquaWorkflowPlanV62F: saveAquaWorkflowPlanV62F, showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F, clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F, copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F, markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F, safetyEnvelope: workflowSafetyEnvelopeV62F() };
     window.AquaWorkflowMemoryV62G = { version: VERSION, localDemoOnly: true, storageKey: ACTIVE_WORKFLOW_KEY_V62G, saveAquaActiveWorkflowV62G: saveAquaActiveWorkflowV62G, getAquaActiveWorkflowV62G: getAquaActiveWorkflowV62G, clearAquaActiveWorkflowV62G: clearAquaActiveWorkflowV62G, continueAquaWorkflowV62G: continueAquaWorkflowV62G, classifyAquaFollowUpV62G: classifyAquaFollowUpV62G, renderAquaWorkflowContinuationV62G: renderAquaWorkflowContinuationV62G, safetyEnvelope: workflowSafetyEnvelopeV62F() };
     window.AquaVoiceInteractionV62H = { version: VERSION, localDemoOnly: true, storageKey: VOICE_INTERACTION_KEY_V62H, states: AQUA_VOICE_STATES_V62H.slice(), setAquaVoiceStateV62H: setAquaVoiceStateV62H, getAquaVoiceStateV62H: getAquaVoiceStateV62H, renderAquaVoiceStatePanelV62H: renderAquaVoiceStatePanelV62H, handleAquaVoiceCommandV62H: handleAquaVoiceCommandV62H, speakAquaResponseV62H: speakAquaResponseV62H, stopAquaSpeakingV62H: stopAquaSpeakingV62H, repeatLastAquaResponseV62H: repeatLastAquaResponseV62H, enableAquaVoiceV62H: enableAquaVoiceV62H, disableAquaVoiceV62H: disableAquaVoiceV62H, fallbackToManualControlsV62H: fallbackToManualControlsV62H, startVoiceCaptureV62H: startVoiceCaptureV62H, installAquaVoicePanelV62H: installAquaVoicePanelV62H, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true } };
+    window.AquaToolGatewayContractV62J = ensureToolGatewayContractV62J();
     window.AquaVoiceSessionV62I = { version: VERSION, localDemoOnly: true, storageKey: VOICE_SESSION_KEY_V62I, statuses: AQUA_SESSION_STATUSES_V62I.slice(), startAquaVoiceSessionV62I: startAquaVoiceSessionV62I, endAquaVoiceSessionV62I: endAquaVoiceSessionV62I, getAquaVoiceSessionV62I: getAquaVoiceSessionV62I, saveAquaVoiceSessionV62I: saveAquaVoiceSessionV62I, clearAquaVoiceSessionV62I: clearAquaVoiceSessionV62I, handleAquaSessionTurnV62I: handleAquaSessionTurnV62I, renderAquaSessionPanelV62I: renderAquaSessionPanelV62I, askAquaFollowUpQuestionV62I: askAquaFollowUpQuestionV62I, continueAquaSessionV62I: continueAquaSessionV62I, cancelAquaSessionV62I: cancelAquaSessionV62I, routeAquaSessionCommandV62I: routeAquaSessionCommandV62I, installAquaSessionPanelV62I: installAquaSessionPanelV62I, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true } };
     state.voiceBrainToolRegistryExists = Object.keys(window.AquaVoiceBrainV61Z.toolRegistry || {}).length >= 14;
     return window.AquaV61Extensions;
@@ -2914,6 +3095,8 @@
     var q = normalizeAquaPhraseV61E(original);
     var askMode = classifyAquaAskModeV61U(original);
     state.askModeRouterWorks = true;
+    var gateway = detectToolGatewayCommandV62J(original, q);
+    if (gateway) return withAskModeV61U(gateway, 'backend_readiness');
     var workflowContinuation = continueAquaWorkflowV62G(original);
     if (workflowContinuation) return withAskModeV61U(workflowContinuation, 'workflow_memory');
     var workflowPlanner = detectAquaWorkflowCommandV62F(original, q);
@@ -3946,6 +4129,16 @@
   }
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
+    var gatewayIntentV62J = detectToolGatewayCommandV62J(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
+    if (gatewayIntentV62J) {
+      gatewayIntentV62J.askMode = 'backend_readiness';
+      if (outputNode) outputNode.innerHTML = renderToolGatewayPanelV62J(gatewayIntentV62J);
+      if (gatewayIntentV62J.gatewayQuestionV62J === 'export') state.exportQuestionStaysLocked = true;
+      if (gatewayIntentV62J.gatewayQuestionV62J === 'upload') state.uploadQuestionStaysLocked = true;
+      if (gatewayIntentV62J.gatewayQuestionV62J === 'chatgpt') state.chatgptConnectionQuestionStaysLocked = true;
+      syncNamespace();
+      return Object.assign({ renderedSecureToolGatewayV62J: true, renderedFallback: false }, gatewayIntentV62J);
+    }
     if (isAquaSessionCommandV62I(commandText)) {
       var session = routeAquaSessionCommandV62I(commandText);
       var htmlV62I = renderAquaSessionPanelV62I(session, outputNode || null);
@@ -5201,6 +5394,17 @@
 
   function regressionCommandCasesV61L() {
     return [
+      { command: 'show tool gateway', expected: 'v62J secure tool gateway panel renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /backend locked \/ contract only|Tool request envelope summary|Blocked frontend actions/i, noFallback: true, toolGatewayV62J: true },
+      { command: 'show secure tool gateway', expected: 'v62J secure gateway alias renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Tool response envelope summary|Tool contract count/i, noFallback: true, toolGatewayV62J: true },
+      { command: 'show backend tool contract', expected: 'v62J backend tool contract renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /20<\/strong> locked future backend tools|frontend execution allowed/i, noFallback: true, toolGatewayV62J: true },
+      { command: 'show permission map', expected: 'v62J permission map renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Permission map|accounting_export/i, noFallback: true, toolGatewayV62J: true },
+      { command: 'show risk map', expected: 'v62J risk map renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Risk map|live_action_locked/i, noFallback: true, toolGatewayV62J: true },
+      { command: 'show approval routes', expected: 'v62J approval routes render', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Approval route map|owner_review|admin_backend_enablement/i, noFallback: true, toolGatewayV62J: true },
+      { command: 'show blocked frontend actions', expected: 'v62J blocked frontend action rules render', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Frontend must never hold API keys|always-listening microphone/i, noFallback: true, toolGatewayV62J: true, frontendBlockRulesV62J: true },
+      { command: 'show backend readiness', expected: 'v62J backend readiness renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Next backend step|server-side gateway/i, noFallback: true, toolGatewayV62J: true },
+      { command: 'can aqua export yet', expected: 'v62J export question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /No\. Export is locked[\s\S]*secure backend[\s\S]*no frontend API keys/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
+      { command: 'can aqua upload yet', expected: 'v62J upload question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /No\. Upload is locked|Future upload requires secure backend storage/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
+      { command: 'can aqua connect to chatgpt yet', expected: 'v62J ChatGPT connection question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Not live yet[\s\S]*server-side API keys only[\s\S]*no API keys in frontend/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
       { command: 'look up all receipts for Henderson from Home Depot and prepare them for accountant export', expected: 'Aqua Brain Workflow Plan v62F / receipt export locked', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'receipt_export_preparation', workflowPlanButtonsV62F: true, html: /Aqua Brain Workflow Plan — v62F[\s\S]*receipt criteria[\s\S]*Lock live export[\s\S]*Accounting|accounting/i, noFallback: true },
 
       { command: 'show me what will be exported', contextCommand: 'look up all receipts for Henderson from Home Depot and prepare them for accountant export', expected: 'v62G export packet follow-up uses active workflow', intent: 'aqua_workflow_memory_v62g', mode: 'workflow_memory', workflowContinuationV62G: true, html: /Aqua Brain Workflow Continuation — v62G[\s\S]*Henderson Home Depot receipts[\s\S]*export packet demo placeholder[\s\S]*Accounting Export Locked/i, noFallback: true },
@@ -5475,6 +5679,9 @@
       workflowPlanButtonsV62F: /Save Workflow Plan[\s\S]*Show Last Workflow Plan[\s\S]*Clear Workflow Plan Demo[\s\S]*Copy Workflow Plan Text[\s\S]*Mark Plan Ready for Owner Review Demo/i.test(html),
       renderedVisualRouteFocusV62C: /data-aqua-v62c-focused-section="true"|aqua-v62c-focused-section|Focused by Aqua Brain/i.test(html),
       renderedFocusedRouteMarkerV62E: /data-aqua-v62e-focused-route="true"|aqua-v62e-focused-route|Focused by Aqua Brain/i.test(html),
+      renderedSecureToolGatewayV62J: /Aqua Brain Secure Tool Gateway — v62J|data-aqua-v62j-secure-tool-gateway/i.test(html),
+      renderedFrontendBlockRulesV62J: /Frontend must never hold API keys|Blocked frontend actions/i.test(html),
+      gatewayQuestionLockedV62J: /Export is locked|Upload is locked|Not live yet/i.test(html),
       html: html,
       openedFocusLabelV62C: ((html.match(/Opened and focused:\s*([^<]+)/i) || [])[1] || '').trim(),
       renderedVoiceBrainPlanViewer: /data-aqua-v62a-voice-brain-plan-viewer|data-aqua-v62a-plan-viewer/i.test(html),
@@ -5521,6 +5728,9 @@
     if (testCase.spokenDraft && !actual.spokenResponseDraft) errors.push('Expected spoken response draft.');
     if (testCase.visualFocus && !actual.renderedVisualRouteFocusV62C) errors.push('Expected v62C focused visual route section.');
     if (testCase.openedFocus && !(actual.openedFocusLabelV62C || '').match(testCase.openedFocus)) errors.push('Expected Opened and focused marker matching ' + testCase.openedFocus + ' but got ' + (actual.openedFocusLabelV62C || 'none') + '.');
+    if (testCase.toolGatewayV62J && !actual.renderedSecureToolGatewayV62J) errors.push('Expected v62J secure tool gateway panel, but it did not render.');
+    if (testCase.frontendBlockRulesV62J && !actual.renderedFrontendBlockRulesV62J) errors.push('Expected v62J frontend block rules, but they did not render.');
+    if (testCase.gatewayQuestionLockedV62J && !actual.gatewayQuestionLockedV62J) errors.push('Expected v62J permission question to remain locked.');
     if (testCase.automationRoute && !actual.renderedAutomationReport) errors.push('Expected automation report viewer to render before fallback/context/module routing.');
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
     if (testCase.lockedGeneralAsk && !actual.renderedGeneralAskLocked) errors.push('Expected locked General Ask / Jobsite Calculator placeholder, but it did not render.');
@@ -5904,6 +6114,17 @@
       continueSessionWorks: state.continueSessionWorks === true,
       cancelSessionWorks: state.cancelSessionWorks === true,
       manualModeWorks: state.manualModeWorks === true,
+      toolGatewayContractExists: state.toolGatewayContractExists === true,
+      toolRequestEnvelopeWorks: state.toolRequestEnvelopeWorks === true,
+      toolResponseEnvelopeWorks: state.toolResponseEnvelopeWorks === true,
+      toolContractMapWorks: state.toolContractMapWorks === true,
+      permissionMapWorks: state.permissionMapWorks === true,
+      riskMapWorks: state.riskMapWorks === true,
+      approvalRoutesWork: state.approvalRoutesWork === true,
+      frontendBlockRulesWork: state.frontendBlockRulesWork === true,
+      exportQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua export yet' && result.passed && result.actual.gatewayQuestionLockedV62J; }),
+      uploadQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua upload yet' && result.passed && result.actual.gatewayQuestionLockedV62J; }),
+      chatgptConnectionQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua connect to chatgpt yet' && result.passed && result.actual.gatewayQuestionLockedV62J; }),
       noBackendCalls: true,
       noNetworkCalls: true,
       noExternalAIAPICalls: true,
@@ -6067,6 +6288,17 @@
     state.unsupportedGeneralAskRemainsLockedV61V = report.unsupportedGeneralAskRemainsLocked;
     state.unknownFallbackWorks = report.unknownFallbackWorks;
     state.noApiKeysInFrontend = report.noApiKeysInFrontend;
+    state.toolGatewayContractExists = report.toolGatewayContractExists;
+    state.toolRequestEnvelopeWorks = report.toolRequestEnvelopeWorks;
+    state.toolResponseEnvelopeWorks = report.toolResponseEnvelopeWorks;
+    state.toolContractMapWorks = report.toolContractMapWorks;
+    state.permissionMapWorks = report.permissionMapWorks;
+    state.riskMapWorks = report.riskMapWorks;
+    state.approvalRoutesWork = report.approvalRoutesWork;
+    state.frontendBlockRulesWork = report.frontendBlockRulesWork;
+    state.exportQuestionStaysLocked = report.exportQuestionStaysLocked;
+    state.uploadQuestionStaysLocked = report.uploadQuestionStaysLocked;
+    state.chatgptConnectionQuestionStaysLocked = report.chatgptConnectionQuestionStaysLocked;
     state.noLiveActionExecuted = true;
     state.noLiveChangeExecuted = true;
     state.noBackendCalls = true;
@@ -6357,6 +6589,7 @@
     };
   }
 
+  ensureToolGatewayContractV62J();
   mergeNamespace();
   installCommandNormalizerV61E();
   installPermissionGranterDemoButtonsV61I();
@@ -6372,5 +6605,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62I extensions loaded: Aqua Brain voice session controller active. Home untouched. No live backend, upload, export, SOW, or estimate created.');
+  console.log('Aqua Homes OS v62J extensions loaded: secure tool gateway contract active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());

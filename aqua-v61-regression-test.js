@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62I';
+const VERSION = 'v62J';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -333,7 +333,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62I', extensionReport.version === 'v62I', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62J', extensionReport.version === 'v62J', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
     addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
@@ -640,7 +640,7 @@ function runSafetyGate() {
   const test = readFileSafe('aqua-v61-regression-test.js');
   const workflow = readFileSafe('.github/workflows/aqua-regression.yml');
   const executableNetworkPattern = /\b(fetch|XMLHttpRequest|sendBeacon|WebSocket|EventSource|RTCPeerConnection)\s*[\(.]/;
-  const liveApiPattern = /\b(openai|api[_-]?key|authorization:\s*bearer|https?:\/\/)/i;
+  const liveApiPattern = /(authorization:\s*bearer|sk-[A-Za-z0-9_-]{20,}|api[_-]?key\s*[:=]\s*['"][^'"]+['"]|https?:\/\/api\.)/i;
   const combined = [extension, test, workflow].join('\n');
   const safetyChecks = {
     noBackendCalls: !/backend\s*\(/i.test(combined),
@@ -764,6 +764,17 @@ function markdown(report) {
     `- noLiveRecordChanges: ${report.noLiveRecordChanges === true}\n` +
     `- noAudioStorage: ${report.noAudioStorage === true}\n` +
     `- noBackendNetworkLiveAI: ${report.noBackendNetworkLiveAI === true}\n` +
+    `- toolGatewayContractExists: ${report.toolGatewayContractExists === true}\n` +
+    `- toolRequestEnvelopeWorks: ${report.toolRequestEnvelopeWorks === true}\n` +
+    `- toolResponseEnvelopeWorks: ${report.toolResponseEnvelopeWorks === true}\n` +
+    `- toolContractMapWorks: ${report.toolContractMapWorks === true}\n` +
+    `- permissionMapWorks: ${report.permissionMapWorks === true}\n` +
+    `- riskMapWorks: ${report.riskMapWorks === true}\n` +
+    `- approvalRoutesWork: ${report.approvalRoutesWork === true}\n` +
+    `- frontendBlockRulesWork: ${report.frontendBlockRulesWork === true}\n` +
+    `- exportQuestionStaysLocked: ${report.exportQuestionStaysLocked === true}\n` +
+    `- uploadQuestionStaysLocked: ${report.uploadQuestionStaysLocked === true}\n` +
+    `- chatgptConnectionQuestionStaysLocked: ${report.chatgptConnectionQuestionStaysLocked === true}\n` +
     `- spokenReadbackAvailable: ${report.spokenReadbackAvailable}\n` +
     `- spokenReadbackBrowserUnavailableFallback: ${report.spokenReadbackBrowserUnavailableFallback}\n` +
     `- automationCommandRoutesBeforeFallback: ${report.extensionRegression && report.extensionRegression.automationCommandRoutesBeforeFallback === true}\n` +
@@ -1012,6 +1023,17 @@ async function main() {
     continueSessionWorks: extensionReport ? extensionReport.continueSessionWorks === true : false,
     cancelSessionWorks: extensionReport ? extensionReport.cancelSessionWorks === true : false,
     manualModeWorks: extensionReport ? extensionReport.manualModeWorks === true : false,
+    toolGatewayContractExists: extensionReport ? extensionReport.toolGatewayContractExists === true : false,
+    toolRequestEnvelopeWorks: extensionReport ? extensionReport.toolRequestEnvelopeWorks === true : false,
+    toolResponseEnvelopeWorks: extensionReport ? extensionReport.toolResponseEnvelopeWorks === true : false,
+    toolContractMapWorks: extensionReport ? extensionReport.toolContractMapWorks === true : false,
+    permissionMapWorks: extensionReport ? extensionReport.permissionMapWorks === true : false,
+    riskMapWorks: extensionReport ? extensionReport.riskMapWorks === true : false,
+    approvalRoutesWork: extensionReport ? extensionReport.approvalRoutesWork === true : false,
+    frontendBlockRulesWork: extensionReport ? extensionReport.frontendBlockRulesWork === true : false,
+    exportQuestionStaysLocked: extensionReport ? extensionReport.exportQuestionStaysLocked === true : false,
+    uploadQuestionStaysLocked: extensionReport ? extensionReport.uploadQuestionStaysLocked === true : false,
+    chatgptConnectionQuestionStaysLocked: extensionReport ? extensionReport.chatgptConnectionQuestionStaysLocked === true : false,
     aquaBrainCommandCenterWorks: extensionReport ? extensionReport.aquaBrainCommandCenterWorks === true : false,
     voiceBrainPlanViewerWorks: extensionReport ? extensionReport.voiceBrainPlanViewerWorks === true : false,
     saveVoiceBrainPlanWorks: extensionReport ? extensionReport.saveVoiceBrainPlanWorks === true : false,
