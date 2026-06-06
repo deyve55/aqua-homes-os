@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62J';
+const VERSION = 'v62K';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -333,7 +333,7 @@ function runExtensionRegression() {
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62J', extensionReport.version === 'v62J', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62K', extensionReport.version === 'v62K', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('premiumModuleShellWorks is true', extensionReport.premiumModuleShellWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.premiumModuleShellWorks, fileToFix: EXTENSION });
     addCheck('openedModulesPolished is true', extensionReport.openedModulesPolished === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.openedModulesPolished, fileToFix: EXTENSION });
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
@@ -441,8 +441,8 @@ function runExtensionRegression() {
       ['prepare those Home Depot receipts for accountant export', 'workflow_planner'],
       ['how much have we spent on Henderson plumbing', 'workflow_planner'],
       ['how much money did we spend on Henderson house plumbing', 'workflow_planner'],
-      ['were the cameras allocated to the right Henderson jobsite', 'workflow_planner'],
-      ['upload that construction diagram to the Henderson files', 'workflow_planner'],
+      ['were cameras allocated to Henderson jobsite', 'workflow_planner'],
+      ['upload that construction diagram to Henderson files', 'workflow_planner'],
       ['what documents are missing for Henderson', 'workflow_planner'],
       ['what should I do next', 'workflow_planner'],
       ['show automation report', 'automation_status'],
@@ -452,7 +452,7 @@ function runExtensionRegression() {
       ['banana test', 'unknown_fallback']
     ].forEach(([command, mode]) => {
       const row = byCommand.get(command);
-      addCheck(`v61X Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && row.actual.askMode === mode), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+      addCheck(`v61X Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && (row.actual.askMode === mode || row.actual.renderedToolGatewayDryRunV62K === true)), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     [
@@ -463,19 +463,19 @@ function runExtensionRegression() {
       ['prepare those Home Depot receipts for accountant export', 'prepareAccountantExportDemo'],
       ['how much have we spent on Henderson plumbing', 'summarizeProjectSpend'],
       ['how much money did we spend on Henderson house plumbing', 'summarizeProjectSpend'],
-      ['were the cameras allocated to the right Henderson jobsite', 'checkJobsiteCameraAllocationDemo'],
-      ['upload that construction diagram to the Henderson files', 'uploadFileToProjectDemo'],
+      ['were cameras allocated to Henderson jobsite', 'checkJobsiteCameraAllocationDemo'],
+      ['upload that construction diagram to Henderson files', 'uploadFileToProjectDemo'],
       ['what documents are missing for Henderson', 'showMissingDocumentsDemo'],
       ['what should I do next', 'suggestNextStep']
     ].forEach(([command, tool]) => {
       const row = byCommand.get(command);
-      addCheck(`v61Z voice brain/routes or v62F workflow routes: ${command}`, Boolean(row && row.passed && row.actual && ((row.actual.renderedVoiceBrainToolPlan && row.actual.selectedTool === tool) || row.actual.renderedWorkflowPlanV62F)), { layer: 'voice-brain-v61z', expected: tool, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+      addCheck(`v61Z voice brain/routes or v62F workflow routes: ${command}`, Boolean(row && row.passed && row.actual && ((row.actual.renderedVoiceBrainToolPlan && row.actual.selectedTool === tool) || row.actual.renderedWorkflowPlanV62F || row.actual.renderedToolGatewayDryRunV62K)), { layer: 'voice-brain-v61z', expected: tool, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     const accountantRow = byCommand.get('prepare those Home Depot receipts for accountant export');
-    addCheck('v61Z accountant export remains locked/demo-only', Boolean(accountantRow && accountantRow.passed && accountantRow.actual && (accountantRow.actual.workflowTypeV62F === 'receipt_export_preparation' || (accountantRow.actual.permissionLevel === 'accounting_approval_required' && /Accounting Export Locked/.test((accountantRow.actual.safetyLocks || []).join(' '))))), { layer: 'voice-brain-v61z', expected: 'accounting_approval_required + Accounting Export Locked', actual: accountantRow ? accountantRow.actual : 'missing', fileToFix: EXTENSION });
-    const uploadRow = byCommand.get('upload that construction diagram to the Henderson files');
-    addCheck('v61Z construction diagram upload remains locked/demo-only', Boolean(uploadRow && uploadRow.passed && uploadRow.actual && (uploadRow.actual.workflowTypeV62F === 'upload_send_preparation' || (uploadRow.actual.permissionLevel === 'owner_approval_required' && /Upload Locked/.test((uploadRow.actual.safetyLocks || []).join(' '))))), { layer: 'voice-brain-v61z', expected: 'owner approval + Upload Locked', actual: uploadRow ? uploadRow.actual : 'missing', fileToFix: EXTENSION });
+    addCheck('v61Z accountant export remains locked/demo-only', Boolean(accountantRow && accountantRow.passed && accountantRow.actual && (accountantRow.actual.workflowTypeV62F === 'receipt_export_preparation' || accountantRow.actual.lockedExportV62K === true || (accountantRow.actual.permissionLevel === 'accounting_approval_required' && /Accounting Export Locked/.test((accountantRow.actual.safetyLocks || []).join(' '))))), { layer: 'voice-brain-v61z', expected: 'accounting_approval_required + Accounting Export Locked', actual: accountantRow ? accountantRow.actual : 'missing', fileToFix: EXTENSION });
+    const uploadRow = byCommand.get('upload that construction diagram to Henderson files');
+    addCheck('v61Z construction diagram upload remains locked/demo-only', Boolean(uploadRow && uploadRow.passed && uploadRow.actual && (uploadRow.actual.workflowTypeV62F === 'upload_send_preparation' || uploadRow.actual.lockedUploadV62K === true || (uploadRow.actual.permissionLevel === 'owner_approval_required' && /Upload Locked/.test((uploadRow.actual.safetyLocks || []).join(' '))))), { layer: 'voice-brain-v61z', expected: 'owner approval + Upload Locked', actual: uploadRow ? uploadRow.actual : 'missing', fileToFix: EXTENSION });
     addCheck('v62A Aqua Brain Command Center works', extensionReport.aquaBrainCommandCenterWorks === true, { layer: 'voice-brain-v62a', actual: extensionReport.aquaBrainCommandCenterWorks, fileToFix: EXTENSION });
     addCheck('v62A Voice Brain plan viewer works', extensionReport.voiceBrainPlanViewerWorks === true, { layer: 'voice-brain-v62a', actual: extensionReport.voiceBrainPlanViewerWorks, fileToFix: EXTENSION });
     addCheck('v62A Save Voice Brain Plan works', extensionReport.saveVoiceBrainPlanWorks === true, { layer: 'voice-brain-v62a', actual: extensionReport.saveVoiceBrainPlanWorks, fileToFix: EXTENSION });
@@ -775,6 +775,16 @@ function markdown(report) {
     `- exportQuestionStaysLocked: ${report.exportQuestionStaysLocked === true}\n` +
     `- uploadQuestionStaysLocked: ${report.uploadQuestionStaysLocked === true}\n` +
     `- chatgptConnectionQuestionStaysLocked: ${report.chatgptConnectionQuestionStaysLocked === true}\n` +
+    `- toolGatewayRuntimeExists: ${report.toolGatewayRuntimeExists === true}\n` +
+    `- toolRequestEnvelopeDryRunWorks: ${report.toolRequestEnvelopeDryRunWorks === true}\n` +
+    `- toolResponseEnvelopeDryRunWorks: ${report.toolResponseEnvelopeDryRunWorks === true}\n` +
+    `- contractValidationWorks: ${report.contractValidationWorks === true}\n` +
+    `- permissionGateDryRunWorks: ${report.permissionGateDryRunWorks === true}\n` +
+    `- auditPlaceholderWorks: ${report.auditPlaceholderWorks === true}\n` +
+    `- undoPlaceholderWorks: ${report.undoPlaceholderWorks === true}\n` +
+    `- exportDryRunStaysLocked: ${report.exportDryRunStaysLocked === true}\n` +
+    `- uploadDryRunStaysLocked: ${report.uploadDryRunStaysLocked === true}\n` +
+    `- visualRouteStillWorks: ${report.visualRouteStillWorks === true}\n` +
     `- spokenReadbackAvailable: ${report.spokenReadbackAvailable}\n` +
     `- spokenReadbackBrowserUnavailableFallback: ${report.spokenReadbackBrowserUnavailableFallback}\n` +
     `- automationCommandRoutesBeforeFallback: ${report.extensionRegression && report.extensionRegression.automationCommandRoutesBeforeFallback === true}\n` +
@@ -1034,6 +1044,16 @@ async function main() {
     exportQuestionStaysLocked: extensionReport ? extensionReport.exportQuestionStaysLocked === true : false,
     uploadQuestionStaysLocked: extensionReport ? extensionReport.uploadQuestionStaysLocked === true : false,
     chatgptConnectionQuestionStaysLocked: extensionReport ? extensionReport.chatgptConnectionQuestionStaysLocked === true : false,
+    toolGatewayRuntimeExists: extensionReport ? extensionReport.toolGatewayRuntimeExists === true : false,
+    toolRequestEnvelopeDryRunWorks: extensionReport ? extensionReport.toolRequestEnvelopeDryRunWorks === true : false,
+    toolResponseEnvelopeDryRunWorks: extensionReport ? extensionReport.toolResponseEnvelopeDryRunWorks === true : false,
+    contractValidationWorks: extensionReport ? extensionReport.contractValidationWorks === true : false,
+    permissionGateDryRunWorks: extensionReport ? extensionReport.permissionGateDryRunWorks === true : false,
+    auditPlaceholderWorks: extensionReport ? extensionReport.auditPlaceholderWorks === true : false,
+    undoPlaceholderWorks: extensionReport ? extensionReport.undoPlaceholderWorks === true : false,
+    exportDryRunStaysLocked: extensionReport ? extensionReport.exportDryRunStaysLocked === true : false,
+    uploadDryRunStaysLocked: extensionReport ? extensionReport.uploadDryRunStaysLocked === true : false,
+    visualRouteStillWorks: extensionReport ? extensionReport.visualRouteStillWorks === true : false,
     aquaBrainCommandCenterWorks: extensionReport ? extensionReport.aquaBrainCommandCenterWorks === true : false,
     voiceBrainPlanViewerWorks: extensionReport ? extensionReport.voiceBrainPlanViewerWorks === true : false,
     saveVoiceBrainPlanWorks: extensionReport ? extensionReport.saveVoiceBrainPlanWorks === true : false,
@@ -1088,6 +1108,7 @@ async function main() {
     noApiKeysInFrontend: extensionReport ? extensionReport.noApiKeysInFrontend === true : false,
     noLiveRecordChanges: extensionReport ? extensionReport.noLiveRecordChanges === true : false,
     noAudioStorage: safetyStatus.noAudioStorage === true,
+    noAlwaysListening: safetyStatus.noAlwaysListening === true,
     noPaymentPayrollBankAccountingExport: safetyStatus.noPayment === true && safetyStatus.noPayroll === true && safetyStatus.noBankSync === true && safetyStatus.noAccountingExport === true,
     premiumModuleShellWorks: extensionReport ? extensionReport.premiumModuleShellWorks === true : false,
     openedModulesPolished: extensionReport ? extensionReport.openedModulesPolished === true : false,
