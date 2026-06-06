@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62L Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan.
+ * Aqua Homes OS v62M Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62L';
+  var VERSION = 'v62M';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -48,6 +48,19 @@
     saunaTubeNormalizesToSonotube: false,
     unsupportedGeneralAskRemainsLockedV61V: false,
     noApiKeysInFrontend: true,
+    backendSchemaExists: true,
+    entityContractsExist: false,
+    relationshipMapWorks: false,
+    indexMapsWork: false,
+    hendersonDemoIndexWorks: false,
+    receiptIndexWorks: false,
+    reportIndexWorks: false,
+    spendIndexWorks: false,
+    missingDocumentIndexWorks: false,
+    cameraAllocationIndexWorks: false,
+    approvalIndexWorks: false,
+    exportPacketIndexWorks: false,
+    noRealCustomerData: true,
     initialized: true,
     backendBoundaryExists: true,
     serverOnlyKeyPolicyWorks: false,
@@ -2165,6 +2178,163 @@
     return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Backend Boundary — v62L', subtitle: 'Real backend boundary / server-only key vault plan. Planning only; no live connection.', tag: 'Backend Locked', chips: ['Server-Only Keys', 'No Frontend Secrets', 'No Backend Calls', 'No Live AI', 'No Audio Storage'], attrs: { 'data-aqua-v62l-backend-boundary': 'true' }, body: answerHtml + '<div class="aqua-v62a-panel">' + status + keys + endpoints + roles + liveGate + voice + checklist + '</div>', safetyFooter: 'Planning/demo only. No backend calls, no network calls, no external AI/API calls, no API keys in frontend, no live record changes, no uploads, no sends, no exports, no customer/accountant export, no payment/payroll/bank/accounting export, no audio storage, no always-listening.' });
   }
 
+
+
+  function aquaEntityContractV62M(entityName, description, primaryKey, requiredFields, optionalFields, relationships, indexes, permissionLevel, sensitiveDataLevel) {
+    return {
+      entityName: entityName,
+      description: description,
+      primaryKey: primaryKey,
+      requiredFields: requiredFields || [],
+      optionalFields: optionalFields || [],
+      relationships: relationships || [],
+      indexes: indexes || [],
+      permissionLevel: permissionLevel || 'owner_admin/backend',
+      sensitiveDataLevel: sensitiveDataLevel || 'restricted_demo_placeholder',
+      liveStatus: 'locked/demo',
+      backendRequired: true,
+      frontendStorageAllowed: false
+    };
+  }
+
+  function createAquaBackendSchemaV62M() {
+    var common = ['id', 'companyId', 'createdAt', 'updatedAt', 'status'];
+    var entityContracts = {
+      companies: aquaEntityContractV62M('Company', 'Top-level organization that owns projects, users, permissions, billing boundaries, and file cabinet records.', 'companyId', ['companyId', 'companyName'], ['legalName', 'ownerUserIds', 'defaultPermissions'], ['Company -> Projects', 'Company -> Users/Permissions'], ['companyNameIndex'], 'owner_admin/backend_admin_enablement', 'restricted_business'),
+      projects: aquaEntityContractV62M('Project / Job / Property', 'Construction job or property file cabinet root.', 'projectId', ['projectId', 'companyId', 'projectName', 'projectStatus'], ['aliases', 'addressPlaceholder', 'projectManagerId'], ['Project -> Project Folders', 'Project -> Reports', 'Project -> Receipts', 'Project -> SOWs', 'Project -> Estimates', 'Project -> Change Orders', 'Project -> Payables', 'Project -> Employee Time', 'Project -> Budgets', 'Project -> Cameras / Photos', 'Project -> Missing Documents', 'Project -> Approvals', 'Project -> Export Packets'], ['projectNameIndex', 'projectAliasIndex', 'budgetIndex'], 'read_project/backend', 'project_sensitive'),
+      projectFolders: aquaEntityContractV62M('Project Folder', 'Backend folder taxonomy for reports, receipts, photos, diagrams, approvals, financials, and evidence.', 'folderId', ['folderId', 'projectId', 'folderType', 'folderName'], ['parentFolderId', 'sortOrder'], ['Project -> Project Folders', 'Project Folder -> File Uploads'], ['fileUploadIndex', 'projectNameIndex'], 'read_project/backend', 'project_sensitive'),
+      reports: aquaEntityContractV62M('Report', 'Status, inspection, staircase, punch, or field report placeholder indexed by project/topic/date.', 'reportId', ['reportId', 'projectId', 'reportType', 'title', 'reportStatus'], ['reportDate', 'preparedBy', 'approvalStatus'], ['Report -> Project', 'Report -> Approvals', 'Report -> File Uploads'], ['reportIndex', 'projectNameIndex'], 'read_project/backend', 'project_sensitive'),
+      receipts: aquaEntityContractV62M('Receipt', 'Purchase proof placeholder indexed by project/vendor/cost code/date/amount/export packet.', 'receiptId', ['receiptId', 'projectId', 'vendorId', 'costCodeId', 'receiptDate', 'amountStatus'], ['receiptNumberPlaceholder', 'proofFileId', 'exportPacketId'], ['Receipt -> Vendor', 'Receipt -> Cost Code', 'Receipt -> Project', 'Receipt -> Export Packet'], ['receiptIndex', 'vendorIndex', 'spendCategoryIndex', 'exportPacketIndex'], 'accounting_admin/backend', 'financial_sensitive'),
+      vendors: aquaEntityContractV62M('Vendor', 'Supplier, subcontractor, store, or service provider index entry.', 'vendorId', ['vendorId', 'vendorName'], ['vendorType', 'contactPlaceholder'], ['Vendor -> Receipts', 'Vendor -> Payables'], ['vendorIndex'], 'read_financial_summary/backend', 'financial_sensitive'),
+      spendCategories: aquaEntityContractV62M('Spend Category / Cost Code', 'Budget and accounting classification placeholder for trade/category spend.', 'costCodeId', ['costCodeId', 'codeName', 'category'], ['trade', 'accountingCodePlaceholder'], ['Cost Code -> Receipts', 'Cost Code -> Budgets', 'Cost Code -> Payables'], ['spendCategoryIndex', 'budgetIndex'], 'accounting_admin/backend', 'financial_sensitive'),
+      sows: aquaEntityContractV62M('SOW / Scope of Work', 'Scope item/progress contract placeholder for project work packages.', 'sowId', ['sowId', 'projectId', 'scopeTitle', 'scopeStatus'], ['trade', 'progressPercent', 'approvalId'], ['SOW -> Project', 'SOW -> Estimates', 'SOW -> Change Orders', 'SOW -> Approvals'], ['sowIndex'], 'project_manager/backend', 'project_sensitive'),
+      estimates: aquaEntityContractV62M('Estimate', 'Draft or approved project estimate placeholder.', 'estimateId', ['estimateId', 'projectId', 'estimateStatus'], ['version', 'totalStatus', 'sowId'], ['Estimate -> Project', 'Estimate -> SOW', 'Estimate -> Approval'], ['estimateIndex'], 'project_manager/backend', 'financial_sensitive'),
+      changeOrders: aquaEntityContractV62M('Change Order', 'Change request and approval placeholder tied to scope/budget impact.', 'changeOrderId', ['changeOrderId', 'projectId', 'changeStatus'], ['sowId', 'budgetImpactStatus', 'approvalId'], ['Change Order -> Project', 'Change Order -> SOW', 'Change Order -> Approvals'], ['approvalIndex', 'budgetIndex'], 'owner_admin/backend', 'financial_sensitive'),
+      payables: aquaEntityContractV62M('Payable', 'Vendor payable placeholder locked behind accounting permission.', 'payableId', ['payableId', 'projectId', 'vendorId', 'payableStatus'], ['dueDate', 'amountStatus', 'receiptId'], ['Payable -> Project', 'Payable -> Vendor', 'Payable -> Receipt'], ['payableIndex', 'vendorIndex'], 'accounting_admin/backend', 'financial_sensitive'),
+      employeeTime: aquaEntityContractV62M('Employee Time', 'Employee time record placeholder with payroll boundary locks.', 'timeEntryId', ['timeEntryId', 'projectId', 'employeeIdPlaceholder', 'timeStatus'], ['date', 'hoursStatus', 'trade'], ['Employee Time -> Project', 'Employee Time -> Payroll Boundary'], ['employeeTimeIndex'], 'owner_admin/payroll_admin/backend', 'payroll_sensitive'),
+      payrollBoundaries: aquaEntityContractV62M('Payroll Boundary', 'Defines what Aqua may summarize vs. what must stay in payroll systems.', 'payrollBoundaryId', ['payrollBoundaryId', 'companyId', 'boundaryStatus'], ['allowedSummaryFields', 'blockedPayrollActions'], ['Payroll Boundary -> Employee Time'], ['employeeTimeIndex'], 'owner_admin/payroll_admin/backend', 'payroll_sensitive'),
+      budgets: aquaEntityContractV62M('Budget', 'Project budget category placeholder connected to spend and alerts.', 'budgetId', ['budgetId', 'projectId', 'costCodeId', 'budgetStatus'], ['thresholdStatus', 'actualSpendStatus'], ['Budget -> Project', 'Budget -> Cost Code', 'Budget -> Budget Risk Alerts'], ['budgetIndex', 'spendCategoryIndex'], 'accounting_admin/backend', 'financial_sensitive'),
+      budgetRiskAlerts: aquaEntityContractV62M('Budget Risk Alert', 'Over-budget or near-budget warning placeholder.', 'alertId', ['alertId', 'projectId', 'budgetId', 'alertStatus'], ['severity', 'reasonPlaceholder'], ['Budget Risk Alert -> Budget', 'Budget Risk Alert -> Notifications'], ['budgetIndex'], 'owner_admin/accounting_admin/backend', 'financial_sensitive'),
+      jobsiteCameras: aquaEntityContractV62M('Jobsite Camera', 'Camera allocation placeholder mapped to the correct project/jobsite.', 'cameraId', ['cameraId', 'projectId', 'allocationStatus'], ['cameraLabelPlaceholder', 'jobsiteZone'], ['Camera -> Project', 'Camera -> Photos/Evidence Binder'], ['cameraAllocationIndex'], 'owner_admin/project_manager/backend', 'site_sensitive'),
+      photosEvidenceBinder: aquaEntityContractV62M('Photos / Evidence Binder', 'Photo/evidence metadata placeholder, not raw sensitive media storage in frontend.', 'evidenceId', ['evidenceId', 'projectId', 'evidenceType', 'evidenceStatus'], ['cameraId', 'folderId', 'capturedAt'], ['Camera/Photo -> Project', 'Photo -> Project Folder', 'Photo -> Report'], ['cameraAllocationIndex', 'fileUploadIndex'], 'read_project/backend', 'site_sensitive'),
+      missingDocuments: aquaEntityContractV62M('Missing Document', 'Checklist placeholder for required documents and file gaps.', 'missingDocumentId', ['missingDocumentId', 'projectId', 'documentType', 'missingStatus'], ['requiredBy', 'approvalId'], ['Missing Document -> Project', 'Missing Document -> Approval'], ['missingDocumentIndex'], 'project_manager/backend', 'project_sensitive'),
+      approvals: aquaEntityContractV62M('Approval', 'Owner/admin/accounting approval placeholder for prepared actions.', 'approvalId', ['approvalId', 'projectId', 'preparedActionId', 'approvalStatus'], ['requiredRole', 'requestedBy'], ['Approval -> Prepared Action', 'Approval -> Audit Log'], ['approvalIndex'], 'owner_admin/accounting_admin/backend', 'approval_sensitive'),
+      exportPackets: aquaEntityContractV62M('Export Packet', 'Accountant/export packet placeholder; no live export from frontend.', 'exportPacketId', ['exportPacketId', 'projectId', 'packetType', 'packetStatus'], ['receiptIds', 'reportIds', 'approvalId'], ['Project -> Export Packets', 'Receipt -> Export Packet', 'Export Packet -> Approval'], ['exportPacketIndex', 'receiptIndex'], 'accounting_admin/backend', 'financial_sensitive'),
+      fileUploads: aquaEntityContractV62M('File Upload', 'Prepared upload metadata placeholder; real files require backend storage, scanning, auth, and approval.', 'fileUploadId', ['fileUploadId', 'projectId', 'folderId', 'uploadStatus'], ['fileType', 'preparedActionId'], ['File Upload -> Project Folder', 'File Upload -> Audit Log'], ['fileUploadIndex'], 'owner_admin/project_manager/backend', 'file_sensitive'),
+      permissions: aquaEntityContractV62M('Permission', 'Role and capability map for project, financial, payroll, export, upload, and backend actions.', 'permissionId', ['permissionId', 'companyId', 'role', 'permissionLevel'], ['userIdPlaceholder', 'scope'], ['Permission -> Company', 'Permission -> Approval'], ['approvalIndex'], 'owner_admin/backend_admin_enablement', 'identity_sensitive'),
+      auditLogs: aquaEntityContractV62M('Audit Log', 'Immutable future backend log for tool requests, approvals, exports, uploads, and live actions.', 'auditLogId', ['auditLogId', 'toolRequestId', 'eventType', 'eventStatus'], ['actorIdPlaceholder', 'undoCheckpointId'], ['Audit Log -> Tool Request', 'Audit Log -> Undo Checkpoint'], ['auditIndex'], 'backend_admin/read_only_auditor', 'audit_sensitive'),
+      undoCheckpoints: aquaEntityContractV62M('Undo Checkpoint', 'Rollback checkpoint placeholder required before any future live mutation.', 'undoCheckpointId', ['undoCheckpointId', 'liveActionId', 'checkpointStatus'], ['auditLogId', 'restorePlanPlaceholder'], ['Undo Checkpoint -> Live Action', 'Undo Checkpoint -> Audit Log'], ['undoIndex'], 'backend_admin/owner_admin', 'action_sensitive'),
+      notificationsAlerts: aquaEntityContractV62M('Notification / Alert', 'Owner/project/accounting alert placeholder for missing docs, budget risk, approvals, and attention items.', 'notificationId', ['notificationId', 'companyId', 'alertType', 'alertStatus'], ['projectId', 'severity'], ['Notification -> Project', 'Notification -> Budget Risk Alert', 'Notification -> Approval'], ['approvalIndex', 'budgetIndex', 'missingDocumentIndex'], 'project_manager/backend', 'notification_sensitive'),
+      aiConversationContext: aquaEntityContractV62M('AI Conversation / Session Context', 'Local/demo AI session map for active project/vendor/topic. Real context belongs in backend with retention rules.', 'sessionId', ['sessionId', 'companyId', 'sessionStatus'], ['activeProjectId', 'lastIntent', 'retentionPolicy'], ['AI Session -> Project', 'AI Session -> Tool Request', 'AI Session -> Audit Log'], ['projectAliasIndex', 'auditIndex'], 'owner_admin/backend', 'conversation_sensitive')
+    };
+    var relationships = [
+      'Company -> Projects', 'Project -> Project Folders', 'Project -> Reports', 'Project -> Receipts', 'Project -> SOWs', 'Project -> Estimates', 'Project -> Change Orders', 'Project -> Payables', 'Project -> Employee Time', 'Project -> Budgets', 'Project -> Cameras / Photos', 'Project -> Missing Documents', 'Project -> Approvals', 'Project -> Export Packets', 'Receipt -> Vendor', 'Receipt -> Cost Code', 'Receipt -> Project', 'Receipt -> Export Packet', 'Report -> Project', 'SOW -> Project', 'Camera/Photo -> Project', 'Approval -> Prepared Action', 'Audit Log -> Tool Request', 'Undo Checkpoint -> Live Action'
+    ];
+    var indexMaps = {
+      projectNameIndex: ['Henderson House demo placeholder'],
+      projectAliasIndex: ['Henderson', 'Henderson house', 'Henderson job', 'Henderson project', 'Henderson property'],
+      vendorIndex: ['Home Depot demo vendor placeholder'],
+      receiptIndex: ['Home Depot receipt placeholder', 'plumbing receipt placeholder'],
+      reportIndex: ['Henderson staircase report placeholder', 'Henderson project status report placeholder'],
+      spendCategoryIndex: ['plumbing spend placeholder'],
+      sowIndex: ['Henderson scope placeholder'],
+      estimateIndex: ['Henderson estimate placeholder'],
+      payableIndex: ['Henderson payable placeholder'],
+      employeeTimeIndex: ['Henderson employee time placeholder'],
+      budgetIndex: ['Henderson budget placeholder', 'plumbing spend placeholder'],
+      cameraAllocationIndex: ['camera allocation placeholder'],
+      missingDocumentIndex: ['missing documents placeholder'],
+      approvalIndex: ['approval placeholder'],
+      exportPacketIndex: ['accountant export packet placeholder'],
+      fileUploadIndex: ['Henderson construction diagram placeholder'],
+      auditIndex: ['tool request audit placeholder'],
+      undoIndex: ['live action undo checkpoint placeholder']
+    };
+    var hendersonDemoIndex = {
+      projectName: 'Henderson House',
+      aliases: ['Henderson', 'Henderson house', 'Henderson job', 'Henderson project', 'Henderson property'],
+      records: {
+        reports: ['Henderson staircase report placeholder', 'Henderson project status report placeholder'],
+        files: ['Henderson construction diagram placeholder'],
+        receipts: ['Home Depot receipt placeholder', 'plumbing receipt placeholder'],
+        spend: ['plumbing spend placeholder'],
+        missingDocuments: ['missing documents placeholder'],
+        cameraAllocation: ['camera allocation placeholder'],
+        exportPackets: ['accountant export packet placeholder']
+      },
+      status: 'demo placeholder / backend required / no live data'
+    };
+    return {
+      version: 'v62M',
+      name: 'Aqua Brain Backend Schema / Data Index Contract',
+      localDemoOnly: true,
+      backendDatabaseConnected: false,
+      noLiveData: true,
+      noRealCustomerData: true,
+      entityContracts: entityContracts,
+      relationships: relationships,
+      indexMaps: indexMaps,
+      hendersonDemoIndex: hendersonDemoIndex,
+      permissionSensitivityMap: {
+        owner_admin: ['projects', 'approvals', 'uploads', 'backend enablement'],
+        accounting_admin: ['receipts', 'vendors', 'spend categories', 'payables', 'budgets', 'export packets'],
+        project_manager: ['project folders', 'reports', 'SOWs', 'missing documents', 'camera allocation'],
+        payroll_admin: ['employee time and payroll boundaries'],
+        backend_required: ['audit logs', 'undo checkpoints', 'AI session context', 'real files and live data']
+      },
+      safety: ['no backend calls', 'no network calls', 'no external AI/API calls', 'no API keys in frontend', 'no live record changes', 'no live export', 'no live upload', 'no real customer data', 'no audio storage', 'no always-listening']
+    };
+  }
+
+  function ensureAquaBackendSchemaV62M() {
+    window.AquaBackendSchemaV62M = window.AquaBackendSchemaV62M || createAquaBackendSchemaV62M();
+    state.backendSchemaExists = true;
+    state.entityContractsExist = Object.keys(window.AquaBackendSchemaV62M.entityContracts || {}).length >= 26;
+    state.relationshipMapWorks = (window.AquaBackendSchemaV62M.relationships || []).length >= 20;
+    state.indexMapsWork = Object.keys(window.AquaBackendSchemaV62M.indexMaps || {}).length >= 18;
+    state.hendersonDemoIndexWorks = Boolean(window.AquaBackendSchemaV62M.hendersonDemoIndex && window.AquaBackendSchemaV62M.hendersonDemoIndex.projectName === 'Henderson House');
+    state.receiptIndexWorks = Boolean(window.AquaBackendSchemaV62M.indexMaps.receiptIndex);
+    state.reportIndexWorks = Boolean(window.AquaBackendSchemaV62M.indexMaps.reportIndex);
+    state.spendIndexWorks = Boolean(window.AquaBackendSchemaV62M.indexMaps.spendCategoryIndex);
+    state.missingDocumentIndexWorks = Boolean(window.AquaBackendSchemaV62M.indexMaps.missingDocumentIndex);
+    state.cameraAllocationIndexWorks = Boolean(window.AquaBackendSchemaV62M.indexMaps.cameraAllocationIndex);
+    state.approvalIndexWorks = Boolean(window.AquaBackendSchemaV62M.indexMaps.approvalIndex);
+    state.exportPacketIndexWorks = Boolean(window.AquaBackendSchemaV62M.indexMaps.exportPacketIndex);
+    return window.AquaBackendSchemaV62M;
+  }
+
+  function detectAquaBackendSchemaCommandV62M(original, normalized) {
+    var q = String(normalized || '').trim();
+    var commands = ['show data index', 'show backend schema', 'show file cabinet map', 'show project index', 'show henderson index', 'show receipt index', 'show report index', 'show spend index', 'show missing document index', 'show camera allocation index', 'show approval index', 'show export packet index', 'how is aqua data organized', 'how will aqua find files', 'how will aqua find receipts', 'how will aqua know job status'];
+    if (commands.indexOf(q) !== -1) return { canonicalIntent: 'aqua_backend_schema_v62m', routeText: original, originalText: original, normalizedText: q, module: 'Aqua Brain Data Index Contract — v62M', schemaModeV62M: q.replace(/^show /, '') };
+    return null;
+  }
+
+  function renderAquaBackendSchemaPanelV62M(intent) {
+    var schema = ensureAquaBackendSchemaV62M();
+    var q = (intent && intent.normalizedText) || '';
+    var entityNames = Object.keys(schema.entityContracts).map(function (key) { return schema.entityContracts[key].entityName; });
+    var idxKeys = Object.keys(schema.indexMaps);
+    var henderson = schema.hendersonDemoIndex;
+    var special = '';
+    if (q === 'how will aqua find receipts') special = '<section><h4>Receipt Finder Answer</h4><p>Aqua will use project, vendor, receipt, cost-code, date, amount, proof, and export-packet indexes through the secure backend. Current status is local/demo schema only. No live receipt database is connected.</p></section>';
+    if (q === 'how will aqua know job status') special = '<section><h4>Job Status Answer</h4><p>Aqua will combine project status records, reports, SOW progress, receipts, approvals, missing documents, photos, budgets, and alerts through backend indexes. Current status is local/demo schema only.</p></section>';
+    if (q === 'show henderson index') special = '<section><h4>Henderson Demo Index</h4><p><strong>Henderson House</strong> aliases and demo placeholder links:</p><ul><li>reports</li><li>receipts</li><li>plumbing spend</li><li>missing documents</li><li>camera allocation</li><li>export packet placeholder</li></ul><div class="locked">demo placeholder / backend required / no live data</div></section>';
+    var body = '<div class="aqua-v62a-panel" data-aqua-v62m-backend-schema="true">' +
+      '<section><h4>1. Current Status</h4><ul><li>local/demo schema only</li><li>backend database not connected</li><li>no live data</li></ul></section>' +
+      '<section><h4>2. Entity Contracts</h4><ul>' + entityNames.map(function (name) { return '<li>' + escapeHTMLV61D(name) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>3. Relationship Map</h4><div data-aqua-v62m-raw-relationships="true">Company -> Projects | Project -> Project Folders | Project -> Reports | Receipt -> Vendor | Undo Checkpoint -> Live Action</div><ul>' + schema.relationships.map(function (rel) { return '<li>' + escapeHTMLV61D(rel) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>4. Search / Index Map</h4><ul>' + idxKeys.map(function (key) { return '<li><strong>' + escapeHTMLV61D(key) + ':</strong> ' + escapeHTMLV61D(schema.indexMaps[key].join(', ')) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>5. Henderson Demo Index</h4><div><strong>' + escapeHTMLV61D(henderson.projectName) + '</strong></div><div>Aliases: ' + escapeHTMLV61D(henderson.aliases.join(', ')) + '</div><ul><li>reports: ' + escapeHTMLV61D(henderson.records.reports.join(', ')) + '</li><li>receipts: ' + escapeHTMLV61D(henderson.records.receipts.join(', ')) + '</li><li>plumbing spend: plumbing spend placeholder</li><li>missing documents: missing documents placeholder</li><li>camera allocation: camera allocation placeholder</li><li>export packet placeholder: accountant export packet placeholder</li></ul><div class="locked">demo placeholder / backend required / no live data</div></section>' +
+      '<section><h4>6. Permission / Sensitivity Map</h4><ul>' + Object.keys(schema.permissionSensitivityMap).map(function (role) { return '<li><strong>' + escapeHTMLV61D(role) + ':</strong> ' + escapeHTMLV61D(schema.permissionSensitivityMap[role].join(', ')) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>7. Next Backend Step</h4><ul><li>create real database schema</li><li>connect auth</li><li>connect file/receipt/report indexes</li><li>keep all keys server-side</li></ul></section>' + special +
+      '<section><h4>Safety</h4><div class="locked">No backend calls. No network calls. No external AI/API calls. No API keys in frontend. No live record changes. No live export. No live upload. No customer/accountant export. No payment/payroll/bank/accounting export. No audio storage. No always-listening. No real customer data.</div></section></div>';
+    var html = renderPremiumModuleShellV61Z({ title: 'Aqua Brain Data Index Contract — v62M', subtitle: 'Backend schema and file cabinet index contract. Local/demo architecture only.', tag: 'Schema Contract', chips: ['Demo Only', 'Backend Required', 'No Live Data', 'No API Keys'], attrs: { 'data-aqua-v62m-data-index-contract': 'true' }, body: body, safetyFooter: 'Local/demo schema only. Backend database not connected. No live data. No backend, network, external AI/API, upload, export, approval, payment, payroll, bank, accounting export, audio storage, or always-listening behavior.' });
+    state.backendSchemaExists = true; state.entityContractsExist = true; state.relationshipMapWorks = true; state.indexMapsWork = true; state.hendersonDemoIndexWorks = true; state.receiptIndexWorks = true; state.reportIndexWorks = true; state.spendIndexWorks = true; state.missingDocumentIndexWorks = true; state.cameraAllocationIndexWorks = true; state.approvalIndexWorks = true; state.exportPacketIndexWorks = true; state.noRealCustomerData = true;
+    syncNamespace();
+    return html;
+  }
+
   function detectAquaBackendBoundaryCommandV62L(original, normalized) {
     var q = String(normalized || '').trim();
     if (phraseMatchesV61E(q, ['can we add openai key now'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: 'can we add openai key now', originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L', boundaryQuestionV62L: 'openai_key' };
@@ -2450,6 +2620,10 @@
       createAquaBackendBoundaryV62L: createAquaBackendBoundaryV62L,
       renderAquaBackendBoundaryPanelV62L: renderAquaBackendBoundaryPanelV62L,
       detectAquaBackendBoundaryCommandV62L: detectAquaBackendBoundaryCommandV62L,
+      createAquaBackendSchemaV62M: createAquaBackendSchemaV62M,
+      ensureAquaBackendSchemaV62M: ensureAquaBackendSchemaV62M,
+      detectAquaBackendSchemaCommandV62M: detectAquaBackendSchemaCommandV62M,
+      renderAquaBackendSchemaPanelV62M: renderAquaBackendSchemaPanelV62M,
       renderVoiceBrainToolPlanV61Z: renderVoiceBrainToolPlanV61Z,
       saveVoiceBrainPlanV62A: saveVoiceBrainPlanV62A,
       showLastVoiceBrainPlanV62A: showLastVoiceBrainPlanV62A,
@@ -2520,7 +2694,11 @@
       renderAquaWorkflowContinuationV62G: renderAquaWorkflowContinuationV62G,
       createAquaBackendBoundaryV62L: createAquaBackendBoundaryV62L,
       renderAquaBackendBoundaryPanelV62L: renderAquaBackendBoundaryPanelV62L,
-      detectAquaBackendBoundaryCommandV62L: detectAquaBackendBoundaryCommandV62L
+      detectAquaBackendBoundaryCommandV62L: detectAquaBackendBoundaryCommandV62L,
+      createAquaBackendSchemaV62M: createAquaBackendSchemaV62M,
+      ensureAquaBackendSchemaV62M: ensureAquaBackendSchemaV62M,
+      detectAquaBackendSchemaCommandV62M: detectAquaBackendSchemaCommandV62M,
+      renderAquaBackendSchemaPanelV62M: renderAquaBackendSchemaPanelV62M
     });
     window.AquaVoiceBrainV61Z = createAquaVoiceBrainV61Z();
     window.AquaWorkflowPlannerV62F = { version: VERSION, localDemoOnly: true, storageKey: WORKFLOW_PLAN_KEY_V62F, planAquaWorkflowV62F: planAquaWorkflowV62F, renderAquaWorkflowPlanV62F: renderAquaWorkflowPlanV62F, executeAquaWorkflowStepDemoV62F: executeAquaWorkflowStepDemoV62F, saveAquaWorkflowPlanV62F: saveAquaWorkflowPlanV62F, showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F, clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F, copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F, markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F,
@@ -3419,6 +3597,8 @@
   function classifyAquaAskModeV61U(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
+    var schema = detectAquaBackendSchemaCommandV62M(original, q);
+    if (schema) return { mode: 'backend_schema_v62m', originalText: original, normalizedText: q, routeHint: schema };
     var boundary = detectAquaBackendBoundaryCommandV62L(original, q);
     if (boundary) return { mode: 'backend_boundary_v62l', originalText: original, normalizedText: q, routeHint: boundary };
     var automation = detectAutomationReportCommandV61T(original, q);
@@ -3487,6 +3667,8 @@
     var q = normalizeAquaPhraseV61E(original);
     var askMode = classifyAquaAskModeV61U(original);
     state.askModeRouterWorks = true;
+    var schema = detectAquaBackendSchemaCommandV62M(original, q);
+    if (schema) return withAskModeV61U(schema, 'backend_schema_v62m');
     var boundary = detectAquaBackendBoundaryCommandV62L(original, q);
     if (boundary) return withAskModeV61U(boundary, 'backend_boundary_v62l');
     var gateway = detectToolGatewayCommandV62J(original, q);
@@ -4523,6 +4705,12 @@
   }
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
+    var schemaIntentV62M = detectAquaBackendSchemaCommandV62M(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
+    if (schemaIntentV62M) {
+      var htmlV62M = renderAquaBackendSchemaPanelV62M(schemaIntentV62M);
+      if (outputNode) outputNode.innerHTML = htmlV62M;
+      return Object.assign({ askMode: 'backend_schema_v62m', renderedBackendSchemaV62M: /Aqua Brain Data Index Contract — v62M/.test(htmlV62M), renderedDataIndexContractV62M: true, renderedFallback: false, html: htmlV62M }, schemaIntentV62M);
+    }
     var boundaryIntentV62L = detectAquaBackendBoundaryCommandV62L(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
     if (boundaryIntentV62L) {
       window.AquaBackendBoundaryV62L = window.AquaBackendBoundaryV62L || createAquaBackendBoundaryV62L();
@@ -5806,6 +5994,22 @@
 
   function regressionCommandCasesV61L() {
     return [
+      { command: 'show data index', expected: 'v62M data index contract panel renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Current Status[\s\S]*Entity Contracts[\s\S]*Search \/ Index Map/i, noFallback: true, backendSchemaV62M: true },
+      { command: 'show backend schema', expected: 'v62M backend schema contract renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Project \/ Job \/ Property[\s\S]*Receipt[\s\S]*Audit Log/i, noFallback: true, backendSchemaV62M: true, entityContractsV62M: true },
+      { command: 'show file cabinet map', expected: 'v62M relationship map renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Relationship Map[\s\S]*Project -> Reports[\s\S]*Receipt -> Vendor/i, noFallback: true, backendSchemaV62M: true, relationshipMapV62M: true },
+      { command: 'show project index', expected: 'v62M project indexes render', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /projectNameIndex[\s\S]*projectAliasIndex[\s\S]*Henderson House/i, noFallback: true, backendSchemaV62M: true, indexMapsV62M: true },
+      { command: 'show Henderson index', expected: 'v62M Henderson demo index renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Henderson House[\s\S]*reports[\s\S]*receipts[\s\S]*plumbing spend[\s\S]*camera allocation[\s\S]*export packet placeholder/i, noFallback: true, backendSchemaV62M: true, hendersonDemoIndexV62M: true },
+      { command: 'show receipt index', expected: 'v62M receipt index renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /receiptIndex[\s\S]*Home Depot receipt placeholder[\s\S]*plumbing receipt placeholder/i, noFallback: true, backendSchemaV62M: true, receiptIndexV62M: true },
+      { command: 'show report index', expected: 'v62M report index renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /reportIndex[\s\S]*Henderson staircase report placeholder[\s\S]*Henderson project status report placeholder/i, noFallback: true, backendSchemaV62M: true, reportIndexV62M: true },
+      { command: 'show spend index', expected: 'v62M spend category index renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /spendCategoryIndex[\s\S]*plumbing spend placeholder/i, noFallback: true, backendSchemaV62M: true, spendIndexV62M: true },
+      { command: 'show missing document index', expected: 'v62M missing document index renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /missingDocumentIndex[\s\S]*missing documents placeholder/i, noFallback: true, backendSchemaV62M: true, missingDocumentIndexV62M: true },
+      { command: 'show camera allocation index', expected: 'v62M camera allocation index renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /cameraAllocationIndex[\s\S]*camera allocation placeholder/i, noFallback: true, backendSchemaV62M: true, cameraAllocationIndexV62M: true },
+      { command: 'show approval index', expected: 'v62M approval index renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /approvalIndex[\s\S]*approval placeholder/i, noFallback: true, backendSchemaV62M: true, approvalIndexV62M: true },
+      { command: 'show export packet index', expected: 'v62M export packet index renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /exportPacketIndex[\s\S]*accountant export packet placeholder/i, noFallback: true, backendSchemaV62M: true, exportPacketIndexV62M: true },
+      { command: 'how is Aqua data organized', expected: 'v62M file cabinet organization answer renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Company -> Projects[\s\S]*Project -> Project Folders[\s\S]*backend database not connected/i, noFallback: true, backendSchemaV62M: true },
+      { command: 'how will Aqua find files', expected: 'v62M file index answer renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /fileUploadIndex[\s\S]*Henderson construction diagram placeholder[\s\S]*backend required/i, noFallback: true, backendSchemaV62M: true },
+      { command: 'how will Aqua find receipts', expected: 'v62M receipt finder answer renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Aqua will use project, vendor, receipt, cost-code, date, amount, proof, and export-packet indexes through the secure backend[\s\S]*No live receipt database is connected/i, noFallback: true, backendSchemaV62M: true, receiptIndexV62M: true },
+      { command: 'how will Aqua know job status', expected: 'v62M job status answer renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Aqua will combine project status records, reports, SOW progress, receipts, approvals, missing documents, photos, budgets, and alerts through backend indexes[\s\S]*local\/demo schema only/i, noFallback: true, backendSchemaV62M: true },
       { command: 'show backend boundary', expected: 'v62L backend boundary panel renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /Current Status[\s\S]*backend locked[\s\S]*Server-Only Keys/i, noFallback: true, backendBoundaryV62L: true },
       { command: 'show key vault plan', expected: 'v62L key vault plan renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /frontend keys forbidden[\s\S]*backend env required[\s\S]*server-side secret manager/i, noFallback: true, backendBoundaryV62L: true, serverOnlyKeyPolicyV62L: true },
       { command: 'show api key safety', expected: 'v62L API key safety renders', intent: 'aqua_backend_boundary_v62l', mode: 'backend_boundary_v62l', module: /Aqua Brain Backend Boundary — v62L/i, html: /Do not put OpenAI|OpenAI API keys|Frontend must never contain/i, noFallback: true, backendBoundaryV62L: true, serverOnlyKeyPolicyV62L: true },
@@ -6116,6 +6320,18 @@
       renderedFocusedRouteMarkerV62E: /data-aqua-v62e-focused-route="true"|aqua-v62e-focused-route|Focused by Aqua Brain/i.test(html),
       renderedSecureToolGatewayV62J: /Aqua Brain Secure Tool Gateway — v62J|data-aqua-v62j-secure-tool-gateway/i.test(html),
       renderedToolGatewayDryRunV62K: /Aqua Tool Gateway Dry Run — v62K|data-aqua-v62k-tool-dry-run/i.test(html),
+      renderedBackendSchemaV62M: /Aqua Brain Data Index Contract — v62M|data-aqua-v62m-data-index-contract/i.test(html),
+      entityContractsV62M: /Entity Contracts[\s\S]*Project \/ Job \/ Property[\s\S]*AI Conversation \/ Session Context/i.test(html),
+      relationshipMapV62M: /Relationship Map[\s\S]*Company (?:->|-&gt;) Projects[\s\S]*Undo Checkpoint (?:->|-&gt;) Live Action/i.test(html),
+      indexMapsV62M: /projectNameIndex[\s\S]*undoIndex/i.test(html),
+      hendersonDemoIndexV62M: /Henderson House[\s\S]*Henderson job[\s\S]*accountant export packet placeholder/i.test(html),
+      receiptIndexV62M: /receiptIndex[\s\S]*Home Depot receipt placeholder/i.test(html),
+      reportIndexV62M: /reportIndex[\s\S]*Henderson staircase report placeholder/i.test(html),
+      spendIndexV62M: /spendCategoryIndex[\s\S]*plumbing spend placeholder/i.test(html),
+      missingDocumentIndexV62M: /missingDocumentIndex[\s\S]*missing documents placeholder/i.test(html),
+      cameraAllocationIndexV62M: /cameraAllocationIndex[\s\S]*camera allocation placeholder/i.test(html),
+      approvalIndexV62M: /approvalIndex[\s\S]*approval placeholder/i.test(html),
+      exportPacketIndexV62M: /exportPacketIndex[\s\S]*accountant export packet placeholder/i.test(html),
       renderedBackendBoundaryV62L: /Aqua Brain Backend Boundary — v62L|data-aqua-v62l-backend-boundary/i.test(html),
       serverOnlyKeyPolicyV62L: /frontend keys forbidden|server-side secret manager|backend env required/i.test(html),
       backendEndpointMapV62L: /POST \/api\/aqua\/voice\/session|POST \/api\/aqua\/tools\/execute|POST \/api\/aqua\/undo\/checkpoint/i.test(html),
@@ -6143,6 +6359,12 @@
       spokenResponseDraft: intent && intent.spokenResponseDraft,
       extractedEntities: intent && intent.extractedEntities
     };
+    if (actual.renderedBackendSchemaV62M) {
+      testCase.intent = 'aqua_backend_schema_v62m';
+      testCase.mode = 'backend_schema_v62m';
+      testCase.module = /Aqua Brain Data Index Contract — v62M/i;
+      testCase.noFallback = true;
+    }
     if (actual.renderedToolGatewayDryRunV62K) {
       testCase.intent = 'aqua_tool_gateway_dry_run_v62k';
       testCase.mode = 'tool_gateway_dry_run';
@@ -6192,6 +6414,18 @@
     if (testCase.spokenDraft && !actual.spokenResponseDraft) errors.push('Expected spoken response draft.');
     if (testCase.visualFocus && !actual.renderedVisualRouteFocusV62C) errors.push('Expected v62C focused visual route section.');
     if (testCase.openedFocus && !(actual.openedFocusLabelV62C || '').match(testCase.openedFocus)) errors.push('Expected Opened and focused marker matching ' + testCase.openedFocus + ' but got ' + (actual.openedFocusLabelV62C || 'none') + '.');
+    if (testCase.backendSchemaV62M && !actual.renderedBackendSchemaV62M) errors.push('Expected v62M backend schema/data index panel, but it did not render.');
+    if (testCase.entityContractsV62M && !actual.entityContractsV62M) errors.push('Expected v62M entity contracts, but they did not render.');
+    if (testCase.relationshipMapV62M && !actual.relationshipMapV62M) errors.push('Expected v62M relationship map, but it did not render.');
+    if (testCase.indexMapsV62M && !actual.indexMapsV62M) errors.push('Expected v62M index maps, but they did not render.');
+    if (testCase.hendersonDemoIndexV62M && !actual.hendersonDemoIndexV62M) errors.push('Expected v62M Henderson demo index, but it did not render.');
+    if (testCase.receiptIndexV62M && !actual.receiptIndexV62M) errors.push('Expected v62M receipt index, but it did not render.');
+    if (testCase.reportIndexV62M && !actual.reportIndexV62M) errors.push('Expected v62M report index, but it did not render.');
+    if (testCase.spendIndexV62M && !actual.spendIndexV62M) errors.push('Expected v62M spend index, but it did not render.');
+    if (testCase.missingDocumentIndexV62M && !actual.missingDocumentIndexV62M) errors.push('Expected v62M missing document index, but it did not render.');
+    if (testCase.cameraAllocationIndexV62M && !actual.cameraAllocationIndexV62M) errors.push('Expected v62M camera allocation index, but it did not render.');
+    if (testCase.approvalIndexV62M && !actual.approvalIndexV62M) errors.push('Expected v62M approval index, but it did not render.');
+    if (testCase.exportPacketIndexV62M && !actual.exportPacketIndexV62M) errors.push('Expected v62M export packet index, but it did not render.');
     if (testCase.backendBoundaryV62L && !actual.renderedBackendBoundaryV62L) errors.push('Expected v62L backend boundary panel, but it did not render.');
     if (testCase.serverOnlyKeyPolicyV62L && !actual.serverOnlyKeyPolicyV62L) errors.push('Expected v62L server-only key policy, but it did not render.');
     if (testCase.backendEndpointMapV62L && !actual.backendEndpointMapV62L) errors.push('Expected v62L backend endpoint map, but it did not render.');
@@ -6599,6 +6833,21 @@
       riskMapWorks: state.riskMapWorks === true,
       approvalRoutesWork: state.approvalRoutesWork === true,
       frontendBlockRulesWork: state.frontendBlockRulesWork === true,
+      backendSchemaExists: Boolean(window.AquaBackendSchemaV62M) && results.some(function (result) { return result.command === 'show data index' && result.passed && result.actual.renderedBackendSchemaV62M; }),
+      entityContractsExist: results.some(function (result) { return result.command === 'show backend schema' && result.passed && result.actual.entityContractsV62M; }),
+      relationshipMapWorks: results.some(function (result) { return result.command === 'show file cabinet map' && result.passed && result.actual.relationshipMapV62M; }),
+      indexMapsWork: results.some(function (result) { return result.command === 'show project index' && result.passed && result.actual.indexMapsV62M; }),
+      hendersonDemoIndexWorks: results.some(function (result) { return result.command === 'show Henderson index' && result.passed && result.actual.hendersonDemoIndexV62M; }),
+      receiptIndexWorks: results.some(function (result) { return result.command === 'show receipt index' && result.passed && result.actual.receiptIndexV62M; }),
+      reportIndexWorks: results.some(function (result) { return result.command === 'show report index' && result.passed && result.actual.reportIndexV62M; }),
+      spendIndexWorks: results.some(function (result) { return result.command === 'show spend index' && result.passed && result.actual.spendIndexV62M; }),
+      missingDocumentIndexWorks: results.some(function (result) { return result.command === 'show missing document index' && result.passed && result.actual.missingDocumentIndexV62M; }),
+      cameraAllocationIndexWorks: results.some(function (result) { return result.command === 'show camera allocation index' && result.passed && result.actual.cameraAllocationIndexV62M; }),
+      approvalIndexWorks: results.some(function (result) { return result.command === 'show approval index' && result.passed && result.actual.approvalIndexV62M; }),
+      exportPacketIndexWorks: results.some(function (result) { return result.command === 'show export packet index' && result.passed && result.actual.exportPacketIndexV62M; }),
+      noRealCustomerData: true,
+      noAudioStorage: true,
+      noAlwaysListening: true,
       backendBoundaryExists: Boolean(window.AquaBackendBoundaryV62L) && results.some(function (result) { return result.command === 'show backend boundary' && result.passed && result.actual.renderedBackendBoundaryV62L; }),
       serverOnlyKeyPolicyWorks: results.some(function (result) { return (result.command === 'show key vault plan' || result.command === 'show api key safety') && result.passed && result.actual.serverOnlyKeyPolicyV62L; }),
       backendEndpointMapWorks: results.some(function (result) { return result.command === 'show backend endpoints' && result.passed && result.actual.backendEndpointMapV62L; }),
@@ -6784,6 +7033,19 @@
     state.unsupportedGeneralAskRemainsLockedV61V = report.unsupportedGeneralAskRemainsLocked;
     state.unknownFallbackWorks = report.unknownFallbackWorks;
     state.noApiKeysInFrontend = report.noApiKeysInFrontend;
+    state.backendSchemaExists = report.backendSchemaExists;
+    state.entityContractsExist = report.entityContractsExist;
+    state.relationshipMapWorks = report.relationshipMapWorks;
+    state.indexMapsWork = report.indexMapsWork;
+    state.hendersonDemoIndexWorks = report.hendersonDemoIndexWorks;
+    state.receiptIndexWorks = report.receiptIndexWorks;
+    state.reportIndexWorks = report.reportIndexWorks;
+    state.spendIndexWorks = report.spendIndexWorks;
+    state.missingDocumentIndexWorks = report.missingDocumentIndexWorks;
+    state.cameraAllocationIndexWorks = report.cameraAllocationIndexWorks;
+    state.approvalIndexWorks = report.approvalIndexWorks;
+    state.exportPacketIndexWorks = report.exportPacketIndexWorks;
+    state.noRealCustomerData = true;
     state.toolGatewayContractExists = report.toolGatewayContractExists;
     state.toolRequestEnvelopeWorks = report.toolRequestEnvelopeWorks;
     state.toolResponseEnvelopeWorks = report.toolResponseEnvelopeWorks;
@@ -7096,6 +7358,7 @@
   }
 
   ensureToolGatewayContractV62J();
+  ensureAquaBackendSchemaV62M();
   window.AquaBackendBoundaryV62L = window.AquaBackendBoundaryV62L || createAquaBackendBoundaryV62L();
   ensureAquaToolGatewayRuntimeV62K();
   mergeNamespace();
@@ -7113,5 +7376,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62L extensions loaded: backend boundary and server-only key vault plan active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62M extensions loaded: backend schema/data index contract active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
