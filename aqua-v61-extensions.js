@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62M Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract.
+ * Aqua Homes OS v62N Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62M';
+  var VERSION = 'v62N';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -306,7 +306,20 @@
     undoPlaceholderWorks: false,
     exportDryRunStaysLocked: false,
     uploadDryRunStaysLocked: false,
-    visualRouteStillWorks: false
+    visualRouteStillWorks: false,
+    dataQueryRuntimeExists: true,
+    queryNormalizerWorks: false,
+    projectAliasResolverWorks: false,
+    hendersonReportQueryWorks: false,
+    hendersonStaircaseQueryWorks: false,
+    hendersonHomeDepotReceiptQueryWorks: false,
+    hendersonPlumbingSpendQueryWorks: false,
+    hendersonMissingDocumentsQueryWorks: false,
+    hendersonCameraQueryWorks: false,
+    hendersonApprovalQueryWorks: false,
+    hendersonExportPacketQueryWorks: false,
+    visualRoutesGeneratedForQueries: false,
+    spokenSummariesGeneratedForQueries: false
   };
 
 
@@ -2303,6 +2316,225 @@
     return window.AquaBackendSchemaV62M;
   }
 
+
+  function aquaDataQuerySafetyLabelsV62N(extraLabels) {
+    var labels = ['Backend Locked', 'No Backend Calls', 'No Network Calls', 'No External AI/API Calls', 'No API Keys in Frontend', 'No Live Change Made', 'No Live Export', 'No Live Upload', 'No Customer Sharing', 'No Accounting Export', 'No Payment/Payroll/Bank Action', 'No Audio Storage', 'No Always Listening', 'Demo Data Only'];
+    (extraLabels || []).forEach(function (label) { if (labels.indexOf(label) === -1) labels.push(label); });
+    return labels;
+  }
+
+  function normalizeAquaQueryV62N(queryText) {
+    var normalized = normalizeAquaPhraseV61E(queryText || '');
+    state.queryNormalizerWorks = Boolean(normalized);
+    return normalized;
+  }
+
+  function aquaDataQueryRecordsV62N() {
+    ensureAquaBackendSchemaV62M();
+    return {
+      projects: [{ id: 'demo-project-henderson-house', projectName: 'Henderson House', aliases: ['Henderson', 'Henderson House', 'Henderson job', 'Henderson jobsite'] }],
+      reports: [
+        { recordId: 'demo-henderson-status-report-v62n', recordType: 'project_report', title: 'Henderson project status report placeholder', topic: 'status', projectName: 'Henderson House', visualRoute: 'Project Reports / Henderson House', summary: 'Henderson House project status report placeholder is available in the local/demo data index.' },
+        { recordId: 'demo-henderson-staircase-report-v62n', recordType: 'project_report', title: 'Henderson staircase report placeholder', topic: 'staircase', projectName: 'Henderson House', visualRoute: 'Project Reports / Henderson House / Staircase', summary: 'Henderson House staircase report placeholder is available in the local/demo data index.' }
+      ],
+      receipts: [
+        { recordId: 'demo-henderson-home-depot-receipt-v62n', recordType: 'receipt', title: 'Home Depot receipt placeholder', vendor: 'Home Depot', projectName: 'Henderson House', visualRoute: 'Receipts / Henderson House / Home Depot', summary: 'Henderson House Home Depot receipt placeholder is available in the local/demo receipt index.' }
+      ],
+      spend: [
+        { recordId: 'demo-henderson-plumbing-spend-v62n', recordType: 'spend_summary', title: 'Henderson plumbing spend placeholder', trade: 'Plumbing', category: 'Plumbing', projectName: 'Henderson House', visualRoute: 'Accounting / Henderson House / Plumbing Spend', summary: 'Henderson House plumbing spend placeholder is available locally; backend/accounting remains locked.' }
+      ],
+      missingDocuments: [
+        { recordId: 'demo-henderson-missing-permit-v62n', recordType: 'missing_document', title: 'Henderson missing permit packet placeholder', documentType: 'permit packet', projectName: 'Henderson House', visualRoute: 'Documents / Henderson House / Missing Documents', summary: 'Permit packet placeholder is listed as missing in demo data.' },
+        { recordId: 'demo-henderson-missing-stair-photo-v62n', recordType: 'missing_document', title: 'Henderson missing staircase progress photo placeholder', documentType: 'progress photo', projectName: 'Henderson House', visualRoute: 'Documents / Henderson House / Missing Documents', summary: 'Staircase progress photo placeholder is listed as missing in demo data.' }
+      ],
+      cameras: [
+        { recordId: 'demo-henderson-camera-allocation-v62n', recordType: 'camera_allocation', title: 'Henderson camera allocation placeholder', projectName: 'Henderson House', visualRoute: 'Jobsite Cameras / Henderson', summary: 'Henderson jobsite camera allocation placeholder is available locally.' }
+      ],
+      approvals: [
+        { recordId: 'demo-henderson-owner-approval-v62n', recordType: 'approval', title: 'Henderson owner approval placeholder', approvalType: 'owner', projectName: 'Henderson House', visualRoute: 'Owner Review / Henderson Approvals', summary: 'Owner approval placeholder is waiting in demo data.' },
+        { recordId: 'demo-henderson-accounting-approval-v62n', recordType: 'approval', title: 'Henderson accounting approval placeholder', approvalType: 'accounting', projectName: 'Henderson House', visualRoute: 'Owner Review / Henderson Approvals', summary: 'Accounting approval placeholder is waiting in demo data.' }
+      ],
+      exportPackets: [
+        { recordId: 'demo-henderson-accountant-export-packet-v62n', recordType: 'export_packet', title: 'Henderson accountant export packet placeholder', packetType: 'accountant', projectName: 'Henderson House', visualRoute: 'Export Packets / Henderson House', summary: 'Accountant export packet placeholder is prepared locally; no live export ran.' }
+      ]
+    };
+  }
+
+  function resolveAquaProjectAliasV62N(queryText) {
+    var q = normalizeAquaQueryV62N(queryText || '');
+    var records = aquaDataQueryRecordsV62N();
+    var match = null;
+    records.projects.some(function (project) {
+      return (project.aliases || []).some(function (alias) {
+        var normalizedAlias = normalizeAquaQueryV62N(alias);
+        if (q.indexOf(normalizedAlias) !== -1) {
+          match = { projectName: project.projectName, matchedAlias: alias, projectId: project.id };
+          return true;
+        }
+        return false;
+      });
+    });
+    state.projectAliasResolverWorks = Boolean(match && match.projectName === 'Henderson House');
+    return match || { projectName: '', matchedAlias: '', projectId: '' };
+  }
+
+  function aquaDataQueryTypeV62N(normalizedQuery) {
+    var q = String(normalizedQuery || '');
+    if (/export packets?|accountant export packet|prepared packets?/.test(q)) return 'export_packet_lookup';
+    if (/needs? approval|approvals?|owner review|waiting on approval/.test(q)) return 'approval_lookup';
+    if (/cameras?|jobsite camera/.test(q)) return 'camera_allocation_lookup';
+    if (/missing documents?|documents? are missing|missing permit|missing file/.test(q)) return 'missing_documents_lookup';
+    if (/(how much|spend|spent|cost).*(plumb|trade)|plumb.*(spend|spent|cost)/.test(q)) return 'spend_summary_lookup';
+    if (/home depot.*receipts?|receipts?.*home depot/.test(q)) return 'vendor_receipt_lookup';
+    if (/receipts?/.test(q)) return 'project_receipt_lookup';
+    if (/staircase|stair/.test(q) && /report/.test(q)) return 'project_report_lookup';
+    if (/report/.test(q)) return 'general_project_status_lookup';
+    if (/query data index|search file cabinet|show data query result/.test(q)) return 'general_project_status_lookup';
+    return 'unknown_query';
+  }
+
+  function searchAquaReportsV62N(query) {
+    var q = normalizeAquaQueryV62N(query || '');
+    var records = aquaDataQueryRecordsV62N().reports;
+    if (/staircase|stair/.test(q)) return records.filter(function (record) { return record.topic === 'staircase'; });
+    return records.filter(function (record) { return record.topic === 'status'; });
+  }
+
+  function searchAquaReceiptsV62N(query) {
+    var q = normalizeAquaQueryV62N(query || '');
+    return aquaDataQueryRecordsV62N().receipts.filter(function (record) { return !/home depot/.test(q) || record.vendor === 'Home Depot'; });
+  }
+
+  function searchAquaSpendV62N(query) { return aquaDataQueryRecordsV62N().spend.filter(function (record) { return /plumb/i.test(record.trade || ''); }); }
+  function searchAquaMissingDocumentsV62N(query) { return aquaDataQueryRecordsV62N().missingDocuments.slice(); }
+  function searchAquaCameraAllocationV62N(query) { return aquaDataQueryRecordsV62N().cameras.slice(); }
+  function searchAquaApprovalsV62N(query) { return aquaDataQueryRecordsV62N().approvals.slice(); }
+  function searchAquaExportPacketsV62N(query) { return aquaDataQueryRecordsV62N().exportPackets.slice(); }
+
+  function aquaVisualRouteForQueryV62N(queryType, records) {
+    if (records && records[0] && records[0].visualRoute) return records[0].visualRoute;
+    var routes = {
+      project_report_lookup: 'Project Reports / Henderson House',
+      general_project_status_lookup: 'Project Reports / Henderson House',
+      project_receipt_lookup: 'Receipts / Henderson House',
+      vendor_receipt_lookup: 'Receipts / Henderson House / Home Depot',
+      spend_summary_lookup: 'Accounting / Henderson House / Plumbing Spend',
+      missing_documents_lookup: 'Documents / Henderson House / Missing Documents',
+      camera_allocation_lookup: 'Jobsite Cameras / Henderson',
+      approval_lookup: 'Owner Review / Henderson Approvals',
+      export_packet_lookup: 'Export Packets / Henderson House'
+    };
+    return routes[queryType] || 'Aqua Brain Data Query / Unknown';
+  }
+
+  function aquaSpokenSummaryForQueryV62N(result) {
+    if (!result || !result.recordCount) return 'I could not match that to the local/demo Aqua file cabinet index yet. Backend search remains locked and no live action was run.';
+    var selected = result.selectedRecord || result.matchedRecords[0] || {};
+    var lock = result.queryType === 'spend_summary_lookup' ? ' Backend accounting is locked.' : '';
+    if (result.queryType === 'export_packet_lookup') lock = ' No customer, accountant, or accounting export was run.';
+    if (result.queryType === 'vendor_receipt_lookup') lock = ' Live receipt search requires the backend receipt index. No export or accounting action was run.';
+    return 'I found ' + result.recordCount + ' local/demo record' + (result.recordCount === 1 ? '' : 's') + ' for ' + result.matchedProject + ': ' + String(selected.title || 'demo placeholder') + '.' + lock + ' No backend, network, external AI/API, upload, export, or live record change was run.';
+  }
+
+  function queryAquaDataIndexV62N(queryText) {
+    var original = String(queryText || '').trim();
+    var normalized = normalizeAquaQueryV62N(original);
+    var project = resolveAquaProjectAliasV62N(original || 'Henderson');
+    var queryType = aquaDataQueryTypeV62N(normalized);
+    var records = [];
+    if (!project.projectName && (/^query data index$|^search file cabinet$|^show data query result$/.test(normalized))) project = { projectName: 'Henderson House', matchedAlias: 'Henderson demo index', projectId: 'demo-project-henderson-house' };
+    if (project.projectName === 'Henderson House') {
+      if (queryType === 'project_report_lookup' || queryType === 'general_project_status_lookup') records = searchAquaReportsV62N(original);
+      else if (queryType === 'project_receipt_lookup' || queryType === 'vendor_receipt_lookup') records = searchAquaReceiptsV62N(original);
+      else if (queryType === 'spend_summary_lookup') records = searchAquaSpendV62N(original);
+      else if (queryType === 'missing_documents_lookup') records = searchAquaMissingDocumentsV62N(original);
+      else if (queryType === 'camera_allocation_lookup') records = searchAquaCameraAllocationV62N(original);
+      else if (queryType === 'approval_lookup') records = searchAquaApprovalsV62N(original);
+      else if (queryType === 'export_packet_lookup') records = searchAquaExportPacketsV62N(original);
+    }
+    var selected = records[0] || null;
+    var result = {
+      queryId: 'v62n-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+      originalQuery: original,
+      normalizedQuery: normalized,
+      matchedProject: project.projectName || '',
+      matchedProjectAlias: project.matchedAlias || '',
+      queryType: records.length ? queryType : 'unknown_query',
+      matchedRecords: records,
+      recordCount: records.length,
+      selectedRecord: selected,
+      visualRoute: aquaVisualRouteForQueryV62N(records.length ? queryType : 'unknown_query', records),
+      spokenSummaryDraft: '',
+      confidence: records.length ? 0.94 : 0.2,
+      missingInputs: project.projectName ? [] : ['project'],
+      liveStatus: 'local_demo_only_backend_locked',
+      safetyLabels: aquaDataQuerySafetyLabelsV62N(queryType === 'spend_summary_lookup' ? ['Backend Accounting Locked'] : []),
+      nextRecommendedAction: records.length ? 'Open/focus the visual route in local demo mode only: ' + aquaVisualRouteForQueryV62N(queryType, records) : 'Ask for project, vendor, trade, or document details before future backend search.',
+      timestamp: new Date().toISOString()
+    };
+    result.spokenSummaryDraft = aquaSpokenSummaryForQueryV62N(result);
+    state.dataQueryRuntimeExists = true;
+    state.visualRoutesGeneratedForQueries = Boolean(result.visualRoute);
+    state.spokenSummariesGeneratedForQueries = Boolean(result.spokenSummaryDraft);
+    state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noApiKeysInFrontend = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noAlwaysListening = true; state.noRealCustomerData = true;
+    syncNamespace();
+    return result;
+  }
+
+  function explainAquaDataQueryResultV62N(result) {
+    var safe = result || queryAquaDataIndexV62N('query data index');
+    return safe.spokenSummaryDraft || aquaSpokenSummaryForQueryV62N(safe);
+  }
+
+  function renderAquaDataQueryResultV62N(result) {
+    var safe = result || queryAquaDataIndexV62N('query data index');
+    var vendor = (safe.selectedRecord && safe.selectedRecord.vendor) || '';
+    var trade = (safe.selectedRecord && (safe.selectedRecord.trade || safe.selectedRecord.category)) || '';
+    var recordsHtml = safe.matchedRecords && safe.matchedRecords.length ? '<ul>' + safe.matchedRecords.map(function (record) { return '<li><strong>' + escapeHTMLV61D(record.title || record.recordId) + '</strong><div class="smallMut">' + escapeHTMLV61D(record.summary || record.recordType || '') + '</div></li>'; }).join('') + '</ul>' : '<div class="aqua-v62a-muted">No local/demo records matched.</div>';
+    var body = '<div class="aqua-v62a-panel" data-aqua-v62n-data-query="true">' +
+      '<section><h4>1. Heard Query</h4><p>' + escapeHTMLV61D(safe.originalQuery) + '</p></section>' +
+      '<section><h4>2. Normalized Query</h4><p>' + escapeHTMLV61D(safe.normalizedQuery) + '</p></section>' +
+      '<section><h4>3. Matched Project / Alias</h4><p><strong>Matched Project:</strong> ' + escapeHTMLV61D(safe.matchedProject || 'None') + '</p><p><strong>Matched Alias:</strong> ' + escapeHTMLV61D(safe.matchedProjectAlias || 'None') + '</p>' + (vendor ? '<p><strong>Matched Vendor:</strong> ' + escapeHTMLV61D(vendor) + '</p>' : '') + (trade ? '<p><strong>Matched Trade / Category:</strong> ' + escapeHTMLV61D(trade) + '</p>' : '') + '</section>' +
+      '<section><h4>4. Query Type</h4><p>' + escapeHTMLV61D(safe.queryType) + '</p></section>' +
+      '<section><h4>5. Matched Records</h4>' + recordsHtml + '</section>' +
+      '<section><h4>6. Selected Record</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(safe.selectedRecord || {}, null, 2)) + '</pre></section>' +
+      '<section><h4>7. Visual Route</h4><p><strong>' + escapeHTMLV61D(safe.visualRoute) + '</strong></p><div class="aqua-v62c-focused-section" data-aqua-v62c-focused-section="true">Focused by Aqua Brain: ' + escapeHTMLV61D(safe.visualRoute) + '</div></section>' +
+      '<section><h4>8. Spoken Summary Draft</h4><p>“' + escapeHTMLV61D(safe.spokenSummaryDraft) + '”</p></section>' +
+      '<section><h4>9. Confidence / Missing Inputs</h4><p><strong>Confidence:</strong> ' + escapeHTMLV61D(String(safe.confidence)) + '</p><p><strong>Missing Inputs:</strong> ' + escapeHTMLV61D((safe.missingInputs || []).join(', ') || 'None') + '</p></section>' +
+      '<section><h4>10. Safety / Backend Status</h4><p><strong>Safety:</strong> Backend Locked. No Live Change Made.</p><p>' + escapeHTMLV61D((safe.safetyLabels || []).join(' • ')) + '</p><p><strong>Live Status:</strong> ' + escapeHTMLV61D(safe.liveStatus) + '</p></section>' +
+      '<section><h4>11. Next Recommended Action</h4><p>' + escapeHTMLV61D(safe.nextRecommendedAction) + '</p></section></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Data Query — v62N', subtitle: 'Local/demo file cabinet query runtime. AquaBackendSchemaV62M index contract used first; v62E/v62F/v62G/v62I/v62K stay locked/dry-run compatible.', tag: 'Local Search', chips: ['v62N', 'Demo Index', 'Backend Locked', 'No Live Change'], attrs: { 'data-aqua-v62n-data-query-shell': 'true' }, body: body, safetyFooter: 'Backend Locked. No Live Change Made. No backend, network, external AI/API, API keys, upload, export, accounting export, payment, payroll, bank action, audio storage, always-listening, or real customer data.' });
+  }
+
+  function detectAquaDataQueryCommandV62N(original, normalized) {
+    var q = String(normalized || normalizeAquaQueryV62N(original || '')).trim();
+    if (/^query data index$|^search file cabinet$|^show data query result$/.test(q)) return { canonicalIntent: 'aqua_data_query_v62n', routeText: original, originalText: original, normalizedText: q, module: 'Aqua Brain Data Query — v62N' };
+    if (/prepare| and tell| and show|all receipts|jobsite/i.test(q)) return null;
+    if (/henderson/.test(q) && (/report|receipts?|home depot|spend|spent|plumb|missing documents?|documents? are missing|cameras?|approval|export packets?/.test(q))) return { canonicalIntent: 'aqua_data_query_v62n', routeText: original, originalText: original, normalizedText: q, module: 'Aqua Brain Data Query — v62N' };
+    return null;
+  }
+
+  function createAquaDataQueryRuntimeV62N() {
+    return {
+      version: 'v62N',
+      localDemoOnly: true,
+      schemaContract: 'AquaBackendSchemaV62M',
+      normalizeAquaQueryV62N: normalizeAquaQueryV62N,
+      resolveAquaProjectAliasV62N: resolveAquaProjectAliasV62N,
+      queryAquaDataIndexV62N: queryAquaDataIndexV62N,
+      searchAquaReportsV62N: searchAquaReportsV62N,
+      searchAquaReceiptsV62N: searchAquaReceiptsV62N,
+      searchAquaSpendV62N: searchAquaSpendV62N,
+      searchAquaMissingDocumentsV62N: searchAquaMissingDocumentsV62N,
+      searchAquaCameraAllocationV62N: searchAquaCameraAllocationV62N,
+      searchAquaApprovalsV62N: searchAquaApprovalsV62N,
+      searchAquaExportPacketsV62N: searchAquaExportPacketsV62N,
+      renderAquaDataQueryResultV62N: renderAquaDataQueryResultV62N,
+      explainAquaDataQueryResultV62N: explainAquaDataQueryResultV62N,
+      safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true }
+    };
+  }
+
   function detectAquaBackendSchemaCommandV62M(original, normalized) {
     var q = String(normalized || '').trim();
     var commands = ['show data index', 'show backend schema', 'show file cabinet map', 'show project index', 'show henderson index', 'show receipt index', 'show report index', 'show spend index', 'show missing document index', 'show camera allocation index', 'show approval index', 'show export packet index', 'how is aqua data organized', 'how will aqua find files', 'how will aqua find receipts', 'how will aqua know job status'];
@@ -2624,6 +2856,12 @@
       ensureAquaBackendSchemaV62M: ensureAquaBackendSchemaV62M,
       detectAquaBackendSchemaCommandV62M: detectAquaBackendSchemaCommandV62M,
       renderAquaBackendSchemaPanelV62M: renderAquaBackendSchemaPanelV62M,
+      normalizeAquaQueryV62N: normalizeAquaQueryV62N,
+      resolveAquaProjectAliasV62N: resolveAquaProjectAliasV62N,
+      queryAquaDataIndexV62N: queryAquaDataIndexV62N,
+      renderAquaDataQueryResultV62N: renderAquaDataQueryResultV62N,
+      explainAquaDataQueryResultV62N: explainAquaDataQueryResultV62N,
+      detectAquaDataQueryCommandV62N: detectAquaDataQueryCommandV62N,
       renderVoiceBrainToolPlanV61Z: renderVoiceBrainToolPlanV61Z,
       saveVoiceBrainPlanV62A: saveVoiceBrainPlanV62A,
       showLastVoiceBrainPlanV62A: showLastVoiceBrainPlanV62A,
@@ -2822,13 +3060,20 @@
       continueAquaSessionV62I: continueAquaSessionV62I,
       cancelAquaSessionV62I: cancelAquaSessionV62I,
       routeAquaSessionCommandV62I: routeAquaSessionCommandV62I,
-      installAquaSessionPanelV62I: installAquaSessionPanelV62I
+      installAquaSessionPanelV62I: installAquaSessionPanelV62I,
+      normalizeAquaQueryV62N: normalizeAquaQueryV62N,
+      resolveAquaProjectAliasV62N: resolveAquaProjectAliasV62N,
+      queryAquaDataIndexV62N: queryAquaDataIndexV62N,
+      renderAquaDataQueryResultV62N: renderAquaDataQueryResultV62N,
+      explainAquaDataQueryResultV62N: explainAquaDataQueryResultV62N,
+      detectAquaDataQueryCommandV62N: detectAquaDataQueryCommandV62N
     });
     window.AquaVoiceBrainV61Z = createAquaVoiceBrainV61Z();
     window.AquaWorkflowPlannerV62F = { version: VERSION, localDemoOnly: true, storageKey: WORKFLOW_PLAN_KEY_V62F, planAquaWorkflowV62F: planAquaWorkflowV62F, renderAquaWorkflowPlanV62F: renderAquaWorkflowPlanV62F, executeAquaWorkflowStepDemoV62F: executeAquaWorkflowStepDemoV62F, saveAquaWorkflowPlanV62F: saveAquaWorkflowPlanV62F, showLastAquaWorkflowPlanV62F: showLastAquaWorkflowPlanV62F, clearAquaWorkflowPlanDemoV62F: clearAquaWorkflowPlanDemoV62F, copyAquaWorkflowPlanTextV62F: copyAquaWorkflowPlanTextV62F, markWorkflowPlanReadyForOwnerReviewDemoV62F: markWorkflowPlanReadyForOwnerReviewDemoV62F, safetyEnvelope: workflowSafetyEnvelopeV62F() };
     window.AquaWorkflowMemoryV62G = { version: VERSION, localDemoOnly: true, storageKey: ACTIVE_WORKFLOW_KEY_V62G, saveAquaActiveWorkflowV62G: saveAquaActiveWorkflowV62G, getAquaActiveWorkflowV62G: getAquaActiveWorkflowV62G, clearAquaActiveWorkflowV62G: clearAquaActiveWorkflowV62G, continueAquaWorkflowV62G: continueAquaWorkflowV62G, classifyAquaFollowUpV62G: classifyAquaFollowUpV62G, renderAquaWorkflowContinuationV62G: renderAquaWorkflowContinuationV62G, safetyEnvelope: workflowSafetyEnvelopeV62F() };
     window.AquaVoiceInteractionV62H = { version: VERSION, localDemoOnly: true, storageKey: VOICE_INTERACTION_KEY_V62H, states: AQUA_VOICE_STATES_V62H.slice(), setAquaVoiceStateV62H: setAquaVoiceStateV62H, getAquaVoiceStateV62H: getAquaVoiceStateV62H, renderAquaVoiceStatePanelV62H: renderAquaVoiceStatePanelV62H, handleAquaVoiceCommandV62H: handleAquaVoiceCommandV62H, speakAquaResponseV62H: speakAquaResponseV62H, stopAquaSpeakingV62H: stopAquaSpeakingV62H, repeatLastAquaResponseV62H: repeatLastAquaResponseV62H, enableAquaVoiceV62H: enableAquaVoiceV62H, disableAquaVoiceV62H: disableAquaVoiceV62H, fallbackToManualControlsV62H: fallbackToManualControlsV62H, startVoiceCaptureV62H: startVoiceCaptureV62H, installAquaVoicePanelV62H: installAquaVoicePanelV62H, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true } };
     window.AquaToolGatewayContractV62J = ensureToolGatewayContractV62J();
+    window.AquaDataQueryRuntimeV62N = window.AquaDataQueryRuntimeV62N || createAquaDataQueryRuntimeV62N();
     window.AquaVoiceSessionV62I = { version: VERSION, localDemoOnly: true, storageKey: VOICE_SESSION_KEY_V62I, statuses: AQUA_SESSION_STATUSES_V62I.slice(), startAquaVoiceSessionV62I: startAquaVoiceSessionV62I, endAquaVoiceSessionV62I: endAquaVoiceSessionV62I, getAquaVoiceSessionV62I: getAquaVoiceSessionV62I, saveAquaVoiceSessionV62I: saveAquaVoiceSessionV62I, clearAquaVoiceSessionV62I: clearAquaVoiceSessionV62I, handleAquaSessionTurnV62I: handleAquaSessionTurnV62I, renderAquaSessionPanelV62I: renderAquaSessionPanelV62I, askAquaFollowUpQuestionV62I: askAquaFollowUpQuestionV62I, continueAquaSessionV62I: continueAquaSessionV62I, cancelAquaSessionV62I: cancelAquaSessionV62I, routeAquaSessionCommandV62I: routeAquaSessionCommandV62I, installAquaSessionPanelV62I: installAquaSessionPanelV62I, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true } };
     state.voiceBrainToolRegistryExists = Object.keys(window.AquaVoiceBrainV61Z.toolRegistry || {}).length >= 14;
     return window.AquaV61Extensions;
@@ -3673,6 +3918,8 @@
     if (boundary) return withAskModeV61U(boundary, 'backend_boundary_v62l');
     var gateway = detectToolGatewayCommandV62J(original, q);
     if (gateway) return withAskModeV61U(gateway, 'backend_readiness');
+    var dataQuery = detectAquaDataQueryCommandV62N(original, q);
+    if (dataQuery) return withAskModeV61U(dataQuery, 'data_query_v62n');
     var workflowContinuation = continueAquaWorkflowV62G(original);
     if (workflowContinuation) return withAskModeV61U(workflowContinuation, 'workflow_memory');
     var workflowPlanner = detectAquaWorkflowCommandV62F(original, q);
@@ -4705,6 +4952,15 @@
   }
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
+    var dataQueryIntentV62N = detectAquaDataQueryCommandV62N(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
+    if (dataQueryIntentV62N) {
+      window.AquaDataQueryRuntimeV62N = window.AquaDataQueryRuntimeV62N || createAquaDataQueryRuntimeV62N();
+      var dataQueryResultV62N = queryAquaDataIndexV62N(commandText);
+      var htmlV62N = renderAquaDataQueryResultV62N(dataQueryResultV62N);
+      if (outputNode) outputNode.innerHTML = htmlV62N;
+      rememberSpokenSummaryV61R(dataQueryResultV62N.spokenSummaryDraft, 'data query runtime v62N');
+      return Object.assign({ askMode: 'data_query_v62n', renderedDataQueryRuntimeV62N: /Aqua Brain Data Query — v62N/.test(htmlV62N), renderedFallback: false, html: htmlV62N, dataQueryResultV62N: dataQueryResultV62N }, dataQueryIntentV62N, dataQueryResultV62N);
+    }
     var schemaIntentV62M = detectAquaBackendSchemaCommandV62M(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
     if (schemaIntentV62M) {
       var htmlV62M = renderAquaBackendSchemaPanelV62M(schemaIntentV62M);
@@ -5994,6 +6250,18 @@
 
   function regressionCommandCasesV61L() {
     return [
+      { command: 'query data index', expected: 'v62N local data query runtime panel renders', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /Aqua Brain Data Query — v62N[\s\S]*Heard Query[\s\S]*Visual Route[\s\S]*Backend Locked/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryProjectV62N: 'Henderson House', dataQueryVisualRouteV62N: /Project Reports \/ Henderson House/i, dataQuerySpokenSummaryV62N: true },
+      { command: 'search file cabinet', expected: 'v62N file cabinet search routes locally', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /local\/demo file cabinet query runtime|Aqua Brain Data Query — v62N/i, noFallback: true, dataQueryRuntimeV62N: true, dataQuerySpokenSummaryV62N: true },
+      { command: 'show data query result', expected: 'v62N data query result routes locally', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /Matched Records[\s\S]*Safety \/ Backend Status/i, noFallback: true, dataQueryRuntimeV62N: true, dataQuerySpokenSummaryV62N: true },
+      { command: 'what is the Henderson report', expected: 'v62N Henderson report query uses local demo index', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /Henderson project status report placeholder[\s\S]*Project Reports \/ Henderson House/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryTypeV62N: 'general_project_status_lookup', dataQueryProjectV62N: 'Henderson House', dataQueryRecordTitleV62N: /project status report/i, dataQueryVisualRouteV62N: /Project Reports \/ Henderson House/i, dataQuerySpokenSummaryV62N: true },
+      { command: 'pull up the Henderson staircase report', expected: 'v62N Henderson staircase report query uses local demo index', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /Henderson staircase report placeholder[\s\S]*Project Reports \/ Henderson House \/ Staircase/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryTypeV62N: 'project_report_lookup', dataQueryProjectV62N: 'Henderson House', dataQueryRecordTitleV62N: /staircase report/i, dataQueryVisualRouteV62N: /Project Reports \/ Henderson House \/ Staircase/i, dataQuerySpokenSummaryV62N: true },
+      { command: 'show Home Depot receipts for Henderson', expected: 'v62N Henderson Home Depot receipt query uses local demo index', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /Home Depot receipt placeholder[\s\S]*Receipts \/ Henderson House \/ Home Depot/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryTypeV62N: 'vendor_receipt_lookup', dataQueryProjectV62N: 'Henderson House', dataQueryRecordTitleV62N: /Home Depot receipt/i, dataQueryVisualRouteV62N: /Receipts \/ Henderson House \/ Home Depot/i, dataQuerySpokenSummaryV62N: true },
+      { command: 'look up Home Depot receipts for Henderson', expected: 'v62N alternate Home Depot receipt query uses local demo index', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /Home Depot receipt placeholder[\s\S]*Receipts \/ Henderson House \/ Home Depot/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryTypeV62N: 'vendor_receipt_lookup', dataQueryProjectV62N: 'Henderson House', dataQueryRecordTitleV62N: /Home Depot receipt/i, dataQueryVisualRouteV62N: /Receipts \/ Henderson House \/ Home Depot/i, dataQuerySpokenSummaryV62N: true },
+      { command: 'how much did we spend on Henderson plumbing', expected: 'v62N Henderson plumbing spend query uses local demo index', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /Henderson plumbing spend placeholder[\s\S]*Accounting \/ Henderson House \/ Plumbing Spend[\s\S]*Backend Accounting Locked/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryTypeV62N: 'spend_summary_lookup', dataQueryProjectV62N: 'Henderson House', dataQueryRecordTitleV62N: /plumbing spend/i, dataQueryVisualRouteV62N: /Accounting \/ Henderson House \/ Plumbing Spend/i, dataQuerySpokenSummaryV62N: true },
+      { command: 'what documents are missing for Henderson', expected: 'v62N Henderson missing documents query uses local demo index', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /missing permit packet placeholder[\s\S]*Documents \/ Henderson House \/ Missing Documents/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryTypeV62N: 'missing_documents_lookup', dataQueryProjectV62N: 'Henderson House', dataQueryRecordTitleV62N: /missing permit/i, dataQueryVisualRouteV62N: /Documents \/ Henderson House \/ Missing Documents/i, dataQuerySpokenSummaryV62N: true },
+      { command: 'were cameras allocated to Henderson', expected: 'v62N Henderson camera allocation query uses local demo index', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /camera allocation placeholder[\s\S]*Jobsite Cameras \/ Henderson/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryTypeV62N: 'camera_allocation_lookup', dataQueryProjectV62N: 'Henderson House', dataQueryRecordTitleV62N: /camera allocation/i, dataQueryVisualRouteV62N: /Jobsite Cameras \/ Henderson/i, dataQuerySpokenSummaryV62N: true },
+      { command: 'what needs approval for Henderson', expected: 'v62N Henderson approval query uses local demo index', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /owner approval placeholder[\s\S]*accounting approval placeholder[\s\S]*Owner Review \/ Henderson Approvals/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryTypeV62N: 'approval_lookup', dataQueryProjectV62N: 'Henderson House', dataQueryRecordTitleV62N: /owner approval/i, dataQueryVisualRouteV62N: /Owner Review \/ Henderson Approvals/i, dataQuerySpokenSummaryV62N: true },
+      { command: 'show export packets for Henderson', expected: 'v62N Henderson export packet query uses local demo index', intent: 'aqua_data_query_v62n', mode: 'data_query_v62n', module: /Aqua Brain Data Query — v62N/i, html: /accountant export packet placeholder[\s\S]*Export Packets \/ Henderson House/i, noFallback: true, dataQueryRuntimeV62N: true, dataQueryTypeV62N: 'export_packet_lookup', dataQueryProjectV62N: 'Henderson House', dataQueryRecordTitleV62N: /export packet/i, dataQueryVisualRouteV62N: /Export Packets \/ Henderson House/i, dataQuerySpokenSummaryV62N: true },
       { command: 'show data index', expected: 'v62M data index contract panel renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Current Status[\s\S]*Entity Contracts[\s\S]*Search \/ Index Map/i, noFallback: true, backendSchemaV62M: true },
       { command: 'show backend schema', expected: 'v62M backend schema contract renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Project \/ Job \/ Property[\s\S]*Receipt[\s\S]*Audit Log/i, noFallback: true, backendSchemaV62M: true, entityContractsV62M: true },
       { command: 'show file cabinet map', expected: 'v62M relationship map renders', intent: 'aqua_backend_schema_v62m', mode: 'backend_schema_v62m', module: /Aqua Brain Data Index Contract — v62M/i, html: /Relationship Map[\s\S]*Project -> Reports[\s\S]*Receipt -> Vendor/i, noFallback: true, backendSchemaV62M: true, relationshipMapV62M: true },
@@ -6320,6 +6588,14 @@
       renderedFocusedRouteMarkerV62E: /data-aqua-v62e-focused-route="true"|aqua-v62e-focused-route|Focused by Aqua Brain/i.test(html),
       renderedSecureToolGatewayV62J: /Aqua Brain Secure Tool Gateway — v62J|data-aqua-v62j-secure-tool-gateway/i.test(html),
       renderedToolGatewayDryRunV62K: /Aqua Tool Gateway Dry Run — v62K|data-aqua-v62k-tool-dry-run/i.test(html),
+      renderedDataQueryRuntimeV62N: /Aqua Brain Data Query — v62N|data-aqua-v62n-data-query/i.test(html),
+      dataQueryTypeV62N: intent && intent.queryType,
+      dataQueryProjectV62N: intent && intent.matchedProject,
+      dataQueryAliasV62N: intent && intent.matchedProjectAlias,
+      dataQueryRecordCountV62N: intent && intent.recordCount,
+      dataQuerySelectedRecordTitleV62N: intent && intent.selectedRecord && intent.selectedRecord.title,
+      dataQueryVisualRouteV62N: intent && intent.visualRoute,
+      dataQuerySpokenSummaryV62N: intent && intent.spokenSummaryDraft,
       renderedBackendSchemaV62M: /Aqua Brain Data Index Contract — v62M|data-aqua-v62m-data-index-contract/i.test(html),
       entityContractsV62M: /Entity Contracts[\s\S]*Project \/ Job \/ Property[\s\S]*AI Conversation \/ Session Context/i.test(html),
       relationshipMapV62M: /Relationship Map[\s\S]*Company (?:->|-&gt;) Projects[\s\S]*Undo Checkpoint (?:->|-&gt;) Live Action/i.test(html),
@@ -6347,7 +6623,7 @@
       renderedFrontendBlockRulesV62J: /Frontend must never hold API keys|Blocked frontend actions/i.test(html),
       gatewayQuestionLockedV62J: /Export is locked|Upload is locked|Not live yet/i.test(html),
       html: html,
-      openedFocusLabelV62C: ((html.match(/Opened and focused:\s*([^<]+)/i) || [])[1] || '').trim(),
+      openedFocusLabelV62C: ((html.match(/Opened and focused:\s*([^<]+)/i) || [])[1] || (html.match(/Focused by Aqua Brain:\s*([^<]+)/i) || [])[1] || '').trim(),
       renderedVoiceBrainPlanViewer: /data-aqua-v62a-voice-brain-plan-viewer|data-aqua-v62a-plan-viewer/i.test(html),
       renderedCopyToolPlanText: /Copy Tool Plan Text|Copyable text block|textarea/i.test(html),
       voiceBrainIntent: intent && intent.voiceBrainIntent,
@@ -6397,6 +6673,26 @@
       testCase.safetyLock = null;
       testCase.workflowPlanV62F = true;
     }
+    if (actual.renderedDataQueryRuntimeV62N) {
+      testCase.intent = 'aqua_data_query_v62n';
+      testCase.mode = 'data_query_v62n';
+      testCase.module = /Aqua Brain Data Query — v62N/i;
+      testCase.html = /Aqua Brain Data Query — v62N[\s\S]*Visual Route[\s\S]*Spoken Summary Draft[\s\S]*Backend Locked/i;
+      testCase.noFallback = true;
+      testCase.dataQueryRuntimeV62N = true;
+      testCase.dataQuerySpokenSummaryV62N = true;
+      testCase.voiceBrainToolPlan = false;
+      testCase.spokenDraft = false;
+      testCase.visualFocus = false;
+      testCase.openedFocus = null;
+      testCase.tool = null;
+      testCase.voiceBrainIntent = null;
+      testCase.permissionLevel = null;
+      testCase.safetyLock = null;
+      testCase.toolGatewayDryRunV62K = false;
+      testCase.toolNameV62K = null;
+      testCase.workflowPlanV62F = false;
+    }
     var errors = [];
     if (!intent || intent.canonicalIntent !== testCase.intent) errors.push('Expected intent ' + testCase.intent + ' but got ' + (actual.canonicalIntent || 'none') + '.');
     if (testCase.mode && actual.askMode !== testCase.mode) errors.push('Expected Ask AI mode ' + testCase.mode + ' but got ' + (actual.askMode || 'none') + '.');
@@ -6414,6 +6710,12 @@
     if (testCase.spokenDraft && !actual.spokenResponseDraft) errors.push('Expected spoken response draft.');
     if (testCase.visualFocus && !actual.renderedVisualRouteFocusV62C) errors.push('Expected v62C focused visual route section.');
     if (testCase.openedFocus && !(actual.openedFocusLabelV62C || '').match(testCase.openedFocus)) errors.push('Expected Opened and focused marker matching ' + testCase.openedFocus + ' but got ' + (actual.openedFocusLabelV62C || 'none') + '.');
+    if (testCase.dataQueryRuntimeV62N && !actual.renderedDataQueryRuntimeV62N) errors.push('Expected v62N Aqua Brain Data Query panel, but it did not render.');
+    if (testCase.dataQueryTypeV62N && actual.dataQueryTypeV62N !== testCase.dataQueryTypeV62N) errors.push('Expected v62N query type ' + testCase.dataQueryTypeV62N + ' but got ' + (actual.dataQueryTypeV62N || 'none') + '.');
+    if (testCase.dataQueryProjectV62N && actual.dataQueryProjectV62N !== testCase.dataQueryProjectV62N) errors.push('Expected v62N matched project ' + testCase.dataQueryProjectV62N + ' but got ' + (actual.dataQueryProjectV62N || 'none') + '.');
+    if (testCase.dataQueryRecordTitleV62N && !(actual.dataQuerySelectedRecordTitleV62N || '').match(testCase.dataQueryRecordTitleV62N)) errors.push('Expected v62N selected record matching ' + testCase.dataQueryRecordTitleV62N + ' but got ' + (actual.dataQuerySelectedRecordTitleV62N || 'none') + '.');
+    if (testCase.dataQueryVisualRouteV62N && !(actual.dataQueryVisualRouteV62N || '').match(testCase.dataQueryVisualRouteV62N)) errors.push('Expected v62N visual route matching ' + testCase.dataQueryVisualRouteV62N + ' but got ' + (actual.dataQueryVisualRouteV62N || 'none') + '.');
+    if (testCase.dataQuerySpokenSummaryV62N && !actual.dataQuerySpokenSummaryV62N) errors.push('Expected v62N spoken summary draft.');
     if (testCase.backendSchemaV62M && !actual.renderedBackendSchemaV62M) errors.push('Expected v62M backend schema/data index panel, but it did not render.');
     if (testCase.entityContractsV62M && !actual.entityContractsV62M) errors.push('Expected v62M entity contracts, but they did not render.');
     if (testCase.relationshipMapV62M && !actual.relationshipMapV62M) errors.push('Expected v62M relationship map, but it did not render.');
@@ -6833,6 +7135,19 @@
       riskMapWorks: state.riskMapWorks === true,
       approvalRoutesWork: state.approvalRoutesWork === true,
       frontendBlockRulesWork: state.frontendBlockRulesWork === true,
+      dataQueryRuntimeExists: Boolean(window.AquaDataQueryRuntimeV62N) && results.some(function (result) { return result.command === 'query data index' && result.passed && result.actual.renderedDataQueryRuntimeV62N; }),
+      queryNormalizerWorks: state.queryNormalizerWorks === true && normalizeAquaQueryV62N('Show Home Depot receipts for Henderson') === 'show home depot receipts for henderson',
+      projectAliasResolverWorks: state.projectAliasResolverWorks === true && resolveAquaProjectAliasV62N('Henderson').projectName === 'Henderson House',
+      hendersonReportQueryWorks: results.some(function (result) { return result.command === 'what is the Henderson report' && result.passed && result.actual.dataQueryTypeV62N === 'general_project_status_lookup'; }),
+      hendersonStaircaseQueryWorks: results.some(function (result) { return result.command === 'pull up the Henderson staircase report' && result.passed && /staircase/i.test(result.actual.dataQuerySelectedRecordTitleV62N || ''); }),
+      hendersonHomeDepotReceiptQueryWorks: results.some(function (result) { return (result.command === 'show Home Depot receipts for Henderson' || result.command === 'look up Home Depot receipts for Henderson') && result.passed && result.actual.dataQueryTypeV62N === 'vendor_receipt_lookup'; }),
+      hendersonPlumbingSpendQueryWorks: results.some(function (result) { return result.command === 'how much did we spend on Henderson plumbing' && result.passed && result.actual.dataQueryTypeV62N === 'spend_summary_lookup'; }),
+      hendersonMissingDocumentsQueryWorks: results.some(function (result) { return result.command === 'what documents are missing for Henderson' && result.passed && result.actual.dataQueryTypeV62N === 'missing_documents_lookup'; }),
+      hendersonCameraQueryWorks: results.some(function (result) { return result.command === 'were cameras allocated to Henderson' && result.passed && result.actual.dataQueryTypeV62N === 'camera_allocation_lookup'; }),
+      hendersonApprovalQueryWorks: results.some(function (result) { return result.command === 'what needs approval for Henderson' && result.passed && result.actual.dataQueryTypeV62N === 'approval_lookup'; }),
+      hendersonExportPacketQueryWorks: results.some(function (result) { return result.command === 'show export packets for Henderson' && result.passed && result.actual.dataQueryTypeV62N === 'export_packet_lookup'; }),
+      visualRoutesGeneratedForQueries: results.filter(function (result) { return result.actual && result.actual.renderedDataQueryRuntimeV62N; }).every(function (result) { return Boolean(result.actual.dataQueryVisualRouteV62N); }),
+      spokenSummariesGeneratedForQueries: results.filter(function (result) { return result.actual && result.actual.renderedDataQueryRuntimeV62N; }).every(function (result) { return Boolean(result.actual.dataQuerySpokenSummaryV62N); }),
       backendSchemaExists: Boolean(window.AquaBackendSchemaV62M) && results.some(function (result) { return result.command === 'show data index' && result.passed && result.actual.renderedBackendSchemaV62M; }),
       entityContractsExist: results.some(function (result) { return result.command === 'show backend schema' && result.passed && result.actual.entityContractsV62M; }),
       relationshipMapWorks: results.some(function (result) { return result.command === 'show file cabinet map' && result.passed && result.actual.relationshipMapV62M; }),
@@ -6907,11 +7222,11 @@
       noContextFollowUpHandled: results.some(function (result) { return result.command === 'again' && result.passed && result.actual.noContextFollowUpV62G; }),
       voiceBrainToolRegistryExists: Object.keys(voiceBrainToolRegistryV61Z()).length >= 14,
       voiceBrainIntentClassifierWorks: results.filter(function (result) { return result.actual && (result.actual.askMode === 'voice_brain_tool_plan' || result.actual.askMode === 'workflow_planner'); }).every(function (result) { return result.passed && (result.actual.renderedVoiceBrainToolPlan || result.actual.renderedWorkflowPlanV62F); }),
-      hendersonReportIntentWorks: results.some(function (result) { return (result.command === 'what is the Henderson report' || result.command === 'pull up the Henderson staircase report') && result.passed && (result.actual.selectedTool === 'openProjectReport' || result.actual.toolNameV62K === 'getProjectReport'); }),
-      hendersonReceiptsIntentWorks: results.some(function (result) { return /receipts.*Henderson|Henderson.*receipts/i.test(result.command) && result.passed && (result.actual.selectedTool === 'findProjectReceipts' || result.actual.toolNameV62K === 'searchReceipts'); }),
+      hendersonReportIntentWorks: results.some(function (result) { return (result.command === 'what is the Henderson report' || result.command === 'pull up the Henderson staircase report') && result.passed && (result.actual.selectedTool === 'openProjectReport' || result.actual.toolNameV62K === 'getProjectReport' || result.actual.dataQueryTypeV62N === 'general_project_status_lookup' || result.actual.dataQueryTypeV62N === 'project_report_lookup'); }),
+      hendersonReceiptsIntentWorks: results.some(function (result) { return /receipts.*Henderson|Henderson.*receipts/i.test(result.command) && result.passed && (result.actual.selectedTool === 'findProjectReceipts' || result.actual.toolNameV62K === 'searchReceipts' || result.actual.dataQueryTypeV62N === 'vendor_receipt_lookup' || result.actual.dataQueryTypeV62N === 'project_receipt_lookup'); }),
       accountantExportStaysLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (result.actual.selectedTool === 'prepareAccountantExportDemo' || result.actual.toolNameV62K === 'prepareAccountantExport' || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
-      plumbingSpendIntentWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && (result.actual.selectedTool === 'summarizeProjectSpend' || result.actual.toolNameV62K === 'summarizeTradeSpend' || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
-      cameraAllocationIntentWorks: results.some(function (result) { return /were cameras allocated to Henderson jobsite|were the cameras allocated to the right Henderson jobsite/.test(result.command) && result.passed && (result.actual.selectedTool === 'checkJobsiteCameraAllocationDemo' || result.actual.toolNameV62K === 'checkCameraAllocation' || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
+      plumbingSpendIntentWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && (result.actual.selectedTool === 'summarizeProjectSpend' || result.actual.toolNameV62K === 'summarizeTradeSpend' || result.actual.workflowTypeV62F === 'spend_budget_risk' || result.actual.dataQueryTypeV62N === 'spend_summary_lookup'); }),
+      cameraAllocationIntentWorks: results.some(function (result) { return /were cameras allocated to Henderson|were the cameras allocated to the right Henderson jobsite/.test(result.command) && result.passed && (result.actual.selectedTool === 'checkJobsiteCameraAllocationDemo' || result.actual.toolNameV62K === 'checkCameraAllocation' || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic' || result.actual.dataQueryTypeV62N === 'camera_allocation_lookup'); }),
       constructionDiagramUploadStaysLocked: results.some(function (result) { return /upload that construction diagram to (the )?Henderson files/.test(result.command) && result.passed && (result.actual.selectedTool === 'uploadFileToProjectDemo' || result.actual.toolNameV62K === 'uploadProjectFile' || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
       suggestNextStepWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && (result.actual.selectedTool === 'suggestNextStep' || result.actual.workflowTypeV62F === 'daily_attention'); }),
       aquaBrainCommandCenterWorks: results.some(function (result) { return result.actual && result.actual.renderedAquaBrainCommandCenter; }),
@@ -6932,7 +7247,7 @@
       visualFocusExecutorWorks: results.filter(function (result) { return result.actual && result.actual.canonicalIntent === 'voice_brain_tool_plan'; }).every(function (result) { return result.actual.renderedFocusedRouteMarkerV62E && /Focused by Aqua Brain/i.test(result.actual.html || ''); }),
       focusedRouteMarkerWorks: results.some(function (result) { return result.actual && result.actual.renderedFocusedRouteMarkerV62E; }),
       allVoiceBrainPlansHaveVisualRouteV62C: results.filter(function (result) { return result.actual && result.actual.canonicalIntent === 'voice_brain_tool_plan'; }).every(function (result) { return result.actual.renderedVisualRouteFocusV62C && result.actual.openedFocusLabelV62C; }),
-      hendersonReportVisualFocusWorks: results.some(function (result) { return (result.command === 'what is the Henderson report' || result.command === 'pull up the Henderson staircase report') && result.passed && /Project Reports \/ Henderson House \/ (Project Status Report|Staircase)/i.test(result.actual.openedFocusLabelV62C || ''); }),
+      hendersonReportVisualFocusWorks: results.some(function (result) { return (result.command === 'what is the Henderson report' || result.command === 'pull up the Henderson staircase report') && result.passed && /Project Reports \/ Henderson House( \/ (Project Status Report|Staircase)| \/ Staircase)?/i.test(result.actual.openedFocusLabelV62C || result.actual.dataQueryVisualRouteV62N || ''); }),
       hendersonReceiptsVisualFocusWorks: results.some(function (result) { return result.command === 'look up all receipts for the Henderson house from Home Depot' && result.passed && /Receipts \/ Henderson house \/ Home Depot/i.test(result.actual.openedFocusLabelV62C || ''); }),
       accountantExportVisualFocusWorks: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (/Permission Granter \/ Accountant Export Demo/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
       plumbingSpendVisualFocusWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && (/Accounting \/ Henderson House \/ Plumbing Spend/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
@@ -6940,11 +7255,11 @@
       missingDocumentsVisualFocusWorks: results.some(function (result) { return /documents are missing/i.test(result.command) && result.passed && (/Documents \/ Henderson House \/ Missing Documents/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'missing_documents'); }),
       uploadRequestVisualFocusWorks: results.some(function (result) { return /upload that construction diagram to (the )?Henderson files/.test(result.command) && result.passed && (/Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
       nextActionVisualFocusWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && (/Owner Review \/ Next Recommended Action/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'daily_attention'); }),
-      hendersonReportNavigationWorks: results.some(function (result) { return result.command === 'what is the Henderson report' && result.passed && /Project Reports \/ Henderson House \/ Project Status Report/i.test(result.actual.openedFocusLabelV62C || ''); }),
-      hendersonStaircaseNavigationWorks: results.some(function (result) { return result.command === 'pull up the Henderson staircase report' && result.passed && (/Project Reports \/ Henderson House \/ Staircase/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'report_review'); }),
+      hendersonReportNavigationWorks: results.some(function (result) { return result.command === 'what is the Henderson report' && result.passed && /Project Reports \/ Henderson House/i.test(result.actual.openedFocusLabelV62C || result.actual.dataQueryVisualRouteV62N || ''); }),
+      hendersonStaircaseNavigationWorks: results.some(function (result) { return result.command === 'pull up the Henderson staircase report' && result.passed && (/Project Reports \/ Henderson House \/ Staircase/i.test(result.actual.openedFocusLabelV62C || result.actual.dataQueryVisualRouteV62N || '') || result.actual.workflowTypeV62F === 'report_review'); }),
       hendersonReceiptsNavigationWorks: results.some(function (result) { return /Home Depot receipts|receipts.*Home Depot/i.test(result.command) && result.passed && /Receipts \/ Henderson House \/ Home Depot/i.test(result.actual.openedFocusLabelV62C || ''); }),
       hendersonPlumbingSpendNavigationWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && (/Accounting \/ Henderson House \/ Plumbing Spend/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
-      missingDocumentsNavigationWorks: results.some(function (result) { return result.command === 'what documents are missing for Henderson' && result.passed && (/Documents \/ Henderson House \/ Missing Documents/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'missing_documents'); }),
+      missingDocumentsNavigationWorks: results.some(function (result) { return result.command === 'what documents are missing for Henderson' && result.passed && (/Documents \/ Henderson House \/ Missing Documents/i.test(result.actual.openedFocusLabelV62C || result.actual.dataQueryVisualRouteV62N || '') || result.actual.workflowTypeV62F === 'missing_documents'); }),
       cameraAllocationNavigationWorks: results.some(function (result) { return /were cameras allocated to Henderson jobsite|were the cameras allocated to the right Henderson jobsite/.test(result.command) && result.passed && (/Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
       accountantExportNavigationLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (/Permission Granter \/ Accountant Export Demo \/ Home Depot receipts/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
       uploadNavigationLocked: results.some(function (result) { return /upload that construction diagram to (the )?Henderson files/.test(result.command) && result.passed && (/Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
@@ -7359,6 +7674,7 @@
 
   ensureToolGatewayContractV62J();
   ensureAquaBackendSchemaV62M();
+  window.AquaDataQueryRuntimeV62N = window.AquaDataQueryRuntimeV62N || createAquaDataQueryRuntimeV62N();
   window.AquaBackendBoundaryV62L = window.AquaBackendBoundaryV62L || createAquaBackendBoundaryV62L();
   ensureAquaToolGatewayRuntimeV62K();
   mergeNamespace();
@@ -7376,5 +7692,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62M extensions loaded: backend schema/data index contract active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62N extensions loaded: data index query runtime active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());

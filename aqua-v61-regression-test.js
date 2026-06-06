@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62M';
+const VERSION = 'v62N';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -291,6 +291,8 @@ function checkStaticFiles() {
   addCheck('v62M relationship and index maps exist', /relationships/.test(extension) && /projectNameIndex/.test(extension) && /receiptIndex/.test(extension) && /undoIndex/.test(extension), { layer: 'backend-schema-v62m', fileToFix: EXTENSION });
   addCheck('v62M Henderson demo index exists', /hendersonDemoIndex/.test(extension) && /Henderson staircase report placeholder/.test(extension) && /accountant export packet placeholder/.test(extension), { layer: 'backend-schema-v62m', fileToFix: EXTENSION });
   addCheck('v62M report flags exist', /backendSchemaExists/.test(extension) && /hendersonDemoIndexWorks/.test(extension) && /exportPacketIndexWorks/.test(extension), { layer: 'backend-schema-v62m', fileToFix: EXTENSION });
+  addCheck('v62N data query runtime exists', /window\.AquaDataQueryRuntimeV62N|function\s+createAquaDataQueryRuntimeV62N/.test(extension) && /Aqua Brain Data Query — v62N/.test(extension), { layer: 'data-query-runtime-v62n', fileToFix: EXTENSION });
+  addCheck('v62N query runtime flags exist', /dataQueryRuntimeExists/.test(extension) && /projectAliasResolverWorks/.test(extension) && /hendersonExportPacketQueryWorks/.test(extension), { layer: 'data-query-runtime-v62n', fileToFix: EXTENSION });
   addCheck('v62L role permission plan strings exist', /rolePermissionPlanWorks/.test(extension) && /owner_admin/.test(extension) && /field_worker cannot export accounting/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
   addCheck('v62F workflow planner architecture exists', /AquaWorkflowPlannerV62F/.test(extension) && /function\s+planAquaWorkflowV62F/.test(extension) && /Aqua Brain Workflow Plan — v62F/.test(extension) && /aquaWorkflowPlansV62F/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
   addCheck('v62F workflow report flags exist', /receiptExportWorkflowWorks/.test(extension) && /uploadWorkflowStaysLocked/.test(extension) && /ownerReviewDemoWorks/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
@@ -350,7 +352,8 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62M', extensionReport.version === 'v62M', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62N', extensionReport.version === 'v62N', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('v62L backendBoundaryExists is true', extensionReport.backendBoundaryExists === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendBoundaryExists, fileToFix: EXTENSION });
     addCheck('v62L serverOnlyKeyPolicyWorks is true', extensionReport.serverOnlyKeyPolicyWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.serverOnlyKeyPolicyWorks, fileToFix: EXTENSION });
     addCheck('v62L backendEndpointMapWorks is true', extensionReport.backendEndpointMapWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendEndpointMapWorks, fileToFix: EXTENSION });
@@ -478,7 +481,7 @@ function runExtensionRegression() {
       ['banana test', 'unknown_fallback']
     ].forEach(([command, mode]) => {
       const row = byCommand.get(command);
-      addCheck(`v61X Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && (row.actual.askMode === mode || row.actual.renderedToolGatewayDryRunV62K === true)), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+      addCheck(`v61X Ask AI mode routes: ${command}`, Boolean(row && row.passed && row.actual && (row.actual.askMode === mode || row.actual.renderedToolGatewayDryRunV62K === true || row.actual.renderedDataQueryRuntimeV62N === true)), { layer: 'ask-mode-router-v61u', expected: mode, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     [
@@ -495,7 +498,7 @@ function runExtensionRegression() {
       ['what should I do next', 'suggestNextStep']
     ].forEach(([command, tool]) => {
       const row = byCommand.get(command);
-      addCheck(`v61Z voice brain/routes or v62F workflow routes: ${command}`, Boolean(row && row.passed && row.actual && ((row.actual.renderedVoiceBrainToolPlan && row.actual.selectedTool === tool) || row.actual.renderedWorkflowPlanV62F || row.actual.renderedToolGatewayDryRunV62K)), { layer: 'voice-brain-v61z', expected: tool, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+      addCheck(`v61Z voice brain/routes or v62F workflow routes: ${command}`, Boolean(row && row.passed && row.actual && ((row.actual.renderedVoiceBrainToolPlan && row.actual.selectedTool === tool) || row.actual.renderedWorkflowPlanV62F || row.actual.renderedToolGatewayDryRunV62K || row.actual.renderedDataQueryRuntimeV62N)), { layer: 'voice-brain-v61z', expected: tool, actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     const accountantRow = byCommand.get('prepare those Home Depot receipts for accountant export');
@@ -834,6 +837,19 @@ function markdown(report) {
     `- riskMapWorks: ${report.riskMapWorks === true}\n` +
     `- approvalRoutesWork: ${report.approvalRoutesWork === true}\n` +
     `- frontendBlockRulesWork: ${report.frontendBlockRulesWork === true}\n` +
+    `- dataQueryRuntimeExists: ${report.dataQueryRuntimeExists === true}\n` +
+    `- queryNormalizerWorks: ${report.queryNormalizerWorks === true}\n` +
+    `- projectAliasResolverWorks: ${report.projectAliasResolverWorks === true}\n` +
+    `- hendersonReportQueryWorks: ${report.hendersonReportQueryWorks === true}\n` +
+    `- hendersonStaircaseQueryWorks: ${report.hendersonStaircaseQueryWorks === true}\n` +
+    `- hendersonHomeDepotReceiptQueryWorks: ${report.hendersonHomeDepotReceiptQueryWorks === true}\n` +
+    `- hendersonPlumbingSpendQueryWorks: ${report.hendersonPlumbingSpendQueryWorks === true}\n` +
+    `- hendersonMissingDocumentsQueryWorks: ${report.hendersonMissingDocumentsQueryWorks === true}\n` +
+    `- hendersonCameraQueryWorks: ${report.hendersonCameraQueryWorks === true}\n` +
+    `- hendersonApprovalQueryWorks: ${report.hendersonApprovalQueryWorks === true}\n` +
+    `- hendersonExportPacketQueryWorks: ${report.hendersonExportPacketQueryWorks === true}\n` +
+    `- visualRoutesGeneratedForQueries: ${report.visualRoutesGeneratedForQueries === true}\n` +
+    `- spokenSummariesGeneratedForQueries: ${report.spokenSummariesGeneratedForQueries === true}\n` +
     `- backendSchemaExists: ${report.backendSchemaExists === true}
 ` +
     `- entityContractsExist: ${report.entityContractsExist === true}
@@ -1205,6 +1221,19 @@ async function main() {
     markReviewReadyDemoWorks: extensionReport ? extensionReport.markReviewReadyDemoWorks === true : false,
     clearSowReviewQueueWorks: extensionReport ? extensionReport.clearSowReviewQueueWorks === true : false,
     noLiveSowCreated: extensionReport ? extensionReport.noLiveSowCreated === true : false,
+    dataQueryRuntimeExists: extensionReport ? extensionReport.dataQueryRuntimeExists === true : false,
+    queryNormalizerWorks: extensionReport ? extensionReport.queryNormalizerWorks === true : false,
+    projectAliasResolverWorks: extensionReport ? extensionReport.projectAliasResolverWorks === true : false,
+    hendersonReportQueryWorks: extensionReport ? extensionReport.hendersonReportQueryWorks === true : false,
+    hendersonStaircaseQueryWorks: extensionReport ? extensionReport.hendersonStaircaseQueryWorks === true : false,
+    hendersonHomeDepotReceiptQueryWorks: extensionReport ? extensionReport.hendersonHomeDepotReceiptQueryWorks === true : false,
+    hendersonPlumbingSpendQueryWorks: extensionReport ? extensionReport.hendersonPlumbingSpendQueryWorks === true : false,
+    hendersonMissingDocumentsQueryWorks: extensionReport ? extensionReport.hendersonMissingDocumentsQueryWorks === true : false,
+    hendersonCameraQueryWorks: extensionReport ? extensionReport.hendersonCameraQueryWorks === true : false,
+    hendersonApprovalQueryWorks: extensionReport ? extensionReport.hendersonApprovalQueryWorks === true : false,
+    hendersonExportPacketQueryWorks: extensionReport ? extensionReport.hendersonExportPacketQueryWorks === true : false,
+    visualRoutesGeneratedForQueries: extensionReport ? extensionReport.visualRoutesGeneratedForQueries === true : false,
+    spokenSummariesGeneratedForQueries: extensionReport ? extensionReport.spokenSummariesGeneratedForQueries === true : false,
     backendSchemaExists: extensionReport ? extensionReport.backendSchemaExists === true : false,
     entityContractsExist: extensionReport ? extensionReport.entityContractsExist === true : false,
     relationshipMapWorks: extensionReport ? extensionReport.relationshipMapWorks === true : false,
