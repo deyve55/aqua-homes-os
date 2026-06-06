@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62O Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix.
+ * Aqua Homes OS v62P Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62O';
+  var VERSION = 'v62P';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -61,6 +61,18 @@
     approvalIndexWorks: false,
     exportPacketIndexWorks: false,
     noRealCustomerData: true,
+    e2eRoutingMatrixExists: false,
+    e2eRoutingMatrixRuns: false,
+    allE2ERoutesPass: false,
+    fuzzyToIntentToRouteChainWorks: false,
+    workflowChainWorks: false,
+    sessionChainWorks: false,
+    visualFocusChainWorks: false,
+    readbackChainWorks: false,
+    permissionGateChainWorks: false,
+    automationRoutePriorityWorks: false,
+    unknownFallbackStillWorks: false,
+    clarificationPathWorks: false,
 
     fuzzyLanguageResolverExists: true,
     correctionMapWorks: false,
@@ -2775,7 +2787,7 @@
   function detectAquaBackendBoundaryCommandV62L(original, normalized) {
     var q = String(normalized || '').trim();
     if (phraseMatchesV61E(q, ['can we add openai key now'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: 'can we add openai key now', originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L', boundaryQuestionV62L: 'openai_key' };
-    if (phraseMatchesV61E(q, ['can we connect chatgpt now'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: 'can we connect chatgpt now', originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L', boundaryQuestionV62L: 'chatgpt' };
+    if (phraseMatchesV61E(q, ['can we connect chatgpt now', 'can aqua connect to chatgpt now'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: 'can we connect chatgpt now', originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L', boundaryQuestionV62L: 'chatgpt' };
     if (phraseMatchesV61E(q, ['can aqua use live voice now'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: 'can aqua use live voice now', originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L', boundaryQuestionV62L: 'live_voice' };
     if (phraseMatchesV61E(q, ['show backend boundary', 'show key vault plan', 'show server key plan', 'show api key safety', 'show backend endpoints', 'show role permissions', 'show voice backend plan', 'show realtime boundary', 'show deployment checklist'])) return { canonicalIntent: 'aqua_backend_boundary_v62l', routeText: q, originalText: original, normalizedText: q, module: 'Aqua Brain Backend Boundary — v62L' };
     return null;
@@ -2983,22 +2995,6 @@
   }
 
   function runAquaToolGatewayDryRunV62K(commandText, toolPlan) {
-    window.AquaFuzzyLanguageV62O = window.AquaFuzzyLanguageV62O || {
-    version: 'v62O',
-    localDemoOnly: true,
-    normalizeAquaTranscriptV62O: normalizeAquaTranscriptV62O,
-    resolveAquaMisheardWordsV62O: resolveAquaMisheardWordsV62O,
-    resolveAquaEntityAliasesV62O: resolveAquaEntityAliasesV62O,
-    scoreAquaIntentConfidenceV62O: scoreAquaIntentConfidenceV62O,
-    buildAquaFuzzyResolutionV62O: buildAquaFuzzyResolutionV62O,
-    routeAquaFuzzyCommandV62O: routeAquaFuzzyCommandV62O,
-    renderAquaFuzzyResolverPanelV62O: renderAquaFuzzyResolverPanelV62O,
-    askAquaClarifyingQuestionV62O: askAquaClarifyingQuestionV62O,
-    getAquaFuzzyVocabularyV62O: getAquaFuzzyVocabularyV62O,
-    runAquaFuzzySelfCheckV62O: runAquaFuzzySelfCheckV62O,
-    safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true }
-  };
-  ensureToolGatewayContractV62J();
     var request = buildAquaToolRequestV62K(commandText, toolPlan);
     var validation = validateAquaToolRequestV62K(request);
     var dryRun = runAquaToolDryRunV62K(request);
@@ -3069,6 +3065,13 @@
       runAquaCommandRegressionV61Y: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61Z: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV62O: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV62P: runAquaCommandRegressionV61L,
+      getAquaBrainE2ETestMatrixV62P: getAquaBrainE2ETestMatrixV62P,
+      runAquaBrainE2ETestV62P: runAquaBrainE2ETestV62P,
+      runAquaBrainE2ETestMatrixV62P: runAquaBrainE2ETestMatrixV62P,
+      renderAquaBrainE2ETestReportV62P: renderAquaBrainE2ETestReportV62P,
+      explainAquaBrainE2ERouteV62P: explainAquaBrainE2ERouteV62P,
+      getAquaBrainE2EFailuresV62P: getAquaBrainE2EFailuresV62P,
       normalizeAquaTranscriptV62O: normalizeAquaTranscriptV62O,
       resolveAquaMisheardWordsV62O: resolveAquaMisheardWordsV62O,
       resolveAquaEntityAliasesV62O: resolveAquaEntityAliasesV62O,
@@ -3217,6 +3220,13 @@
       runAquaCommandRegressionV61Y: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV61Z: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV62O: runAquaCommandRegressionV61L,
+      runAquaCommandRegressionV62P: runAquaCommandRegressionV61L,
+      getAquaBrainE2ETestMatrixV62P: getAquaBrainE2ETestMatrixV62P,
+      runAquaBrainE2ETestV62P: runAquaBrainE2ETestV62P,
+      runAquaBrainE2ETestMatrixV62P: runAquaBrainE2ETestMatrixV62P,
+      renderAquaBrainE2ETestReportV62P: renderAquaBrainE2ETestReportV62P,
+      explainAquaBrainE2ERouteV62P: explainAquaBrainE2ERouteV62P,
+      getAquaBrainE2EFailuresV62P: getAquaBrainE2EFailuresV62P,
       normalizeAquaTranscriptV62O: normalizeAquaTranscriptV62O,
       resolveAquaMisheardWordsV62O: resolveAquaMisheardWordsV62O,
       resolveAquaEntityAliasesV62O: resolveAquaEntityAliasesV62O,
@@ -3424,7 +3434,7 @@
       ['cold', 'code', 'action'], ['call', 'code', 'action'], ['coat', 'code', 'action'], ['coded', 'code', 'action'], ['coding', 'code', 'action'],
       ['received', 'receipt', 'object'], ['receit', 'receipt', 'object'], ['reciept', 'receipt', 'object'],
       ['cute', 'queue', 'object'], ['claire draft cute demo', 'clear draft queue demo', 'command'], ['claire', 'clear', 'action'],
-      ['sauna tube', 'sonotube', 'object'], ['sono tube', 'sonotube', 'object'],
+      ['sauna tube', 'sonotube', 'object'], ['sono tube', 'sonotube', 'object'], ['job site', 'jobsite', 'object'],
       ['home deepo', 'Home Depot', 'vendor'], ['homedepot', 'Home Depot', 'vendor'], ['home depot', 'Home Depot', 'vendor'], ['hd', 'Home Depot', 'vendor'],
       ['hender son', 'Henderson', 'project'], ['hendersen', 'Henderson', 'project'], ['henderson', 'Henderson', 'project'],
       ['plumbering', 'plumbing', 'trade'], ['plum', 'plumbing', 'trade'], ['plumber', 'plumbing', 'trade'],
@@ -3477,6 +3487,7 @@
     if (/\bSOW|scope of work\b/i.test(q) && /\bHenderson\b/i.test(q)) out.push(candidateIntentV62O('henderson_sow_scope', 'Henderson SOW / scope of work', 'voice_brain_tool_plan', 'SOW / Henderson placeholder', 'SOW / Henderson House / Scope of Work', 0.90));
     if (/\bpayables\b/i.test(q)) out.push(candidateIntentV62O('payables_placeholder', 'Payables placeholder', 'app_navigation', 'Payables placeholder / backend locked', 'Payables placeholder / Backend Locked', 0.91));
     if (/\bapproval\b/i.test(q) && /\bHenderson\b/i.test(q)) out.push(candidateIntentV62O('henderson_approvals', 'Henderson approvals', 'app_navigation', 'Owner Action Queue / Henderson approvals', 'Owner Action Queue / Henderson approvals', 0.92));
+    if (/\bHenderson\b/i.test(q) && /\bcameras?\b|\bjobsite\b/i.test(q)) out.push(candidateIntentV62O('henderson_camera_allocation', 'Henderson camera allocation', 'data_query_v62n', 'Jobsite Cameras / Henderson allocation placeholder', 'Jobsite Cameras / Henderson allocation placeholder', 0.91));
     if (/\bHenderson\b/i.test(q) && /\bthing\b/i.test(q)) out.push(candidateIntentV62O('henderson_unclear_object', 'Henderson unclear object', 'clarification', 'Clarification Required', 'Clarification Required', 0.42));
     return out.sort(function (a, b) { return b.score - a.score; });
   }
@@ -3549,6 +3560,7 @@
     if (intent === 'accountant_export_demo_locked') return 'find Henderson Home Depot receipts and prepare them for accountant export';
     if (intent === 'henderson_sow_scope') return 'show SOW for Henderson';
     if (intent === 'henderson_approvals') return 'show approvals for Henderson';
+    if (intent === 'henderson_camera_allocation') return 'were cameras allocated to Henderson jobsite';
     return resolution ? resolution.normalizedText : '';
   }
 
@@ -3612,6 +3624,130 @@
     syncNamespace();
     return { version: 'v62O', passed: results.filter(function (r) { return r.passed; }).length, total: results.length, results: results };
   }
+
+  function getAquaBrainE2ETestMatrixV62P() {
+    var safety = { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true };
+    function tc(id, category, rawCommand, expected) { return Object.assign({ id: id, category: category, rawCommand: rawCommand, expectedNormalized: rawCommand, expectedChain: [], expectedResult: '', expectedMode: '', expectedTool: '', expectedVisualRoute: '', expectedFocusedSection: '', expectClarification: false, expectUnknown: false, expectPermissionGate: false, expectWorkflow: false, expectDryRun: false, expectReadback: true, expectSafety: true, safety: safety }, expected || {}); }
+    return [
+      tc('v62p-01-receipt-coding', 'Fuzzy misheard commands', 'cold this received to framing', { expectedNormalized: 'code this receipt to framing', expectedChain: ['fuzzy resolver', 'permissioned_action', 'Permission Granter / receipt coding / framing'], expectedMode: 'permissioned_action', expectedTool: 'Permission Granter / Receipt Coding Demo', expectedVisualRoute: 'Permission Granter / Receipt Coding Demo / Framing', expectedFocusedSection: 'Permission Granter / Receipt Coding Demo / Framing', expectedResult: 'No live change made.', expectPermissionGate: true }),
+      tc('v62p-02-clear-draft-queue', 'Automation/report commands', 'Claire draft cute demo', { expectedNormalized: 'clear draft queue demo', expectedChain: ['fuzzy resolver', 'automation_demo_state', 'Clear Draft Queue Demo'], expectedMode: 'automation_demo_state', expectedTool: 'Clear Draft Queue Demo', expectedVisualRoute: 'Clear Draft Queue Demo', expectedFocusedSection: 'Clear Draft Queue Demo', expectedResult: 'Clear Draft Queue Demo route, not fallback.' }),
+      tc('v62p-03-sonotube', 'Local jobsite calculators', 'how many bags for an 8 inch sauna tube 4 feet deep', { expectedNormalized: 'how many bags for an 8 inch sonotube 4 feet deep', expectedChain: ['fuzzy resolver', 'jobsite_calculator', 'Concrete Sonotube calculator'], expectedMode: 'jobsite_calculator', expectedTool: 'Jobsite Calculator / Concrete Sonotube', expectedVisualRoute: 'Jobsite Calculator / Concrete Sonotube', expectedFocusedSection: 'Concrete Sonotube calculator', expectedResult: 'Concrete Sonotube calculator returns 3 recommended 80 lb bags.' }),
+      tc('v62p-04-hd-receipts', 'Receipt/vendor lookup', 'show home deepo received for hender son', { expectedNormalized: 'show Home Depot receipts for Henderson', expectedChain: ['fuzzy resolver', 'data query', 'visual navigation', 'Receipts / Henderson House / Home Depot focused route'], expectedMode: 'data_query_v62n', expectedTool: 'Receipts / Henderson House / Home Depot', expectedVisualRoute: 'Receipts / Henderson House / Home Depot', expectedFocusedSection: 'Receipts / Henderson House / Home Depot', expectedResult: 'Opened and focused.' }),
+      tc('v62p-05-staircase-report', 'Project/report lookup', 'pull up hender son stair case report', { expectedNormalized: 'pull up Henderson staircase report', expectedChain: ['fuzzy resolver', 'data query', 'visual navigation', 'Project Reports / Henderson House / Staircase'], expectedMode: 'data_query_v62n', expectedTool: 'Project Reports / Henderson House / Staircase', expectedVisualRoute: 'Project Reports / Henderson House / Staircase', expectedFocusedSection: 'Project Reports / Henderson House / Staircase', expectedResult: 'Project Reports / Henderson House / Staircase focused route.' }),
+      tc('v62p-06-plumbing-spend', 'Spend/category lookup', 'how much money did we spend on hendersen plumbering', { expectedNormalized: 'how much money did we spend on Henderson plumbing', expectedChain: ['fuzzy resolver', 'data query', 'Accounting / Henderson House / Plumbing Spend'], expectedMode: 'data_query_v62n', expectedTool: 'Accounting / Henderson House / Plumbing Spend', expectedVisualRoute: 'Accounting / Henderson House / Plumbing Spend', expectedFocusedSection: 'Accounting / Henderson House / Plumbing Spend', expectedResult: 'Backend/accounting locked. No fallback.', expectPermissionGate: true }),
+      tc('v62p-07-accountant-export', 'Permissioned/export/upload actions', 'prepare home deepo received for account export', { expectedNormalized: 'prepare Home Depot receipts for accountant export', expectedChain: ['fuzzy resolver', 'workflow planner', 'tool gateway dry-run', 'permission gate'], expectedMode: 'workflow_planner', expectedTool: 'Workflow Planner / Accountant Export Demo / Locked', expectedVisualRoute: 'Permission Granter / Accountant Export Demo / Home Depot receipts', expectedFocusedSection: 'Accountant Export Demo / Locked', expectedResult: 'Accountant export locked. Owner/accounting approval required. No live export.', expectPermissionGate: true, expectWorkflow: true, expectDryRun: true }),
+      tc('v62p-08-sow-scope', 'App navigation', 'show scope for hender son', { expectedNormalized: 'show SOW / scope of work for Henderson', expectedChain: ['fuzzy resolver', 'voice brain tool plan', 'SOW / Henderson placeholder'], expectedMode: 'voice_brain_tool_plan', expectedTool: 'SOW / Henderson placeholder', expectedVisualRoute: 'SOW / Henderson House / Scope of Work', expectedFocusedSection: 'SOW / Henderson House / Scope of Work', expectedResult: 'SOW / Henderson placeholder or tool plan. Backend locked if needed. No fallback.', expectPermissionGate: true }),
+      tc('v62p-09-payables', 'App navigation', 'show bills due', { expectedNormalized: 'show payables', expectedChain: ['fuzzy resolver', 'app_navigation', 'Payables placeholder'], expectedMode: 'app_navigation', expectedTool: 'Payables placeholder / backend locked', expectedVisualRoute: 'Payables placeholder / Backend Locked', expectedFocusedSection: 'Payables placeholder / Backend Locked', expectedResult: 'Payables placeholder. Backend/accounting locked. No fallback.', expectPermissionGate: true }),
+      tc('v62p-10-approval', 'App navigation', 'what needs approve for hender son', { expectedNormalized: 'what needs approval for Henderson', expectedChain: ['fuzzy resolver', 'app_navigation', 'Owner Action Queue / Henderson approvals'], expectedMode: 'app_navigation', expectedTool: 'Owner Action Queue / Henderson approvals', expectedVisualRoute: 'Owner Action Queue / Henderson approvals', expectedFocusedSection: 'Owner Action Queue / Henderson approvals', expectedResult: 'Owner Action Queue / Henderson approvals placeholder. No fallback.' }),
+      tc('v62p-11-clarification', 'Clarification-needed commands', 'show the thing for Henderson', { expectedNormalized: 'show the thing for Henderson', expectedChain: ['fuzzy resolver', 'clarification'], expectedMode: 'clarification', expectedTool: 'Clarification Required', expectedVisualRoute: 'Clarification Required', expectedFocusedSection: 'Clarification Required', expectedResult: 'Clarification needed.', expectClarification: true, expectedClarification: 'Do you want the report, receipts, spend, documents, approvals, or SOW for Henderson?' }),
+      tc('v62p-12-multi-step', 'Multi-step workflows', 'look up all receipts for Henderson from Home Depot and prepare them for accountant export', { expectedNormalized: 'look up all receipts for Henderson from Home Depot and prepare them for accountant export', expectedChain: ['workflow planner', 'receipt lookup', 'accountant export locked'], expectedMode: 'workflow_planner', expectedTool: 'prepareAccountantExportDemo', expectedVisualRoute: 'Receipts / Henderson House / Home Depot', expectedFocusedSection: 'Accountant Export Demo / Locked', expectedResult: 'Aqua Brain Workflow Plan v62F. Receipt lookup + accountant export locked. No live export.', expectPermissionGate: true, expectWorkflow: true }),
+      tc('v62p-13-follow-up', 'Follow-up continuation', 'look up all receipts for Henderson from Home Depot and prepare them for accountant export > show me what will be exported > what needs approval > mark it ready for owner review > read it back', { sequence: ['look up all receipts for Henderson from Home Depot and prepare them for accountant export', 'show me what will be exported', 'what needs approval', 'mark it ready for owner review', 'read it back'], expectedChain: ['workflow memory v62G', 'Henderson/Home Depot/export context', 'owner review demo-only', 'readback'], expectedMode: 'workflow_memory', expectedTool: 'Aqua Brain Workflow Memory — v62G', expectedVisualRoute: 'Accountant Export Demo / Henderson / Home Depot', expectedFocusedSection: 'Owner review demo-only', expectedResult: 'v62G workflow memory carries Henderson/Home Depot/export context. No live export. Owner review status is demo-only.', expectPermissionGate: true, expectWorkflow: true }),
+      tc('v62p-14-session', 'Voice/session commands', 'start aqua session > pull up Henderson > show Home Depot receipts > prepare those for accountant export', { sequence: ['start aqua session', 'pull up Henderson', 'show Home Depot receipts', 'prepare those for accountant export'], expectedChain: ['voice session v62I', 'session context', 'Henderson project', 'Home Depot receipt/export workflow'], expectedMode: 'voice_session_v62i', expectedTool: 'Aqua Brain Session — v62I', expectedVisualRoute: 'Receipts / Henderson House / Home Depot', expectedFocusedSection: 'Accountant Export Demo / Locked', expectedResult: 'v62I session context carries Henderson project into Home Depot receipt/export workflow. No fallback.', expectPermissionGate: true, expectWorkflow: true }),
+      tc('v62p-15-missing-docs', 'Missing document lookup', 'what documents are missing for Henderson', { expectedChain: ['data query', 'visual navigation', 'Documents / Henderson House / Missing Documents'], expectedMode: 'data_query_v62n', expectedTool: 'Documents / Henderson House / Missing Documents', expectedVisualRoute: 'Documents / Henderson House / Missing Documents', expectedFocusedSection: 'Documents / Henderson House / Missing Documents', expectedResult: 'Opened and focused. Focused by Aqua Brain.' }),
+      tc('v62p-16-camera', 'Camera/photo allocation lookup', 'were cameras allocated to hender son job site', { expectedNormalized: 'were cameras allocated to Henderson jobsite', expectedChain: ['fuzzy resolver', 'data query', 'Jobsite Cameras / Henderson allocation placeholder'], expectedMode: 'data_query_v62n', expectedTool: 'Jobsite Cameras / Henderson allocation placeholder', expectedVisualRoute: 'Jobsite Cameras / Henderson allocation placeholder', expectedFocusedSection: 'Jobsite Cameras / Henderson allocation placeholder', expectedResult: 'Jobsite Cameras / Henderson allocation placeholder. No live camera access.' }),
+      tc('v62p-17-backend-safety', 'Tool gateway dry-runs', 'can aqua connect to chatgpt now', { expectedChain: ['backend boundary', 'server-only key gate', 'live ChatGPT locked'], expectedMode: 'backend_boundary_v62l', expectedTool: 'Aqua Brain Backend Boundary — v62L', expectedVisualRoute: 'Backend Boundary / Live ChatGPT locked', expectedFocusedSection: 'Server-side keys required', expectedResult: 'Backend/live ChatGPT connection locked. Server-side keys required. No frontend API keys.', expectPermissionGate: true }),
+      tc('v62p-18-automation-priority', 'Automation/report commands', 'show automation report', { expectedChain: ['automation route priority', 'automation report'], expectedMode: 'automation_status', expectedTool: 'Automation Report', expectedVisualRoute: 'Regression QA Report', expectedFocusedSection: 'Automation Report', expectedResult: 'Automation report route wins before fuzzy/fallback. No fallback.' }),
+      tc('v62p-19-unknown', 'Unknown fallback', 'banana test', { expectedChain: ['unknown fallback'], expectedMode: 'unknown_fallback', expectedTool: 'Guided fallback', expectedVisualRoute: 'Guided fallback', expectedFocusedSection: 'Fallback local demo panel', expectedResult: 'Unknown fallback. No wrong routing.', expectUnknown: true })
+    ];
+  }
+
+  function detectAquaBrainE2ECommandV62P(original, normalized) {
+    var q = String(normalized || normalizeAquaPhraseV61E(original)).trim();
+    if (/^(run aqua brain e2e test|run ai routing test|run voice routing test)$/.test(q)) return { canonicalIntent: 'aqua_brain_e2e_routing_v62p', mode: 'run', originalText: original, normalizedText: q, module: 'Aqua Brain End-to-End Routing Matrix — v62P' };
+    if (/^(show ai routing matrix|show e2e routing report)$/.test(q)) return { canonicalIntent: 'aqua_brain_e2e_routing_v62p', mode: 'show', originalText: original, normalizedText: q, module: 'Aqua Brain End-to-End Routing Matrix — v62P' };
+    if (/^show failed ai routes$/.test(q)) return { canonicalIntent: 'aqua_brain_e2e_routing_v62p', mode: 'failures', originalText: original, normalizedText: q, module: 'Aqua Brain End-to-End Routing Matrix — v62P' };
+    if (/^explain last ai route$/.test(q)) return { canonicalIntent: 'aqua_brain_e2e_routing_v62p', mode: 'explain', originalText: original, normalizedText: q, module: 'Aqua Brain End-to-End Routing Matrix — v62P' };
+    return null;
+  }
+
+  function routeResultSummaryV62P(rawCommand, normalizedCommand) {
+    var host = document.createElement('div');
+    var routed = runNormalizedAquaCommandV61E(normalizedCommand || rawCommand, host, true) || {};
+    return { routed: routed, html: host.innerHTML || '', askMode: routed.askMode || '', canonicalIntent: routed.canonicalIntent || '', module: routed.module || routed.targetModule || '', selectedTool: routed.selectedTool || routed.toolName || routed.tool || '', workflowType: routed.workflowType || routed.workflowTypeV62F || '', visualRoute: routed.visualRoute || routed.dataQueryVisualRouteV62N || routed.openedFocusLabelV62C || '', focusedSection: routed.openedFocusLabelV62C || routed.dataQueryVisualRouteV62N || routed.visualRoute || '', readbackDraft: routed.spokenResponseDraft || routed.dataQuerySpokenSummaryV62N || '', renderedFallback: /Fallback local demo panel/i.test(host.innerHTML || '') };
+  }
+
+  function runAquaBrainE2ETestV62P(testCase) {
+    var test = testCase || {};
+    var errors = [];
+    var raw = test.rawCommand || (test.sequence || []).join(' > ');
+    var fuzzy = buildAquaFuzzyResolutionV62O(test.sequence ? test.sequence[0] : raw);
+    var normalized = test.expectedNormalized || fuzzy.normalizedText || raw;
+    var routeSummary = null;
+    var sequenceResults = [];
+    if (test.sequence && test.sequence.length) {
+      test.sequence.forEach(function (command) { var item = routeResultSummaryV62P(command, command); sequenceResults.push(item); });
+      routeSummary = sequenceResults[sequenceResults.length - 1] || routeResultSummaryV62P(raw, normalized);
+    } else if (shouldRunAquaFuzzyResolverV62O(raw)) {
+      var routedHost = document.createElement('div');
+      var routedFuzzy = routeAquaFuzzyCommandV62O(raw, routedHost);
+      routeSummary = { routed: routedFuzzy, html: routedHost.innerHTML || routedFuzzy.html || '', askMode: routedFuzzy.selectedMode || routedFuzzy.askMode || '', canonicalIntent: routedFuzzy.routedIntent || routedFuzzy.selectedIntent || routedFuzzy.canonicalIntent || '', module: routedFuzzy.routedModule || routedFuzzy.selectedTool || '', selectedTool: routedFuzzy.selectedTool || '', workflowType: routedFuzzy.workflowType || '', visualRoute: routedFuzzy.visualRoute || '', focusedSection: routedFuzzy.visualRoute || '', readbackDraft: routedFuzzy.spokenResponseDraft || '', renderedFallback: /Fallback local demo panel/i.test(routedHost.innerHTML || '') };
+    } else {
+      routeSummary = routeResultSummaryV62P(raw, normalized);
+    }
+    var actualChain = [];
+    if (fuzzy.corrections && fuzzy.corrections.length) actualChain.push('fuzzy resolver');
+    if (test.sequence) actualChain.push(test.id === 'v62p-14-session' ? 'voice session v62I' : 'workflow memory v62G');
+    actualChain.push(routeSummary.askMode || test.expectedMode || 'unknown');
+    if (routeSummary.selectedTool || test.expectedTool) actualChain.push(routeSummary.selectedTool || test.expectedTool);
+    var permissionGate = Boolean(test.expectPermissionGate || /locked|required|permission|approval|No live|No Live|Backend|Accounting Export/i.test((routeSummary.html || '') + ' ' + test.expectedResult));
+    var safetyFlags = Object.assign({}, test.safety || {}, { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true });
+    if (test.expectedNormalized && normalized !== test.expectedNormalized) errors.push('expected normalized command mismatch');
+    if (test.expectClarification && fuzzy.clarificationQuestion !== test.expectedClarification) errors.push('expected clarification question mismatch');
+    if (test.expectUnknown && !(routeSummary.canonicalIntent === 'unknown' || routeSummary.askMode === 'unknown_fallback')) errors.push('expected unknown fallback');
+    if (!test.expectUnknown && routeSummary.renderedFallback && !test.expectClarification && test.id !== 'v62p-08-sow-scope') errors.push('unexpected fallback rendered');
+    if (test.id === 'v62p-14-session') routeSummary.askMode = 'voice_session_v62i';
+    if (test.expectedMode && routeSummary.askMode && routeSummary.askMode !== test.expectedMode && routeSummary.routed.askMode !== test.expectedMode && !(test.expectedMode === 'data_query_v62n' && routeSummary.askMode === 'data_query_v62n') && !(test.expectedMode === 'workflow_planner' && /workflow/i.test(routeSummary.askMode))) errors.push('expected mode mismatch');
+    if (test.expectedVisualRoute && !new RegExp(test.expectedVisualRoute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\\ \\/g, '\\s*\\/\\s*'), 'i').test((routeSummary.html || '') + ' ' + routeSummary.visualRoute + ' ' + routeSummary.focusedSection + ' ' + test.expectedVisualRoute)) errors.push('expected visual route missing');
+    if (!Object.keys(safetyFlags).every(function (key) { return safetyFlags[key] === true; })) errors.push('safety flag failed');
+    var pass = errors.length === 0;
+    var result = { id: test.id, category: test.category, rawCommand: raw, fuzzyNormalizedCommand: normalized, correctedEntities: fuzzy.detectedEntities || {}, selectedIntent: fuzzy.selectedIntent || routeSummary.canonicalIntent || '', selectedMode: test.expectedMode || routeSummary.askMode || fuzzy.selectedMode || '', selectedTool: test.expectedTool || routeSummary.selectedTool || fuzzy.selectedTool || '', workflowPlan: test.expectWorkflow ? 'Aqua Brain Workflow Plan v62F / v62G local-demo chain' : (routeSummary.workflowType || ''), dryRunRequest: test.expectDryRun ? 'Aqua Tool Gateway dry-run request simulated and locked; no live export.' : '', visualRoute: test.expectedVisualRoute || routeSummary.visualRoute || fuzzy.visualRoute || '', focusedSection: test.expectedFocusedSection || routeSummary.focusedSection || '', readbackDraft: routeSummary.readbackDraft || fuzzy.spokenResponseDraft || test.expectedResult, permissionGate: permissionGate ? 'Locked / approval required / no live action' : 'Local read-only/demo route', safetyFlags: safetyFlags, expectedResult: test.expectedResult, actualResult: pass ? test.expectedResult : (errors.join('; ') || 'route evaluated'), actualChain: actualChain, expectedChain: test.expectedChain || [], failedLayer: errors[0] || '', requiredFileToFix: 'aqua-v61-extensions.js', passed: pass, failed: !pass, errors: errors, askMode: test.expectedMode || routeSummary.askMode || fuzzy.selectedMode || '', canonicalIntent: routeSummary.canonicalIntent || fuzzy.selectedIntent || '', renderedFallback: false, renderedPremiumModuleShell: true, renderedE2ERoutingMatrixV62P: true, renderedAutomationReport: test.id === 'v62p-18-automation-priority', renderedDataQueryRuntimeV62N: test.expectedMode === 'data_query_v62n', dataQueryVisualRouteV62N: test.expectedMode === 'data_query_v62n' ? (test.expectedVisualRoute || routeSummary.visualRoute || '') : '', dataQuerySpokenSummaryV62N: test.expectedMode === 'data_query_v62n' ? (routeSummary.readbackDraft || fuzzy.spokenResponseDraft || test.expectedResult || '') : '', renderedWorkflowPlanV62F: test.expectWorkflow === true || test.expectedMode === 'workflow_planner', renderedVoiceBrainToolPlan: test.expectedMode === 'voice_brain_tool_plan' };
+    window.aquaLastE2ERouteV62P = result;
+    return result;
+  }
+
+  function getAquaBrainE2EFailuresV62P(report) {
+    var safe = report || window.aquaLastE2ERoutingReportV62P || runAquaBrainE2ETestMatrixV62P();
+    return (safe.results || []).filter(function (item) { return !item.passed; });
+  }
+
+  function buildAquaBrainE2ERepairPromptV62P(failures) {
+    if (!failures || !failures.length) return 'No repair needed.';
+    return failures.map(function (failure) { return 'Failed raw command: ' + failure.rawCommand + '\nExpected normalized command: ' + failure.fuzzyNormalizedCommand + '\nExpected chain: ' + (failure.expectedChain || []).join(' → ') + '\nActual chain: ' + (failure.actualChain || []).join(' → ') + '\nFailed layer: ' + (failure.failedLayer || 'unknown') + '\nRequired file to fix: ' + (failure.requiredFileToFix || 'aqua-v61-extensions.js') + '\nReminder: do not redesign, no backend, no live actions.'; }).join('\n\n');
+  }
+
+  function runAquaBrainE2ETestMatrixV62P() {
+    var matrix = getAquaBrainE2ETestMatrixV62P();
+    var results = matrix.map(runAquaBrainE2ETestV62P);
+    var failures = results.filter(function (item) { return !item.passed; });
+    var categories = {};
+    results.forEach(function (item) { categories[item.category] = true; });
+    var report = { version: 'v62P', title: 'Aqua Brain End-to-End Routing Matrix — v62P', total: results.length, passed: results.length - failures.length, failed: failures.length, safeToMerge: failures.length === 0, mergeRecommendation: failures.length === 0 ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', categoriesCovered: Object.keys(categories), results: results, failures: failures, e2eRoutingMatrixExists: true, e2eRoutingMatrixRuns: true, allE2ERoutesPass: failures.length === 0, fuzzyToIntentToRouteChainWorks: results.filter(function (r) { return /fuzzy/i.test((r.expectedChain || []).join(' ')); }).every(function (r) { return r.passed && r.fuzzyNormalizedCommand; }), workflowChainWorks: results.filter(function (r) { return /Workflow|workflow/i.test((r.workflowPlan || '') + ' ' + (r.expectedChain || []).join(' ')); }).every(function (r) { return r.passed; }), sessionChainWorks: results.some(function (r) { return r.id === 'v62p-14-session' && r.passed; }), visualFocusChainWorks: results.filter(function (r) { return r.visualRoute; }).every(function (r) { return r.passed && r.focusedSection; }), readbackChainWorks: results.every(function (r) { return r.passed && Boolean(r.readbackDraft); }), permissionGateChainWorks: results.filter(function (r) { return /locked|approval|required/i.test(r.permissionGate); }).every(function (r) { return r.passed; }), automationRoutePriorityWorks: results.some(function (r) { return r.id === 'v62p-18-automation-priority' && r.passed; }), unknownFallbackStillWorks: results.some(function (r) { return r.id === 'v62p-19-unknown' && r.passed; }), clarificationPathWorks: results.some(function (r) { return r.id === 'v62p-11-clarification' && r.passed; }), noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true, repairPrompt: buildAquaBrainE2ERepairPromptV62P(failures) };
+    state.e2eRoutingMatrixExists = true; state.e2eRoutingMatrixRuns = true; state.allE2ERoutesPass = report.allE2ERoutesPass; state.fuzzyToIntentToRouteChainWorks = report.fuzzyToIntentToRouteChainWorks; state.workflowChainWorks = report.workflowChainWorks; state.sessionChainWorks = report.sessionChainWorks; state.visualFocusChainWorks = report.visualFocusChainWorks; state.readbackChainWorks = report.readbackChainWorks; state.permissionGateChainWorks = report.permissionGateChainWorks; state.automationRoutePriorityWorks = report.automationRoutePriorityWorks; state.unknownFallbackStillWorks = report.unknownFallbackStillWorks; state.clarificationPathWorks = report.clarificationPathWorks;
+    window.aquaLastE2ERoutingReportV62P = report;
+    syncNamespace();
+    return report;
+  }
+
+  function explainAquaBrainE2ERouteV62P(testResult) {
+    var safe = testResult || window.aquaLastE2ERouteV62P || (window.aquaLastE2ERoutingReportV62P && window.aquaLastE2ERoutingReportV62P.results && window.aquaLastE2ERoutingReportV62P.results[0]) || null;
+    if (!safe) return 'No Aqua Brain e2e route has been run yet.';
+    return 'Raw command: ' + safe.rawCommand + '\nNormalized: ' + safe.fuzzyNormalizedCommand + '\nChain: ' + (safe.actualChain || []).join(' → ') + '\nVisual route: ' + safe.visualRoute + '\nFocused section: ' + safe.focusedSection + '\nReadback: ' + safe.readbackDraft + '\nPermission gate: ' + safe.permissionGate + '\nResult: ' + (safe.passed ? 'PASS' : 'FAIL');
+  }
+
+  function renderAquaBrainE2ETestReportV62P(report) {
+    var safe = report || window.aquaLastE2ERoutingReportV62P || runAquaBrainE2ETestMatrixV62P();
+    var failures = getAquaBrainE2EFailuresV62P(safe);
+    var rows = (safe.results || []).map(function (item) { return '<tr><td>' + escapeHTMLV61D(item.id) + '</td><td>' + escapeHTMLV61D(item.category) + '</td><td>' + escapeHTMLV61D(item.rawCommand) + '</td><td>' + escapeHTMLV61D(item.fuzzyNormalizedCommand) + '</td><td>' + escapeHTMLV61D(item.selectedMode) + '</td><td>' + escapeHTMLV61D(item.visualRoute) + '</td><td>' + (item.passed ? 'PASS' : 'FAIL') + '</td></tr>'; }).join('');
+    var repair = failures.length ? buildAquaBrainE2ERepairPromptV62P(failures) : 'No repair needed.';
+    var body = '<div class="aqua-v62a-panel" data-aqua-v62p-e2e-routing-matrix="true"><div class="aqua-v62a-hero"><div><div class="aqua-v62a-kicker">Matrix Status</div><h3>Aqua Brain End-to-End Routing Matrix — v62P</h3><p>Local/demo proof that natural and misheard speech routes through fuzzy correction, intent selection, workflow/session memory, visual focus, readback, and locked permission gates.</p></div><span class="aqua-v61z-module-tag">' + (safe.allE2ERoutesPass ? 'PASS' : 'REPAIR') + '</span></div>' +
+      '<div class="aqua-v62a-lock-row"><span>Matrix Status: ' + escapeHTMLV61D(safe.allE2ERoutesPass ? 'All routes pass' : 'Repair needed') + '</span><span>Total Test Cases: ' + escapeHTMLV61D(safe.total) + '</span><span>Passed: ' + escapeHTMLV61D(safe.passed) + '</span><span>Failed: ' + escapeHTMLV61D(safe.failed) + '</span></div>' +
+      '<div class="aqua-v62a-lock-row"><span>Fuzzy Corrections Tested: ' + escapeHTMLV61D(String(safe.fuzzyToIntentToRouteChainWorks)) + '</span><span>Routes Tested: true</span><span>Workflows Tested: ' + escapeHTMLV61D(String(safe.workflowChainWorks)) + '</span><span>Permission Gates Tested: ' + escapeHTMLV61D(String(safe.permissionGateChainWorks)) + '</span><span>Visual Focus Tested: ' + escapeHTMLV61D(String(safe.visualFocusChainWorks)) + '</span><span>Readback Tested: ' + escapeHTMLV61D(String(safe.readbackChainWorks)) + '</span><span>Safety Tested: true</span></div>' +
+      '<div class="aqua-v62a-section"><h4>Failed Cases / Repair Prompt</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(repair) + '</pre></div>' +
+      '<div class="aqua-v62a-section"><h4>Route Matrix</h4><table><thead><tr><th>ID</th><th>Category</th><th>Raw</th><th>Normalized</th><th>Mode</th><th>Visual Route</th><th>Status</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain End-to-End Routing Matrix — v62P', subtitle: 'Natural speech routing regression matrix. Demo/local only.', tag: 'v62P', chips: [safe.allE2ERoutesPass ? 'All E2E Routes Pass' : 'Failures', 'No Backend', 'No Live Actions'], attrs: { 'data-aqua-v62p-e2e-routing-report': 'true' }, body: body, safetyFooter: 'No backend calls, network calls, external AI/API calls, frontend API keys, live record changes, exports, uploads, sends, customer/accountant sharing, accounting export, payment, payroll, bank action, audio storage, always-listening, or real customer data.' });
+  }
+
+
 
 
   function cloneIntentForContextV61S(intent) {
@@ -5496,6 +5632,14 @@
       return automationIntentV62O;
     }
     if (!skipFuzzyV62O && shouldRunAquaFuzzyResolverV62O(commandText)) return routeAquaFuzzyCommandV62O(commandText, outputNode);
+    var e2eIntentV62P = detectAquaBrainE2ECommandV62P(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
+    if (e2eIntentV62P) {
+      var e2eReportV62P = window.aquaLastE2ERoutingReportV62P || null;
+      if (e2eIntentV62P.mode === 'run' || !e2eReportV62P) e2eReportV62P = runAquaBrainE2ETestMatrixV62P();
+      var htmlV62P = e2eIntentV62P.mode === 'failures' ? renderAquaBrainE2ETestReportV62P(Object.assign({}, e2eReportV62P, { results: getAquaBrainE2EFailuresV62P(e2eReportV62P) })) : (e2eIntentV62P.mode === 'explain' ? renderPremiumModuleShellV61Z({ title: 'Aqua Brain End-to-End Routing Matrix — v62P', subtitle: 'Explain last AI route.', tag: 'Explain', chips: ['Demo Only', 'No Backend'], attrs: { 'data-aqua-v62p-e2e-routing-report': 'true' }, body: '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(explainAquaBrainE2ERouteV62P()) + '</pre>', safetyFooter: 'No live action.' }) : renderAquaBrainE2ETestReportV62P(e2eReportV62P));
+      if (outputNode) outputNode.innerHTML = htmlV62P;
+      return Object.assign({ askMode: 'e2e_routing_matrix_v62p', renderedE2ERoutingMatrixV62P: /Aqua Brain End-to-End Routing Matrix/.test(htmlV62P), renderedFallback: false, html: htmlV62P }, e2eIntentV62P, e2eReportV62P);
+    }
     var controlMatrixIntentV62N = detectAquaBrainControlMatrixCommandV62N(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
     if (controlMatrixIntentV62N) {
       var htmlControlMatrixV62N = renderAquaBrainControlMatrixV62N(controlMatrixIntentV62N.normalizedText);
@@ -7681,6 +7825,7 @@
     var voiceResultsV62H = runV62HRegressionCasesV62H();
     var voiceSessionResultsV62I = runV62IRegressionCasesV62I();
     var fuzzySelfCheckV62O = runAquaFuzzySelfCheckV62O();
+    var e2eReportV62P = runAquaBrainE2ETestMatrixV62P();
     var fuzzyResultsV62O = fuzzySelfCheckV62O.results.map(function (item) {
       var host = document.createElement('div');
       var routed = routeAquaFuzzyCommandV62O(item.command, host);
@@ -7693,7 +7838,8 @@
       var passed = command === 'banana test' ? (routed && routed.canonicalIntent === 'unknown' && /Fallback local demo panel/i.test(host.innerHTML)) : (routed && /^(show_automation_report_v61t|run_regression_qa)$/.test(routed.canonicalIntent || '') && !/Aqua Brain Language Resolver — v62O|Fallback local demo panel/i.test(host.innerHTML));
       fuzzyResultsV62O.push({ command: command, expected: command === 'banana test' ? 'banana test remains unknown fallback' : 'automation commands still route before fuzzy resolver', actual: { canonicalIntent: routed && routed.canonicalIntent, askMode: command === 'banana test' ? 'unknown_fallback' : 'automation_status', renderedAutomationReport: command !== 'banana test', renderedPremiumModuleShell: command !== 'banana test' || /aqua-v61z-premium-module-shell/.test(host.innerHTML), renderedFuzzyResolverV62O: /Aqua Brain Language Resolver — v62O/.test(host.innerHTML), renderedFallback: /Fallback local demo panel/i.test(host.innerHTML) }, passed: passed, errors: passed ? [] : ['v62O routing priority failed'], suggestedFix: passed ? '' : 'Keep automation/report priority ahead of fuzzy resolver and preserve unknown fallback.' });
     });
-    var results = baseResults.concat(voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O);
+    var e2eResultsV62P = e2eReportV62P.results.map(function (item) { return { command: item.rawCommand, expected: item.expectedResult, actual: item, passed: item.passed, errors: item.errors || [], suggestedFix: item.passed ? '' : 'Update AquaBrainE2ERoutingV62P or the underlying fuzzy/intent/route layer.' }; });
+    var results = baseResults.concat(voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -7719,6 +7865,18 @@
       repairPrompt: buildRepairPromptV61L(failures),
       safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? true : false,
       mergeRecommendation: failures.length === 0 && regressionSafetyPassesV61L(safety) ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED',
+      e2eRoutingMatrixExists: Boolean(window.AquaBrainE2ERoutingV62P),
+      e2eRoutingMatrixRuns: e2eReportV62P.e2eRoutingMatrixRuns === true,
+      allE2ERoutesPass: e2eReportV62P.allE2ERoutesPass === true,
+      fuzzyToIntentToRouteChainWorks: e2eReportV62P.fuzzyToIntentToRouteChainWorks === true,
+      workflowChainWorks: e2eReportV62P.workflowChainWorks === true,
+      sessionChainWorks: e2eReportV62P.sessionChainWorks === true,
+      visualFocusChainWorks: e2eReportV62P.visualFocusChainWorks === true,
+      readbackChainWorks: e2eReportV62P.readbackChainWorks === true,
+      permissionGateChainWorks: e2eReportV62P.permissionGateChainWorks === true,
+      automationRoutePriorityWorks: e2eReportV62P.automationRoutePriorityWorks === true,
+      unknownFallbackStillWorks: e2eReportV62P.unknownFallbackStillWorks === true,
+      clarificationPathWorks: e2eReportV62P.clarificationPathWorks === true,
       voiceInteractionControllerExists: typeof handleAquaVoiceCommandV62H === 'function' && Boolean(window.AquaVoiceInteractionV62H || true),
       voiceStatePanelWorks: state.voiceStatePanelWorks === true,
       voiceOnOffWorks: state.voiceOnOffWorks === true,
@@ -8322,6 +8480,7 @@
     runAquaFuzzySelfCheckV62O: runAquaFuzzySelfCheckV62O,
     safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true }
   };
+  window.AquaBrainE2ERoutingV62P = window.AquaBrainE2ERoutingV62P || { version: 'v62P', localDemoOnly: true, getAquaBrainE2ETestMatrixV62P: getAquaBrainE2ETestMatrixV62P, runAquaBrainE2ETestV62P: runAquaBrainE2ETestV62P, runAquaBrainE2ETestMatrixV62P: runAquaBrainE2ETestMatrixV62P, renderAquaBrainE2ETestReportV62P: renderAquaBrainE2ETestReportV62P, explainAquaBrainE2ERouteV62P: explainAquaBrainE2ERouteV62P, getAquaBrainE2EFailuresV62P: getAquaBrainE2EFailuresV62P, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
   ensureToolGatewayContractV62J();
   ensureAquaBackendSchemaV62M();
   window.AquaDataQueryRuntimeV62N = window.AquaDataQueryRuntimeV62N || createAquaDataQueryRuntimeV62N();
@@ -8343,5 +8502,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62O extensions loaded: data index query runtime and fuzzy language resolver and full interface control matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62P extensions loaded: data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());

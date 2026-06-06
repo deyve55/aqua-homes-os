@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62O';
+const VERSION = 'v62P';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -276,6 +276,8 @@ function checkStaticFiles() {
   addCheck('v61U noApiKeysInFrontend report flag exists', /noApiKeysInFrontend/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
   addCheck('v62O fuzzy language resolver architecture exists', /window\.AquaFuzzyLanguageV62O/.test(extension) && /function\s+buildAquaFuzzyResolutionV62O/.test(extension) && /Aqua Brain Language Resolver — v62O/.test(extension), { layer: 'fuzzy-language-v62o', fileToFix: EXTENSION });
   addCheck('v62O correction and confidence flags exist', /fuzzyLanguageResolverExists/.test(extension) && /correctionMapWorks/.test(extension) && /confidenceScoringWorks/.test(extension), { layer: 'fuzzy-language-v62o', fileToFix: EXTENSION });
+  addCheck('v62P e2e routing matrix architecture exists', /window\.AquaBrainE2ERoutingV62P/.test(extension) && /function\s+getAquaBrainE2ETestMatrixV62P/.test(extension) && /Aqua Brain End-to-End Routing Matrix/.test(extension), { layer: 'e2e-routing-matrix-v62p', fileToFix: EXTENSION });
+  addCheck('v62P e2e routing matrix report flags exist', /e2eRoutingMatrixExists/.test(extension) && /allE2ERoutesPass/.test(extension) && /fuzzyToIntentToRouteChainWorks/.test(extension), { layer: 'e2e-routing-matrix-v62p', fileToFix: EXTENSION });
   addCheck('v61Z AquaVoiceBrainV61Z architecture exists', /window\.AquaVoiceBrainV61Z|function\s+createAquaVoiceBrainV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain context key exists', /aquaVoiceBrainContextV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain tool registry exists', /function\s+voiceBrainToolRegistryV61Z/.test(extension) && /openProjectReport/.test(extension) && /findProjectReceipts/.test(extension) && /prepareAccountantExportDemo/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
@@ -356,10 +358,11 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62O', extensionReport.version === 'v62O', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62P', extensionReport.version === 'v62P', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['e2eRoutingMatrixExists','e2eRoutingMatrixRuns','allE2ERoutesPass','fuzzyToIntentToRouteChainWorks','workflowChainWorks','sessionChainWorks','visualFocusChainWorks','readbackChainWorks','permissionGateChainWorks','automationRoutePriorityWorks','unknownFallbackStillWorks','clarificationPathWorks','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62P ${flag}`, extensionReport[flag] === true, { layer: 'e2e-routing-matrix-v62p', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('v62L backendBoundaryExists is true', extensionReport.backendBoundaryExists === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendBoundaryExists, fileToFix: EXTENSION });
     addCheck('v62L serverOnlyKeyPolicyWorks is true', extensionReport.serverOnlyKeyPolicyWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.serverOnlyKeyPolicyWorks, fileToFix: EXTENSION });
     addCheck('v62L backendEndpointMapWorks is true', extensionReport.backendEndpointMapWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendEndpointMapWorks, fileToFix: EXTENSION });
@@ -882,6 +885,18 @@ function markdown(report) {
     `- approvalAliasWorks: ${report.approvalAliasWorks === true}\n` +
     `- clarificationForAmbiguousCommandWorks: ${report.clarificationForAmbiguousCommandWorks === true}\n` +
     `- automationCommandsStillRouteFirst: ${report.automationCommandsStillRouteFirst === true}\n` +
+    `- e2eRoutingMatrixExists: ${report.e2eRoutingMatrixExists === true}\n` +
+    `- e2eRoutingMatrixRuns: ${report.e2eRoutingMatrixRuns === true}\n` +
+    `- allE2ERoutesPass: ${report.allE2ERoutesPass === true}\n` +
+    `- fuzzyToIntentToRouteChainWorks: ${report.fuzzyToIntentToRouteChainWorks === true}\n` +
+    `- workflowChainWorks: ${report.workflowChainWorks === true}\n` +
+    `- sessionChainWorks: ${report.sessionChainWorks === true}\n` +
+    `- visualFocusChainWorks: ${report.visualFocusChainWorks === true}\n` +
+    `- readbackChainWorks: ${report.readbackChainWorks === true}\n` +
+    `- permissionGateChainWorks: ${report.permissionGateChainWorks === true}\n` +
+    `- automationRoutePriorityWorks: ${report.automationRoutePriorityWorks === true}\n` +
+    `- unknownFallbackStillWorks: ${report.unknownFallbackStillWorks === true}\n` +
+    `- clarificationPathWorks: ${report.clarificationPathWorks === true}\n` +
     `- backendSchemaExists: ${report.backendSchemaExists === true}
 ` +
     `- entityContractsExist: ${report.entityContractsExist === true}
@@ -1305,6 +1320,18 @@ async function main() {
     approvalIndexWorks: extensionReport ? extensionReport.approvalIndexWorks === true : false,
     exportPacketIndexWorks: extensionReport ? extensionReport.exportPacketIndexWorks === true : false,
     noRealCustomerData: extensionReport ? extensionReport.noRealCustomerData === true : false,
+    e2eRoutingMatrixExists: extensionReport ? extensionReport.e2eRoutingMatrixExists === true : false,
+    e2eRoutingMatrixRuns: extensionReport ? extensionReport.e2eRoutingMatrixRuns === true : false,
+    allE2ERoutesPass: extensionReport ? extensionReport.allE2ERoutesPass === true : false,
+    fuzzyToIntentToRouteChainWorks: extensionReport ? extensionReport.fuzzyToIntentToRouteChainWorks === true : false,
+    workflowChainWorks: extensionReport ? extensionReport.workflowChainWorks === true : false,
+    sessionChainWorks: extensionReport ? extensionReport.sessionChainWorks === true : false,
+    visualFocusChainWorks: extensionReport ? extensionReport.visualFocusChainWorks === true : false,
+    readbackChainWorks: extensionReport ? extensionReport.readbackChainWorks === true : false,
+    permissionGateChainWorks: extensionReport ? extensionReport.permissionGateChainWorks === true : false,
+    automationRoutePriorityWorks: extensionReport ? extensionReport.automationRoutePriorityWorks === true : false,
+    unknownFallbackStillWorks: extensionReport ? extensionReport.unknownFallbackStillWorks === true : false,
+    clarificationPathWorks: extensionReport ? extensionReport.clarificationPathWorks === true : false,
     backendBoundaryExists: extensionReport ? extensionReport.backendBoundaryExists === true : false,
     serverOnlyKeyPolicyWorks: extensionReport ? extensionReport.serverOnlyKeyPolicyWorks === true : false,
     backendEndpointMapWorks: extensionReport ? extensionReport.backendEndpointMapWorks === true : false,
