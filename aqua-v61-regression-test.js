@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62N';
+const VERSION = 'v62O';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -274,6 +274,8 @@ function checkStaticFiles() {
   addCheck('v61U Ask AI mode classifier exists', /function\s+classifyAquaAskModeV61U/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
   addCheck('v61U General Ask locked placeholder exists', /General Ask \/ Jobsite Calculator — Locked Foundation/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
   addCheck('v61U noApiKeysInFrontend report flag exists', /noApiKeysInFrontend/.test(extension), { layer: 'ask-mode-router-v61u', fileToFix: EXTENSION });
+  addCheck('v62O fuzzy language resolver architecture exists', /window\.AquaFuzzyLanguageV62O/.test(extension) && /function\s+buildAquaFuzzyResolutionV62O/.test(extension) && /Aqua Brain Language Resolver — v62O/.test(extension), { layer: 'fuzzy-language-v62o', fileToFix: EXTENSION });
+  addCheck('v62O correction and confidence flags exist', /fuzzyLanguageResolverExists/.test(extension) && /correctionMapWorks/.test(extension) && /confidenceScoringWorks/.test(extension), { layer: 'fuzzy-language-v62o', fileToFix: EXTENSION });
   addCheck('v61Z AquaVoiceBrainV61Z architecture exists', /window\.AquaVoiceBrainV61Z|function\s+createAquaVoiceBrainV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain context key exists', /aquaVoiceBrainContextV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain tool registry exists', /function\s+voiceBrainToolRegistryV61Z/.test(extension) && /openProjectReport/.test(extension) && /findProjectReceipts/.test(extension) && /prepareAccountantExportDemo/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
@@ -354,9 +356,10 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62N', extensionReport.version === 'v62N', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62O', extensionReport.version === 'v62O', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('v62L backendBoundaryExists is true', extensionReport.backendBoundaryExists === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendBoundaryExists, fileToFix: EXTENSION });
     addCheck('v62L serverOnlyKeyPolicyWorks is true', extensionReport.serverOnlyKeyPolicyWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.serverOnlyKeyPolicyWorks, fileToFix: EXTENSION });
     addCheck('v62L backendEndpointMapWorks is true', extensionReport.backendEndpointMapWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendEndpointMapWorks, fileToFix: EXTENSION });
@@ -864,6 +867,21 @@ function markdown(report) {
     `- hendersonExportPacketQueryWorks: ${report.hendersonExportPacketQueryWorks === true}\n` +
     `- visualRoutesGeneratedForQueries: ${report.visualRoutesGeneratedForQueries === true}\n` +
     `- spokenSummariesGeneratedForQueries: ${report.spokenSummariesGeneratedForQueries === true}\n` +
+    `- fuzzyLanguageResolverExists: ${report.fuzzyLanguageResolverExists === true}\n` +
+    `- correctionMapWorks: ${report.correctionMapWorks === true}\n` +
+    `- confidenceScoringWorks: ${report.confidenceScoringWorks === true}\n` +
+    `- receiptMishearCorrectionWorks: ${report.receiptMishearCorrectionWorks === true}\n` +
+    `- draftQueueMishearCorrectionWorks: ${report.draftQueueMishearCorrectionWorks === true}\n` +
+    `- sonotubeMishearCorrectionWorks: ${report.sonotubeMishearCorrectionWorks === true}\n` +
+    `- hendersonProjectMishearCorrectionWorks: ${report.hendersonProjectMishearCorrectionWorks === true}\n` +
+    `- homeDepotMishearCorrectionWorks: ${report.homeDepotMishearCorrectionWorks === true}\n` +
+    `- plumbingMishearCorrectionWorks: ${report.plumbingMishearCorrectionWorks === true}\n` +
+    `- accountantExportMishearCorrectionWorks: ${report.accountantExportMishearCorrectionWorks === true}\n` +
+    `- sowScopeMishearCorrectionWorks: ${report.sowScopeMishearCorrectionWorks === true}\n` +
+    `- payablesAliasWorks: ${report.payablesAliasWorks === true}\n` +
+    `- approvalAliasWorks: ${report.approvalAliasWorks === true}\n` +
+    `- clarificationForAmbiguousCommandWorks: ${report.clarificationForAmbiguousCommandWorks === true}\n` +
+    `- automationCommandsStillRouteFirst: ${report.automationCommandsStillRouteFirst === true}\n` +
     `- backendSchemaExists: ${report.backendSchemaExists === true}
 ` +
     `- entityContractsExist: ${report.entityContractsExist === true}
@@ -1259,6 +1277,21 @@ async function main() {
     hendersonExportPacketQueryWorks: extensionReport ? extensionReport.hendersonExportPacketQueryWorks === true : false,
     visualRoutesGeneratedForQueries: extensionReport ? extensionReport.visualRoutesGeneratedForQueries === true : false,
     spokenSummariesGeneratedForQueries: extensionReport ? extensionReport.spokenSummariesGeneratedForQueries === true : false,
+    fuzzyLanguageResolverExists: extensionReport ? extensionReport.fuzzyLanguageResolverExists === true : false,
+    correctionMapWorks: extensionReport ? extensionReport.correctionMapWorks === true : false,
+    confidenceScoringWorks: extensionReport ? extensionReport.confidenceScoringWorks === true : false,
+    receiptMishearCorrectionWorks: extensionReport ? extensionReport.receiptMishearCorrectionWorks === true : false,
+    draftQueueMishearCorrectionWorks: extensionReport ? extensionReport.draftQueueMishearCorrectionWorks === true : false,
+    sonotubeMishearCorrectionWorks: extensionReport ? extensionReport.sonotubeMishearCorrectionWorks === true : false,
+    hendersonProjectMishearCorrectionWorks: extensionReport ? extensionReport.hendersonProjectMishearCorrectionWorks === true : false,
+    homeDepotMishearCorrectionWorks: extensionReport ? extensionReport.homeDepotMishearCorrectionWorks === true : false,
+    plumbingMishearCorrectionWorks: extensionReport ? extensionReport.plumbingMishearCorrectionWorks === true : false,
+    accountantExportMishearCorrectionWorks: extensionReport ? extensionReport.accountantExportMishearCorrectionWorks === true : false,
+    sowScopeMishearCorrectionWorks: extensionReport ? extensionReport.sowScopeMishearCorrectionWorks === true : false,
+    payablesAliasWorks: extensionReport ? extensionReport.payablesAliasWorks === true : false,
+    approvalAliasWorks: extensionReport ? extensionReport.approvalAliasWorks === true : false,
+    clarificationForAmbiguousCommandWorks: extensionReport ? extensionReport.clarificationForAmbiguousCommandWorks === true : false,
+    automationCommandsStillRouteFirst: extensionReport ? extensionReport.automationCommandsStillRouteFirst === true : false,
     backendSchemaExists: extensionReport ? extensionReport.backendSchemaExists === true : false,
     entityContractsExist: extensionReport ? extensionReport.entityContractsExist === true : false,
     relationshipMapWorks: extensionReport ? extensionReport.relationshipMapWorks === true : false,
