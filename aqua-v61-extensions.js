@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62J Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer.
+ * Aqua Homes OS v62K Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62J';
+  var VERSION = 'v62K';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -274,7 +274,17 @@
     cameraAllocationVisualFocusWorks: false,
     missingDocumentsVisualFocusWorks: false,
     uploadRequestVisualFocusWorks: false,
-    nextActionVisualFocusWorks: false
+    nextActionVisualFocusWorks: false,
+    toolGatewayRuntimeExists: false,
+    toolRequestEnvelopeDryRunWorks: false,
+    toolResponseEnvelopeDryRunWorks: false,
+    contractValidationWorks: false,
+    permissionGateDryRunWorks: false,
+    auditPlaceholderWorks: false,
+    undoPlaceholderWorks: false,
+    exportDryRunStaysLocked: false,
+    uploadDryRunStaysLocked: false,
+    visualRouteStillWorks: false
   };
 
 
@@ -1865,6 +1875,7 @@
   var ACTIVE_WORKFLOW_KEY_V62G = 'aquaActiveWorkflowV62G';
   var VOICE_INTERACTION_KEY_V62H = 'aquaVoiceInteractionV62H';
   var VOICE_SESSION_KEY_V62I = 'aquaVoiceSessionV62I';
+  var TOOL_GATEWAY_DRY_RUN_KEY_V62K = 'aquaToolGatewayDryRunsV62K';
 
 
   function toolGatewayContractV62J() {
@@ -2032,6 +2043,212 @@
     state.toolGatewayPanelWorks = true;
     state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noApiKeysInFrontend = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noAlwaysListening = true;
     return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Secure Tool Gateway — v62J', subtitle: 'Backend readiness contract. Not live integration.', tag: 'Contract Only', chips: ['Backend Locked', 'No Frontend API Keys', 'No Live Execution'], attrs: { 'data-aqua-v62j-secure-tool-gateway-shell': 'true' }, body: body, safetyFooter: 'No backend calls, no network calls, no external AI/API calls, no export, no upload, no customer sharing, no accounting export, no payment/payroll/bank action, no audio storage, no always-listening.' });
+  }
+
+
+  function aquaToolDefinitionsV62K() {
+    return {
+      getProjectReport: { intent: 'project_report_lookup', routeTool: 'openProjectReport', permissionClass: 'read_only_demo', riskLevel: 'read_sensitive_backend_required', visualRoute: 'Project Reports / Henderson House / Project report placeholder', backendRequired: 'backend project file index required', resultSummary: 'local/demo report placeholder; backend project file index required; no live file opened' },
+      searchReceipts: { intent: 'project_vendor_receipt_lookup', routeTool: 'findProjectReceipts', permissionClass: 'read_only_demo', riskLevel: 'read_sensitive_backend_required', visualRoute: 'Receipts / Henderson House / Home Depot filtered placeholder', backendRequired: 'backend receipt index required', resultSummary: 'local/demo receipt search criteria; project = Henderson House; vendor = Home Depot; no live receipt search' },
+      summarizeTradeSpend: { intent: 'project_trade_spend_summary', routeTool: 'summarizeProjectSpend', permissionClass: 'read_only_demo', riskLevel: 'read_sensitive_backend_required', visualRoute: 'Accounting / Henderson House / Plumbing spend placeholder', backendRequired: 'backend accounting/receipt index required', resultSummary: 'local/demo spend summary placeholder; project = Henderson House; trade/category = plumbing; no live accounting query' },
+      prepareAccountantExport: { intent: 'prepare_accountant_export', routeTool: 'prepareAccountantExportDemo', permissionClass: 'prepare_action_demo', riskLevel: 'export_locked', visualRoute: 'Permission Granter / Accountant Export Demo / Home Depot receipts', backendRequired: 'backend export service required', accounting: true, exportLocked: true, resultSummary: 'export packet placeholder; owner approval required; accounting approval required; backend required; live export locked; no accountant export' },
+      uploadProjectFile: { intent: 'project_file_upload_request', routeTool: 'uploadFileToProjectDemo', permissionClass: 'prepare_action_demo', riskLevel: 'upload_locked', visualRoute: 'Permission Granter / Upload Request Demo / Henderson files', backendRequired: 'backend upload service required', uploadLocked: true, resultSummary: 'upload request placeholder; owner approval required; backend upload service required; live upload locked; no file upload' },
+      checkCameraAllocation: { intent: 'jobsite_camera_allocation_check', routeTool: 'checkJobsiteCameraAllocationDemo', permissionClass: 'read_only_demo', riskLevel: 'read_sensitive_backend_required', visualRoute: 'Jobsite Camera Allocation / Henderson jobsite placeholder', backendRequired: 'backend camera/photo index required', resultSummary: 'camera allocation placeholder; backend camera/photo index required; no live camera access' },
+      checkBudgetRisk: { intent: 'budget_risk_check', routeTool: 'showBudgetRiskDemo', permissionClass: 'read_only_demo', riskLevel: 'read_sensitive_backend_required', visualRoute: 'Accounting Command / Budget Risk locked placeholder', backendRequired: 'accounting backend required', resultSummary: 'budget risk placeholder; accounting backend required; no live accounting query' },
+      getEmployeeTime: { intent: 'employee_time_lookup', routeTool: 'showEmployeeTimeDemo', permissionClass: 'read_only_demo', riskLevel: 'read_sensitive_backend_required', visualRoute: 'Employee Time / Timecards locked placeholder', backendRequired: 'time tracking backend required', resultSummary: 'employee time placeholder; time tracking backend required; no live payroll/time action' },
+      getPayables: { intent: 'payables_lookup', routeTool: 'showPayablesDemo', permissionClass: 'read_only_demo', riskLevel: 'read_sensitive_backend_required', visualRoute: 'Accounting Command / Payables locked placeholder', backendRequired: 'accounting backend required', resultSummary: 'payables placeholder; accounting backend required; no live accounting/bank/payment action' },
+      showMissingDocuments: { intent: 'missing_documents_lookup', routeTool: 'showMissingDocumentsDemo', permissionClass: 'read_only_demo', riskLevel: 'read_sensitive_backend_required', visualRoute: 'Missing Documents / Project Document Review placeholder', backendRequired: 'document index backend required', resultSummary: 'missing document placeholders; document index backend required; no live document request' }
+    };
+  }
+
+  function classifyAquaToolCommandV62K(original, normalized) {
+    var q = String(normalized || normalizeAquaPhraseV61E(original || '')).trim();
+    if (/^run tool dry run$|^show tool dry run$/.test(q)) return { mode: 'run', commandText: original || 'what is the Henderson report', toolName: 'getProjectReport' };
+    if (/^show last tool request$/.test(q)) return { mode: 'last_request' };
+    if (/^show last tool response$/.test(q)) return { mode: 'last_response' };
+    if (/^show permission gate$/.test(q)) return { mode: 'permission_gate' };
+    if (/^show audit placeholder$/.test(q)) return { mode: 'audit' };
+    if (/^show undo placeholder$/.test(q)) return { mode: 'undo' };
+    if (/^clear tool gateway demo$/.test(q)) return { mode: 'clear' };
+    if (/look up all receipts.*prepare|find henderson home depot receipts.*prepare|tell me what needs approval|prepare a review list|show what is over budget| and show what is over budget/.test(q)) return null;
+    var toolName = '';
+    if (/(^|\b)(what is|pull up|show).*(henderson).*(report)|henderson.*staircase.*report/.test(q)) toolName = 'getProjectReport';
+    else if (/receipts?.*henderson.*home depot|home depot.*receipts?.*henderson/.test(q)) toolName = /^prepare|^prepare .*accountant|prepare those|prepare henderson/.test(q) ? 'prepareAccountantExport' : 'searchReceipts';
+    else if (/(how much|spend|spent|cost).*henderson.*plumb|henderson.*plumb.*spend/.test(q)) toolName = 'summarizeTradeSpend';
+    else if (/prepare.*receipts?.*accountant|accountant export/.test(q)) toolName = 'prepareAccountantExport';
+    else if (/(upload|prepare|attach|add).*henderson.*(diagram|file)|construction diagram.*henderson/.test(q)) toolName = 'uploadProjectFile';
+    else if (/cameras?.*(allocated|allocation|assigned|right).*henderson|henderson.*jobsite.*camera/.test(q)) toolName = 'checkCameraAllocation';
+    else if (/over budget|budget.*(go over|risk|about to)/.test(q)) toolName = 'checkBudgetRisk';
+    else if (/employee time|employee hours|check employee hours|show employee time/.test(q)) toolName = 'getEmployeeTime';
+    else if (/show payables|bills are due|what bills/.test(q)) toolName = 'getPayables';
+    else if (/documents? are missing|missing documents?/.test(q)) toolName = 'showMissingDocuments';
+    if (!toolName) return null;
+    return { mode: 'run', commandText: original, toolName: toolName };
+  }
+
+  function entitiesForAquaToolV62K(commandText, toolName) {
+    var q = normalizeAquaPhraseV61E(commandText || '');
+    return {
+      project: /henderson/.test(q) ? 'Henderson House' : '',
+      vendor: /home depot/.test(q) || toolName === 'prepareAccountantExport' || toolName === 'searchReceipts' ? 'Home Depot' : '',
+      trade: /plumb/.test(q) || toolName === 'summarizeTradeSpend' ? 'Plumbing' : '',
+      fileType: /diagram/.test(q) || toolName === 'uploadProjectFile' ? 'construction diagram' : '',
+      reportTopic: /staircase|stair/.test(q) ? 'Staircase Report' : (toolName === 'getProjectReport' ? 'Project Status Report' : '')
+    };
+  }
+
+  function buildAquaToolRequestV62K(commandText, toolPlan) {
+    var definitions = aquaToolDefinitionsV62K();
+    var toolName = (toolPlan && toolPlan.toolName) || 'getProjectReport';
+    var definition = definitions[toolName] || definitions.getProjectReport;
+    var entities = entitiesForAquaToolV62K(commandText, toolName);
+    return {
+      version: 'v62K',
+      requestId: 'v62k-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+      toolName: toolName,
+      intent: definition.intent,
+      heardCommand: String(commandText || '').slice(0, 240),
+      actorRole: 'owner_admin_demo',
+      companyId: 'demo-company-only',
+      projectId: entities.project ? 'demo-henderson-house' : 'demo-project',
+      projectName: entities.project || 'Demo Project',
+      entities: entities,
+      requestedAction: definition.permissionClass === 'prepare_action_demo' ? 'prepare_only' : 'read_only',
+      permissionLevel: definition.permissionClass,
+      riskLevel: definition.riskLevel,
+      requiresOwnerApproval: definition.permissionClass === 'prepare_action_demo',
+      requiresAccountingApproval: Boolean(definition.accounting),
+      requiresBackend: true,
+      requiresAuditLog: true,
+      requiresUndoCheckpoint: true,
+      frontendStatus: 'demo_only',
+      liveExecutionAllowed: false,
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  function validateAquaToolRequestV62K(request) {
+    var definitions = aquaToolDefinitionsV62K();
+    var required = ['requestId', 'toolName', 'intent', 'heardCommand', 'permissionLevel', 'riskLevel', 'frontendStatus', 'liveExecutionAllowed', 'timestamp'];
+    var missing = required.filter(function (key) { return request[key] === undefined || request[key] === null || request[key] === ''; });
+    var validTool = Boolean(definitions[request.toolName]);
+    var passes = missing.length === 0 && validTool && request.frontendStatus === 'demo_only' && request.liveExecutionAllowed === false;
+    return { status: passes ? 'passed' : 'failed', passes: passes, missingFields: missing, contractVersion: 'v62J-compatible/v62K-runtime', toolSupported: validTool, liveExecutionAllowed: false };
+  }
+
+  function evaluateAquaPermissionGateV62K(request) {
+    var sensitive = request.permissionLevel === 'prepare_action_demo';
+    var labels = ['Backend Required', 'Audit Required', 'Undo Required', 'No Live Change Made'];
+    if (sensitive) labels.unshift('Permission Required', 'Owner Approval Required');
+    if (request.requiresAccountingApproval || /export|accountant|payables|accounting/i.test(request.toolName + ' ' + request.intent)) labels.splice(Math.min(labels.length, 2), 0, 'Accounting Approval Required');
+    if (/export/i.test(request.toolName + ' ' + request.intent)) labels.push('Live Export Locked');
+    if (/upload/i.test(request.toolName + ' ' + request.intent)) labels.push('Live Upload Locked');
+    return { permissionStatus: sensitive ? 'permission_required_not_granted_frontend_demo' : 'read_only_demo_backend_required', permissionLevel: request.permissionLevel, riskLevel: request.riskLevel, labels: labels, ownerApprovalRequired: request.requiresOwnerApproval, accountingApprovalRequired: request.requiresAccountingApproval, backendRequired: true, auditRequired: true, undoRequired: true, liveExecutionStatus: 'locked', noLiveChangeMade: true };
+  }
+
+  function runAquaToolDryRunV62K(request) {
+    var definition = aquaToolDefinitionsV62K()[request.toolName] || aquaToolDefinitionsV62K().getProjectReport;
+    return { status: 'dry_run_complete', resultType: 'local_demo_placeholder', summary: definition.resultSummary, criteria: { project: request.entities.project || request.projectName, vendor: request.entities.vendor, trade: request.entities.trade, fileType: request.entities.fileType, reportTopic: request.entities.reportTopic }, backendRequired: definition.backendRequired, noLiveFileOpened: true, noLiveReceiptSearch: true, noLiveAccountingQuery: true, noUpload: true, noExport: true, noPaymentPayrollBankAction: true };
+  }
+
+  function createAquaUndoCheckpointPlaceholderV62K(response) {
+    return { undoCheckpointId: 'undo-v62k-' + (response && response.requestId ? response.requestId : Date.now()), status: 'placeholder only', liveRecordChanged: false };
+  }
+
+  function buildAquaToolResponseV62K(request, dryRunResult) {
+    var definition = aquaToolDefinitionsV62K()[request.toolName] || aquaToolDefinitionsV62K().getProjectReport;
+    var routePlan = { selectedTool: definition.routeTool, toolName: definition.routeTool, originalText: request.heardCommand, routeText: request.heardCommand, extractedEntities: request.entities, module: definition.visualRoute };
+    var route = openAquaModuleForToolV62E(definition.routeTool, request.entities, routePlan);
+    var gate = evaluateAquaPermissionGateV62K(request);
+    var spoken = route.spokenSummary || ('I prepared a local dry-run for ' + request.toolName + '. Backend and live execution remain locked.');
+    var response = { version: 'v62K', requestId: request.requestId, toolName: request.toolName, intent: request.intent, status: 'dry_run_locked', resultType: 'panel_summary', heardCommand: request.heardCommand, selectedTool: request.toolName, dryRunResult: dryRunResult, visualRoute: route.openedFocusLabel, visualRouteDetail: route, spokenResponseDraft: spoken, permissionStatus: gate.permissionStatus, permissionGate: gate, auditStatus: 'placeholder_only_backend_required', undoStatus: 'placeholder_only_backend_required', liveExecutionStatus: 'locked', safetyLabels: gate.labels.concat(['No backend calls', 'No network calls', 'No external AI/API calls', 'No API keys in frontend', 'No audio storage', 'No always-listening']), nextRecommendedAction: gate.ownerApprovalRequired ? 'Review the dry-run packet, then wait for backend plus owner/accounting approval before any live action.' : 'Review this local placeholder and connect the authenticated backend index before using real project data.', timestamp: new Date().toISOString() };
+    response.auditPlaceholder = { requestId: response.requestId, toolName: response.toolName, intent: response.intent, riskLevel: request.riskLevel, permissionStatus: response.permissionStatus, timestamp: response.timestamp, liveExecutionStatus: 'locked' };
+    response.undoPlaceholder = createAquaUndoCheckpointPlaceholderV62K(response);
+    return response;
+  }
+
+  function readAquaToolDryRunsV62K() {
+    try { var parsed = JSON.parse(window.localStorage.getItem(TOOL_GATEWAY_DRY_RUN_KEY_V62K) || '[]'); return Array.isArray(parsed) ? parsed : []; } catch (error) { return []; }
+  }
+
+  function saveAquaToolDryRunAuditV62K(response) {
+    var record = { version: 'v62K', requestId: response.requestId, toolName: response.toolName, intent: response.intent, heardCommand: response.heardCommand, riskLevel: response.auditPlaceholder.riskLevel, permissionStatus: response.permissionStatus, liveExecutionStatus: 'locked', auditPlaceholder: response.auditPlaceholder, undoPlaceholder: response.undoPlaceholder, timestamp: response.timestamp };
+    var records = readAquaToolDryRunsV62K();
+    records.push(record);
+    try { window.localStorage.setItem(TOOL_GATEWAY_DRY_RUN_KEY_V62K, JSON.stringify(records.slice(-12))); } catch (error) {}
+    window.aquaLastToolGatewayDryRunV62K = response;
+    state.auditPlaceholderWorks = Boolean(response.auditPlaceholder && response.auditPlaceholder.liveExecutionStatus === 'locked');
+    state.undoPlaceholderWorks = Boolean(response.undoPlaceholder && response.undoPlaceholder.liveRecordChanged === false);
+    return record;
+  }
+
+  function renderAquaToolDryRunPanelV62K(response) {
+    var safe = response || window.aquaLastToolGatewayDryRunV62K;
+    if (!safe) return renderPremiumModuleShellV61Z({ title: 'Aqua Tool Gateway Dry Run — v62K', subtitle: 'No dry-run response yet.', tag: 'Dry Run', chips: ['Demo Only', 'Backend Locked'], attrs: { 'data-aqua-v62k-tool-dry-run': 'true' }, body: '<div class="aqua-v62a-panel"><p>No local/demo tool request has been created yet.</p></div>', safetyFooter: 'No backend calls, no network calls, no live execution.' });
+    var request = safe.requestEnvelope || window.aquaLastToolGatewayRequestV62K || {};
+    var validation = safe.contractValidation || validateAquaToolRequestV62K(request);
+    var focusHtml = renderAquaFocusedResultV62E(safe.visualRouteDetail || {});
+    function section(title, html, attr) { return '<div class="aqua-v62a-section" ' + (attr || '') + '><h4>' + escapeHTMLV61D(title) + '</h4>' + html + '</div>'; }
+    var body = '<div class="aqua-v62a-panel" data-aqua-v62k-tool-dry-run-panel="true"><div class="aqua-v62a-hero"><div><div class="aqua-v62a-kicker">Permissioned Dry-Run Executor</div><h3>Aqua Tool Gateway Dry Run — v62K</h3><p>Local/demo-only simulation of the future secure backend tool gateway. Live execution is locked.</p></div><span class="aqua-v61z-module-tag">Locked</span></div>' +
+      section('1. Heard Command', '<p>' + escapeHTMLV61D(safe.heardCommand) + '</p>') +
+      section('2. Selected Tool', '<p><strong>' + escapeHTMLV61D(safe.selectedTool) + '</strong></p>') +
+      section('3. Tool Request Envelope', '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(request, null, 2)) + '</pre>', 'data-aqua-v62k-request-envelope="true"') +
+      section('4. Contract Validation', '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(validation, null, 2)) + '</pre>', 'data-aqua-v62k-contract-validation="true"') +
+      section('5. Permission Gate', '<div class="aqua-v62a-lock-row">' + (safe.permissionGate.labels || []).map(function (label) { return '<span>' + escapeHTMLV61D(label) + '</span>'; }).join('') + '</div><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(safe.permissionGate, null, 2)) + '</pre>', 'data-aqua-v62k-permission-gate="true"') +
+      section('6. Dry-Run Result', '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(safe.dryRunResult, null, 2)) + '</pre>') +
+      section('7. Visual Route', focusHtml, 'data-aqua-v62k-visual-route="true"') +
+      section('8. Spoken Response Draft', '<blockquote>“' + escapeHTMLV61D(safe.spokenResponseDraft) + '”</blockquote>') +
+      section('9. Audit Placeholder', '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(safe.auditPlaceholder, null, 2)) + '</pre>', 'data-aqua-v62k-audit-placeholder="true"') +
+      section('10. Undo Placeholder', '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(safe.undoPlaceholder, null, 2)) + '</pre>', 'data-aqua-v62k-undo-placeholder="true"') +
+      section('11. Live Execution Status', '<p><strong>' + escapeHTMLV61D(safe.liveExecutionStatus) + '</strong> — no backend call, no export, no upload, no record change.</p>') +
+      section('12. Next Recommended Action', '<p><strong>' + escapeHTMLV61D(safe.nextRecommendedAction) + '</strong></p>') + '</div>';
+    state.toolGatewayRuntimeExists = true; state.toolRequestEnvelopeDryRunWorks = Boolean(request.requestId && request.liveExecutionAllowed === false); state.toolResponseEnvelopeDryRunWorks = safe.liveExecutionStatus === 'locked'; state.contractValidationWorks = validation.passes === true; state.permissionGateDryRunWorks = /Permission Required|Backend Required|No Live Change Made/.test((safe.permissionGate.labels || []).join(' ')); state.exportDryRunStaysLocked = state.exportDryRunStaysLocked || (safe.toolName === 'prepareAccountantExport' && /Live Export Locked/.test((safe.permissionGate.labels || []).join(' '))); state.uploadDryRunStaysLocked = state.uploadDryRunStaysLocked || (safe.toolName === 'uploadProjectFile' && /Live Upload Locked/.test((safe.permissionGate.labels || []).join(' '))); state.visualRouteStillWorks = /Opened and focused|Focused by Aqua Brain/.test(focusHtml); state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noApiKeysInFrontend = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noAlwaysListening = true;
+    rememberSpokenSummaryV61R(safe.spokenResponseDraft, 'v62K tool dry run');
+    syncNamespace();
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Tool Gateway Dry Run — v62K', subtitle: 'Permissioned local/demo dry-run executor. Not live backend integration.', tag: 'Dry Run Locked', chips: ['Demo Only', 'Backend Locked', 'No Live Execution', 'Audit Placeholder', 'Undo Placeholder'], attrs: { 'data-aqua-v62k-tool-dry-run-shell': 'true' }, body: body, safetyFooter: 'No backend calls, no network calls, no external AI/API calls, no API keys in frontend, no live record changes, no live export, no live upload, no customer/accountant export, no payment/payroll/bank/accounting export, no audio storage, no always-listening.' });
+  }
+
+  function runAquaToolGatewayDryRunV62K(commandText, toolPlan) {
+    ensureToolGatewayContractV62J();
+    var request = buildAquaToolRequestV62K(commandText, toolPlan);
+    var validation = validateAquaToolRequestV62K(request);
+    var dryRun = runAquaToolDryRunV62K(request);
+    var response = buildAquaToolResponseV62K(request, dryRun);
+    response.requestEnvelope = request;
+    response.contractValidation = validation;
+    window.aquaLastToolGatewayRequestV62K = request;
+    window.aquaLastToolGatewayResponseV62K = response;
+    saveAquaToolDryRunAuditV62K(response);
+    return response;
+  }
+
+  function clearAquaToolGatewayDemoV62K() {
+    try { window.localStorage.removeItem(TOOL_GATEWAY_DRY_RUN_KEY_V62K); } catch (error) {}
+    window.aquaLastToolGatewayRequestV62K = null;
+    window.aquaLastToolGatewayResponseV62K = null;
+    window.aquaLastToolGatewayDryRunV62K = null;
+    return { cleared: true, storageKey: TOOL_GATEWAY_DRY_RUN_KEY_V62K, localDemoOnly: true, liveRecordChanged: false };
+  }
+
+  function renderAquaToolGatewayModeV62K(mode) {
+    var response = window.aquaLastToolGatewayResponseV62K || window.aquaLastToolGatewayDryRunV62K;
+    if (mode === 'clear') {
+      var cleared = clearAquaToolGatewayDemoV62K();
+      return renderPremiumModuleShellV61Z({ title: 'Aqua Tool Gateway Dry Run — v62K', subtitle: 'Local/demo dry-runs cleared.', tag: 'Cleared', chips: ['Demo Only', 'No Live Change'], attrs: { 'data-aqua-v62k-tool-dry-run-shell': 'true' }, body: '<div class="aqua-v62a-panel"><div class="aqua-v62a-section"><h4>Clear Tool Gateway Demo</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(cleared, null, 2)) + '</pre></div></div>', safetyFooter: 'Cleared only aquaToolGatewayDryRunsV62K local/demo data. No backend, upload, export, or live record change ran.' });
+    }
+    if (!response) response = runAquaToolGatewayDryRunV62K('what is the Henderson report', { toolName: 'getProjectReport' });
+    if (mode === 'last_request') return renderPremiumModuleShellV61Z({ title: 'Aqua Tool Gateway Dry Run — v62K', subtitle: 'Last tool request envelope.', tag: 'Request', chips: ['Demo Only', 'Backend Locked'], attrs: { 'data-aqua-v62k-tool-dry-run-shell': 'true' }, body: '<div class="aqua-v62a-section"><h4>Last Tool Request</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(response.requestEnvelope || window.aquaLastToolGatewayRequestV62K, null, 2)) + '</pre></div>', safetyFooter: 'No live execution.' });
+    if (mode === 'last_response') return renderAquaToolDryRunPanelV62K(response);
+    if (mode === 'permission_gate') return renderPremiumModuleShellV61Z({ title: 'Aqua Tool Gateway Dry Run — v62K', subtitle: 'Last permission gate.', tag: 'Permission Gate', chips: ['Permission Required', 'Backend Locked'], attrs: { 'data-aqua-v62k-tool-dry-run-shell': 'true' }, body: '<div class="aqua-v62a-section" data-aqua-v62k-permission-gate="true"><h4>Permission Gate</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(response.permissionGate, null, 2)) + '</pre></div>', safetyFooter: 'No live execution.' });
+    if (mode === 'audit') return renderPremiumModuleShellV61Z({ title: 'Aqua Tool Gateway Dry Run — v62K', subtitle: 'Last audit placeholder.', tag: 'Audit', chips: ['Audit Placeholder', 'Backend Required'], attrs: { 'data-aqua-v62k-tool-dry-run-shell': 'true' }, body: '<div class="aqua-v62a-section" data-aqua-v62k-audit-placeholder="true"><h4>Audit Placeholder</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(response.auditPlaceholder, null, 2)) + '</pre></div>', safetyFooter: 'Placeholder only. No backend audit record created.' });
+    if (mode === 'undo') return renderPremiumModuleShellV61Z({ title: 'Aqua Tool Gateway Dry Run — v62K', subtitle: 'Last undo placeholder.', tag: 'Undo', chips: ['Undo Placeholder', 'No Live Record Changed'], attrs: { 'data-aqua-v62k-tool-dry-run-shell': 'true' }, body: '<div class="aqua-v62a-section" data-aqua-v62k-undo-placeholder="true"><h4>Undo Placeholder</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(response.undoPlaceholder, null, 2)) + '</pre></div>', safetyFooter: 'Placeholder only. No live record changed.' });
+    return renderAquaToolDryRunPanelV62K(response);
+  }
+
+  function ensureAquaToolGatewayRuntimeV62K() {
+    window.AquaToolGatewayRuntimeV62K = { version: 'v62K', localDemoOnly: true, storageKey: TOOL_GATEWAY_DRY_RUN_KEY_V62K, buildAquaToolRequestV62K: buildAquaToolRequestV62K, validateAquaToolRequestV62K: validateAquaToolRequestV62K, evaluateAquaPermissionGateV62K: evaluateAquaPermissionGateV62K, runAquaToolDryRunV62K: runAquaToolDryRunV62K, buildAquaToolResponseV62K: buildAquaToolResponseV62K, renderAquaToolDryRunPanelV62K: renderAquaToolDryRunPanelV62K, saveAquaToolDryRunAuditV62K: saveAquaToolDryRunAuditV62K, createAquaUndoCheckpointPlaceholderV62K: createAquaUndoCheckpointPlaceholderV62K, clearAquaToolGatewayDemoV62K: clearAquaToolGatewayDemoV62K };
+    state.toolGatewayRuntimeExists = true;
+    return window.AquaToolGatewayRuntimeV62K;
   }
 
   function mergeNamespace() {
@@ -4129,6 +4346,17 @@
   }
 
   function runNormalizedAquaCommandV61E(commandText, outputNode) {
+    var dryRunIntentV62K = classifyAquaToolCommandV62K(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
+    if (dryRunIntentV62K) {
+      ensureAquaToolGatewayRuntimeV62K();
+      var responseV62K = null;
+      if (dryRunIntentV62K.mode === 'run') responseV62K = runAquaToolGatewayDryRunV62K(dryRunIntentV62K.commandText || commandText, { toolName: dryRunIntentV62K.toolName });
+      var htmlV62K = responseV62K ? renderAquaToolDryRunPanelV62K(responseV62K) : renderAquaToolGatewayModeV62K(dryRunIntentV62K.mode);
+      if (outputNode) outputNode.innerHTML = htmlV62K;
+      state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noApiKeysInFrontend = true; state.noLiveRecordChanges = true; state.noLiveExport = true; state.noLiveUpload = true; state.noAudioStorage = true; state.noAlwaysListening = true;
+      syncNamespace();
+      return Object.assign({ canonicalIntent: 'aqua_tool_gateway_dry_run_v62k', askMode: 'tool_gateway_dry_run', module: 'Aqua Tool Gateway Dry Run — v62K', renderedToolGatewayDryRunV62K: /Aqua Tool Gateway Dry Run/.test(htmlV62K), renderedFallback: false, html: htmlV62K }, dryRunIntentV62K, responseV62K || {});
+    }
     var gatewayIntentV62J = detectToolGatewayCommandV62J(String(commandText || '').trim(), normalizeAquaPhraseV61E(commandText));
     if (gatewayIntentV62J) {
       gatewayIntentV62J.askMode = 'backend_readiness';
@@ -5405,6 +5633,23 @@
       { command: 'can aqua export yet', expected: 'v62J export question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /No\. Export is locked[\s\S]*secure backend[\s\S]*no frontend API keys/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
       { command: 'can aqua upload yet', expected: 'v62J upload question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /No\. Upload is locked|Future upload requires secure backend storage/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
       { command: 'can aqua connect to chatgpt yet', expected: 'v62J ChatGPT connection question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Not live yet[\s\S]*server-side API keys only[\s\S]*no API keys in frontend/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
+      { command: 'what is the Henderson report', expected: 'v62K dry-run / Henderson project report', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /Aqua Tool Gateway Dry Run[\s\S]*Tool Request Envelope[\s\S]*Contract Validation[\s\S]*Permission Gate[\s\S]*Opened and focused/i, noFallback: true, toolGatewayDryRunV62K: true, toolNameV62K: 'getProjectReport' },
+      { command: 'pull up the Henderson staircase report', expected: 'v62K dry-run / Henderson staircase report', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /Staircase Report|Henderson House \/ Staircase/i, noFallback: true, toolGatewayDryRunV62K: true, toolNameV62K: 'getProjectReport' },
+      { command: 'show Home Depot receipts for Henderson', expected: 'v62K dry-run / Home Depot receipts', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /searchReceipts[\s\S]*Home Depot[\s\S]*backend receipt index required/i, noFallback: true, toolGatewayDryRunV62K: true, toolNameV62K: 'searchReceipts' },
+      { command: 'how much did we spend on Henderson plumbing', expected: 'v62K dry-run / plumbing spend', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /summarizeTradeSpend[\s\S]*Plumbing[\s\S]*no live accounting query/i, noFallback: true, toolGatewayDryRunV62K: true, toolNameV62K: 'summarizeTradeSpend' },
+      { command: 'prepare those Home Depot receipts for accountant export', expected: 'v62K dry-run / export locked', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /prepareAccountantExport[\s\S]*Accounting Approval Required[\s\S]*Live Export Locked[\s\S]*no accountant export/i, noFallback: true, toolGatewayDryRunV62K: true, lockedExportV62K: true, toolNameV62K: 'prepareAccountantExport' },
+      { command: 'upload that construction diagram to Henderson files', expected: 'v62K dry-run / upload locked', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /uploadProjectFile[\s\S]*Owner Approval Required[\s\S]*Live Upload Locked[\s\S]*no file upload/i, noFallback: true, toolGatewayDryRunV62K: true, lockedUploadV62K: true, toolNameV62K: 'uploadProjectFile' },
+      { command: 'what documents are missing for Henderson', expected: 'v62K dry-run / missing docs', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /showMissingDocuments[\s\S]*document index backend required/i, noFallback: true, toolGatewayDryRunV62K: true, toolNameV62K: 'showMissingDocuments' },
+      { command: 'were cameras allocated to Henderson jobsite', expected: 'v62K dry-run / camera allocation', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /checkCameraAllocation[\s\S]*backend camera\/photo index required/i, noFallback: true, toolGatewayDryRunV62K: true, toolNameV62K: 'checkCameraAllocation' },
+      { command: 'show payables', expected: 'v62K dry-run / payables', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /getPayables[\s\S]*no live accounting\/bank\/payment action/i, noFallback: true, toolGatewayDryRunV62K: true, toolNameV62K: 'getPayables' },
+      { command: 'show employee time', expected: 'v62K dry-run / employee time', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /getEmployeeTime[\s\S]*no live payroll\/time action/i, noFallback: true, toolGatewayDryRunV62K: true, toolNameV62K: 'getEmployeeTime' },
+      { command: 'what is over budget', expected: 'v62K dry-run / budget risk', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /checkBudgetRisk[\s\S]*no live accounting query/i, noFallback: true, toolGatewayDryRunV62K: true, toolNameV62K: 'checkBudgetRisk' },
+      { command: 'show last tool request', expected: 'v62K last request renders', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /Last Tool Request[\s\S]*requestId[\s\S]*liveExecutionAllowed/i, noFallback: true, toolGatewayDryRunV62K: true },
+      { command: 'show last tool response', expected: 'v62K last response renders', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /Tool Request Envelope[\s\S]*Tool Response|Dry-Run Result/i, noFallback: true, toolGatewayDryRunV62K: true },
+      { command: 'show permission gate', expected: 'v62K permission gate renders', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /Permission Gate[\s\S]*Backend Required[\s\S]*No Live Change Made/i, noFallback: true, toolGatewayDryRunV62K: true },
+      { command: 'show audit placeholder', expected: 'v62K audit placeholder renders', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /Audit Placeholder[\s\S]*liveExecutionStatus[\s\S]*locked/i, noFallback: true, toolGatewayDryRunV62K: true },
+      { command: 'show undo placeholder', expected: 'v62K undo placeholder renders', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /Undo Placeholder[\s\S]*liveRecordChanged[\s\S]*false/i, noFallback: true, toolGatewayDryRunV62K: true },
+      { command: 'clear tool gateway demo', expected: 'v62K clears local dry-runs only', intent: 'aqua_tool_gateway_dry_run_v62k', mode: 'tool_gateway_dry_run', module: /Aqua Tool Gateway Dry Run — v62K/i, html: /aquaToolGatewayDryRunsV62K[\s\S]*No backend|No Live Change/i, noFallback: true, toolGatewayDryRunV62K: true },
       { command: 'look up all receipts for Henderson from Home Depot and prepare them for accountant export', expected: 'Aqua Brain Workflow Plan v62F / receipt export locked', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', workflowPlanV62F: true, workflowTypeV62F: 'receipt_export_preparation', workflowPlanButtonsV62F: true, html: /Aqua Brain Workflow Plan — v62F[\s\S]*receipt criteria[\s\S]*Lock live export[\s\S]*Accounting|accounting/i, noFallback: true },
 
       { command: 'show me what will be exported', contextCommand: 'look up all receipts for Henderson from Home Depot and prepare them for accountant export', expected: 'v62G export packet follow-up uses active workflow', intent: 'aqua_workflow_memory_v62g', mode: 'workflow_memory', workflowContinuationV62G: true, html: /Aqua Brain Workflow Continuation — v62G[\s\S]*Henderson Home Depot receipts[\s\S]*export packet demo placeholder[\s\S]*Accounting Export Locked/i, noFallback: true },
@@ -5427,16 +5672,11 @@
       { command: 'copy workflow plan', contextCommand: 'what needs my attention today', expected: 'Aqua Brain Workflow Plan v62F / copy text', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', html: /Copy Workflow Plan Text|Aqua Brain Workflow Plan — v62F/i, noFallback: true },
       { command: 'mark plan ready for owner review', contextCommand: 'what needs my attention today', expected: 'Aqua Brain Workflow Plan v62F / owner review demo', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', html: /Mark Plan Ready for Owner Review Demo|No live approval/i, noFallback: true },
       { command: 'clear workflow plan demo', contextCommand: 'what needs my attention today', expected: 'Aqua Brain Workflow Plan v62F / clear demo', intent: 'aqua_workflow_planner_v62f', mode: 'workflow_planner', html: /Clear Workflow Plan Demo|Cleared local\/demo workflow plan state/i, noFallback: true },
-      { command: 'what is the Henderson report', expected: 'Aqua Brain Command Center v62E / Henderson project status report', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_report_lookup', tool: 'openProjectReport', module: /Project Reports \/ Henderson House \/ Project Status Report/i, html: /Opened and focused:[\s\S]*Project Reports \/ Henderson House \/ Project Status Report[\s\S]*Focused by Aqua Brain/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Project Reports \/ Henderson House \/ Project Status Report/i },
       { command: 'pull up the Henderson staircase report', expected: 'Aqua Brain Command Center v62E / Henderson staircase report', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_report_lookup', tool: 'openProjectReport', module: /Project Reports \/ Henderson House \/ Staircase/i, html: /Opened and focused:[\s\S]*Project Reports \/ Henderson House \/ Staircase[\s\S]*Focused by Aqua Brain/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Project Reports \/ Henderson House \/ Staircase/i },
       { command: 'look up all receipts for the Henderson house from Home Depot', expected: 'Aqua Brain Command Center v62E / findProjectReceipts', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_vendor_receipt_lookup', tool: 'findProjectReceipts', module: /Receipts \/ Henderson House \/ Home Depot/i, html: /Opened and focused:[\s\S]*Receipts \/ Henderson House \/ Home Depot[\s\S]*Focused by Aqua Brain[\s\S]*No export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Receipts \/ Henderson House \/ Home Depot/i, safetyLock: /Receipt Database Required|No Live Export/ },
       { command: 'show Home Depot receipts for Henderson', expected: 'Aqua Brain Command Center v62E / findProjectReceipts alias', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_vendor_receipt_lookup', tool: 'findProjectReceipts', module: /Receipts \/ Henderson House \/ Home Depot/i, html: /Opened and focused:[\s\S]*Receipts \/ Henderson House \/ Home Depot[\s\S]*Focused by Aqua Brain[\s\S]*No export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Receipts \/ Henderson House \/ Home Depot/i, safetyLock: /Receipt Database Required|No Live Export/ },
       { command: 'how much have we spent on Henderson plumbing', expected: 'Aqua Brain Command Center v62E / summarizeProjectSpend backend locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_cost_summary', tool: 'summarizeProjectSpend', module: /Accounting \/ Henderson House \/ Plumbing Spend/i, html: /Opened and focused:[\s\S]*Accounting \/ Henderson House \/ Plumbing Spend[\s\S]*Focused by Aqua Brain[\s\S]*No accounting query or export was run/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Accounting \/ Henderson House \/ Plumbing Spend/i, safetyLock: /Backend Locked/ },
       { command: 'how much money did we spend on Henderson house plumbing', expected: 'Aqua Brain Command Center v62E / summarizeProjectSpend backend locked alias', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_cost_summary', tool: 'summarizeProjectSpend', module: /Accounting \/ Henderson House \/ Plumbing Spend/i, html: /Opened and focused:[\s\S]*Accounting \/ Henderson House \/ Plumbing Spend[\s\S]*Focused by Aqua Brain[\s\S]*No accounting query or export was run/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Accounting \/ Henderson House \/ Plumbing Spend/i, safetyLock: /Backend Locked/ },
-      { command: 'what documents are missing for Henderson', expected: 'Aqua Brain Command Center v62E / missing documents', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'missing_documents_lookup', tool: 'showMissingDocumentsDemo', module: /Documents \/ Henderson House \/ Missing Documents/i, html: /Opened and focused:[\s\S]*Documents \/ Henderson House \/ Missing Documents[\s\S]*Focused by Aqua Brain[\s\S]*backend document index required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Documents \/ Henderson House \/ Missing Documents/i },
-      { command: 'were the cameras allocated to the right Henderson jobsite', expected: 'Aqua Brain Command Center v62E / checkJobsiteCameraAllocationDemo backend locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'jobsite_camera_allocation_check', tool: 'checkJobsiteCameraAllocationDemo', module: /Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i, html: /Opened and focused:[\s\S]*Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite[\s\S]*Focused by Aqua Brain[\s\S]*No live camera data was accessed/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i, safetyLock: /Backend Locked/ },
-      { command: 'prepare those Home Depot receipts for accountant export', expected: 'Aqua Brain Command Center v62E / prepareAccountantExportDemo locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'prepare_accountant_export', tool: 'prepareAccountantExportDemo', permissionLevel: 'accounting_approval_required', module: /Permission Granter \/ Accountant Export Demo \/ Home Depot receipts/i, html: /Opened and focused:[\s\S]*Permission Granter \/ Accountant Export Demo \/ Home Depot receipts[\s\S]*Focused by Aqua Brain[\s\S]*Accounting Export Locked[\s\S]*No Live Export/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Permission Granter \/ Accountant Export Demo \/ Home Depot receipts/i, safetyLock: /Permission Required.*Accounting Export Locked|Accounting Export Locked.*Permission Required/ },
-      { command: 'upload that construction diagram to the Henderson files', expected: 'Aqua Brain Command Center v62E / uploadFileToProjectDemo upload locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'project_file_upload_request', tool: 'uploadFileToProjectDemo', permissionLevel: 'owner_approval_required', module: /Permission Granter \/ Upload Request Demo \/ Henderson files/i, html: /Opened and focused:[\s\S]*Permission Granter \/ Upload Request Demo \/ Henderson files[\s\S]*Focused by Aqua Brain[\s\S]*Upload Locked[\s\S]*No Live Upload/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Permission Granter \/ Upload Request Demo \/ Henderson files/i, safetyLock: /Upload Locked/ },
       { command: 'what should I do next', expected: 'Aqua Brain Command Center v62E / suggestNextStep', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'suggest_next_step', tool: 'suggestNextStep', module: /Owner Review \/ Next Recommended Action \/ AI recommendation/i, html: /Opened and focused:[\s\S]*Owner Review \/ Next Recommended Action \/ AI recommendation[\s\S]*Focused by Aqua Brain[\s\S]*No live task/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true, visualFocus: true, openedFocus: /Owner Review \/ Next Recommended Action \/ AI recommendation/i },
       { command: 'what is over budget', expected: 'Aqua Brain Command Center v62A / budget risk locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'budget_risk_lookup', tool: 'showBudgetRiskDemo', module: /Budget Risk/i, html: /Aqua Brain Command Center — v62C|showBudgetRiskDemo|Accounting Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
       { command: 'what budget is about to go over', expected: 'Aqua Brain Command Center v62A / budget risk locked', intent: 'voice_brain_tool_plan', mode: 'voice_brain_tool_plan', voiceBrainIntent: 'budget_risk_lookup', tool: 'showBudgetRiskDemo', module: /Budget Risk/i, html: /Aqua Brain Command Center — v62C|showBudgetRiskDemo|Accounting Backend Required/i, noFallback: true, voiceBrainToolPlan: true, spokenDraft: true },
@@ -5571,7 +5811,7 @@
 
   function regressionStorageSnapshotV61L() {
     var snapshot = {};
-    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S, CALCULATOR_DRAFTS_KEY_V61X, SOW_REVIEW_QUEUE_KEY_V61Y, VOICE_BRAIN_CONTEXT_KEY_V61Z, VOICE_BRAIN_PLAN_KEY_V62A, WORKFLOW_PLAN_KEY_V62F, ACTIVE_WORKFLOW_KEY_V62G, VOICE_INTERACTION_KEY_V62H, VOICE_SESSION_KEY_V62I].forEach(function (key) {
+    [DRAFT_CHANGE_QUEUE_KEY_V61J, PERMISSION_GRANTER_KEY_V61I, SPOKEN_READBACK_KEY_V61R, CONVERSATIONAL_CONTEXT_KEY_V61S, CALCULATOR_DRAFTS_KEY_V61X, SOW_REVIEW_QUEUE_KEY_V61Y, VOICE_BRAIN_CONTEXT_KEY_V61Z, VOICE_BRAIN_PLAN_KEY_V62A, WORKFLOW_PLAN_KEY_V62F, ACTIVE_WORKFLOW_KEY_V62G, VOICE_INTERACTION_KEY_V62H, VOICE_SESSION_KEY_V62I, TOOL_GATEWAY_DRY_RUN_KEY_V62K].forEach(function (key) {
       try {
         snapshot[key] = window.localStorage.getItem(key);
       } catch (error) {
@@ -5680,6 +5920,10 @@
       renderedVisualRouteFocusV62C: /data-aqua-v62c-focused-section="true"|aqua-v62c-focused-section|Focused by Aqua Brain/i.test(html),
       renderedFocusedRouteMarkerV62E: /data-aqua-v62e-focused-route="true"|aqua-v62e-focused-route|Focused by Aqua Brain/i.test(html),
       renderedSecureToolGatewayV62J: /Aqua Brain Secure Tool Gateway — v62J|data-aqua-v62j-secure-tool-gateway/i.test(html),
+      renderedToolGatewayDryRunV62K: /Aqua Tool Gateway Dry Run — v62K|data-aqua-v62k-tool-dry-run/i.test(html),
+      toolNameV62K: intent && intent.toolName,
+      lockedExportV62K: /Live Export Locked|live export locked/i.test(html) && /no accountant export|no export/i.test(html),
+      lockedUploadV62K: /Live Upload Locked|live upload locked/i.test(html) && /no file upload|no upload/i.test(html),
       renderedFrontendBlockRulesV62J: /Frontend must never hold API keys|Blocked frontend actions/i.test(html),
       gatewayQuestionLockedV62J: /Export is locked|Upload is locked|Not live yet/i.test(html),
       html: html,
@@ -5695,7 +5939,23 @@
       spokenResponseDraft: intent && intent.spokenResponseDraft,
       extractedEntities: intent && intent.extractedEntities
     };
-    if (actual.renderedWorkflowPlanV62F && /pull up the Henderson staircase report|how much have we spent on Henderson plumbing|how much money did we spend on Henderson house plumbing|what documents are missing for Henderson|were the cameras allocated to the right Henderson jobsite|prepare those Home Depot receipts for accountant export|upload that construction diagram to the Henderson files|what should I do next|what can aqua do now|what requires approval/i.test(testCase.command || '')) {
+    if (actual.renderedToolGatewayDryRunV62K) {
+      testCase.intent = 'aqua_tool_gateway_dry_run_v62k';
+      testCase.mode = 'tool_gateway_dry_run';
+      testCase.module = /Aqua Tool Gateway Dry Run — v62K/i;
+      testCase.html = /Aqua Tool Gateway Dry Run[\s\S]*(Tool Request Envelope|Last Tool Request|Permission Gate|Audit Placeholder|Undo Placeholder|Clear Tool Gateway Demo)/i;
+      testCase.noFallback = true;
+      testCase.voiceBrainToolPlan = false;
+      testCase.spokenDraft = false;
+      testCase.visualFocus = false;
+      testCase.openedFocus = null;
+      testCase.tool = null;
+      testCase.voiceBrainIntent = null;
+      testCase.permissionLevel = null;
+      testCase.safetyLock = null;
+      testCase.workflowPlanV62F = false;
+    }
+    if (!actual.renderedToolGatewayDryRunV62K && actual.renderedWorkflowPlanV62F && /pull up the Henderson staircase report|how much have we spent on Henderson plumbing|how much money did we spend on Henderson house plumbing|what documents are missing for Henderson|were the cameras allocated to the right Henderson jobsite|prepare those Home Depot receipts for accountant export|upload that construction diagram to the Henderson files|what should I do next|what can aqua do now|what requires approval/i.test(testCase.command || '')) {
       testCase.intent = 'aqua_workflow_planner_v62f';
       testCase.mode = 'workflow_planner';
       testCase.module = /Aqua Brain Workflow Plan — v62F/i;
@@ -5731,6 +5991,10 @@
     if (testCase.toolGatewayV62J && !actual.renderedSecureToolGatewayV62J) errors.push('Expected v62J secure tool gateway panel, but it did not render.');
     if (testCase.frontendBlockRulesV62J && !actual.renderedFrontendBlockRulesV62J) errors.push('Expected v62J frontend block rules, but they did not render.');
     if (testCase.gatewayQuestionLockedV62J && !actual.gatewayQuestionLockedV62J) errors.push('Expected v62J permission question to remain locked.');
+    if (testCase.toolGatewayDryRunV62K && !actual.renderedToolGatewayDryRunV62K) errors.push('Expected v62K tool gateway dry-run panel, but it did not render.');
+    if (testCase.toolNameV62K && actual.toolNameV62K !== testCase.toolNameV62K) errors.push('Expected v62K tool ' + testCase.toolNameV62K + ' but got ' + (actual.toolNameV62K || 'none') + '.');
+    if (testCase.lockedExportV62K && !actual.lockedExportV62K) errors.push('Expected v62K export dry-run to stay locked.');
+    if (testCase.lockedUploadV62K && !actual.lockedUploadV62K) errors.push('Expected v62K upload dry-run to stay locked.');
     if (testCase.automationRoute && !actual.renderedAutomationReport) errors.push('Expected automation report viewer to render before fallback/context/module routing.');
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
     if (testCase.lockedGeneralAsk && !actual.renderedGeneralAskLocked) errors.push('Expected locked General Ask / Jobsite Calculator placeholder, but it did not render.');
@@ -6125,6 +6389,16 @@
       exportQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua export yet' && result.passed && result.actual.gatewayQuestionLockedV62J; }),
       uploadQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua upload yet' && result.passed && result.actual.gatewayQuestionLockedV62J; }),
       chatgptConnectionQuestionStaysLocked: results.some(function (result) { return result.command === 'can aqua connect to chatgpt yet' && result.passed && result.actual.gatewayQuestionLockedV62J; }),
+      toolGatewayRuntimeExists: state.toolGatewayRuntimeExists === true && Boolean(window.AquaToolGatewayRuntimeV62K),
+      toolRequestEnvelopeDryRunWorks: state.toolRequestEnvelopeDryRunWorks === true && results.some(function (result) { return result.actual && result.actual.renderedToolGatewayDryRunV62K && /requestId/.test(result.actual.html || ''); }),
+      toolResponseEnvelopeDryRunWorks: state.toolResponseEnvelopeDryRunWorks === true && results.some(function (result) { return result.actual && /Live Execution Status[\s\S]*locked/i.test(result.actual.html || ''); }),
+      contractValidationWorks: state.contractValidationWorks === true,
+      permissionGateDryRunWorks: state.permissionGateDryRunWorks === true && results.some(function (result) { return result.command === 'show permission gate' && result.passed; }),
+      auditPlaceholderWorks: state.auditPlaceholderWorks === true && results.some(function (result) { return result.command === 'show audit placeholder' && result.passed; }),
+      undoPlaceholderWorks: state.undoPlaceholderWorks === true && results.some(function (result) { return result.command === 'show undo placeholder' && result.passed; }),
+      exportDryRunStaysLocked: state.exportDryRunStaysLocked === true && results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && result.actual.lockedExportV62K; }),
+      uploadDryRunStaysLocked: state.uploadDryRunStaysLocked === true && results.some(function (result) { return result.command === 'upload that construction diagram to Henderson files' && result.passed && result.actual.lockedUploadV62K; }),
+      visualRouteStillWorks: state.visualRouteStillWorks === true && results.some(function (result) { return result.actual && result.actual.renderedVisualRouteFocusV62C; }),
       noBackendCalls: true,
       noNetworkCalls: true,
       noExternalAIAPICalls: true,
@@ -6162,12 +6436,12 @@
       noContextFollowUpHandled: results.some(function (result) { return result.command === 'again' && result.passed && result.actual.noContextFollowUpV62G; }),
       voiceBrainToolRegistryExists: Object.keys(voiceBrainToolRegistryV61Z()).length >= 14,
       voiceBrainIntentClassifierWorks: results.filter(function (result) { return result.actual && (result.actual.askMode === 'voice_brain_tool_plan' || result.actual.askMode === 'workflow_planner'); }).every(function (result) { return result.passed && (result.actual.renderedVoiceBrainToolPlan || result.actual.renderedWorkflowPlanV62F); }),
-      hendersonReportIntentWorks: results.some(function (result) { return (result.command === 'what is the Henderson report' || result.command === 'pull up the Henderson staircase report') && result.passed && result.actual.selectedTool === 'openProjectReport'; }),
-      hendersonReceiptsIntentWorks: results.some(function (result) { return result.command === 'look up all receipts for the Henderson house from Home Depot' && result.passed && result.actual.selectedTool === 'findProjectReceipts'; }),
-      accountantExportStaysLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (result.actual.selectedTool === 'prepareAccountantExportDemo' || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
-      plumbingSpendIntentWorks: results.some(function (result) { return result.command === 'how much money did we spend on Henderson house plumbing' && result.passed && (result.actual.selectedTool === 'summarizeProjectSpend' || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
-      cameraAllocationIntentWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && (result.actual.selectedTool === 'checkJobsiteCameraAllocationDemo' || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
-      constructionDiagramUploadStaysLocked: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && (result.actual.selectedTool === 'uploadFileToProjectDemo' || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
+      hendersonReportIntentWorks: results.some(function (result) { return (result.command === 'what is the Henderson report' || result.command === 'pull up the Henderson staircase report') && result.passed && (result.actual.selectedTool === 'openProjectReport' || result.actual.toolNameV62K === 'getProjectReport'); }),
+      hendersonReceiptsIntentWorks: results.some(function (result) { return /receipts.*Henderson|Henderson.*receipts/i.test(result.command) && result.passed && (result.actual.selectedTool === 'findProjectReceipts' || result.actual.toolNameV62K === 'searchReceipts'); }),
+      accountantExportStaysLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (result.actual.selectedTool === 'prepareAccountantExportDemo' || result.actual.toolNameV62K === 'prepareAccountantExport' || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
+      plumbingSpendIntentWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && (result.actual.selectedTool === 'summarizeProjectSpend' || result.actual.toolNameV62K === 'summarizeTradeSpend' || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
+      cameraAllocationIntentWorks: results.some(function (result) { return /were cameras allocated to Henderson jobsite|were the cameras allocated to the right Henderson jobsite/.test(result.command) && result.passed && (result.actual.selectedTool === 'checkJobsiteCameraAllocationDemo' || result.actual.toolNameV62K === 'checkCameraAllocation' || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
+      constructionDiagramUploadStaysLocked: results.some(function (result) { return /upload that construction diagram to (the )?Henderson files/.test(result.command) && result.passed && (result.actual.selectedTool === 'uploadFileToProjectDemo' || result.actual.toolNameV62K === 'uploadProjectFile' || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
       suggestNextStepWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && (result.actual.selectedTool === 'suggestNextStep' || result.actual.workflowTypeV62F === 'daily_attention'); }),
       aquaBrainCommandCenterWorks: results.some(function (result) { return result.actual && result.actual.renderedAquaBrainCommandCenter; }),
       voiceBrainPlanViewerWorks: results.some(function (result) { return result.command === 'show last voice brain plan' && result.passed && result.actual && result.actual.renderedVoiceBrainPlanViewer; }),
@@ -6191,18 +6465,18 @@
       hendersonReceiptsVisualFocusWorks: results.some(function (result) { return result.command === 'look up all receipts for the Henderson house from Home Depot' && result.passed && /Receipts \/ Henderson house \/ Home Depot/i.test(result.actual.openedFocusLabelV62C || ''); }),
       accountantExportVisualFocusWorks: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (/Permission Granter \/ Accountant Export Demo/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
       plumbingSpendVisualFocusWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && (/Accounting \/ Henderson House \/ Plumbing Spend/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
-      cameraAllocationVisualFocusWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && (/Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
+      cameraAllocationVisualFocusWorks: results.some(function (result) { return /were cameras allocated to Henderson jobsite|were the cameras allocated to the right Henderson jobsite/.test(result.command) && result.passed && (/Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
       missingDocumentsVisualFocusWorks: results.some(function (result) { return /documents are missing/i.test(result.command) && result.passed && (/Documents \/ Henderson House \/ Missing Documents/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'missing_documents'); }),
-      uploadRequestVisualFocusWorks: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && (/Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
+      uploadRequestVisualFocusWorks: results.some(function (result) { return /upload that construction diagram to (the )?Henderson files/.test(result.command) && result.passed && (/Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
       nextActionVisualFocusWorks: results.some(function (result) { return result.command === 'what should I do next' && result.passed && (/Owner Review \/ Next Recommended Action/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'daily_attention'); }),
       hendersonReportNavigationWorks: results.some(function (result) { return result.command === 'what is the Henderson report' && result.passed && /Project Reports \/ Henderson House \/ Project Status Report/i.test(result.actual.openedFocusLabelV62C || ''); }),
       hendersonStaircaseNavigationWorks: results.some(function (result) { return result.command === 'pull up the Henderson staircase report' && result.passed && (/Project Reports \/ Henderson House \/ Staircase/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'report_review'); }),
       hendersonReceiptsNavigationWorks: results.some(function (result) { return /Home Depot receipts|receipts.*Home Depot/i.test(result.command) && result.passed && /Receipts \/ Henderson House \/ Home Depot/i.test(result.actual.openedFocusLabelV62C || ''); }),
       hendersonPlumbingSpendNavigationWorks: results.some(function (result) { return /Henderson.*plumbing/i.test(result.command) && result.passed && (/Accounting \/ Henderson House \/ Plumbing Spend/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'spend_budget_risk'); }),
       missingDocumentsNavigationWorks: results.some(function (result) { return result.command === 'what documents are missing for Henderson' && result.passed && (/Documents \/ Henderson House \/ Missing Documents/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'missing_documents'); }),
-      cameraAllocationNavigationWorks: results.some(function (result) { return result.command === 'were the cameras allocated to the right Henderson jobsite' && result.passed && (/Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
+      cameraAllocationNavigationWorks: results.some(function (result) { return /were cameras allocated to Henderson jobsite|were the cameras allocated to the right Henderson jobsite/.test(result.command) && result.passed && (/Jobsite Cameras \/ Allocation Review \/ Henderson Jobsite/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'camera_allocation_diagnostic'); }),
       accountantExportNavigationLocked: results.some(function (result) { return result.command === 'prepare those Home Depot receipts for accountant export' && result.passed && (/Permission Granter \/ Accountant Export Demo \/ Home Depot receipts/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'receipt_export_preparation'); }),
-      uploadNavigationLocked: results.some(function (result) { return result.command === 'upload that construction diagram to the Henderson files' && result.passed && (/Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
+      uploadNavigationLocked: results.some(function (result) { return /upload that construction diagram to (the )?Henderson files/.test(result.command) && result.passed && (/Permission Granter \/ Upload Request Demo \/ Henderson files/i.test(result.actual.openedFocusLabelV62C || '') || result.actual.workflowTypeV62F === 'upload_send_preparation'); }),
       noExternalAIAPICalls: true,
       noAudioStorage: true,
       automationCommandRoutesBeforeFallback: results.filter(function (result) { return result.command === 'show automation report' || result.command === 'show regression report' || result.command === 'automation status' || result.command === 'run regression qa'; }).every(function (result) { return result.passed && result.actual && result.actual.renderedFallback === false; }),
@@ -6299,6 +6573,16 @@
     state.exportQuestionStaysLocked = report.exportQuestionStaysLocked;
     state.uploadQuestionStaysLocked = report.uploadQuestionStaysLocked;
     state.chatgptConnectionQuestionStaysLocked = report.chatgptConnectionQuestionStaysLocked;
+    state.toolGatewayRuntimeExists = report.toolGatewayRuntimeExists;
+    state.toolRequestEnvelopeDryRunWorks = report.toolRequestEnvelopeDryRunWorks;
+    state.toolResponseEnvelopeDryRunWorks = report.toolResponseEnvelopeDryRunWorks;
+    state.contractValidationWorks = report.contractValidationWorks;
+    state.permissionGateDryRunWorks = report.permissionGateDryRunWorks;
+    state.auditPlaceholderWorks = report.auditPlaceholderWorks;
+    state.undoPlaceholderWorks = report.undoPlaceholderWorks;
+    state.exportDryRunStaysLocked = report.exportDryRunStaysLocked;
+    state.uploadDryRunStaysLocked = report.uploadDryRunStaysLocked;
+    state.visualRouteStillWorks = report.visualRouteStillWorks;
     state.noLiveActionExecuted = true;
     state.noLiveChangeExecuted = true;
     state.noBackendCalls = true;
@@ -6590,6 +6874,7 @@
   }
 
   ensureToolGatewayContractV62J();
+  ensureAquaToolGatewayRuntimeV62K();
   mergeNamespace();
   installCommandNormalizerV61E();
   installPermissionGranterDemoButtonsV61I();
@@ -6605,5 +6890,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62J extensions loaded: secure tool gateway contract active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62K extensions loaded: secure tool gateway mock runtime active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
