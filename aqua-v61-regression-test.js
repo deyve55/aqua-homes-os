@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62W';
+const VERSION = 'v62X';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -354,6 +354,9 @@ function checkStaticFiles() {
   addCheck('v62W assistant acceptance namespace exists', /window\.AquaAssistantAcceptanceV62W/.test(extension) && /function\s+runAquaAssistantAcceptanceChecklistV62W/.test(extension), { layer: 'assistant-acceptance-v62w', fileToFix: EXTENSION });
   addCheck('v62W acceptance checklist render exists', /Aqua Brain Assistant Acceptance Checklist — v62W/.test(extension) && /function\s+renderAquaAssistantAcceptanceChecklistV62W/.test(extension), { layer: 'assistant-acceptance-v62w', fileToFix: EXTENSION });
   addCheck('v62W acceptance report flags exist', /assistantAcceptanceChecklistExists/.test(extension) && /keeperRecommendationWorks/.test(extension) && /aquaAssistantAcceptanceV62W/.test(extension), { layer: 'assistant-acceptance-v62w', fileToFix: EXTENSION });
+  addCheck('v62X keeper recovery namespace exists', /window\.AquaBrainKeeperV62X/.test(extension) && /function\s+getAquaBrainKeeperStatusV62X/.test(extension) && /function\s+renderAquaBrainRecoveryHandoffV62X/.test(extension), { layer: 'keeper-recovery-v62x', fileToFix: EXTENSION });
+  addCheck('v62X keeper panel copy exists', /Aqua Brain Keeper \/ Recovery Handoff — v62X/.test(extension) && /Aqua Homes OS v62X Keeper Handoff/.test(extension), { layer: 'keeper-recovery-v62x', fileToFix: EXTENSION });
+  addCheck('v62X keeper report flags exist', /keeperStatusExists/.test(extension) && /recoveryHandoffWorks/.test(extension) && /keeperManifestWorks/.test(extension), { layer: 'keeper-recovery-v62x', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -394,7 +397,7 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62W', extensionReport.version === 'v62W', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62X', extensionReport.version === 'v62X', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
@@ -407,6 +410,8 @@ function runExtensionRegression() {
     ['assistantAcceptanceChecklistExists','aiEntryAcceptanceWorks','primaryAssistantSurfaceAcceptanceWorks','commandInputAcceptanceWorks','fuzzyUnderstandingAcceptanceWorks','visualRouteAcceptanceWorks','readbackAcceptanceWorks','workflowContinuationAcceptanceWorks','permissionGateAcceptanceWorks','manualVoiceFallbackAcceptanceWorks','automationAcceptanceWorks','keeperRecommendationWorks','zeroReportGuardStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks'].forEach((flag) => addCheck(`v62W ${flag}`, extensionReport[flag] === true, { layer: 'assistant-acceptance-v62w', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('v62W keeper ready demo flag is true', extensionReport.aquaBrainKeeperReadyDemo === true, { layer: 'assistant-acceptance-v62w', actual: extensionReport.aquaBrainKeeperReadyDemo, fileToFix: EXTENSION });
     ['noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening'].forEach((flag) => addCheck(`v62W safety ${flag}`, extensionReport[flag] === true, { layer: 'assistant-acceptance-v62w', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['keeperStatusExists','recoveryHandoffWorks','keeperManifestWorks','keeperCheckWorks','copyKeeperHandoffWorks','nextPhasePlanWorks','protectedVisualKeeperStillAHv54I3','aquaBrainPrimaryInterfaceLocked','liveActionsStillLocked','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks'].forEach((flag) => addCheck(`v62X ${flag}`, extensionReport[flag] === true, { layer: 'keeper-recovery-v62x', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening'].forEach((flag) => addCheck(`v62X safety ${flag}`, extensionReport[flag] === true, { layer: 'keeper-recovery-v62x', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['naturalResponseIntegrationExists','assistantSurfaceNaturalCopyWorks','correctionNaturalCopyWorks','openingFocusNaturalCopyWorks','lockedActionNaturalCopyWorks','missingInfoNaturalCopyWorks','manualFallbackNaturalCopyWorks'].forEach((flag) => addCheck(`v62V-B ${flag}`, extensionReport[flag] === true, { layer: 'natural-response-integration-v62vb', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['primaryAssistantInterfaceExists','aiButtonOpensPrimaryAssistant','mainCommandInputWorks','inputTargetingStillCorrect','quickControlsSecondary','manualControlsWork','commandUnderstandingStillWorks','currentFocusStillWorks','responseDraftStillWorks','nextSuggestionsStillWork','permissionSummaryStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62S ${flag}`, extensionReport[flag] === true, { layer: 'primary-assistant-interface-v62s', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('v62L backendBoundaryExists is true', extensionReport.backendBoundaryExists === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendBoundaryExists, fileToFix: EXTENSION });
@@ -1553,6 +1558,15 @@ async function main() {
     manualFallbackNaturalCopyWorks: extensionReport ? extensionReport.manualFallbackNaturalCopyWorks === true : false,
     automationReportStillWorks: extensionReport ? extensionReport.automationReportStillWorks === true : false,
     unknownFallbackStillWorks: extensionReport ? extensionReport.unknownFallbackStillWorks === true : false,
+    keeperStatusExists: extensionReport ? extensionReport.keeperStatusExists === true : false,
+    recoveryHandoffWorks: extensionReport ? extensionReport.recoveryHandoffWorks === true : false,
+    keeperManifestWorks: extensionReport ? extensionReport.keeperManifestWorks === true : false,
+    keeperCheckWorks: extensionReport ? extensionReport.keeperCheckWorks === true : false,
+    copyKeeperHandoffWorks: extensionReport ? extensionReport.copyKeeperHandoffWorks === true : false,
+    nextPhasePlanWorks: extensionReport ? extensionReport.nextPhasePlanWorks === true : false,
+    protectedVisualKeeperStillAHv54I3: extensionReport ? extensionReport.protectedVisualKeeperStillAHv54I3 === true : false,
+    aquaBrainPrimaryInterfaceLocked: extensionReport ? extensionReport.aquaBrainPrimaryInterfaceLocked === true : false,
+    liveActionsStillLocked: extensionReport ? extensionReport.liveActionsStillLocked === true : false,
     conversationScenariosExist: extensionReport ? extensionReport.conversationScenariosExist === true : false,
     conversationScenarioRunnerWorks: extensionReport ? extensionReport.conversationScenarioRunnerWorks === true : false,
     allConversationScenariosPass: extensionReport ? extensionReport.allConversationScenariosPass === true : false,
