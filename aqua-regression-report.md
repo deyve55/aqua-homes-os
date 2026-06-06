@@ -1,8 +1,8 @@
-# Aqua Homes OS v62I Regression Report
+# Aqua Homes OS v62J Regression Report
 
-- Timestamp: 2026-06-05T23:57:50.033Z
+- Timestamp: 2026-06-06T00:42:35.103Z
 - Branch: work
-- Commit: b5ac7dc53bfbe55a49bfea04d6170280b8f3292d
+- Commit: d614d5453b031c918c9d618e44c5782507d3ff2c
 - Total tests: 314
 - Passed: 314
 - Failed: 0
@@ -16,6 +16,17 @@
 - noLiveRecordChanges: true
 - noAudioStorage: true
 - noBackendNetworkLiveAI: true
+- toolGatewayContractExists: true
+- toolRequestEnvelopeWorks: true
+- toolResponseEnvelopeWorks: true
+- toolContractMapWorks: true
+- permissionMapWorks: true
+- riskMapWorks: true
+- approvalRoutesWork: true
+- frontendBlockRulesWork: true
+- exportQuestionStaysLocked: true
+- uploadQuestionStaysLocked: true
+- chatgptConnectionQuestionStaysLocked: true
 - spokenReadbackAvailable: false
 - spokenReadbackBrowserUnavailableFallback: true
 - automationCommandRoutesBeforeFallback: true
@@ -186,9 +197,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62I
-- Total: 140
-- Passed: 140
+- Version: v62J
+- Total: 151
+- Passed: 151
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
