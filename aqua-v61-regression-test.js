@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62P';
+const VERSION = 'v62Q';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -278,6 +278,8 @@ function checkStaticFiles() {
   addCheck('v62O correction and confidence flags exist', /fuzzyLanguageResolverExists/.test(extension) && /correctionMapWorks/.test(extension) && /confidenceScoringWorks/.test(extension), { layer: 'fuzzy-language-v62o', fileToFix: EXTENSION });
   addCheck('v62P e2e routing matrix architecture exists', /window\.AquaBrainE2ERoutingV62P/.test(extension) && /function\s+getAquaBrainE2ETestMatrixV62P/.test(extension) && /Aqua Brain End-to-End Routing Matrix/.test(extension), { layer: 'e2e-routing-matrix-v62p', fileToFix: EXTENSION });
   addCheck('v62P e2e routing matrix report flags exist', /e2eRoutingMatrixExists/.test(extension) && /allE2ERoutesPass/.test(extension) && /fuzzyToIntentToRouteChainWorks/.test(extension), { layer: 'e2e-routing-matrix-v62p', fileToFix: EXTENSION });
+  addCheck('v62Q assistant interface architecture exists', /window\.AquaBrainAssistantInterfaceV62Q/.test(extension) && /function\s+renderAquaBrainAssistantInterfaceV62Q/.test(extension) && /Aqua Brain Assistant — v62Q/.test(extension), { layer: 'assistant-interface-v62q', fileToFix: EXTENSION });
+  addCheck('v62Q assistant report flags exist', /assistantInterfaceExists/.test(extension) && /unifiedConversationSurfaceWorks/.test(extension) && /commandUnderstandingPanelWorks/.test(extension), { layer: 'assistant-interface-v62q', fileToFix: EXTENSION });
   addCheck('v61Z AquaVoiceBrainV61Z architecture exists', /window\.AquaVoiceBrainV61Z|function\s+createAquaVoiceBrainV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain context key exists', /aquaVoiceBrainContextV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain tool registry exists', /function\s+voiceBrainToolRegistryV61Z/.test(extension) && /openProjectReport/.test(extension) && /findProjectReceipts/.test(extension) && /prepareAccountantExportDemo/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
@@ -358,7 +360,7 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62P', extensionReport.version === 'v62P', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62Q', extensionReport.version === 'v62Q', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
@@ -1005,6 +1007,28 @@ function markdown(report) {
 ` +
     `- manualFallbackWorks: ${report.manualFallbackWorks === true}
 ` +
+    `- assistantInterfaceExists: ${report.assistantInterfaceExists === true}
+` +
+    `- unifiedConversationSurfaceWorks: ${report.unifiedConversationSurfaceWorks === true}
+` +
+    `- commandUnderstandingPanelWorks: ${report.commandUnderstandingPanelWorks === true}
+` +
+    `- currentFocusPanelWorks: ${report.currentFocusPanelWorks === true}
+` +
+    `- responseDraftPanelWorks: ${report.responseDraftPanelWorks === true}
+` +
+    `- nextSuggestionsWork: ${report.nextSuggestionsWork === true}
+` +
+    `- permissionSummaryWorks: ${report.permissionSummaryWorks === true}
+` +
+    `- assistantContextWorks: ${report.assistantContextWorks === true}
+` +
+    `- clearAssistantContextWorks: ${report.clearAssistantContextWorks === true}
+` +
+    `- inputTargetingStillCorrect: ${report.inputTargetingStillCorrect === true}
+` +
+    `- automationReportStillWorks: ${report.automationReportStillWorks === true}
+` +
     `- continueUsesWorkflowMemory: ${report.continueUsesWorkflowMemory === true}
 ` +
     `- permissionQuestionVoiceStateWorks: ${report.permissionQuestionVoiceStateWorks === true}
@@ -1191,6 +1215,17 @@ async function main() {
     repeatLastResponseWorks: extensionReport ? extensionReport.repeatLastResponseWorks === true : false,
     stopSpeakingWorks: extensionReport ? extensionReport.stopSpeakingWorks === true : false,
     manualFallbackWorks: extensionReport ? extensionReport.manualFallbackWorks === true : false,
+    assistantInterfaceExists: extensionReport ? extensionReport.assistantInterfaceExists === true : false,
+    unifiedConversationSurfaceWorks: extensionReport ? extensionReport.unifiedConversationSurfaceWorks === true : false,
+    commandUnderstandingPanelWorks: extensionReport ? extensionReport.commandUnderstandingPanelWorks === true : false,
+    currentFocusPanelWorks: extensionReport ? extensionReport.currentFocusPanelWorks === true : false,
+    responseDraftPanelWorks: extensionReport ? extensionReport.responseDraftPanelWorks === true : false,
+    nextSuggestionsWork: extensionReport ? extensionReport.nextSuggestionsWork === true : false,
+    permissionSummaryWorks: extensionReport ? extensionReport.permissionSummaryWorks === true : false,
+    assistantContextWorks: extensionReport ? extensionReport.assistantContextWorks === true : false,
+    clearAssistantContextWorks: extensionReport ? extensionReport.clearAssistantContextWorks === true : false,
+    inputTargetingStillCorrect: extensionReport ? extensionReport.inputTargetingStillCorrect === true : false,
+    automationReportStillWorks: extensionReport ? extensionReport.showAutomationReportCommandWorks === true : false,
     continueUsesWorkflowMemory: extensionReport ? extensionReport.continueUsesWorkflowMemory === true : false,
     permissionQuestionVoiceStateWorks: extensionReport ? extensionReport.permissionQuestionVoiceStateWorks === true : false,
     voiceSessionControllerExists: extensionReport ? extensionReport.voiceSessionControllerExists === true : false,

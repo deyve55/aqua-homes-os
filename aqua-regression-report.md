@@ -1,10 +1,10 @@
-# Aqua Homes OS v62P Regression Report
+# Aqua Homes OS v62Q Regression Report
 
-- Timestamp: 2026-06-06T16:51:48.021Z
+- Timestamp: 2026-06-06T17:08:29.093Z
 - Branch: work
-- Commit: ce60aae074f712f4cc846728405966061631fdab
-- Total tests: 413
-- Passed: 413
+- Commit: 8743a52b3d7b222d9e6bb3c0379b2b5432339e7c
+- Total tests: 415
+- Passed: 415
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -155,6 +155,17 @@
 - repeatLastResponseWorks: true
 - stopSpeakingWorks: true
 - manualFallbackWorks: true
+- assistantInterfaceExists: true
+- unifiedConversationSurfaceWorks: true
+- commandUnderstandingPanelWorks: true
+- currentFocusPanelWorks: true
+- responseDraftPanelWorks: true
+- nextSuggestionsWork: true
+- permissionSummaryWorks: true
+- assistantContextWorks: true
+- clearAssistantContextWorks: true
+- inputTargetingStillCorrect: true
+- automationReportStillWorks: true
 - continueUsesWorkflowMemory: true
 - permissionQuestionVoiceStateWorks: true
 - voiceSessionControllerExists: true
@@ -242,7 +253,7 @@
 - aqua-regression-report.md
 - aqua-v61-extensions.js
 - aqua-v61-regression-test.js
-- aqua-brain-e2e-speech-routing-v62p.md
+- aqua-brain-assistant-interface-v62q.md
 
 ## Failed Commands / Checks
 - None
@@ -282,9 +293,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62P
-- Total: 245
-- Passed: 245
+- Version: v62Q
+- Total: 256
+- Passed: 256
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
