@@ -293,6 +293,8 @@ function checkStaticFiles() {
   addCheck('v62M report flags exist', /backendSchemaExists/.test(extension) && /hendersonDemoIndexWorks/.test(extension) && /exportPacketIndexWorks/.test(extension), { layer: 'backend-schema-v62m', fileToFix: EXTENSION });
   addCheck('v62N data query runtime exists', /window\.AquaDataQueryRuntimeV62N|function\s+createAquaDataQueryRuntimeV62N/.test(extension) && /Aqua Brain Data Query — v62N/.test(extension), { layer: 'data-query-runtime-v62n', fileToFix: EXTENSION });
   addCheck('v62N query runtime flags exist', /dataQueryRuntimeExists/.test(extension) && /projectAliasResolverWorks/.test(extension) && /hendersonExportPacketQueryWorks/.test(extension), { layer: 'data-query-runtime-v62n', fileToFix: EXTENSION });
+  addCheck('v62N Aqua Brain control matrix exists', /window\.AquaBrainControlMatrixV62N|function\s+getAquaBrainControlMatrixV62N/.test(extension) && /Aqua Brain Full Interface Map — v62N/.test(extension), { layer: 'brain-control-matrix-v62n', fileToFix: EXTENSION });
+  addCheck('v62N Aqua Brain coverage validation flags exist', /brainControlMatrixExists/.test(extension) && /aiInterfaceMapWorks/.test(extension) && /coverageValidationWorks/.test(extension), { layer: 'brain-control-matrix-v62n', fileToFix: EXTENSION });
   addCheck('v62L role permission plan strings exist', /rolePermissionPlanWorks/.test(extension) && /owner_admin/.test(extension) && /field_worker cannot export accounting/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
   addCheck('v62F workflow planner architecture exists', /AquaWorkflowPlannerV62F/.test(extension) && /function\s+planAquaWorkflowV62F/.test(extension) && /Aqua Brain Workflow Plan — v62F/.test(extension) && /aquaWorkflowPlansV62F/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
   addCheck('v62F workflow report flags exist', /receiptExportWorkflowWorks/.test(extension) && /uploadWorkflowStaysLocked/.test(extension) && /ownerReviewDemoWorks/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
@@ -353,6 +355,7 @@ function runExtensionRegression() {
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
     addCheck('extension regression version is v62N', extensionReport.version === 'v62N', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('v62L backendBoundaryExists is true', extensionReport.backendBoundaryExists === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendBoundaryExists, fileToFix: EXTENSION });
     addCheck('v62L serverOnlyKeyPolicyWorks is true', extensionReport.serverOnlyKeyPolicyWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.serverOnlyKeyPolicyWorks, fileToFix: EXTENSION });
@@ -837,6 +840,17 @@ function markdown(report) {
     `- riskMapWorks: ${report.riskMapWorks === true}\n` +
     `- approvalRoutesWork: ${report.approvalRoutesWork === true}\n` +
     `- frontendBlockRulesWork: ${report.frontendBlockRulesWork === true}\n` +
+    `- brainControlMatrixExists: ${report.brainControlMatrixExists === true}\n` +
+    `- aiInterfaceMapWorks: ${report.aiInterfaceMapWorks === true}\n` +
+    `- moduleCoverageWorks: ${report.moduleCoverageWorks === true}\n` +
+    `- workflowCoverageWorks: ${report.workflowCoverageWorks === true}\n` +
+    `- voiceCoverageWorks: ${report.voiceCoverageWorks === true}\n` +
+    `- visualRouteCoverageWorks: ${report.visualRouteCoverageWorks === true}\n` +
+    `- readbackCoverageWorks: ${report.readbackCoverageWorks === true}\n` +
+    `- permissionGateCoverageWorks: ${report.permissionGateCoverageWorks === true}\n` +
+    `- manualFallbackCoverageWorks: ${report.manualFallbackCoverageWorks === true}\n` +
+    `- backendReadinessCoverageWorks: ${report.backendReadinessCoverageWorks === true}\n` +
+    `- coverageValidationWorks: ${report.coverageValidationWorks === true}\n` +
     `- dataQueryRuntimeExists: ${report.dataQueryRuntimeExists === true}\n` +
     `- queryNormalizerWorks: ${report.queryNormalizerWorks === true}\n` +
     `- projectAliasResolverWorks: ${report.projectAliasResolverWorks === true}\n` +
@@ -1221,6 +1235,17 @@ async function main() {
     markReviewReadyDemoWorks: extensionReport ? extensionReport.markReviewReadyDemoWorks === true : false,
     clearSowReviewQueueWorks: extensionReport ? extensionReport.clearSowReviewQueueWorks === true : false,
     noLiveSowCreated: extensionReport ? extensionReport.noLiveSowCreated === true : false,
+    brainControlMatrixExists: extensionReport ? extensionReport.brainControlMatrixExists === true : false,
+    aiInterfaceMapWorks: extensionReport ? extensionReport.aiInterfaceMapWorks === true : false,
+    moduleCoverageWorks: extensionReport ? extensionReport.moduleCoverageWorks === true : false,
+    workflowCoverageWorks: extensionReport ? extensionReport.workflowCoverageWorks === true : false,
+    voiceCoverageWorks: extensionReport ? extensionReport.voiceCoverageWorks === true : false,
+    visualRouteCoverageWorks: extensionReport ? extensionReport.visualRouteCoverageWorks === true : false,
+    readbackCoverageWorks: extensionReport ? extensionReport.readbackCoverageWorks === true : false,
+    permissionGateCoverageWorks: extensionReport ? extensionReport.permissionGateCoverageWorks === true : false,
+    manualFallbackCoverageWorks: extensionReport ? extensionReport.manualFallbackCoverageWorks === true : false,
+    backendReadinessCoverageWorks: extensionReport ? extensionReport.backendReadinessCoverageWorks === true : false,
+    coverageValidationWorks: extensionReport ? extensionReport.coverageValidationWorks === true : false,
     dataQueryRuntimeExists: extensionReport ? extensionReport.dataQueryRuntimeExists === true : false,
     queryNormalizerWorks: extensionReport ? extensionReport.queryNormalizerWorks === true : false,
     projectAliasResolverWorks: extensionReport ? extensionReport.projectAliasResolverWorks === true : false,

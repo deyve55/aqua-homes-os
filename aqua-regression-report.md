@@ -1,10 +1,10 @@
 # Aqua Homes OS v62N Regression Report
 
-- Timestamp: 2026-06-06T15:46:09.502Z
+- Timestamp: 2026-06-06T16:20:05.434Z
 - Branch: work
-- Commit: 71c44afe46f1e31ad677ab344dffb958fdbf11be
-- Total tests: 361
-- Passed: 361
+- Commit: 40e1de9a52e2698a3b2f64cc8d76fa8e4eb3b105
+- Total tests: 374
+- Passed: 374
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -24,6 +24,17 @@
 - riskMapWorks: true
 - approvalRoutesWork: true
 - frontendBlockRulesWork: true
+- brainControlMatrixExists: true
+- aiInterfaceMapWorks: true
+- moduleCoverageWorks: true
+- workflowCoverageWorks: true
+- voiceCoverageWorks: true
+- visualRouteCoverageWorks: true
+- readbackCoverageWorks: true
+- permissionGateCoverageWorks: true
+- manualFallbackCoverageWorks: true
+- backendReadinessCoverageWorks: true
+- coverageValidationWorks: true
 - dataQueryRuntimeExists: true
 - queryNormalizerWorks: true
 - projectAliasResolverWorks: true
@@ -244,8 +255,8 @@ MERGE_ALLOWED
 
 ## Extension Regression Summary
 - Version: v62N
-- Total: 202
-- Passed: 202
+- Total: 212
+- Passed: 212
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
