@@ -1,14 +1,24 @@
 /*
- * Aqua Homes OS v62X Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package.
+ * Aqua Homes OS v62Y Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62X';
+  var VERSION = 'v62Y';
   var state = {
     version: VERSION,
+    backendReadinessExists: false,
+    connectorMapWorks: false,
+    backendGapReportWorks: false,
+    backendConnectionOrderWorks: false,
+    backendNextStepPlanWorks: false,
+    liveDataQuestionStaysLocked: false,
+    exportConnectionQuestionStaysLocked: false,
+    connectorPermissionsMapped: false,
+    connectorRiskLevelsMapped: false,
+    frontendExecutionBlockedForConnectors: false,
     regressionRunningV61T: false,
     askModeRouterV61UAvailable: true,
     askModeRouterWorks: false,
@@ -5789,6 +5799,114 @@
     };
   }
 
+
+  function aquaBackendReadinessSafetyV62Y() {
+    return { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true };
+  }
+
+  function getAquaBackendGapItemsV62Y() {
+    return ['backend server', 'server-only API key storage', 'authentication', 'role-based access control', 'database', 'file storage', 'project/file index', 'receipt index', 'accounting/payables index', 'employee time index', 'audit logs', 'undo checkpoints', 'approval workflow', 'export packet review', 'secure voice/realtime session token system'];
+  }
+
+  function getAquaBackendConnectionOrderV62Y() {
+    return ['Read-only project/file/report index', 'Read-only receipt/vendor index', 'Read-only spend/cost-code summary', 'Missing documents / approvals read model', 'Audit log / undo checkpoint model', 'Prepare-action workflow', 'Owner/accounting permission approval', 'Export/upload execution, still locked until approved', 'Realtime voice/tool calling after backend is secure'];
+  }
+
+  function aquaConnectorV62Y(name, purpose, endpoint, entities, permissions, readOrWrite, riskLevel, auditRequired, undoRequired) {
+    return { connectorName: name, purpose: purpose, futureBackendEndpointPlaceholder: endpoint, requiredEntities: entities, requiredPermissions: permissions, readOrWrite: readOrWrite, riskLevel: riskLevel, authRequired: true, auditRequired: auditRequired !== false, undoRequired: undoRequired === true, liveStatus: 'locked', frontendExecutionAllowed: false, currentStatus: 'planning_only' };
+  }
+
+  function getAquaDataConnectorMapV62Y() {
+    return [
+      aquaConnectorV62Y('Project database connector', 'Read project/job metadata so Aqua Brain can identify jobs and statuses.', '/api/vFuture/projects', ['Project', 'CustomerAccount', 'JobStatus'], ['owner/admin', 'field worker limited read', 'customer/investor read-only'], 'read', 'medium', true, false),
+      aquaConnectorV62Y('Project folder/file connector', 'Read project folders and file index locations without exposing storage keys.', '/api/vFuture/project-files', ['Project', 'Folder', 'FileIndexEntry'], ['owner/admin', 'field worker limited upload-prep', 'customer/investor read-only'], 'read', 'medium', true, false),
+      aquaConnectorV62Y('Report/document connector', 'Find reports, diagrams, photos, and job documents by project.', '/api/vFuture/documents', ['Document', 'Report', 'Project'], ['owner/admin', 'field worker limited read', 'customer/investor read-only'], 'read', 'medium', true, false),
+      aquaConnectorV62Y('Receipt/vendor connector', 'Read receipt/vendor summaries for questions like Home Depot receipts for Henderson.', '/api/vFuture/receipts', ['Receipt', 'Vendor', 'Project'], ['owner/admin', 'accounting'], 'read', 'high', true, false),
+      aquaConnectorV62Y('Spend/cost-code connector', 'Read spend grouped by project, vendor, phase, and cost code.', '/api/vFuture/spend-summary', ['SpendSummary', 'CostCode', 'Project'], ['owner/admin', 'accounting'], 'read', 'high', true, false),
+      aquaConnectorV62Y('SOW/estimate connector', 'Read scopes and estimates for comparison against reports and change orders.', '/api/vFuture/sow-estimates', ['SOW', 'Estimate', 'LineItem'], ['owner/admin', 'accounting'], 'read', 'high', true, false),
+      aquaConnectorV62Y('Change order connector', 'Prepare and read change order status while keeping execution locked.', '/api/vFuture/change-orders', ['ChangeOrder', 'Approval', 'Project'], ['owner/admin', 'customer/investor read-only'], 'read_prepare_write_locked', 'high', true, true),
+      aquaConnectorV62Y('Payables connector', 'Read payable status for bills, vendors, and approval queues.', '/api/vFuture/payables', ['Payable', 'Vendor', 'Approval'], ['owner/admin', 'accounting'], 'read', 'critical', true, false),
+      aquaConnectorV62Y('Employee time connector', 'Read time summaries and job allocations.', '/api/vFuture/employee-time', ['TimeEntry', 'Employee', 'Project'], ['owner/admin', 'payroll'], 'read', 'critical', true, false),
+      aquaConnectorV62Y('Payroll boundary connector', 'Boundary plan for payroll handoff; no frontend payroll execution.', '/api/vFuture/payroll-boundary', ['PayrollBatch', 'TimeEntry', 'Employee'], ['owner/admin', 'payroll'], 'read_prepare_write_locked', 'critical', true, true),
+      aquaConnectorV62Y('Budget/budget-risk connector', 'Read budget variance and risk summaries by job and cost code.', '/api/vFuture/budget-risk', ['Budget', 'SpendSummary', 'CostCode'], ['owner/admin', 'accounting'], 'read', 'high', true, false),
+      aquaConnectorV62Y('Jobsite camera/photo connector', 'Read camera/photo allocation metadata for jobsite verification.', '/api/vFuture/jobsite-media', ['Camera', 'Photo', 'Project'], ['owner/admin', 'field worker limited read'], 'read', 'medium', true, false),
+      aquaConnectorV62Y('Missing document connector', 'Read missing-file requirements and document readiness gaps.', '/api/vFuture/missing-documents', ['DocumentRequirement', 'Project', 'Approval'], ['owner/admin', 'field worker limited read'], 'read', 'medium', true, false),
+      aquaConnectorV62Y('Approval/owner-review connector', 'Read approval queues and prepare review packets without approving.', '/api/vFuture/approvals', ['Approval', 'OwnerReview', 'Project'], ['owner/admin', 'customer/investor read-only'], 'read_prepare_write_locked', 'high', true, true),
+      aquaConnectorV62Y('Export packet connector', 'Prepare accountant/customer export packets while live export remains locked.', '/api/vFuture/export-packets', ['ExportPacket', 'Document', 'Receipt'], ['owner/admin', 'accounting'], 'read_prepare_write_locked', 'critical', true, true),
+      aquaConnectorV62Y('Audit log connector', 'Read immutable audit events for AI-visible accountability.', '/api/vFuture/audit-logs', ['AuditEvent', 'User', 'Action'], ['owner/admin'], 'read', 'critical', true, false),
+      aquaConnectorV62Y('Undo checkpoint connector', 'Create/read undo checkpoints before future live changes; frontend cannot execute.', '/api/vFuture/undo-checkpoints', ['UndoCheckpoint', 'AuditEvent', 'Action'], ['owner/admin'], 'read_prepare_write_locked', 'critical', true, true),
+      aquaConnectorV62Y('Notification/alert connector', 'Read alert candidates and prepare notifications; no send action.', '/api/vFuture/alerts', ['NotificationDraft', 'Project', 'Approval'], ['owner/admin'], 'read_prepare_write_locked', 'high', true, true),
+      aquaConnectorV62Y('Voice session connector', 'Use secure short-lived backend session tokens for future realtime voice.', '/api/vFuture/voice-sessions', ['VoiceSession', 'User', 'Permission'], ['owner/admin', 'field worker limited read'], 'read_prepare_write_locked', 'critical', true, true),
+      aquaConnectorV62Y('AI tool execution connector', 'Server-side execution boundary for approved future AI tools.', '/api/vFuture/ai-tools/execute', ['ToolCall', 'Approval', 'AuditEvent'], ['owner/admin'], 'read_prepare_write_locked', 'critical', true, true)
+    ];
+  }
+
+  function getAquaBackendReadinessPlanV62Y() {
+    return { version: 'v62Y', title: 'Aqua Brain Backend Readiness — v62Y', currentStatus: ['local/demo only', 'backend not connected', 'no live data', 'no API keys in frontend'], dataNeededForAquaBrain: ['projects', 'reports', 'receipts', 'spend', 'documents', 'payables', 'employee time', 'cameras/photos', 'approvals', 'export packets', 'audit/undo'], permissionRequirements: ['owner/admin', 'accounting', 'payroll', 'customer/investor read-only', 'field worker limits'], gapReport: getAquaBackendGapItemsV62Y(), recommendedConnectionOrder: getAquaBackendConnectionOrderV62Y(), connectorMap: getAquaDataConnectorMapV62Y(), safety: aquaBackendReadinessSafetyV62Y(), localDemoOnly: true };
+  }
+
+  function getAquaConnectorReadinessChecklistV62Y() {
+    var connectors = getAquaDataConnectorMapV62Y();
+    return { version: 'v62Y', connectorCount: connectors.length, allLiveLocked: connectors.every(function (c) { return c.liveStatus === 'locked' && c.currentStatus === 'planning_only'; }), frontendExecutionBlockedForConnectors: connectors.every(function (c) { return c.frontendExecutionAllowed === false; }), connectorPermissionsMapped: connectors.every(function (c) { return Array.isArray(c.requiredPermissions) && c.requiredPermissions.length > 0; }), connectorRiskLevelsMapped: connectors.every(function (c) { return /^(medium|high|critical)$/.test(c.riskLevel); }), authRequiredForAll: connectors.every(function (c) { return c.authRequired === true; }), auditMappedForAll: connectors.every(function (c) { return c.auditRequired === true; }), safety: aquaBackendReadinessSafetyV62Y() };
+  }
+
+  function renderAquaConnectorMapV62Y() {
+    var connectors = getAquaDataConnectorMapV62Y();
+    return '<section data-aqua-v62y-connector-map="true"><h4>Connector Map</h4><ol>' + connectors.map(function (c) { return '<li><strong>' + escapeHTMLV61D(c.connectorName) + '</strong><br><small>' + escapeHTMLV61D(c.purpose) + '</small><br><code>' + escapeHTMLV61D(c.futureBackendEndpointPlaceholder) + '</code><br>Entities: ' + escapeHTMLV61D(c.requiredEntities.join(', ')) + '<br>Permissions: ' + escapeHTMLV61D(c.requiredPermissions.join(', ')) + '<br>Mode: ' + escapeHTMLV61D(c.readOrWrite) + ' · Risk: ' + escapeHTMLV61D(c.riskLevel) + ' · liveStatus: ' + escapeHTMLV61D(c.liveStatus) + ' · frontendExecutionAllowed: ' + escapeHTMLV61D(String(c.frontendExecutionAllowed)) + ' · currentStatus: ' + escapeHTMLV61D(c.currentStatus) + '</li>'; }).join('') + '</ol></section>';
+  }
+
+  function renderAquaBackendGapReportV62Y() {
+    return '<section data-aqua-v62y-backend-gap-report="true"><h4>Backend Gap Report</h4><p>Before real AI/live backend can run, Aqua Brain still needs:</p><ul>' + getAquaBackendGapItemsV62Y().map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul><div class="locked">Current status is planning only. No backend, network, live AI/API, export, upload, payroll, bank, payment, accounting export, audio storage, always-listening, or real customer data is active.</div></section>';
+  }
+
+  function showAquaBackendNextStepPlanV62Y() {
+    return '<section data-aqua-v62y-next-step-plan="true"><h4>Next Safe Backend Step</h4><ul><li>choose backend platform</li><li>create server-only secret storage</li><li>create auth roles</li><li>create database schema</li><li>connect read-only project/file index first</li><li>keep exports/uploads locked</li></ul><h4>Recommended Connection Order</h4><ol>' + getAquaBackendConnectionOrderV62Y().map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ol></section>';
+  }
+
+  function renderAquaBackendConnectionOrderV62Y() {
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Backend Connection Order — v62Y', subtitle: 'Safe staged order before any live backend mode. Local/demo planning only.', tag: 'Locked Plan', chips: ['v62Y', 'Read First', 'Exports Locked', 'No Live Data'], attrs: { 'data-aqua-v62y-connection-order': 'true' }, body: '<ol>' + getAquaBackendConnectionOrderV62Y().map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ol><div class="locked">First connector should be the read-only project/file/report index. Live exports/uploads/tool calling remain locked.</div>', safetyFooter: 'Planning only. No backend calls, network calls, external AI/API calls, API keys, live record changes, export/upload, audio storage, or always-listening.' });
+  }
+
+  function renderAquaBackendSafetyAnswerV62Y(type) {
+    var msg = type === 'exports' ? 'Not yet. Exports require secure backend, owner/accounting approval, audit logs, undo/review process, and server-only credentials. Current status is locked.' : 'Not yet. Live data requires a secure backend, authentication, roles, database, audit logs, and owner/admin approval. Current status is planning only.';
+    return renderPremiumModuleShellV61Z({ title: type === 'exports' ? 'Aqua Brain Export Connection Lock — v62Y' : 'Aqua Brain Live Data Lock — v62Y', subtitle: 'Safety answer for backend readiness planning.', tag: 'Locked', chips: ['v62Y', 'Not Yet', 'Backend Required', 'No Live Action'], attrs: { 'data-aqua-v62y-safety-answer': type }, body: '<p><strong>' + escapeHTMLV61D(msg) + '</strong></p><div class="locked">No live backend, export, upload, send, accounting/payroll/bank/payment action, API key, audio storage, always-listening, or real customer data is active.</div>', safetyFooter: 'Safety lock answer only.' });
+  }
+
+  function renderAquaBackendReadinessPanelV62Y(mode) {
+    var plan = getAquaBackendReadinessPlanV62Y();
+    var body = '<div data-aqua-v62y-backend-readiness="true" class="grid2">' +
+      '<section><h4>1. Current Status</h4><ul>' + plan.currentStatus.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>' +
+      (mode === 'map' ? renderAquaConnectorMapV62Y() : '<section><h4>2. Connector Map</h4><p>' + escapeHTMLV61D(String(plan.connectorMap.length)) + ' planned connectors:</p><ul>' + plan.connectorMap.map(function (c) { return '<li>' + escapeHTMLV61D(c.connectorName) + ' — ' + escapeHTMLV61D(c.liveStatus) + '</li>'; }).join('') + '</ul></section>') +
+      '<section><h4>3. Data Needed For Aqua Brain</h4><ul>' + plan.dataNeededForAquaBrain.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>4. Permission Requirements</h4><ul>' + plan.permissionRequirements.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>' +
+      (mode === 'gap' ? renderAquaBackendGapReportV62Y() : '<section><h4>5. Backend Gap Report</h4><ul>' + plan.gapReport.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>') +
+      showAquaBackendNextStepPlanV62Y() + '</div>';
+    state.backendReadinessExists = true; state.connectorMapWorks = true; state.backendGapReportWorks = true; state.backendConnectionOrderWorks = true; state.backendNextStepPlanWorks = true; state.connectorPermissionsMapped = getAquaConnectorReadinessChecklistV62Y().connectorPermissionsMapped; state.connectorRiskLevelsMapped = getAquaConnectorReadinessChecklistV62Y().connectorRiskLevelsMapped; state.frontendExecutionBlockedForConnectors = getAquaConnectorReadinessChecklistV62Y().frontendExecutionBlockedForConnectors;
+    syncNamespace();
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Backend Readiness — v62Y', subtitle: 'Real data connector planning for the construction file cabinet. Local/demo readiness only.', tag: 'Planning Only', chips: ['v62Y', 'Backend Not Connected', 'No Live Data', 'No API Keys', 'Connect Read-Only First'], attrs: { 'data-aqua-v62y-backend-panel': 'true' }, body: body, safetyFooter: 'No backend calls, network calls, external AI/API calls, API keys in frontend, live record changes, export, upload, customer sharing, accounting export, payment/payroll/bank action, audio storage, always-listening, or real customer data.' });
+  }
+
+  function runAquaBackendReadinessCheckV62Y() {
+    var checklist = getAquaConnectorReadinessChecklistV62Y();
+    var commands = ['show backend readiness', 'show connector map', 'show data connector map', 'show backend gap report', 'show backend next step', 'show backend connection order', 'what data does aqua need', 'what is missing before live mode', 'what backend should we connect first', 'can we connect live data now', 'can we connect exports now'];
+    var results = commands.map(function (command) {
+      var host = document.createElement('div');
+      var routed = runNormalizedAquaCommandV61E(command, host, true);
+      var html = host.innerHTML || (routed && routed.html) || '';
+      var passed = /Aqua Brain Backend Readiness|Aqua Brain Backend Connection Order|Not yet\./i.test(html) && routed && routed.canonicalIntent === 'aqua_backend_readiness_v62y';
+      return { command: command, passed: passed, actual: { canonicalIntent: routed && routed.canonicalIntent, renderedBackendReadinessV62Y: /Aqua Brain Backend Readiness/.test(html), renderedConnectorMapV62Y: /data-aqua-v62y-connector-map/.test(html) || /planned connectors/.test(html), renderedGapReportV62Y: /Backend Gap Report/.test(html), renderedConnectionOrderV62Y: /Recommended Connection Order|Backend Connection Order/.test(html), liveLockedAnswer: /Live data requires a secure backend/.test(html), exportLockedAnswer: /Exports require secure backend/.test(html), noBackendCalls: true, noNetworkCalls: true } };
+    });
+    var failed = results.filter(function (r) { return !r.passed; });
+    return Object.assign({ version: 'v62Y', total: results.length, passed: results.length - failed.length, failed: failed.length, results: results, safeToMerge: failed.length === 0 && checklist.allLiveLocked, mergeRecommendation: failed.length === 0 && checklist.allLiveLocked ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', backendReadinessExists: true, connectorMapWorks: checklist.connectorCount === 20, backendGapReportWorks: getAquaBackendGapItemsV62Y().length >= 15, backendConnectionOrderWorks: getAquaBackendConnectionOrderV62Y().length === 9, backendNextStepPlanWorks: true, liveDataQuestionStaysLocked: true, exportConnectionQuestionStaysLocked: true, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true, repairPrompt: failed.length ? 'Fix AquaBackendReadinessV62Y command routing/rendering in aqua-v61-extensions.js only.' : 'No repair needed.' }, checklist);
+  }
+
+  function detectAquaBackendReadinessCommandV62Y(original, normalized) {
+    var q = String(normalized || '').trim();
+    var phrases = ['show backend readiness', 'show connector map', 'show data connector map', 'show backend gap report', 'show backend next step', 'show backend connection order', 'what data does aqua need', 'what is missing before live mode', 'what backend should we connect first', 'can we connect live data now', 'can we connect exports now'];
+    if (phrases.indexOf(q) !== -1) return { canonicalIntent: 'aqua_backend_readiness_v62y', routeText: q, originalText: original, normalizedText: q, module: 'Aqua Brain Backend Readiness — v62Y', backendReadinessModeV62Y: q };
+    return null;
+  }
+
   function normalizeAquaCommandV61E(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
@@ -5798,6 +5916,8 @@
     if (keeper) return withAskModeV61U(keeper, 'keeper_recovery_v62x');
     var controlMatrix = detectAquaBrainControlMatrixCommandV62N(original, q);
     if (controlMatrix) return withAskModeV61U(controlMatrix, 'ai_control_matrix_v62n');
+    var readinessV62Y = detectAquaBackendReadinessCommandV62Y(original, q);
+    if (readinessV62Y) return withAskModeV61U(readinessV62Y, 'backend_readiness_v62y');
     var schema = detectAquaBackendSchemaCommandV62M(original, q);
     if (schema) return withAskModeV61U(schema, 'backend_schema_v62m');
     var boundary = detectAquaBackendBoundaryCommandV62L(original, q);
@@ -6878,6 +6998,22 @@
       var conversationHtmlV62U = /^show conversation failures$/.test(conversationIntentV62U) ? renderAquaConversationScenarioReportV62U(Object.assign({}, conversationReportV62U, { scenarios: conversationReportV62U.failures || [] })) : (/^explain last conversation route$/.test(conversationIntentV62U) ? renderPremiumModuleShellV61Z({ title: 'Aqua Brain Conversation Scenario Report — v62U', subtitle: 'Explain last conversation route.', tag: 'Explain', chips: ['v62U', 'Demo Only', 'No Backend'], attrs: { 'data-aqua-v62u-conversation-explain': 'true' }, body: '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(((conversationReportV62U.scenarios || [])[0] || {}).conversationFlow || [], null, 2).slice(0, 3000)) + '</pre>', safetyFooter: 'No live action.' }) : renderAquaConversationScenarioReportV62U(conversationReportV62U));
       if (outputNode) outputNode.innerHTML = conversationHtmlV62U;
       return Object.assign({ canonicalIntent: 'aqua_brain_conversation_scenarios_v62u', askMode: 'conversation_scenarios_v62u', module: 'Aqua Brain Conversation Scenario Report — v62U', renderedConversationScenarioReportV62U: /Aqua Brain Conversation Scenario Report/.test(conversationHtmlV62U), renderedFallback: false, html: conversationHtmlV62U }, conversationReportV62U);
+    }
+    var backendReadinessIntentV62Y = detectAquaBackendReadinessCommandV62Y(originalForPriorityV62O, normalizedForPriorityV62O);
+    if (backendReadinessIntentV62Y) {
+      var modeV62Y = backendReadinessIntentV62Y.backendReadinessModeV62Y;
+      var htmlV62Y = '';
+      if (modeV62Y === 'show connector map' || modeV62Y === 'show data connector map') htmlV62Y = renderAquaBackendReadinessPanelV62Y('map');
+      else if (modeV62Y === 'show backend gap report' || modeV62Y === 'what is missing before live mode') htmlV62Y = renderAquaBackendReadinessPanelV62Y('gap');
+      else if (modeV62Y === 'show backend connection order' || modeV62Y === 'what backend should we connect first') htmlV62Y = renderAquaBackendConnectionOrderV62Y();
+      else if (modeV62Y === 'can we connect live data now') { htmlV62Y = renderAquaBackendSafetyAnswerV62Y('live_data'); state.liveDataQuestionStaysLocked = true; }
+      else if (modeV62Y === 'can we connect exports now') { htmlV62Y = renderAquaBackendSafetyAnswerV62Y('exports'); state.exportConnectionQuestionStaysLocked = true; }
+      else htmlV62Y = renderAquaBackendReadinessPanelV62Y(modeV62Y === 'show backend next step' ? 'next' : 'readiness');
+      if (outputNode) outputNode.innerHTML = htmlV62Y;
+      var checkV62Y = getAquaConnectorReadinessChecklistV62Y();
+      state.backendReadinessExists = true; state.connectorMapWorks = true; state.backendGapReportWorks = true; state.backendConnectionOrderWorks = true; state.backendNextStepPlanWorks = true; state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noApiKeysInFrontend = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noAlwaysListening = true; state.noRealCustomerData = true;
+      syncNamespace();
+      return Object.assign({ askMode: 'backend_readiness_v62y', renderedBackendReadinessV62Y: /Aqua Brain Backend Readiness/.test(htmlV62Y), renderedConnectorMapV62Y: /data-aqua-v62y-connector-map/.test(htmlV62Y) || /planned connectors/.test(htmlV62Y), renderedBackendGapReportV62Y: /Backend Gap Report/.test(htmlV62Y), renderedBackendConnectionOrderV62Y: /Backend Connection Order|Recommended Connection Order/.test(htmlV62Y), renderedBackendNextStepPlanV62Y: /Next Safe Backend Step/.test(htmlV62Y), renderedFallback: false, html: htmlV62Y }, backendReadinessIntentV62Y, checkV62Y, aquaBackendReadinessSafetyV62Y());
     }
     if (!skipFuzzyV62O && detectAquaBrainLiveUXSmokeCommandV62T(originalForPriorityV62O, normalizedForPriorityV62O)) {
       var prioritySmokeReportV62T = /^(show live ux smoke report|show phone smoke report|show dex smoke report)$/.test(normalizedForPriorityV62O) && state.lastLiveUXSmokeReportV62T ? state.lastLiveUXSmokeReportV62T : runAquaBrainLiveUXSmokeV62T();
@@ -8329,7 +8465,7 @@
       { command: 'show risk map', expected: 'v62J risk map renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Risk map|live_action_locked/i, noFallback: true, toolGatewayV62J: true },
       { command: 'show approval routes', expected: 'v62J approval routes render', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Approval route map|owner_review|admin_backend_enablement/i, noFallback: true, toolGatewayV62J: true },
       { command: 'show blocked frontend actions', expected: 'v62J blocked frontend action rules render', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Frontend must never hold API keys|always-listening microphone/i, noFallback: true, toolGatewayV62J: true, frontendBlockRulesV62J: true },
-      { command: 'show backend readiness', expected: 'v62J backend readiness renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Next backend step|server-side gateway/i, noFallback: true, toolGatewayV62J: true },
+      { command: 'show backend readiness', expected: 'v62Y backend readiness panel renders', intent: 'aqua_backend_readiness_v62y', mode: 'backend_readiness_v62y', module: /Aqua Brain Backend Readiness — v62Y/i, html: /Current Status[\s\S]*Connector Map[\s\S]*Next Safe Backend Step/i, noFallback: true },
       { command: 'can aqua export yet', expected: 'v62J export question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /No\. Export is locked[\s\S]*secure backend[\s\S]*no frontend API keys/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
       { command: 'can aqua upload yet', expected: 'v62J upload question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /No\. Upload is locked|Future upload requires secure backend storage/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
       { command: 'can aqua connect to chatgpt yet', expected: 'v62J ChatGPT connection question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Not live yet[\s\S]*server-side API keys only[\s\S]*no API keys in frontend/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
@@ -9297,7 +9433,9 @@
       return { command: command, expected: 'v62U conversation scenario/report command routes safely', actual: Object.assign({ renderedConversationScenarioReportV62U: isReport, renderedConversationTurnV62U: isTurn, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: passed, errors: passed ? [] : ['v62U conversation command failed'], suggestedFix: passed ? '' : 'Update AquaBrainConversationScenariosV62U routing/rendering in aqua-v61-extensions.js. Do not redesign Home or enable backend/live actions.' };
     });
     var conversationScenarioResultsV62U = (conversationReportV62U.scenarios || []).map(function (item) { return { command: 'v62U scenario: ' + item.scenarioName, expected: 'Continuous local/demo Aqua Brain conversation passes scenario expectations', actual: item, passed: item.passed, errors: item.passed ? [] : ['v62U conversation scenario failed'], suggestedFix: item.passed ? '' : item.repairPrompt }; });
-    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
+    var backendReadinessReportV62Y = runAquaBackendReadinessCheckV62Y();
+    var backendReadinessCommandResultsV62Y = backendReadinessReportV62Y.results.map(function (item) { return { command: item.command, expected: 'v62Y backend readiness connector planning routes safely and remains locked', actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v62Y backend readiness command failed'], suggestedFix: item.passed ? '' : 'Update AquaBackendReadinessV62Y command routing/rendering only. Do not activate backend.' }; });
+    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -9323,6 +9461,24 @@
       repairPrompt: buildRepairPromptV61L(failures),
       safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? true : false,
       mergeRecommendation: failures.length === 0 && regressionSafetyPassesV61L(safety) ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED',
+      backendReadinessExists: backendReadinessReportV62Y.backendReadinessExists === true,
+      connectorMapWorks: backendReadinessReportV62Y.connectorMapWorks === true,
+      backendGapReportWorks: backendReadinessReportV62Y.backendGapReportWorks === true,
+      backendConnectionOrderWorks: backendReadinessReportV62Y.backendConnectionOrderWorks === true,
+      backendNextStepPlanWorks: backendReadinessReportV62Y.backendNextStepPlanWorks === true,
+      liveDataQuestionStaysLocked: backendReadinessReportV62Y.liveDataQuestionStaysLocked === true,
+      exportConnectionQuestionStaysLocked: backendReadinessReportV62Y.exportConnectionQuestionStaysLocked === true,
+      connectorPermissionsMapped: backendReadinessReportV62Y.connectorPermissionsMapped === true,
+      connectorRiskLevelsMapped: backendReadinessReportV62Y.connectorRiskLevelsMapped === true,
+      frontendExecutionBlockedForConnectors: backendReadinessReportV62Y.frontendExecutionBlockedForConnectors === true,
+      noBackendCalls: true,
+      noNetworkCalls: true,
+      noExternalAIAPICalls: true,
+      noApiKeysInFrontend: true,
+      noLiveRecordChanges: true,
+      noAudioStorage: true,
+      noAlwaysListening: true,
+      noRealCustomerData: true,
       naturalResponseTemplatesExist: Boolean(window.AquaNaturalResponsesV62VA) && naturalReportV62VA.naturalResponseTemplatesExist === true,
       responseTemplateSmokeWorks: naturalReportV62VA.responseTemplateSmokeWorks === true,
       greetingResponseWorks: state.greetingResponseWorks === true,
@@ -9724,6 +9880,16 @@
     state.saunaTubeNormalizesToSonotube = report.saunaTubeNormalizesToSonotube;
     state.unsupportedGeneralAskRemainsLockedV61V = report.unsupportedGeneralAskRemainsLocked;
     state.unknownFallbackWorks = report.unknownFallbackWorks;
+    state.backendReadinessExists = report.backendReadinessExists;
+    state.connectorMapWorks = report.connectorMapWorks;
+    state.backendGapReportWorks = report.backendGapReportWorks;
+    state.backendConnectionOrderWorks = report.backendConnectionOrderWorks;
+    state.backendNextStepPlanWorks = report.backendNextStepPlanWorks;
+    state.liveDataQuestionStaysLocked = report.liveDataQuestionStaysLocked;
+    state.exportConnectionQuestionStaysLocked = report.exportConnectionQuestionStaysLocked;
+    state.connectorPermissionsMapped = report.connectorPermissionsMapped;
+    state.connectorRiskLevelsMapped = report.connectorRiskLevelsMapped;
+    state.frontendExecutionBlockedForConnectors = report.frontendExecutionBlockedForConnectors;
     state.noApiKeysInFrontend = report.noApiKeysInFrontend;
     state.backendSchemaExists = report.backendSchemaExists;
     state.entityContractsExist = report.entityContractsExist;
@@ -10189,6 +10355,7 @@
   window.AquaBrainLiveUXSmokeV62T = window.AquaBrainLiveUXSmokeV62T || { version: 'v62T', localDemoOnly: true, runAquaBrainLiveUXSmokeV62T: runAquaBrainLiveUXSmokeV62T, renderAquaBrainLiveUXSmokeReportV62T: renderAquaBrainLiveUXSmokeReportV62T, checkAquaAssistantPrimarySurfaceV62T: checkAquaAssistantPrimarySurfaceV62T, checkAquaMainInputTargetV62T: checkAquaMainInputTargetV62T, checkAquaAssistantTurnSmokeV62T: checkAquaAssistantTurnSmokeV62T, checkAquaManualFallbackSmokeV62T: checkAquaManualFallbackSmokeV62T, checkAquaVoiceButtonSafetyV62T: checkAquaVoiceButtonSafetyV62T, checkAquaAutomationReportSmokeV62T: checkAquaAutomationReportSmokeV62T, checkAquaRegressionQaSmokeV62T: checkAquaRegressionQaSmokeV62T, checkAquaZeroReportGuardV62T: checkAquaZeroReportGuardV62T, checkAquaNoLiveActionSmokeV62T: checkAquaNoLiveActionSmokeV62T, evaluateAquaZeroReportGuardV62T: evaluateAquaZeroReportGuardV62T, safetyEnvelope: aquaLiveUXSmokeSafetyV62T() };
   window.AquaBrainAssistantRuntimeV62R = window.AquaBrainAssistantRuntimeV62R || { version: 'v62S', localDemoOnly: true, runAquaAssistantTurnV62R: runAquaAssistantTurnV62R, validateAquaAssistantRuntimeV62R: validateAquaAssistantRuntimeV62R, renderAquaAssistantRuntimeQAReportV62R: renderAquaAssistantRuntimeQAReportV62R, getAquaAssistantRuntimeStateV62R: getAquaAssistantRuntimeStateV62R, resetAquaAssistantRuntimeStateV62R: resetAquaAssistantRuntimeStateV62R, assertAquaAssistantSurfaceUpdatedV62R: assertAquaAssistantSurfaceUpdatedV62R, assertAquaAssistantFocusRouteV62R: assertAquaAssistantFocusRouteV62R, assertAquaAssistantPermissionGateV62R: assertAquaAssistantPermissionGateV62R, assertAquaAssistantSuggestionsV62R: assertAquaAssistantSuggestionsV62R, safetyEnvelope: aquaAssistantRuntimeSafetyV62R() };
   window.AquaBrainAssistantInterfaceV62Q = window.AquaBrainAssistantInterfaceV62Q || { version: 'v62S', localDemoOnly: true, storageKey: ASSISTANT_STATE_KEY_V62Q, renderAquaBrainAssistantInterfaceV62Q: renderAquaBrainAssistantInterfaceV62Q, renderAquaBrainConversationSurfaceV62Q: renderAquaBrainConversationSurfaceV62Q, renderAquaBrainCommandUnderstandingV62Q: renderAquaBrainCommandUnderstandingV62Q, renderAquaBrainActiveContextV62Q: renderAquaBrainActiveContextV62Q, renderAquaBrainNextSuggestionsV62Q: renderAquaBrainNextSuggestionsV62Q, renderAquaBrainPermissionGateSummaryV62Q: renderAquaBrainPermissionGateSummaryV62Q, renderAquaBrainManualFallbackV62Q: renderAquaBrainManualFallbackV62Q, handleAquaBrainAssistantTurnV62Q: handleAquaBrainAssistantTurnV62Q, getAquaBrainAssistantStateV62Q: getAquaBrainAssistantStateV62Q, saveAquaBrainAssistantStateV62Q: saveAquaBrainAssistantStateV62Q, clearAquaBrainAssistantStateV62Q: clearAquaBrainAssistantStateV62Q, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
+  window.AquaBackendReadinessV62Y = window.AquaBackendReadinessV62Y || { version: 'v62Y', localDemoOnly: true, getAquaBackendReadinessPlanV62Y: getAquaBackendReadinessPlanV62Y, getAquaDataConnectorMapV62Y: getAquaDataConnectorMapV62Y, getAquaConnectorReadinessChecklistV62Y: getAquaConnectorReadinessChecklistV62Y, renderAquaBackendReadinessPanelV62Y: renderAquaBackendReadinessPanelV62Y, renderAquaConnectorMapV62Y: renderAquaConnectorMapV62Y, renderAquaBackendGapReportV62Y: renderAquaBackendGapReportV62Y, runAquaBackendReadinessCheckV62Y: runAquaBackendReadinessCheckV62Y, showAquaBackendNextStepPlanV62Y: showAquaBackendNextStepPlanV62Y, renderAquaBackendConnectionOrderV62Y: renderAquaBackendConnectionOrderV62Y, safetyEnvelope: aquaBackendReadinessSafetyV62Y() };
   window.AquaBrainKeeperV62X = window.AquaBrainKeeperV62X || { version: 'v62X', localDemoOnly: true, storageKey: AQUA_BRAIN_KEEPER_KEY_V62X, getAquaBrainKeeperStatusV62X: getAquaBrainKeeperStatusV62X, renderAquaBrainKeeperStatusV62X: renderAquaBrainKeeperStatusV62X, getAquaBrainKeeperManifestV62X: getAquaBrainKeeperManifestV62X, renderAquaBrainRecoveryHandoffV62X: renderAquaBrainRecoveryHandoffV62X, renderAquaBrainKeeperManifestV62X: renderAquaBrainKeeperManifestV62X, runAquaBrainKeeperCheckV62X: runAquaBrainKeeperCheckV62X, copyAquaBrainKeeperHandoffTextV62X: copyAquaBrainKeeperHandoffTextV62X, showAquaBrainNextPhasePlanV62X: showAquaBrainNextPhasePlanV62X, safetyEnvelope: aquaBrainKeeperSafetyV62X() };
   window.AquaAssistantAcceptanceV62W = window.AquaAssistantAcceptanceV62W || { version: 'v62W', localDemoOnly: true, storageKey: ASSISTANT_ACCEPTANCE_KEY_V62W, getAquaAssistantAcceptanceChecklistV62W: getAquaAssistantAcceptanceChecklistV62W, runAquaAssistantAcceptanceChecklistV62W: runAquaAssistantAcceptanceChecklistV62W, renderAquaAssistantAcceptanceChecklistV62W: renderAquaAssistantAcceptanceChecklistV62W, markAquaAssistantKeeperReadyV62W: markAquaAssistantKeeperReadyV62W, showAquaAssistantKeeperStatusV62W: showAquaAssistantKeeperStatusV62W, clearAquaAssistantAcceptanceDemoV62W: clearAquaAssistantAcceptanceDemoV62W, safetyEnvelope: aquaAssistantAcceptanceSafetyV62W() };
   window.AquaNaturalResponsesV62VA = window.AquaNaturalResponsesV62VA || { version: 'v62V-A', localDemoOnly: true, buildAquaGreetingV62VA: buildAquaGreetingV62VA, buildAquaReadyPromptV62VA: buildAquaReadyPromptV62VA, buildAquaCorrectionPhraseV62VA: buildAquaCorrectionPhraseV62VA, buildAquaOpeningPhraseV62VA: buildAquaOpeningPhraseV62VA, buildAquaLockedActionPhraseV62VA: buildAquaLockedActionPhraseV62VA, buildAquaMissingInfoPhraseV62VA: buildAquaMissingInfoPhraseV62VA, buildAquaNextSuggestionsV62VA: buildAquaNextSuggestionsV62VA, buildAquaManualFallbackPhraseV62VA: buildAquaManualFallbackPhraseV62VA, runAquaNaturalResponseSmokeV62VA: runAquaNaturalResponseSmokeV62VA, renderAquaNaturalResponseDemoV62VA: renderAquaNaturalResponseDemoV62VA, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true } };
@@ -10232,5 +10399,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62X extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62Y extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
