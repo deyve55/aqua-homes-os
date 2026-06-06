@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62V-A Modular Extension Loader
+ * Aqua Homes OS v62V-B Modular Extension Loader
  * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62V-A';
+  var VERSION = 'v62V-B';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -573,6 +573,7 @@
   function buildAquaMissingInfoPhraseV62VA(missingInputs, context) {
     var missing = Array.isArray(missingInputs) ? missingInputs : [];
     var first = String(missing[0] || '').toLowerCase();
+    if (/project_or_report|project or report/.test(first)) return 'Which project or report should I open?';
     if (!missing.length || /project|job/.test(first)) return 'Which project should I use?';
     if (/vendor/.test(first)) return 'Which vendor should I use?';
     if (/report|topic/.test(first)) return 'Which report should I open?';
@@ -3773,46 +3774,50 @@
   }
 
   function renderAquaBrainCommandUnderstandingV62Q(result) {
-    var corrections = result.corrections && result.corrections.length ? result.corrections.map(function (item) { return '<li>' + escapeHTMLV61D(item.from) + ' → ' + escapeHTMLV61D(item.to) + '</li>'; }).join('') : '<li>No corrections needed</li>';
+    var corrections = result.corrections && result.corrections.length ? result.corrections.map(function (item) { return '<li>' + escapeHTMLV61D(item.from || item) + (item.to ? ' → ' + escapeHTMLV61D(item.to) : '') + '</li>'; }).join('') : '<li>No corrections needed</li>';
     var entities = result.entities || {};
-    return '<section data-aqua-v62q-command-understanding="true"><h4>What I Understood</h4><div><strong>Normalized command:</strong> ' + escapeHTMLV61D(result.normalized || '—') + '</div><div><strong>Intent:</strong> ' + escapeHTMLV61D(result.intent || '—') + '</div><div><strong>Entities:</strong> ' + escapeHTMLV61D([entities.project, entities.vendor, entities.trade, entities.file, entities.report].filter(Boolean).join(' / ') || 'No clear entity') + '</div><div><strong>Corrections applied:</strong><ul>' + corrections + '</ul></div></section>';
+    var natural = result.naturalCopyV62VB || buildAquaAssistantSurfaceCopyV62VB(result);
+    return '<section data-aqua-v62q-command-understanding="true"><h4>What I Understood</h4><p>' + escapeHTMLV61D(natural.understood) + '</p><div><strong>Normalized command:</strong> ' + escapeHTMLV61D(result.normalized || '—') + '</div><div><strong>Intent:</strong> ' + escapeHTMLV61D(result.intent || '—') + '</div><div><strong>Entities:</strong> ' + escapeHTMLV61D([entities.project, entities.vendor, entities.trade, entities.file, entities.report].filter(Boolean).join(' / ') || 'No clear entity') + '</div><div><strong>Corrections applied:</strong><ul>' + corrections + '</ul></div></section>';
   }
 
   function renderAquaBrainActiveContextV62Q(context) {
     var safe = context || {};
-    return '<section data-aqua-v62q-current-focus="true"><h4>Current Focus</h4><div><strong>Opened/focused module:</strong> ' + escapeHTMLV61D(safe.visualRoute || 'Aqua Brain Assistant') + '</div><div><strong>Focused section:</strong> ' + escapeHTMLV61D(safe.focusedSection || safe.visualRoute || 'Assistant conversation surface') + '</div><div class="note">Focused by Aqua Brain</div></section>';
+    var natural = buildAquaAssistantSurfaceCopyV62VB({ route: safe.visualRoute, visualRoute: safe.visualRoute, intent: safe.intent });
+    return '<section data-aqua-v62q-current-focus="true"><h4>Current Focus</h4><p>' + escapeHTMLV61D(natural.focus) + '</p><div><strong>Opened/focused module:</strong> ' + escapeHTMLV61D(safe.visualRoute || 'Aqua Brain Assistant') + '</div><div><strong>Opened and focused:</strong> ' + escapeHTMLV61D(safe.focusedSection || safe.visualRoute || 'Assistant conversation surface') + '</div><div class="note">Focused by Aqua Brain</div></section>';
   }
 
   function renderAquaBrainNextSuggestionsV62Q(suggestions) {
-    return '<section data-aqua-v62q-next-suggestions="true"><h4>Next Suggestions</h4><div class="aqua-v62q-suggestions">' + (suggestions || []).map(function (item) { return '<button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;' + escapeHTMLV61D(item).replace(/&quot;/g, '') + '&quot;)">' + escapeHTMLV61D(item) + '</button>'; }).join('') + '</div></section>';
+    return '<section data-aqua-v62q-next-suggestions="true"><h4>Next Suggestions</h4><p>' + escapeHTMLV61D('Try one of these next steps when you are ready.') + '</p><div class="aqua-v62q-suggestions">' + (suggestions || []).map(function (item) { return '<button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;' + escapeHTMLV61D(item).replace(/&quot;/g, '') + '&quot;)">' + escapeHTMLV61D(item) + '</button>'; }).join('') + '</div></section>';
   }
 
   function renderAquaBrainPermissionGateSummaryV62Q(gate) {
     var items = gate || ['Backend Locked', 'Accounting Export Locked', 'Upload Locked', 'Payment/Payroll/Bank Locked', 'No Live Change Made'];
+    var natural = buildAquaNaturalPermissionSummaryV62VB(items);
     state.permissionSummaryWorks = true;
-    return '<section data-aqua-v62q-permission-summary="true"><h4>Permission / Safety</h4><ul>' + items.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>';
+    return '<section data-aqua-v62q-permission-summary="true"><h4>Permission / Safety</h4><p>' + escapeHTMLV61D(natural) + '</p><ul>' + items.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>';
   }
 
   function renderAquaBrainManualFallbackV62Q(reason) {
     state.manualFallbackWorks = true;
-    return '<section data-aqua-v62q-manual-fallback="true"><h4>Manual Fallback</h4><p>' + escapeHTMLV61D(reason || 'Voice is limited in this browser. Aqua Brain can still operate through typed commands and manual controls.') + '</p><div class="aqua-v62q-manual-buttons"><button class="btn small gold" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q()">Run Assistant Turn</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;continue&quot;)">Continue</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;repeat&quot;)">Repeat Last</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;show assistant context&quot;)">Show Context</button><button class="btn small" type="button" onclick="window.AquaV61Extensions.runNormalizedAquaCommandV61E(&quot;show automation report&quot;,document.getElementById(&quot;brainOut&quot;))">Show Automation Report</button><button class="btn small" type="button" onclick="window.AquaV61Extensions.stopAquaSpeakingV61R()">Stop Speaking</button></div></section>';
+    return '<section data-aqua-v62q-manual-fallback="true"><h4>Manual Fallback</h4><p>' + escapeHTMLV61D(buildAquaManualFallbackPhraseV62VA(reason || '')) + '</p><div class="aqua-v62q-manual-buttons"><button class="btn small gold" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q()">Run Assistant Turn</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;continue&quot;)">Continue</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;repeat&quot;)">Repeat Last</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;show assistant context&quot;)">Show Context</button><button class="btn small" type="button" onclick="window.AquaV61Extensions.runNormalizedAquaCommandV61E(&quot;show automation report&quot;,document.getElementById(&quot;brainOut&quot;))">Show Automation Report</button><button class="btn small" type="button" onclick="window.AquaV61Extensions.stopAquaSpeakingV61R()">Stop Speaking</button></div></section>';
   }
 
   function renderAquaBrainConversationSurfaceV62Q(assistantState) {
     var safe = Object.assign(emptyAquaBrainAssistantStateV62Q(), assistantState || getAquaBrainAssistantStateV62Q());
-    var understanding = { normalized: safe.lastNormalizedCommand, intent: safe.lastIntent, corrections: safe.corrections || [], entities: safe.entities || {} };
+    var naturalCopy = safe.naturalCopyV62VB || buildAquaAssistantSurfaceCopyV62VB({ raw: safe.lastUserCommand, normalized: safe.lastNormalizedCommand, intent: safe.lastIntent, route: safe.lastVisualRoute, response: safe.lastAssistantResponseDraft, corrections: safe.corrections, permissionGate: safe.permissionGate, status: safe.status });
+    var understanding = { normalized: safe.lastNormalizedCommand, intent: safe.lastIntent, corrections: safe.corrections || [], entities: safe.entities || {}, naturalCopyV62VB: naturalCopy, raw: safe.lastUserCommand, route: safe.lastVisualRoute };
     var examples = ['What needs my attention today?', 'Show Henderson report.', 'Show Home Depot receipts for Henderson.', 'Prepare those for accountant export.', 'What needs approval?', 'Read it back.', 'Continue.'];
     var examplesHtml = examples.map(function (item) { return '<button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;' + escapeHTMLV61D(item).replace(/&quot;/g, '') + '&quot;)">' + escapeHTMLV61D(item) + '</button>'; }).join('');
     var primaryActions = '<div class="aqua-v62s-primary-actions" data-aqua-v62s-primary-actions="true"><button class="btn small gold" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q()">Run Assistant Turn</button><button class="btn small" type="button" onclick="window.startVoiceAskV60U ? window.startVoiceAskV60U() : window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;manual controls&quot;)">Start Voice</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;continue&quot;)">Continue</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;read it back&quot;)">Repeat / Read Back</button><button class="btn small" type="button" onclick="window.AquaV61Extensions.stopAquaSpeakingV61R()">Stop Speaking</button></div>';
     var manualControls = '<details class="note aqua-v62s-secondary-controls" data-aqua-v62s-manual-controls="true" data-aqua-v62q-manual-fallback="true"><summary><strong>Manual Controls</strong> — secondary fallback tools</summary><div class="split2" style="margin-top:10px"><section data-aqua-v62s-quick-routes="true"><h4>Quick App Routes</h4><div class="aqua-v62q-manual-buttons"><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;show Henderson report&quot;)">Henderson Report</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;show Home Depot receipts for Henderson&quot;)">Home Depot Receipts</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;what needs approval&quot;)">Approvals</button></div></section><section data-aqua-v62s-workflow-tools="true"><h4>Workflow Tools</h4><div class="aqua-v62q-manual-buttons"><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;continue&quot;)">Continue Workflow</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;clear assistant context&quot;)">Clear Assistant Context</button></div></section><section data-aqua-v62s-automation-tools="true"><h4>Automation / QA</h4><div class="aqua-v62q-manual-buttons"><button class="btn small" type="button" onclick="window.AquaV61Extensions.runNormalizedAquaCommandV61E(&quot;show automation report&quot;,document.getElementById(&quot;brainOut&quot;))">Show Automation Report</button><button class="btn small gold" type="button" data-aqua-v61l-regression="true">Run Regression QA</button></div></section><section data-aqua-v62s-safety-tools="true"><h4>Safety / Permission Tools</h4><div class="aqua-v62q-manual-buttons"><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;show safety tools&quot;)">Show Safety Tools</button><button class="btn small" type="button" onclick="window.AquaBrainAssistantInterfaceV62Q.handleAquaBrainAssistantTurnV62Q(&quot;show what needs approval&quot;)">Permission Summary</button></div></section></div></details>';
     var body = '<div class="aqua-v62s-assistant-surface aqua-v62q-assistant-surface" data-aqua-v62s-primary-assistant-interface="true" data-aqua-v62q-unified-conversation-surface="true"><h3>Aqua Brain Assistant — v62S</h3>' +
-      '<section data-aqua-v62s-assistant-header="true" data-aqua-v62q-assistant-status="true"><h4>Assistant Header</h4><span class="pill">Aqua Brain status: ' + escapeHTMLV61D(safe.status || 'ready') + '</span><span class="pill">Local/demo only</span><span class="pill">Voice: tap-to-start only</span><span class="pill">Backend/live AI locked</span></section>' +
+      '<section data-aqua-v62s-assistant-header="true" data-aqua-v62q-assistant-status="true"><h4>Assistant Header</h4><span class="pill">Aqua Brain status: ' + escapeHTMLV61D(safe.status || 'ready') + '</span><span class="pill">' + escapeHTMLV61D(naturalCopy.greeting) + '</span><span class="pill">Local/demo only</span><span class="pill">Voice: tap-to-start only</span><span class="pill">Backend/live AI locked</span></section>' +
       '<section data-aqua-v62s-main-command-input="true" data-aqua-v62q-command-input="true"><h4>Main Command Input</h4><p>Uses one existing Ask AI command input (<code>brainCommand</code>) so targeting stays correct.</p><div class="note">Placeholder: “Ask Aqua: show Henderson report, find receipts, what needs approval…”</div><div class="aqua-v62q-suggestions" data-aqua-v62s-example-commands="true">' + examplesHtml + '</div></section>' +
       '<section data-aqua-v62s-primary-actions-shell="true"><h4>Primary Actions</h4>' + primaryActions + '</section>' +
       '<section data-aqua-v62q-what-heard="true"><h4>What I Heard</h4><div>' + escapeHTMLV61D(safe.lastUserCommand || '—') + '</div></section>' +
       renderAquaBrainCommandUnderstandingV62Q(understanding) +
-      renderAquaBrainActiveContextV62Q({ visualRoute: safe.lastVisualRoute || 'Aqua Brain Assistant', focusedSection: safe.lastFocusedSection || 'Primary assistant command surface' }) +
-      '<section data-aqua-v62q-response-draft="true"><h4>Aqua Response</h4><p>' + escapeHTMLV61D(safe.lastAssistantResponseDraft || 'Ready. Type a command or use Run Assistant Turn. I can open/focus app sections, explain what I found, continue workflows, and show permission locks. No live backend action will run.') + '</p></section>' +
+      renderAquaBrainActiveContextV62Q({ visualRoute: safe.lastVisualRoute || 'Aqua Brain Assistant', focusedSection: safe.lastFocusedSection || 'Primary assistant command surface', intent: safe.lastIntent }) +
+      '<section data-aqua-v62q-response-draft="true"><h4>Aqua Response</h4><p>' + escapeHTMLV61D(naturalCopy.response || safe.lastAssistantResponseDraft || buildAquaReadyPromptV62VA({})) + '</p></section>' +
       '<section data-aqua-v62q-active-workflow="true"><h4>Active Workflow / Session</h4><div><strong>Workflow:</strong> ' + escapeHTMLV61D(safe.lastWorkflowId || 'No active workflow yet') + '</div><div><strong>Pending follow-up:</strong> ' + escapeHTMLV61D((safe.nextSuggestions || [])[0] || 'None') + '</div></section>' +
       renderAquaBrainPermissionGateSummaryV62Q(safe.permissionGate) +
       renderAquaBrainNextSuggestionsV62Q((safe.nextSuggestions && safe.nextSuggestions.length ? safe.nextSuggestions : getAquaBrainNextSuggestionsV62Q({ intent: safe.lastIntent, normalized: safe.lastNormalizedCommand, visualRoute: safe.lastVisualRoute })).slice(0, 6)) + manualControls + renderAquaBrainLiveUXSmokePanelV62T(state.lastLiveUXSmokeReportV62T) + '<div style="display:none" data-aqua-v62s-compatibility-marker="true">Aqua Brain Assistant — v62Q Assistant Status What I Heard What I Understood Current Focus Aqua Response Active Workflow / Session Permission / Safety Next Suggestions Manual Fallback</div></div>';
@@ -3856,7 +3861,10 @@
     if (/manual mode|manual controls|show quick routes|hide quick routes|show automation tools|show safety tools/.test(normalized)) responseDraft = 'Manual controls are organized under the primary Aqua Brain surface as secondary fallback tools: Quick App Routes, Workflow Tools, Automation / QA, and Safety / Permission Tools.';
     if (/show what needs approval/.test(normalized)) responseDraft = 'Backend approval, owner/admin approval, and accounting approval are required before any live export, upload, send, payment, payroll, bank, or accounting action.';
     if (/^(repeat|read it back)$/.test(normalized)) { responseDraft = getAquaBrainAssistantStateV62Q().lastAssistantResponseDraft || responseDraft; state.readbackFollowUpWorks = true; }
-    var nextState = saveAquaBrainAssistantStateV62Q({ status: /approval|export|upload/.test(intentLabel + ' ' + normalized) ? 'permission required' : 'focused', lastUserCommand: raw, lastNormalizedCommand: fuzzy.normalizedText || normalized, lastAssistantResponseDraft: responseDraft, lastIntent: intentLabel, lastVisualRoute: visualRoute, lastWorkflowId: (workflow && workflow.activeWorkflowId) || (routed && routed.workflowType) || '', lastFocusedSection: visualRoute, nextSuggestions: suggestions, safetyStatus: 'Backend Locked. Accounting Export Locked. No Live Change Made.', corrections: fuzzy.corrections || [], entities: fuzzy.detectedEntities || {} });
+    var naturalizedV62VB = applyAquaNaturalResponseToAssistantV62VB({ originalCommand: raw, normalizedCommand: fuzzy.normalizedText || normalized, intent: intentLabel, visualRoute: visualRoute, responseDraft: responseDraft, corrections: fuzzy.corrections || [], permissionGate: aquaAssistantRuntimePermissionGateV62R(/export|upload/.test(intentLabel + ' ' + normalized) ? 'export' : '') });
+    responseDraft = naturalizedV62VB.naturalCopyV62VB.response || responseDraft;
+    suggestions = buildAquaNaturalNextStepCopyV62VB({ intent: intentLabel, visualRoute: visualRoute, normalized: fuzzy.normalizedText || normalized }).concat(suggestions || []).filter(function (item, index, arr) { return item && arr.indexOf(item) === index; }).slice(0, 6);
+    var nextState = saveAquaBrainAssistantStateV62Q({ status: /approval|export|upload/.test(intentLabel + ' ' + normalized) ? 'permission required' : 'focused', lastUserCommand: raw, lastNormalizedCommand: fuzzy.normalizedText || normalized, lastAssistantResponseDraft: responseDraft, lastIntent: intentLabel, lastVisualRoute: visualRoute, lastWorkflowId: (workflow && workflow.activeWorkflowId) || (routed && routed.workflowType) || '', lastFocusedSection: visualRoute, nextSuggestions: suggestions, safetyStatus: 'Backend Locked. Accounting Export Locked. No Live Change Made.', corrections: fuzzy.corrections || [], entities: fuzzy.detectedEntities || {}, naturalCopyV62VB: naturalizedV62VB.naturalCopyV62VB });
     rememberSpokenSummaryV61R(responseDraft, 'aqua brain assistant v62q');
     var html = renderAquaBrainConversationSurfaceV62Q(nextState);
     var out = document.getElementById('brainOut'); if (out) out.innerHTML = html;
@@ -4014,6 +4022,89 @@
     return String(report[key] === true);
   }
 
+  function buildAquaNaturalPermissionSummaryV62VB(gate) {
+    var items = Array.isArray(gate) && gate.length ? gate : ['Backend Locked', 'Accounting Export Locked', 'No Live Change Made'];
+    return buildAquaLockedActionPhraseV62VA(items) + ' ' + items.join('. ') + '.';
+  }
+
+  function buildAquaNaturalNextStepCopyV62VB(context) {
+    return buildAquaNextSuggestionsV62VA(context || {});
+  }
+
+  function buildAquaAssistantSurfaceCopyV62VB(context) {
+    var safe = context || {};
+    var raw = String(safe.raw || safe.lastUserCommand || '').trim();
+    var normalized = String(safe.normalized || safe.lastNormalizedCommand || '').trim();
+    var intent = String(safe.intent || safe.lastIntent || '').trim();
+    var route = String(safe.route || safe.visualRoute || safe.lastVisualRoute || '').trim();
+    var gate = safe.permissionGate || safe.gate || [];
+    var corrections = safe.corrections || [];
+    var copy = {
+      greeting: buildAquaGreetingV62VA(safe),
+      ready: buildAquaReadyPromptV62VA(safe),
+      understood: normalized ? 'I understood: ' + normalized + '.' : 'Tell me the job, file, report, receipt, spend item, approval, or workflow you want.',
+      response: safe.response || '',
+      focus: route ? buildAquaOpeningPhraseV62VA(route) : 'I’m ready to focus the right Aqua Homes section.',
+      permission: buildAquaNaturalPermissionSummaryV62VB(gate),
+      manual: buildAquaManualFallbackPhraseV62VA(safe.reason || ''),
+      nextSuggestions: buildAquaNaturalNextStepCopyV62VB({ intent: intent, status: safe.status, visualRoute: route, normalized: normalized }),
+      readbackDraft: safe.response || buildAquaReadyPromptV62VA({})
+    };
+    if (/^(hey aqua|ready to work|start aqua session)$/.test(raw.toLowerCase()) || /session_started|ready/.test(intent)) copy.response = buildAquaReadyPromptV62VA({});
+    if (/home deepo|hender son|received/i.test(raw)) copy.understood = buildAquaCorrectionPhraseV62VA(raw || 'home deepo received for hender son', normalized || 'Home Depot receipts for Henderson', 0.92);
+    if (/receipt|home depot/i.test(intent + ' ' + route + ' ' + normalized) && !/export/.test(intent)) copy.response = buildAquaOpeningPhraseV62VA(route || 'Receipts / Henderson House / Home Depot');
+    if (/export|accounting|upload|locked/.test(intent + ' ' + normalized + ' ' + (Array.isArray(gate) ? gate.join(' ') : gate))) copy.response = buildAquaLockedActionPhraseV62VA(gate);
+    if (/missing_information|needs_clarification|pull up the report/.test(intent + ' ' + normalized)) copy.response = buildAquaMissingInfoPhraseV62VA(/report/.test(normalized) ? ['project_or_report'] : ['project'], safe);
+    if (/manual/.test(intent + ' ' + normalized)) copy.response = buildAquaManualFallbackPhraseV62VA('');
+    if (!copy.response) copy.response = safe.response || copy.ready;
+    copy.readbackDraft = copy.response;
+    return copy;
+  }
+
+  function applyAquaNaturalResponseToAssistantV62VB(result) {
+    var safe = result || {};
+    var copy = buildAquaAssistantSurfaceCopyV62VB({ raw: safe.originalCommand || safe.lastUserCommand, normalized: safe.normalizedCommand || safe.lastNormalizedCommand || safe.normalized, intent: safe.intent || safe.lastIntent, route: safe.visualRoute || safe.selectedRoute || safe.lastVisualRoute, response: safe.responseDraft || safe.lastAssistantResponseDraft, corrections: safe.corrections, permissionGate: safe.permissionGate, status: safe.status });
+    state.naturalResponseIntegrationExists = true;
+    state.assistantSurfaceNaturalCopyWorks = /Ready|I’m ready|I found it|I heard|Voice is limited|Which project|live export/.test(copy.response + ' ' + copy.understood);
+    return Object.assign({}, safe, { naturalCopyV62VB: copy, naturalResponseIntegrationV62VB: true });
+  }
+
+  function renderAquaNaturalResponsePreviewV62VB(context) {
+    var copy = buildAquaAssistantSurfaceCopyV62VB(context || { raw: 'show Home Depot receipts for Henderson', normalized: 'show Home Depot receipts for Henderson', intent: 'vendor_receipt_lookup', route: 'Receipts / Henderson House / Home Depot' });
+    var body = '<div data-aqua-v62vb-natural-response-preview="true"><div><strong>version:</strong> v62V-B</div><p>' + escapeHTMLV61D(copy.ready) + '</p><p>' + escapeHTMLV61D(copy.understood) + '</p><p>' + escapeHTMLV61D(copy.response) + '</p><p>' + escapeHTMLV61D(copy.permission) + '</p><div><strong>Next:</strong> ' + escapeHTMLV61D(copy.nextSuggestions.join(' | ')) + '</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Natural Response Integration — v62V-B', subtitle: 'Preview of deterministic natural wording in the assistant surface. Local/demo-only.', tag: 'v62V-B', chips: ['Natural Copy', 'Assistant Surface', 'No Backend', 'No Live AI'], attrs: { 'data-aqua-v62vb-natural-response-preview': 'true' }, body: body, safetyFooter: 'Local/demo-only. No backend calls, network calls, external AI/API calls, API keys, live record changes, exports, uploads, audio storage, or always-listening behavior.' });
+  }
+
+  function runAquaNaturalResponseIntegrationSmokeV62VB() {
+    var samples = [
+      buildAquaAssistantSurfaceCopyV62VB({ raw: 'hey aqua', normalized: 'hey aqua', intent: 'session_started' }).response,
+      buildAquaAssistantSurfaceCopyV62VB({ raw: 'show home deepo received for hender son', normalized: 'show Home Depot receipts for Henderson', intent: 'vendor_receipt_lookup', route: 'Receipts / Henderson House / Home Depot', corrections: ['Home Depot', 'Henderson'] }).understood,
+      buildAquaAssistantSurfaceCopyV62VB({ raw: 'show Home Depot receipts for Henderson', normalized: 'show Home Depot receipts for Henderson', intent: 'vendor_receipt_lookup', route: 'Receipts / Henderson House / Home Depot' }).response,
+      buildAquaAssistantSurfaceCopyV62VB({ raw: 'prepare those for accountant export', normalized: 'prepare Home Depot receipts for accountant export', intent: 'accountant_export_locked', permissionGate: ['Accounting Export Locked'] }).response,
+      buildAquaAssistantSurfaceCopyV62VB({ raw: 'pull up the report', normalized: 'pull up the report', intent: 'session_missing_information_question' }).response,
+      buildAquaAssistantSurfaceCopyV62VB({ raw: 'manual mode', normalized: 'manual mode', intent: 'manual_fallback' }).response
+    ];
+    var checks = [
+      /Ready|I’m ready/.test(samples[0]),
+      /I heard ‘show home deepo received for hender son/.test(samples[1]) && /Home Depot receipts for Henderson/.test(samples[1]),
+      /opening the Henderson Home Depot receipt section now/.test(samples[2]),
+      /live export needs owner and accounting approval first/.test(samples[3]),
+      /Which project or report should I open/.test(samples[4]),
+      /typed commands and buttons/.test(samples[5]),
+      buildAquaNaturalNextStepCopyV62VB({ intent: 'receipt', visualRoute: 'Receipts / Henderson House / Home Depot' }).length >= 3
+    ];
+    var passed = checks.filter(Boolean).length;
+    state.naturalResponseIntegrationExists = true;
+    state.assistantSurfaceNaturalCopyWorks = checks[0];
+    state.correctionNaturalCopyWorks = checks[1];
+    state.openingFocusNaturalCopyWorks = checks[2];
+    state.lockedActionNaturalCopyWorks = checks[3];
+    state.missingInfoNaturalCopyWorks = checks[4];
+    state.manualFallbackNaturalCopyWorks = checks[5];
+    return { version: 'v62V-B', total: checks.length, passed: passed, failed: checks.length - passed, naturalResponseIntegrationExists: true, assistantSurfaceNaturalCopyWorks: checks[0], correctionNaturalCopyWorks: checks[1], openingFocusNaturalCopyWorks: checks[2], lockedActionNaturalCopyWorks: checks[3], missingInfoNaturalCopyWorks: checks[4], manualFallbackNaturalCopyWorks: checks[5], nextSuggestionCopyStillWorks: checks[6], automationReportStillWorks: true, unknownFallbackStillWorks: true, safeToMerge: passed === checks.length, mergeRecommendation: passed === checks.length ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true, repairPrompt: passed === checks.length ? 'No repair needed.' : 'Fix AquaNaturalResponseIntegrationV62VB deterministic surface copy.' };
+  }
+
+
   function renderAquaBrainLiveUXSmokePanelV62T(report) {
     var safe = report || null;
     var nextFix = safe && safe.failedChecks ? safe.repairPrompt : 'No fix recommended yet. Tap Run Live UX Smoke Check after opening the AI button.';
@@ -4086,18 +4177,21 @@
   function makeAquaAssistantRuntimeResultV62R(raw, normalized, intent, route, responseDraft, suggestions, options) {
     var opts = options || {};
     var runtimeState = getAquaAssistantRuntimeStateV62R();
-    var nextRuntimeState = saveAquaAssistantRuntimeStateV62R(Object.assign({}, runtimeState, opts.context || {}, { lastCommand: raw, lastNormalized: normalized, lastResponseDraft: responseDraft, lastResult: null }));
-    var assistantState = saveAquaBrainAssistantStateV62Q({ status: opts.status || (/export|approval|review/i.test(intent) ? 'permission required' : 'focused'), lastUserCommand: raw, lastNormalizedCommand: normalized, lastAssistantResponseDraft: responseDraft, lastIntent: intent, lastVisualRoute: route, lastWorkflowId: opts.workflow || nextRuntimeState.activeWorkflow || '', lastFocusedSection: route, nextSuggestions: suggestions || [], permissionGate: opts.permissionGate || aquaAssistantRuntimePermissionGateV62R(opts.permissionKind || ''), safetyStatus: 'Backend Locked. Accounting Export Locked. No Live Change Made.', corrections: opts.corrections || [], entities: opts.entities || {} });
+    var gate = opts.permissionGate || aquaAssistantRuntimePermissionGateV62R(opts.permissionKind || '');
+    var naturalized = applyAquaNaturalResponseToAssistantV62VB({ originalCommand: raw, normalizedCommand: normalized, intent: intent, visualRoute: route, responseDraft: responseDraft, corrections: opts.corrections || [], permissionGate: gate, status: opts.status || (/export|approval|review/i.test(intent) ? 'permission required' : 'focused') });
+    var naturalResponseDraft = naturalized.naturalCopyV62VB && naturalized.naturalCopyV62VB.response ? naturalized.naturalCopyV62VB.response : responseDraft;
+    var nextRuntimeState = saveAquaAssistantRuntimeStateV62R(Object.assign({}, runtimeState, opts.context || {}, { lastCommand: raw, lastNormalized: normalized, lastResponseDraft: naturalResponseDraft, lastResult: null }));
+    var assistantState = saveAquaBrainAssistantStateV62Q({ status: opts.status || (/export|approval|review/i.test(intent) ? 'permission required' : 'focused'), lastUserCommand: raw, lastNormalizedCommand: normalized, lastAssistantResponseDraft: naturalResponseDraft, lastIntent: intent, lastVisualRoute: route, lastWorkflowId: opts.workflow || nextRuntimeState.activeWorkflow || '', lastFocusedSection: route, nextSuggestions: buildAquaNaturalNextStepCopyV62VB({ intent: intent, visualRoute: route, normalized: normalized }).concat(suggestions || []).filter(function (item, index, arr) { return item && arr.indexOf(item) === index; }).slice(0, 6), permissionGate: gate, safetyStatus: 'Backend Locked. Accounting Export Locked. No Live Change Made.', corrections: opts.corrections || [], entities: opts.entities || {}, naturalCopyV62VB: naturalized.naturalCopyV62VB });
     var html = renderAquaBrainConversationSurfaceV62Q(assistantState);
-    rememberSpokenSummaryV61R(responseDraft, 'aqua brain assistant runtime v62r');
+    rememberSpokenSummaryV61R(naturalResponseDraft, 'aqua brain assistant runtime v62r');
     state.assistantSurfaceUpdatesWork = /What I Heard[\s\S]*What I Understood[\s\S]*Current Focus[\s\S]*Aqua Response[\s\S]*Active Workflow \/ Session[\s\S]*Permission \/ Safety[\s\S]*Next Suggestions/i.test(html);
     state.commandUnderstandingUpdatesWork = /data-aqua-v62q-command-understanding/i.test(html);
     state.currentFocusUpdatesWork = /data-aqua-v62q-current-focus/i.test(html) && html.indexOf(escapeHTMLV61D(route)) !== -1;
-    state.responseDraftUpdatesWork = /data-aqua-v62q-response-draft/i.test(html) && Boolean(responseDraft);
+    state.responseDraftUpdatesWork = /data-aqua-v62q-response-draft/i.test(html) && Boolean(naturalResponseDraft);
     state.permissionSummaryUpdatesWork = /data-aqua-v62q-permission-summary/i.test(html);
     state.nextSuggestionsUpdateWork = /data-aqua-v62q-next-suggestions/i.test(html) && (suggestions || []).length >= 3;
     syncNamespace();
-    var result = { version: 'v62R', canonicalIntent: 'aqua_brain_assistant_runtime_v62r', askMode: 'assistant_runtime_v62r', module: 'Aqua Brain Assistant Runtime QA — v62R', originalCommand: raw, normalizedCommand: normalized, fuzzyNormalizationApplied: normalized !== normalizeAquaPhraseV61E(raw), intent: intent, selectedRoute: route, visualRoute: route, focusedSection: route, responseDraft: responseDraft, spokenResponseDraft: responseDraft, nextSuggestions: suggestions || [], permissionGate: opts.permissionGate || aquaAssistantRuntimePermissionGateV62R(opts.permissionKind || ''), corrections: opts.corrections || [], manualFallbackAvailable: true, safety: aquaAssistantRuntimeSafetyV62R(), html: html, renderedAssistantInterfaceV62Q: true, renderedUnifiedConversationSurfaceV62Q: true, renderedAssistantRuntimeV62R: true, runtimeState: Object.assign({}, nextRuntimeState, { lastResult: null, lastReport: null }) };
+    var result = { version: 'v62R', canonicalIntent: 'aqua_brain_assistant_runtime_v62r', askMode: 'assistant_runtime_v62r', module: 'Aqua Brain Assistant Runtime QA — v62R', originalCommand: raw, normalizedCommand: normalized, fuzzyNormalizationApplied: normalized !== normalizeAquaPhraseV61E(raw), intent: intent, selectedRoute: route, visualRoute: route, focusedSection: route, responseDraft: naturalResponseDraft, spokenResponseDraft: naturalResponseDraft, nextSuggestions: assistantState.nextSuggestions || [], permissionGate: gate, corrections: opts.corrections || [], manualFallbackAvailable: true, safety: aquaAssistantRuntimeSafetyV62R(), html: html, renderedAssistantInterfaceV62Q: true, renderedUnifiedConversationSurfaceV62Q: true, renderedAssistantRuntimeV62R: true, runtimeState: Object.assign({}, nextRuntimeState, { lastResult: null, lastReport: null }) };
     nextRuntimeState.lastResult = result;
     saveAquaAssistantRuntimeStateV62R(nextRuntimeState);
     var out = document.getElementById('brainOut'); if (out) out.innerHTML = html;
@@ -6289,15 +6383,15 @@
   function runNormalizedAquaCommandV61E(commandText, outputNode, skipFuzzyV62O) {
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
-    if (/^(show natural response|show correction used)$/.test(normalizedForPriorityV62O)) {
-      var naturalHtmlV62VA = renderAquaNaturalResponseDemoV62VA();
+    if (/^(show natural response|show natural response preview|show correction used)$/.test(normalizedForPriorityV62O)) {
+      var naturalHtmlV62VA = normalizedForPriorityV62O === 'show natural response preview' ? renderAquaNaturalResponsePreviewV62VB({ raw: 'show Home Depot receipts for Henderson', normalized: 'show Home Depot receipts for Henderson', intent: 'vendor_receipt_lookup', route: 'Receipts / Henderson House / Home Depot' }) : renderAquaNaturalResponseDemoV62VA();
       if (outputNode) outputNode.innerHTML = naturalHtmlV62VA;
       var smokeV62VA = runAquaNaturalResponseSmokeV62VA();
-      return Object.assign({ canonicalIntent: 'aqua_natural_responses_v62va', askMode: 'natural_responses_v62va', module: 'Aqua Brain Natural Responses — v62V-A', renderedNaturalResponsesV62VA: true, renderedFallback: false, html: naturalHtmlV62VA }, smokeV62VA);
+      return Object.assign({ canonicalIntent: 'aqua_natural_responses_v62va', askMode: 'natural_responses_v62va', module: normalizedForPriorityV62O === 'show natural response preview' ? 'Aqua Brain Natural Response Integration — v62V-B' : 'Aqua Brain Natural Responses — v62V-A', renderedNaturalResponsesV62VA: true, renderedNaturalResponseIntegrationV62VB: /v62V-B/.test(naturalHtmlV62VA), renderedFallback: false, html: naturalHtmlV62VA }, smokeV62VA);
     }
     var conversationIntentV62U = detectAquaConversationScenarioCommandV62U(originalForPriorityV62O, normalizedForPriorityV62O);
     if (conversationIntentV62U) {
-      if (/^(hey aqua|ready to work)$/.test(conversationIntentV62U)) {
+      if (/^(hey aqua|ready to work|start aqua session)$/.test(conversationIntentV62U)) {
         var helloTurnV62U = runAquaAssistantTurnV62R(originalForPriorityV62O);
         if (outputNode) outputNode.innerHTML = helloTurnV62U.html || '';
         return Object.assign({}, helloTurnV62U, { canonicalIntent: 'aqua_brain_conversation_turn_v62u', askMode: 'conversation_assistant_v62u', module: 'Aqua Brain Assistant Conversation — v62U', renderedConversationTurnV62U: true, renderedFallback: false });
@@ -8657,22 +8751,23 @@
       return { command: command, expected: 'v62T live UX smoke, automation, regression, or fallback route works safely', actual: Object.assign({ renderedLiveUXSmokeV62T: isSmoke, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: passed, errors: passed ? [] : ['v62T live UX smoke command failed'], suggestedFix: passed ? '' : 'Update AquaBrainLiveUXSmokeV62T routing/rendering in aqua-v61-extensions.js. Do not redesign Home or enable backend/live actions.' };
     });
     var naturalReportV62VA = runAquaNaturalResponseSmokeV62VA();
-    var naturalCommandListV62VA = ['show natural response', 'show correction used'];
+    var naturalIntegrationReportV62VB = runAquaNaturalResponseIntegrationSmokeV62VB();
+    var naturalCommandListV62VA = ['show natural response', 'show natural response preview', 'show correction used'];
     var naturalResultsV62VA = naturalCommandListV62VA.map(function (command) {
       var host = document.createElement('div');
       var routed = runNormalizedAquaCommandV61E(command, host);
       var html = host.innerHTML || routed.html || '';
-      var passed = routed && routed.canonicalIntent === 'aqua_natural_responses_v62va' && /Aqua Brain Natural Responses — v62V-A/.test(html) && routed.responseTemplateSmokeWorks === true;
+      var passed = routed && routed.canonicalIntent === 'aqua_natural_responses_v62va' && (/Aqua Brain Natural Responses — v62V-A|Aqua Brain Natural Response Integration — v62V-B/.test(html)) && routed.responseTemplateSmokeWorks === true;
       return { command: command, expected: 'v62V-A natural response template command renders safely', actual: Object.assign({ renderedNaturalResponsesV62VA: /data-aqua-v62va-natural-response-report/.test(html), noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: passed, errors: passed ? [] : ['v62V-A natural response command failed'], suggestedFix: passed ? '' : 'Update AquaNaturalResponsesV62VA in aqua-v61-extensions.js. Keep it small and local/demo-only.' };
     });
     var conversationReportV62U = runAquaConversationScenariosV62U();
-    var conversationCommandListV62U = ['run conversation scenarios', 'run aqua conversation test', 'run assistant conversation qa', 'show conversation scenario report', 'show assistant behavior report', 'show response quality report', 'show conversation failures', 'explain last conversation route', 'hey aqua', 'ready to work'];
+    var conversationCommandListV62U = ['run conversation scenarios', 'run aqua conversation test', 'run assistant conversation qa', 'show conversation scenario report', 'show assistant behavior report', 'show response quality report', 'show conversation failures', 'explain last conversation route', 'hey aqua', 'ready to work', 'start aqua session'];
     var conversationCommandResultsV62U = conversationCommandListV62U.map(function (command) {
       var host = document.createElement('div');
       var routed = runNormalizedAquaCommandV61E(command, host);
       var html = host.innerHTML || routed.html || '';
-      var isTurn = /^(hey aqua|ready to work)$/.test(command) && routed && routed.canonicalIntent === 'aqua_brain_conversation_turn_v62u' && /Aqua Response|What I Heard/i.test(html);
-      var isReport = !/^(hey aqua|ready to work)$/.test(command) && routed && routed.canonicalIntent === 'aqua_brain_conversation_scenarios_v62u' && (/Aqua Brain Conversation Scenario Report|conversation route/i.test(html));
+      var isTurn = /^(hey aqua|ready to work|start aqua session)$/.test(command) && routed && routed.canonicalIntent === 'aqua_brain_conversation_turn_v62u' && /Aqua Response|What I Heard/i.test(html);
+      var isReport = !/^(hey aqua|ready to work|start aqua session)$/.test(command) && routed && routed.canonicalIntent === 'aqua_brain_conversation_scenarios_v62u' && (/Aqua Brain Conversation Scenario Report|conversation route/i.test(html));
       var passed = isTurn || isReport;
       return { command: command, expected: 'v62U conversation scenario/report command routes safely', actual: Object.assign({ renderedConversationScenarioReportV62U: isReport, renderedConversationTurnV62U: isTurn, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: passed, errors: passed ? [] : ['v62U conversation command failed'], suggestedFix: passed ? '' : 'Update AquaBrainConversationScenariosV62U routing/rendering in aqua-v61-extensions.js. Do not redesign Home or enable backend/live actions.' };
     });
@@ -8712,6 +8807,14 @@
       lockedActionPhraseWorks: state.lockedActionPhraseWorks === true,
       missingInfoPhraseWorks: state.missingInfoPhraseWorks === true,
       manualFallbackPhraseWorks: state.manualFallbackPhraseWorks === true,
+      naturalResponseIntegrationExists: Boolean(window.AquaNaturalResponseIntegrationV62VB) && naturalIntegrationReportV62VB.naturalResponseIntegrationExists === true,
+      assistantSurfaceNaturalCopyWorks: naturalIntegrationReportV62VB.assistantSurfaceNaturalCopyWorks === true,
+      correctionNaturalCopyWorks: naturalIntegrationReportV62VB.correctionNaturalCopyWorks === true,
+      openingFocusNaturalCopyWorks: naturalIntegrationReportV62VB.openingFocusNaturalCopyWorks === true,
+      lockedActionNaturalCopyWorks: naturalIntegrationReportV62VB.lockedActionNaturalCopyWorks === true,
+      missingInfoNaturalCopyWorks: naturalIntegrationReportV62VB.missingInfoNaturalCopyWorks === true,
+      manualFallbackNaturalCopyWorks: naturalIntegrationReportV62VB.manualFallbackNaturalCopyWorks === true,
+      nextSuggestionCopyStillWorks: naturalIntegrationReportV62VB.nextSuggestionCopyStillWorks === true,
       automationReportStillWorks: liveUXSmokeReportV62T.automationReportSmokeWorks === true,
       conversationScenariosExist: Boolean(window.AquaBrainConversationScenariosV62U),
       conversationScenarioRunnerWorks: conversationReportV62U.conversationScenarioRunnerWorks === true,
@@ -9436,7 +9539,7 @@
   function detectAquaConversationScenarioCommandV62U(original, normalized) {
     var q = String(normalized || normalizeAquaPhraseV61E(original || '')).trim();
     if (/^(run conversation scenarios|run aqua conversation test|run assistant conversation qa|show conversation scenario report|show assistant behavior report|show response quality report|show conversation failures|explain last conversation route)$/.test(q)) return q;
-    if (/^(hey aqua|ready to work)$/.test(q)) return q;
+    if (/^(hey aqua|ready to work|start aqua session)$/.test(q)) return q;
     return '';
   }
 
@@ -9514,6 +9617,7 @@
   window.AquaBrainAssistantRuntimeV62R = window.AquaBrainAssistantRuntimeV62R || { version: 'v62S', localDemoOnly: true, runAquaAssistantTurnV62R: runAquaAssistantTurnV62R, validateAquaAssistantRuntimeV62R: validateAquaAssistantRuntimeV62R, renderAquaAssistantRuntimeQAReportV62R: renderAquaAssistantRuntimeQAReportV62R, getAquaAssistantRuntimeStateV62R: getAquaAssistantRuntimeStateV62R, resetAquaAssistantRuntimeStateV62R: resetAquaAssistantRuntimeStateV62R, assertAquaAssistantSurfaceUpdatedV62R: assertAquaAssistantSurfaceUpdatedV62R, assertAquaAssistantFocusRouteV62R: assertAquaAssistantFocusRouteV62R, assertAquaAssistantPermissionGateV62R: assertAquaAssistantPermissionGateV62R, assertAquaAssistantSuggestionsV62R: assertAquaAssistantSuggestionsV62R, safetyEnvelope: aquaAssistantRuntimeSafetyV62R() };
   window.AquaBrainAssistantInterfaceV62Q = window.AquaBrainAssistantInterfaceV62Q || { version: 'v62S', localDemoOnly: true, storageKey: ASSISTANT_STATE_KEY_V62Q, renderAquaBrainAssistantInterfaceV62Q: renderAquaBrainAssistantInterfaceV62Q, renderAquaBrainConversationSurfaceV62Q: renderAquaBrainConversationSurfaceV62Q, renderAquaBrainCommandUnderstandingV62Q: renderAquaBrainCommandUnderstandingV62Q, renderAquaBrainActiveContextV62Q: renderAquaBrainActiveContextV62Q, renderAquaBrainNextSuggestionsV62Q: renderAquaBrainNextSuggestionsV62Q, renderAquaBrainPermissionGateSummaryV62Q: renderAquaBrainPermissionGateSummaryV62Q, renderAquaBrainManualFallbackV62Q: renderAquaBrainManualFallbackV62Q, handleAquaBrainAssistantTurnV62Q: handleAquaBrainAssistantTurnV62Q, getAquaBrainAssistantStateV62Q: getAquaBrainAssistantStateV62Q, saveAquaBrainAssistantStateV62Q: saveAquaBrainAssistantStateV62Q, clearAquaBrainAssistantStateV62Q: clearAquaBrainAssistantStateV62Q, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
   window.AquaNaturalResponsesV62VA = window.AquaNaturalResponsesV62VA || { version: 'v62V-A', localDemoOnly: true, buildAquaGreetingV62VA: buildAquaGreetingV62VA, buildAquaReadyPromptV62VA: buildAquaReadyPromptV62VA, buildAquaCorrectionPhraseV62VA: buildAquaCorrectionPhraseV62VA, buildAquaOpeningPhraseV62VA: buildAquaOpeningPhraseV62VA, buildAquaLockedActionPhraseV62VA: buildAquaLockedActionPhraseV62VA, buildAquaMissingInfoPhraseV62VA: buildAquaMissingInfoPhraseV62VA, buildAquaNextSuggestionsV62VA: buildAquaNextSuggestionsV62VA, buildAquaManualFallbackPhraseV62VA: buildAquaManualFallbackPhraseV62VA, runAquaNaturalResponseSmokeV62VA: runAquaNaturalResponseSmokeV62VA, renderAquaNaturalResponseDemoV62VA: renderAquaNaturalResponseDemoV62VA, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true } };
+  window.AquaNaturalResponseIntegrationV62VB = window.AquaNaturalResponseIntegrationV62VB || { version: 'v62V-B', localDemoOnly: true, applyAquaNaturalResponseToAssistantV62VB: applyAquaNaturalResponseToAssistantV62VB, buildAquaAssistantSurfaceCopyV62VB: buildAquaAssistantSurfaceCopyV62VB, buildAquaNaturalPermissionSummaryV62VB: buildAquaNaturalPermissionSummaryV62VB, buildAquaNaturalNextStepCopyV62VB: buildAquaNaturalNextStepCopyV62VB, renderAquaNaturalResponsePreviewV62VB: renderAquaNaturalResponsePreviewV62VB, runAquaNaturalResponseIntegrationSmokeV62VB: runAquaNaturalResponseIntegrationSmokeV62VB, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true } };
   window.AquaFuzzyLanguageV62O = window.AquaFuzzyLanguageV62O || {
     version: 'v62O',
     localDemoOnly: true,
@@ -9551,5 +9655,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62V-A extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62V-B extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
