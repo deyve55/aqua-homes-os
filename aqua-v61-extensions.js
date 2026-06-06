@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v63C Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish.
+ * Aqua Homes OS v63D Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v63C';
+  var VERSION = 'v63D';
   var state = {
     version: VERSION,
     backendReadinessExists: false,
@@ -2238,17 +2238,96 @@
     ].join('');
   }
 
+  function projectFolderCardsV63D() {
+    var marker = 'data-aqua-v63d-premium-project-folder-card="true"';
+    return [
+      renderAquaPremiumOperationalCardV63C({ kicker: 'Project Folder', title: 'Henderson House Job File Cabinet', value: 'Missing Docs', description: 'Organized construction file cabinet view for folder grouping, owner review, and locked backend index status. No files are uploaded, moved, renamed, shared, exported, or changed.', chips: ['Project Folder', 'File Cabinet', 'Backend Locked', 'Missing Docs', 'Owner Review', 'No Live Change Made'], rows: [['Project / property name', 'Henderson House'], ['Company / division', 'Aqua Homes / Residential Renovation'], ['Folder type', 'Job File Cabinet / Project Folder'], ['Reports folder', 'Project reports placeholder / locked'], ['Receipts folder', 'Home Depot + vendor receipt placeholders'], ['SOW / estimate folder', 'Draft SOW + estimate placeholders'], ['Photos / evidence folder', 'Photo proof / evidence binder placeholder'], ['Permits / inspections placeholder', 'Permit closeout and inspection status locked'], ['Insurance placeholder', 'COI / policy proof placeholder'], ['Missing documents status', 'Missing Docs / owner review required'], ['Owner review status', 'Owner Review pending'], ['Backend index locked', 'Yes — local demo only'], ['Live file change', 'No live file change made']] }, marker),
+      renderAquaPremiumOperationalCardV63C({ kicker: 'File Cabinet', title: 'Henderson Folder Index Map', value: 'Backend Locked', chips: ['File Cabinet', 'Reports Folder', 'Receipts Folder', 'Evidence Folder', 'Backend Locked'], rows: [['Folder groups visible', 'Reports, receipts, SOW/estimate, photos/evidence, permits, insurance'], ['Project detail folders', 'Property detail + closeout placeholders'], ['Backend/data index', 'Compatible / locked'], ['Recommended next action', 'Review missing document placeholders locally']] }, marker)
+    ].join('');
+  }
+
+  function companyCommandCardsV63D() {
+    var marker = 'data-aqua-v63d-premium-company-command-card="true"';
+    return [
+      renderAquaPremiumOperationalCardV63C({ kicker: 'Company Command', title: 'Aqua Homes Multi-Company Command Center', value: 'Role Locked', description: 'Company-level command center placeholder for divisions, module visibility, reports, receipts, accounting, and role boundaries. No live sync or company database action runs.', chips: ['Company Command', 'Multi-Company Ready', 'Role Locked', 'Backend Locked', 'No Live Sync'], rows: [['Company / division name', 'Aqua Homes / Renovation Division'], ['Active project placeholder', 'Henderson House + future portfolio projects'], ['Module access placeholder', 'Reports, receipts, SOW, service, portals'], ['Company-level reports placeholder', 'Reports rollup locked'], ['Company-level receipts placeholder', 'Receipt rollup locked'], ['Company-level accounting placeholder', 'Accounting/P&L locked'], ['Permissions / role boundary', 'Owner/admin/accounting role boundary required'], ['Backend/company database locked', 'Locked / no live sync']] }, marker)
+    ].join('');
+  }
+
+  function portalCardsV63D(type) {
+    var portalType = type === 'investor' ? 'Investor Portal' : type === 'satellite' ? 'Satellite / Partner Portal' : 'Customer / Homeowner Request Portal';
+    var access = type === 'investor' ? 'Portfolio read-only visibility' : type === 'satellite' ? 'Mapped read-only feed visibility' : 'Owner-controlled customer request visibility';
+    var marker = type === 'investor' ? 'data-aqua-v63d-premium-investor-portal-card="true"' : type === 'satellite' ? 'data-aqua-v63d-premium-satellite-portal-card="true"' : 'data-aqua-v63d-premium-customer-portal-card="true"';
+    return [renderAquaPremiumOperationalCardV63C({ kicker: 'Controlled Portal', title: portalType, value: 'Portal Auth Required', description: 'Controlled access portal placeholder only. Authentication, sharing, exports, payroll, accounting, and backend data access remain locked.', chips: ['Read-Only', 'Owner Controlled', 'Payroll Hidden', 'Export Locked', 'Portal Auth Required', 'No Live Sharing'], rows: [['Portal type', portalType], ['Access level', access], ['Project/property visibility', 'Henderson House placeholder / owner controlled'], ['Data categories visible', 'Approved project status, selected documents, selected requests'], ['Data categories locked', 'Payroll, bank, accounting export, internal cost details, private notes'], ['Owner/admin approval required', 'Required before any future sharing'], ['Backend/auth required', 'Required / not connected in frontend'], ['Live sharing', 'No live sharing']] }, marker)].join('');
+  }
+
+  function serviceRequestCardsV63D(kind) {
+    var isHvac = kind === 'hvac';
+    var title = isHvac ? 'HVAC Service Request Placeholder' : 'Maintenance Service Request Placeholder';
+    var marker = isHvac ? 'data-aqua-v63d-premium-hvac-card="true"' : 'data-aqua-v63d-premium-maintenance-card="true"';
+    return [renderAquaPremiumOperationalCardV63C({ kicker: 'Service Request', title: title, value: 'Office Review Required', description: 'Professional service operations card for maintenance/HVAC intake, dispatch placeholders, photo placeholders, pricing draft, and locked backend status.', chips: ['Service Request', 'HVAC / Maintenance', 'Dispatch Locked', 'Office Review Required', 'Pricing Draft Only', 'No Live Change'], rows: [['Service request title', isHvac ? 'No-cool HVAC diagnostic placeholder' : 'Maintenance repair request placeholder'], ['Property / customer placeholder', 'Henderson House / customer placeholder'], ['Request type', isHvac ? 'HVAC / diagnostic' : 'Maintenance / general repair'], ['Urgency', isHvac ? 'Priority placeholder' : 'Normal review placeholder'], ['Technician dispatch placeholder', 'Dispatch locked'], ['Mileage/expense placeholder', 'Mileage + expense draft only'], ['Before/after photo placeholder', 'Photo proof upload locked'], ['AI repair pricing placeholder', 'Pricing Draft Only / office review required'], ['Office review required', 'Yes'], ['Backend locked', 'Yes / no live service record change']] }, marker)].join('');
+  }
+
+  function technicianServiceCardsV63D() {
+    var marker = 'data-aqua-v63d-premium-technician-service-card="true"';
+    return [renderAquaPremiumOperationalCardV63C({ kicker: 'Field Service', title: 'Technician Work Order Placeholder', value: 'Technician Status', description: 'Technician field-service card for work order state, check-in/check-out, mileage, labor/material, sign-off, and office reconciliation locks.', chips: ['Field Service', 'Technician Status', 'Check-In Locked', 'Sign-Off Placeholder', 'Office Review Required'], rows: [['Work order placeholder', 'WO-HENDERSON-DEMO / locked'], ['Technician status', 'En route / on site / complete placeholders'], ['En route placeholder', 'Locked status chip only'], ['On site placeholder', 'Locked status chip only'], ['Complete placeholder', 'Locked status chip only'], ['Check-in/check-out placeholder', 'Check-In Locked'], ['Mileage placeholder', 'Mileage draft only'], ['Labor/material placeholder', 'Labor/material draft only'], ['Customer sign-off placeholder', 'Sign-Off Placeholder'], ['Office reconciliation lock', 'Required before any live action']] }, marker)].join('');
+  }
+
+  function satelliteHubCardsV63D() {
+    var marker = 'data-aqua-v63d-premium-satellite-hub-card="true"';
+    return [renderAquaPremiumOperationalCardV63C({ kicker: 'Satellite Feed', title: 'Satellite App Connection Hub / Feed Router', value: 'Sync Locked', description: 'Feed router placeholder for connected apps, source types, mapping, offline queue, owner approval, and backend/API locks. No API call or sync runs.', chips: ['Satellite Feed', 'Sync Locked', 'Mapping Required', 'Approval Required', 'No Live API Call'], rows: [['Connected app placeholder', 'Future satellite app / vendor app placeholder'], ['Source app type', 'Field app, portal, service app, accounting app placeholder'], ['Feed type', 'Receipt, service, photo proof, status, alert placeholder'], ['Company/module mapping', 'Mapping Required / owner controlled'], ['Sync status', 'Sync Locked'], ['Offline queue placeholder', 'Offline queue placeholder only'], ['Owner approval gate', 'Approval Required'], ['Backend/API locked', 'Locked / No Live API Call']] }, marker)].join('');
+  }
+
+  function notificationAlertCardsV63D() {
+    var marker = 'data-aqua-v63d-premium-notification-card="true"';
+    return [renderAquaPremiumOperationalCardV63C({ kicker: 'Alert Placeholder', title: 'Operational Alerts / Notifications', value: 'Notification Locked', description: 'Operational alert cards for budget risk, missing documents, overdue reviews, suggested actions, and locked notification delivery.', chips: ['Alert Placeholder', 'Budget Risk', 'Missing Docs', 'Owner Review', 'Notification Locked'], rows: [['Alert type', 'Budget risk / missing docs / owner review placeholder'], ['Project/property', 'Henderson House'], ['Trigger source', 'Local demo data-index placeholder'], ['Budget risk placeholder', 'Budget Risk review required'], ['Missing document placeholder', 'Missing Docs flag'], ['Overdue review placeholder', 'Owner Review overdue placeholder'], ['Suggested action', 'Review folder packet locally'], ['Backend/notification locked', 'Locked / no SMS, email, push, or live notification sent']] }, marker)].join('');
+  }
+
+  function dataIndexCardsV63D() {
+    var marker = 'data-aqua-v63d-premium-data-index-card="true"';
+    return [renderAquaPremiumOperationalCardV63C({ kicker: 'Aqua Brain Data Index', title: 'File Cabinet / Backend Readiness Panels', value: 'Compatible', description: 'Premium shell-compatible data-index and backend-readiness view for file cabinet records, schema, query runtime, tool gateway, keeper handoff, and AI assistant surfaces.', chips: ['Data Index', 'File Cabinet', 'Backend Readiness', 'Tool Gateway', 'AI Surface Compatible', 'Backend Locked'], rows: [['Backend readiness', 'Compatible / locked'], ['Data schema', 'Project, receipt, report, spend, missing document, approval, export indexes preserved'], ['Data query runtime', 'Local demo query runtime preserved'], ['Tool gateway', 'Dry-run gateway compatibility preserved'], ['Keeper handoff', 'Keeper/handoff surface preserved'], ['AI assistant surface', 'Routing and visual focus preserved'], ['Live backend query', 'No live backend query']] }, marker)].join('');
+  }
+
 
   function renderAquaPremiumModuleDemoV63A(mode) {
     var q = String(mode || 'show premium module shell').toLowerCase();
     var commonSafety = ['No backend calls', 'No network calls', 'No external AI/API calls', 'No API keys in frontend', 'No live record changes', 'No live export/upload/send', 'No accounting export', 'No audio storage', 'No always-listening'];
     var title = 'Premium Module Shell / Opened Module Visual Polish Pass';
-    var subtitle = 'v63C controlled SOW, field, evidence, insurance, bank, compliance, report, and missing-document polish. Home/Main Brain remains untouched.';
+    var subtitle = 'v63D controlled project folders, company command, portals, service, satellite hub, alerts, and data-index polish. Home/Main Brain remains untouched.';
     var status = ['Local Demo', 'Backend Locked', 'Owner Review Required', 'No Live Change Made', 'Permission Required'];
     var cards = [];
-    var attrs = { 'data-aqua-v63a-demo-panel': q, 'data-aqua-v63b-detail-polish': 'true', 'data-aqua-v63c-operational-polish': 'true' };
+    var attrs = { 'data-aqua-v63a-demo-panel': q, 'data-aqua-v63b-detail-polish': 'true', 'data-aqua-v63c-operational-polish': 'true', 'data-aqua-v63d-portal-polish': 'true' };
     var actions = [{ label: 'Review Locally', kind: 'primary' }, { label: 'Owner Review', kind: 'secondary' }, { label: 'No Live Action', kind: 'danger' }];
-    if (/automation/.test(q)) {
+    if (/project folders|file cabinet|job file|property detail|henderson project folders/.test(q)) {
+      title = 'Project Folders / Job File Cabinet'; subtitle = 'Premium construction file cabinet cards for project/property folders, reports, receipts, SOW, photos, permits, insurance, missing docs, and owner review locks.'; attrs['data-aqua-v63d-project-folders-polish'] = 'true'; attrs['data-aqua-v63d-file-cabinet-polish'] = 'true';
+      cards = [projectFolderCardsV63D()]; status = ['Project Folder', 'File Cabinet', 'Backend Locked', 'Missing Docs', 'Owner Review', 'No Live Change Made'];
+    } else if (/company command|multi-company|multi company/.test(q)) {
+      title = 'Company Command / Multi-Company Command Center'; subtitle = 'Premium company-level command center placeholders for divisions, project access, reports, receipts, accounting, role boundaries, and backend locks.'; attrs['data-aqua-v63d-company-command-polish'] = 'true';
+      cards = [companyCommandCardsV63D()]; status = ['Company Command', 'Multi-Company Ready', 'Role Locked', 'Backend Locked', 'No Live Sync'];
+    } else if (/customer portal|homeowner|request portal/.test(q)) {
+      title = 'Customer / Homeowner Request Portal'; subtitle = 'Controlled access portal placeholder with owner-controlled visibility, locked data categories, auth requirements, and no live sharing.'; attrs['data-aqua-v63d-customer-portal-polish'] = 'true';
+      cards = [portalCardsV63D('customer')]; status = ['Read-Only', 'Owner Controlled', 'Portal Auth Required', 'Export Locked', 'No Live Sharing'];
+    } else if (/investor portal|investor/.test(q)) {
+      title = 'Investor Portal Placeholder'; subtitle = 'Controlled read-only investor portal placeholder with owner/admin approval, hidden payroll/accounting categories, auth requirements, and no live sharing.'; attrs['data-aqua-v63d-investor-portal-polish'] = 'true';
+      cards = [portalCardsV63D('investor')]; status = ['Read-Only', 'Owner Controlled', 'Payroll Hidden', 'Portal Auth Required', 'No Live Sharing'];
+    } else if (/maintenance request|show polished maintenance|maintenance/.test(q)) {
+      title = 'Maintenance Service Request'; subtitle = 'Premium service operations card with dispatch, mileage, before/after photo, pricing draft, office review, and backend locks.'; attrs['data-aqua-v63d-maintenance-polish'] = 'true';
+      cards = [serviceRequestCardsV63D('maintenance')]; status = ['Service Request', 'HVAC / Maintenance', 'Dispatch Locked', 'Office Review Required', 'Pricing Draft Only', 'No Live Change'];
+    } else if (/hvac/.test(q)) {
+      title = 'HVAC Service Request'; subtitle = 'Premium HVAC operations card with dispatch, mileage, proof, pricing draft, office review, and backend locks.'; attrs['data-aqua-v63d-hvac-polish'] = 'true';
+      cards = [serviceRequestCardsV63D('hvac')]; status = ['Service Request', 'HVAC / Maintenance', 'Dispatch Locked', 'Office Review Required', 'Pricing Draft Only', 'No Live Change'];
+    } else if (/technician service|field service|technician/.test(q)) {
+      title = 'Technician / Field Service'; subtitle = 'Premium technician work-order card for status, check-in/out, mileage, labor/material, customer sign-off, and office reconciliation locks.'; attrs['data-aqua-v63d-technician-service-polish'] = 'true';
+      cards = [technicianServiceCardsV63D()]; status = ['Field Service', 'Technician Status', 'Check-In Locked', 'Sign-Off Placeholder', 'Office Review Required'];
+    } else if (/satellite hub|satellite app hub|satellite app|connection hub|feed router/.test(q)) {
+      title = 'Satellite App Connection Hub / Feed Router'; subtitle = 'Premium satellite feed/router placeholder for connected apps, feed mapping, offline queue, approval gates, and locked backend/API status.'; attrs['data-aqua-v63d-satellite-hub-polish'] = 'true';
+      cards = [satelliteHubCardsV63D(), portalCardsV63D('satellite')]; status = ['Satellite Feed', 'Sync Locked', 'Mapping Required', 'Approval Required', 'No Live API Call'];
+    } else if (/notifications|alerts|alert/.test(q)) {
+      title = 'Notifications / Alerts'; subtitle = 'Premium operational alert cards for budget risk, missing documents, overdue review, suggested action, and locked notifications.'; attrs['data-aqua-v63d-notifications-polish'] = 'true';
+      cards = [notificationAlertCardsV63D()]; status = ['Alert Placeholder', 'Budget Risk', 'Missing Docs', 'Owner Review', 'Notification Locked'];
+    } else if (/data index|backend readiness|backend panels/.test(q)) {
+      title = 'Aqua Brain File Cabinet / Data Index'; subtitle = 'Premium shell-compatible Aqua Brain data-index/backend-readiness panel preserving schema, query runtime, tool gateway, keeper, and assistant surfaces.'; attrs['data-aqua-v63d-data-index-polish'] = 'true';
+      cards = [dataIndexCardsV63D()]; status = ['Data Index', 'File Cabinet', 'Backend Readiness', 'Tool Gateway', 'Backend Locked'];
+    } else if (/automation/.test(q)) {
       title = 'Automation Report / Regression Report Viewer'; subtitle = 'Polished merge-gate status screen for local QA.'; status = ['Local Demo', 'Backend Locked', 'No Live Change Made', 'MERGE_ALLOWED']; attrs['data-aqua-v63a-automation-report-polished'] = 'true';
       cards = [renderAquaPremiumInfoCardV63A({ kicker: 'Regression', title: 'Total Checks', value: '723+', chips: ['version v63C', 'failed 0'] }), renderAquaPremiumInfoCardV63A({ kicker: 'Merge Gate', title: 'Status', value: 'MERGE_ALLOWED', chips: ['safeToMerge true', 'Home untouched'] }), renderAquaPremiumInfoCardV63A({ kicker: 'Repair Prompt', title: 'No repair needed', description: 'If a polish check fails, include failed panel/module, expected marker, actual result, likely file to fix, and reminders to preserve Home, IDs, routing, automation, and all backend/live locks.' })];
     } else if (/receipt/.test(q)) {
@@ -2297,13 +2376,13 @@
       attrs['data-aqua-v63a-module-polish-overview'] = 'true';
       cards = [renderAquaPremiumInfoCardV63A({ kicker: 'Coverage', title: 'Premium Shell Available', value: 'SOW + field + evidence + compliance expansion', chips: ['SOW', 'field walkthrough', 'evidence binder', 'insurance/bank', 'workers comp', 'project reports'] }), renderAquaPremiumInfoCardV63A({ title: 'Home Lock', description: 'This is an opened-module polish pass only. AH_v54I-3.html and the approved Home/Main Brain layout are not rewritten.', chips: ['Home untouched', 'Logo/header/nav protected'] })];
     }
-    return renderAquaPremiumModuleShellV63A({ title: title, subtitle: subtitle, statusBadge: 'v63C', statusItems: status, bodyHtml: cards.join(''), actions: actions, safetyItems: commonSafety, attrs: attrs });
+    return renderAquaPremiumModuleShellV63A({ title: title, subtitle: subtitle, statusBadge: 'v63D', statusItems: status, bodyHtml: cards.join(''), actions: actions, safetyItems: commonSafety, attrs: attrs });
   }
 
   function detectAquaPremiumModuleShellCommandV63A(original, normalized) {
     var q = String(normalized || normalizeAquaPhraseV61E(original)).trim();
-    var phrases = ['show premium module shell', 'show module polish', 'show polished receipts', 'show receipt detail polish', 'show polished automation report', 'show polished accounting', 'show accounting detail polish', 'show spend detail polish', 'show polished owner review', 'show accountant export placeholder', 'show polished SOW', 'show polished scope', 'show polished sow', 'show polished sow review queue', 'show polished SOW review queue', 'show polished field walkthrough', 'show polished evidence binder', 'show polished photo proof', 'show polished insurance', 'show polished bank reconciliation', 'show polished workers comp', 'show polished subcontractor compliance', 'show polished project reports', 'show polished missing documents', 'show polished permission gate', 'show polished aqua brain panel'];
-    if (phrases.indexOf(q) !== -1) return { canonicalIntent: 'aqua_premium_module_shell_v63a', routeText: original, originalText: original, normalizedText: q, module: 'Premium Module Shell / Opened Module Visual Polish Pass — v63C', premiumModuleShellModeV63A: q };
+    var phrases = ['show premium module shell', 'show module polish', 'show polished receipts', 'show receipt detail polish', 'show polished automation report', 'show polished accounting', 'show accounting detail polish', 'show spend detail polish', 'show polished owner review', 'show accountant export placeholder', 'show polished SOW', 'show polished scope', 'show polished sow', 'show polished sow review queue', 'show polished SOW review queue', 'show polished field walkthrough', 'show polished evidence binder', 'show polished photo proof', 'show polished insurance', 'show polished bank reconciliation', 'show polished workers comp', 'show polished subcontractor compliance', 'show polished project reports', 'show polished missing documents', 'show polished permission gate', 'show polished aqua brain panel', 'show polished project folders', 'show polished file cabinet', 'show polished company command', 'show polished customer portal', 'show polished investor portal', 'show polished maintenance', 'show polished HVAC', 'show polished hvac', 'show polished technician service', 'show polished satellite hub', 'show polished notifications', 'show polished data index', 'show henderson project folders', 'show maintenance request', 'show satellite app hub'];
+    if (phrases.indexOf(q) !== -1) return { canonicalIntent: 'aqua_premium_module_shell_v63a', routeText: original, originalText: original, normalizedText: q, module: 'Premium Module Shell / Opened Module Visual Polish Pass — v63D', premiumModuleShellModeV63A: q };
     return null;
   }
 
@@ -8948,6 +9027,20 @@
       { command: 'show polished missing documents', expected: 'v63C polished missing documents panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63c-missing-documents-polish[\s\S]*Missing Document[\s\S]*Source Proof Needed[\s\S]*Backend Locked/i, noFallback: true, missingDocumentsPanelPolishedV63A: true, missingDocumentsPolishV63C: true, premiumOperationalCardsV63C: true },
       { command: 'show polished permission gate', expected: 'v63A polished permission gate panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63a-permission-gate-polished[\s\S]*Permission Required/i, noFallback: true, permissionGatePolishedV63A: true },
       { command: 'show polished aqua brain panel', expected: 'v63A Aqua Brain shell-compatible panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /Aqua Brain Panel[\s\S]*data-aqua-v63a-aqua-brain-panel-polished/i, noFallback: true, aquaBrainPanelCompatibleV63A: true },
+      { command: 'show polished project folders', expected: 'v63D polished project folders', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-project-folders-polish[\s\S]*Project Folder[\s\S]*File Cabinet[\s\S]*No Live Change Made/i, noFallback: true, projectFoldersPolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished file cabinet', expected: 'v63D polished file cabinet', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-file-cabinet-polish[\s\S]*Reports folder[\s\S]*Receipts folder[\s\S]*Backend index locked/i, noFallback: true, fileCabinetPolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished company command', expected: 'v63D polished company command', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-company-command-polish[\s\S]*Company Command[\s\S]*Multi-Company Ready[\s\S]*Role Locked/i, noFallback: true, companyCommandPolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished customer portal', expected: 'v63D polished customer portal', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-customer-portal-polish[\s\S]*Customer \/ Homeowner Request Portal[\s\S]*Portal Auth Required[\s\S]*No Live Sharing/i, noFallback: true, customerPortalPolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished investor portal', expected: 'v63D polished investor portal', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-investor-portal-polish[\s\S]*Investor Portal[\s\S]*Payroll Hidden[\s\S]*No Live Sharing/i, noFallback: true, investorPortalPolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished maintenance', expected: 'v63D polished maintenance service', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-maintenance-polish[\s\S]*Service Request[\s\S]*Dispatch Locked[\s\S]*Pricing Draft Only/i, noFallback: true, maintenancePolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished HVAC', expected: 'v63D polished HVAC service', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-hvac-polish[\s\S]*HVAC Service Request[\s\S]*Office Review Required[\s\S]*Backend locked/i, noFallback: true, hvacPolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished technician service', expected: 'v63D polished technician service', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-technician-service-polish[\s\S]*Field Service[\s\S]*Check-In Locked[\s\S]*Sign-Off Placeholder/i, noFallback: true, technicianServicePolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished satellite hub', expected: 'v63D polished satellite hub', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-satellite-hub-polish[\s\S]*Satellite Feed[\s\S]*Mapping Required[\s\S]*No Live API Call/i, noFallback: true, satelliteHubPolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished notifications', expected: 'v63D polished notifications', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-notifications-polish[\s\S]*Alert Placeholder[\s\S]*Budget Risk[\s\S]*Notification Locked/i, noFallback: true, notificationsPolishV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show polished data index', expected: 'v63D polished data index compatibility panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-data-index-polish[\s\S]*Aqua Brain Data Index[\s\S]*Data query runtime[\s\S]*AI assistant surface/i, noFallback: true, dataIndexPanelsCompatibleV63D: true, premiumPortalCardsV63D: true },
+      { command: 'show Henderson project folders', expected: 'v63D Henderson project folders alias', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-project-folders-polish[\s\S]*Henderson House Job File Cabinet[\s\S]*Missing Docs/i, noFallback: true, projectFoldersPolishV63D: true },
+      { command: 'show maintenance request', expected: 'v63D maintenance request alias', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-maintenance-polish[\s\S]*Maintenance Service Request[\s\S]*No Live Change/i, noFallback: true, maintenancePolishV63D: true },
+      { command: 'show satellite app hub', expected: 'v63D satellite app hub alias', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63d-satellite-hub-polish[\s\S]*Satellite App Connection Hub[\s\S]*No Live API Call/i, noFallback: true, satelliteHubPolishV63D: true },
       { command: 'show automation report', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
       { command: 'show regression report', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
       { command: 'automation status', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
@@ -9146,6 +9239,18 @@
       projectReportsPolishWorksV63C: /data-aqua-v63c-project-reports-polish/i.test(html),
       missingDocumentsPolishWorksV63C: /data-aqua-v63c-missing-documents-polish/i.test(html),
       premiumOperationalCardsRenderV63C: /data-aqua-v63c-premium-operational-card/i.test(html),
+      projectFoldersPolishWorksV63D: /data-aqua-v63d-project-folders-polish/i.test(html),
+      fileCabinetPolishWorksV63D: /data-aqua-v63d-file-cabinet-polish/i.test(html),
+      companyCommandPolishWorksV63D: /data-aqua-v63d-company-command-polish/i.test(html),
+      customerPortalPolishWorksV63D: /data-aqua-v63d-customer-portal-polish/i.test(html),
+      investorPortalPolishWorksV63D: /data-aqua-v63d-investor-portal-polish/i.test(html),
+      maintenancePolishWorksV63D: /data-aqua-v63d-maintenance-polish/i.test(html),
+      hvacPolishWorksV63D: /data-aqua-v63d-hvac-polish/i.test(html),
+      technicianServicePolishWorksV63D: /data-aqua-v63d-technician-service-polish/i.test(html),
+      satelliteHubPolishWorksV63D: /data-aqua-v63d-satellite-hub-polish/i.test(html),
+      notificationsPolishWorksV63D: /data-aqua-v63d-notifications-polish/i.test(html),
+      dataIndexPanelsCompatibleV63D: /data-aqua-v63d-data-index-polish/i.test(html),
+      premiumPortalCardsRenderV63D: /data-aqua-v63d-premium-(project-folder|company-command|customer-portal|investor-portal|maintenance|hvac|technician-service|satellite-hub|notification|data-index)-card/i.test(html),
       missingDocumentsPanelPolishedV63A: /data-aqua-v63a-missing-documents-polished/i.test(html),
       permissionGatePolishedV63A: /data-aqua-v63a-permission-gate-polished/i.test(html),
       aquaBrainPanelCompatibleV63A: /data-aqua-v63a-aqua-brain-panel-polished/i.test(html),
@@ -9430,6 +9535,18 @@
     if (testCase.projectReportsPolishV63C && !actual.projectReportsPolishWorksV63C) errors.push('Expected v63C project reports polish marker.');
     if (testCase.missingDocumentsPolishV63C && !actual.missingDocumentsPolishWorksV63C) errors.push('Expected v63C missing documents polish marker.');
     if (testCase.premiumOperationalCardsV63C && !actual.premiumOperationalCardsRenderV63C) errors.push('Expected v63C premium operational cards.');
+    if (testCase.projectFoldersPolishV63D && !actual.projectFoldersPolishWorksV63D) errors.push('Expected v63D project folders polish marker.');
+    if (testCase.fileCabinetPolishV63D && !actual.fileCabinetPolishWorksV63D) errors.push('Expected v63D file cabinet polish marker.');
+    if (testCase.companyCommandPolishV63D && !actual.companyCommandPolishWorksV63D) errors.push('Expected v63D company command polish marker.');
+    if (testCase.customerPortalPolishV63D && !actual.customerPortalPolishWorksV63D) errors.push('Expected v63D customer portal polish marker.');
+    if (testCase.investorPortalPolishV63D && !actual.investorPortalPolishWorksV63D) errors.push('Expected v63D investor portal polish marker.');
+    if (testCase.maintenancePolishV63D && !actual.maintenancePolishWorksV63D) errors.push('Expected v63D maintenance polish marker.');
+    if (testCase.hvacPolishV63D && !actual.hvacPolishWorksV63D) errors.push('Expected v63D HVAC polish marker.');
+    if (testCase.technicianServicePolishV63D && !actual.technicianServicePolishWorksV63D) errors.push('Expected v63D technician service polish marker.');
+    if (testCase.satelliteHubPolishV63D && !actual.satelliteHubPolishWorksV63D) errors.push('Expected v63D satellite hub polish marker.');
+    if (testCase.notificationsPolishV63D && !actual.notificationsPolishWorksV63D) errors.push('Expected v63D notifications polish marker.');
+    if (testCase.dataIndexPanelsCompatibleV63D && !actual.dataIndexPanelsCompatibleV63D) errors.push('Expected v63D data-index compatibility marker.');
+    if (testCase.premiumPortalCardsV63D && !actual.premiumPortalCardsRenderV63D) errors.push('Expected v63D premium portal/project cards.');
     if (testCase.missingDocumentsPanelPolishedV63A && !actual.missingDocumentsPanelPolishedV63A) errors.push('Expected v63A polished missing documents marker.');
     if (testCase.permissionGatePolishedV63A && !actual.permissionGatePolishedV63A) errors.push('Expected v63A polished permission gate marker.');
     if (testCase.aquaBrainPanelCompatibleV63A && !actual.aquaBrainPanelCompatibleV63A) errors.push('Expected v63A Aqua Brain compatible panel marker.');
@@ -10382,6 +10499,19 @@
       projectReportsPolishWorks: results.some(function (result) { return result.command === 'show polished project reports' && result.passed && result.actual.projectReportsPolishWorksV63C; }),
       missingDocumentsPolishWorks: results.some(function (result) { return result.command === 'show polished missing documents' && result.passed && result.actual.missingDocumentsPolishWorksV63C; }),
       premiumOperationalCardsRender: results.filter(function (result) { return /show polished (SOW|scope|field walkthrough|evidence binder|photo proof|insurance|bank reconciliation|workers comp|subcontractor compliance|project reports|missing documents)/i.test(result.command); }).every(function (result) { return result.passed && result.actual.premiumOperationalCardsRenderV63C; }),
+      projectFoldersPolishWorks: results.some(function (result) { return /show polished project folders|show Henderson project folders/i.test(result.command) && result.passed && result.actual.projectFoldersPolishWorksV63D; }),
+      fileCabinetPolishWorks: results.some(function (result) { return result.command === 'show polished file cabinet' && result.passed && result.actual.fileCabinetPolishWorksV63D; }),
+      companyCommandPolishWorks: results.some(function (result) { return result.command === 'show polished company command' && result.passed && result.actual.companyCommandPolishWorksV63D; }),
+      customerPortalPolishWorks: results.some(function (result) { return result.command === 'show polished customer portal' && result.passed && result.actual.customerPortalPolishWorksV63D; }),
+      investorPortalPolishWorks: results.some(function (result) { return result.command === 'show polished investor portal' && result.passed && result.actual.investorPortalPolishWorksV63D; }),
+      maintenancePolishWorks: results.some(function (result) { return /show polished maintenance|show maintenance request/i.test(result.command) && result.passed && result.actual.maintenancePolishWorksV63D; }),
+      hvacPolishWorks: results.some(function (result) { return result.command === 'show polished HVAC' && result.passed && result.actual.hvacPolishWorksV63D; }),
+      technicianServicePolishWorks: results.some(function (result) { return result.command === 'show polished technician service' && result.passed && result.actual.technicianServicePolishWorksV63D; }),
+      satelliteHubPolishWorks: results.some(function (result) { return /show polished satellite hub|show satellite app hub/i.test(result.command) && result.passed && result.actual.satelliteHubPolishWorksV63D; }),
+      notificationsPolishWorks: results.some(function (result) { return result.command === 'show polished notifications' && result.passed && result.actual.notificationsPolishWorksV63D; }),
+      dataIndexPanelsCompatible: results.some(function (result) { return result.command === 'show polished data index' && result.passed && result.actual.dataIndexPanelsCompatibleV63D; }),
+      premiumPortalCardsRender: results.filter(function (result) { return /show polished (project folders|file cabinet|company command|customer portal|investor portal|maintenance|HVAC|technician service|satellite hub|notifications|data index)|show Henderson project folders|show maintenance request|show satellite app hub/i.test(result.command); }).every(function (result) { return result.passed && result.actual.premiumPortalCardsRenderV63D; }),
+      v63COperationalPolishStillWorks: results.filter(function (result) { return /show polished (SOW|scope|field walkthrough|evidence binder|photo proof|insurance|bank reconciliation|workers comp|subcontractor compliance|project reports|missing documents)/i.test(result.command); }).every(function (result) { return result.passed && result.actual.premiumOperationalCardsRenderV63C; }),
       v63BDetailPolishStillWorks: results.some(function (result) { return result.command === 'show receipt detail polish' && result.passed && result.actual.receiptDetailPolishWorksV63B; }) && results.some(function (result) { return result.command === 'show accounting detail polish' && result.passed && result.actual.accountingDetailPolishWorksV63B; }),
       v63AShellStillWorks: results.some(function (result) { return result.command === 'show premium module shell' && result.passed && result.actual.renderedPremiumModuleShellV63A; }),
       missingDocumentsPanelPolished: results.some(function (result) { return result.actual.missingDocumentsPanelPolishedV63A; }),
@@ -10465,6 +10595,19 @@
     state.projectReportsPolishWorks = report.projectReportsPolishWorks;
     state.missingDocumentsPolishWorks = report.missingDocumentsPolishWorks;
     state.premiumOperationalCardsRender = report.premiumOperationalCardsRender;
+    state.projectFoldersPolishWorks = report.projectFoldersPolishWorks;
+    state.fileCabinetPolishWorks = report.fileCabinetPolishWorks;
+    state.companyCommandPolishWorks = report.companyCommandPolishWorks;
+    state.customerPortalPolishWorks = report.customerPortalPolishWorks;
+    state.investorPortalPolishWorks = report.investorPortalPolishWorks;
+    state.maintenancePolishWorks = report.maintenancePolishWorks;
+    state.hvacPolishWorks = report.hvacPolishWorks;
+    state.technicianServicePolishWorks = report.technicianServicePolishWorks;
+    state.satelliteHubPolishWorks = report.satelliteHubPolishWorks;
+    state.notificationsPolishWorks = report.notificationsPolishWorks;
+    state.dataIndexPanelsCompatible = report.dataIndexPanelsCompatible;
+    state.premiumPortalCardsRender = report.premiumPortalCardsRender;
+    state.v63COperationalPolishStillWorks = report.v63COperationalPolishStillWorks;
     state.v63BDetailPolishStillWorks = report.v63BDetailPolishStillWorks;
     state.v63AShellStillWorks = report.v63AShellStillWorks;
     state.backendSchemaExists = report.backendSchemaExists;
@@ -10651,6 +10794,19 @@
       '<div><strong>projectReportsPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.projectReportsPolishWorks === true)) + '</div>' +
       '<div><strong>missingDocumentsPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.missingDocumentsPolishWorks === true)) + '</div>' +
       '<div><strong>premiumOperationalCardsRender:</strong> ' + escapeHTMLV61D(String(safe.premiumOperationalCardsRender === true)) + '</div>' +
+      '<div><strong>projectFoldersPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.projectFoldersPolishWorks === true)) + '</div>' +
+      '<div><strong>fileCabinetPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.fileCabinetPolishWorks === true)) + '</div>' +
+      '<div><strong>companyCommandPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.companyCommandPolishWorks === true)) + '</div>' +
+      '<div><strong>customerPortalPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.customerPortalPolishWorks === true)) + '</div>' +
+      '<div><strong>investorPortalPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.investorPortalPolishWorks === true)) + '</div>' +
+      '<div><strong>maintenancePolishWorks:</strong> ' + escapeHTMLV61D(String(safe.maintenancePolishWorks === true)) + '</div>' +
+      '<div><strong>hvacPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.hvacPolishWorks === true)) + '</div>' +
+      '<div><strong>technicianServicePolishWorks:</strong> ' + escapeHTMLV61D(String(safe.technicianServicePolishWorks === true)) + '</div>' +
+      '<div><strong>satelliteHubPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.satelliteHubPolishWorks === true)) + '</div>' +
+      '<div><strong>notificationsPolishWorks:</strong> ' + escapeHTMLV61D(String(safe.notificationsPolishWorks === true)) + '</div>' +
+      '<div><strong>dataIndexPanelsCompatible:</strong> ' + escapeHTMLV61D(String(safe.dataIndexPanelsCompatible === true)) + '</div>' +
+      '<div><strong>premiumPortalCardsRender:</strong> ' + escapeHTMLV61D(String(safe.premiumPortalCardsRender === true)) + '</div>' +
+      '<div><strong>v63COperationalPolishStillWorks:</strong> ' + escapeHTMLV61D(String(safe.v63COperationalPolishStillWorks === true)) + '</div>' +
       '<div><strong>v63BDetailPolishStillWorks:</strong> ' + escapeHTMLV61D(String(safe.v63BDetailPolishStillWorks === true)) + '</div>' +
       '<div><strong>v63AShellStillWorks:</strong> ' + escapeHTMLV61D(String(safe.v63AShellStillWorks === true)) + '</div>' +
       '<div><strong>noApiKeysInFrontend:</strong> ' + escapeHTMLV61D(String(safe.noApiKeysInFrontend === true)) + '</div>' +
@@ -11016,5 +11172,5 @@
 
   installPremiumModuleShellStylesV61Z();
   installPremiumModuleShellStylesV63A();
-  console.log('Aqua Homes OS v63C extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v63D extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
