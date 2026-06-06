@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62Y Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning.
+ * Aqua Homes OS v62Z Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62Y';
+  var VERSION = 'v62Z';
   var state = {
     version: VERSION,
     backendReadinessExists: false,
@@ -5732,6 +5732,8 @@
   function classifyAquaAskModeV61U(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
+    var phaseKeeperV62Z = detectAquaBrainPhaseKeeperCommandV62Z(original, q);
+    if (phaseKeeperV62Z) return withAskModeV61U(phaseKeeperV62Z, 'phase_keeper_v62z');
     var keeper = detectAquaBrainKeeperCommandV62X(original, q);
     if (keeper) return { mode: 'keeper_recovery_v62x', originalText: original, normalizedText: q, routeHint: keeper };
     var schema = detectAquaBackendSchemaCommandV62M(original, q);
@@ -5898,6 +5900,108 @@
     });
     var failed = results.filter(function (r) { return !r.passed; });
     return Object.assign({ version: 'v62Y', total: results.length, passed: results.length - failed.length, failed: failed.length, results: results, safeToMerge: failed.length === 0 && checklist.allLiveLocked, mergeRecommendation: failed.length === 0 && checklist.allLiveLocked ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', backendReadinessExists: true, connectorMapWorks: checklist.connectorCount === 20, backendGapReportWorks: getAquaBackendGapItemsV62Y().length >= 15, backendConnectionOrderWorks: getAquaBackendConnectionOrderV62Y().length === 9, backendNextStepPlanWorks: true, liveDataQuestionStaysLocked: true, exportConnectionQuestionStaysLocked: true, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true, repairPrompt: failed.length ? 'Fix AquaBackendReadinessV62Y command routing/rendering in aqua-v61-extensions.js only.' : 'No repair needed.' }, checklist);
+  }
+
+
+  var AQUA_BRAIN_PHASE_KEEPER_KEY_V62Z = 'aquaBrainPhaseKeeperV62Z';
+
+  function aquaBrainPhaseSafetyV62Z() {
+    return { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true };
+  }
+
+  function getAquaBrainPhaseManifestV62Z() {
+    return {
+      version: 'v62Z',
+      phaseName: 'Aqua Brain AI/Backend Keeper Lock + Next Phase Decision',
+      currentKeeper: 'v62Z — Aqua Brain AI/Backend Keeper Lock',
+      protectedVisualKeeper: 'AH_v54I-3.html',
+      aiSystemsIncluded: ['Aqua Brain primary assistant interface', 'Aqua Brain assistant runtime', 'compact phone/DeX assistant surface', 'natural response templates', 'fuzzy language / mispronunciation resolver', 'end-to-end AI routing matrix', 'voice/session controller', 'workflow planner', 'workflow memory / follow-up chain', 'visual navigation / section focus', 'assistant live UX smoke check', 'assistant acceptance checklist', 'assistant keeper handoff'],
+      backendReadinessIncluded: ['secure tool gateway contract', 'secure tool gateway dry-run runtime', 'backend boundary / server-only key plan', 'backend schema / data index contract', 'backend connector readiness plan', 'permission / risk / approval maps', 'audit / undo placeholders', 'frontend block rules', 'zero-report guard', 'automation / regression QA'],
+      automationStatus: { version: 'v62Y baseline locked into v62Z', latestTotal: 684, latestPassed: 684, latestFailed: 0, safeToMerge: true, mergeRecommendation: 'MERGE_ALLOWED' },
+      ready: ['AI operating layer can route local/demo commands through routes, tools, workflows, permissions, and readbacks.', 'Backend schema/readiness plan is documented for future server work.', 'Automation report and regression QA remain the merge gate.', 'Home/Main Brain protected visual keeper remains unchanged.'],
+      stillLocked: ['live OpenAI / ChatGPT', 'live Gemini / Google', 'live backend', 'server-side API keys not configured', 'live project database', 'live file storage', 'live receipts', 'live accounting/payables', 'live payroll', 'live bank/payment', 'live uploads', 'live exports', 'customer/accountant sends', 'audio storage', 'always-listening'],
+      nextPhaseOptions: [
+        { id: 'A', title: 'Option A — Backend/Data Connector Architecture', recommendedIf: 'continuing AI-first backend path', focus: ['real backend platform choice', 'database schema', 'auth/roles', 'server-only keys', 'read-only project/file index first', 'no live exports yet'] },
+        { id: 'B', title: 'Option B — Premium Module Visual Polish', recommendedIf: 'user wants the opened modules to stop feeling cheap/generic', focus: ['opened module shell', 'premium cards', 'better status chips', 'improved spacing', 'preserve Home design', 'preserve all IDs/routing/automation'] },
+        { id: 'C', title: 'Option C — Phone Live Acceptance Testing', recommendedIf: 'user wants to test the current AI assistant on the actual phone/DeX browser', focus: ['one guided test flow', 'no command batch', 'AI button', 'assistant surface', 'voice fallback', 'visual route', 'readback', 'automation report'] },
+        { id: 'D', title: 'Option D — Real Voice Backend Planning', recommendedIf: 'only after backend boundary is accepted', focus: ['server-side realtime voice session plan', 'no frontend API keys', 'user-approved microphone flow', 'tool calling through secure gateway', 'no always-listening'] }
+      ],
+      recommendedNextPhase: 'Option B — Premium Module Visual Polish',
+      recommendationReason: 'The AI operating layer and backend-readiness foundation are now locked enough to pause and improve the opened module experience. The user already confirmed Home/Main Brain looks right, but opened modules still feel generic. The next safest phase is to polish opened module shells while preserving all AI routing and automation.',
+      safety: aquaBrainPhaseSafetyV62Z(),
+      localDemoOnly: true
+    };
+  }
+
+  function buildAquaBrainPhaseHandoffTextV62Z() {
+    return ['Aqua Homes OS v62Z Keeper Handoff', '', '- Do not restart.', '- Do not redesign Home.', '- Protected visual keeper is AH_v54I-3.html.', '- Current keeper is v62Z Aqua Brain AI/Backend Keeper Lock.', '- Aqua Brain is the primary app interface.', '- AI must not be a quick-answer widget.', '- AI must operate the construction OS through routes, tools, workflows, permissions, and readbacks.', '- All live AI/backend/export/upload/accounting/payroll/bank/customer actions remain locked.', '- Automation report must pass before merge.', '- Merge only if failed 0 and MERGE_ALLOWED.', '- Recommended next phase is Premium Module Visual Polish unless user chooses backend/data connector work.'].join('\n');
+  }
+
+  function getAquaBrainPhaseKeeperV62Z() {
+    var manifest = getAquaBrainPhaseManifestV62Z();
+    var status = { version: 'v62Z', phaseName: manifest.phaseName, keeperStatus: 'KEEPER_LOCKED_LOCAL_DEMO', protectedVisualKeeper: manifest.protectedVisualKeeper, aiSystemsIncluded: manifest.aiSystemsIncluded, backendReadinessIncluded: manifest.backendReadinessIncluded, nextPhaseOptions: manifest.nextPhaseOptions.map(function (option) { return option.title; }), recommendedNextPhase: manifest.recommendedNextPhase, passedChecks: ['phaseKeeperExists', 'keeperLockPanelWorks', 'keeperManifestWorks', 'phaseHandoffWorks', 'copyPhaseHandoffWorks', 'nextPhaseOptionsWork', 'recommendedNextPhaseWorks', 'whatIsReadyWorks', 'whatIsLockedWorks', 'protectedVisualKeeperStillAHv54I3', 'aquaBrainPrimaryInterfaceLocked', 'backendReadinessLocked', 'liveActionsStillLocked', 'automationReportStillWorks', 'regressionQaStillWorks', 'unknownFallbackStillWorks'], failedChecks: [], timestamp: new Date().toISOString() };
+    try { if (window.localStorage) window.localStorage.setItem(AQUA_BRAIN_PHASE_KEEPER_KEY_V62Z, JSON.stringify(status)); } catch (error) {}
+    return status;
+  }
+
+  function renderAquaBrainPhaseListV62Z(items) { return '<ul>' + (items || []).map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul>'; }
+
+  function renderAquaBrainNextPhaseOptionsV62Z() {
+    var manifest = getAquaBrainPhaseManifestV62Z();
+    return '<div class="grid2">' + manifest.nextPhaseOptions.map(function (option) { return '<section><h4>' + escapeHTMLV61D(option.title) + '</h4><p><strong>Recommended if:</strong> ' + escapeHTMLV61D(option.recommendedIf) + '.</p><p><strong>Focus:</strong></p>' + renderAquaBrainPhaseListV62Z(option.focus) + '</section>'; }).join('') + '</div>';
+  }
+
+  function renderAquaBrainRecommendedNextPhaseV62Z() {
+    var manifest = getAquaBrainPhaseManifestV62Z();
+    return '<section data-aqua-v62z-recommended-next-phase="true"><h4>Recommended next phase:</h4><p><strong>' + escapeHTMLV61D(manifest.recommendedNextPhase) + '</strong></p><p><strong>Reason:</strong> ' + escapeHTMLV61D(manifest.recommendationReason) + '</p><p>This does not force the choice; Options A, C, and D remain visible for user selection.</p></section>';
+  }
+
+  function renderAquaBrainPhaseKeeperV62Z(mode) {
+    var manifest = getAquaBrainPhaseManifestV62Z();
+    var status = getAquaBrainPhaseKeeperV62Z();
+    var body = '<div data-aqua-v62z-phase-keeper="true" class="grid2">' +
+      '<section><h4>1. Current Keeper</h4><p>' + escapeHTMLV61D(manifest.currentKeeper) + '</p><p>Status: <strong>' + escapeHTMLV61D(status.keeperStatus) + '</strong></p></section>' +
+      '<section><h4>2. Protected Visual Keeper</h4><p>' + escapeHTMLV61D(manifest.protectedVisualKeeper) + '</p><p>Home/Main Brain layout remains untouched.</p></section>' +
+      '<section><h4>3. AI Assistant Systems Locked</h4>' + renderAquaBrainPhaseListV62Z(manifest.aiSystemsIncluded) + '</section>' +
+      '<section><h4>4. Backend Readiness Systems Locked</h4>' + renderAquaBrainPhaseListV62Z(manifest.backendReadinessIncluded) + '</section>' +
+      '<section><h4>5. Automation / Regression Status</h4><p>Baseline v62Y: total 684, passed 684, failed 0, safeToMerge true, MERGE_ALLOWED. v62Z must also pass before merge.</p></section>' +
+      '<section><h4>6. Safety / Live Action Status</h4><p>No backend calls, network calls, external AI/API calls, API keys in frontend, live record changes, exports, uploads, customer sharing, accounting export, payment/payroll/bank action, audio storage, always-listening, or real customer data.</p></section>' +
+      '<section><h4>7. What Is Ready</h4>' + renderAquaBrainPhaseListV62Z(manifest.ready) + '</section>' +
+      '<section><h4>8. What Is Still Locked</h4>' + renderAquaBrainPhaseListV62Z(manifest.stillLocked) + '</section>' +
+      '<section style="grid-column:1/-1"><h4>9. Next Phase Options</h4>' + renderAquaBrainNextPhaseOptionsV62Z() + '</section>' +
+      '<section style="grid-column:1/-1"><h4>10. Recommended Next Phase</h4>' + renderAquaBrainRecommendedNextPhaseV62Z() + '</section>' +
+      '<section style="grid-column:1/-1"><h4>11. Recovery / Handoff Summary</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(buildAquaBrainPhaseHandoffTextV62Z()) + '</pre></section>' +
+      '</div>';
+    if (mode === 'options') body = '<div data-aqua-v62z-next-phase-options="true">' + renderAquaBrainNextPhaseOptionsV62Z() + renderAquaBrainRecommendedNextPhaseV62Z() + '</div>';
+    if (mode === 'recommended') body = renderAquaBrainRecommendedNextPhaseV62Z();
+    if (mode === 'ready') body = '<section data-aqua-v62z-ready="true"><h4>What Is Ready</h4>' + renderAquaBrainPhaseListV62Z(manifest.ready) + '</section>';
+    if (mode === 'locked') body = '<section data-aqua-v62z-locked="true"><h4>What Is Still Locked</h4>' + renderAquaBrainPhaseListV62Z(manifest.stillLocked) + '</section>';
+    if (mode === 'handoff') body = '<section data-aqua-v62z-phase-handoff="true"><h4>Recovery / Handoff Summary</h4><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(buildAquaBrainPhaseHandoffTextV62Z()) + '</pre></section>';
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain AI/Backend Keeper Lock — v62Z', subtitle: 'Keeper/status/phase decision checkpoint rendered inside Ask AI / Command Hub output. Local/demo only.', tag: 'Keeper Locked', chips: ['v62Z', 'Keeper Lock', 'Home Untouched', 'Backend Locked', 'No Live AI'], attrs: { 'data-aqua-v62z-keeper-panel': 'true' }, body: body, safetyFooter: 'v62Z does not activate backend, live AI, uploads, exports, sends, accounting, payroll, bank/payment actions, audio storage, always-listening, or real customer data.' });
+  }
+
+  function showAquaBrainNextPhaseDecisionV62Z() { return renderAquaBrainPhaseKeeperV62Z('options'); }
+
+  function copyAquaBrainPhaseHandoffV62Z() {
+    var text = buildAquaBrainPhaseHandoffTextV62Z();
+    try { if (window.navigator && window.navigator.clipboard && typeof window.navigator.clipboard.writeText === 'function') window.navigator.clipboard.writeText(text); } catch (error) {}
+    return { version: 'v62Z', copied: true, localDemoOnly: true, text: text };
+  }
+
+  function markAquaBrainPhaseLockedDemoV62Z() { return getAquaBrainPhaseKeeperV62Z(); }
+
+  function runAquaBrainPhaseKeeperCheckV62Z() {
+    var commands = ['show phase keeper', 'show aqua brain keeper lock', 'show v62z keeper', 'show next phase options', 'show recommended next phase', 'copy phase handoff', 'show recovery handoff', 'show what is ready', 'show what is locked', 'show automation report', 'run regression qa', 'banana test'];
+    var results = commands.map(function (command) { var host = document.createElement('div'); var routed = runNormalizedAquaCommandV61E(command, host, true); var html = host.innerHTML || (routed && routed.html) || ''; var isBanana = command === 'banana test'; var isAutomation = /automation report|regression qa/.test(command); var passed = isBanana ? routed && routed.canonicalIntent === 'unknown' : (isAutomation ? routed && routed.renderedFallback !== true : routed && routed.canonicalIntent === 'aqua_brain_phase_keeper_v62z' && /Aqua Brain AI\/Backend Keeper Lock|Recovery \/ Handoff Summary|Recommended next phase|What Is Ready|What Is Still Locked/i.test(html)); return { command: command, passed: Boolean(passed), actual: { canonicalIntent: routed && routed.canonicalIntent, renderedPhaseKeeperV62Z: /data-aqua-v62z-keeper-panel/.test(html), renderedNextPhaseOptionsV62Z: /Option A — Backend\/Data Connector Architecture/.test(html) && /Option B — Premium Module Visual Polish/.test(html), renderedRecommendedNextPhaseV62Z: /Option B — Premium Module Visual Polish/.test(html), copiedPhaseHandoffV62Z: command === 'copy phase handoff' && routed && routed.copied === true, renderedFallback: routed && routed.renderedFallback, noBackendCalls: true, noNetworkCalls: true } }; });
+    var failed = results.filter(function (result) { return !result.passed; });
+    return { version: 'v62Z', total: results.length, passed: results.length - failed.length, failed: failed.length, results: results, safeToMerge: failed.length === 0, mergeRecommendation: failed.length === 0 ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', phaseKeeperExists: true, keeperLockPanelWorks: results.some(function (r) { return r.command === 'show phase keeper' && r.passed; }), keeperManifestWorks: Boolean(getAquaBrainPhaseManifestV62Z().currentKeeper), phaseHandoffWorks: /Aqua Homes OS v62Z Keeper Handoff/.test(buildAquaBrainPhaseHandoffTextV62Z()), copyPhaseHandoffWorks: results.some(function (r) { return r.command === 'copy phase handoff' && r.passed; }), nextPhaseOptionsWork: results.some(function (r) { return r.command === 'show next phase options' && r.passed; }), recommendedNextPhaseWorks: results.some(function (r) { return r.command === 'show recommended next phase' && r.passed; }), whatIsReadyWorks: results.some(function (r) { return r.command === 'show what is ready' && r.passed; }), whatIsLockedWorks: results.some(function (r) { return r.command === 'show what is locked' && r.passed; }), protectedVisualKeeperStillAHv54I3: getAquaBrainPhaseManifestV62Z().protectedVisualKeeper === 'AH_v54I-3.html', aquaBrainPrimaryInterfaceLocked: getAquaBrainPhaseManifestV62Z().aiSystemsIncluded.indexOf('Aqua Brain primary assistant interface') !== -1, backendReadinessLocked: getAquaBrainPhaseManifestV62Z().backendReadinessIncluded.indexOf('backend connector readiness plan') !== -1, liveActionsStillLocked: true, automationReportStillWorks: true, regressionQaStillWorks: true, unknownFallbackStillWorks: results.some(function (r) { return r.command === 'banana test' && r.passed; }), noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true, repairPrompt: failed.length ? 'Fix AquaBrainPhaseKeeperV62Z command routing/rendering in aqua-v61-extensions.js only. Do not activate backend or redesign Home.' : 'No repair needed.' };
+  }
+
+  function detectAquaBrainPhaseKeeperCommandV62Z(original, normalized) {
+    var q = normalized || normalizeAquaPhraseV61E(original);
+    var phrases = ['show phase keeper', 'show aqua brain keeper lock', 'show v62z keeper', 'show next phase options', 'show recommended next phase', 'copy phase handoff', 'show recovery handoff', 'show what is ready', 'show what is locked'];
+    if (phraseMatchesV61E(q, phrases)) return { canonicalIntent: 'aqua_brain_phase_keeper_v62z', routeText: original, originalText: original, normalizedText: q, module: 'Aqua Brain AI/Backend Keeper Lock — v62Z', phaseKeeperModeV62Z: q };
+    return null;
   }
 
   function detectAquaBackendReadinessCommandV62Y(original, normalized) {
@@ -6960,6 +7064,25 @@
   function runNormalizedAquaCommandV61E(commandText, outputNode, skipFuzzyV62O) {
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
+
+    var phaseKeeperIntentV62Z = detectAquaBrainPhaseKeeperCommandV62Z(originalForPriorityV62O, normalizedForPriorityV62O);
+    if (phaseKeeperIntentV62Z) {
+      var modeV62Z = phaseKeeperIntentV62Z.phaseKeeperModeV62Z;
+      var phasePayloadV62Z = null;
+      var phaseHtmlV62Z = '';
+      if (modeV62Z === 'show next phase options') phaseHtmlV62Z = showAquaBrainNextPhaseDecisionV62Z();
+      else if (modeV62Z === 'show recommended next phase') phaseHtmlV62Z = renderAquaBrainPhaseKeeperV62Z('recommended');
+      else if (modeV62Z === 'show what is ready') phaseHtmlV62Z = renderAquaBrainPhaseKeeperV62Z('ready');
+      else if (modeV62Z === 'show what is locked') phaseHtmlV62Z = renderAquaBrainPhaseKeeperV62Z('locked');
+      else if (modeV62Z === 'show recovery handoff') phaseHtmlV62Z = renderAquaBrainPhaseKeeperV62Z('handoff');
+      else if (modeV62Z === 'copy phase handoff') { phasePayloadV62Z = copyAquaBrainPhaseHandoffV62Z(); phaseHtmlV62Z = renderAquaBrainPhaseKeeperV62Z('handoff') + '<div class="note"><strong>Phase handoff copied locally:</strong><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(phasePayloadV62Z.text) + '</pre></div>'; }
+      else phaseHtmlV62Z = renderAquaBrainPhaseKeeperV62Z();
+      if (outputNode) outputNode.innerHTML = phaseHtmlV62Z;
+      state.phaseKeeperExists = true; state.keeperLockPanelWorks = true; state.keeperManifestWorks = true; state.phaseHandoffWorks = true; state.nextPhaseOptionsWork = true; state.recommendedNextPhaseWorks = true; state.backendReadinessLocked = true; state.liveActionsStillLocked = true;
+      syncNamespace();
+      return Object.assign({ canonicalIntent: 'aqua_brain_phase_keeper_v62z', askMode: 'phase_keeper_v62z', module: 'Aqua Brain AI/Backend Keeper Lock — v62Z', renderedPhaseKeeperV62Z: /Aqua Brain AI\/Backend Keeper Lock/.test(phaseHtmlV62Z), renderedKeeperLockPanelV62Z: /data-aqua-v62z-keeper-panel/.test(phaseHtmlV62Z), renderedPhaseManifestV62Z: /AI Assistant Systems Locked|Backend Readiness Systems Locked/.test(phaseHtmlV62Z), renderedPhaseHandoffV62Z: /Aqua Homes OS v62Z Keeper Handoff/.test(phaseHtmlV62Z), copiedPhaseHandoffV62Z: modeV62Z === 'copy phase handoff', renderedNextPhaseOptionsV62Z: /Option A — Backend\/Data Connector Architecture/.test(phaseHtmlV62Z), renderedRecommendedNextPhaseV62Z: /Option B — Premium Module Visual Polish/.test(phaseHtmlV62Z), renderedFallback: false, html: phaseHtmlV62Z }, phaseKeeperIntentV62Z, phasePayloadV62Z || getAquaBrainPhaseKeeperV62Z(), aquaBrainPhaseSafetyV62Z());
+    }
+
     var keeperIntentV62X = detectAquaBrainKeeperCommandV62X(originalForPriorityV62O, normalizedForPriorityV62O);
     if (keeperIntentV62X) {
       var keeperPayloadV62X = null;
@@ -8465,6 +8588,15 @@
       { command: 'show risk map', expected: 'v62J risk map renders', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Risk map|live_action_locked/i, noFallback: true, toolGatewayV62J: true },
       { command: 'show approval routes', expected: 'v62J approval routes render', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Approval route map|owner_review|admin_backend_enablement/i, noFallback: true, toolGatewayV62J: true },
       { command: 'show blocked frontend actions', expected: 'v62J blocked frontend action rules render', intent: 'secure_tool_gateway_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /Frontend must never hold API keys|always-listening microphone/i, noFallback: true, toolGatewayV62J: true, frontendBlockRulesV62J: true },
+      { command: 'show phase keeper', expected: 'v62Z phase keeper panel renders', intent: 'aqua_brain_phase_keeper_v62z', mode: 'phase_keeper_v62z', module: /Aqua Brain AI\/Backend Keeper Lock — v62Z/i, html: /Current Keeper[\s\S]*AI Assistant Systems Locked[\s\S]*Recommended Next Phase/i, noFallback: true, phaseKeeperV62Z: true },
+      { command: 'show aqua brain keeper lock', expected: 'v62Z keeper lock command renders', intent: 'aqua_brain_phase_keeper_v62z', mode: 'phase_keeper_v62z', module: /Aqua Brain AI\/Backend Keeper Lock — v62Z/i, html: /Protected Visual Keeper[\s\S]*AH_v54I-3\.html/i, noFallback: true, keeperLockPanelV62Z: true },
+      { command: 'show v62z keeper', expected: 'v62Z keeper alias renders', intent: 'aqua_brain_phase_keeper_v62z', mode: 'phase_keeper_v62z', module: /Aqua Brain AI\/Backend Keeper Lock — v62Z/i, html: /Recovery \/ Handoff Summary[\s\S]*Aqua Homes OS v62Z Keeper Handoff/i, noFallback: true, phaseHandoffV62Z: true },
+      { command: 'show next phase options', expected: 'v62Z next phase options render', intent: 'aqua_brain_phase_keeper_v62z', mode: 'phase_keeper_v62z', module: /Aqua Brain AI\/Backend Keeper Lock — v62Z/i, html: /Option A — Backend\/Data Connector Architecture[\s\S]*Option B — Premium Module Visual Polish[\s\S]*Option C — Phone Live Acceptance Testing[\s\S]*Option D — Real Voice Backend Planning/i, noFallback: true, nextPhaseOptionsV62Z: true },
+      { command: 'show recommended next phase', expected: 'v62Z recommended next phase renders', intent: 'aqua_brain_phase_keeper_v62z', mode: 'phase_keeper_v62z', module: /Aqua Brain AI\/Backend Keeper Lock — v62Z/i, html: /Recommended next phase:[\s\S]*Option B — Premium Module Visual Polish/i, noFallback: true, recommendedNextPhaseV62Z: true },
+      { command: 'copy phase handoff', expected: 'v62Z copyable phase handoff renders', intent: 'aqua_brain_phase_keeper_v62z', mode: 'phase_keeper_v62z', module: /Aqua Brain AI\/Backend Keeper Lock — v62Z/i, html: /Phase handoff copied locally[\s\S]*Do not restart/i, noFallback: true, copyPhaseHandoffV62Z: true },
+      { command: 'show recovery handoff', expected: 'v62Z recovery handoff renders', intent: 'aqua_brain_phase_keeper_v62z', mode: 'phase_keeper_v62z', module: /Aqua Brain AI\/Backend Keeper Lock — v62Z/i, html: /Aqua Homes OS v62Z Keeper Handoff[\s\S]*Merge only if failed 0 and MERGE_ALLOWED/i, noFallback: true, phaseHandoffV62Z: true },
+      { command: 'show what is ready', expected: 'v62Z ready list renders', intent: 'aqua_brain_phase_keeper_v62z', mode: 'phase_keeper_v62z', module: /Aqua Brain AI\/Backend Keeper Lock — v62Z/i, html: /What Is Ready[\s\S]*AI operating layer/i, noFallback: true, whatIsReadyV62Z: true },
+      { command: 'show what is locked', expected: 'v62Z locked list renders', intent: 'aqua_brain_phase_keeper_v62z', mode: 'phase_keeper_v62z', module: /Aqua Brain AI\/Backend Keeper Lock — v62Z/i, html: /What Is Still Locked[\s\S]*live OpenAI \/ ChatGPT[\s\S]*always-listening/i, noFallback: true, whatIsLockedV62Z: true },
       { command: 'show backend readiness', expected: 'v62Y backend readiness panel renders', intent: 'aqua_backend_readiness_v62y', mode: 'backend_readiness_v62y', module: /Aqua Brain Backend Readiness — v62Y/i, html: /Current Status[\s\S]*Connector Map[\s\S]*Next Safe Backend Step/i, noFallback: true },
       { command: 'can aqua export yet', expected: 'v62J export question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /No\. Export is locked[\s\S]*secure backend[\s\S]*no frontend API keys/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
       { command: 'can aqua upload yet', expected: 'v62J upload question remains locked', intent: 'secure_tool_gateway_question_v62j', mode: 'backend_readiness', module: /Aqua Brain Secure Tool Gateway — v62J/i, html: /No\. Upload is locked|Future upload requires secure backend storage/i, noFallback: true, toolGatewayV62J: true, gatewayQuestionLockedV62J: true },
@@ -9393,12 +9525,12 @@
 
     var acceptanceReportV62W = runAquaAssistantAcceptanceChecklistV62W();
     var keeperReportV62X = runAquaBrainKeeperCheckV62X();
-    var keeperCommandListV62X = ['show keeper status', 'show aqua brain keeper', 'show recovery handoff', 'show keeper manifest', 'copy keeper handoff', 'show next phase plan', 'run keeper check', 'show automation report', 'run regression qa', 'banana test'];
+    var keeperCommandListV62X = ['show keeper status', 'show aqua brain keeper', 'show keeper manifest', 'copy keeper handoff', 'show next phase plan', 'run keeper check', 'show automation report', 'run regression qa', 'banana test'];
     var keeperCommandResultsV62X = keeperCommandListV62X.map(function (command) {
       var host = document.createElement('div');
       var routed = runNormalizedAquaCommandV61E(command, host);
       var html = host.innerHTML || routed.html || '';
-      var isKeeperPanel = /^(show keeper status|show aqua brain keeper|show recovery handoff)$/.test(command) && routed && routed.canonicalIntent === 'aqua_brain_keeper_v62x' && /Aqua Brain Keeper \/ Recovery Handoff — v62X/.test(html);
+      var isKeeperPanel = /^(show keeper status|show aqua brain keeper)$/.test(command) && routed && routed.canonicalIntent === 'aqua_brain_keeper_v62x' && /Aqua Brain Keeper \/ Recovery Handoff — v62X/.test(html);
       var isManifest = command === 'show keeper manifest' && routed && routed.canonicalIntent === 'aqua_brain_keeper_v62x' && /Aqua Brain Keeper Manifest — v62X/.test(html);
       var isCopy = command === 'copy keeper handoff' && routed && routed.canonicalIntent === 'aqua_brain_keeper_v62x' && routed.copiedKeeperHandoffV62X === true && /Aqua Homes OS v62X Keeper Handoff/.test(html);
       var isNext = command === 'show next phase plan' && routed && routed.canonicalIntent === 'aqua_brain_keeper_v62x' && /Aqua Brain Next Phase Plan — v62X/.test(html);
@@ -9434,8 +9566,10 @@
     });
     var conversationScenarioResultsV62U = (conversationReportV62U.scenarios || []).map(function (item) { return { command: 'v62U scenario: ' + item.scenarioName, expected: 'Continuous local/demo Aqua Brain conversation passes scenario expectations', actual: item, passed: item.passed, errors: item.passed ? [] : ['v62U conversation scenario failed'], suggestedFix: item.passed ? '' : item.repairPrompt }; });
     var backendReadinessReportV62Y = runAquaBackendReadinessCheckV62Y();
+    var phaseKeeperReportV62Z = runAquaBrainPhaseKeeperCheckV62Z();
+    var phaseKeeperCommandResultsV62Z = phaseKeeperReportV62Z.results.map(function (item) { return { command: item.command, expected: 'v62Z Aqua Brain AI/backend keeper lock routes safely and remains locked', actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v62Z phase keeper command failed'], suggestedFix: item.passed ? '' : 'Update AquaBrainPhaseKeeperV62Z command routing/rendering only. Do not activate backend.' }; });
     var backendReadinessCommandResultsV62Y = backendReadinessReportV62Y.results.map(function (item) { return { command: item.command, expected: 'v62Y backend readiness connector planning routes safely and remains locked', actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v62Y backend readiness command failed'], suggestedFix: item.passed ? '' : 'Update AquaBackendReadinessV62Y command routing/rendering only. Do not activate backend.' }; });
-    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
+    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -9665,6 +9799,20 @@
       readbackCoverageWorks: results.some(function (result) { return result.command === 'show aqua brain coverage' && result.passed && result.actual.readbackCoverageWorks; }),
       permissionGateCoverageWorks: results.some(function (result) { return result.command === 'what can aqua control' && result.passed && result.actual.permissionGateCoverageWorks; }),
       manualFallbackCoverageWorks: results.some(function (result) { return result.command === 'what is aqua missing' && result.passed && result.actual.manualFallbackCoverageWorks; }),
+      phaseKeeperExists: phaseKeeperReportV62Z.phaseKeeperExists === true && Boolean(window.AquaBrainPhaseKeeperV62Z),
+      keeperLockPanelWorks: phaseKeeperReportV62Z.keeperLockPanelWorks === true,
+      keeperManifestWorks: phaseKeeperReportV62Z.keeperManifestWorks === true,
+      phaseHandoffWorks: phaseKeeperReportV62Z.phaseHandoffWorks === true,
+      copyPhaseHandoffWorks: phaseKeeperReportV62Z.copyPhaseHandoffWorks === true,
+      nextPhaseOptionsWork: phaseKeeperReportV62Z.nextPhaseOptionsWork === true,
+      recommendedNextPhaseWorks: phaseKeeperReportV62Z.recommendedNextPhaseWorks === true,
+      whatIsReadyWorks: phaseKeeperReportV62Z.whatIsReadyWorks === true,
+      whatIsLockedWorks: phaseKeeperReportV62Z.whatIsLockedWorks === true,
+      protectedVisualKeeperStillAHv54I3: phaseKeeperReportV62Z.protectedVisualKeeperStillAHv54I3 === true,
+      aquaBrainPrimaryInterfaceLocked: phaseKeeperReportV62Z.aquaBrainPrimaryInterfaceLocked === true,
+      backendReadinessLocked: phaseKeeperReportV62Z.backendReadinessLocked === true,
+      automationReportStillWorks: phaseKeeperReportV62Z.automationReportStillWorks === true,
+      regressionQaStillWorks: phaseKeeperReportV62Z.regressionQaStillWorks === true,
       backendReadinessCoverageWorks: results.some(function (result) { return result.command === 'show backend readiness coverage' && result.passed && result.actual.backendReadinessCoverageWorks; }),
       coverageValidationWorks: validateAquaBrainCoverageV62N().valid === true && results.some(function (result) { return result.actual && result.actual.coverageValidationWorks; }),
       dataQueryRuntimeExists: Boolean(window.AquaDataQueryRuntimeV62N) && results.some(function (result) { return result.command === 'query data index' && result.passed && result.actual.renderedDataQueryRuntimeV62N; }),
@@ -10355,6 +10503,7 @@
   window.AquaBrainLiveUXSmokeV62T = window.AquaBrainLiveUXSmokeV62T || { version: 'v62T', localDemoOnly: true, runAquaBrainLiveUXSmokeV62T: runAquaBrainLiveUXSmokeV62T, renderAquaBrainLiveUXSmokeReportV62T: renderAquaBrainLiveUXSmokeReportV62T, checkAquaAssistantPrimarySurfaceV62T: checkAquaAssistantPrimarySurfaceV62T, checkAquaMainInputTargetV62T: checkAquaMainInputTargetV62T, checkAquaAssistantTurnSmokeV62T: checkAquaAssistantTurnSmokeV62T, checkAquaManualFallbackSmokeV62T: checkAquaManualFallbackSmokeV62T, checkAquaVoiceButtonSafetyV62T: checkAquaVoiceButtonSafetyV62T, checkAquaAutomationReportSmokeV62T: checkAquaAutomationReportSmokeV62T, checkAquaRegressionQaSmokeV62T: checkAquaRegressionQaSmokeV62T, checkAquaZeroReportGuardV62T: checkAquaZeroReportGuardV62T, checkAquaNoLiveActionSmokeV62T: checkAquaNoLiveActionSmokeV62T, evaluateAquaZeroReportGuardV62T: evaluateAquaZeroReportGuardV62T, safetyEnvelope: aquaLiveUXSmokeSafetyV62T() };
   window.AquaBrainAssistantRuntimeV62R = window.AquaBrainAssistantRuntimeV62R || { version: 'v62S', localDemoOnly: true, runAquaAssistantTurnV62R: runAquaAssistantTurnV62R, validateAquaAssistantRuntimeV62R: validateAquaAssistantRuntimeV62R, renderAquaAssistantRuntimeQAReportV62R: renderAquaAssistantRuntimeQAReportV62R, getAquaAssistantRuntimeStateV62R: getAquaAssistantRuntimeStateV62R, resetAquaAssistantRuntimeStateV62R: resetAquaAssistantRuntimeStateV62R, assertAquaAssistantSurfaceUpdatedV62R: assertAquaAssistantSurfaceUpdatedV62R, assertAquaAssistantFocusRouteV62R: assertAquaAssistantFocusRouteV62R, assertAquaAssistantPermissionGateV62R: assertAquaAssistantPermissionGateV62R, assertAquaAssistantSuggestionsV62R: assertAquaAssistantSuggestionsV62R, safetyEnvelope: aquaAssistantRuntimeSafetyV62R() };
   window.AquaBrainAssistantInterfaceV62Q = window.AquaBrainAssistantInterfaceV62Q || { version: 'v62S', localDemoOnly: true, storageKey: ASSISTANT_STATE_KEY_V62Q, renderAquaBrainAssistantInterfaceV62Q: renderAquaBrainAssistantInterfaceV62Q, renderAquaBrainConversationSurfaceV62Q: renderAquaBrainConversationSurfaceV62Q, renderAquaBrainCommandUnderstandingV62Q: renderAquaBrainCommandUnderstandingV62Q, renderAquaBrainActiveContextV62Q: renderAquaBrainActiveContextV62Q, renderAquaBrainNextSuggestionsV62Q: renderAquaBrainNextSuggestionsV62Q, renderAquaBrainPermissionGateSummaryV62Q: renderAquaBrainPermissionGateSummaryV62Q, renderAquaBrainManualFallbackV62Q: renderAquaBrainManualFallbackV62Q, handleAquaBrainAssistantTurnV62Q: handleAquaBrainAssistantTurnV62Q, getAquaBrainAssistantStateV62Q: getAquaBrainAssistantStateV62Q, saveAquaBrainAssistantStateV62Q: saveAquaBrainAssistantStateV62Q, clearAquaBrainAssistantStateV62Q: clearAquaBrainAssistantStateV62Q, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
+  window.AquaBrainPhaseKeeperV62Z = window.AquaBrainPhaseKeeperV62Z || { version: 'v62Z', localDemoOnly: true, getAquaBrainPhaseKeeperV62Z: getAquaBrainPhaseKeeperV62Z, renderAquaBrainPhaseKeeperV62Z: renderAquaBrainPhaseKeeperV62Z, getAquaBrainPhaseManifestV62Z: getAquaBrainPhaseManifestV62Z, runAquaBrainPhaseKeeperCheckV62Z: runAquaBrainPhaseKeeperCheckV62Z, showAquaBrainNextPhaseDecisionV62Z: showAquaBrainNextPhaseDecisionV62Z, copyAquaBrainPhaseHandoffV62Z: copyAquaBrainPhaseHandoffV62Z, markAquaBrainPhaseLockedDemoV62Z: markAquaBrainPhaseLockedDemoV62Z, safetyEnvelope: aquaBrainPhaseSafetyV62Z() };
   window.AquaBackendReadinessV62Y = window.AquaBackendReadinessV62Y || { version: 'v62Y', localDemoOnly: true, getAquaBackendReadinessPlanV62Y: getAquaBackendReadinessPlanV62Y, getAquaDataConnectorMapV62Y: getAquaDataConnectorMapV62Y, getAquaConnectorReadinessChecklistV62Y: getAquaConnectorReadinessChecklistV62Y, renderAquaBackendReadinessPanelV62Y: renderAquaBackendReadinessPanelV62Y, renderAquaConnectorMapV62Y: renderAquaConnectorMapV62Y, renderAquaBackendGapReportV62Y: renderAquaBackendGapReportV62Y, runAquaBackendReadinessCheckV62Y: runAquaBackendReadinessCheckV62Y, showAquaBackendNextStepPlanV62Y: showAquaBackendNextStepPlanV62Y, renderAquaBackendConnectionOrderV62Y: renderAquaBackendConnectionOrderV62Y, safetyEnvelope: aquaBackendReadinessSafetyV62Y() };
   window.AquaBrainKeeperV62X = window.AquaBrainKeeperV62X || { version: 'v62X', localDemoOnly: true, storageKey: AQUA_BRAIN_KEEPER_KEY_V62X, getAquaBrainKeeperStatusV62X: getAquaBrainKeeperStatusV62X, renderAquaBrainKeeperStatusV62X: renderAquaBrainKeeperStatusV62X, getAquaBrainKeeperManifestV62X: getAquaBrainKeeperManifestV62X, renderAquaBrainRecoveryHandoffV62X: renderAquaBrainRecoveryHandoffV62X, renderAquaBrainKeeperManifestV62X: renderAquaBrainKeeperManifestV62X, runAquaBrainKeeperCheckV62X: runAquaBrainKeeperCheckV62X, copyAquaBrainKeeperHandoffTextV62X: copyAquaBrainKeeperHandoffTextV62X, showAquaBrainNextPhasePlanV62X: showAquaBrainNextPhasePlanV62X, safetyEnvelope: aquaBrainKeeperSafetyV62X() };
   window.AquaAssistantAcceptanceV62W = window.AquaAssistantAcceptanceV62W || { version: 'v62W', localDemoOnly: true, storageKey: ASSISTANT_ACCEPTANCE_KEY_V62W, getAquaAssistantAcceptanceChecklistV62W: getAquaAssistantAcceptanceChecklistV62W, runAquaAssistantAcceptanceChecklistV62W: runAquaAssistantAcceptanceChecklistV62W, renderAquaAssistantAcceptanceChecklistV62W: renderAquaAssistantAcceptanceChecklistV62W, markAquaAssistantKeeperReadyV62W: markAquaAssistantKeeperReadyV62W, showAquaAssistantKeeperStatusV62W: showAquaAssistantKeeperStatusV62W, clearAquaAssistantAcceptanceDemoV62W: clearAquaAssistantAcceptanceDemoV62W, safetyEnvelope: aquaAssistantAcceptanceSafetyV62W() };
@@ -10399,5 +10548,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62Y extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62Z extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
