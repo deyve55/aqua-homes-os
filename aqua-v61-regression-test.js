@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62T';
+const VERSION = 'v62U';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -289,6 +289,8 @@ function checkStaticFiles() {
   addCheck('v62S primary assistant interface architecture exists', /Aqua Brain Assistant — v62S/.test(extension) && /data-aqua-v62s-primary-assistant-interface/.test(extension) && /primaryAssistantInterfaceExists/.test(extension) && /aiButtonOpensPrimaryAssistant/.test(extension) && /quickControlsSecondary/.test(extension), { layer: 'primary-assistant-interface-v62s', fileToFix: EXTENSION });
   addCheck('v62T live UX smoke checker architecture exists', /window\.AquaBrainLiveUXSmokeV62T/.test(extension) && /function\s+runAquaBrainLiveUXSmokeV62T/.test(extension) && /Aqua Brain Live UX Smoke Check — v62T/.test(extension), { layer: 'live-ux-smoke-v62t', fileToFix: EXTENSION });
   addCheck('v62T live UX smoke report flags exist', /liveUXSmokeCheckerExists/.test(extension) && /aiEntryOpensAssistant/.test(extension) && /mainInputTargetWorks/.test(extension) && /zeroReportGuardWorks/.test(extension) && /safetyLocksWork/.test(extension), { layer: 'live-ux-smoke-v62t', fileToFix: EXTENSION });
+  addCheck('v62U conversation scenario architecture exists', /window\.AquaBrainConversationScenariosV62U/.test(extension) && /function\s+getAquaConversationScenariosV62U/.test(extension) && /Aqua Brain Conversation Scenario Report — v62U/.test(extension), { layer: 'conversation-scenarios-v62u', fileToFix: EXTENSION });
+  addCheck('v62U conversation scenario report flags exist', /conversationScenariosExist/.test(extension) && /allConversationScenariosPass/.test(extension) && /hendersonReceiptExportScenarioWorks/.test(extension) && /manualFallbackConversationWorks/.test(extension), { layer: 'conversation-scenarios-v62u', fileToFix: EXTENSION });
   addCheck('v61Z AquaVoiceBrainV61Z architecture exists', /window\.AquaVoiceBrainV61Z|function\s+createAquaVoiceBrainV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain context key exists', /aquaVoiceBrainContextV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain tool registry exists', /function\s+voiceBrainToolRegistryV61Z/.test(extension) && /openProjectReport/.test(extension) && /findProjectReceipts/.test(extension) && /prepareAccountantExportDemo/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
@@ -369,13 +371,14 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62T', extensionReport.version === 'v62T', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62U', extensionReport.version === 'v62U', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['e2eRoutingMatrixExists','e2eRoutingMatrixRuns','allE2ERoutesPass','fuzzyToIntentToRouteChainWorks','workflowChainWorks','sessionChainWorks','visualFocusChainWorks','readbackChainWorks','permissionGateChainWorks','automationRoutePriorityWorks','unknownFallbackStillWorks','clarificationPathWorks','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62P ${flag}`, extensionReport[flag] === true, { layer: 'e2e-routing-matrix-v62p', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['assistantRuntimeExists','assistantTurnChainWorks','assistantSurfaceUpdatesWork','commandUnderstandingUpdatesWork','currentFocusUpdatesWork','responseDraftUpdatesWork','permissionSummaryUpdatesWork','nextSuggestionsUpdateWork','workflowFollowUpRuntimeWorks','sessionFollowUpRuntimeWorks','manualFallbackRuntimeWorks','automationPriorityStillWorks','unknownFallbackStillWorks','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62R ${flag}`, extensionReport[flag] === true, { layer: 'assistant-runtime-v62r', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['liveUXSmokeCheckerExists','aiEntryOpensAssistant','primaryAssistantSurfaceWorks','mainInputTargetWorks','assistantTurnSmokeWorks','manualFallbackWorks','voiceSafetyWorks','automationReportSmokeWorks','regressionQaSmokeWorks','zeroReportGuardWorks','safetyLocksWork','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62T ${flag}`, extensionReport[flag] === true, { layer: 'live-ux-smoke-v62t', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['conversationScenariosExist','conversationScenarioRunnerWorks','allConversationScenariosPass','hendersonReceiptExportScenarioWorks','hendersonReportReviewScenarioWorks','spendBudgetScenarioWorks','cameraPhotoScenarioWorks','uploadDiagramScenarioStaysLocked','voiceMishearConversationWorks','missingInputClarificationScenarioWorks','manualFallbackConversationWorks','responseQualityTemplatesWork','contextContinuityWorks','visualRoutesOpenDuringScenarios','permissionGatesShowDuringScenarios','fuzzyCorrectionsWorkInsideConversations','readbackRepeatWorks','followUpQuestionsWork','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62U ${flag}`, extensionReport[flag] === true, { layer: 'conversation-scenarios-v62u', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['primaryAssistantInterfaceExists','aiButtonOpensPrimaryAssistant','mainCommandInputWorks','inputTargetingStillCorrect','quickControlsSecondary','manualControlsWork','commandUnderstandingStillWorks','currentFocusStillWorks','responseDraftStillWorks','nextSuggestionsStillWork','permissionSummaryStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62S ${flag}`, extensionReport[flag] === true, { layer: 'primary-assistant-interface-v62s', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('v62L backendBoundaryExists is true', extensionReport.backendBoundaryExists === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendBoundaryExists, fileToFix: EXTENSION });
     addCheck('v62L serverOnlyKeyPolicyWorks is true', extensionReport.serverOnlyKeyPolicyWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.serverOnlyKeyPolicyWorks, fileToFix: EXTENSION });
@@ -856,6 +859,21 @@ function markdown(report) {
     `- noLiveRecordChanges: ${report.noLiveRecordChanges === true}\n` +
     `- noAudioStorage: ${report.noAudioStorage === true}\n` +
     `- noBackendNetworkLiveAI: ${report.noBackendNetworkLiveAI === true}\n` +
+    `- conversationScenariosExist: ${report.conversationScenariosExist === true}\n` +
+    `- conversationScenarioRunnerWorks: ${report.conversationScenarioRunnerWorks === true}\n` +
+    `- allConversationScenariosPass: ${report.allConversationScenariosPass === true}\n` +
+    `- hendersonReceiptExportScenarioWorks: ${report.hendersonReceiptExportScenarioWorks === true}\n` +
+    `- hendersonReportReviewScenarioWorks: ${report.hendersonReportReviewScenarioWorks === true}\n` +
+    `- spendBudgetScenarioWorks: ${report.spendBudgetScenarioWorks === true}\n` +
+    `- cameraPhotoScenarioWorks: ${report.cameraPhotoScenarioWorks === true}\n` +
+    `- uploadDiagramScenarioStaysLocked: ${report.uploadDiagramScenarioStaysLocked === true}\n` +
+    `- voiceMishearConversationWorks: ${report.voiceMishearConversationWorks === true}\n` +
+    `- missingInputClarificationScenarioWorks: ${report.missingInputClarificationScenarioWorks === true}\n` +
+    `- manualFallbackConversationWorks: ${report.manualFallbackConversationWorks === true}\n` +
+    `- responseQualityTemplatesWork: ${report.responseQualityTemplatesWork === true}\n` +
+    `- contextContinuityWorks: ${report.contextContinuityWorks === true}\n` +
+    `- visualRoutesOpenDuringScenarios: ${report.visualRoutesOpenDuringScenarios === true}\n` +
+    `- permissionGatesShowDuringScenarios: ${report.permissionGatesShowDuringScenarios === true}\n` +
     `- toolGatewayContractExists: ${report.toolGatewayContractExists === true}\n` +
     `- toolRequestEnvelopeWorks: ${report.toolRequestEnvelopeWorks === true}\n` +
     `- toolResponseEnvelopeWorks: ${report.toolResponseEnvelopeWorks === true}\n` +
@@ -1477,6 +1495,21 @@ async function main() {
     regressionQaSmokeWorks: extensionReport ? extensionReport.regressionQaSmokeWorks === true : false,
     zeroReportGuardWorks: extensionReport ? extensionReport.zeroReportGuardWorks === true : false,
     safetyLocksWork: extensionReport ? extensionReport.safetyLocksWork === true : false,
+    conversationScenariosExist: extensionReport ? extensionReport.conversationScenariosExist === true : false,
+    conversationScenarioRunnerWorks: extensionReport ? extensionReport.conversationScenarioRunnerWorks === true : false,
+    allConversationScenariosPass: extensionReport ? extensionReport.allConversationScenariosPass === true : false,
+    hendersonReceiptExportScenarioWorks: extensionReport ? extensionReport.hendersonReceiptExportScenarioWorks === true : false,
+    hendersonReportReviewScenarioWorks: extensionReport ? extensionReport.hendersonReportReviewScenarioWorks === true : false,
+    spendBudgetScenarioWorks: extensionReport ? extensionReport.spendBudgetScenarioWorks === true : false,
+    cameraPhotoScenarioWorks: extensionReport ? extensionReport.cameraPhotoScenarioWorks === true : false,
+    uploadDiagramScenarioStaysLocked: extensionReport ? extensionReport.uploadDiagramScenarioStaysLocked === true : false,
+    voiceMishearConversationWorks: extensionReport ? extensionReport.voiceMishearConversationWorks === true : false,
+    missingInputClarificationScenarioWorks: extensionReport ? extensionReport.missingInputClarificationScenarioWorks === true : false,
+    manualFallbackConversationWorks: extensionReport ? extensionReport.manualFallbackConversationWorks === true : false,
+    responseQualityTemplatesWork: extensionReport ? extensionReport.responseQualityTemplatesWork === true : false,
+    contextContinuityWorks: extensionReport ? extensionReport.contextContinuityWorks === true : false,
+    visualRoutesOpenDuringScenarios: extensionReport ? extensionReport.visualRoutesOpenDuringScenarios === true : false,
+    permissionGatesShowDuringScenarios: extensionReport ? extensionReport.permissionGatesShowDuringScenarios === true : false,
     noBackendCalls: safetyStatus.noBackendCalls === true,
     noNetworkCalls: extensionReport ? extensionReport.noNetworkCalls === true : false,
     noExternalAIApiCalls: safetyStatus.noLiveAIApiCalls === true,
