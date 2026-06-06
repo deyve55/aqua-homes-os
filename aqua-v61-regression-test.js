@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v63A';
+const VERSION = 'v63B';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -345,6 +345,9 @@ function checkStaticFiles() {
   addCheck('v63A premium module shell namespace exists', /window\.AquaPremiumModuleShellV63A/.test(extension) && /function\s+renderAquaPremiumModuleShellV63A/.test(extension) && /function\s+wrapAquaModulePanelV63A/.test(extension), { layer: 'premium-module-shell-v63a', fileToFix: EXTENSION });
   addCheck('v63A premium module shell markers exist', /aqua-premium-module-shell-v63a/.test(extension) && /data-aqua-module-polished/.test(extension), { layer: 'premium-module-shell-v63a', fileToFix: EXTENSION });
   addCheck('v63A premium module shell report flags exist', /premiumModuleShellExists/.test(extension) && /automationReportPolished/.test(extension) && /receiptsPanelPolished/.test(extension) && /homeDesignUntouched/.test(extension), { layer: 'premium-module-shell-v63a', fileToFix: EXTENSION });
+  addCheck('v63B receipt/accounting detail polish commands exist', /show receipt detail polish/.test(extension) && /show accounting detail polish/.test(extension) && /show spend detail polish/.test(extension) && /show polished owner review/.test(extension) && /show accountant export placeholder/.test(extension), { layer: 'premium-module-detail-polish-v63b', fileToFix: EXTENSION });
+  addCheck('v63B premium detail card markers exist', /data-aqua-v63b-premium-receipt-card/.test(extension) && /data-aqua-v63b-premium-accounting-card/.test(extension) && /data-aqua-v63b-premium-approval-card/.test(extension) && /data-aqua-v63b-premium-export-card/.test(extension), { layer: 'premium-module-detail-polish-v63b', fileToFix: EXTENSION });
+  addCheck('v63B detail polish report flags exist', /receiptDetailPolishWorks/.test(extension) && /accountingDetailPolishWorks/.test(extension) && /premiumReceiptCardsRender/.test(extension) && /accountantExportPlaceholderPolished/.test(extension), { layer: 'premium-module-detail-polish-v63b', fileToFix: EXTENSION });
   addCheck('v62V-A natural response namespace exists', /window\.AquaNaturalResponsesV62VA/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
   addCheck('v62V-A natural response helpers exist', /function\s+buildAquaGreetingV62VA/.test(extension) && /function\s+buildAquaReadyPromptV62VA/.test(extension) && /function\s+buildAquaCorrectionPhraseV62VA/.test(extension) && /function\s+buildAquaManualFallbackPhraseV62VA/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
   addCheck('v62V-A natural response report flags exist', /naturalResponseTemplatesExist/.test(extension) && /responseTemplateSmokeWorks/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
@@ -407,7 +410,7 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v63A', extensionReport.version === 'v63A', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v63B', extensionReport.version === 'v63B', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
@@ -707,6 +710,11 @@ function runExtensionRegression() {
     addCheck('v61Z Permission Granter renders with premium shell marker/class', Boolean(permissionRow && permissionRow.actual && permissionRow.actual.renderedPremiumModuleShell), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
     addCheck('v61Z Calculator panel renders with premium shell marker/class', Boolean(byCommand.get('how many gallons of paint for 1200 square feet') && byCommand.get('how many gallons of paint for 1200 square feet').actual && byCommand.get('how many gallons of paint for 1200 square feet').actual.renderedPremiumModuleShell), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
     addCheck('v61Z SOW Review Queue renders with premium shell marker/class', Boolean(sowShowRow && sowShowRow.actual && sowShowRow.actual.renderedPremiumModuleShell), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
+    ['show polished receipts','show receipt detail polish','show polished accounting','show accounting detail polish','show spend detail polish','show polished owner review','show accountant export placeholder'].forEach((command) => {
+      const row = byCommand.get(command);
+      addCheck(`v63B required command renders: ${command}`, Boolean(row && row.passed && row.actual && row.actual.renderedPremiumModuleShellV63A), { layer: 'premium-module-detail-polish-v63b', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    });
+    ['receiptDetailPolishWorks','accountingDetailPolishWorks','spendDetailPolishWorks','ownerReviewDetailPolishWorks','accountantExportPlaceholderPolished','premiumReceiptCardsRender','premiumAccountingCardsRender','premiumApprovalCardsRender','premiumExportCardsRender','v63AShellStillWorks','homeDesignUntouched','aiRoutingStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks'].forEach((flag) => addCheck(`v63B ${flag}`, extensionReport[flag] === true, { layer: 'premium-module-detail-polish-v63b', actual: extensionReport[flag], fileToFix: EXTENSION }));
     const safety = extensionReport.permissionDraftSafety || {};
     [
       ['no live record change occurs', safety.noLiveRecordChangeOccurs],
@@ -924,6 +932,16 @@ function markdown(report) {
     `- homeDesignUntouched: ${report.homeDesignUntouched === true}\n` +
     `- routingStillWorks: ${report.routingStillWorks === true}\n` +
     `- automationStillWorks: ${report.automationStillWorks === true}\n` +
+    `- receiptDetailPolishWorks: ${report.receiptDetailPolishWorks === true}\n` +
+    `- accountingDetailPolishWorks: ${report.accountingDetailPolishWorks === true}\n` +
+    `- spendDetailPolishWorks: ${report.spendDetailPolishWorks === true}\n` +
+    `- ownerReviewDetailPolishWorks: ${report.ownerReviewDetailPolishWorks === true}\n` +
+    `- accountantExportPlaceholderPolished: ${report.accountantExportPlaceholderPolished === true}\n` +
+    `- premiumReceiptCardsRender: ${report.premiumReceiptCardsRender === true}\n` +
+    `- premiumAccountingCardsRender: ${report.premiumAccountingCardsRender === true}\n` +
+    `- premiumApprovalCardsRender: ${report.premiumApprovalCardsRender === true}\n` +
+    `- premiumExportCardsRender: ${report.premiumExportCardsRender === true}\n` +
+    `- v63AShellStillWorks: ${report.v63AShellStillWorks === true}\n` +
     `- noLiveRecordChanges: ${report.noLiveRecordChanges === true}\n` +
     `- noAudioStorage: ${report.noAudioStorage === true}\n` +
     `- noBackendNetworkLiveAI: ${report.noBackendNetworkLiveAI === true}\n` +
@@ -1635,6 +1653,16 @@ async function main() {
     automationReportPolished: extensionReport ? extensionReport.automationReportPolished === true : false,
     receiptsPanelPolished: extensionReport ? extensionReport.receiptsPanelPolished === true : false,
     accountingPanelPolished: extensionReport ? extensionReport.accountingPanelPolished === true : false,
+    receiptDetailPolishWorks: extensionReport ? extensionReport.receiptDetailPolishWorks === true : false,
+    accountingDetailPolishWorks: extensionReport ? extensionReport.accountingDetailPolishWorks === true : false,
+    spendDetailPolishWorks: extensionReport ? extensionReport.spendDetailPolishWorks === true : false,
+    ownerReviewDetailPolishWorks: extensionReport ? extensionReport.ownerReviewDetailPolishWorks === true : false,
+    accountantExportPlaceholderPolished: extensionReport ? extensionReport.accountantExportPlaceholderPolished === true : false,
+    premiumReceiptCardsRender: extensionReport ? extensionReport.premiumReceiptCardsRender === true : false,
+    premiumAccountingCardsRender: extensionReport ? extensionReport.premiumAccountingCardsRender === true : false,
+    premiumApprovalCardsRender: extensionReport ? extensionReport.premiumApprovalCardsRender === true : false,
+    premiumExportCardsRender: extensionReport ? extensionReport.premiumExportCardsRender === true : false,
+    v63AShellStillWorks: extensionReport ? extensionReport.v63AShellStillWorks === true : false,
     missingDocumentsPanelPolished: extensionReport ? extensionReport.missingDocumentsPanelPolished === true : false,
     permissionGatePolished: extensionReport ? extensionReport.permissionGatePolished === true : false,
     aquaBrainPanelsCompatible: extensionReport ? extensionReport.aquaBrainPanelsCompatible === true : false,
