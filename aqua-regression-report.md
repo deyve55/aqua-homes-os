@@ -1,10 +1,10 @@
-# Aqua Homes OS v62N Regression Report
+# Aqua Homes OS v62O Regression Report
 
-- Timestamp: 2026-06-06T16:20:05.434Z
+- Timestamp: 2026-06-06T16:37:39.615Z
 - Branch: work
-- Commit: 40e1de9a52e2698a3b2f64cc8d76fa8e4eb3b105
-- Total tests: 374
-- Passed: 374
+- Commit: c2dc5b86e9fd2f084eb92c8d8e6c89ca4b205aff
+- Total tests: 391
+- Passed: 391
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -48,6 +48,21 @@
 - hendersonExportPacketQueryWorks: true
 - visualRoutesGeneratedForQueries: true
 - spokenSummariesGeneratedForQueries: true
+- fuzzyLanguageResolverExists: true
+- correctionMapWorks: true
+- confidenceScoringWorks: true
+- receiptMishearCorrectionWorks: true
+- draftQueueMishearCorrectionWorks: true
+- sonotubeMishearCorrectionWorks: true
+- hendersonProjectMishearCorrectionWorks: true
+- homeDepotMishearCorrectionWorks: true
+- plumbingMishearCorrectionWorks: true
+- accountantExportMishearCorrectionWorks: true
+- sowScopeMishearCorrectionWorks: true
+- payablesAliasWorks: true
+- approvalAliasWorks: true
+- clarificationForAmbiguousCommandWorks: true
+- automationCommandsStillRouteFirst: true
 - backendSchemaExists: true
 - entityContractsExist: true
 - relationshipMapWorks: true
@@ -254,9 +269,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62N
-- Total: 212
-- Passed: 212
+- Version: v62O
+- Total: 226
+- Passed: 226
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
