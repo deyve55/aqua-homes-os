@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62U';
+const VERSION = 'v62V-A';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -342,6 +342,9 @@ function checkStaticFiles() {
   addCheck('v61Z premium module shell helper exists', /function\s+renderPremiumModuleShellV61Z/.test(extension) && /Premium Module Shell/.test(extension), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
   addCheck('v61Z premium module shell report flags exist', /premiumModuleShellWorks/.test(extension) && /openedModulesPolished/.test(extension), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
   addCheck('v61Z premium shell marker class exists', /aqua-v61z-module-shell/.test(extension) && /data-aqua-v61z-premium-module-shell/.test(extension), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
+  addCheck('v62V-A natural response namespace exists', /window\.AquaNaturalResponsesV62VA/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
+  addCheck('v62V-A natural response helpers exist', /function\s+buildAquaGreetingV62VA/.test(extension) && /function\s+buildAquaReadyPromptV62VA/.test(extension) && /function\s+buildAquaCorrectionPhraseV62VA/.test(extension) && /function\s+buildAquaManualFallbackPhraseV62VA/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
+  addCheck('v62V-A natural response report flags exist', /naturalResponseTemplatesExist/.test(extension) && /responseTemplateSmokeWorks/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -363,6 +366,17 @@ function runExtensionRegression() {
     addCheck('extension regression has repairPrompt when failures exist', Number(extensionReport.failed) === 0 || (typeof extensionReport.repairPrompt === 'string' && extensionReport.repairPrompt.trim().length > 0 && extensionReport.repairPrompt !== 'No repair needed.'), { layer: 'extension-regression', actual: extensionReport.repairPrompt, fileToFix: EXTENSION });
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
 
+    addCheck('v62V-A naturalResponseTemplatesExist is true', extensionReport.naturalResponseTemplatesExist === true, { layer: 'natural-responses-v62va', actual: extensionReport.naturalResponseTemplatesExist, fileToFix: EXTENSION });
+    addCheck('v62V-A greetingResponseWorks is true', extensionReport.greetingResponseWorks === true, { layer: 'natural-responses-v62va', actual: extensionReport.greetingResponseWorks, fileToFix: EXTENSION });
+    addCheck('v62V-A readyPromptWorks is true', extensionReport.readyPromptWorks === true, { layer: 'natural-responses-v62va', actual: extensionReport.readyPromptWorks, fileToFix: EXTENSION });
+    addCheck('v62V-A correctionPhraseWorks is true', extensionReport.correctionPhraseWorks === true, { layer: 'natural-responses-v62va', actual: extensionReport.correctionPhraseWorks, fileToFix: EXTENSION });
+    addCheck('v62V-A openingPhraseWorks is true', extensionReport.openingPhraseWorks === true, { layer: 'natural-responses-v62va', actual: extensionReport.openingPhraseWorks, fileToFix: EXTENSION });
+    addCheck('v62V-A lockedActionPhraseWorks is true', extensionReport.lockedActionPhraseWorks === true, { layer: 'natural-responses-v62va', actual: extensionReport.lockedActionPhraseWorks, fileToFix: EXTENSION });
+    addCheck('v62V-A missingInfoPhraseWorks is true', extensionReport.missingInfoPhraseWorks === true, { layer: 'natural-responses-v62va', actual: extensionReport.missingInfoPhraseWorks, fileToFix: EXTENSION });
+    addCheck('v62V-A manualFallbackPhraseWorks is true', extensionReport.manualFallbackPhraseWorks === true, { layer: 'natural-responses-v62va', actual: extensionReport.manualFallbackPhraseWorks, fileToFix: EXTENSION });
+    addCheck('v62V-A automationReportStillWorks is true', extensionReport.automationReportStillWorks === true, { layer: 'natural-responses-v62va', actual: extensionReport.automationReportStillWorks, fileToFix: EXTENSION });
+    addCheck('v62V-A unknownFallbackStillWorks is true', extensionReport.unknownFallbackStillWorks === true, { layer: 'natural-responses-v62va', actual: extensionReport.unknownFallbackStillWorks, fileToFix: EXTENSION });
+
     addCheck('v62M extension backend schema exists', extensionReport.backendSchemaExists === true, { layer: 'backend-schema-v62m', actual: extensionReport.backendSchemaExists, fileToFix: EXTENSION });
     addCheck('v62M entity contracts exist in extension report', extensionReport.entityContractsExist === true, { layer: 'backend-schema-v62m', actual: extensionReport.entityContractsExist, fileToFix: EXTENSION });
     addCheck('v62M relationship map works', extensionReport.relationshipMapWorks === true, { layer: 'backend-schema-v62m', actual: extensionReport.relationshipMapWorks, fileToFix: EXTENSION });
@@ -371,7 +385,7 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62U', extensionReport.version === 'v62U', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62V-A', extensionReport.version === 'v62V-A', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
@@ -859,6 +873,8 @@ function markdown(report) {
     `- noLiveRecordChanges: ${report.noLiveRecordChanges === true}\n` +
     `- noAudioStorage: ${report.noAudioStorage === true}\n` +
     `- noBackendNetworkLiveAI: ${report.noBackendNetworkLiveAI === true}\n` +
+    `- naturalResponseTemplatesExist: ${report.naturalResponseTemplatesExist === true}\n` +
+    `- responseTemplateSmokeWorks: ${report.responseTemplateSmokeWorks === true}\n` +
     `- conversationScenariosExist: ${report.conversationScenariosExist === true}\n` +
     `- conversationScenarioRunnerWorks: ${report.conversationScenarioRunnerWorks === true}\n` +
     `- allConversationScenariosPass: ${report.allConversationScenariosPass === true}\n` +
@@ -1495,6 +1511,17 @@ async function main() {
     regressionQaSmokeWorks: extensionReport ? extensionReport.regressionQaSmokeWorks === true : false,
     zeroReportGuardWorks: extensionReport ? extensionReport.zeroReportGuardWorks === true : false,
     safetyLocksWork: extensionReport ? extensionReport.safetyLocksWork === true : false,
+    naturalResponseTemplatesExist: extensionReport ? extensionReport.naturalResponseTemplatesExist === true : false,
+    responseTemplateSmokeWorks: extensionReport ? extensionReport.responseTemplateSmokeWorks === true : false,
+    greetingResponseWorks: extensionReport ? extensionReport.greetingResponseWorks === true : false,
+    readyPromptWorks: extensionReport ? extensionReport.readyPromptWorks === true : false,
+    correctionPhraseWorks: extensionReport ? extensionReport.correctionPhraseWorks === true : false,
+    openingPhraseWorks: extensionReport ? extensionReport.openingPhraseWorks === true : false,
+    lockedActionPhraseWorks: extensionReport ? extensionReport.lockedActionPhraseWorks === true : false,
+    missingInfoPhraseWorks: extensionReport ? extensionReport.missingInfoPhraseWorks === true : false,
+    manualFallbackPhraseWorks: extensionReport ? extensionReport.manualFallbackPhraseWorks === true : false,
+    automationReportStillWorks: extensionReport ? extensionReport.automationReportStillWorks === true : false,
+    unknownFallbackStillWorks: extensionReport ? extensionReport.unknownFallbackStillWorks === true : false,
     conversationScenariosExist: extensionReport ? extensionReport.conversationScenariosExist === true : false,
     conversationScenarioRunnerWorks: extensionReport ? extensionReport.conversationScenarioRunnerWorks === true : false,
     allConversationScenariosPass: extensionReport ? extensionReport.allConversationScenariosPass === true : false,

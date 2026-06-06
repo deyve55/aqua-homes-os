@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62U Modular Extension Loader
+ * Aqua Homes OS v62V-A Modular Extension Loader
  * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62U';
+  var VERSION = 'v62V-A';
   var state = {
     version: VERSION,
     regressionRunningV61T: false,
@@ -176,6 +176,15 @@
     repeatLastResponseWorks: false,
     stopSpeakingWorks: false,
     manualFallbackWorks: false,
+    naturalResponseTemplatesExist: false,
+    greetingResponseWorks: false,
+    readyPromptWorks: false,
+    correctionPhraseWorks: false,
+    openingPhraseWorks: false,
+    lockedActionPhraseWorks: false,
+    missingInfoPhraseWorks: false,
+    manualFallbackPhraseWorks: false,
+    responseTemplateSmokeWorks: false,
     continueUsesWorkflowMemory: false,
     permissionQuestionVoiceStateWorks: false,
     aquaVoiceInteractionV62HState: null,
@@ -526,6 +535,93 @@
   function missingInputsForToolV61Z(tool, entities) {
     var map = { project: 'project', vendor: 'vendor', reportTopic: 'report/topic', trade: 'trade/category', fileType: 'file type' };
     return ((tool && tool.requiredInputs) || []).filter(function (input) { return !entities || !entities[input]; }).map(function (input) { return map[input] || input; });
+  }
+
+  function buildAquaGreetingV62VA(context) {
+    var safe = context || {};
+    if (safe.project || safe.job) return 'Ready. I have ' + (safe.project || safe.job) + ' in focus. What file or task should we work on?';
+    return 'Ready. What job or file are we working on?';
+  }
+
+  function buildAquaReadyPromptV62VA(context) {
+    var safe = context || {};
+    if (safe.short) return 'I’m ready. Pick a report, receipts, spend, approvals, missing documents, or a workflow.';
+    return 'I’m ready. You can ask for a report, receipts, spend, approvals, missing documents, or a workflow.';
+  }
+
+  function buildAquaCorrectionPhraseV62VA(rawText, normalizedText, confidence) {
+    var raw = String(rawText || '').trim() || 'that';
+    var normalized = String(normalizedText || '').trim() || 'the closest local demo command';
+    var suffix = Number(confidence) > 0 && Number(confidence) < 0.7 ? ' If that is wrong, tell me and I’ll adjust.' : '';
+    return 'I heard ‘' + raw + ',’ and I’m treating that as ' + normalized + '.' + suffix;
+  }
+
+  function buildAquaOpeningPhraseV62VA(route) {
+    var safeRoute = String(route || 'that section').trim();
+    if (/henderson/i.test(safeRoute) && /home depot|receipt/i.test(safeRoute)) return 'I found it. I’m opening the Henderson Home Depot receipt section now.';
+    if (/henderson/i.test(safeRoute) && /staircase|report/i.test(safeRoute)) return 'I found it. I’m opening the Henderson staircase report section now.';
+    return 'I found it. I’m opening ' + safeRoute + ' now.';
+  }
+
+  function buildAquaLockedActionPhraseV62VA(gate) {
+    var text = Array.isArray(gate) ? gate.join(' ') : String(gate || '');
+    if (/upload/i.test(text)) return 'I can prepare that as a demo, but live upload needs owner approval and backend support first.';
+    if (/export|accounting/i.test(text)) return 'I can prepare that as a demo, but live export needs owner and accounting approval first.';
+    return 'I can prepare that as a demo, but live action needs approval and backend support first.';
+  }
+
+  function buildAquaMissingInfoPhraseV62VA(missingInputs, context) {
+    var missing = Array.isArray(missingInputs) ? missingInputs : [];
+    var first = String(missing[0] || '').toLowerCase();
+    if (!missing.length || /project|job/.test(first)) return 'Which project should I use?';
+    if (/vendor/.test(first)) return 'Which vendor should I use?';
+    if (/report|topic/.test(first)) return 'Which report should I open?';
+    if (/file/.test(first)) return 'Which file type should I use?';
+    if (context && context.project) return 'What detail should I use for ' + context.project + '?';
+    return 'What detail should I use?';
+  }
+
+  function buildAquaNextSuggestionsV62VA(context) {
+    var safe = context || {};
+    if (/approval|export|upload/i.test(safe.intent || safe.status || '')) return ['what needs approval', 'mark ready for owner review', 'show automation report'];
+    if (/receipt|home depot/i.test((safe.intent || '') + ' ' + (safe.visualRoute || ''))) return ['prepare those for accountant export', 'what needs approval', 'read it back'];
+    if (/report/i.test(safe.intent || safe.visualRoute || '')) return ['show missing documents', 'what needs approval', 'continue'];
+    return ['show Home Depot receipts for Henderson', 'what needs approval', 'show automation report'];
+  }
+
+  function buildAquaManualFallbackPhraseV62VA(reason) {
+    var suffix = reason ? ' Reason: ' + String(reason).slice(0, 140) : '';
+    return 'Voice is limited in this browser. I can still guide you through typed commands and buttons.' + suffix;
+  }
+
+  function runAquaNaturalResponseSmokeV62VA() {
+    var checks = [
+      /Ready/.test(buildAquaGreetingV62VA({})),
+      /report, receipts, spend, approvals, missing documents, or a workflow/.test(buildAquaReadyPromptV62VA({})),
+      /home deepo received/.test(buildAquaCorrectionPhraseV62VA('home deepo received', 'Home Depot receipts', 0.92)),
+      /opening the Henderson Home Depot receipt section now/.test(buildAquaOpeningPhraseV62VA('Receipts / Henderson House / Home Depot')),
+      /live export needs owner and accounting approval first/.test(buildAquaLockedActionPhraseV62VA(['Accounting Export Locked'])),
+      /Which project should I use/.test(buildAquaMissingInfoPhraseV62VA(['project'], {})),
+      buildAquaNextSuggestionsV62VA({ intent: 'receipt' }).length >= 3,
+      /typed commands and buttons/.test(buildAquaManualFallbackPhraseV62VA('browser'))
+    ];
+    var passed = checks.filter(Boolean).length;
+    state.naturalResponseTemplatesExist = true;
+    state.greetingResponseWorks = checks[0];
+    state.readyPromptWorks = checks[1];
+    state.correctionPhraseWorks = checks[2];
+    state.openingPhraseWorks = checks[3];
+    state.lockedActionPhraseWorks = checks[4];
+    state.missingInfoPhraseWorks = checks[5];
+    state.manualFallbackPhraseWorks = checks[7];
+    state.responseTemplateSmokeWorks = passed === checks.length;
+    return { version: 'v62V-A', total: checks.length, passed: passed, failed: checks.length - passed, naturalResponseTemplatesExist: true, responseTemplateSmokeWorks: passed === checks.length, safeToMerge: passed === checks.length, mergeRecommendation: passed === checks.length ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true, repairPrompt: passed === checks.length ? 'No repair needed.' : 'Fix AquaNaturalResponsesV62VA deterministic template helpers in aqua-v61-extensions.js.' };
+  }
+
+  function renderAquaNaturalResponseDemoV62VA() {
+    var smoke = runAquaNaturalResponseSmokeV62VA();
+    var body = '<div data-aqua-v62va-natural-responses="true"><div><strong>version:</strong> v62V-A</div><p>' + escapeHTMLV61D(buildAquaGreetingV62VA({})) + '</p><p>' + escapeHTMLV61D(buildAquaReadyPromptV62VA({})) + '</p><p>' + escapeHTMLV61D(buildAquaCorrectionPhraseV62VA('home deepo received', 'Home Depot receipts', 0.92)) + '</p><p>' + escapeHTMLV61D(buildAquaOpeningPhraseV62VA('Receipts / Henderson House / Home Depot')) + '</p><p>' + escapeHTMLV61D(buildAquaLockedActionPhraseV62VA(['Accounting Export Locked'])) + '</p><p>' + escapeHTMLV61D(buildAquaManualFallbackPhraseV62VA('browser voice fallback')) + '</p><div><strong>responseTemplateSmokeWorks:</strong> ' + escapeHTMLV61D(String(smoke.responseTemplateSmokeWorks)) + '</div></div>';
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Natural Responses — v62V-A', subtitle: 'Small deterministic local/demo response-template layer.', tag: smoke.mergeRecommendation, chips: ['v62V-A', 'Demo Only', 'No Backend', 'No Live AI'], attrs: { 'data-aqua-v62va-natural-response-report': 'true' }, body: body, safetyFooter: 'No backend calls, network calls, external AI/API calls, API keys, live record changes, audio storage, or always-listening behavior.' });
   }
 
   function classifyVoiceBrainIntentV61Z(commandText) {
@@ -4020,15 +4116,15 @@
     if (/account export/i.test(raw) && corrections.indexOf('accountant export') === -1) corrections.push('accountant export');
     var combined = normalized + ' ' + q;
     var hasHendersonContext = /Henderson House|henderson/i.test(runtimeState.activeProject || '') || /henderson/i.test(combined);
-    if (/^(hey aqua|ready to work|start aqua session)$/.test(q)) return { normalized: q === 'ready to work' ? 'ready to work' : 'hey aqua', intent: 'session_started', route: 'Aqua Brain / Conversation Session', response: 'I’m ready to work. Tell me the project, report, receipts, spend, approvals, missing documents, or SOW you want to review.', suggestions: ['pull up Henderson', 'show Home Depot receipts', 'what needs approval'], context: { activeWorkflow: 'aqua-conversation-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
-    if (/^manual mode$/.test(q)) return { normalized: 'manual mode', intent: 'manual_fallback', route: 'Manual Fallback / Typed Assistant Controls', response: 'Manual mode is available. Typed commands still run the assistant conversation; there is no voice-only dependency.', suggestions: ['show Henderson report', 'continue', 'repeat'], context: { activeWorkflow: runtimeState.activeWorkflow || 'manual-fallback-demo' }, permissionKind: '', corrections: corrections };
-    if (/prepare.*(account|export)/i.test(q + ' ' + normalized)) return { normalized: 'prepare Home Depot receipts for accountant export', intent: 'accountant_export_locked', route: 'Workflow / Accountant Export Demo / Home Depot Receipts', response: 'I can prepare the accountant export packet as a demo, but live export is locked until owner and accounting approval plus backend connection.', suggestions: ['show what needs approval', 'mark ready for owner review', 'read it back'], context: { activeProject: runtimeState.activeProject || 'Henderson House', activeVendor: runtimeState.activeVendor || 'Home Depot', activeTopic: 'accountant export', activeWorkflow: 'accountant-export-demo', pendingSessionQuestion: '' }, permissionKind: 'export', workflow: 'accountant-export-demo', corrections: corrections };
-    if (/^pull up the report$/.test(q) && !runtimeState.activeProject) return { normalized: 'pull up the report', intent: 'session_missing_information_question', route: 'Aqua Session / Missing Information', response: 'Which project and report should I pull up? For example: Henderson staircase.', suggestions: ['Henderson staircase', 'Henderson report', 'manual mode'], context: { activeWorkflow: 'aqua-session-demo', pendingSessionQuestion: 'project_report_topic' }, permissionKind: '', corrections: corrections };
+    if (/^(hey aqua|ready to work|start aqua session)$/.test(q)) return { normalized: q === 'ready to work' ? 'ready to work' : 'hey aqua', intent: 'session_started', route: 'Aqua Brain / Conversation Session', response: buildAquaReadyPromptV62VA({}), suggestions: ['pull up Henderson', 'show Home Depot receipts', 'what needs approval'], context: { activeWorkflow: 'aqua-conversation-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
+    if (/^manual mode$/.test(q)) return { normalized: 'manual mode', intent: 'manual_fallback', route: 'Manual Fallback / Typed Assistant Controls', response: buildAquaManualFallbackPhraseV62VA('manual mode requested'), suggestions: ['show Henderson report', 'continue', 'repeat'], context: { activeWorkflow: runtimeState.activeWorkflow || 'manual-fallback-demo' }, permissionKind: '', corrections: corrections };
+    if (/prepare.*(account|export)/i.test(q + ' ' + normalized)) return { normalized: 'prepare Home Depot receipts for accountant export', intent: 'accountant_export_locked', route: 'Workflow / Accountant Export Demo / Home Depot Receipts', response: buildAquaLockedActionPhraseV62VA(['Accounting Export Locked']), suggestions: ['show what needs approval', 'mark ready for owner review', 'read it back'], context: { activeProject: runtimeState.activeProject || 'Henderson House', activeVendor: runtimeState.activeVendor || 'Home Depot', activeTopic: 'accountant export', activeWorkflow: 'accountant-export-demo', pendingSessionQuestion: '' }, permissionKind: 'export', workflow: 'accountant-export-demo', corrections: corrections };
+    if (/^pull up the report$/.test(q) && !runtimeState.activeProject) return { normalized: 'pull up the report', intent: 'session_missing_information_question', route: 'Aqua Session / Missing Information', response: buildAquaMissingInfoPhraseV62VA(['project'], {}), suggestions: ['Henderson staircase', 'Henderson report', 'manual mode'], context: { activeWorkflow: 'aqua-session-demo', pendingSessionQuestion: 'project_report_topic' }, permissionKind: '', corrections: corrections };
     if (/^pull up the report$/.test(q) && runtimeState.activeProject) return { normalized: 'pull up the report', intent: 'session_missing_information_question', route: 'Aqua Session / Missing Information', response: 'I have ' + runtimeState.activeProject + ' selected. Which report do you want — staircase, status, receipts, spend, missing documents, approvals, or SOW?', suggestions: ['Henderson staircase', 'show missing documents', 'what needs approval'], context: { activeWorkflow: runtimeState.activeWorkflow || 'aqua-session-demo', pendingSessionQuestion: 'project_report_topic' }, permissionKind: '', corrections: corrections };
     if (/^henderson staircase$/.test(q) && runtimeState.pendingSessionQuestion) normalized = 'Henderson staircase report';
     if (/^pull up henderson$|^show henderson$|^select henderson$/.test(q)) return { normalized: 'pull up Henderson', intent: 'project_selected', route: 'Project / Henderson House', response: 'I have Henderson selected. What do you want to see — reports, receipts, spend, missing documents, approvals, or SOW?', suggestions: ['show Home Depot receipts', 'pull up Henderson staircase report', 'what needs approval'], context: { activeProject: 'Henderson House', activeTopic: 'project overview', activeWorkflow: 'henderson-context-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
     if (/show henderson report$|show henderson reports$|pull up henderson report$/.test(q)) return { normalized: 'show Henderson report', intent: 'report_lookup', route: 'Project Reports / Henderson House', response: 'I found it. I’m opening the Henderson report placeholder now. Live report retrieval still needs the backend file index.', suggestions: ['show missing documents', 'what needs approval', 'continue'], context: { activeProject: 'Henderson House', activeTopic: 'project report', activeWorkflow: 'report-review-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
-    if (/staircase report|stair case report|henderson staircase report|henderson staircase/i.test(combined)) return { normalized: 'Henderson staircase report', intent: 'report_lookup', route: 'Project Reports / Henderson House / Staircase', response: 'I found it. I’m opening the Henderson staircase report placeholder now. Live project file retrieval requires the backend/project file index, so no live record changed.', suggestions: ['show missing documents', 'what needs approval', 'prepare review checklist'], context: { activeProject: 'Henderson House', activeTopic: 'staircase report', activeWorkflow: 'report-review-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
+    if (/staircase report|stair case report|henderson staircase report|henderson staircase/i.test(combined)) return { normalized: 'Henderson staircase report', intent: 'report_lookup', route: 'Project Reports / Henderson House / Staircase', response: buildAquaOpeningPhraseV62VA('Project Reports / Henderson House / Staircase') + ' Live project file retrieval requires the backend/project file index, so no live record changed.', suggestions: ['show missing documents', 'what needs approval', 'prepare review checklist'], context: { activeProject: 'Henderson House', activeTopic: 'staircase report', activeWorkflow: 'report-review-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
     if (/home depot receipts|show home depot receipts|home deepo|hender son.*received|received.*hender son|received.*home/i.test(combined)) return { normalized: 'show Home Depot receipts for Henderson', intent: 'vendor_receipt_lookup', route: 'Receipts / Henderson House / Home Depot', response: 'I found the Home Depot receipt placeholder for Henderson. I’m opening that section now. Live receipt search still needs the backend.', suggestions: ['prepare these for accountant export', 'prepare those for accountant export', 'what needs approval'], context: { activeProject: 'Henderson House', activeVendor: 'Home Depot', activeTopic: 'receipts', activeWorkflow: 'receipt-lookup-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
     if (/prepare (those|these|home depot receipts|home deepo received).*account|accountant export|account export/i.test(combined)) return { normalized: 'prepare Home Depot receipts for accountant export', intent: 'accountant_export_locked', route: 'Workflow / Accountant Export Demo / Home Depot Receipts', response: 'I can prepare the accountant export packet as a demo, but live export is locked until owner and accounting approval plus a backend connection.', suggestions: ['what needs approval', 'mark ready for owner review', 'read it back'], context: { activeProject: runtimeState.activeProject || 'Henderson House', activeVendor: runtimeState.activeVendor || 'Home Depot', activeTopic: 'accountant export', activeWorkflow: 'accountant-export-demo', pendingSessionQuestion: '' }, permissionKind: 'export', workflow: 'accountant-export-demo', corrections: corrections };
     if (/what documents are missing|what is missing|missing documents|missing proof/i.test(combined)) return { normalized: 'what documents are missing', intent: 'missing_documents_lookup', route: hasHendersonContext && /camera|photo|proof/i.test(runtimeState.activeTopic || '') ? 'Evidence / Henderson House / Missing Photo Proof' : 'Documents / Henderson House / Missing Documents', response: 'I found the Henderson missing-document placeholder. It shows demo-only gaps; live document checks require the backend file index.', suggestions: ['prepare review checklist', 'what needs approval', 'continue'], context: { activeProject: 'Henderson House', activeTopic: /camera|photo|proof/i.test(runtimeState.activeTopic || '') ? 'missing photo proof' : 'missing documents', activeWorkflow: runtimeState.activeWorkflow || 'missing-documents-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
@@ -4041,7 +4137,7 @@
     if (/what should i do next/i.test(q)) return { normalized: 'what should I do next', intent: 'next_recommendation', route: 'Owner Review / Next Recommended Action', response: 'Next, review the Henderson demo packet with the owner, then connect the accounting/backend indexes before any live export or accounting action.', suggestions: ['what needs approval', 'mark ready for owner review', 'show automation report'], context: { activeProject: runtimeState.activeProject || 'Henderson House', activeWorkflow: runtimeState.activeWorkflow || 'next-action-demo', pendingSessionQuestion: '' }, permissionKind: 'review', corrections: corrections };
     if (/were cameras allocated to henderson|cameras allocated to henderson|camera allocation/i.test(combined)) return { normalized: 'were cameras allocated to Henderson', intent: 'camera_allocation_demo', route: 'Jobsite Cameras / Allocation Review / Henderson Jobsite', response: 'I’m opening the Henderson camera allocation placeholder. Live camera assignment and device data remain disconnected.', suggestions: ['show photo proof', 'what is missing', 'what should I do next'], context: { activeProject: 'Henderson House', activeTopic: 'camera allocation', activeWorkflow: 'camera-photo-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
     if (/show photo proof|photo proof|show proof/i.test(q)) return { normalized: 'show photo proof', intent: 'photo_proof_demo', route: 'Photo Proof / Evidence Binder / Henderson House', response: 'I’m opening the Henderson photo-proof binder placeholder. No photos were uploaded, captured, stored, or shared.', suggestions: ['what is missing', 'what should I do next', 'read it back'], context: { activeProject: 'Henderson House', activeTopic: 'photo proof', activeWorkflow: 'camera-photo-demo', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
-    if (/upload that construction diagram|upload.*diagram.*henderson/i.test(q)) return { normalized: 'upload construction diagram to Henderson files', intent: 'upload_request_locked', route: 'Permission Granter / Upload Request Demo / Henderson files', response: 'I can stage that upload request as a demo, but live upload is locked. Backend connection and owner approval are required.', suggestions: ['what approval is needed', 'cancel that', 'read it back'], context: { activeProject: 'Henderson House', activeTopic: 'construction diagram upload', activeWorkflow: 'pending-upload-demo', pendingUploadAction: 'construction diagram to Henderson files', pendingSessionQuestion: '' }, permissionKind: 'review', corrections: corrections };
+    if (/upload that construction diagram|upload.*diagram.*henderson/i.test(q)) return { normalized: 'upload construction diagram to Henderson files', intent: 'upload_request_locked', route: 'Permission Granter / Upload Request Demo / Henderson files', response: buildAquaLockedActionPhraseV62VA(['Upload Locked']), suggestions: ['what approval is needed', 'cancel that', 'read it back'], context: { activeProject: 'Henderson House', activeTopic: 'construction diagram upload', activeWorkflow: 'pending-upload-demo', pendingUploadAction: 'construction diagram to Henderson files', pendingSessionQuestion: '' }, permissionKind: 'review', corrections: corrections };
     if (/^cancel that$|^cancel$|clear pending upload/i.test(q)) return { normalized: 'cancel that', intent: 'cancel_pending_demo_action', route: 'Canceled / Local Demo Pending Action', response: 'Canceled the local demo pending action. No upload, export, send, approval, or live record change happened.', suggestions: ['pull up Henderson', 'manual mode', 'show automation report'], context: { activeWorkflow: '', pendingUploadAction: '', pendingSessionQuestion: '' }, permissionKind: '', corrections: corrections };
     if (/^(repeat|read it back)$/.test(q)) return { normalized: q === 'repeat' ? 'repeat' : 'read it back', intent: 'readback', route: runtimeState.activeWorkflow ? 'Readback / Active Workflow' : 'Readback / Last Response Draft', response: runtimeState.lastResponseDraft || getAquaBrainAssistantStateV62Q().lastAssistantResponseDraft || 'There is no response draft to repeat yet. Run an assistant command first.', suggestions: ['continue', 'manual mode', 'show automation report'], context: {}, permissionKind: '', corrections: corrections };
     if (/^stop speaking$/.test(q)) return { normalized: 'stop speaking', intent: 'stop_speaking_no_audio_storage', route: 'Voice Controls / Stop Speaking', response: 'Speaking stopped locally if browser speech was active. No audio was recorded or stored.', suggestions: ['continue', 'repeat', 'manual mode'], context: {}, permissionKind: '', corrections: corrections };
@@ -6193,6 +6289,12 @@
   function runNormalizedAquaCommandV61E(commandText, outputNode, skipFuzzyV62O) {
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
+    if (/^(show natural response|show correction used)$/.test(normalizedForPriorityV62O)) {
+      var naturalHtmlV62VA = renderAquaNaturalResponseDemoV62VA();
+      if (outputNode) outputNode.innerHTML = naturalHtmlV62VA;
+      var smokeV62VA = runAquaNaturalResponseSmokeV62VA();
+      return Object.assign({ canonicalIntent: 'aqua_natural_responses_v62va', askMode: 'natural_responses_v62va', module: 'Aqua Brain Natural Responses — v62V-A', renderedNaturalResponsesV62VA: true, renderedFallback: false, html: naturalHtmlV62VA }, smokeV62VA);
+    }
     var conversationIntentV62U = detectAquaConversationScenarioCommandV62U(originalForPriorityV62O, normalizedForPriorityV62O);
     if (conversationIntentV62U) {
       if (/^(hey aqua|ready to work)$/.test(conversationIntentV62U)) {
@@ -8554,6 +8656,15 @@
       var passed = isSmoke || isAutomation || isRegression || isFallback;
       return { command: command, expected: 'v62T live UX smoke, automation, regression, or fallback route works safely', actual: Object.assign({ renderedLiveUXSmokeV62T: isSmoke, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: passed, errors: passed ? [] : ['v62T live UX smoke command failed'], suggestedFix: passed ? '' : 'Update AquaBrainLiveUXSmokeV62T routing/rendering in aqua-v61-extensions.js. Do not redesign Home or enable backend/live actions.' };
     });
+    var naturalReportV62VA = runAquaNaturalResponseSmokeV62VA();
+    var naturalCommandListV62VA = ['show natural response', 'show correction used'];
+    var naturalResultsV62VA = naturalCommandListV62VA.map(function (command) {
+      var host = document.createElement('div');
+      var routed = runNormalizedAquaCommandV61E(command, host);
+      var html = host.innerHTML || routed.html || '';
+      var passed = routed && routed.canonicalIntent === 'aqua_natural_responses_v62va' && /Aqua Brain Natural Responses — v62V-A/.test(html) && routed.responseTemplateSmokeWorks === true;
+      return { command: command, expected: 'v62V-A natural response template command renders safely', actual: Object.assign({ renderedNaturalResponsesV62VA: /data-aqua-v62va-natural-response-report/.test(html), noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: passed, errors: passed ? [] : ['v62V-A natural response command failed'], suggestedFix: passed ? '' : 'Update AquaNaturalResponsesV62VA in aqua-v61-extensions.js. Keep it small and local/demo-only.' };
+    });
     var conversationReportV62U = runAquaConversationScenariosV62U();
     var conversationCommandListV62U = ['run conversation scenarios', 'run aqua conversation test', 'run assistant conversation qa', 'show conversation scenario report', 'show assistant behavior report', 'show response quality report', 'show conversation failures', 'explain last conversation route', 'hey aqua', 'ready to work'];
     var conversationCommandResultsV62U = conversationCommandListV62U.map(function (command) {
@@ -8566,7 +8677,7 @@
       return { command: command, expected: 'v62U conversation scenario/report command routes safely', actual: Object.assign({ renderedConversationScenarioReportV62U: isReport, renderedConversationTurnV62U: isTurn, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: passed, errors: passed ? [] : ['v62U conversation command failed'], suggestedFix: passed ? '' : 'Update AquaBrainConversationScenariosV62U routing/rendering in aqua-v61-extensions.js. Do not redesign Home or enable backend/live actions.' };
     });
     var conversationScenarioResultsV62U = (conversationReportV62U.scenarios || []).map(function (item) { return { command: 'v62U scenario: ' + item.scenarioName, expected: 'Continuous local/demo Aqua Brain conversation passes scenario expectations', actual: item, passed: item.passed, errors: item.passed ? [] : ['v62U conversation scenario failed'], suggestedFix: item.passed ? '' : item.repairPrompt }; });
-    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, conversationCommandResultsV62U, conversationScenarioResultsV62U, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
+    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, conversationCommandResultsV62U, conversationScenarioResultsV62U, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -8592,6 +8703,16 @@
       repairPrompt: buildRepairPromptV61L(failures),
       safeToMerge: failures.length === 0 && regressionSafetyPassesV61L(safety) ? true : false,
       mergeRecommendation: failures.length === 0 && regressionSafetyPassesV61L(safety) ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED',
+      naturalResponseTemplatesExist: Boolean(window.AquaNaturalResponsesV62VA) && naturalReportV62VA.naturalResponseTemplatesExist === true,
+      responseTemplateSmokeWorks: naturalReportV62VA.responseTemplateSmokeWorks === true,
+      greetingResponseWorks: state.greetingResponseWorks === true,
+      readyPromptWorks: state.readyPromptWorks === true,
+      correctionPhraseWorks: state.correctionPhraseWorks === true,
+      openingPhraseWorks: state.openingPhraseWorks === true,
+      lockedActionPhraseWorks: state.lockedActionPhraseWorks === true,
+      missingInfoPhraseWorks: state.missingInfoPhraseWorks === true,
+      manualFallbackPhraseWorks: state.manualFallbackPhraseWorks === true,
+      automationReportStillWorks: liveUXSmokeReportV62T.automationReportSmokeWorks === true,
       conversationScenariosExist: Boolean(window.AquaBrainConversationScenariosV62U),
       conversationScenarioRunnerWorks: conversationReportV62U.conversationScenarioRunnerWorks === true,
       allConversationScenariosPass: conversationReportV62U.allConversationScenariosPass === true,
@@ -9392,6 +9513,7 @@
   window.AquaBrainLiveUXSmokeV62T = window.AquaBrainLiveUXSmokeV62T || { version: 'v62T', localDemoOnly: true, runAquaBrainLiveUXSmokeV62T: runAquaBrainLiveUXSmokeV62T, renderAquaBrainLiveUXSmokeReportV62T: renderAquaBrainLiveUXSmokeReportV62T, checkAquaAssistantPrimarySurfaceV62T: checkAquaAssistantPrimarySurfaceV62T, checkAquaMainInputTargetV62T: checkAquaMainInputTargetV62T, checkAquaAssistantTurnSmokeV62T: checkAquaAssistantTurnSmokeV62T, checkAquaManualFallbackSmokeV62T: checkAquaManualFallbackSmokeV62T, checkAquaVoiceButtonSafetyV62T: checkAquaVoiceButtonSafetyV62T, checkAquaAutomationReportSmokeV62T: checkAquaAutomationReportSmokeV62T, checkAquaRegressionQaSmokeV62T: checkAquaRegressionQaSmokeV62T, checkAquaZeroReportGuardV62T: checkAquaZeroReportGuardV62T, checkAquaNoLiveActionSmokeV62T: checkAquaNoLiveActionSmokeV62T, evaluateAquaZeroReportGuardV62T: evaluateAquaZeroReportGuardV62T, safetyEnvelope: aquaLiveUXSmokeSafetyV62T() };
   window.AquaBrainAssistantRuntimeV62R = window.AquaBrainAssistantRuntimeV62R || { version: 'v62S', localDemoOnly: true, runAquaAssistantTurnV62R: runAquaAssistantTurnV62R, validateAquaAssistantRuntimeV62R: validateAquaAssistantRuntimeV62R, renderAquaAssistantRuntimeQAReportV62R: renderAquaAssistantRuntimeQAReportV62R, getAquaAssistantRuntimeStateV62R: getAquaAssistantRuntimeStateV62R, resetAquaAssistantRuntimeStateV62R: resetAquaAssistantRuntimeStateV62R, assertAquaAssistantSurfaceUpdatedV62R: assertAquaAssistantSurfaceUpdatedV62R, assertAquaAssistantFocusRouteV62R: assertAquaAssistantFocusRouteV62R, assertAquaAssistantPermissionGateV62R: assertAquaAssistantPermissionGateV62R, assertAquaAssistantSuggestionsV62R: assertAquaAssistantSuggestionsV62R, safetyEnvelope: aquaAssistantRuntimeSafetyV62R() };
   window.AquaBrainAssistantInterfaceV62Q = window.AquaBrainAssistantInterfaceV62Q || { version: 'v62S', localDemoOnly: true, storageKey: ASSISTANT_STATE_KEY_V62Q, renderAquaBrainAssistantInterfaceV62Q: renderAquaBrainAssistantInterfaceV62Q, renderAquaBrainConversationSurfaceV62Q: renderAquaBrainConversationSurfaceV62Q, renderAquaBrainCommandUnderstandingV62Q: renderAquaBrainCommandUnderstandingV62Q, renderAquaBrainActiveContextV62Q: renderAquaBrainActiveContextV62Q, renderAquaBrainNextSuggestionsV62Q: renderAquaBrainNextSuggestionsV62Q, renderAquaBrainPermissionGateSummaryV62Q: renderAquaBrainPermissionGateSummaryV62Q, renderAquaBrainManualFallbackV62Q: renderAquaBrainManualFallbackV62Q, handleAquaBrainAssistantTurnV62Q: handleAquaBrainAssistantTurnV62Q, getAquaBrainAssistantStateV62Q: getAquaBrainAssistantStateV62Q, saveAquaBrainAssistantStateV62Q: saveAquaBrainAssistantStateV62Q, clearAquaBrainAssistantStateV62Q: clearAquaBrainAssistantStateV62Q, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
+  window.AquaNaturalResponsesV62VA = window.AquaNaturalResponsesV62VA || { version: 'v62V-A', localDemoOnly: true, buildAquaGreetingV62VA: buildAquaGreetingV62VA, buildAquaReadyPromptV62VA: buildAquaReadyPromptV62VA, buildAquaCorrectionPhraseV62VA: buildAquaCorrectionPhraseV62VA, buildAquaOpeningPhraseV62VA: buildAquaOpeningPhraseV62VA, buildAquaLockedActionPhraseV62VA: buildAquaLockedActionPhraseV62VA, buildAquaMissingInfoPhraseV62VA: buildAquaMissingInfoPhraseV62VA, buildAquaNextSuggestionsV62VA: buildAquaNextSuggestionsV62VA, buildAquaManualFallbackPhraseV62VA: buildAquaManualFallbackPhraseV62VA, runAquaNaturalResponseSmokeV62VA: runAquaNaturalResponseSmokeV62VA, renderAquaNaturalResponseDemoV62VA: renderAquaNaturalResponseDemoV62VA, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true } };
   window.AquaFuzzyLanguageV62O = window.AquaFuzzyLanguageV62O || {
     version: 'v62O',
     localDemoOnly: true,
@@ -9429,5 +9551,5 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62U extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v62V-A extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
