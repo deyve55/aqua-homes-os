@@ -1,10 +1,10 @@
-# Aqua Homes OS v62R Regression Report
+# Aqua Homes OS v62S Regression Report
 
-- Timestamp: 2026-06-06T17:21:31.466Z
+- Timestamp: 2026-06-06T17:51:16.986Z
 - Branch: work
-- Commit: 46495ee936a8e33c9362d6dffc65b855a4e77a5b
-- Total tests: 438
-- Passed: 438
+- Commit: faa4dfb3da570cb93629cd663d56e4f6392b4511
+- Total tests: 478
+- Passed: 478
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -165,6 +165,18 @@
 - assistantContextWorks: true
 - clearAssistantContextWorks: true
 - inputTargetingStillCorrect: true
+- primaryAssistantInterfaceExists: true
+- aiButtonOpensPrimaryAssistant: true
+- mainCommandInputWorks: true
+- quickControlsSecondary: true
+- manualControlsWork: true
+- commandUnderstandingStillWorks: true
+- currentFocusStillWorks: true
+- responseDraftStillWorks: true
+- nextSuggestionsStillWork: true
+- permissionSummaryStillWorks: true
+- automationReportStillWorks: true
+- regressionQaStillWorks: true
 - assistantRuntimeExists: true
 - assistantTurnChainWorks: true
 - assistantSurfaceUpdatesWork: true
@@ -304,9 +316,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62R
-- Total: 272
-- Passed: 272
+- Version: v62S
+- Total: 289
+- Passed: 289
 - Failed: 0
 
 ## Copyable Codex Repair Prompt

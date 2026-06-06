@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62R';
+const VERSION = 'v62S';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -282,6 +282,7 @@ function checkStaticFiles() {
   addCheck('v62Q assistant report flags exist', /assistantInterfaceExists/.test(extension) && /unifiedConversationSurfaceWorks/.test(extension) && /commandUnderstandingPanelWorks/.test(extension), { layer: 'assistant-interface-v62q', fileToFix: EXTENSION });
   addCheck('v62R assistant runtime architecture exists', /window\.AquaBrainAssistantRuntimeV62R/.test(extension) && /function\s+runAquaAssistantTurnV62R/.test(extension) && /Aqua Brain Assistant Runtime QA/.test(extension), { layer: 'assistant-runtime-v62r', fileToFix: EXTENSION });
   addCheck('v62R assistant runtime report flags exist', /assistantRuntimeExists/.test(extension) && /assistantTurnChainWorks/.test(extension) && /workflowFollowUpRuntimeWorks/.test(extension), { layer: 'assistant-runtime-v62r', fileToFix: EXTENSION });
+  addCheck('v62S primary assistant interface architecture exists', /Aqua Brain Assistant — v62S/.test(extension) && /data-aqua-v62s-primary-assistant-interface/.test(extension) && /primaryAssistantInterfaceExists/.test(extension) && /aiButtonOpensPrimaryAssistant/.test(extension) && /quickControlsSecondary/.test(extension), { layer: 'primary-assistant-interface-v62s', fileToFix: EXTENSION });
   addCheck('v61Z AquaVoiceBrainV61Z architecture exists', /window\.AquaVoiceBrainV61Z|function\s+createAquaVoiceBrainV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain context key exists', /aquaVoiceBrainContextV61Z/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
   addCheck('v61Z voice brain tool registry exists', /function\s+voiceBrainToolRegistryV61Z/.test(extension) && /openProjectReport/.test(extension) && /findProjectReceipts/.test(extension) && /prepareAccountantExportDemo/.test(extension), { layer: 'voice-brain-v61z', fileToFix: EXTENSION });
@@ -362,12 +363,13 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62R', extensionReport.version === 'v62R', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62S', extensionReport.version === 'v62S', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['e2eRoutingMatrixExists','e2eRoutingMatrixRuns','allE2ERoutesPass','fuzzyToIntentToRouteChainWorks','workflowChainWorks','sessionChainWorks','visualFocusChainWorks','readbackChainWorks','permissionGateChainWorks','automationRoutePriorityWorks','unknownFallbackStillWorks','clarificationPathWorks','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62P ${flag}`, extensionReport[flag] === true, { layer: 'e2e-routing-matrix-v62p', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['assistantRuntimeExists','assistantTurnChainWorks','assistantSurfaceUpdatesWork','commandUnderstandingUpdatesWork','currentFocusUpdatesWork','responseDraftUpdatesWork','permissionSummaryUpdatesWork','nextSuggestionsUpdateWork','workflowFollowUpRuntimeWorks','sessionFollowUpRuntimeWorks','manualFallbackRuntimeWorks','automationPriorityStillWorks','unknownFallbackStillWorks','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62R ${flag}`, extensionReport[flag] === true, { layer: 'assistant-runtime-v62r', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['primaryAssistantInterfaceExists','aiButtonOpensPrimaryAssistant','mainCommandInputWorks','inputTargetingStillCorrect','quickControlsSecondary','manualControlsWork','commandUnderstandingStillWorks','currentFocusStillWorks','responseDraftStillWorks','nextSuggestionsStillWork','permissionSummaryStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening','noRealCustomerData'].forEach((flag) => addCheck(`v62S ${flag}`, extensionReport[flag] === true, { layer: 'primary-assistant-interface-v62s', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('v62L backendBoundaryExists is true', extensionReport.backendBoundaryExists === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendBoundaryExists, fileToFix: EXTENSION });
     addCheck('v62L serverOnlyKeyPolicyWorks is true', extensionReport.serverOnlyKeyPolicyWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.serverOnlyKeyPolicyWorks, fileToFix: EXTENSION });
     addCheck('v62L backendEndpointMapWorks is true', extensionReport.backendEndpointMapWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendEndpointMapWorks, fileToFix: EXTENSION });
@@ -554,6 +556,10 @@ function runExtensionRegression() {
     ['voice on','voice off','repeat last response','stop speaking','continue','cancel / clear context','manual controls','read it back after active workflow','what needs approval after active workflow','look up all receipts for Henderson from Home Depot and prepare them for accountant export','show automation report','banana test'].forEach((command) => {
       const row = (extensionReport.results || []).find((result) => result.command === command);
       addCheck(`v62H voice command/state test: ${command}`, Boolean(row && row.passed), { layer: 'voice-interaction-v62h', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    });
+    ['show aqua brain assistant','open aqua brain assistant','show assistant interface','show primary ai interface','show Home Depot receipts for Henderson','prepare those for accountant export','what needs approval','read it back','continue','manual controls','show quick routes','show automation tools','show safety tools','clear assistant context','show automation report','run regression qa','banana test'].forEach((command) => {
+      const row = (extensionReport.results || []).find((result) => result.command === command);
+      addCheck(`v62S primary assistant command: ${command}`, Boolean(row && row.passed), { layer: 'primary-assistant-interface-v62s', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
 
     const concreteDefaultRow = byCommand.get('how many bags of concrete for an 8 inch sonotube 4 feet deep');
@@ -1030,6 +1036,30 @@ function markdown(report) {
 ` +
     `- inputTargetingStillCorrect: ${report.inputTargetingStillCorrect === true}
 ` +
+    `- primaryAssistantInterfaceExists: ${report.primaryAssistantInterfaceExists === true}
+` +
+    `- aiButtonOpensPrimaryAssistant: ${report.aiButtonOpensPrimaryAssistant === true}
+` +
+    `- mainCommandInputWorks: ${report.mainCommandInputWorks === true}
+` +
+    `- quickControlsSecondary: ${report.quickControlsSecondary === true}
+` +
+    `- manualControlsWork: ${report.manualControlsWork === true}
+` +
+    `- commandUnderstandingStillWorks: ${report.commandUnderstandingStillWorks === true}
+` +
+    `- currentFocusStillWorks: ${report.currentFocusStillWorks === true}
+` +
+    `- responseDraftStillWorks: ${report.responseDraftStillWorks === true}
+` +
+    `- nextSuggestionsStillWork: ${report.nextSuggestionsStillWork === true}
+` +
+    `- permissionSummaryStillWorks: ${report.permissionSummaryStillWorks === true}
+` +
+    `- automationReportStillWorks: ${report.automationReportStillWorks === true}
+` +
+    `- regressionQaStillWorks: ${report.regressionQaStillWorks === true}
+` +
     `- assistantRuntimeExists: ${report.assistantRuntimeExists === true}
 ` +
     `- assistantTurnChainWorks: ${report.assistantTurnChainWorks === true}
@@ -1252,6 +1282,18 @@ async function main() {
     assistantContextWorks: extensionReport ? extensionReport.assistantContextWorks === true : false,
     clearAssistantContextWorks: extensionReport ? extensionReport.clearAssistantContextWorks === true : false,
     inputTargetingStillCorrect: extensionReport ? extensionReport.inputTargetingStillCorrect === true : false,
+    primaryAssistantInterfaceExists: extensionReport ? extensionReport.primaryAssistantInterfaceExists === true : false,
+    aiButtonOpensPrimaryAssistant: extensionReport ? extensionReport.aiButtonOpensPrimaryAssistant === true : false,
+    mainCommandInputWorks: extensionReport ? extensionReport.mainCommandInputWorks === true : false,
+    quickControlsSecondary: extensionReport ? extensionReport.quickControlsSecondary === true : false,
+    manualControlsWork: extensionReport ? extensionReport.manualControlsWork === true : false,
+    commandUnderstandingStillWorks: extensionReport ? extensionReport.commandUnderstandingStillWorks === true : false,
+    currentFocusStillWorks: extensionReport ? extensionReport.currentFocusStillWorks === true : false,
+    responseDraftStillWorks: extensionReport ? extensionReport.responseDraftStillWorks === true : false,
+    nextSuggestionsStillWork: extensionReport ? extensionReport.nextSuggestionsStillWork === true : false,
+    permissionSummaryStillWorks: extensionReport ? extensionReport.permissionSummaryStillWorks === true : false,
+    automationReportStillWorks: extensionReport ? extensionReport.automationReportStillWorks === true : false,
+    regressionQaStillWorks: extensionReport ? extensionReport.regressionQaStillWorks === true : false,
     assistantRuntimeExists: extensionReport ? extensionReport.assistantRuntimeExists === true : false,
     assistantTurnChainWorks: extensionReport ? extensionReport.assistantTurnChainWorks === true : false,
     assistantSurfaceUpdatesWork: extensionReport ? extensionReport.assistantSurfaceUpdatesWork === true : false,
