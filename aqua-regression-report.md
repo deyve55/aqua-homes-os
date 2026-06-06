@@ -1,10 +1,10 @@
-# Aqua Homes OS v62M Regression Report
+# Aqua Homes OS v62N Regression Report
 
-- Timestamp: 2026-06-06T15:04:31.206Z
+- Timestamp: 2026-06-06T15:46:09.502Z
 - Branch: work
-- Commit: 1cdedb2009efd7f490cc40d1369b2d96f06dd1e8
-- Total tests: 346
-- Passed: 346
+- Commit: 71c44afe46f1e31ad677ab344dffb958fdbf11be
+- Total tests: 361
+- Passed: 361
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -24,6 +24,19 @@
 - riskMapWorks: true
 - approvalRoutesWork: true
 - frontendBlockRulesWork: true
+- dataQueryRuntimeExists: true
+- queryNormalizerWorks: true
+- projectAliasResolverWorks: true
+- hendersonReportQueryWorks: true
+- hendersonStaircaseQueryWorks: true
+- hendersonHomeDepotReceiptQueryWorks: true
+- hendersonPlumbingSpendQueryWorks: true
+- hendersonMissingDocumentsQueryWorks: true
+- hendersonCameraQueryWorks: true
+- hendersonApprovalQueryWorks: true
+- hendersonExportPacketQueryWorks: true
+- visualRoutesGeneratedForQueries: true
+- spokenSummariesGeneratedForQueries: true
 - backendSchemaExists: true
 - entityContractsExist: true
 - relationshipMapWorks: true
@@ -191,7 +204,6 @@
 - aqua-regression-report.md
 - aqua-v61-extensions.js
 - aqua-v61-regression-test.js
-- aqua-backend-schema-v62m.md
 
 ## Failed Commands / Checks
 - None
@@ -231,9 +243,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62M
-- Total: 190
-- Passed: 190
+- Version: v62N
+- Total: 202
+- Passed: 202
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
