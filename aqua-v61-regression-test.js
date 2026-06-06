@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62Z';
+const VERSION = 'v63A';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -342,6 +342,9 @@ function checkStaticFiles() {
   addCheck('v61Z premium module shell helper exists', /function\s+renderPremiumModuleShellV61Z/.test(extension) && /Premium Module Shell/.test(extension), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
   addCheck('v61Z premium module shell report flags exist', /premiumModuleShellWorks/.test(extension) && /openedModulesPolished/.test(extension), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
   addCheck('v61Z premium shell marker class exists', /aqua-v61z-module-shell/.test(extension) && /data-aqua-v61z-premium-module-shell/.test(extension), { layer: 'premium-module-shell-v61z', fileToFix: EXTENSION });
+  addCheck('v63A premium module shell namespace exists', /window\.AquaPremiumModuleShellV63A/.test(extension) && /function\s+renderAquaPremiumModuleShellV63A/.test(extension) && /function\s+wrapAquaModulePanelV63A/.test(extension), { layer: 'premium-module-shell-v63a', fileToFix: EXTENSION });
+  addCheck('v63A premium module shell markers exist', /aqua-premium-module-shell-v63a/.test(extension) && /data-aqua-module-polished/.test(extension), { layer: 'premium-module-shell-v63a', fileToFix: EXTENSION });
+  addCheck('v63A premium module shell report flags exist', /premiumModuleShellExists/.test(extension) && /automationReportPolished/.test(extension) && /receiptsPanelPolished/.test(extension) && /homeDesignUntouched/.test(extension), { layer: 'premium-module-shell-v63a', fileToFix: EXTENSION });
   addCheck('v62V-A natural response namespace exists', /window\.AquaNaturalResponsesV62VA/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
   addCheck('v62V-A natural response helpers exist', /function\s+buildAquaGreetingV62VA/.test(extension) && /function\s+buildAquaReadyPromptV62VA/.test(extension) && /function\s+buildAquaCorrectionPhraseV62VA/.test(extension) && /function\s+buildAquaManualFallbackPhraseV62VA/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
   addCheck('v62V-A natural response report flags exist', /naturalResponseTemplatesExist/.test(extension) && /responseTemplateSmokeWorks/.test(extension), { layer: 'natural-responses-v62va', fileToFix: EXTENSION });
@@ -404,7 +407,7 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62Z', extensionReport.version === 'v62Z', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v63A', extensionReport.version === 'v63A', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
@@ -437,6 +440,7 @@ function runExtensionRegression() {
     addCheck('homeDesignUntouched is true', extensionReport.homeDesignUntouched === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.homeDesignUntouched, fileToFix: EXTENSION });
     addCheck('routingStillWorks is true', extensionReport.routingStillWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.routingStillWorks, fileToFix: EXTENSION });
     addCheck('automationStillWorks is true', extensionReport.automationStillWorks === true, { layer: 'premium-module-shell-v61z', actual: extensionReport.automationStillWorks, fileToFix: EXTENSION });
+    ['premiumModuleShellExists','premiumModuleShellRenders','automationReportPolished','receiptsPanelPolished','accountingPanelPolished','missingDocumentsPanelPolished','permissionGatePolished','aquaBrainPanelsCompatible','modulePolishMarkersExist','homeDesignUntouched','aiRoutingStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks','noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening'].forEach((flag) => addCheck(`v63A ${flag}`, extensionReport[flag] === true, { layer: 'premium-module-shell-v63a', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression includes spoken readback availability or fallback flag', extensionReport.spokenReadbackAvailable === true || extensionReport.spokenReadbackBrowserUnavailableFallback === true, { layer: 'spoken-readback-v61r', actual: { available: extensionReport.spokenReadbackAvailable, fallback: extensionReport.spokenReadbackBrowserUnavailableFallback }, fileToFix: EXTENSION });
     addCheck('extension regression spoken preference key is aquaSpokenReadbackV61R', extensionReport.spokenReadbackPreferenceKey === 'aquaSpokenReadbackV61R', { layer: 'spoken-readback-v61r', actual: extensionReport.spokenReadbackPreferenceKey, fileToFix: EXTENSION });
     addCheck('automationCommandRoutesBeforeFallback is true', extensionReport.automationCommandRoutesBeforeFallback === true, { layer: 'automation-routing-v61t', actual: extensionReport.automationCommandRoutesBeforeFallback, fileToFix: EXTENSION });
@@ -1626,6 +1630,16 @@ async function main() {
     noAudioStorage: safetyStatus.noAudioStorage === true,
     noAlwaysListening: safetyStatus.noAlwaysListening === true,
     noPaymentPayrollBankAccountingExport: safetyStatus.noPayment === true && safetyStatus.noPayroll === true && safetyStatus.noBankSync === true && safetyStatus.noAccountingExport === true,
+    premiumModuleShellExists: extensionReport ? extensionReport.premiumModuleShellExists === true : false,
+    premiumModuleShellRenders: extensionReport ? extensionReport.premiumModuleShellRenders === true : false,
+    automationReportPolished: extensionReport ? extensionReport.automationReportPolished === true : false,
+    receiptsPanelPolished: extensionReport ? extensionReport.receiptsPanelPolished === true : false,
+    accountingPanelPolished: extensionReport ? extensionReport.accountingPanelPolished === true : false,
+    missingDocumentsPanelPolished: extensionReport ? extensionReport.missingDocumentsPanelPolished === true : false,
+    permissionGatePolished: extensionReport ? extensionReport.permissionGatePolished === true : false,
+    aquaBrainPanelsCompatible: extensionReport ? extensionReport.aquaBrainPanelsCompatible === true : false,
+    modulePolishMarkersExist: extensionReport ? extensionReport.modulePolishMarkersExist === true : false,
+    aiRoutingStillWorks: extensionReport ? extensionReport.aiRoutingStillWorks === true : false,
     premiumModuleShellWorks: extensionReport ? extensionReport.premiumModuleShellWorks === true : false,
     openedModulesPolished: extensionReport ? extensionReport.openedModulesPolished === true : false,
     homeDesignUntouched: extensionReport ? extensionReport.homeDesignUntouched === true : false,

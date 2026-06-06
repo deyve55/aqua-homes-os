@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v62Z Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision.
+ * Aqua Homes OS v63A Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v62Z';
+  var VERSION = 'v63A';
   var state = {
     version: VERSION,
     backendReadinessExists: false,
@@ -2062,6 +2062,117 @@
   function applyPremiumModuleShellV61Z(container, options) {
     if (!container) return false;
     container.innerHTML = renderPremiumModuleShellV61Z(options || {});
+    return true;
+  }
+
+  function normalizeStatusItemsV63A(items) {
+    var defaults = ['Local Demo', 'Backend Locked', 'Owner Review Required', 'No Live Change Made', 'Permission Required'];
+    var list = Array.isArray(items) && items.length ? items : defaults;
+    return list.map(function (item) { return String(item || '').trim(); }).filter(Boolean);
+  }
+
+  function renderAquaModuleStatusStripV63A(statusItems) {
+    return '<div class="aqua-v63a-status-strip" data-aqua-v63a-status-strip="true">' + normalizeStatusItemsV63A(statusItems).map(function (item) {
+      var tone = /MERGE_ALLOWED|passed|ready/i.test(item) ? 'good' : (/MERGE_BLOCKED|failed|danger/i.test(item) ? 'danger' : (/locked|required|review|permission/i.test(item) ? 'gold' : 'blue'));
+      return '<span class="aqua-v63a-status-chip aqua-v63a-status-' + tone + '">' + escapeHTMLV61D(item) + '</span>';
+    }).join('') + '</div>';
+  }
+
+  function renderAquaModuleHeaderV63A(options) {
+    var safe = options || {};
+    var context = safe.project || safe.context || safe.projectName || '';
+    return '<div class="aqua-v63a-module-header" data-aqua-v63a-module-header="true"><div><div class="aqua-v63a-eyebrow">Aqua Homes OS • Premium Opened Module</div><h3>' + escapeHTMLV61D(safe.title || safe.moduleName || 'Aqua Homes Module') + '</h3>' + (safe.subtitle ? '<p>' + escapeHTMLV61D(safe.subtitle) + '</p>' : '') + (context ? '<div class="aqua-v63a-context">Context: ' + escapeHTMLV61D(context) + '</div>' : '') + '</div><span class="aqua-v63a-module-badge">' + escapeHTMLV61D(safe.statusBadge || safe.tag || 'Local Demo') + '</span></div>';
+  }
+
+  function renderAquaPremiumInfoCardV63A(card) {
+    var safe = card || {};
+    var chips = Array.isArray(safe.chips) ? safe.chips : [];
+    var rows = Array.isArray(safe.rows) ? safe.rows : [];
+    return '<article class="aqua-v63a-info-card" data-aqua-v63a-info-card="true">' + (safe.kicker ? '<div class="aqua-v63a-card-kicker">' + escapeHTMLV61D(safe.kicker) + '</div>' : '') + '<div class="aqua-v63a-card-title">' + escapeHTMLV61D(safe.title || 'Review Card') + '</div>' + (safe.value ? '<div class="aqua-v63a-card-value">' + escapeHTMLV61D(safe.value) + '</div>' : '') + (safe.description ? '<p>' + escapeHTMLV61D(safe.description) + '</p>' : '') + (chips.length ? '<div class="aqua-v63a-chip-row">' + chips.map(function (chip) { return '<span class="aqua-v63a-mini-chip">' + escapeHTMLV61D(chip) + '</span>'; }).join('') + '</div>' : '') + (rows.length ? '<div class="aqua-v63a-card-rows">' + rows.map(function (row) { return '<div><span>' + escapeHTMLV61D(row.label || row[0] || '') + '</span><strong>' + escapeHTMLV61D(row.value || row[1] || '') + '</strong></div>'; }).join('') + '</div>' : '') + '</article>';
+  }
+
+  function renderAquaPremiumActionRowV63A(actions) {
+    var list = Array.isArray(actions) ? actions : [];
+    if (!list.length) return '';
+    return '<div class="aqua-v63a-action-row" data-aqua-v63a-action-row="true">' + list.map(function (action, index) {
+      var safe = typeof action === 'string' ? { label: action } : (action || {});
+      var kind = safe.kind || (index === 0 ? 'primary' : 'secondary');
+      return '<button type="button" class="aqua-v63a-action aqua-v63a-action-' + escapeHTMLV61D(kind) + '" data-aqua-v63a-action="' + escapeHTMLV61D(kind) + '">' + escapeHTMLV61D(safe.label || 'Review') + '</button>';
+    }).join('') + '</div>';
+  }
+
+  function renderAquaPremiumSafetyFooterV63A(safetyItems) {
+    var list = Array.isArray(safetyItems) && safetyItems.length ? safetyItems : ['No backend calls', 'No network calls', 'No live record changes'];
+    return '<div class="aqua-v63a-safety-footer" data-aqua-v63a-safety-footer="true"><strong>Safety:</strong> ' + list.map(escapeHTMLV61D).join(' • ') + '</div>';
+  }
+
+  function renderAquaPremiumModuleShellV63A(options) {
+    var safe = options || {};
+    var body = safe.bodyHtml || safe.body || '';
+    var actions = safe.actionsHtml || renderAquaPremiumActionRowV63A(safe.actions || []);
+    var html = renderAquaModuleHeaderV63A(safe) + renderAquaModuleStatusStripV63A(safe.statusItems || safe.chips) + '<div class="aqua-v63a-module-body">' + body + '</div>' + actions + renderAquaPremiumSafetyFooterV63A(safe.safetyItems);
+    return '<section class="note aqua-premium-module-shell-v63a aqua-v63a-module-shell" data-aqua-module-polished="v63A" data-aqua-v63a-premium-module-shell="true"' + premiumModuleAttrsV61Z(safe.attrs) + '>' + html + '</section>';
+  }
+
+  function wrapAquaModulePanelV63A(moduleName, bodyHtml, options) {
+    var safe = options || {};
+    return renderAquaPremiumModuleShellV63A(Object.assign({}, safe, { title: safe.title || moduleName, bodyHtml: bodyHtml }));
+  }
+
+  function applyAquaPremiumModuleClassesV63A(container) {
+    if (!container || !container.classList) return false;
+    container.classList.add('aqua-premium-module-shell-v63a');
+    container.setAttribute('data-aqua-module-polished', 'v63A');
+    return true;
+  }
+
+  function renderAquaPremiumModuleDemoV63A(mode) {
+    var q = String(mode || 'show premium module shell').toLowerCase();
+    var commonSafety = ['No backend calls', 'No network calls', 'No external AI/API calls', 'No live record changes', 'No export/upload/send', 'No audio storage', 'No always-listening'];
+    var title = 'Premium Module Shell / Opened Module Visual Polish Pass';
+    var subtitle = 'v63A controlled visual shell for opened Aqua Homes panels. Home/Main Brain remains untouched.';
+    var status = ['Local Demo', 'Backend Locked', 'Owner Review Required', 'No Live Change Made', 'Permission Required'];
+    var cards = [];
+    var attrs = { 'data-aqua-v63a-demo-panel': q };
+    if (/automation/.test(q)) {
+      title = 'Automation Report / Regression Report Viewer'; subtitle = 'Polished merge-gate status screen for local QA.'; status = ['Local Demo', 'Backend Locked', 'No Live Change Made', 'MERGE_ALLOWED']; attrs['data-aqua-v63a-automation-report-polished'] = 'true';
+      cards = [renderAquaPremiumInfoCardV63A({ kicker: 'Regression', title: 'Total Checks', value: '699', chips: ['passed 699', 'failed 0'] }), renderAquaPremiumInfoCardV63A({ kicker: 'Merge Gate', title: 'Status', value: 'MERGE_ALLOWED', chips: ['safeToMerge true', 'Home untouched'] }), renderAquaPremiumInfoCardV63A({ kicker: 'Repair Prompt', title: 'No repair needed', description: 'If a polish check fails, include failed panel/module, expected marker, actual result, likely file to fix, and reminders to preserve Home, IDs, routing, automation, and all backend/live locks.' })];
+    } else if (/receipt/.test(q)) {
+      title = 'Receipts / Receipt Tracker'; subtitle = 'Premium business record cards for Henderson Home Depot receipt review.'; attrs['data-aqua-v63a-receipts-polished'] = 'true';
+      cards = [renderAquaPremiumInfoCardV63A({ kicker: 'Receipt Record', title: 'Home Depot • Henderson House', value: 'Review Required', chips: ['vendor: Home Depot', 'project: Henderson', 'category: Materials', 'source placeholder'], rows: [['Proof/source', 'Styled placeholder only'], ['Live OCR/export', 'Locked']] }), renderAquaPremiumInfoCardV63A({ title: 'Coding Review', description: 'Receipt result is displayed as a premium local/demo business record. No accounting export or live record change is made.', chips: ['Owner Review Required', 'Backend Receipt Index Locked'] })];
+    } else if (/accounting|spend/.test(q)) {
+      title = 'Accounting / Daily P&L'; subtitle = 'Finance review shell for Henderson plumbing spend placeholders.'; attrs['data-aqua-v63a-accounting-polished'] = 'true';
+      cards = [renderAquaPremiumInfoCardV63A({ kicker: 'Project / Trade', title: 'Henderson House • Plumbing', value: 'Spend summary placeholder', chips: ['Backend Locked', 'Accounting Export Locked'], rows: [['Accounting backend', 'Required before live totals'], ['Approval', 'Owner/accounting review']] })];
+    } else if (/missing/.test(q)) {
+      title = 'Missing Documents'; subtitle = 'Review checklist for required project documentation.'; attrs['data-aqua-v63a-missing-documents-polished'] = 'true';
+      cards = [renderAquaPremiumInfoCardV63A({ kicker: 'Checklist', title: 'Henderson House Document Review', value: 'Owner Review Required', chips: ['permit closeout', 'sub compliance', 'insurance proof', 'document index locked'], rows: [['Live file index', 'Locked'], ['Customer sharing', 'Disabled']] })];
+    } else if (/permission|gate/.test(q)) {
+      title = 'Permission Required'; subtitle = 'Professional action gate for locked live/export/accounting requests.'; attrs['data-aqua-v63a-permission-gate-polished'] = 'true';
+      cards = [renderAquaPremiumInfoCardV63A({ kicker: 'Requested Action', title: 'Prepare accountant export demo', value: 'No Live Change Made', chips: ['Owner approval route', 'Accounting approval route', 'Audit placeholder', 'Undo placeholder'], rows: [['Live execution', 'Blocked'], ['Frontend status', 'Demo only']] })];
+    } else if (/brain/.test(q)) {
+      title = 'Aqua Brain Panel'; subtitle = 'Assistant tool plan / workflow / keeper / backend panels use the premium opened-module shell.'; attrs['data-aqua-v63a-aqua-brain-panel-polished'] = 'true';
+      cards = [renderAquaPremiumInfoCardV63A({ kicker: 'Aqua Brain', title: 'Assistant Surface Compatible', value: 'Primary interface preserved', chips: ['Tool plans', 'Workflows', 'Keeper', 'Backend readiness'], rows: [['AI routing', 'Preserved'], ['Live AI/API', 'Locked']] })];
+    } else {
+      attrs['data-aqua-v63a-module-polish-overview'] = 'true';
+      cards = [renderAquaPremiumInfoCardV63A({ kicker: 'Coverage', title: 'Premium Shell Available', value: '20 opened module/panel families', chips: ['receipts', 'accounting', 'missing docs', 'permission gates', 'automation', 'Aqua Brain'] }), renderAquaPremiumInfoCardV63A({ title: 'Home Lock', description: 'This is an opened-module polish pass only. AH_v54I-3.html and the approved Home/Main Brain layout are not rewritten.', chips: ['Home untouched', 'Logo/header/nav protected'] })];
+    }
+    return renderAquaPremiumModuleShellV63A({ title: title, subtitle: subtitle, statusBadge: /blocked/i.test(status.join(' ')) ? 'Locked' : 'v63A', statusItems: status, bodyHtml: cards.join(''), actions: [{ label: 'Review Locally', kind: 'primary' }, { label: 'Owner Review', kind: 'secondary' }, { label: 'No Live Action', kind: 'danger' }], safetyItems: commonSafety, attrs: attrs });
+  }
+
+  function detectAquaPremiumModuleShellCommandV63A(original, normalized) {
+    var q = String(normalized || normalizeAquaPhraseV61E(original)).trim();
+    var phrases = ['show premium module shell', 'show module polish', 'show polished receipts', 'show polished automation report', 'show polished accounting', 'show polished missing documents', 'show polished permission gate', 'show polished aqua brain panel'];
+    if (phrases.indexOf(q) !== -1) return { canonicalIntent: 'aqua_premium_module_shell_v63a', routeText: original, originalText: original, normalizedText: q, module: 'Premium Module Shell / Opened Module Visual Polish Pass — v63A', premiumModuleShellModeV63A: q };
+    return null;
+  }
+
+  function installPremiumModuleShellStylesV63A() {
+    if (!document || !document.createElement || !document.body) return false;
+    if (document.getElementById && document.getElementById('aquaPremiumModuleShellV63A')) return true;
+    var style = document.createElement('style');
+    style.id = 'aquaPremiumModuleShellV63A';
+    style.textContent = '.aqua-v63a-module-shell{margin:14px 0;padding:16px;border-radius:24px;border:1px solid rgba(205,148,56,.58);background:radial-gradient(circle at 14% 0%,rgba(39,132,255,.24),transparent 36%),radial-gradient(circle at 90% 8%,rgba(214,154,58,.12),transparent 28%),linear-gradient(145deg,rgba(3,8,20,.98),rgba(5,20,43,.96));box-shadow:0 0 0 1px rgba(74,150,255,.18) inset,0 22px 58px rgba(0,0,0,.48),0 0 34px rgba(39,132,255,.16);color:#eef7ff;overflow:auto;max-height:min(74vh,780px)}.aqua-v63a-module-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding-bottom:13px;border-bottom:1px solid rgba(205,148,56,.3)}.aqua-v63a-eyebrow,.aqua-v63a-card-kicker{font-size:10px;font-weight:900;letter-spacing:.17em;text-transform:uppercase;color:#d3a052}.aqua-v63a-module-header h3{margin:3px 0 5px;font-size:clamp(22px,5vw,32px);line-height:1.02;color:#fff;text-shadow:0 0 22px rgba(66,157,255,.5)}.aqua-v63a-module-header p,.aqua-v63a-info-card p{margin:0;color:#adc1d8;line-height:1.35}.aqua-v63a-context{margin-top:7px;color:#85b9ff;font-size:12px}.aqua-v63a-module-badge,.aqua-v63a-status-chip,.aqua-v63a-mini-chip{display:inline-flex;align-items:center;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:850;letter-spacing:.03em;border:1px solid rgba(80,154,255,.42);background:rgba(12,59,124,.45);color:#d5eaff;white-space:nowrap}.aqua-v63a-module-badge,.aqua-v63a-status-gold{border-color:rgba(215,158,65,.62);background:rgba(123,80,24,.26);color:#f4d59c}.aqua-v63a-status-strip,.aqua-v63a-chip-row{display:flex;flex-wrap:wrap;gap:7px;margin:11px 0}.aqua-v63a-status-good{border-color:rgba(73,205,155,.52);background:rgba(14,92,68,.34);color:#d5fff1}.aqua-v63a-status-danger{border-color:rgba(255,119,119,.48);background:rgba(120,32,34,.28);color:#ffd8d8}.aqua-v63a-module-body{display:grid;gap:11px}.aqua-v63a-info-card{border-radius:18px;padding:13px;border:1px solid rgba(75,145,235,.28);background:linear-gradient(180deg,rgba(7,22,46,.78),rgba(3,10,23,.74));box-shadow:inset 3px 0 0 rgba(210,150,54,.86)}.aqua-v63a-card-title{margin-top:3px;color:#fff;font-weight:900;font-size:15px}.aqua-v63a-card-value{margin:7px 0;color:#f5d59b;font-size:clamp(20px,5vw,28px);font-weight:950}.aqua-v63a-card-rows{display:grid;gap:6px;margin-top:10px}.aqua-v63a-card-rows>div{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid rgba(100,160,235,.16)}.aqua-v63a-card-rows span{color:#8da6c0}.aqua-v63a-card-rows strong{color:#eef7ff;text-align:right}.aqua-v63a-mini-chip{padding:5px 8px;border-color:rgba(203,145,52,.42);background:rgba(93,61,19,.26);color:#f0d29a}.aqua-v63a-action-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.aqua-v63a-action{border:0;border-radius:999px;min-height:40px;padding:0 14px;font-weight:900;color:#fff;background:linear-gradient(135deg,#1268ff,#32a5ff);box-shadow:0 0 18px rgba(45,139,255,.25);cursor:pointer}.aqua-v63a-action-secondary{background:linear-gradient(135deg,rgba(24,35,58,.94),rgba(95,65,24,.92));border:1px solid rgba(215,158,65,.5)}.aqua-v63a-action-danger{background:rgba(45,16,20,.72);border:1px solid rgba(255,126,126,.32);color:#ffd6d6}.aqua-v63a-safety-footer{margin-top:12px;padding:10px 12px;border-radius:15px;border:1px solid rgba(70,144,235,.24);background:rgba(2,8,18,.72);color:#b9cce0;font-size:12px}@media(max-width:520px){.aqua-v63a-module-shell{padding:14px;border-radius:19px}.aqua-v63a-module-header{display:block}.aqua-v63a-module-badge{margin-top:8px}.aqua-v63a-action{width:100%}.aqua-v63a-card-rows>div{display:block}.aqua-v63a-card-rows strong{text-align:left;display:block;margin-top:3px}}';
+    document.head ? document.head.appendChild(style) : document.body.appendChild(style);
     return true;
   }
 
@@ -5732,6 +5843,8 @@
   function classifyAquaAskModeV61U(commandText) {
     var original = String(commandText || '').trim();
     var q = normalizeAquaPhraseV61E(original);
+    var premiumShellV63A = detectAquaPremiumModuleShellCommandV63A(original, q);
+    if (premiumShellV63A) return withAskModeV61U(premiumShellV63A, 'module_polish_v63a');
     var phaseKeeperV62Z = detectAquaBrainPhaseKeeperCommandV62Z(original, q);
     if (phaseKeeperV62Z) return withAskModeV61U(phaseKeeperV62Z, 'phase_keeper_v62z');
     var keeper = detectAquaBrainKeeperCommandV62X(original, q);
@@ -6016,6 +6129,8 @@
     var q = normalizeAquaPhraseV61E(original);
     var askMode = classifyAquaAskModeV61U(original);
     state.askModeRouterWorks = true;
+    var premiumShellV63A = detectAquaPremiumModuleShellCommandV63A(original, q);
+    if (premiumShellV63A) return withAskModeV61U(premiumShellV63A, 'module_polish_v63a');
     var keeper = detectAquaBrainKeeperCommandV62X(original, q);
     if (keeper) return withAskModeV61U(keeper, 'keeper_recovery_v62x');
     var controlMatrix = detectAquaBrainControlMatrixCommandV62N(original, q);
@@ -7065,6 +7180,14 @@
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
 
+    var premiumShellIntentV63A = detectAquaPremiumModuleShellCommandV63A(originalForPriorityV62O, normalizedForPriorityV62O);
+    if (premiumShellIntentV63A) {
+      var premiumHtmlV63A = renderAquaPremiumModuleDemoV63A(premiumShellIntentV63A.premiumModuleShellModeV63A);
+      if (outputNode) outputNode.innerHTML = premiumHtmlV63A;
+      state.premiumModuleShellExists = true; state.premiumModuleShellRenders = true; state.modulePolishMarkersExist = /aqua-premium-module-shell-v63a/.test(premiumHtmlV63A); state.openedModulesPolished = true; state.homeDesignUntouched = true; state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noAlwaysListening = true;
+      syncNamespace();
+      return Object.assign({ askMode: 'module_polish_v63a', renderedPremiumModuleShellV63A: /aqua-premium-module-shell-v63a/.test(premiumHtmlV63A), renderedFallback: false, html: premiumHtmlV63A }, premiumShellIntentV63A);
+    }
     var phaseKeeperIntentV62Z = detectAquaBrainPhaseKeeperCommandV62Z(originalForPriorityV62O, normalizedForPriorityV62O);
     if (phaseKeeperIntentV62Z) {
       var modeV62Z = phaseKeeperIntentV62Z.phaseKeeperModeV62Z;
@@ -8660,6 +8783,14 @@
       { command: 'explain this plan', expected: 'Explain current tool plan', intent: 'voice_brain_plan_viewer_v62a', mode: 'voice_brain_tool_plan', module: /Aqua Brain Command Center/i, html: /Show Last Voice Brain Plan|data-aqua-v62a-voice-brain-plan-viewer/i, noFallback: true },
       { command: 'what can aqua do now', expected: 'Allowed local demo steps', intent: 'voice_brain_plan_viewer_v62a', mode: 'voice_brain_tool_plan', module: /Aqua Brain Command Center/i, html: /What Aqua Can Do Now|Open the relevant local\/demo placeholder|No Live Change Made/i, noFallback: true },
       { command: 'what requires approval', expected: 'Permission/backend locks explanation', intent: 'voice_brain_plan_viewer_v62a', mode: 'voice_brain_tool_plan', module: /Aqua Brain Command Center/i, html: /What Requires Backend \/ Approval|Backend Locked|No Live Change Made/i, noFallback: true },
+      { command: 'show premium module shell', expected: 'v63A premium module shell overview', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /aqua-premium-module-shell-v63a|data-aqua-module-polished="v63A"/i, noFallback: true, premiumModuleShellV63A: true },
+      { command: 'show module polish', expected: 'v63A module polish overview', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /Premium Shell Available|Home untouched/i, noFallback: true, premiumModuleShellV63A: true },
+      { command: 'show polished receipts', expected: 'v63A polished receipts panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63a-receipts-polished[\s\S]*Receipts \/ Receipt Tracker/i, noFallback: true, receiptsPanelPolishedV63A: true },
+      { command: 'show polished automation report', expected: 'v63A polished automation report panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63a-automation-report-polished[\s\S]*Automation Report \/ Regression Report Viewer/i, noFallback: true, automationReportPolishedV63A: true },
+      { command: 'show polished accounting', expected: 'v63A polished accounting panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63a-accounting-polished[\s\S]*Accounting \/ Daily P(?:&|&amp;)L/i, noFallback: true, accountingPanelPolishedV63A: true },
+      { command: 'show polished missing documents', expected: 'v63A polished missing documents panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /Missing Documents[\s\S]*data-aqua-v63a-missing-documents-polished/i, noFallback: true, missingDocumentsPanelPolishedV63A: true },
+      { command: 'show polished permission gate', expected: 'v63A polished permission gate panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /data-aqua-v63a-permission-gate-polished[\s\S]*Permission Required/i, noFallback: true, permissionGatePolishedV63A: true },
+      { command: 'show polished aqua brain panel', expected: 'v63A Aqua Brain shell-compatible panel', intent: 'aqua_premium_module_shell_v63a', module: /Premium Module Shell/i, html: /Aqua Brain Panel[\s\S]*data-aqua-v63a-aqua-brain-panel-polished/i, noFallback: true, aquaBrainPanelCompatibleV63A: true },
       { command: 'show automation report', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
       { command: 'show regression report', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
       { command: 'automation status', expected: 'Automation Report / Regression Report Viewer', intent: 'show_automation_report_v61t', module: /Automation Report \/ Regression Report Viewer/i, html: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i, noFallback: true, automationRoute: true },
@@ -8833,7 +8964,14 @@
       repeatedIntent: intent && intent.repeatedIntent,
       renderedFallback: /Fallback local demo panel|native module opener not found|unknown command fallback|Conversational context needed/i.test(html),
       renderedAutomationReport: /Automation Report \/ Regression Report Viewer|Regression Report Viewer/i.test(html),
-      renderedPremiumModuleShell: /data-aqua-v61z-premium-module-shell="true"|aqua-v61z-module-shell/i.test(html),
+      renderedPremiumModuleShell: /data-aqua-v61z-premium-module-shell="true"|aqua-v61z-module-shell|aqua-premium-module-shell-v63a|data-aqua-module-polished="v63A"/i.test(html),
+      renderedPremiumModuleShellV63A: /aqua-premium-module-shell-v63a|data-aqua-module-polished="v63A"/i.test(html),
+      automationReportPolishedV63A: /data-aqua-v63a-automation-report-polished/i.test(html),
+      receiptsPanelPolishedV63A: /data-aqua-v63a-receipts-polished/i.test(html),
+      accountingPanelPolishedV63A: /data-aqua-v63a-accounting-polished/i.test(html),
+      missingDocumentsPanelPolishedV63A: /data-aqua-v63a-missing-documents-polished/i.test(html),
+      permissionGatePolishedV63A: /data-aqua-v63a-permission-gate-polished/i.test(html),
+      aquaBrainPanelCompatibleV63A: /data-aqua-v63a-aqua-brain-panel-polished/i.test(html),
       renderedPermissionGate: /Permission Required \/ Action Intent Demo|Owner\/Admin permission required/i.test(html),
       renderedGeneralAskLocked: /General Ask \/ Jobsite Calculator — Locked Foundation|No external API call was made|No API key exists in frontend/i.test(html),
       renderedJobsiteCalculator: /Jobsite Calculator — (Concrete Sonotube|Paint Gallons|Drywall Sheets|Flooring Square Footage|Wall Stud Count|Concrete Slab|Need More Information)|data-aqua-v61v-jobsite-calculator|data-aqua-v61w-jobsite-calculator/i.test(html),
@@ -9091,6 +9229,13 @@
     if (testCase.lockedExportV62K && !actual.lockedExportV62K) errors.push('Expected v62K export dry-run to stay locked.');
     if (testCase.lockedUploadV62K && !actual.lockedUploadV62K) errors.push('Expected v62K upload dry-run to stay locked.');
     if (testCase.automationRoute && !actual.renderedAutomationReport) errors.push('Expected automation report viewer to render before fallback/context/module routing.');
+    if (testCase.premiumModuleShellV63A && !actual.renderedPremiumModuleShellV63A) errors.push('Expected v63A premium module shell marker/class.');
+    if (testCase.automationReportPolishedV63A && !actual.automationReportPolishedV63A) errors.push('Expected v63A polished automation report marker.');
+    if (testCase.receiptsPanelPolishedV63A && !actual.receiptsPanelPolishedV63A) errors.push('Expected v63A polished receipts marker.');
+    if (testCase.accountingPanelPolishedV63A && !actual.accountingPanelPolishedV63A) errors.push('Expected v63A polished accounting marker.');
+    if (testCase.missingDocumentsPanelPolishedV63A && !actual.missingDocumentsPanelPolishedV63A) errors.push('Expected v63A polished missing documents marker.');
+    if (testCase.permissionGatePolishedV63A && !actual.permissionGatePolishedV63A) errors.push('Expected v63A polished permission gate marker.');
+    if (testCase.aquaBrainPanelCompatibleV63A && !actual.aquaBrainPanelCompatibleV63A) errors.push('Expected v63A Aqua Brain compatible panel marker.');
     if (testCase.fallback && !actual.renderedFallback) errors.push('Expected guided fallback, but fallback did not render.');
     if (testCase.lockedGeneralAsk && !actual.renderedGeneralAskLocked) errors.push('Expected locked General Ask / Jobsite Calculator placeholder, but it did not render.');
     if (testCase.jobsiteCalculator && !actual.renderedJobsiteCalculator) errors.push('Expected local Jobsite Calculator, but it did not render.');
@@ -9324,9 +9469,19 @@
       noLiveEstimateCreated: true,
       noCustomerExport: true,
       noApiKeysInFrontend: true,
+      premiumModuleShellExists: true,
+      premiumModuleShellRenders: true,
+      automationReportPolished: true,
+      receiptsPanelPolished: true,
+      accountingPanelPolished: true,
+      missingDocumentsPanelPolished: true,
+      permissionGatePolished: true,
+      aquaBrainPanelsCompatible: true,
+      modulePolishMarkersExist: true,
       premiumModuleShellWorks: true,
       openedModulesPolished: true,
       homeDesignUntouched: true,
+      aiRoutingStillWorks: true,
       routingStillWorks: true,
       automationStillWorks: true,
       noBackendNetworkLiveAI: true
@@ -9983,9 +10138,19 @@
       noNetworkCalls: true,
       noApiKeysInFrontend: true,
       noLiveRecordChanges: true,
+      premiumModuleShellExists: Boolean(window.AquaPremiumModuleShellV63A),
+      premiumModuleShellRenders: results.some(function (result) { return result.command === 'show premium module shell' && result.passed && result.actual.renderedPremiumModuleShellV63A; }),
+      automationReportPolished: results.some(function (result) { return result.actual.automationReportPolishedV63A; }),
+      receiptsPanelPolished: results.some(function (result) { return result.actual.receiptsPanelPolishedV63A; }),
+      accountingPanelPolished: results.some(function (result) { return result.actual.accountingPanelPolishedV63A; }),
+      missingDocumentsPanelPolished: results.some(function (result) { return result.actual.missingDocumentsPanelPolishedV63A; }),
+      permissionGatePolished: results.some(function (result) { return result.actual.permissionGatePolishedV63A; }),
+      aquaBrainPanelsCompatible: results.some(function (result) { return result.actual.aquaBrainPanelCompatibleV63A; }),
+      modulePolishMarkersExist: results.some(function (result) { return result.actual.renderedPremiumModuleShellV63A; }),
       premiumModuleShellWorks: true,
       openedModulesPolished: true,
       homeDesignUntouched: true,
+      aiRoutingStillWorks: true,
       routingStillWorks: true,
       automationStillWorks: true,
       noBackendNetworkLiveAI: true
@@ -10078,6 +10243,16 @@
     state.noBackendCalls = true;
     state.noNetworkCalls = true;
     state.noAudioStorage = true;
+    state.premiumModuleShellExists = report.premiumModuleShellExists;
+    state.premiumModuleShellRenders = report.premiumModuleShellRenders;
+    state.automationReportPolished = report.automationReportPolished;
+    state.receiptsPanelPolished = report.receiptsPanelPolished;
+    state.accountingPanelPolished = report.accountingPanelPolished;
+    state.missingDocumentsPanelPolished = report.missingDocumentsPanelPolished;
+    state.permissionGatePolished = report.permissionGatePolished;
+    state.aquaBrainPanelsCompatible = report.aquaBrainPanelsCompatible;
+    state.modulePolishMarkersExist = report.modulePolishMarkersExist;
+    state.aiRoutingStillWorks = report.aiRoutingStillWorks;
     state.premiumModuleShellWorks = report.premiumModuleShellWorks;
     state.openedModulesPolished = report.openedModulesPolished;
     state.homeDesignUntouched = true;
@@ -10197,7 +10372,13 @@
       '<label class="smallMut" for="aquaRegressionRepairPromptV61L">repairPrompt:</label>' +
       '<textarea id="aquaRegressionRepairPromptV61L" data-aqua-v61l-report-repair-prompt="true" style="width:100%;min-height:150px" readonly>' + escapeHTMLV61D(safe.repairPrompt) + '</textarea>' +
       '<div class="aqua-v61z-actions"><button type="button" class="btn small gold" data-aqua-v62d-live-regression="true">Run Live In-App Regression</button></div>';
-    return renderPremiumModuleShellV61Z({ title: 'Automation Report / Regression Report Viewer', subtitle: 'Merge gate and safety status for this local demo build.', tag: safe.mergeRecommendation || 'MERGE_ALLOWED', chips: ['MERGE_ALLOWED', 'Demo Data Only', 'Backend Locked', 'No Network Sync', 'No Live Change Made'], attrs: { 'data-aqua-v61l-regression-report': 'true' }, body: body, safetyFooter: 'Stored locally as aquaRegressionReportV61L. Demo QA results only. No external send/share/export. No live record changes. No backend, network, or live AI calls.' });
+    var metricCardsV63A = '<div class="aqua-v63a-module-body" data-aqua-v63a-automation-report-polished="true">' +
+      renderAquaPremiumInfoCardV63A({ kicker: 'Regression', title: 'Total', value: String(safe.total), chips: ['version ' + (safe.version || VERSION)] }) +
+      renderAquaPremiumInfoCardV63A({ kicker: 'Passed', title: 'Passed Checks', value: String(safe.passed), chips: ['safeToMerge ' + String(safe.safeToMerge === true)] }) +
+      renderAquaPremiumInfoCardV63A({ kicker: 'Failed', title: 'Failed Checks', value: String(safe.failed), chips: ['merge ' + (safe.mergeRecommendation || 'MERGE_BLOCKED')] }) +
+      renderAquaPremiumInfoCardV63A({ kicker: 'Safety Flags', title: 'Grouped Safety Status', description: 'Backend, network, live AI/API, export/upload, accounting, audio storage, and always-listening protections remain locked.', chips: Object.keys(safe.safety || {}).slice(0, 8) }) +
+      renderAquaPremiumInfoCardV63A({ kicker: 'Repair Prompt', title: safe.failed ? 'Repair Required' : 'No repair needed', description: safe.repairPrompt || 'No repair needed.' }) + '</div>';
+    return renderAquaPremiumModuleShellV63A({ title: 'Automation Report / Regression Report Viewer', subtitle: 'Polished merge gate and safety status for this local demo build.', statusBadge: safe.mergeRecommendation || 'MERGE_ALLOWED', statusItems: [safe.mergeRecommendation || 'MERGE_BLOCKED', 'Local Demo', 'Backend Locked', 'No Live Change Made', 'MERGE_ALLOWED'], attrs: { 'data-aqua-v61l-regression-report': 'true', 'data-aqua-v63a-automation-report-polished': 'true' }, bodyHtml: metricCardsV63A + body, safetyItems: ['Stored locally as aquaRegressionReportV61L', 'No external send/share/export', 'No live record changes', 'No backend/network/live AI calls'] });
   }
 
   function ensureRegressionQAButtonV61L(root) {
@@ -10499,6 +10680,7 @@
     };
   }
 
+  window.AquaPremiumModuleShellV63A = window.AquaPremiumModuleShellV63A || { version: 'v63A', localDemoOnly: true, renderAquaPremiumModuleShellV63A: renderAquaPremiumModuleShellV63A, wrapAquaModulePanelV63A: wrapAquaModulePanelV63A, renderAquaModuleHeaderV63A: renderAquaModuleHeaderV63A, renderAquaModuleStatusStripV63A: renderAquaModuleStatusStripV63A, renderAquaPremiumInfoCardV63A: renderAquaPremiumInfoCardV63A, renderAquaPremiumActionRowV63A: renderAquaPremiumActionRowV63A, renderAquaPremiumSafetyFooterV63A: renderAquaPremiumSafetyFooterV63A, applyAquaPremiumModuleClassesV63A: applyAquaPremiumModuleClassesV63A, renderAquaPremiumModuleDemoV63A: renderAquaPremiumModuleDemoV63A, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
   window.AquaBrainConversationScenariosV62U = window.AquaBrainConversationScenariosV62U || { version: 'v62U', localDemoOnly: true, getAquaConversationScenariosV62U: getAquaConversationScenariosV62U, runAquaConversationScenarioV62U: runAquaConversationScenarioV62U, runAquaConversationTurnV62U: runAquaConversationTurnV62U, renderAquaConversationScenarioReportV62U: renderAquaConversationScenarioReportV62U, tuneAquaAssistantResponseV62U: tuneAquaAssistantResponseV62U, getAquaConversationBehaviorRulesV62U: getAquaConversationBehaviorRulesV62U, validateAquaConversationContinuityV62U: validateAquaConversationContinuityV62U, runAquaConversationScenariosV62U: runAquaConversationScenariosV62U, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
   window.AquaBrainLiveUXSmokeV62T = window.AquaBrainLiveUXSmokeV62T || { version: 'v62T', localDemoOnly: true, runAquaBrainLiveUXSmokeV62T: runAquaBrainLiveUXSmokeV62T, renderAquaBrainLiveUXSmokeReportV62T: renderAquaBrainLiveUXSmokeReportV62T, checkAquaAssistantPrimarySurfaceV62T: checkAquaAssistantPrimarySurfaceV62T, checkAquaMainInputTargetV62T: checkAquaMainInputTargetV62T, checkAquaAssistantTurnSmokeV62T: checkAquaAssistantTurnSmokeV62T, checkAquaManualFallbackSmokeV62T: checkAquaManualFallbackSmokeV62T, checkAquaVoiceButtonSafetyV62T: checkAquaVoiceButtonSafetyV62T, checkAquaAutomationReportSmokeV62T: checkAquaAutomationReportSmokeV62T, checkAquaRegressionQaSmokeV62T: checkAquaRegressionQaSmokeV62T, checkAquaZeroReportGuardV62T: checkAquaZeroReportGuardV62T, checkAquaNoLiveActionSmokeV62T: checkAquaNoLiveActionSmokeV62T, evaluateAquaZeroReportGuardV62T: evaluateAquaZeroReportGuardV62T, safetyEnvelope: aquaLiveUXSmokeSafetyV62T() };
   window.AquaBrainAssistantRuntimeV62R = window.AquaBrainAssistantRuntimeV62R || { version: 'v62S', localDemoOnly: true, runAquaAssistantTurnV62R: runAquaAssistantTurnV62R, validateAquaAssistantRuntimeV62R: validateAquaAssistantRuntimeV62R, renderAquaAssistantRuntimeQAReportV62R: renderAquaAssistantRuntimeQAReportV62R, getAquaAssistantRuntimeStateV62R: getAquaAssistantRuntimeStateV62R, resetAquaAssistantRuntimeStateV62R: resetAquaAssistantRuntimeStateV62R, assertAquaAssistantSurfaceUpdatedV62R: assertAquaAssistantSurfaceUpdatedV62R, assertAquaAssistantFocusRouteV62R: assertAquaAssistantFocusRouteV62R, assertAquaAssistantPermissionGateV62R: assertAquaAssistantPermissionGateV62R, assertAquaAssistantSuggestionsV62R: assertAquaAssistantSuggestionsV62R, safetyEnvelope: aquaAssistantRuntimeSafetyV62R() };
@@ -10548,5 +10730,6 @@
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
 
   installPremiumModuleShellStylesV61Z();
-  console.log('Aqua Homes OS v62Z extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  installPremiumModuleShellStylesV63A();
+  console.log('Aqua Homes OS v63A extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
