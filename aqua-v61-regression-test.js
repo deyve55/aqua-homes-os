@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62Y';
+const VERSION = 'v62Z';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -361,6 +361,9 @@ function checkStaticFiles() {
   addCheck('v62Y backend readiness panel copy exists', /Aqua Brain Backend Readiness — v62Y/.test(extension) && /local\/demo only/.test(extension) && /backend not connected/.test(extension), { layer: 'backend-readiness-v62y', fileToFix: EXTENSION });
   addCheck('v62Y connector map fields exist', /connectorName/.test(extension) && /futureBackendEndpointPlaceholder/.test(extension) && /frontendExecutionAllowed/.test(extension) && /currentStatus: 'planning_only'/.test(extension), { layer: 'backend-readiness-v62y', fileToFix: EXTENSION });
   addCheck('v62Y backend readiness report flags exist', /backendReadinessExists/.test(extension) && /connectorMapWorks/.test(extension) && /backendGapReportWorks/.test(extension) && /backendConnectionOrderWorks/.test(extension), { layer: 'backend-readiness-v62y', fileToFix: EXTENSION });
+  addCheck('v62Z phase keeper namespace exists', /window\.AquaBrainPhaseKeeperV62Z/.test(extension) && /function\s+getAquaBrainPhaseKeeperV62Z/.test(extension) && /function\s+renderAquaBrainPhaseKeeperV62Z/.test(extension), { layer: 'phase-keeper-v62z', fileToFix: EXTENSION });
+  addCheck('v62Z phase keeper panel copy exists', /Aqua Brain AI\/Backend Keeper Lock — v62Z/.test(extension) && /Aqua Homes OS v62Z Keeper Handoff/.test(extension) && /Option B — Premium Module Visual Polish/.test(extension), { layer: 'phase-keeper-v62z', fileToFix: EXTENSION });
+  addCheck('v62Z phase keeper report flags exist', /phaseKeeperExists/.test(extension) && /keeperLockPanelWorks/.test(extension) && /keeperManifestWorks/.test(extension) && /recommendedNextPhaseWorks/.test(extension), { layer: 'phase-keeper-v62z', fileToFix: EXTENSION });
 }
 
 function runExtensionRegression() {
@@ -401,7 +404,7 @@ function runExtensionRegression() {
     ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62Y', extensionReport.version === 'v62Y', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62Z', extensionReport.version === 'v62Z', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     ['brainControlMatrixExists','aiInterfaceMapWorks','moduleCoverageWorks','workflowCoverageWorks','voiceCoverageWorks','visualRouteCoverageWorks','readbackCoverageWorks','permissionGateCoverageWorks','manualFallbackCoverageWorks','backendReadinessCoverageWorks','coverageValidationWorks'].forEach((flag) => addCheck(`v62N control matrix ${flag}`, extensionReport[flag] === true, { layer: 'brain-control-matrix-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['dataQueryRuntimeExists','queryNormalizerWorks','projectAliasResolverWorks','hendersonReportQueryWorks','hendersonStaircaseQueryWorks','hendersonHomeDepotReceiptQueryWorks','hendersonPlumbingSpendQueryWorks','hendersonMissingDocumentsQueryWorks','hendersonCameraQueryWorks','hendersonApprovalQueryWorks','hendersonExportPacketQueryWorks','visualRoutesGeneratedForQueries','spokenSummariesGeneratedForQueries'].forEach((flag) => addCheck(`v62N ${flag}`, extensionReport[flag] === true, { layer: 'data-query-runtime-v62n', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['fuzzyLanguageResolverExists','correctionMapWorks','confidenceScoringWorks','receiptMishearCorrectionWorks','draftQueueMishearCorrectionWorks','sonotubeMishearCorrectionWorks','hendersonProjectMishearCorrectionWorks','homeDepotMishearCorrectionWorks','plumbingMishearCorrectionWorks','accountantExportMishearCorrectionWorks','sowScopeMishearCorrectionWorks','payablesAliasWorks','approvalAliasWorks','clarificationForAmbiguousCommandWorks','automationCommandsStillRouteFirst'].forEach((flag) => addCheck(`v62O ${flag}`, extensionReport[flag] === true, { layer: 'fuzzy-language-v62o', actual: extensionReport[flag], fileToFix: EXTENSION }));
@@ -464,6 +467,18 @@ function runExtensionRegression() {
     addCheck('sauna tube normalizes to Sonotube', extensionReport.saunaTubeNormalizesToSonotube === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.saunaTubeNormalizesToSonotube, fileToFix: EXTENSION });
     addCheck('unsupported General Ask remains locked', extensionReport.unsupportedGeneralAskRemainsLocked === true, { layer: 'jobsite-calculator-v61v', actual: extensionReport.unsupportedGeneralAskRemainsLocked, fileToFix: EXTENSION });
     addCheck('unknownFallbackWorks is true', extensionReport.unknownFallbackWorks === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.unknownFallbackWorks, fileToFix: EXTENSION });
+    addCheck('phaseKeeperExists is true', extensionReport.phaseKeeperExists === true, { layer: 'phase-keeper-v62z', actual: extensionReport.phaseKeeperExists, fileToFix: EXTENSION });
+    addCheck('keeperLockPanelWorks is true', extensionReport.keeperLockPanelWorks === true, { layer: 'phase-keeper-v62z', actual: extensionReport.keeperLockPanelWorks, fileToFix: EXTENSION });
+    addCheck('keeperManifestWorks is true', extensionReport.keeperManifestWorks === true, { layer: 'phase-keeper-v62z', actual: extensionReport.keeperManifestWorks, fileToFix: EXTENSION });
+    addCheck('phaseHandoffWorks is true', extensionReport.phaseHandoffWorks === true, { layer: 'phase-keeper-v62z', actual: extensionReport.phaseHandoffWorks, fileToFix: EXTENSION });
+    addCheck('copyPhaseHandoffWorks is true', extensionReport.copyPhaseHandoffWorks === true, { layer: 'phase-keeper-v62z', actual: extensionReport.copyPhaseHandoffWorks, fileToFix: EXTENSION });
+    addCheck('nextPhaseOptionsWork is true', extensionReport.nextPhaseOptionsWork === true, { layer: 'phase-keeper-v62z', actual: extensionReport.nextPhaseOptionsWork, fileToFix: EXTENSION });
+    addCheck('recommendedNextPhaseWorks is true', extensionReport.recommendedNextPhaseWorks === true, { layer: 'phase-keeper-v62z', actual: extensionReport.recommendedNextPhaseWorks, fileToFix: EXTENSION });
+    addCheck('whatIsReadyWorks is true', extensionReport.whatIsReadyWorks === true, { layer: 'phase-keeper-v62z', actual: extensionReport.whatIsReadyWorks, fileToFix: EXTENSION });
+    addCheck('whatIsLockedWorks is true', extensionReport.whatIsLockedWorks === true, { layer: 'phase-keeper-v62z', actual: extensionReport.whatIsLockedWorks, fileToFix: EXTENSION });
+    addCheck('protectedVisualKeeperStillAHv54I3 is true', extensionReport.protectedVisualKeeperStillAHv54I3 === true, { layer: 'phase-keeper-v62z', actual: extensionReport.protectedVisualKeeperStillAHv54I3, fileToFix: EXTENSION });
+    addCheck('aquaBrainPrimaryInterfaceLocked is true', extensionReport.aquaBrainPrimaryInterfaceLocked === true, { layer: 'phase-keeper-v62z', actual: extensionReport.aquaBrainPrimaryInterfaceLocked, fileToFix: EXTENSION });
+    addCheck('backendReadinessLocked is true', extensionReport.backendReadinessLocked === true, { layer: 'phase-keeper-v62z', actual: extensionReport.backendReadinessLocked, fileToFix: EXTENSION });
     addCheck('noApiKeysInFrontend is true', extensionReport.noApiKeysInFrontend === true, { layer: 'ask-mode-router-v61u', actual: extensionReport.noApiKeysInFrontend, fileToFix: EXTENSION });
     addCheck('voiceBrainToolRegistryExists is true', extensionReport.voiceBrainToolRegistryExists === true, { layer: 'voice-brain-v61z', actual: extensionReport.voiceBrainToolRegistryExists, fileToFix: EXTENSION });
     addCheck('voiceBrainIntentClassifierWorks is true', extensionReport.voiceBrainIntentClassifierWorks === true, { layer: 'voice-brain-v61z', actual: extensionReport.voiceBrainIntentClassifierWorks, fileToFix: EXTENSION });
@@ -1588,6 +1603,20 @@ async function main() {
     contextContinuityWorks: extensionReport ? extensionReport.contextContinuityWorks === true : false,
     visualRoutesOpenDuringScenarios: extensionReport ? extensionReport.visualRoutesOpenDuringScenarios === true : false,
     permissionGatesShowDuringScenarios: extensionReport ? extensionReport.permissionGatesShowDuringScenarios === true : false,
+    phaseKeeperExists: extensionReport ? extensionReport.phaseKeeperExists === true : false,
+    keeperLockPanelWorks: extensionReport ? extensionReport.keeperLockPanelWorks === true : false,
+    keeperManifestWorks: extensionReport ? extensionReport.keeperManifestWorks === true : false,
+    phaseHandoffWorks: extensionReport ? extensionReport.phaseHandoffWorks === true : false,
+    copyPhaseHandoffWorks: extensionReport ? extensionReport.copyPhaseHandoffWorks === true : false,
+    nextPhaseOptionsWork: extensionReport ? extensionReport.nextPhaseOptionsWork === true : false,
+    recommendedNextPhaseWorks: extensionReport ? extensionReport.recommendedNextPhaseWorks === true : false,
+    whatIsReadyWorks: extensionReport ? extensionReport.whatIsReadyWorks === true : false,
+    whatIsLockedWorks: extensionReport ? extensionReport.whatIsLockedWorks === true : false,
+    protectedVisualKeeperStillAHv54I3: extensionReport ? extensionReport.protectedVisualKeeperStillAHv54I3 === true : false,
+    aquaBrainPrimaryInterfaceLocked: extensionReport ? extensionReport.aquaBrainPrimaryInterfaceLocked === true : false,
+    backendReadinessLocked: extensionReport ? extensionReport.backendReadinessLocked === true : false,
+    automationReportStillWorks: extensionReport ? extensionReport.automationReportStillWorks === true : false,
+    regressionQaStillWorks: extensionReport ? extensionReport.regressionQaStillWorks === true : false,
     noBackendCalls: safetyStatus.noBackendCalls === true,
     noNetworkCalls: extensionReport ? extensionReport.noNetworkCalls === true : false,
     noExternalAIApiCalls: safetyStatus.noLiveAIApiCalls === true,
