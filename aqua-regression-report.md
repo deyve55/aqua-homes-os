@@ -1,10 +1,10 @@
-# Aqua Homes OS v62L Regression Report
+# Aqua Homes OS v62M Regression Report
 
-- Timestamp: 2026-06-06T14:31:54.650Z
+- Timestamp: 2026-06-06T15:04:31.206Z
 - Branch: work
-- Commit: 964435b5c5d8ec9f282088e9ed854546d2202169
-- Total tests: 329
-- Passed: 329
+- Commit: 1cdedb2009efd7f490cc40d1369b2d96f06dd1e8
+- Total tests: 346
+- Passed: 346
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -24,6 +24,19 @@
 - riskMapWorks: true
 - approvalRoutesWork: true
 - frontendBlockRulesWork: true
+- backendSchemaExists: true
+- entityContractsExist: true
+- relationshipMapWorks: true
+- indexMapsWork: true
+- hendersonDemoIndexWorks: true
+- receiptIndexWorks: true
+- reportIndexWorks: true
+- spendIndexWorks: true
+- missingDocumentIndexWorks: true
+- cameraAllocationIndexWorks: true
+- approvalIndexWorks: true
+- exportPacketIndexWorks: true
+- noRealCustomerData: true
 - backendBoundaryExists: true
 - serverOnlyKeyPolicyWorks: true
 - backendEndpointMapWorks: true
@@ -178,7 +191,7 @@
 - aqua-regression-report.md
 - aqua-v61-extensions.js
 - aqua-v61-regression-test.js
-- aqua-backend-boundary-v62l.md
+- aqua-backend-schema-v62m.md
 
 ## Failed Commands / Checks
 - None
@@ -218,9 +231,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62L
-- Total: 174
-- Passed: 174
+- Version: v62M
+- Total: 190
+- Passed: 190
 - Failed: 0
 
 ## Copyable Codex Repair Prompt

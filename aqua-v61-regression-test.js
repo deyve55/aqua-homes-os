@@ -7,7 +7,7 @@ const vm = require('vm');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 
-const VERSION = 'v62L';
+const VERSION = 'v62M';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const EXTENSION = 'aqua-v61-extensions.js';
@@ -285,6 +285,12 @@ function checkStaticFiles() {
   addCheck('v62L backend boundary architecture exists', /window\.AquaBackendBoundaryV62L|function\s+createAquaBackendBoundaryV62L/.test(extension) && /Aqua Brain Backend Boundary — v62L/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
   addCheck('v62L server-only key policy strings exist', /serverOnlyKeyPolicyWorks/.test(extension) && /Frontend must never contain/.test(extension) && /secure backend environment variables/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
   addCheck('v62L backend endpoint map strings exist', /backendEndpointMapWorks/.test(extension) && /path: '\/api\/aqua\/voice\/session'|\/api\/aqua\/voice\/session/.test(extension) && /path: '\/api\/aqua\/tools\/execute'|\/api\/aqua\/tools\/execute/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
+
+  addCheck('v62M backend schema contract exists', /window\.AquaBackendSchemaV62M|function\s+createAquaBackendSchemaV62M/.test(extension) && /Aqua Brain Data Index Contract — v62M/.test(extension), { layer: 'backend-schema-v62m', fileToFix: EXTENSION });
+  addCheck('v62M entity contracts exist', /entityContracts/.test(extension) && /Project \/ Job \/ Property/.test(extension) && /AI Conversation \/ Session Context/.test(extension), { layer: 'backend-schema-v62m', fileToFix: EXTENSION });
+  addCheck('v62M relationship and index maps exist', /relationships/.test(extension) && /projectNameIndex/.test(extension) && /receiptIndex/.test(extension) && /undoIndex/.test(extension), { layer: 'backend-schema-v62m', fileToFix: EXTENSION });
+  addCheck('v62M Henderson demo index exists', /hendersonDemoIndex/.test(extension) && /Henderson staircase report placeholder/.test(extension) && /accountant export packet placeholder/.test(extension), { layer: 'backend-schema-v62m', fileToFix: EXTENSION });
+  addCheck('v62M report flags exist', /backendSchemaExists/.test(extension) && /hendersonDemoIndexWorks/.test(extension) && /exportPacketIndexWorks/.test(extension), { layer: 'backend-schema-v62m', fileToFix: EXTENSION });
   addCheck('v62L role permission plan strings exist', /rolePermissionPlanWorks/.test(extension) && /owner_admin/.test(extension) && /field_worker cannot export accounting/.test(extension), { layer: 'backend-boundary-v62l', fileToFix: EXTENSION });
   addCheck('v62F workflow planner architecture exists', /AquaWorkflowPlannerV62F/.test(extension) && /function\s+planAquaWorkflowV62F/.test(extension) && /Aqua Brain Workflow Plan — v62F/.test(extension) && /aquaWorkflowPlansV62F/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
   addCheck('v62F workflow report flags exist', /receiptExportWorkflowWorks/.test(extension) && /uploadWorkflowStaysLocked/.test(extension) && /ownerReviewDemoWorks/.test(extension), { layer: 'workflow-planner-v62f', fileToFix: EXTENSION });
@@ -335,9 +341,16 @@ function runExtensionRegression() {
     addCheck('extension regression has repairPrompt', typeof extensionReport.repairPrompt === 'string' && extensionReport.repairPrompt.length > 0, { layer: 'extension-regression', fileToFix: EXTENSION });
     addCheck('extension regression has repairPrompt when failures exist', Number(extensionReport.failed) === 0 || (typeof extensionReport.repairPrompt === 'string' && extensionReport.repairPrompt.trim().length > 0 && extensionReport.repairPrompt !== 'No repair needed.'), { layer: 'extension-regression', actual: extensionReport.repairPrompt, fileToFix: EXTENSION });
     addCheck('extension regression safety flags pass', extensionReport.safety && Object.values(extensionReport.safety).every((value) => value === true), { layer: 'extension-regression', actual: extensionReport.safety, fileToFix: EXTENSION });
+
+    addCheck('v62M extension backend schema exists', extensionReport.backendSchemaExists === true, { layer: 'backend-schema-v62m', actual: extensionReport.backendSchemaExists, fileToFix: EXTENSION });
+    addCheck('v62M entity contracts exist in extension report', extensionReport.entityContractsExist === true, { layer: 'backend-schema-v62m', actual: extensionReport.entityContractsExist, fileToFix: EXTENSION });
+    addCheck('v62M relationship map works', extensionReport.relationshipMapWorks === true, { layer: 'backend-schema-v62m', actual: extensionReport.relationshipMapWorks, fileToFix: EXTENSION });
+    addCheck('v62M index maps work', extensionReport.indexMapsWork === true, { layer: 'backend-schema-v62m', actual: extensionReport.indexMapsWork, fileToFix: EXTENSION });
+    addCheck('v62M Henderson demo index works', extensionReport.hendersonDemoIndexWorks === true, { layer: 'backend-schema-v62m', actual: extensionReport.hendersonDemoIndexWorks, fileToFix: EXTENSION });
+    ['receiptIndexWorks','reportIndexWorks','spendIndexWorks','missingDocumentIndexWorks','cameraAllocationIndexWorks','approvalIndexWorks','exportPacketIndexWorks'].forEach((flag) => addCheck(`v62M ${flag}`, extensionReport[flag] === true, { layer: 'backend-schema-v62m', actual: extensionReport[flag], fileToFix: EXTENSION }));
     addCheck('extension regression has zero failures', Number(extensionReport.failed) === 0, { layer: 'extension-regression', actual: extensionReport.failed, fileToFix: EXTENSION });
     addCheck('extension regression safeToMerge is true', extensionReport.safeToMerge === true, { layer: 'extension-regression', actual: extensionReport.safeToMerge, fileToFix: EXTENSION });
-    addCheck('extension regression version is v62L', extensionReport.version === 'v62L', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
+    addCheck('extension regression version is v62M', extensionReport.version === 'v62M', { layer: 'extension-regression', actual: extensionReport.version, fileToFix: EXTENSION });
     addCheck('v62L backendBoundaryExists is true', extensionReport.backendBoundaryExists === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendBoundaryExists, fileToFix: EXTENSION });
     addCheck('v62L serverOnlyKeyPolicyWorks is true', extensionReport.serverOnlyKeyPolicyWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.serverOnlyKeyPolicyWorks, fileToFix: EXTENSION });
     addCheck('v62L backendEndpointMapWorks is true', extensionReport.backendEndpointMapWorks === true, { layer: 'backend-boundary-v62l', actual: extensionReport.backendEndpointMapWorks, fileToFix: EXTENSION });
@@ -821,6 +834,32 @@ function markdown(report) {
     `- riskMapWorks: ${report.riskMapWorks === true}\n` +
     `- approvalRoutesWork: ${report.approvalRoutesWork === true}\n` +
     `- frontendBlockRulesWork: ${report.frontendBlockRulesWork === true}\n` +
+    `- backendSchemaExists: ${report.backendSchemaExists === true}
+` +
+    `- entityContractsExist: ${report.entityContractsExist === true}
+` +
+    `- relationshipMapWorks: ${report.relationshipMapWorks === true}
+` +
+    `- indexMapsWork: ${report.indexMapsWork === true}
+` +
+    `- hendersonDemoIndexWorks: ${report.hendersonDemoIndexWorks === true}
+` +
+    `- receiptIndexWorks: ${report.receiptIndexWorks === true}
+` +
+    `- reportIndexWorks: ${report.reportIndexWorks === true}
+` +
+    `- spendIndexWorks: ${report.spendIndexWorks === true}
+` +
+    `- missingDocumentIndexWorks: ${report.missingDocumentIndexWorks === true}
+` +
+    `- cameraAllocationIndexWorks: ${report.cameraAllocationIndexWorks === true}
+` +
+    `- approvalIndexWorks: ${report.approvalIndexWorks === true}
+` +
+    `- exportPacketIndexWorks: ${report.exportPacketIndexWorks === true}
+` +
+    `- noRealCustomerData: ${report.noRealCustomerData === true}
+` +
     `- backendBoundaryExists: ${report.backendBoundaryExists === true}
 ` +
     `- serverOnlyKeyPolicyWorks: ${report.serverOnlyKeyPolicyWorks === true}
@@ -1166,6 +1205,19 @@ async function main() {
     markReviewReadyDemoWorks: extensionReport ? extensionReport.markReviewReadyDemoWorks === true : false,
     clearSowReviewQueueWorks: extensionReport ? extensionReport.clearSowReviewQueueWorks === true : false,
     noLiveSowCreated: extensionReport ? extensionReport.noLiveSowCreated === true : false,
+    backendSchemaExists: extensionReport ? extensionReport.backendSchemaExists === true : false,
+    entityContractsExist: extensionReport ? extensionReport.entityContractsExist === true : false,
+    relationshipMapWorks: extensionReport ? extensionReport.relationshipMapWorks === true : false,
+    indexMapsWork: extensionReport ? extensionReport.indexMapsWork === true : false,
+    hendersonDemoIndexWorks: extensionReport ? extensionReport.hendersonDemoIndexWorks === true : false,
+    receiptIndexWorks: extensionReport ? extensionReport.receiptIndexWorks === true : false,
+    reportIndexWorks: extensionReport ? extensionReport.reportIndexWorks === true : false,
+    spendIndexWorks: extensionReport ? extensionReport.spendIndexWorks === true : false,
+    missingDocumentIndexWorks: extensionReport ? extensionReport.missingDocumentIndexWorks === true : false,
+    cameraAllocationIndexWorks: extensionReport ? extensionReport.cameraAllocationIndexWorks === true : false,
+    approvalIndexWorks: extensionReport ? extensionReport.approvalIndexWorks === true : false,
+    exportPacketIndexWorks: extensionReport ? extensionReport.exportPacketIndexWorks === true : false,
+    noRealCustomerData: extensionReport ? extensionReport.noRealCustomerData === true : false,
     backendBoundaryExists: extensionReport ? extensionReport.backendBoundaryExists === true : false,
     serverOnlyKeyPolicyWorks: extensionReport ? extensionReport.serverOnlyKeyPolicyWorks === true : false,
     backendEndpointMapWorks: extensionReport ? extensionReport.backendEndpointMapWorks === true : false,
