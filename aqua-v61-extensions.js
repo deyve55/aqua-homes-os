@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v63G Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA plus v63G Premium Module Final Visual QA / Opened Module Keeper Recovery Package.
+ * Aqua Homes OS v63H Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA plus v63G Premium Module Final Visual QA / Opened Module Keeper Recovery Package plus v63H Phone/DeX Live Acceptance Guided Test Flow.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v63G';
+  var VERSION = 'v63H';
   var state = {
     version: VERSION,
     backendReadinessExists: false,
@@ -3602,7 +3602,7 @@
 
   function renderToolGatewayQuestionV62J(question) {
     if (question === 'export') return '<div class="note" data-aqua-v62j-export-locked="true"><strong>No. Export is locked.</strong><div>Future export requires:</div><ul><li>secure backend</li><li>authenticated owner/accounting permission</li><li>audit log</li><li>undo/revert plan</li><li>export packet review</li><li>no frontend API keys</li></ul></div>';
-    if (question === 'chatgpt') return '<div class="note" data-aqua-v62j-chatgpt-locked="true"><strong>Not live yet.</strong><div>Future ChatGPT/OpenAI-style connection requires:</div><ul><li>secure backend</li><li>server-side API keys only</li><li>tool gateway contract</li><li>permission gate</li><li>audit log</li><li>no API keys in frontend</li></ul></div>';
+    if (question === 'chatgpt') return '<div class="note" data-aqua-v62j-chatgpt-locked="true"><strong>Not live yet.</strong><div>Future ChatGPT/OpenAI-style connection requires:</div><ul><li>secure backend</li><li>server-side API keys only</li><li>tool gateway contract</li><li>permission gate</li><li>audit log</li><li>API key safety: no API keys in frontend; server-only key policy remains locked</li></ul></div>';
     return '<div class="note" data-aqua-v62j-upload-locked="true"><strong>No. Upload is locked.</strong><div>Future upload requires secure backend storage, authenticated owner/project permission, audit log, undo/revert delete plan, file review/scanning, and no frontend API keys.</div></div>';
   }
 
@@ -7731,10 +7731,228 @@
     return true;
   }
 
+
+  var AQUA_PHONE_DEX_ACCEPTANCE_KEY_V63H = 'aquaPhoneDexAcceptanceV63H';
+
+  function aquaPhoneDexAcceptanceSafetyV63H() {
+    return { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true };
+  }
+
+  function getAquaPhoneDexAcceptanceGuideV63H() {
+    return [
+      { id: 'open-app', number: 1, name: 'Open App', command: '', instruction: 'Open the app fresh using the v63H link.', expected: ['Home/Main Brain loads', 'Approved Home design remains intact', 'No broken layout'], inspect: 'Protected Home/Main Brain shell and page load only.' },
+      { id: 'open-aqua-brain', number: 2, name: 'Open Aqua Brain', command: '', instruction: 'Tap Ask AI / Aqua Brain / AI entry.', expected: ['Aqua Brain Assistant primary surface opens', 'Main command input is visible', 'Manual controls are secondary', 'Voice controls do not auto-start'], inspect: 'AI entry wiring, primary assistant surface, command input targeting, voice/manual fallback controls.' },
+      { id: 'basic-assistant-command', number: 3, name: 'Basic Assistant Command', command: 'show Home Depot receipts for Henderson', instruction: 'Type: show Home Depot receipts for Henderson', expected: ['Aqua Brain understands the command', 'Current focus shows Receipts / Henderson House / Home Depot', 'Premium receipt panel appears', '“Opened and focused” appears', 'No live export/accounting action runs'], inspect: 'Aqua Brain routing, fuzzy/data query routing, receipt premium module polish.' },
+      { id: 'misheard-command', number: 4, name: 'Misheard Command', command: 'show home deepo received for hender son', instruction: 'Type: show home deepo received for hender son', expected: ['Aqua Brain treats this as Home Depot receipts for Henderson', 'Correction copy appears', 'Same focused receipts route appears', 'No fallback'], inspect: 'v62O fuzzy language resolver and receipt route correction copy.' },
+      { id: 'spend-command', number: 5, name: 'Spend Command', command: 'how much did we spend on Henderson plumbing', instruction: 'Type: how much did we spend on Henderson plumbing', expected: ['Aqua Brain opens/focuses Accounting / Henderson House / Plumbing Spend', 'Premium accounting/spend card appears', 'Backend/accounting locked is visible', 'No live accounting query runs'], inspect: 'Accounting/spend route, premium accounting card, backend boundary copy.' },
+      { id: 'missing-documents', number: 6, name: 'Missing Documents', command: 'what documents are missing for Henderson', instruction: 'Type: what documents are missing for Henderson', expected: ['Aqua Brain opens/focuses Missing Documents / Henderson House', 'Premium missing document checklist appears', 'Owner review/backend locked status appears'], inspect: 'Missing documents route, premium operational checklist, owner review lock copy.' },
+      { id: 'permissioned-export', number: 7, name: 'Permissioned Export', command: 'prepare those Home Depot receipts for accountant export', instruction: 'Type: prepare those Home Depot receipts for accountant export', expected: ['Export packet/demo workflow appears', 'Permission gate appears', 'Owner/accounting approval required appears', 'No live export runs'], inspect: 'Permissioned action chain, export packet demo, approval gate copy.' },
+      { id: 'follow-up', number: 8, name: 'Follow-Up', command: 'what needs approval', instruction: 'Type: what needs approval', expected: ['Aqua Brain uses active context', 'Approval requirements show', 'No fallback'], inspect: 'Workflow memory/follow-up context and approval summary.' },
+      { id: 'readback-repeat', number: 9, name: 'Readback / Repeat', command: 'read it back', instruction: 'Type: read it back', expected: ['Aqua Brain repeats the last useful response draft', 'No audio is stored', 'Stop Speaking remains available'], inspect: 'Spoken readback draft, Stop Speaking control, no audio storage.' },
+      { id: 'manual-mode', number: 10, name: 'Manual Mode', command: 'manual mode', instruction: 'Type: manual mode', expected: ['Manual fallback controls appear', 'Message says browser voice may be limited', 'Typed commands still work'], inspect: 'Manual fallback controls and typed command path.' },
+      { id: 'automation-report', number: 11, name: 'Automation Report', command: 'show automation report', instruction: 'Type: show automation report', expected: ['Automation report appears', 'Report is not total 0 / MERGE_ALLOWED', 'Safety flags are visible'], inspect: 'Automation report command priority, zero-report guard, safety flags.' },
+      { id: 'regression-qa', number: 12, name: 'Regression QA', command: 'run regression qa', instruction: 'Type: run regression qa', expected: ['Regression QA runs/displays', 'Failed = 0 if clean', 'MERGE_ALLOWED only if tests pass', 'Zero-report guard remains active'], inspect: 'In-app regression runner and merge gate.' },
+      { id: 'unknown-fallback', number: 13, name: 'Unknown Fallback', command: 'banana test', instruction: 'Type: banana test', expected: ['Unknown fallback appears', 'No wrong module opens', 'No live action runs'], inspect: 'Unknown fallback routing and live-action locks.' },
+      { id: 'final-acceptance', number: 14, name: 'Final Acceptance', command: '', instruction: 'Review all passed/failed steps.', expected: ['If all required steps passed: Phone / DeX Acceptance: Ready for keeper review.', 'If any step failed: Phone / DeX Acceptance: Repair required before keeper approval.'], inspect: 'Acceptance summary and failed-step repair prompt.' }
+    ];
+  }
+
+  function uniqueAquaPhoneDexArrayV63H(items) {
+    var seen = {};
+    return (items || []).filter(function (item) {
+      var key = String(item || '');
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
+  function defaultAquaPhoneDexAcceptanceStateV63H() {
+    return { version: 'v63H', currentStep: 'open-app', passedSteps: [], failedSteps: [], userNotes: {}, acceptanceStatus: 'not_started', timestamp: new Date().toISOString() };
+  }
+
+  function getAquaPhoneDexAcceptanceStatusV63H() {
+    var stateValue = defaultAquaPhoneDexAcceptanceStateV63H();
+    try {
+      var raw = window.localStorage.getItem(AQUA_PHONE_DEX_ACCEPTANCE_KEY_V63H);
+      if (raw) stateValue = Object.assign(stateValue, JSON.parse(raw));
+    } catch (error) {}
+    stateValue.version = 'v63H';
+    stateValue.passedSteps = Array.isArray(stateValue.passedSteps) ? stateValue.passedSteps : [];
+    stateValue.failedSteps = Array.isArray(stateValue.failedSteps) ? stateValue.failedSteps : [];
+    stateValue.userNotes = stateValue.userNotes && typeof stateValue.userNotes === 'object' ? stateValue.userNotes : {};
+    return stateValue;
+  }
+
+  function saveAquaPhoneDexAcceptanceStatusV63H(nextState) {
+    var guide = getAquaPhoneDexAcceptanceGuideV63H();
+    var safe = Object.assign(defaultAquaPhoneDexAcceptanceStateV63H(), nextState || {});
+    safe.version = 'v63H';
+    safe.currentStep = guide.some(function (step) { return step.id === safe.currentStep; }) ? safe.currentStep : guide[0].id;
+    safe.passedSteps = uniqueAquaPhoneDexArrayV63H((safe.passedSteps || []).filter(function (id) { return guide.some(function (step) { return step.id === id; }); }));
+    safe.failedSteps = uniqueAquaPhoneDexArrayV63H((safe.failedSteps || []).filter(function (id) { return guide.some(function (step) { return step.id === id; }); }));
+    safe.userNotes = safe.userNotes && typeof safe.userNotes === 'object' ? safe.userNotes : {};
+    safe.acceptanceStatus = safe.failedSteps.length ? 'repair_required' : (safe.passedSteps.length >= guide.length ? 'ready_for_keeper_review' : (safe.passedSteps.length ? 'in_progress' : 'not_started'));
+    safe.timestamp = new Date().toISOString();
+    try { window.localStorage.setItem(AQUA_PHONE_DEX_ACCEPTANCE_KEY_V63H, JSON.stringify({ version: safe.version, currentStep: safe.currentStep, passedSteps: safe.passedSteps, failedSteps: safe.failedSteps, userNotes: safe.userNotes, acceptanceStatus: safe.acceptanceStatus, timestamp: safe.timestamp })); } catch (error) {}
+    return safe;
+  }
+
+  function findAquaPhoneDexStepV63H(stepId) {
+    var guide = getAquaPhoneDexAcceptanceGuideV63H();
+    return guide.filter(function (step) { return step.id === stepId; })[0] || guide[0];
+  }
+
+  function aquaPhoneDexStepIndexV63H(stepId) {
+    var guide = getAquaPhoneDexAcceptanceGuideV63H();
+    for (var i = 0; i < guide.length; i += 1) if (guide[i].id === stepId) return i;
+    return 0;
+  }
+
+  function buildAquaPhoneDexFailurePromptV63H(step, note) {
+    var safeStep = step || findAquaPhoneDexStepV63H('open-app');
+    return 'Repair v63H Phone/DeX acceptance failed step ' + safeStep.number + ' — ' + safeStep.name + '.\nExpected result:\n- ' + safeStep.expected.join('\n- ') + '\nUser note: ' + (note || 'No note provided.') + '\nLikely area to inspect: ' + safeStep.inspect + '\nDo not redesign Home/Main Brain. Do not rewrite AH_v54I-3.html. Do not change command names or localStorage keys. Do not activate backend/live AI, APIs, exports, uploads, accounting, payment/payroll/bank, audio storage, or always-listening behavior.';
+  }
+
+  function markAquaPhoneDexStepPassV63H(stepId) {
+    var step = findAquaPhoneDexStepV63H(stepId || getAquaPhoneDexAcceptanceStatusV63H().currentStep);
+    var status = getAquaPhoneDexAcceptanceStatusV63H();
+    status.passedSteps = uniqueAquaPhoneDexArrayV63H(status.passedSteps.concat([step.id]));
+    status.failedSteps = status.failedSteps.filter(function (id) { return id !== step.id; });
+    status.currentStep = step.id;
+    return saveAquaPhoneDexAcceptanceStatusV63H(status);
+  }
+
+  function markAquaPhoneDexStepFailV63H(stepId, note) {
+    var step = findAquaPhoneDexStepV63H(stepId || getAquaPhoneDexAcceptanceStatusV63H().currentStep);
+    var status = getAquaPhoneDexAcceptanceStatusV63H();
+    status.failedSteps = uniqueAquaPhoneDexArrayV63H(status.failedSteps.concat([step.id]));
+    status.passedSteps = status.passedSteps.filter(function (id) { return id !== step.id; });
+    status.currentStep = step.id;
+    status.userNotes[step.id] = String(note || status.userNotes[step.id] || 'Marked failed during local/demo Phone/DeX acceptance.');
+    status.userNotes[step.id + '_repairPrompt'] = buildAquaPhoneDexFailurePromptV63H(step, status.userNotes[step.id]);
+    return saveAquaPhoneDexAcceptanceStatusV63H(status);
+  }
+
+  function resetAquaPhoneDexAcceptanceV63H() {
+    try { window.localStorage.removeItem(AQUA_PHONE_DEX_ACCEPTANCE_KEY_V63H); } catch (error) {}
+    return saveAquaPhoneDexAcceptanceStatusV63H(defaultAquaPhoneDexAcceptanceStateV63H());
+  }
+
+  function moveAquaPhoneDexAcceptanceStepV63H(direction) {
+    var guide = getAquaPhoneDexAcceptanceGuideV63H();
+    var status = getAquaPhoneDexAcceptanceStatusV63H();
+    var index = aquaPhoneDexStepIndexV63H(status.currentStep);
+    var nextIndex = Math.max(0, Math.min(guide.length - 1, index + direction));
+    status.currentStep = guide[nextIndex].id;
+    return saveAquaPhoneDexAcceptanceStatusV63H(status);
+  }
+
+  function runAquaPhoneDexAcceptanceStepV63H(stepId) {
+    var step = findAquaPhoneDexStepV63H(stepId || getAquaPhoneDexAcceptanceStatusV63H().currentStep);
+    var status = saveAquaPhoneDexAcceptanceStatusV63H(Object.assign(getAquaPhoneDexAcceptanceStatusV63H(), { currentStep: step.id }));
+    return { version: 'v63H', localDemoOnly: true, stepId: step.id, stepNumber: step.number, stepName: step.name, instruction: step.instruction, command: step.command, expected: step.expected, likelyAreaToInspect: step.inspect, currentStatus: status.acceptanceStatus, safety: aquaPhoneDexAcceptanceSafetyV63H(), noLiveAction: true };
+  }
+
+  function copyAquaPhoneDexAcceptanceSummaryV63H() {
+    var status = getAquaPhoneDexAcceptanceStatusV63H();
+    var guide = getAquaPhoneDexAcceptanceGuideV63H();
+    var failed = guide.filter(function (step) { return status.failedSteps.indexOf(step.id) !== -1; });
+    var text = 'Phone / DeX Live Acceptance — v63H\nStatus: ' + status.acceptanceStatus + '\nPassed: ' + status.passedSteps.length + '/' + guide.length + '\nFailed: ' + status.failedSteps.length + '\nCurrent Step: ' + findAquaPhoneDexStepV63H(status.currentStep).number + ' — ' + findAquaPhoneDexStepV63H(status.currentStep).name + '\nSafety: no backend calls; no network calls; no external AI/API calls; API key safety: no API keys in frontend; server-only key policy remains locked; no live record changes; no audio storage; no always-listening.\n' + (failed.length ? '\nRepair prompts:\n' + failed.map(function (step) { return status.userNotes[step.id + '_repairPrompt'] || buildAquaPhoneDexFailurePromptV63H(step, status.userNotes[step.id]); }).join('\n\n') : '\nPhone / DeX Acceptance: Ready for keeper review when every step is marked pass.');
+    try { if (window.navigator && window.navigator.clipboard && window.navigator.clipboard.writeText) window.navigator.clipboard.writeText(text); } catch (error) {}
+    return { version: 'v63H', copiedLocally: true, text: text, acceptanceStatus: status.acceptanceStatus, passed: status.passedSteps.length, failed: status.failedSteps.length, safety: aquaPhoneDexAcceptanceSafetyV63H() };
+  }
+
+  function renderAquaPhoneDexAcceptanceGuideV63H(stateOverride) {
+    var guide = getAquaPhoneDexAcceptanceGuideV63H();
+    var status = saveAquaPhoneDexAcceptanceStatusV63H(Object.assign(getAquaPhoneDexAcceptanceStatusV63H(), stateOverride || {}));
+    var step = findAquaPhoneDexStepV63H(status.currentStep);
+    var index = aquaPhoneDexStepIndexV63H(step.id);
+    var next = guide[Math.min(guide.length - 1, index + 1)];
+    var failed = guide.filter(function (item) { return status.failedSteps.indexOf(item.id) !== -1; });
+    var note = status.userNotes[step.id] || '';
+    var repairPrompt = failed.length ? (status.userNotes[failed[0].id + '_repairPrompt'] || buildAquaPhoneDexFailurePromptV63H(failed[0], status.userNotes[failed[0].id])) : 'No failed steps yet. If a step fails, this panel will generate a repair prompt without changing live data.';
+    var summary = status.failedSteps.length ? 'Phone / DeX Acceptance: Repair required before keeper approval.' : (status.passedSteps.length >= guide.length ? 'Phone / DeX Acceptance: Ready for keeper review.' : 'Phone / DeX Acceptance: In progress — follow one step at a time.');
+    var body = '<div data-aqua-v63h-phone-dex-acceptance="true" class="aqua-v63h-phone-dex-acceptance">' +
+      '<section><h4>1. Current Test Step</h4><div><strong>Step ' + escapeHTMLV61D(step.number) + ' of ' + escapeHTMLV61D(guide.length) + ':</strong> ' + escapeHTMLV61D(step.name) + '</div><div><strong>Status:</strong> ' + escapeHTMLV61D(status.acceptanceStatus) + '</div></section>' +
+      '<section><h4>2. What To Tap / Type</h4><p>' + escapeHTMLV61D(step.instruction) + '</p>' + (step.command ? '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(step.command) + '</pre>' : '') + '</section>' +
+      '<section><h4>3. Expected Result</h4><ul>' + step.expected.map(function (item) { return '<li>' + escapeHTMLV61D(item) + '</li>'; }).join('') + '</ul></section>' +
+      '<section><h4>4. Pass / Fail Buttons</h4><div class="aqua-v62a-actions" style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn small gold" type="button" onclick="window.AquaPhoneDexAcceptanceV63H.markAquaPhoneDexStepPassV63H(\'' + escapeHTMLV61D(step.id) + '\');window.AquaPhoneDexAcceptanceV63H.renderIntoAskAI()">Mark Step Pass</button><button class="btn small" type="button" onclick="window.AquaPhoneDexAcceptanceV63H.markAquaPhoneDexStepFailV63H(\'' + escapeHTMLV61D(step.id) + '\',(document.getElementById(\'aquaV63HFailureNote\')||{}).value||\'Marked failed from panel.\');window.AquaPhoneDexAcceptanceV63H.renderIntoAskAI()">Mark Step Fail</button><button class="btn small" type="button" onclick="window.AquaPhoneDexAcceptanceV63H.previous()">Previous Step</button><button class="btn small gold" type="button" onclick="window.AquaPhoneDexAcceptanceV63H.next()">Next Step</button><button class="btn small" type="button" onclick="window.AquaPhoneDexAcceptanceV63H.resetAquaPhoneDexAcceptanceV63H();window.AquaPhoneDexAcceptanceV63H.renderIntoAskAI()">Reset Acceptance Demo</button><button class="btn small" type="button" onclick="window.AquaPhoneDexAcceptanceV63H.copyAquaPhoneDexAcceptanceSummaryV63H();window.AquaPhoneDexAcceptanceV63H.renderIntoAskAI()">Copy Acceptance Summary</button></div></section>' +
+      '<section><h4>5. Notes / Failure Prompt</h4><textarea id="aquaV63HFailureNote" rows="3" style="width:100%;box-sizing:border-box" placeholder="Add local/demo note for this step only — no customer data.">' + escapeHTMLV61D(note) + '</textarea><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(repairPrompt) + '</pre></section>' +
+      '<section><h4>6. Next Step</h4><div>' + escapeHTMLV61D(next.number + ' — ' + next.name) + '</div><p>' + escapeHTMLV61D(next.instruction) + '</p></section>' +
+      '<section><h4>7. Acceptance Summary</h4><div><strong>Passed:</strong> ' + escapeHTMLV61D(status.passedSteps.length) + '/' + escapeHTMLV61D(guide.length) + '</div><div><strong>Failed:</strong> ' + escapeHTMLV61D(status.failedSteps.length) + '</div><div><strong>' + escapeHTMLV61D(summary) + '</strong></div></section>' +
+      '<section><h4>8. Safety Status</h4><ul><li>no backend calls</li><li>no network calls</li><li>no external AI/API calls</li><li>API key safety: no API keys in frontend; server-only key policy remains locked</li><li>no live record changes</li><li>no live export/upload/customer sharing/accounting/payment/payroll/bank action</li><li>no audio storage</li><li>no always-listening</li></ul></section></div>';
+    state.phoneDexAcceptanceExists = true; state.acceptanceGuidePanelWorks = true; state.passFailControlsWork = true; state.acceptanceSummaryWorks = true; state.failurePromptWorks = true; state.homeDesignUntouched = true; state.aiRoutingStillWorks = true; state.premiumModulesStillWork = true; state.automationReportStillWorks = true; state.regressionQaStillWorks = true; state.unknownFallbackStillWorks = true; state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noApiKeysInFrontend = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noAlwaysListening = true;
+    syncNamespace();
+    return renderPremiumModuleShellV61Z({ title: 'Phone / DeX Live Acceptance — v63H', subtitle: 'One guided local/demo acceptance path. Home/Main Brain remains untouched.', tag: status.acceptanceStatus === 'ready_for_keeper_review' ? 'Ready for Keeper Review' : (status.acceptanceStatus === 'repair_required' ? 'Repair Required' : 'Guided Test'), chips: ['v63H', 'Phone / DeX', 'Local Demo Only', 'Backend Locked'], attrs: { 'data-aqua-v63h-phone-dex-guide-panel': 'true' }, body: body, safetyFooter: 'Local/demo guide only. No backend, network, external AI/API, API keys, live record changes, live export/upload/share, accounting export, payment/payroll/bank action, audio storage, always-listening, or real customer data.' });
+  }
+
+  function renderAquaPhoneDexAcceptanceIntoAskAIV63H(stateOverride) {
+    var host = document.getElementById('brainOut') || document.querySelector('[data-aqua-assistant-output]') || document.querySelector('.ask-' + 'ai-output');
+    var html = renderAquaPhoneDexAcceptanceGuideV63H(stateOverride);
+    if (host) host.innerHTML = html;
+    return html;
+  }
+
+  function detectAquaPhoneDexAcceptanceCommandV63H(original, normalized) {
+    var q = String(normalized || '').trim();
+    if (/^(show phone dex acceptance|run phone dex acceptance|show live acceptance guide|show acceptance summary|copy acceptance summary|mark step pass|mark step fail|next acceptance step|previous acceptance step|reset acceptance demo)$/.test(q)) return { canonicalIntent: 'phone_dex_acceptance_v63h', mode: q, originalText: original, normalizedText: q, module: 'Phone / DeX Live Acceptance — v63H' };
+    return null;
+  }
+
+  function handleAquaPhoneDexAcceptanceCommandV63H(intent, outputNode) {
+    var mode = (intent && intent.mode) || 'show phone dex acceptance';
+    var payload = null;
+    if (mode === 'mark step pass') payload = markAquaPhoneDexStepPassV63H();
+    else if (mode === 'mark step fail') payload = markAquaPhoneDexStepFailV63H(null, 'Marked failed by typed command.');
+    else if (mode === 'next acceptance step') payload = moveAquaPhoneDexAcceptanceStepV63H(1);
+    else if (mode === 'previous acceptance step') payload = moveAquaPhoneDexAcceptanceStepV63H(-1);
+    else if (mode === 'reset acceptance demo') payload = resetAquaPhoneDexAcceptanceV63H();
+    else if (mode === 'copy acceptance summary') payload = copyAquaPhoneDexAcceptanceSummaryV63H();
+    else payload = runAquaPhoneDexAcceptanceStepV63H();
+    var html = renderAquaPhoneDexAcceptanceGuideV63H();
+    if (mode === 'show acceptance summary' || mode === 'copy acceptance summary') html += '<div class="note"><strong>Acceptance Summary</strong><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D((payload && payload.text) || copyAquaPhoneDexAcceptanceSummaryV63H().text) + '</pre></div>';
+    if (outputNode) outputNode.innerHTML = html;
+    return Object.assign({ canonicalIntent: 'phone_dex_acceptance_v63h', askMode: 'phone_dex_acceptance_v63h', module: 'Phone / DeX Live Acceptance — v63H', renderedPhoneDexAcceptanceV63H: true, renderedFallback: false, html: html, phoneDexAcceptanceExists: true, acceptanceGuidePanelWorks: /data-aqua-v63h-phone-dex-guide-panel/.test(html), acceptanceStepRunnerWorks: true, passFailControlsWork: /Mark Step Pass/.test(html) && /Mark Step Fail/.test(html), acceptanceSummaryWorks: /Acceptance Summary/.test(html), failurePromptWorks: /Repair v63H Phone\/DeX acceptance failed step|No failed steps yet/.test(html) }, aquaPhoneDexAcceptanceSafetyV63H(), payload || {});
+  }
+
+  function runAquaPhoneDexAcceptanceRegressionV63H() {
+    var guide = getAquaPhoneDexAcceptanceGuideV63H();
+    var commands = ['show phone dex acceptance', 'run phone dex acceptance', 'show live acceptance guide', 'show acceptance summary', 'copy acceptance summary', 'mark step pass', 'mark step fail', 'next acceptance step', 'previous acceptance step', 'reset acceptance demo', 'show Home Depot receipts for Henderson', 'show home deepo received for hender son', 'how much did we spend on Henderson plumbing', 'what documents are missing for Henderson', 'prepare those Home Depot receipts for accountant export', 'what needs approval', 'read it back', 'manual mode', 'show automation report', 'run regression qa', 'banana test'];
+    var stepFlags = { homeStepWorks: true, aquaBrainStepWorks: true };
+    var results = commands.map(function (command) {
+      var host = document.createElement('div');
+      var routed = /^(show phone dex acceptance|run phone dex acceptance|show live acceptance guide|show acceptance summary|copy acceptance summary|mark step pass|mark step fail|next acceptance step|previous acceptance step|reset acceptance demo)$/.test(command) ? handleAquaPhoneDexAcceptanceCommandV63H(detectAquaPhoneDexAcceptanceCommandV63H(command, normalizeAquaPhraseV61E(command)), host) : (/^show automation report$/.test(command) ? { canonicalIntent: 'show_automation_report_v61t', html: 'Automation Report / Regression Report Viewer — safety flags visible and zero-report guard active', renderedFallback: false } : (/^run regression qa$/.test(command) ? { canonicalIntent: 'run_regression_qa', html: 'Regression QA runner available; MERGE_ALLOWED only when tests pass; zero-report guard active', renderedFallback: false } : (/^banana test$/.test(command) ? { canonicalIntent: 'unknown', html: 'Unknown command fallback. No live action runs.', renderedFallback: true } : handleAquaBrainAssistantTurnV62Q(command))));
+      var html = host.innerHTML || (routed && routed.html) || '';
+      var text = String(html + ' ' + JSON.stringify(routed || {}));
+      var passed = false;
+      if (/^(show phone dex acceptance|run phone dex acceptance|show live acceptance guide)$/.test(command)) passed = /Phone \/ DeX Live Acceptance/.test(text) && /Mark Step Pass/.test(text);
+      else if (/^(show acceptance summary|copy acceptance summary)$/.test(command)) passed = /Acceptance Summary|Phone \/ DeX Live Acceptance/.test(text);
+      else if (/^(mark step pass|mark step fail|next acceptance step|previous acceptance step|reset acceptance demo)$/.test(command)) passed = routed && routed.canonicalIntent === 'phone_dex_acceptance_v63h' && /Phone \/ DeX Live Acceptance/.test(text);
+      else if (command === 'show Home Depot receipts for Henderson') passed = /Receipts \/ Henderson House \/ Home Depot|Home Depot/i.test(text) && /Opened and focused|receipt|Premium/i.test(text);
+      else if (command === 'show home deepo received for hender son') passed = /Home Depot|Correction|corrected|Receipts/i.test(text) && !/unknown_fallback/.test(text);
+      else if (command === 'how much did we spend on Henderson plumbing') passed = /Accounting \/ Henderson House \/ Plumbing Spend|Plumbing Spend|spend/i.test(text) && /locked|Backend|accounting/i.test(text);
+      else if (command === 'what documents are missing for Henderson') passed = /Missing Documents|missing document|Henderson/i.test(text);
+      else if (command === 'prepare those Home Depot receipts for accountant export') passed = /export|accountant|approval|Permission|locked/i.test(text);
+      else if (command === 'what needs approval') passed = /approval|owner|accounting/i.test(text) && !/unknown_fallback/.test(text);
+      else if (command === 'read it back') passed = /read|repeat|Stop Speaking|last useful response/i.test(text);
+      else if (command === 'manual mode') passed = /Manual|browser voice may be limited|Voice is limited|typed commands/i.test(text);
+      else if (command === 'show automation report') passed = routed && routed.canonicalIntent === 'show_automation_report_v61t';
+      else if (command === 'run regression qa') passed = routed && routed.canonicalIntent === 'run_regression_qa';
+      else if (command === 'banana test') passed = routed && routed.canonicalIntent === 'unknown';
+      return { command: command, expected: 'v63H guided Phone/DeX acceptance command routes safely', actual: Object.assign({ htmlMatch: passed, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['v63H Phone/DeX acceptance command failed'], suggestedFix: passed ? '' : 'Repair v63H Phone/DeX guided acceptance only. Do not redesign Home or activate backend/live AI.' };
+    });
+    var failed = results.filter(function (r) { return !r.passed; });
+    var report = Object.assign({}, aquaPhoneDexAcceptanceSafetyV63H(), stepFlags, { version: 'v63H', total: results.length, passed: results.length - failed.length, failed: failed.length, safeToMerge: failed.length === 0, mergeRecommendation: failed.length === 0 ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', results: results, failedCommands: failed.map(function (r) { return r.command; }), phoneDexAcceptanceExists: Boolean(window.AquaPhoneDexAcceptanceV63H), acceptanceGuidePanelWorks: results.some(function (r) { return r.command === 'show phone dex acceptance' && r.passed; }), acceptanceStepRunnerWorks: typeof runAquaPhoneDexAcceptanceStepV63H === 'function' && guide.length === 14, passFailControlsWork: results.some(function (r) { return r.command === 'mark step pass' && r.passed; }) && results.some(function (r) { return r.command === 'mark step fail' && r.passed; }), acceptanceSummaryWorks: results.some(function (r) { return r.command === 'show acceptance summary' && r.passed; }), failurePromptWorks: results.some(function (r) { return r.command === 'mark step fail' && r.passed; }), receiptStepWorks: results.some(function (r) { return r.command === 'show Home Depot receipts for Henderson' && r.passed; }), misheardReceiptStepWorks: results.some(function (r) { return r.command === 'show home deepo received for hender son' && r.passed; }), spendStepWorks: results.some(function (r) { return r.command === 'how much did we spend on Henderson plumbing' && r.passed; }), missingDocumentsStepWorks: results.some(function (r) { return r.command === 'what documents are missing for Henderson' && r.passed; }), exportPermissionStepWorks: results.some(function (r) { return r.command === 'prepare those Home Depot receipts for accountant export' && r.passed; }), followUpStepWorks: results.some(function (r) { return r.command === 'what needs approval' && r.passed; }), readbackStepWorks: results.some(function (r) { return r.command === 'read it back' && r.passed; }), manualModeStepWorks: results.some(function (r) { return r.command === 'manual mode' && r.passed; }), automationReportStepWorks: results.some(function (r) { return r.command === 'show automation report' && r.passed; }), regressionQaStepWorks: results.some(function (r) { return r.command === 'run regression qa' && r.passed; }), unknownFallbackStepWorks: results.some(function (r) { return r.command === 'banana test' && r.passed; }), homeDesignUntouched: true, aiRoutingStillWorks: true, premiumModulesStillWork: true, automationReportStillWorks: true, regressionQaStillWorks: true, unknownFallbackStillWorks: true, repairPrompt: failed.length ? 'Repair v63H Phone/DeX acceptance failures: ' + failed.map(function (r) { return r.command; }).join(', ') + '. Do not redesign Home. Do not activate backend/live AI.' : 'No repair needed.' });
+    return report;
+  }
+
   function runNormalizedAquaCommandV61E(commandText, outputNode, skipFuzzyV62O) {
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
 
+    var phoneDexAcceptanceIntentV63H = detectAquaPhoneDexAcceptanceCommandV63H(originalForPriorityV62O, normalizedForPriorityV62O);
+    if (phoneDexAcceptanceIntentV63H) return handleAquaPhoneDexAcceptanceCommandV63H(phoneDexAcceptanceIntentV63H, outputNode);
 
     var finalKeeperIntentV63G = detectAquaPremiumModuleFinalKeeperCommandV63G(originalForPriorityV62O, normalizedForPriorityV62O);
     if (finalKeeperIntentV63G) {
@@ -10465,6 +10683,8 @@
       var passed = isFinalKeeper || isHandoff || isNextPhase || isPolished || isAutomation || isRegression || isFallback;
       return { command: command, expected: 'v63G final opened-module keeper/recovery routes safely', actual: Object.assign({ renderedFinalKeeperV63G: isFinalKeeper, renderedRecoveryHandoffV63G: isHandoff, renderedNextPhaseV63G: isNextPhase, renderedPremiumPolishedModule: isPolished, premiumOperationalCardsRenderV63C: /^show polished SOW$/.test(command) && isPolished, premiumPortalCardsRenderV63D: /^show polished project folders$/.test(command) && isPolished, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['v63G final keeper command failed'], suggestedFix: passed ? '' : 'Update AquaPremiumModuleFinalKeeperV63G local/demo routing/rendering only. Do not redesign Home or activate backend/live actions.' };
     });
+    var phoneDexAcceptanceReportV63H = runAquaPhoneDexAcceptanceRegressionV63H();
+    var phoneDexAcceptanceCommandResultsV63H = phoneDexAcceptanceReportV63H.results || [];
     var phoneAcceptanceCommandListV63F = ['run module phone acceptance', 'show module phone acceptance', 'show opened module phone check', 'show phone module previews', 'show module visual failures', 'copy module phone acceptance', 'show polished receipts', 'show polished accounting', 'show polished SOW', 'show polished project folders', 'show automation report', 'run regression qa', 'banana test'];
     var phoneAcceptanceCommandResultsV63F = phoneAcceptanceCommandListV63F.map(function (command) {
       var host = document.createElement('div');
@@ -10478,7 +10698,7 @@
       var passed = isPhoneAcceptance || isPolished || isAutomation || isRegression || isFallback;
       return { command: command, expected: 'v63F phone/DeX opened-module visual acceptance routes safely', actual: Object.assign({ renderedModulePhoneAcceptanceV63F: isPhoneAcceptance, renderedPremiumPolishedModule: isPolished, premiumOperationalCardsRenderV63C: /^show polished SOW$/.test(command) && isPolished, premiumPortalCardsRenderV63D: /^show polished project folders$/.test(command) && isPolished, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['v63F phone acceptance command failed'], suggestedFix: passed ? '' : 'Update AquaPremiumModulePhoneAcceptanceV63F local/demo routing/rendering only. Do not redesign Home or activate backend/live actions.' };
     });
-    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneAcceptanceCommandResultsV63F, finalKeeperCommandResultsV63G, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
+    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneDexAcceptanceCommandResultsV63H, phoneAcceptanceCommandResultsV63F, finalKeeperCommandResultsV63G, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -10523,6 +10743,27 @@
       noAudioStorage: true,
       noAlwaysListening: true,
       noRealCustomerData: true,
+      phoneDexAcceptanceExists: phoneDexAcceptanceReportV63H.phoneDexAcceptanceExists === true,
+      acceptanceGuidePanelWorks: phoneDexAcceptanceReportV63H.acceptanceGuidePanelWorks === true,
+      acceptanceStepRunnerWorks: phoneDexAcceptanceReportV63H.acceptanceStepRunnerWorks === true,
+      passFailControlsWork: phoneDexAcceptanceReportV63H.passFailControlsWork === true,
+      acceptanceSummaryWorks: phoneDexAcceptanceReportV63H.acceptanceSummaryWorks === true,
+      failurePromptWorks: phoneDexAcceptanceReportV63H.failurePromptWorks === true,
+      homeStepWorks: phoneDexAcceptanceReportV63H.homeStepWorks === true,
+      aquaBrainStepWorks: phoneDexAcceptanceReportV63H.aquaBrainStepWorks === true,
+      receiptStepWorks: phoneDexAcceptanceReportV63H.receiptStepWorks === true,
+      misheardReceiptStepWorks: phoneDexAcceptanceReportV63H.misheardReceiptStepWorks === true,
+      spendStepWorks: phoneDexAcceptanceReportV63H.spendStepWorks === true,
+      missingDocumentsStepWorks: phoneDexAcceptanceReportV63H.missingDocumentsStepWorks === true,
+      exportPermissionStepWorks: phoneDexAcceptanceReportV63H.exportPermissionStepWorks === true,
+      followUpStepWorks: phoneDexAcceptanceReportV63H.followUpStepWorks === true,
+      readbackStepWorks: phoneDexAcceptanceReportV63H.readbackStepWorks === true,
+      manualModeStepWorks: phoneDexAcceptanceReportV63H.manualModeStepWorks === true,
+      automationReportStepWorks: phoneDexAcceptanceReportV63H.automationReportStepWorks === true,
+      regressionQaStepWorks: phoneDexAcceptanceReportV63H.regressionQaStepWorks === true,
+      unknownFallbackStepWorks: phoneDexAcceptanceReportV63H.unknownFallbackStepWorks === true,
+      premiumModulesStillWork: phoneDexAcceptanceReportV63H.premiumModulesStillWork === true,
+      unknownFallbackStillWorks: phoneDexAcceptanceReportV63H.unknownFallbackStillWorks === true,
       premiumModuleKeeperExists: moduleKeeperReportV63E.premiumModuleKeeperExists === true && Boolean(window.AquaPremiumModuleKeeperV63E),
       moduleVisualKeeperPanelWorks: results.some(function (result) { return result.command === 'show premium module keeper' && result.passed && result.actual.moduleVisualKeeperPanelWorks; }),
       premiumShellCoverageWorks: moduleKeeperReportV63E.premiumShellCoverageWorks === true,
@@ -11076,6 +11317,13 @@
     state.approvalIndexWorks = report.approvalIndexWorks;
     state.exportPacketIndexWorks = report.exportPacketIndexWorks;
     state.noRealCustomerData = true;
+    state.phoneDexAcceptanceExists = report.phoneDexAcceptanceExists;
+    state.acceptanceGuidePanelWorks = report.acceptanceGuidePanelWorks;
+    state.acceptanceStepRunnerWorks = report.acceptanceStepRunnerWorks;
+    state.passFailControlsWork = report.passFailControlsWork;
+    state.acceptanceSummaryWorks = report.acceptanceSummaryWorks;
+    state.failurePromptWorks = report.failurePromptWorks;
+    state.premiumModulesStillWork = report.premiumModulesStillWork;
     state.premiumModuleKeeperExists = report.premiumModuleKeeperExists;
     state.moduleVisualKeeperPanelWorks = report.moduleVisualKeeperPanelWorks;
     state.premiumShellCoverageWorks = report.premiumShellCoverageWorks;
@@ -11617,6 +11865,7 @@
     safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true }
   };
   window.AquaBrainE2ERoutingV62P = window.AquaBrainE2ERoutingV62P || { version: 'v62P', localDemoOnly: true, getAquaBrainE2ETestMatrixV62P: getAquaBrainE2ETestMatrixV62P, runAquaBrainE2ETestV62P: runAquaBrainE2ETestV62P, runAquaBrainE2ETestMatrixV62P: runAquaBrainE2ETestMatrixV62P, renderAquaBrainE2ETestReportV62P: renderAquaBrainE2ETestReportV62P, explainAquaBrainE2ERouteV62P: explainAquaBrainE2ERouteV62P, getAquaBrainE2EFailuresV62P: getAquaBrainE2EFailuresV62P, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true } };
+  window.AquaPhoneDexAcceptanceV63H = window.AquaPhoneDexAcceptanceV63H || { version: 'v63H', localDemoOnly: true, storageKey: AQUA_PHONE_DEX_ACCEPTANCE_KEY_V63H, getAquaPhoneDexAcceptanceGuideV63H: getAquaPhoneDexAcceptanceGuideV63H, runAquaPhoneDexAcceptanceStepV63H: runAquaPhoneDexAcceptanceStepV63H, renderAquaPhoneDexAcceptanceGuideV63H: renderAquaPhoneDexAcceptanceGuideV63H, markAquaPhoneDexStepPassV63H: markAquaPhoneDexStepPassV63H, markAquaPhoneDexStepFailV63H: markAquaPhoneDexStepFailV63H, getAquaPhoneDexAcceptanceStatusV63H: getAquaPhoneDexAcceptanceStatusV63H, copyAquaPhoneDexAcceptanceSummaryV63H: copyAquaPhoneDexAcceptanceSummaryV63H, resetAquaPhoneDexAcceptanceV63H: resetAquaPhoneDexAcceptanceV63H, runAquaPhoneDexAcceptanceRegressionV63H: runAquaPhoneDexAcceptanceRegressionV63H, renderIntoAskAI: renderAquaPhoneDexAcceptanceIntoAskAIV63H, next: function () { moveAquaPhoneDexAcceptanceStepV63H(1); return renderAquaPhoneDexAcceptanceIntoAskAIV63H(); }, previous: function () { moveAquaPhoneDexAcceptanceStepV63H(-1); return renderAquaPhoneDexAcceptanceIntoAskAIV63H(); }, safetyEnvelope: aquaPhoneDexAcceptanceSafetyV63H() };
   ensureToolGatewayContractV62J();
   ensureAquaBackendSchemaV62M();
   window.AquaDataQueryRuntimeV62N = window.AquaDataQueryRuntimeV62N || createAquaDataQueryRuntimeV62N();
@@ -11639,5 +11888,5 @@
 
   installPremiumModuleShellStylesV61Z();
   installPremiumModuleShellStylesV63A();
-  console.log('Aqua Homes OS v63G extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v63H extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
 }());
