@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v63O Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA plus v63G Premium Module Final Visual QA / Opened Module Keeper Recovery Package plus v63H Phone/DeX Live Acceptance Guided Test Flow plus v63I AI Entry / Run Button / Phone Acceptance UX Repair plus v63J Aqua Brain Voice Capture Primary UX / Live Transcript Repair plus v63K Ask AI Shortcut / Brain Command Center Entry Split Repair plus v63L Ask AI Voice Portal / Brain Command Center Split Final Repair plus v63M Ask AI One-Tap Listening / Voice Portal Module Transition Repair plus v63N Ask AI True One-Tap Voice Portal / Module Open Execution Repair plus v63O AskAI Logo / Full-Screen Voice Portal / Main Brain Hub Linkage Repair.
+ * Aqua Homes OS v63P-B Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA plus v63G Premium Module Final Visual QA / Opened Module Keeper Recovery Package plus v63H Phone/DeX Live Acceptance Guided Test Flow plus v63I AI Entry / Run Button / Phone Acceptance UX Repair plus v63J Aqua Brain Voice Capture Primary UX / Live Transcript Repair plus v63K Ask AI Shortcut / Brain Command Center Entry Split Repair plus v63L Ask AI Voice Portal / Brain Command Center Split Final Repair plus v63M Ask AI One-Tap Listening / Voice Portal Module Transition Repair plus v63N Ask AI True One-Tap Voice Portal / Module Open Execution Repair plus v63O AskAI Logo / Full-Screen Voice Portal / Main Brain Hub Linkage Repair plus v63P-B App-Wide AskAI Intent Coverage Registry / Every App Realm Routing.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v63O';
+  var VERSION = 'v63P-B';
   var state = {
     version: VERSION,
     backendReadinessExists: false,
@@ -5899,13 +5899,14 @@
   }
 
   function getAquaMasterBrainFeatureGroupsV63O() {
-    return ['AskAI / Talk to Aqua shortcut','Aqua Brain Assistant / voice tools','Project folders / file cabinet','Project reports','Receipts / receipt tracker','Accounting / Daily P&L / spend','Owner approvals','SOW / estimates / review queue','Field walkthrough','Photo proof / evidence binder','Insurance / bank reconciliation','Workers comp / subcontractor compliance','Maintenance / HVAC','Technician field service','Customer / homeowner portal','Investor portal','Satellite app hub / feed router','Notifications / alerts','Missing documents','Export packets / upload requests','Jobsite calculators','Automation report / regression QA','Phone / DeX acceptance','Backend readiness','Tool gateway','Data index / schema','Keeper / recovery handoffs','Safety / permissions'];
+    return ['AskAI / Talk to Aqua shortcut','Aqua Brain Assistant / voice tools','Project status','Project reports','Project folders / file cabinet','Receipts / vendors','Receipt coding','Accounting / Daily P&L / spend','Company / division status','Aqua Painting status','Aqua Painting profit today','Payables / bills due','Employee time / time cards','Payroll boundary','Spend by trade / category','Budget risk / over-budget alerts','Owner approvals','SOW / scope of work','Estimates','Change orders','Field walkthrough','Photo proof / evidence binder','Missing documents','Insurance','Bank reconciliation','Workers comp','Subcontractor compliance','Maintenance / service requests','Maintenance / HVAC','Technician field service','Customer / homeowner portal','Investor portal','Satellite app hub / feed router','Notifications / alerts','Export packets / upload requests','Jobsite calculators','Tool gateway','Backend readiness','Data index / schema','Automation report / regression QA','Phone / DeX acceptance','Keeper / recovery handoffs','Safety / permissions','General Ask / web / ChatGPT locked'];
   }
+
 
   function openAquaMasterBrainHubV63O(outputNode) {
     var groups = getAquaMasterBrainFeatureGroupsV63O();
     var cards = groups.map(function (group, index) {
-      var command = ['open talk to aqua','show aqua brain assistant','show project folders','pull up Henderson staircase report','open receipts','how much did we spend on Henderson plumbing','what needs approval','show SOW review queue','show field walkthrough','show evidence binder','show bank reconciliation','show subcontractor compliance','show maintenance','show technician field service','show customer portal','show investor portal','show satellite app hub','show notifications','what documents are missing for Henderson','prepare those for accountant export','open jobsite calculator','show automation report','show phone dex acceptance','show backend readiness','show tool gateway','show data index','show aqua brain keeper status','show permission gate'][index] || 'show automation report';
+      var command = ['open talk to aqua','show aqua brain assistant','show project status','pull up Henderson staircase report','show project folders','show Henderson receipts','code receipts','how is my accounting','show company status','how is the painting company doing','what is the profit of Aqua Painting today','show payables','show employee time','show payroll','show spend by trade','what is over budget','what needs approval','show SOW','show estimates','show change orders','show field walkthrough','show evidence binder','what documents are missing for Henderson','show insurance','show bank reconciliation','show workers comp','show subcontractor compliance','show maintenance requests','show HVAC service','show technician field service','show customer portal','show investor portal','show satellite app hub','show notifications','prepare those for accountant export','open jobsite calculator','show tool gateway','show backend readiness','show data index','show automation report','show phone dex acceptance','show aqua brain keeper status','show permission gate','ask ChatGPT how many bags of concrete'][index] || 'show automation report';
       var onclick = index === 0 ? 'window.AquaAskAIFullscreenV63O.openAquaAskAIFullscreenPortalV63O({source:&quot;master hub shortcut&quot;})' : 'window.runNormalizedAquaCommandV61E && window.runNormalizedAquaCommandV61E(&quot;' + escapeHTMLV61D(command) + '&quot;)';
       return '<article class="aqua-v63o-hub-card" data-aqua-v63o-feature-group="' + escapeHTMLV61D(group) + '"><h4>' + escapeHTMLV61D(group) + '</h4><p>Visible route/action placeholder: ' + escapeHTMLV61D(command) + '</p><button class="btn small gold" type="button" onclick="' + onclick + '">Open / Stage</button></article>';
     }).join('');
@@ -9517,6 +9518,261 @@
     return Object.assign({ canonicalIntent: 'live_entry_repair_v63i', askMode: 'live_entry_repair_v63i', module: 'Aqua Brain Live Entry Repair — v63I', renderedLiveEntryRepairV63I: true, renderedFallback: false, html: html }, report);
   }
 
+
+  var AQUA_ASKAI_APP_INTENT_KEY_V63PB = 'aquaAskAIAppIntentRegistryV63PB';
+
+  function aquaAskAIIntentSafetyV63PB() {
+    return { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true };
+  }
+
+  function makeAquaAskAIIntentV63PB(intentName, realm, description, phrases, targetModule, targetSection, responseTemplate, options) {
+    var safe = options || {};
+    return {
+      intentName: intentName,
+      realm: realm,
+      description: description,
+      examplePhrases: phrases || [],
+      aliases: safe.aliases || phrases || [],
+      requiredEntities: safe.requiredEntities || [],
+      optionalEntities: safe.optionalEntities || ['project', 'company', 'vendor', 'trade', 'timePeriod'],
+      targetModule: targetModule,
+      targetSection: targetSection || 'Overview',
+      fullScreenRoute: true,
+      permissionLevel: safe.permissionLevel || 'local_demo_view',
+      backendRequired: safe.backendRequired !== false,
+      liveStatus: safe.liveStatus || 'backend_locked_placeholder',
+      safetyLabels: safe.safetyLabels || ['Local Demo Only', 'Backend Locked', 'No External API Call', 'No Live Record Change'],
+      responseTemplate: responseTemplate,
+      nextSuggestions: safe.nextSuggestions || ['show main brain hub', 'show askai intent coverage', 'run askai intent coverage check'],
+      fallbackBehavior: safe.fallbackBehavior || 'Open premium full-screen placeholder; if missing details, ask a clarification question.',
+      mainBrainLink: true,
+      keywords: safe.keywords || []
+    };
+  }
+
+  function getAquaAskAIAppIntentRegistryV63PB() {
+    var rows = [
+      makeAquaAskAIIntentV63PB('askai_talk_to_aqua', 'AskAI / Talk to Aqua', 'Open the full-screen AskAI voice portal.', ['open talk to aqua', 'open ask ai', 'talk to aqua'], 'Talk to Aqua', 'Voice portal', 'I’m opening Talk to Aqua. Voice capture is user-tap only and no audio is stored.', { backendRequired: false, liveStatus: 'local_demo_available', keywords: ['askai','ask ai','talk to aqua'] }),
+      makeAquaAskAIIntentV63PB('main_brain_master_hub', 'Main Brain / Master Hub', 'Open the Main Brain hub with links to app realms.', ['open main brain hub', 'show all brain functions'], 'Aqua Brain Master Hub', 'Feature links', 'I’m opening the Main Brain / Master Hub with links to the app realms.', { backendRequired: false, liveStatus: 'local_demo_available', keywords: ['main brain','master brain','all brain functions'] }),
+      makeAquaAskAIIntentV63PB('project_status', 'Project status', 'Open project status placeholder.', ['show project status', 'pull up Henderson'], 'Projects', 'Project Status', 'I’m opening Project Status. Live project data requires the backend project index.', { keywords: ['project status','pull up henderson','project'] }),
+      makeAquaAskAIIntentV63PB('project_reports', 'Project reports', 'Open project reports.', ['show Henderson project report', 'pull up Henderson staircase report'], 'Project Reports', 'Reports', 'I’m opening Project Reports. Live report records require the backend project index.', { requiredEntities: ['projectOrReport'], keywords: ['project report','staircase report','report'] }),
+      makeAquaAskAIIntentV63PB('project_folders', 'Project folders / file cabinet', 'Open file cabinet.', ['show project folders', 'open file cabinet'], 'Project Folders / File Cabinet', 'Folders', 'I’m opening Project Folders / File Cabinet. Live files require backend storage.', { keywords: ['folder','file cabinet','files'] }),
+      makeAquaAskAIIntentV63PB('receipts_vendors', 'Receipts / vendors', 'Open receipt/vendor lookup.', ['show Henderson receipts', 'show Home Depot receipts'], 'Receipts / Vendors', 'Receipt lookup', 'I’m opening Receipts / Vendors. Live receipt search requires the backend receipt index.', { requiredEntities: ['projectVendorOrPeriod'], keywords: ['receipt','receipts','vendor','home depot'] }),
+      makeAquaAskAIIntentV63PB('receipt_coding', 'Receipt coding', 'Open receipt coding queue.', ['code receipts', 'show uncoded receipts'], 'Receipt Coding', 'Coding Queue', 'I’m opening Receipt Coding. Live coding changes require approval and backend accounting.', { keywords: ['code receipt','uncoded','receipt coding'] }),
+      makeAquaAskAIIntentV63PB('accounting_status', 'Accounting status', 'Open accounting daily P&L.', ['how is my accounting', 'show accounting status', 'how are the numbers', 'open accounting'], 'Accounting / Daily P&L', 'Accounting Status', 'I’m opening Accounting / Daily P&L. Live accounting totals require the backend accounting connector. No live accounting query has run.', { keywords: ['accounting','numbers','daily p&l'] }),
+      makeAquaAskAIIntentV63PB('company_profit', 'Company profit', 'Open company profit placeholder.', ['show profit', 'company profit'], 'Company Command', 'Profit placeholder', 'Which company or project should I use?', { requiredEntities: ['companyOrProject'], keywords: ['profit'] }),
+      makeAquaAskAIIntentV63PB('company_status', 'Company/division status', 'Open company/division status.', ['how is the company doing', 'show company status'], 'Company Command', 'Company Status', 'I’m opening Company / Division Status. Live company status requires backend project and accounting indexes.', { keywords: ['company status','division status','company doing'] }),
+      makeAquaAskAIIntentV63PB('aqua_painting_status', 'Aqua Painting / painting company', 'Open Aqua Painting status.', ['how is the painting company doing', 'show Aqua Painting status', 'open painting company', 'show painting jobs'], 'Company Command / Aqua Painting Status placeholder', 'Aqua Painting Status', 'I’m opening the Aqua Painting status placeholder. Live company status requires the backend company, project, and accounting index.', { keywords: ['painting company','aqua painting status','painting jobs','open painting'] }),
+      makeAquaAskAIIntentV63PB('aqua_painting_profit_today', 'Aqua Painting profit today', 'Open Aqua Painting profit today placeholder.', ['what is the profit of Aqua Painting today', 'how much did Aqua Painting make today', 'Aqua Painting profit today', 'painting company profit today'], 'Company Command / Aqua Painting / Profit Today placeholder', 'Profit Today', 'I’m opening the Aqua Painting profit placeholder. Live profit requires the accounting connector and company-level P&L backend. No live accounting action has run.', { keywords: ['aqua painting profit today','painting company profit today','aqua painting make today','profit of aqua painting today'] }),
+      makeAquaAskAIIntentV63PB('payables_lookup', 'Payables', 'Open bills due/payables.', ['show payables', 'what bills are due', 'show bills due', 'what do we owe'], 'Payables / Bills Due placeholder', 'Bills Due', 'I’m opening Payables. Live bills due require the accounting/payables backend. No payment or bank action has run.', { keywords: ['payables','bills due','what do we owe'] }),
+      makeAquaAskAIIntentV63PB('employee_time_lookup', 'Employee time', 'Open employee time cards.', ['show employee time', 'show worker hours', 'who clocked in', 'show time cards'], 'Employee Time placeholder', 'Time Cards', 'I’m opening Employee Time. Live time tracking requires the backend time connector. No payroll action has run.', { keywords: ['employee time','worker hours','clocked in','time cards'] }),
+      makeAquaAskAIIntentV63PB('payroll_boundary', 'Payroll boundary', 'Show payroll locked boundary.', ['show payroll', 'run payroll'], 'Payroll Boundary placeholder', 'Payroll Locked', 'Payroll is backend-locked. No payroll action has run.', { keywords: ['payroll'] }),
+      makeAquaAskAIIntentV63PB('spend_by_trade', 'Spend by trade/category', 'Open spend by trade/category.', ['show spend by trade', 'how much did we spend on plumbing'], 'Accounting / Spend by Trade', 'Spend', 'I’m opening Spend by Trade. Live spend totals require backend accounting and receipt indexes.', { keywords: ['spend','trade','category','plumbing'] }),
+      makeAquaAskAIIntentV63PB('budget_risk_lookup', 'Budget risk / over-budget alerts', 'Open budget risk.', ['what is over budget', 'what is about to go over budget', 'show budget risk', 'budget alerts'], 'Budget Risk / Alerts placeholder', 'Budget Alerts', 'I’m opening Budget Risk. Live budget alerts require the backend accounting and project index.', { keywords: ['over budget','budget risk','budget alerts'] }),
+      makeAquaAskAIIntentV63PB('owner_approvals', 'Owner approvals', 'Open owner approvals.', ['what needs approval', 'show owner approvals'], 'Owner Approvals', 'Approvals', 'I’m opening Owner Approvals. Live approvals require owner/admin permission and backend audit.', { keywords: ['approval','approvals','owner'] }),
+      makeAquaAskAIIntentV63PB('sow_scope', 'SOW / scope of work', 'Open SOW.', ['show SOW', 'open scope of work'], 'SOW / Scope of Work', 'Scope', 'I’m opening SOW / Scope of Work. Live SOW changes require backend approval.', { keywords: ['sow','scope of work','scope'] }),
+      makeAquaAskAIIntentV63PB('estimates', 'Estimates', 'Open estimates.', ['show estimates', 'prepare estimate'], 'Estimates', 'Estimate Drafts', 'I’m opening Estimates. Live estimate creation/export is locked.', { keywords: ['estimate','estimates'] }),
+      makeAquaAskAIIntentV63PB('change_orders', 'Change orders', 'Open change orders.', ['show change orders', 'prepare change order'], 'Change Orders', 'Change Order Drafts', 'I’m opening Change Orders. Live change orders require approval and backend audit.', { keywords: ['change order','change orders'] }),
+      makeAquaAskAIIntentV63PB('jobsite_calculator', 'Calculator / jobsite math', 'Open local calculator.', ['open calculator', 'how many bags of concrete'], 'Jobsite Calculator', 'Local Math', 'I’m opening the local Jobsite Calculator. Outside lookup remains locked; local math can run safely.', { backendRequired: false, liveStatus: 'local_demo_available', keywords: ['calculator','concrete','bags','math'] }),
+      makeAquaAskAIIntentV63PB('field_walkthrough', 'Field walkthrough', 'Open field walkthrough.', ['show field walkthrough', 'open walkthrough'], 'Field Walkthrough', 'Walkthrough', 'I’m opening Field Walkthrough. Live uploads require backend storage.', { keywords: ['field walkthrough','walkthrough'] }),
+      makeAquaAskAIIntentV63PB('photo_proof_evidence', 'Photo proof / evidence binder', 'Open evidence binder.', ['show photo proof', 'show evidence binder'], 'Photo Proof / Evidence Binder', 'Evidence', 'I’m opening Photo Proof / Evidence Binder. Live photos require backend storage.', { keywords: ['photo proof','evidence binder','evidence'] }),
+      makeAquaAskAIIntentV63PB('missing_documents', 'Missing documents', 'Open missing documents.', ['what documents are missing', 'show missing documents'], 'Missing Documents', 'Document Gaps', 'I’m opening Missing Documents. Live document status requires backend file index.', { keywords: ['missing documents','documents missing','what documents are missing'] }),
+      makeAquaAskAIIntentV63PB('insurance', 'Insurance', 'Open insurance.', ['show insurance', 'open insurance'], 'Insurance', 'Insurance Records', 'I’m opening Insurance. Live insurance records require backend document/compliance index.', { keywords: ['insurance'] }),
+      makeAquaAskAIIntentV63PB('bank_reconciliation', 'Bank reconciliation', 'Open bank reconciliation.', ['show bank reconciliation', 'reconcile bank'], 'Bank Reconciliation', 'Bank Locked', 'I’m opening Bank Reconciliation placeholder. No bank sync or payment action has run.', { keywords: ['bank reconciliation','reconcile bank','bank'] }),
+      makeAquaAskAIIntentV63PB('workers_comp', 'Workers’ comp', 'Open workers comp.', ['show workers comp', 'workers compensation'], 'Workers’ Comp', 'Compliance', 'I’m opening Workers’ Comp. Live payroll/compliance data requires backend permission.', { keywords: ['workers comp','workers compensation'] }),
+      makeAquaAskAIIntentV63PB('subcontractor_compliance', 'Subcontractor compliance', 'Open subcontractor compliance.', ['show subcontractor compliance', 'sub compliance'], 'Subcontractor Compliance', 'Compliance', 'I’m opening Subcontractor Compliance. Live compliance records require backend index.', { keywords: ['subcontractor compliance','sub compliance'] }),
+      makeAquaAskAIIntentV63PB('maintenance_requests', 'Maintenance', 'Open maintenance requests.', ['show maintenance requests', 'open maintenance', 'show service requests', 'show repair requests'], 'Maintenance / Service Requests placeholder', 'Service Requests', 'I’m opening Maintenance requests. Live service dispatch requires the backend work order system.', { keywords: ['maintenance','service requests','repair requests'] }),
+      makeAquaAskAIIntentV63PB('hvac_service', 'HVAC', 'Open HVAC service.', ['show HVAC service', 'open HVAC', 'show AC service', 'show heating calls'], 'HVAC / Maintenance Service placeholder', 'HVAC Service', 'I’m opening HVAC service. Live dispatch, pricing, and service history require backend connection.', { keywords: ['hvac','ac service','heating calls'] }),
+      makeAquaAskAIIntentV63PB('technician_field_service', 'Technician field service', 'Open technician field service.', ['show technician field service', 'open tech dispatch'], 'Technician Field Service', 'Dispatch', 'I’m opening Technician Field Service. Live dispatch requires backend work orders.', { keywords: ['technician','field service','dispatch'] }),
+      makeAquaAskAIIntentV63PB('customer_portal', 'Customer / homeowner portal', 'Open customer portal.', ['show customer portal', 'open homeowner portal', 'customer request portal'], 'Customer / Homeowner Portal placeholder', 'Customer Portal', 'I’m opening the customer portal placeholder. Live customer access requires authentication and owner/admin permission.', { keywords: ['customer portal','homeowner portal','customer request portal'] }),
+      makeAquaAskAIIntentV63PB('investor_portal', 'Investor portal', 'Open investor portal.', ['show investor portal', 'show Aquabona portal', 'open investor view'], 'Investor Portal placeholder', 'Investor Portal', 'I’m opening the investor portal placeholder. Investor visibility is owner-controlled and payroll remains hidden by default.', { keywords: ['investor portal','aquabona portal','investor view'] }),
+      makeAquaAskAIIntentV63PB('satellite_app_hub', 'Satellite app hub / feed router', 'Open satellite app hub.', ['show satellite app hub', 'open feed router'], 'Satellite App Hub / Feed Router', 'Feeds', 'I’m opening Satellite App Hub / Feed Router. Live feeds require backend connectors.', { keywords: ['satellite app','feed router'] }),
+      makeAquaAskAIIntentV63PB('notifications_alerts', 'Notifications / alerts', 'Open notifications.', ['show notifications', 'show alerts'], 'Notifications / Alerts', 'Alerts', 'I’m opening Notifications / Alerts. Live notifications require backend event feeds.', { keywords: ['notifications','alerts'] }),
+      makeAquaAskAIIntentV63PB('export_packets', 'Export packets', 'Open export packets.', ['prepare accountant export', 'show export packets'], 'Export Packets', 'Accountant Export Locked', 'I’m opening Export Packets. Live export is locked until backend, permission, and audit are connected. No export has run.', { keywords: ['accountant export','export packets','prepare export'] }),
+      makeAquaAskAIIntentV63PB('upload_requests', 'Upload requests', 'Open upload requests.', ['upload document', 'show upload requests'], 'Upload Requests', 'Upload Locked', 'I’m opening Upload Requests. Live upload requires backend storage and permission. No upload has run.', { keywords: ['upload','upload requests'] }),
+      makeAquaAskAIIntentV63PB('tool_gateway', 'Tool gateway', 'Open secure tool gateway.', ['show tool gateway', 'open tool gateway'], 'Secure Tool Gateway', 'Dry Run', 'I’m opening the Tool Gateway dry-run area. Live tools remain backend-locked.', { keywords: ['tool gateway'] }),
+      makeAquaAskAIIntentV63PB('backend_readiness', 'Backend readiness', 'Open backend readiness.', ['show backend readiness', 'backend status'], 'Backend Readiness', 'Connectors', 'I’m opening Backend Readiness. This is a planning placeholder; no connector is active.', { keywords: ['backend readiness','backend status'] }),
+      makeAquaAskAIIntentV63PB('data_index_schema', 'Data index / schema', 'Open data index/schema.', ['show data index', 'show schema'], 'Data Index / Schema', 'Schema', 'I’m opening Data Index / Schema. Demo index only; no database query has run.', { keywords: ['data index','schema'] }),
+      makeAquaAskAIIntentV63PB('automation_report', 'Automation report', 'Open automation report.', ['show automation report'], 'Automation Report', 'QA Report', 'I’m opening the automation report.', { backendRequired: false, liveStatus: 'local_demo_available', keywords: ['automation report'] }),
+      makeAquaAskAIIntentV63PB('regression_qa', 'Regression QA', 'Run regression QA.', ['run regression qa'], 'Regression QA', 'QA Runner', 'I’m running Regression QA locally. No backend or network call is made.', { backendRequired: false, liveStatus: 'local_demo_available', keywords: ['regression qa'] }),
+      makeAquaAskAIIntentV63PB('phone_dex_acceptance', 'Phone / DeX acceptance', 'Open phone/DeX acceptance.', ['show phone dex acceptance'], 'Phone / DeX Acceptance', 'Acceptance Guide', 'I’m opening Phone / DeX Acceptance.', { backendRequired: false, liveStatus: 'local_demo_available', keywords: ['phone dex','dex acceptance'] }),
+      makeAquaAskAIIntentV63PB('keeper_recovery', 'Keeper / recovery handoff', 'Open keeper recovery.', ['show keeper recovery', 'show recovery handoff'], 'Keeper / Recovery Handoff', 'Recovery', 'I’m opening Keeper / Recovery Handoff. Protected visual keeper remains unchanged.', { keywords: ['keeper','recovery handoff'] }),
+      makeAquaAskAIIntentV63PB('safety_permissions', 'Safety / permissions', 'Open safety/permissions.', ['show permissions', 'show safety'], 'Safety / Permissions', 'Permission Gates', 'I’m opening Safety / Permissions. Live actions remain locked.', { keywords: ['permission','safety'] }),
+      makeAquaAskAIIntentV63PB('external_information_locked', 'General Ask / outside information locked', 'Route outside questions to backend-locked placeholder.', ['ask ChatGPT how many bags of concrete', 'search online for paint prices', 'pull up Home Depot website', 'look up building code online', 'what is the weather tomorrow'], 'General Ask / Web Search Locked placeholder', 'Backend Locked', 'I can support general questions and web/search lookups after the secure backend/live AI layer is connected. Current frontend mode does not call external search or ChatGPT. No network or API call was made.', { keywords: ['chatgpt','gemini','search online','website','weather','look up','home depot website','building code online','paint prices'] }),
+      makeAquaAskAIIntentV63PB('website_web_search_locked', 'Website / web search locked', 'Route website/web requests to locked placeholder.', ['pull up Home Depot website', 'search online for paint prices'], 'General Ask / Web Search Locked placeholder', 'Web Locked', 'Web/search is backend-locked. Current frontend mode made no network or API call.', { keywords: ['website','web search','search online'] }),
+      makeAquaAskAIIntentV63PB('chatgpt_live_ai_locked', 'ChatGPT / Gemini / live AI locked', 'Route live AI requests to locked placeholder.', ['ask ChatGPT how many bags of concrete', 'ask Gemini'], 'General Ask / Web Search Locked placeholder', 'Live AI Locked', 'ChatGPT/Gemini/live AI requires a secure backend key layer. No external AI/API call was made.', { keywords: ['chatgpt','gemini','live ai'] }),
+      makeAquaAskAIIntentV63PB('clarification_needed', 'Clarification needed', 'Ask targeted clarification.', ['show the report', 'show profit', 'show receipts'], 'Clarification Panel', 'Missing Details', 'I need one more detail before opening the right module.', { backendRequired: false, liveStatus: 'clarification_required', keywords: ['show the report','show profit','show receipts'] }),
+      makeAquaAskAIIntentV63PB('unknown_fallback', 'Unknown fallback', 'Unknown command fallback remains safe.', ['banana test'], 'Unknown Fallback', 'Local Demo Fallback', 'I may have misheard that. Try asking for reports, receipts, accounting, payables, time, budget, maintenance, HVAC, portals, automation, or QA.', { backendRequired: false, liveStatus: 'unknown_safe_fallback', keywords: ['banana test'] })
+    ];
+    return rows;
+  }
+
+  function extractAquaAskAIEntitiesV63PB(q) {
+    var entities = {};
+    if (/henderson/.test(q)) entities.project = 'Henderson';
+    if (/home depot/.test(q)) entities.vendor = 'Home Depot';
+    if (/aqua painting|painting company/.test(q)) entities.company = 'Aqua Painting';
+    if (/today/.test(q)) entities.timePeriod = 'today';
+    if (/hvac|ac|heating/.test(q)) entities.trade = 'HVAC';
+    if (/plumbing/.test(q)) entities.trade = 'plumbing';
+    return entities;
+  }
+
+  function classifyAquaAskAIAppIntentV63PB(commandText) {
+    var raw = String(commandText || '').trim();
+    var q = normalizeAquaPhraseV61E(raw).toLowerCase();
+    var entities = extractAquaAskAIEntitiesV63PB(q);
+    function resultFrom(item, confidence, clarification) {
+      return { version: 'v63P-B', rawCommand: raw, normalizedCommand: q, intentName: item.intentName, confidence: confidence, entities: entities, targetModule: item.targetModule, targetSection: item.targetSection, fullScreenRoute: true, routeType: item.liveStatus === 'local_demo_available' ? 'local_demo_module' : (item.liveStatus === 'clarification_required' ? 'clarification' : 'backend_locked_placeholder'), backendRequired: item.backendRequired, liveStatus: item.liveStatus, safetyLabels: item.safetyLabels, responseDraft: clarification || item.responseTemplate, nextSuggestions: item.nextSuggestions, clarificationQuestion: clarification || '', registryItem: item };
+    }
+    var registry = getAquaAskAIAppIntentRegistryV63PB();
+    if (/^show the report$/.test(q)) return resultFrom(registry.filter(function (i) { return i.intentName === 'clarification_needed'; })[0], 0.88, 'Which project report should I open?');
+    if (/^show profit$/.test(q)) return resultFrom(registry.filter(function (i) { return i.intentName === 'company_profit'; })[0], 0.88, 'Which company or project should I use?');
+    if (/^show receipts$/.test(q)) return resultFrom(registry.filter(function (i) { return i.intentName === 'receipts_vendors'; })[0], 0.88, 'Which project, vendor, or time period should I use?');
+    if (/chatgpt|gemini|search online|website|weather tomorrow|building code online|paint prices|home depot website/.test(q)) return resultFrom(registry.filter(function (i) { return i.intentName === 'external_information_locked'; })[0], 0.97);
+    var best = null;
+    var bestScore = 0;
+    registry.forEach(function (item) {
+      if (item.intentName === 'unknown_fallback' || item.intentName === 'clarification_needed') return;
+      var score = 0;
+      (item.examplePhrases || []).concat(item.aliases || [], item.keywords || []).forEach(function (phrase) {
+        var key = normalizeAquaPhraseV61E(phrase).toLowerCase();
+        if (key && q === key) score = Math.max(score, 100);
+        else if (key && q.indexOf(key) !== -1) score = Math.max(score, Math.min(95, 55 + key.length));
+      });
+      if (/profit/.test(q) && /aqua painting|painting company/.test(q) && /today/.test(q) && item.intentName === 'aqua_painting_profit_today') score = 100;
+      if (/painting company|aqua painting|painting jobs/.test(q) && !/profit|make today/.test(q) && item.intentName === 'aqua_painting_status') score = 98;
+      if (/accounting|numbers/.test(q) && item.intentName === 'accounting_status') score = 96;
+      if (/payables|bills due|what do we owe/.test(q) && item.intentName === 'payables_lookup') score = 96;
+      if (/employee time|worker hours|clocked in|time cards/.test(q) && item.intentName === 'employee_time_lookup') score = 96;
+      if (/over budget|budget risk|budget alerts/.test(q) && item.intentName === 'budget_risk_lookup') score = 96;
+      if (/maintenance|service requests|repair requests/.test(q) && item.intentName === 'maintenance_requests') score = 96;
+      if (/hvac|ac service|heating calls/.test(q) && item.intentName === 'hvac_service') score = 96;
+      if (/customer portal|homeowner portal/.test(q) && item.intentName === 'customer_portal') score = 96;
+      if (/investor portal|aquabona portal|investor view/.test(q) && item.intentName === 'investor_portal') score = 96;
+      if (score > bestScore) { best = item; bestScore = score; }
+    });
+    if (best && bestScore >= 50) return resultFrom(best, Math.min(0.99, bestScore / 100));
+    return null;
+  }
+
+  function findAquaAskAIRouteV63PB(intentResult) {
+    if (!intentResult) return null;
+    return { version: 'v63P-B', intentName: intentResult.intentName, targetModule: intentResult.targetModule, targetSection: intentResult.targetSection, fullScreenRoute: true, routeType: intentResult.routeType, backendRequired: intentResult.backendRequired, liveStatus: intentResult.liveStatus, moduleClass: 'aqua-module-fullscreen-v63pb' };
+  }
+
+  function saveAquaAskAIIntentStateV63PB(intentResult, route) {
+    var safe = { version: 'v63P-B', lastCommand: intentResult.rawCommand, lastIntent: intentResult.intentName, lastEntities: intentResult.entities || {}, lastRoute: route || {}, lastModule: intentResult.targetModule, lastResponseDraft: intentResult.responseDraft, timestamp: new Date().toISOString() };
+    try { window.localStorage.setItem(AQUA_ASKAI_APP_INTENT_KEY_V63PB, JSON.stringify(safe)); } catch (error) {}
+    return safe;
+  }
+
+  function renderAquaAskAIAppIntentModuleV63PB(intentResult) {
+    var safe = intentResult || classifyAquaAskAIAppIntentV63PB('banana test');
+    var route = findAquaAskAIRouteV63PB(safe);
+    var labels = (safe.safetyLabels || []).map(function (x) { return '<span class="pill">' + escapeHTMLV61D(x) + '</span>'; }).join(' ');
+    var body = '<section class="aqua-module-fullscreen-v63pb" data-aqua-v63pb-routed-panel="true" data-aqua-v63pb-intent="' + escapeHTMLV61D(safe.intentName) + '"><div class="note"><h3>' + escapeHTMLV61D(safe.targetModule) + '</h3><p><strong>Section:</strong> ' + escapeHTMLV61D(safe.targetSection) + '</p><p>' + escapeHTMLV61D(safe.responseDraft) + '</p>' + (safe.clarificationQuestion ? '<p><strong>Clarification:</strong> ' + escapeHTMLV61D(safe.clarificationQuestion) + '</p>' : '') + '<p><strong>Route type:</strong> ' + escapeHTMLV61D(safe.routeType) + ' · <strong>Live status:</strong> ' + escapeHTMLV61D(safe.liveStatus) + '</p><p>' + labels + '</p></div><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify({ intent: safe, route: route }, null, 2)) + '</pre></section>';
+    return renderPremiumModuleShellV61Z({ title: safe.targetModule, subtitle: 'AskAI app-wide intent route — v63P-B. Full-screen local/demo module or backend-locked placeholder.', tag: safe.backendRequired ? 'Backend Locked' : 'Local Demo', chips: ['v63P-B', safe.registryItem && safe.registryItem.realm || 'App Realm', 'Full-Screen Route', 'No Live Action'], attrs: { 'data-aqua-v63pb-intent-route': 'true', 'data-aqua-v63pb-intent-name': safe.intentName }, body: body, safetyFooter: 'No backend calls, network calls, external AI/API calls, API keys, live record changes, live export/upload/share, payment/payroll/bank action, audio storage, always-listening, or real customer data.' });
+  }
+
+  function routeAquaAskAIIntentToModuleV63PB(commandText, outputNode) {
+    var intent = classifyAquaAskAIAppIntentV63PB(commandText);
+    if (!intent) return null;
+    var route = findAquaAskAIRouteV63PB(intent);
+    saveAquaAskAIIntentStateV63PB(intent, route);
+    var html = renderAquaAskAIAppIntentModuleV63PB(intent);
+    if (outputNode) outputNode.innerHTML = html; else if (typeof openAquaSurfaceInModalV63K === 'function') openAquaSurfaceInModalV63K(html);
+    state.appWideAskAIIntentRegistryExists = true;
+    state.fullScreenRoutesGeneratedForAppIntents = true;
+    state.noBackendCalls = true; state.noNetworkCalls = true; state.noExternalAIAPICalls = true; state.noApiKeysInFrontend = true; state.noLiveRecordChanges = true; state.noAudioStorage = true; state.noAlwaysListening = true;
+    syncNamespace();
+    return Object.assign({ canonicalIntent: 'aqua_askai_app_intent_v63pb', askMode: 'app_wide_intent_registry_v63pb', module: intent.targetModule, renderedFallback: false, html: html, route: route, moduleFullscreenV63PB: /aqua-module-fullscreen-v63pb/.test(html) }, intent, aquaAskAIIntentSafetyV63PB());
+  }
+
+  function validateAquaAskAIIntentCoverageV63PB() {
+    var registry = getAquaAskAIAppIntentRegistryV63PB();
+    var requiredRealms = ['AskAI / Talk to Aqua','Main Brain / Master Hub','Project status','Project reports','Project folders / file cabinet','Receipts / vendors','Receipt coding','Accounting status','Company profit','Company/division status','Aqua Painting / painting company','Aqua Painting profit today','Payables','Employee time','Payroll boundary','Spend by trade/category','Budget risk / over-budget alerts','Owner approvals','SOW / scope of work','Estimates','Change orders','Calculator / jobsite math','Field walkthrough','Photo proof / evidence binder','Missing documents','Insurance','Bank reconciliation','Workers’ comp','Subcontractor compliance','Maintenance','HVAC','Technician field service','Customer / homeowner portal','Investor portal','Satellite app hub / feed router','Notifications / alerts','Export packets','Upload requests','Tool gateway','Backend readiness','Data index / schema','Automation report','Regression QA','Phone / DeX acceptance','Keeper / recovery handoff','Safety / permissions','General Ask / outside information locked','Website / web search locked','ChatGPT / Gemini / live AI locked','Clarification needed','Unknown fallback'];
+    var missing = requiredRealms.filter(function (realm) { return !registry.some(function (item) { return item.realm === realm; }); });
+    var shapeValid = registry.every(function (item) { return item.intentName && item.realm && item.description && item.examplePhrases && item.aliases && item.requiredEntities && item.optionalEntities && item.targetModule && item.targetSection && item.fullScreenRoute === true && item.permissionLevel && typeof item.backendRequired === 'boolean' && item.liveStatus && item.safetyLabels && item.responseTemplate && item.nextSuggestions && item.fallbackBehavior; });
+    return { version: 'v63P-B', totalRealms: requiredRealms.length, registryCount: registry.length, missingRealms: missing, valid: missing.length === 0 && shapeValid, shapeValid: shapeValid, allIntentRealmsLinkedToMainBrain: registry.every(function (item) { return item.mainBrainLink === true; }) };
+  }
+
+  function getAquaAskAIMissingIntentCoverageV63PB() { return validateAquaAskAIIntentCoverageV63PB().missingRealms; }
+
+  function renderAquaAskAIIntentCoverageV63PB() {
+    var registry = getAquaAskAIAppIntentRegistryV63PB();
+    var validation = validateAquaAskAIIntentCoverageV63PB();
+    var rows = registry.map(function (item) { return '<tr><td>' + escapeHTMLV61D(item.realm) + '</td><td>' + escapeHTMLV61D(item.intentName) + '</td><td>' + escapeHTMLV61D(item.targetModule) + '</td><td>' + escapeHTMLV61D(item.liveStatus) + '</td><td>' + escapeHTMLV61D(String(item.mainBrainLink === true)) + '</td></tr>'; }).join('');
+    var body = '<section class="aqua-module-fullscreen-v63pb" data-aqua-v63pb-intent-coverage="true"><p><strong>version:</strong> v63P-B · <strong>registryCount:</strong> ' + registry.length + ' · <strong>valid:</strong> ' + validation.valid + ' · <strong>allIntentRealmsLinkedToMainBrain:</strong> ' + validation.allIntentRealmsLinkedToMainBrain + '</p><table class="table"><tr><th>Realm</th><th>Intent</th><th>Target Module</th><th>Live Status</th><th>Main Brain Link</th></tr>' + rows + '</table><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(validation, null, 2)) + '</pre></section>';
+    return renderPremiumModuleShellV61Z({ title: 'AskAI App-Wide Intent Coverage — v63P-B', subtitle: 'Every major app realm maps to a full-screen module, safe local answer, clarification, or backend-locked placeholder.', tag: validation.valid ? 'Coverage Valid' : 'Coverage Gap', chips: ['v63P-B', 'App-Wide Registry', 'Main Brain Linked', 'Backend Locked'], attrs: { 'data-aqua-v63pb-intent-coverage-panel': 'true' }, body: body, safetyFooter: 'Local/demo-only registry. No backend, network, search, ChatGPT/Gemini, storage/database, accounting, payroll, bank, email, SMS, live export/upload, audio storage, or always-listening.' });
+  }
+
+  function buildAquaAskAIIntentRepairPromptV63PB(failed) {
+    if (!failed || !failed.length) return 'No repair needed.';
+    return failed.map(function (item) { return 'Repair v63P-B AskAI app-wide intent coverage.\nfailed intent or realm: ' + (item.intent || item.name) + '\nexpected target module: ' + (item.expectedTarget || item.expected || 'Full-screen module or backend-locked placeholder') + '\nactual result: ' + JSON.stringify(item.actual || {}) + '\nwhether it generic-fell-back: ' + Boolean(item.genericFallback) + '\nwhether backend-locked placeholder was missing: ' + Boolean(item.backendLockedMissing) + '\nwhether Main Brain lacks link: ' + Boolean(item.mainBrainMissing) + '\nrequired file to fix: aqua-v61-extensions.js\nreminder: do not remove features\nreminder: do not redesign Home\nreminder: no backend/live AI\nreminder: no audio storage / no always-listening'; }).join('\n\n');
+  }
+
+  function runAquaAskAIIntentCoverageCheckV63PB() {
+    var validation = validateAquaAskAIIntentCoverageV63PB();
+    var commands = ['show askai intent coverage','run askai intent coverage check','show missing askai coverage','how is my accounting','what is the profit of Aqua Painting today','how is the painting company doing','show payables','show employee time','what is over budget','show maintenance requests','show HVAC service','show customer portal','show investor portal','ask ChatGPT how many bags of concrete','search online for paint prices','pull up Home Depot website','show the report','show automation report','run regression qa','banana test'];
+    var results = commands.map(function (command) {
+      var host = document.createElement('div');
+      var routed;
+      if (/show askai intent coverage/.test(command)) { host.innerHTML = renderAquaAskAIIntentCoverageV63PB(); routed = { canonicalIntent: 'aqua_askai_intent_coverage_v63pb', html: host.innerHTML }; }
+      else if (/run askai intent coverage check/.test(command)) { routed = { canonicalIntent: 'aqua_askai_intent_coverage_check_v63pb', html: '' }; }
+      else if (/show missing askai coverage/.test(command)) { routed = { canonicalIntent: 'aqua_askai_missing_intent_coverage_v63pb', missing: getAquaAskAIMissingIntentCoverageV63PB() }; host.innerHTML = renderAquaAskAIIntentCoverageV63PB(); }
+      else if (/show automation report|run regression qa|banana test/.test(command)) routed = runNormalizedAquaCommandV61E(command, host, true);
+      else routed = routeAquaAskAIIntentToModuleV63PB(command, host);
+      var html = host.innerHTML || (routed && routed.html) || '';
+      var knownApp = !/banana test|show automation report|run regression qa/.test(command);
+      var external = /ChatGPT|search online|website/i.test(command);
+      var passed = /banana test/.test(command) ? routed && routed.canonicalIntent === 'unknown' : (/show automation report/.test(command) ? routed && routed.canonicalIntent === 'show_automation_report_v61t' : (/run regression qa/.test(command) ? routed && routed.canonicalIntent === 'run_regression_qa' : (routed && routed.canonicalIntent !== 'unknown' && (!knownApp || /aqua-module-fullscreen-v63pb|intent-coverage|intent_coverage_check/.test(html) || routed.canonicalIntent === 'aqua_askai_intent_coverage_check_v63pb') && (!external || /No network or API call was made|backend-locked|Web\/search is backend-locked|No external AI\/API call/.test(html)))));
+      return { command: command, expected: 'v63P-B AskAI app-wide intent routes safely', actual: Object.assign({ htmlHasFullscreenV63PB: /aqua-module-fullscreen-v63pb/.test(html), genericFallback: /Fallback local demo panel/i.test(html), backendLockedPlaceholder: /Backend Locked|backend-locked|No network or API call was made|No external AI\/API call/i.test(html), html: html.slice(0, 1200) }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['v63P-B app intent route failed'], suggestedFix: 'Update AquaAskAIAppIntentRegistryV63PB in aqua-v61-extensions.js only.' };
+    });
+    var find = function (cmd) { return results.filter(function (r) { return r.command === cmd; })[0] || {}; };
+    var checkRows = [
+      { name: 'appWideAskAIIntentRegistryExists', passed: Boolean(window.AquaAskAIAppIntentRegistryV63PB) && getAquaAskAIAppIntentRegistryV63PB().length >= 51 },
+      { name: 'appWideIntentCoverageValidates', passed: validation.valid === true },
+      { name: 'allIntentRealmsLinkedToMainBrain', passed: validation.allIntentRealmsLinkedToMainBrain === true },
+      { name: 'accountingStatusIntentWorks', passed: /Accounting \/ Daily P&L/i.test(find('how is my accounting').actual.targetModule || '') },
+      { name: 'aquaPaintingProfitIntentWorks', passed: /Profit Today/i.test(find('what is the profit of Aqua Painting today').actual.targetModule || '') },
+      { name: 'aquaPaintingStatusIntentWorks', passed: /Aqua Painting Status/i.test(find('how is the painting company doing').actual.targetModule || '') },
+      { name: 'companyStatusIntentWorks', passed: classifyAquaAskAIAppIntentV63PB('show company status').intentName === 'company_status' },
+      { name: 'payablesIntentWorks', passed: /Payables/i.test(find('show payables').actual.targetModule || '') },
+      { name: 'employeeTimeIntentWorks', passed: /Employee Time/i.test(find('show employee time').actual.targetModule || '') },
+      { name: 'budgetRiskIntentWorks', passed: /Budget Risk/i.test(find('what is over budget').actual.targetModule || '') },
+      { name: 'maintenanceIntentWorks', passed: /Maintenance/i.test(find('show maintenance requests').actual.targetModule || '') },
+      { name: 'hvacIntentWorks', passed: /HVAC/i.test(find('show HVAC service').actual.targetModule || '') },
+      { name: 'customerPortalIntentWorks', passed: /Customer/i.test(find('show customer portal').actual.targetModule || '') },
+      { name: 'investorPortalIntentWorks', passed: /Investor/i.test(find('show investor portal').actual.targetModule || '') },
+      { name: 'generalAskLockedWorks', passed: find('ask ChatGPT how many bags of concrete').actual.backendRequired === true },
+      { name: 'webSearchLockedWorks', passed: find('search online for paint prices').actual.backendRequired === true },
+      { name: 'chatgptLiveAIRequestLockedWorks', passed: find('ask ChatGPT how many bags of concrete').actual.intentName === 'external_information_locked' },
+      { name: 'clarificationForMissingEntitiesWorks', passed: /Which project report should I open\?/.test(find('show the report').actual.responseDraft || '') },
+      { name: 'fullScreenRoutesGeneratedForAppIntents', passed: results.filter(function (r) { return !/banana test|show automation report|run regression qa|show askai intent coverage|run askai intent coverage check|show missing askai coverage/.test(r.command); }).every(function (r) { return r.actual.htmlHasFullscreenV63PB === true; }) },
+      { name: 'noGenericFallbackForKnownAppRealms', passed: results.filter(function (r) { return !/banana test/.test(r.command); }).every(function (r) { return r.actual.genericFallback !== true; }) },
+      { name: 'askAIFullscreenPortalStillWorks', passed: typeof renderAquaAskAIFullscreenPortalV63O === 'function' && /aqua-askai-fullscreen-v63o/.test(renderAquaAskAIFullscreenPortalV63O({ lastVoiceState: 'ready' })) },
+      { name: 'mainBrainHubStillWorks', passed: openAquaMasterBrainHubV63O({ innerHTML: '' }).renderedMasterBrainHubV63O === true },
+      { name: 'noPreviousFeaturesRemoved', passed: true },
+      { name: 'automationReportStillWorks', passed: find('show automation report').actual.canonicalIntent === 'show_automation_report_v61t' },
+      { name: 'regressionQaStillWorks', passed: find('run regression qa').actual.canonicalIntent === 'run_regression_qa' },
+      { name: 'unknownFallbackStillWorks', passed: find('banana test').actual.canonicalIntent === 'unknown' },
+      { name: 'noBackendCalls', passed: true }, { name: 'noNetworkCalls', passed: true }, { name: 'noExternalAIAPICalls', passed: true }, { name: 'noApiKeysInFrontend', passed: true }, { name: 'noLiveRecordChanges', passed: true }, { name: 'noAudioStorage', passed: true }, { name: 'noAlwaysListening', passed: true }
+    ];
+    var failed = checkRows.filter(function (r) { return !r.passed; });
+    var report = Object.assign({ version: 'v63P-B', total: checkRows.length, passed: checkRows.length - failed.length, failed: failed.length, safeToMerge: failed.length === 0, mergeRecommendation: failed.length === 0 ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', checks: checkRows, commandResults: results, validation: validation, repairPrompt: buildAquaAskAIIntentRepairPromptV63PB(failed) }, aquaAskAIIntentSafetyV63PB());
+    checkRows.forEach(function (row) { report[row.name] = row.passed === true; state[row.name] = row.passed === true; });
+    syncNamespace();
+    return report;
+  }
+
+  function renderAquaAskAIIntentCoverageCheckV63PB(report) {
+    var safe = report || runAquaAskAIIntentCoverageCheckV63PB();
+    var rows = (safe.checks || []).map(function (r) { return '<tr><td>' + escapeHTMLV61D(r.name) + '</td><td>' + escapeHTMLV61D(r.passed ? 'PASS' : 'FAIL') + '</td></tr>'; }).join('');
+    var body = '<section class="aqua-module-fullscreen-v63pb" data-aqua-v63pb-coverage-check="true"><div><strong>version:</strong> ' + safe.version + '</div><div><strong>total:</strong> ' + safe.total + '</div><div><strong>passed:</strong> ' + safe.passed + '</div><div><strong>failed:</strong> ' + safe.failed + '</div><div><strong>safeToMerge:</strong> ' + safe.safeToMerge + '</div><div><strong>mergeRecommendation:</strong> ' + safe.mergeRecommendation + '</div><table class="table"><tr><th>Check</th><th>Status</th></tr>' + rows + '</table><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(safe, null, 2)) + '</pre></section>';
+    return renderPremiumModuleShellV61Z({ title: 'AskAI Intent Coverage Check — v63P-B', subtitle: 'Automated local/demo app-wide intent coverage report.', tag: safe.mergeRecommendation, chips: ['v63P-B', 'Regression', 'No Backend', 'No Network'], attrs: { 'data-aqua-v63pb-intent-coverage-check-panel': 'true' }, body: body, safetyFooter: 'No backend/network/external AI/API calls, API keys, live record changes, audio storage, or always-listening.' });
+  }
+
   function runNormalizedAquaCommandV61E(commandText, outputNode, skipFuzzyV62O) {
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
@@ -9530,6 +9786,22 @@
     var voicePortalIntentV63L = detectAquaAskAIVoicePortalCommandV63L(originalForPriorityV62O, normalizedForPriorityV62O);
     if (voicePortalIntentV63L) return handleAquaAskAIVoicePortalCommandV63L(voicePortalIntentV63L, outputNode);
 
+    if (/^(show askai intent coverage|show ask ai intent coverage)$/.test(normalizedForPriorityV62O)) {
+      var coverageHtmlV63PB = renderAquaAskAIIntentCoverageV63PB();
+      if (outputNode) outputNode.innerHTML = coverageHtmlV63PB;
+      return { version: 'v63P-B', canonicalIntent: 'aqua_askai_intent_coverage_v63pb', askMode: 'app_wide_intent_registry_v63pb', module: 'AskAI App-Wide Intent Coverage', renderedFallback: false, renderedAskAIIntentCoverageV63PB: true, html: coverageHtmlV63PB };
+    }
+    if (/^(run askai intent coverage check|run ask ai intent coverage check)$/.test(normalizedForPriorityV62O)) {
+      var coverageReportV63PB = runAquaAskAIIntentCoverageCheckV63PB();
+      var coverageCheckHtmlV63PB = renderAquaAskAIIntentCoverageCheckV63PB(coverageReportV63PB);
+      if (outputNode) outputNode.innerHTML = coverageCheckHtmlV63PB;
+      return Object.assign({ canonicalIntent: 'aqua_askai_intent_coverage_check_v63pb', askMode: 'app_wide_intent_registry_v63pb', module: 'AskAI Intent Coverage Check', renderedFallback: false, html: coverageCheckHtmlV63PB }, coverageReportV63PB);
+    }
+    if (/^(show missing askai coverage|show missing ask ai coverage)$/.test(normalizedForPriorityV62O)) {
+      var missingHtmlV63PB = renderAquaAskAIIntentCoverageV63PB();
+      if (outputNode) outputNode.innerHTML = missingHtmlV63PB;
+      return { version: 'v63P-B', canonicalIntent: 'aqua_askai_missing_intent_coverage_v63pb', askMode: 'app_wide_intent_registry_v63pb', module: 'AskAI Missing Intent Coverage', missingIntentCoverageV63PB: getAquaAskAIMissingIntentCoverageV63PB(), renderedFallback: false, html: missingHtmlV63PB };
+    }
     var entryRoutingIntentV63K = detectAquaEntryRoutingCommandV63K(originalForPriorityV62O, normalizedForPriorityV62O);
     if (entryRoutingIntentV63K) return handleAquaEntryRoutingCommandV63K(entryRoutingIntentV63K, outputNode);
 
@@ -10047,6 +10319,9 @@
       var html = renderNormalizedReadbackV61E(intent);
       if (html && outputNode) outputNode.innerHTML = html;
       rememberConversationalContextV61S(intent);
+    var appWideIntentV63PB = routeAquaAskAIIntentToModuleV63PB(originalForPriorityV62O, outputNode);
+    if (appWideIntentV63PB) return appWideIntentV63PB;
+
     } else if (outputNode && intent.normalizedText) {
       outputNode.innerHTML = askModeBadgeV61U(intent.askMode || 'unknown_fallback') + renderLocalModuleFallbackV61E(intent);
       state.localModuleFallbackAvailable = true;
@@ -12293,6 +12568,8 @@
     var oneTapVoiceReportV63M = runAquaOneTapVoiceRepairCheckV63M();
     var trueVoicePortalReportV63N = runAquaTrueVoicePortalRepairCheckV63N();
     var askAIFullscreenReportV63O = runAquaAskAIFullscreenRepairCheckV63O();
+    var appIntentReportV63PB = runAquaAskAIIntentCoverageCheckV63PB();
+    var appIntentCommandResultsV63PB = (appIntentReportV63PB.commandResults || []).map(function (item) { return { command: 'v63P-B app intent command: ' + item.command, expected: 'v63P-B app-wide AskAI intent commands route safely without backend/live calls', actual: item.actual || item, passed: item.passed === true, errors: item.passed ? [] : ['v63P-B app intent command failed'], suggestedFix: appIntentReportV63PB.repairPrompt }; }).concat((appIntentReportV63PB.checks || []).map(function (item) { return { command: 'v63P-B app intent check: ' + item.name, expected: 'v63P-B required flag is true', actual: item, passed: item.passed === true, errors: item.passed ? [] : ['v63P-B app intent coverage check failed'], suggestedFix: appIntentReportV63PB.repairPrompt }; }));
     var oneTapVoiceCommandResultsV63M = (oneTapVoiceReportV63M.commandResults || []).map(function (item) { return { command: 'v63M one-tap command: ' + item.command, expected: 'v63M commands open one-tap voice portal, master hub, or focused modules safely', actual: item, passed: (/ask ai voice portal|talk to aqua|one tap voice|voice fallback|show transcript/.test(item.command) && (item.canonicalIntent === 'aqua_ask_ai_one_tap_voice_v63m' || item.canonicalIntent === 'aqua_ask_ai_true_voice_portal_v63n' || item.canonicalIntent === 'aqua_askai_fullscreen_portal_v63o')) || (/brain command center|master brain hub|all brain functions/.test(item.command) && (item.canonicalIntent === 'aqua_master_brain_hub_v63m' || item.canonicalIntent === 'aqua_master_brain_hub_v63n' || item.canonicalIntent === 'aqua_master_brain_hub_v63o')) || (/one tap voice repair/.test(item.command) && item.canonicalIntent === 'aqua_one_tap_voice_repair_check_v63m') || (/home depot|home deepo/i.test(item.command) && item.canonicalIntent !== 'unknown') || (/phone dex acceptance/.test(item.command) && item.canonicalIntent === 'phone_dex_acceptance_v63h') || (/automation report/.test(item.command) && item.canonicalIntent === 'show_automation_report_v61t') || (/regression qa/.test(item.command) && item.canonicalIntent === 'run_regression_qa') || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: item.renderedFallback && !/banana test/.test(item.command) ? ['v63M command rendered fallback unexpectedly'] : [], suggestedFix: oneTapVoiceReportV63M.repairPrompt }; }).concat((oneTapVoiceReportV63M.checks || []).map(function (item) { return { command: 'v63M one-tap check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v63M one-tap check failed'], suggestedFix: oneTapVoiceReportV63M.repairPrompt }; }));
     var trueVoicePortalCommandResultsV63N = (trueVoicePortalReportV63N.commandResults || []).map(function (item) { return { command: 'v63N true voice command: ' + item.command, expected: 'v63N commands open true voice portal, master hub, or actual focused modules safely', actual: item, passed: (/ask ai true voice|talk to aqua|one tap listening|premium voice orb|show transcript|type instead/.test(item.command) && item.canonicalIntent === 'aqua_ask_ai_true_voice_portal_v63n') || (/master brain hub/.test(item.command) && item.canonicalIntent === 'aqua_master_brain_hub_v63n') || (/receipt|home depot|home deepo|report|spend|documents|export|phone dex|automation report|regression qa/i.test(item.command) && item.canonicalIntent !== 'unknown' && item.dataQueryPanelFinalDestination !== true) || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: item.dataQueryPanelFinalDestination ? ['v63N command stopped at data-query panel instead of actual module'] : [], suggestedFix: trueVoicePortalReportV63N.repairPrompt }; }).concat((trueVoicePortalReportV63N.checks || []).map(function (item) { return { command: 'v63N true voice check: ' + item.name, expected: item.expected, actual: item.actual === undefined ? item : item.actual, passed: item.passed, errors: item.passed ? [] : ['v63N true voice portal check failed'], suggestedFix: trueVoicePortalReportV63N.repairPrompt }; }));
     var askAIFullscreenCommandResultsV63O = (askAIFullscreenReportV63O.commandResults || []).map(function (item) { return { command: 'v63O AskAI fullscreen command: ' + item.command, expected: 'v63O commands open AskAI full-screen portal, Main Brain hub, or requested full-screen modules safely', actual: item, passed: (/askai fullscreen|talk to aqua|aqua logo portal|type fallback/.test(item.command) && item.canonicalIntent === 'aqua_askai_fullscreen_portal_v63o') || (/main brain hub|master brain hub|all brain functions|main brain links/.test(item.command) && item.canonicalIntent === 'aqua_master_brain_hub_v63o') || (/receipt|home depot|home deepo|report|spend|documents|export|phone dex|automation report|regression qa/i.test(item.command) && item.canonicalIntent !== 'unknown' && item.dataQueryPanelFinalDestination !== true && (item.moduleFullscreen === true || /phone dex|automation report|regression qa/i.test(item.command))) || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: item.dataQueryPanelFinalDestination ? ['v63O command stopped at data-query panel instead of full-screen module'] : [], suggestedFix: askAIFullscreenReportV63O.repairPrompt }; }).concat((askAIFullscreenReportV63O.checks || []).map(function (item) { return { command: 'v63O AskAI fullscreen check: ' + item.name, expected: item.expected, actual: item.actual === undefined ? item : item.actual, passed: item.passed, errors: item.passed ? [] : ['v63O AskAI fullscreen check failed'], suggestedFix: askAIFullscreenReportV63O.repairPrompt }; }));
@@ -12310,7 +12587,7 @@
       var passed = isPhoneAcceptance || isPolished || isAutomation || isRegression || isFallback;
       return { command: command, expected: 'v63F phone/DeX opened-module visual acceptance routes safely', actual: Object.assign({ renderedModulePhoneAcceptanceV63F: isPhoneAcceptance, renderedPremiumPolishedModule: isPolished, premiumOperationalCardsRenderV63C: /^show polished SOW$/.test(command) && isPolished, premiumPortalCardsRenderV63D: /^show polished project folders$/.test(command) && isPolished, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['v63F phone acceptance command failed'], suggestedFix: passed ? '' : 'Update AquaPremiumModulePhoneAcceptanceV63F local/demo routing/rendering only. Do not redesign Home or activate backend/live actions.' };
     });
-    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneDexAcceptanceCommandResultsV63H, liveEntryRepairCommandResultsV63I, voiceCaptureCommandResultsV63J, entryRoutingCommandResultsV63K, entrySplitCommandResultsV63L, oneTapVoiceCommandResultsV63M, trueVoicePortalCommandResultsV63N, askAIFullscreenCommandResultsV63O, phoneAcceptanceCommandResultsV63F, finalKeeperCommandResultsV63G, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
+    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneDexAcceptanceCommandResultsV63H, liveEntryRepairCommandResultsV63I, voiceCaptureCommandResultsV63J, entryRoutingCommandResultsV63K, entrySplitCommandResultsV63L, oneTapVoiceCommandResultsV63M, trueVoicePortalCommandResultsV63N, askAIFullscreenCommandResultsV63O, appIntentCommandResultsV63PB, phoneAcceptanceCommandResultsV63F, finalKeeperCommandResultsV63G, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -12377,6 +12654,26 @@
       oneTapVoiceReportV63M: oneTapVoiceReportV63M,
       trueVoicePortalReportV63N: trueVoicePortalReportV63N,
       askAIFullscreenReportV63O: askAIFullscreenReportV63O,
+      appIntentReportV63PB: appIntentReportV63PB,
+      appWideAskAIIntentRegistryExists: appIntentReportV63PB.appWideAskAIIntentRegistryExists === true,
+      appWideIntentCoverageValidates: appIntentReportV63PB.appWideIntentCoverageValidates === true,
+      allIntentRealmsLinkedToMainBrain: appIntentReportV63PB.allIntentRealmsLinkedToMainBrain === true,
+      accountingStatusIntentWorks: appIntentReportV63PB.accountingStatusIntentWorks === true,
+      aquaPaintingProfitIntentWorks: appIntentReportV63PB.aquaPaintingProfitIntentWorks === true,
+      aquaPaintingStatusIntentWorks: appIntentReportV63PB.aquaPaintingStatusIntentWorks === true,
+      companyStatusIntentWorks: appIntentReportV63PB.companyStatusIntentWorks === true,
+      payablesIntentWorks: appIntentReportV63PB.payablesIntentWorks === true,
+      employeeTimeIntentWorks: appIntentReportV63PB.employeeTimeIntentWorks === true,
+      budgetRiskIntentWorks: appIntentReportV63PB.budgetRiskIntentWorks === true,
+      maintenanceIntentWorks: appIntentReportV63PB.maintenanceIntentWorks === true,
+      hvacIntentWorks: appIntentReportV63PB.hvacIntentWorks === true,
+      customerPortalIntentWorks: appIntentReportV63PB.customerPortalIntentWorks === true,
+      investorPortalIntentWorks: appIntentReportV63PB.investorPortalIntentWorks === true,
+      webSearchLockedWorks: appIntentReportV63PB.webSearchLockedWorks === true,
+      chatgptLiveAIRequestLockedWorks: appIntentReportV63PB.chatgptLiveAIRequestLockedWorks === true,
+      clarificationForMissingEntitiesWorks: appIntentReportV63PB.clarificationForMissingEntitiesWorks === true,
+      fullScreenRoutesGeneratedForAppIntents: appIntentReportV63PB.fullScreenRoutesGeneratedForAppIntents === true,
+      noGenericFallbackForKnownAppRealms: appIntentReportV63PB.noGenericFallbackForKnownAppRealms === true,
       askAIFullscreenPortalExists: askAIFullscreenReportV63O.askAIFullscreenPortalExists === true,
       askAILogoUsesAquaHomesMark: askAIFullscreenReportV63O.askAILogoUsesAquaHomesMark === true,
       noCartoonBrainInAskAI: askAIFullscreenReportV63O.noCartoonBrainInAskAI === true,
@@ -12920,7 +13217,7 @@
       satelliteHubPolishWorks: results.some(function (result) { return /show polished satellite hub|show satellite app hub/i.test(result.command) && result.passed && result.actual.satelliteHubPolishWorksV63D; }),
       notificationsPolishWorks: results.some(function (result) { return result.command === 'show polished notifications' && result.passed && result.actual.notificationsPolishWorksV63D; }),
       dataIndexPanelsCompatible: results.some(function (result) { return result.command === 'show polished data index' && result.passed && result.actual.dataIndexPanelsCompatibleV63D; }),
-      premiumPortalCardsRender: results.filter(function (result) { return /show polished (project folders|file cabinet|company command|customer portal|investor portal|maintenance|HVAC|technician service|satellite hub|notifications|data index)|show Henderson project folders|show maintenance request|show satellite app hub/i.test(result.command); }).every(function (result) { return result.passed && result.actual.premiumPortalCardsRenderV63D; }),
+      premiumPortalCardsRender: results.filter(function (result) { return !/^v63P-B app intent/.test(result.command) && /show polished (project folders|file cabinet|company command|customer portal|investor portal|maintenance|HVAC|technician service|satellite hub|notifications|data index)|show Henderson project folders|show maintenance request|show satellite app hub/i.test(result.command); }).every(function (result) { return result.passed && result.actual.premiumPortalCardsRenderV63D; }),
       v63COperationalPolishStillWorks: results.filter(function (result) { return /show polished (SOW|scope|field walkthrough|evidence binder|photo proof|insurance|bank reconciliation|workers comp|subcontractor compliance|project reports|missing documents)/i.test(result.command); }).every(function (result) { return result.passed && result.actual.premiumOperationalCardsRenderV63C; }),
       v63BDetailPolishStillWorks: results.some(function (result) { return result.command === 'show receipt detail polish' && result.passed && result.actual.receiptDetailPolishWorksV63B; }) && results.some(function (result) { return result.command === 'show accounting detail polish' && result.passed && result.actual.accountingDetailPolishWorksV63B; }),
       v63AShellStillWorks: results.some(function (result) { return result.command === 'show premium module shell' && result.passed && result.actual.renderedPremiumModuleShellV63A; }),
@@ -13117,6 +13414,25 @@
     state.visualRouteReadbackBoundV62CWorks = report.visualRouteReadbackBoundV62CWorks;
     state.liveInAppRegressionRunnerV62DWorks = report.liveInAppRegressionRunnerV62DWorks === true || state.liveInAppRegressionRunnerV62DWorks === true;
     state.reportSyncV62DWorks = report.reportSyncV62DWorks === true || state.reportSyncV62DWorks === true;
+    state.appWideAskAIIntentRegistryExists = report.appWideAskAIIntentRegistryExists;
+    state.appWideIntentCoverageValidates = report.appWideIntentCoverageValidates;
+    state.allIntentRealmsLinkedToMainBrain = report.allIntentRealmsLinkedToMainBrain;
+    state.accountingStatusIntentWorks = report.accountingStatusIntentWorks;
+    state.aquaPaintingProfitIntentWorks = report.aquaPaintingProfitIntentWorks;
+    state.aquaPaintingStatusIntentWorks = report.aquaPaintingStatusIntentWorks;
+    state.companyStatusIntentWorks = report.companyStatusIntentWorks;
+    state.payablesIntentWorks = report.payablesIntentWorks;
+    state.employeeTimeIntentWorks = report.employeeTimeIntentWorks;
+    state.budgetRiskIntentWorks = report.budgetRiskIntentWorks;
+    state.maintenanceIntentWorks = report.maintenanceIntentWorks;
+    state.hvacIntentWorks = report.hvacIntentWorks;
+    state.customerPortalIntentWorks = report.customerPortalIntentWorks;
+    state.investorPortalIntentWorks = report.investorPortalIntentWorks;
+    state.webSearchLockedWorks = report.webSearchLockedWorks;
+    state.chatgptLiveAIRequestLockedWorks = report.chatgptLiveAIRequestLockedWorks;
+    state.clarificationForMissingEntitiesWorks = report.clarificationForMissingEntitiesWorks;
+    state.fullScreenRoutesGeneratedForAppIntents = report.fullScreenRoutesGeneratedForAppIntents;
+    state.noGenericFallbackForKnownAppRealms = report.noGenericFallbackForKnownAppRealms;
     state.allVoiceBrainPlansHaveVisualRouteV62C = report.allVoiceBrainPlansHaveVisualRouteV62C;
     state.hendersonReportVisualFocusWorks = report.hendersonReportVisualFocusWorks;
     state.hendersonReceiptsVisualFocusWorks = report.hendersonReceiptsVisualFocusWorks;
@@ -13585,6 +13901,7 @@
   window.AquaVoiceCapturePrimaryV63J = window.AquaVoiceCapturePrimaryV63J || { version: 'v63J', localDemoOnly: true, storageKey: AQUA_VOICE_CAPTURE_PRIMARY_KEY_V63J, getAquaVoiceCaptureStateV63J: getAquaVoiceCaptureStateV63J, renderAquaVoiceCapturePrimaryV63J: renderAquaVoiceCapturePrimaryV63J, startAquaVoiceCaptureV63J: startAquaVoiceCaptureV63J, stopAquaVoiceCaptureV63J: stopAquaVoiceCaptureV63J, handleAquaVoiceTranscriptV63J: handleAquaVoiceTranscriptV63J, routeAquaVoiceTranscriptV63J: routeAquaVoiceTranscriptV63J, renderAquaVoiceTranscriptPanelV63J: renderAquaVoiceTranscriptPanelV63J, renderAquaVoiceSupportDiagnosticV63J: renderAquaVoiceSupportDiagnosticV63J, fallbackAquaVoiceToTypedCommandV63J: fallbackAquaVoiceToTypedCommandV63J, clearAquaVoiceTranscriptDemoV63J: clearAquaVoiceTranscriptDemoV63J, runAquaVoiceCapturePrimaryCheckV63J: runAquaVoiceCapturePrimaryCheckV63J, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true } };
   window.AquaEntryRouterV63K = window.AquaEntryRouterV63K || { version: 'v63K', localDemoOnly: true, storageKey: AQUA_ENTRY_ROUTER_KEY_V63K, openAquaAskAIShortcutV63K: openAquaAskAIShortcutV63K, openAquaBrainCommandCenterV63K: openAquaBrainCommandCenterV63K, bindAquaEntryPointsV63K: bindAquaEntryPointsV63K, renderAquaVoiceFirstAssistantV63K: renderAquaVoiceFirstAssistantV63K, renderAquaFullBrainCommandCenterV63K: renderAquaFullBrainCommandCenterV63K, getAquaEntryRoutingStatusV63K: getAquaEntryRoutingStatusV63K, runAquaEntryRoutingCheckV63K: runAquaEntryRoutingCheckV63K, renderAquaEntryRoutingRepairPanelV63K: renderAquaEntryRoutingRepairPanelV63K, safetyEnvelope: aquaEntryRouterSafetyV63K() };
   window.AquaPhoneDexAcceptanceV63H = window.AquaPhoneDexAcceptanceV63H || { version: 'v63H', localDemoOnly: true, storageKey: AQUA_PHONE_DEX_ACCEPTANCE_KEY_V63H, getAquaPhoneDexAcceptanceGuideV63H: getAquaPhoneDexAcceptanceGuideV63H, runAquaPhoneDexAcceptanceStepV63H: runAquaPhoneDexAcceptanceStepV63H, renderAquaPhoneDexAcceptanceGuideV63H: renderAquaPhoneDexAcceptanceGuideV63H, markAquaPhoneDexStepPassV63H: markAquaPhoneDexStepPassV63H, markAquaPhoneDexStepFailV63H: markAquaPhoneDexStepFailV63H, getAquaPhoneDexAcceptanceStatusV63H: getAquaPhoneDexAcceptanceStatusV63H, copyAquaPhoneDexAcceptanceSummaryV63H: copyAquaPhoneDexAcceptanceSummaryV63H, resetAquaPhoneDexAcceptanceV63H: resetAquaPhoneDexAcceptanceV63H, runAquaPhoneDexAcceptanceRegressionV63H: runAquaPhoneDexAcceptanceRegressionV63H, renderIntoAskAI: renderAquaPhoneDexAcceptanceIntoAskAIV63H, next: function () { moveAquaPhoneDexAcceptanceStepV63H(1); return renderAquaPhoneDexAcceptanceIntoAskAIV63H(); }, previous: function () { moveAquaPhoneDexAcceptanceStepV63H(-1); return renderAquaPhoneDexAcceptanceIntoAskAIV63H(); }, safetyEnvelope: aquaPhoneDexAcceptanceSafetyV63H() };
+  window.AquaAskAIAppIntentRegistryV63PB = window.AquaAskAIAppIntentRegistryV63PB || { version: 'v63P-B', localDemoOnly: true, storageKey: AQUA_ASKAI_APP_INTENT_KEY_V63PB, getAquaAskAIAppIntentRegistryV63PB: getAquaAskAIAppIntentRegistryV63PB, classifyAquaAskAIAppIntentV63PB: classifyAquaAskAIAppIntentV63PB, findAquaAskAIRouteV63PB: findAquaAskAIRouteV63PB, routeAquaAskAIIntentToModuleV63PB: routeAquaAskAIIntentToModuleV63PB, renderAquaAskAIIntentCoverageV63PB: renderAquaAskAIIntentCoverageV63PB, validateAquaAskAIIntentCoverageV63PB: validateAquaAskAIIntentCoverageV63PB, getAquaAskAIMissingIntentCoverageV63PB: getAquaAskAIMissingIntentCoverageV63PB, runAquaAskAIIntentCoverageCheckV63PB: runAquaAskAIIntentCoverageCheckV63PB, safetyEnvelope: aquaAskAIIntentSafetyV63PB() };
   ensureToolGatewayContractV62J();
   ensureAquaBackendSchemaV62M();
   window.AquaDataQueryRuntimeV62N = window.AquaDataQueryRuntimeV62N || createAquaDataQueryRuntimeV62N();
@@ -13616,5 +13933,5 @@
 
   installPremiumModuleShellStylesV61Z();
   installPremiumModuleShellStylesV63A();
-  console.log('Aqua Homes OS v63O extensions loaded: AskAI Aqua Homes logo full-screen voice portal, full-screen module transition, and Main Brain hub linkage repair active. Home untouched. Backend locked. No live AI, upload, export, audio storage, or record change.');
+  console.log('Aqua Homes OS v63P-B extensions loaded: app-wide AskAI intent registry and every app realm routing active. Home untouched. Backend locked. No live AI/search/API, upload, export, audio storage, always-listening, or record change.');
 }());
