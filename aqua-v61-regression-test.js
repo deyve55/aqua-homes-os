@@ -11,6 +11,7 @@ const VERSION = 'v63P-D';
 const ROOT = __dirname;
 const HTML_KEEPER = 'AH_v54I-3.html';
 const CURRENT_KEEPER = 'AQUA_HOMES_OS_CURRENT_KEEPER.md';
+const CODEX_OPERATING_PROTOCOL = 'AQUA_CODEX_OPERATING_PROTOCOL.md';
 const EXTENSION = 'aqua-v61-extensions.js';
 const JSON_REPORT = 'aqua-regression-report.json';
 const MD_REPORT = 'aqua-regression-report.md';
@@ -255,6 +256,7 @@ function checkStaticFiles() {
   const docsIndex = readFileSafe('docs/index.html');
   addCheck(`${HTML_KEEPER} exists`, fileExists(HTML_KEEPER), { layer: 'static-file-safety', fileToFix: HTML_KEEPER });
   addCheck(`${CURRENT_KEEPER} exists`, fileExists(CURRENT_KEEPER), { layer: 'static-file-safety', fileToFix: CURRENT_KEEPER });
+  addCheck(`${CODEX_OPERATING_PROTOCOL} exists`, fileExists(CODEX_OPERATING_PROTOCOL), { layer: 'static-file-safety', fileToFix: CODEX_OPERATING_PROTOCOL });
   addCheck(`${EXTENSION} exists`, fileExists(EXTENSION), { layer: 'static-file-safety', fileToFix: EXTENSION });
   addCheck(`${HTML_KEEPER} references ${EXTENSION}`, html.includes(EXTENSION), { layer: 'static-file-safety', fileToFix: HTML_KEEPER });
   addCheck('index.html routes to AH_v54I-3.html', /AH_v54I-3\.html/.test(index), { layer: 'static-file-safety', fileToFix: 'index.html' });
@@ -1425,6 +1427,7 @@ async function main() {
     browserVisualTest,
     extensionRegression: extensionReport,
     keeperHandoffFileExists: fileExists(CURRENT_KEEPER),
+    codexOperatingProtocolExists: fileExists(CODEX_OPERATING_PROTOCOL),
     askModeRouterWorks: extensionReport ? extensionReport.askModeRouterWorks === true : false,
     appNavigationModeWorks: extensionReport ? extensionReport.appNavigationModeWorks === true : false,
     automationStatusModeWorks: extensionReport ? extensionReport.automationStatusModeWorks === true : false,
