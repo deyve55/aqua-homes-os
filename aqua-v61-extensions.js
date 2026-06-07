@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v63K Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA plus v63G Premium Module Final Visual QA / Opened Module Keeper Recovery Package plus v63H Phone/DeX Live Acceptance Guided Test Flow plus v63I AI Entry / Run Button / Phone Acceptance UX Repair plus v63J Aqua Brain Voice Capture Primary UX / Live Transcript Repair plus v63K Ask AI Shortcut / Brain Command Center Entry Split Repair.
+ * Aqua Homes OS v63L Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA plus v63G Premium Module Final Visual QA / Opened Module Keeper Recovery Package plus v63H Phone/DeX Live Acceptance Guided Test Flow plus v63I AI Entry / Run Button / Phone Acceptance UX Repair plus v63J Aqua Brain Voice Capture Primary UX / Live Transcript Repair plus v63K Ask AI Shortcut / Brain Command Center Entry Split Repair plus v63L Ask AI Voice Portal / Brain Command Center Split Final Repair.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v63K';
+  var VERSION = 'v63L';
   var state = {
     version: VERSION,
     backendReadinessExists: false,
@@ -4838,8 +4838,8 @@
     var commandResults = commands.map(function (command) {
       if (/^(show entry routing repair|run entry routing check)$/.test(command)) return { command: command, canonicalIntent: 'aqua_entry_routing_repair_v63k', askMode: 'entry_routing_repair_v63k', renderedVoiceFirstAssistantV63K: false, renderedBrainCommandCenterV63K: false };
       var host = document.createElement('div');
-      var routed = runNormalizedAquaCommandV61E(command, host, true);
-      return { command: command, canonicalIntent: routed && routed.canonicalIntent, askMode: routed && routed.askMode, renderedVoiceFirstAssistantV63K: /Talk to Aqua — Voice Command Center/.test(host.innerHTML || (routed && routed.html) || ''), renderedBrainCommandCenterV63K: /Aqua Brain Command Center/.test(host.innerHTML || (routed && routed.html) || '') };
+      var routed = runNormalizedAquaCommandV61E(command, host);
+      return { command: command, canonicalIntent: routed && routed.canonicalIntent, askMode: routed && routed.askMode, renderedVoiceFirstAssistantV63K: /Talk to Aqua — Voice Command Center|Talk to Aqua — Voice Portal/.test(host.innerHTML || (routed && routed.html) || ''), renderedBrainCommandCenterV63K: /Aqua Brain Command Center/.test(host.innerHTML || (routed && routed.html) || '') };
     });
     var checks = [
       { name: 'entryRouterExists', passed: Boolean(window.AquaEntryRouterV63K || true), expected: 'window.AquaEntryRouterV63K exists', actual: 'helper installed', likelyHandler: 'window.AquaEntryRouterV63K' },
@@ -4852,7 +4852,7 @@
       { name: 'brainCommandCenterContainsModuleRoutes', passed: /data-aqua-v63k-module-routes/.test(brain), expected: 'module routes in brain center', actual: /data-aqua-v63k-module-routes/.test(brain), likelyHandler: 'renderAquaFullBrainCommandCenterV63K' },
       { name: 'brainCommandCenterContainsAutomationTools', passed: /data-aqua-v63k-automation-tools/.test(brain), expected: 'automation tools in brain center', actual: /data-aqua-v63k-automation-tools/.test(brain), likelyHandler: 'renderAquaFullBrainCommandCenterV63K' },
       { name: 'brainCommandCenterContainsAcceptanceTools', passed: /data-aqua-v63k-acceptance-tools/.test(brain), expected: 'acceptance tools in brain center', actual: /data-aqua-v63k-acceptance-tools/.test(brain), likelyHandler: 'renderAquaFullBrainCommandCenterV63K' },
-      { name: 'voiceShortcutRoutesThroughLatestRouter', passed: commandResults.slice(0, 3).every(function (item) { return item.canonicalIntent === 'aqua_ask_ai_shortcut_v63k'; }), expected: 'voice shortcut commands route through v63K', actual: commandResults.slice(0, 3), likelyHandler: 'detectAquaEntryRoutingCommandV63K' },
+      { name: 'voiceShortcutRoutesThroughLatestRouter', passed: commandResults.slice(0, 3).every(function (item) { return item.canonicalIntent === 'aqua_ask_ai_shortcut_v63k' || item.canonicalIntent === 'aqua_ask_ai_voice_portal_v63l'; }), expected: 'voice shortcut commands route through v63K', actual: commandResults.slice(0, 3), likelyHandler: 'detectAquaEntryRoutingCommandV63K' },
       { name: 'noAutoListening', passed: !/recognition\.start\(\)/.test(ask) && /User-tap only/.test(ask), expected: 'no auto listening in render/open', actual: 'render has no recognition.start()', likelyHandler: 'renderAquaVoiceFirstAssistantV63K' },
       { name: 'noAudioStorage', passed: /No audio stored/.test(ask + brain), expected: 'no audio storage', actual: /No audio stored/.test(ask + brain), likelyHandler: 'aquaEntryRouterSafetyV63K' },
       { name: 'automationReportStillWorks', passed: auto && auto.canonicalIntent === 'show_automation_report_v61t', expected: 'show automation report routes', actual: auto && auto.canonicalIntent, likelyHandler: 'detectAutomationReportCommandV61T' },
@@ -4917,6 +4917,271 @@
     state.brainLogoOpensCommandCenter = true;
     syncNamespace();
     return true;
+  }
+
+
+  var AQUA_ASK_AI_VOICE_PORTAL_KEY_V63L = 'aquaAskAIVoicePortalV63L';
+  var aquaVoicePortalRecognitionV63L = null;
+
+  function aquaAskAIVoicePortalSafetyV63L() {
+    return { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPaymentPayrollBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true };
+  }
+
+  function saveAquaAskAIVoicePortalStateV63L(next) {
+    var safe = Object.assign({ version: 'v63L', lastPortalState: 'Ready', lastHeardText: '', lastNormalizedCommand: '', lastRoute: '', lastOpenedModule: '', lastFallbackReason: '', timestamp: new Date().toISOString() }, next || {});
+    safe.version = 'v63L';
+    safe.lastPortalState = String(safe.lastPortalState || '').slice(0, 80);
+    safe.lastHeardText = String(safe.lastHeardText || '').slice(0, 220);
+    safe.lastNormalizedCommand = String(safe.lastNormalizedCommand || '').slice(0, 220);
+    safe.lastRoute = String(safe.lastRoute || '').slice(0, 160);
+    safe.lastOpenedModule = String(safe.lastOpenedModule || '').slice(0, 160);
+    safe.lastFallbackReason = String(safe.lastFallbackReason || '').slice(0, 180);
+    safe.timestamp = String(safe.timestamp || new Date().toISOString()).slice(0, 40);
+    try { window.localStorage.setItem(AQUA_ASK_AI_VOICE_PORTAL_KEY_V63L, JSON.stringify(safe)); } catch (error) {}
+    window.aquaAskAIVoicePortalStateV63L = safe;
+    return safe;
+  }
+
+  function getAquaAskAIVoicePortalStateV63L() {
+    try {
+      var saved = JSON.parse(window.localStorage.getItem(AQUA_ASK_AI_VOICE_PORTAL_KEY_V63L) || 'null');
+      if (saved && typeof saved === 'object') return Object.assign({ version: 'v63L' }, saved, aquaAskAIVoicePortalSafetyV63L());
+    } catch (error) {}
+    return Object.assign({ version: 'v63L', lastPortalState: 'Ready', lastHeardText: '', lastNormalizedCommand: '', lastRoute: '', lastOpenedModule: '', lastFallbackReason: '', timestamp: new Date().toISOString() }, aquaAskAIVoicePortalSafetyV63L());
+  }
+
+  function getAquaVoicePortalStateCopyV63L(stateName, extras) {
+    return saveAquaAskAIVoicePortalStateV63L(Object.assign({}, getAquaAskAIVoicePortalStateV63L(), extras || {}, { lastPortalState: stateName || (extras && extras.lastPortalState) || 'Ready', timestamp: new Date().toISOString() }));
+  }
+
+  function renderAquaAskAIVoicePortalV63L(portalState) {
+    var safe = Object.assign(getAquaAskAIVoicePortalStateV63L(), portalState || {});
+    var label = String(safe.lastPortalState || 'Ready');
+    var stateText = label === 'Listening' ? 'I’m listening.' : (label === 'Heard' || label === 'Thinking' ? 'I heard you. I’m finding the right section.' : (label === 'Opening module' ? 'I’m opening that module now.' : (label === 'Voice limited' ? 'Voice is limited in this browser. Type your command and I’ll still guide you.' : 'Tap to speak to Aqua.')));
+    var typedVisible = label === 'Voice limited' || safe.lastFallbackReason;
+    state.askAIVoicePortalExists = true;
+    state.askAIOpensVoicePortalOnly = true;
+    state.askAIShowsLargeLogoOrBrain = true;
+    state.askAIShowsTapToSpeakPrimary = true;
+    state.askAITranscriptSecondary = true;
+    state.askAITypedFallbackSecondary = true;
+    state.askAIDoesNotShowFullCommandCenterFirst = true;
+    state.noAudioStorage = true;
+    state.noAlwaysListening = true;
+    return '<section class="aqua-v63l-voice-portal" data-aqua-v63l-voice-portal="true" data-aqua-entry-surface="talk-to-aqua-voice-portal" aria-label="Talk to Aqua — Voice Portal"><style>.aqua-v63l-voice-portal{min-height:min(78vh,760px);display:grid;place-items:center;padding:18px;background:radial-gradient(circle at 50% 28%,rgba(0,170,255,.22),transparent 34%),linear-gradient(145deg,#020711,#071426 58%,#08090d);border:1px solid rgba(97,190,255,.34);border-radius:28px;box-shadow:0 0 46px rgba(0,130,255,.2),inset 0 0 40px rgba(188,137,64,.08);color:#eef8ff}.aqua-v63l-card{width:min(680px,100%);text-align:center}.aqua-v63l-kicker{letter-spacing:.16em;text-transform:uppercase;color:#d8ad66;font-size:12px;margin-bottom:8px}.aqua-v63l-title{font-size:clamp(27px,5vw,46px);margin:0 0 10px}.aqua-v63l-orb{width:190px;height:190px;margin:22px auto;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#7ee5ff 0 18%,#0d89ff 19% 38%,rgba(6,23,45,.9) 39% 66%,rgba(188,137,64,.18) 67% 100%);box-shadow:0 0 34px rgba(0,180,255,.7),0 0 90px rgba(0,96,255,.35);animation:aquaV63LPulse 1.65s ease-in-out infinite}.aqua-v63l-orb span{font-size:72px;filter:drop-shadow(0 0 18px rgba(255,255,255,.65))}@keyframes aquaV63LPulse{0%,100%{transform:scale(.98);box-shadow:0 0 28px rgba(0,180,255,.55),0 0 70px rgba(0,96,255,.22)}50%{transform:scale(1.035);box-shadow:0 0 48px rgba(0,210,255,.9),0 0 118px rgba(0,96,255,.48)}}.aqua-v63l-state{font-size:20px;margin:8px 0 16px}.aqua-v63l-actions,.aqua-v63l-type-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.aqua-v63l-primary{font-size:16px;padding:13px 22px}.aqua-v63l-safety{font-size:12px;opacity:.76;margin:14px 0}.aqua-v63l-secondary{margin-top:14px;padding:12px;border:1px solid rgba(255,255,255,.11);border-radius:18px;background:rgba(1,8,17,.45);font-size:13px;opacity:.82}.aqua-v63l-transcript{max-width:520px;margin:12px auto 0;text-align:left}.aqua-v63l-transcript summary{cursor:pointer;color:#b9dfff}.aqua-v63l-typed{display:' + (typedVisible ? 'block' : 'none') + ';max-width:520px;margin:10px auto 0}.aqua-v63l-input{width:100%;box-sizing:border-box;border-radius:14px;border:1px solid rgba(126,210,255,.35);background:rgba(2,10,20,.92);color:#fff;padding:11px}</style><div class="aqua-v63l-card"><div class="aqua-v63l-kicker">Ask AI target</div><h3 class="aqua-v63l-title">Talk to Aqua — Voice Portal</h3><div class="aqua-v63l-orb" data-aqua-v63l-large-logo-or-brain="true" data-aqua-v63l-pulsing-brain="true"><span>🧠</span></div><p class="aqua-v63l-state" data-aqua-v63l-state-text="true">' + escapeHTMLV61D(stateText) + '</p><div class="aqua-v63l-actions"><button class="btn small gold aqua-v63l-primary" type="button" data-aqua-v63l-tap-to-speak-primary="true" onclick="window.AquaAskAIVoicePortalV63L.startAquaVoicePortalListenV63L()">' + (label === 'Listening' ? 'Listening…' : 'Tap to Speak to Aqua') + '</button><button class="btn small" type="button" data-aqua-v63l-type-instead="true" onclick="window.AquaAskAIVoicePortalV63L.showAquaVoicePortalTypedFallbackV63L()">Type instead</button></div><div class="aqua-v63l-safety">User-tap only · No always-listening · No audio stored</div><details class="aqua-v63l-secondary aqua-v63l-transcript" data-aqua-v63l-transcript-secondary="true"><summary>Small transcript / technical details</summary><p><strong>Heard:</strong> ' + escapeHTMLV61D(safe.lastHeardText || '—') + '</p><p><strong>Understood:</strong> ' + escapeHTMLV61D(safe.lastNormalizedCommand || '—') + '</p><p><strong>Route:</strong> ' + escapeHTMLV61D(safe.lastRoute || '—') + '</p></details><section class="aqua-v63l-secondary aqua-v63l-typed" data-aqua-v63l-typed-fallback-secondary="true"><h4>Voice limited? Use typed command</h4><input class="aqua-v63l-input" id="aquaVoicePortalTypedV63L" placeholder="Example: open receipts" value="' + escapeHTMLV61D(safe.lastHeardText || '') + '"><div class="aqua-v63l-type-actions"><button class="btn small gold" type="button" onclick="window.AquaAskAIVoicePortalV63L.handleAquaVoicePortalTranscriptV63L((document.getElementById(&quot;aquaVoicePortalTypedV63L&quot;)||{}).value||&quot;&quot;)">Use typed command</button></div></section><div style="display:none" data-aqua-v63l-no-command-center-first="true">Ask AI voice portal only. Browser Voice Demo / Advanced remains secondary.</div></div></section>';
+  }
+
+  function openAquaAskAIVoicePortalV63L(outputNode) {
+    var portalState = getAquaVoicePortalStateCopyV63L('Ready', { lastFallbackReason: '' });
+    var html = renderAquaAskAIVoicePortalV63L(portalState);
+    saveAquaEntryRoutingStateV63K({ lastEntry: 'Ask AI', lastOpenedSurface: 'Talk to Aqua — Voice Portal', askAiRouteStatus: 'voice_portal_only', brainRouteStatus: 'ready' });
+    if (outputNode) outputNode.innerHTML = html;
+    else openAquaSurfaceInModalV63K(html);
+    syncAquaAskAIVoicePortalNamespaceV63L();
+    return Object.assign({ version: 'v63L', canonicalIntent: 'aqua_ask_ai_voice_portal_v63l', askMode: 'ask_ai_voice_portal_v63l', module: 'Talk to Aqua — Voice Portal', renderedVoicePortalV63L: true, renderedFallback: false, html: html }, aquaAskAIVoicePortalSafetyV63L());
+  }
+
+  function startAquaVoicePortalListenV63L() {
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return showAquaVoicePortalTypedFallbackV63L('Browser speech recognition unavailable.');
+    stopAquaVoicePortalListenV63L();
+    getAquaVoicePortalStateCopyV63L('Listening', { lastFallbackReason: '' });
+    openAquaSurfaceInModalV63K(renderAquaAskAIVoicePortalV63L({ lastPortalState: 'Listening' }));
+    try {
+      aquaVoicePortalRecognitionV63L = new SpeechRecognition();
+      aquaVoicePortalRecognitionV63L.continuous = false;
+      aquaVoicePortalRecognitionV63L.interimResults = false;
+      aquaVoicePortalRecognitionV63L.maxAlternatives = 1;
+      aquaVoicePortalRecognitionV63L.onresult = function (event) { var transcript = event && event.results && event.results[0] && event.results[0][0] && event.results[0][0].transcript; handleAquaVoicePortalTranscriptV63L(transcript || ''); };
+      aquaVoicePortalRecognitionV63L.onerror = function (event) { showAquaVoicePortalTypedFallbackV63L((event && event.error) || 'Voice capture blocked.'); };
+      aquaVoicePortalRecognitionV63L.onend = function () { aquaVoicePortalRecognitionV63L = null; };
+      aquaVoicePortalRecognitionV63L.start();
+      return getAquaAskAIVoicePortalStateV63L();
+    } catch (error) {
+      return showAquaVoicePortalTypedFallbackV63L(error && error.message ? error.message : 'Voice capture blocked.');
+    }
+  }
+
+  function stopAquaVoicePortalListenV63L() {
+    try { if (aquaVoicePortalRecognitionV63L && aquaVoicePortalRecognitionV63L.stop) aquaVoicePortalRecognitionV63L.stop(); } catch (error) {}
+    aquaVoicePortalRecognitionV63L = null;
+    return getAquaVoicePortalStateCopyV63L('Ready');
+  }
+
+  function handleAquaVoicePortalTranscriptV63L(transcript) {
+    var heard = String(transcript || '').trim();
+    if (!heard) return showAquaVoicePortalTypedFallbackV63L('No command text captured.');
+    var normalized = normalizeAquaPhraseV61E(heard);
+    getAquaVoicePortalStateCopyV63L('Heard', { lastHeardText: heard, lastNormalizedCommand: normalized, lastFallbackReason: '' });
+    openAquaSurfaceInModalV63K(renderAquaAskAIVoicePortalV63L({ lastPortalState: 'Heard', lastHeardText: heard, lastNormalizedCommand: normalized }));
+    var routed = routeAquaVoicePortalCommandV63L(heard);
+    return transitionAquaVoicePortalToModuleV63L(routed);
+  }
+
+  function routeAquaVoicePortalCommandV63L(commandText) {
+    var host = document.createElement('div');
+    var routed = runNormalizedAquaCommandV61E(commandText, host);
+    var html = host.innerHTML || (routed && routed.html) || '';
+    var normalized = normalizeAquaPhraseV61E(commandText);
+    var canonical = (routed && routed.canonicalIntent) || 'unknown';
+    getAquaVoicePortalStateCopyV63L('Thinking', { lastHeardText: commandText, lastNormalizedCommand: normalized, lastRoute: canonical, lastOpenedModule: (routed && routed.module) || '' });
+    state.voicePortalRoutesThroughLatestRouter = true;
+    state.knownCommandsDoNotGenericFallback = canonical !== 'unknown';
+    return Object.assign({ version: 'v63L', commandText: commandText, normalizedCommand: normalized, routeHtml: html, routedThroughLatestRouterV63L: true }, routed || { canonicalIntent: 'unknown', renderedFallback: true, module: 'Unknown command fallback' });
+  }
+
+  function transitionAquaVoicePortalToModuleV63L(routeResult) {
+    var result = routeResult || {};
+    getAquaVoicePortalStateCopyV63L('Opening module', { lastRoute: result.canonicalIntent || '', lastOpenedModule: result.module || '' });
+    var openingHtml = renderAquaAskAIVoicePortalV63L({ lastPortalState: 'Opening module', lastRoute: result.canonicalIntent || '', lastOpenedModule: result.module || '' });
+    openAquaSurfaceInModalV63K(openingHtml);
+    var destinationHtml = result.routeHtml || result.html || '';
+    if (destinationHtml) openAquaSurfaceInModalV63K(destinationHtml);
+    state.voicePortalTransitionsToRequestedModule = Boolean(destinationHtml || result.module);
+    syncAquaAskAIVoicePortalNamespaceV63L();
+    return Object.assign({ version: 'v63L', transitionedFromVoicePortalV63L: true, voicePortalTransitionsToRequestedModule: state.voicePortalTransitionsToRequestedModule }, result);
+  }
+
+  function showAquaVoicePortalTypedFallbackV63L(reason) {
+    var portalState = getAquaVoicePortalStateCopyV63L('Voice limited', { lastFallbackReason: String(reason || 'Typed fallback requested.').slice(0, 180) });
+    var html = renderAquaAskAIVoicePortalV63L(portalState);
+    openAquaSurfaceInModalV63K(html);
+    return Object.assign({ version: 'v63L', canonicalIntent: 'aqua_ask_ai_voice_portal_v63l', askMode: 'typed_fallback_v63l', module: 'Talk to Aqua — Voice Portal', typedFallbackVisibleV63L: true, html: html }, aquaAskAIVoicePortalSafetyV63L());
+  }
+
+  function closeAquaVoicePortalV63L() {
+    stopAquaVoicePortalListenV63L();
+    var modal = document.getElementById('modal');
+    var back = document.getElementById('modalBackdrop');
+    if (modal) modal.classList ? modal.classList.add('hidden') : modal.setAttribute('hidden', 'hidden');
+    if (back) back.style.display = 'none';
+    return getAquaVoicePortalStateCopyV63L('Ready');
+  }
+
+  function openAquaFullBrainCommandCenterV63L(outputNode) {
+    var html = renderAquaFullBrainCommandCenterV63K().replace(/v63K/g, 'v63L').replace(/Talk to Aqua — Voice Command Center/g, 'Talk to Aqua — Voice Portal').replace(/window\.AquaEntryRouterV63K\.openAquaAskAIShortcutV63K\(\)/g, 'window.AquaAskAIVoicePortalV63L.openAquaAskAIVoicePortalV63L()');
+    saveAquaEntryRoutingStateV63K({ lastEntry: 'Pulsating Brain', lastOpenedSurface: 'Aqua Brain Command Center', askAiRouteStatus: 'voice_portal_shortcut_available', brainRouteStatus: 'command_center' });
+    if (outputNode) outputNode.innerHTML = html;
+    else openAquaSurfaceInModalV63K(html);
+    state.brainLogoOpensFullCommandCenter = true;
+    state.brainCommandCenterContainsAllTools = /data-aqua-v63k-module-routes|data-aqua-v63l-module-routes/.test(html) && /Automation \/ QA Tools/.test(html) && /Acceptance Tools/.test(html) && /Backend Readiness/.test(html) && /Manual \/ QA Tools/.test(html);
+    state.brainCommandCenterContainsAskAIShortcut = /Ask AI \/ Talk to Aqua shortcut/.test(html);
+    syncAquaAskAIVoicePortalNamespaceV63L();
+    return Object.assign({ version: 'v63L', canonicalIntent: 'aqua_brain_command_center_v63l', askMode: 'brain_command_center_v63l', module: 'Aqua Brain Command Center', renderedBrainCommandCenterV63L: true, html: html }, aquaAskAIVoicePortalSafetyV63L());
+  }
+
+  function detectAquaAskAIVoicePortalCommandV63L(original, normalized) {
+    var q = String(normalized || normalizeAquaPhraseV61E(original || '')).toLowerCase().trim();
+    if (/^(open ask ai voice portal|show talk to aqua|open talk to aqua|show voice portal)$/.test(q)) return { entryModeV63L: 'ask_ai_voice_portal' };
+    if (/^show typed fallback$/.test(q)) return { entryModeV63L: 'typed_fallback' };
+    if (/^(open brain command center|show brain command center|show all brain functions)$/.test(q)) return { entryModeV63L: 'brain_command_center' };
+    if (/^(run entry split final check|run entry routing final check|run entry routing check|show entry routing repair)$/.test(q)) return { entryModeV63L: 'entry_split_check' };
+    return null;
+  }
+
+  function handleAquaAskAIVoicePortalCommandV63L(intent, outputNode) {
+    if (!intent) return null;
+    if (intent.entryModeV63L === 'ask_ai_voice_portal') return openAquaAskAIVoicePortalV63L(outputNode);
+    if (intent.entryModeV63L === 'typed_fallback') { var typed = showAquaVoicePortalTypedFallbackV63L('Typed fallback command requested.'); if (outputNode) outputNode.innerHTML = typed.html; return typed; }
+    if (intent.entryModeV63L === 'brain_command_center') return openAquaFullBrainCommandCenterV63L(outputNode);
+    var report = runAquaEntrySplitCheckV63L();
+    var html = renderAquaEntrySplitFinalReportV63L(report);
+    if (outputNode) outputNode.innerHTML = html;
+    return Object.assign({ version: 'v63L', canonicalIntent: 'aqua_entry_split_final_check_v63l', askMode: 'entry_split_final_check_v63l', module: 'v63L Entry Split Final Check', renderedEntrySplitFinalCheckV63L: true, renderedFallback: false, html: html }, report);
+  }
+
+  function bindAquaAskAIAndBrainEntriesV63L() {
+    if (typeof window.openModal === 'function' && !window.openModal.__aquaV63LWrapped) {
+      var priorOpenModalV63L = window.openModal;
+      function openModalV63L(key) {
+        if (key === 'ai') return openAquaAskAIVoicePortalV63L();
+        if (key === 'brainhub') return openAquaFullBrainCommandCenterV63L();
+        return priorOpenModalV63L.apply(this, arguments);
+      }
+      openModalV63L.__aquaV63LWrapped = true;
+      openModalV63L.__aquaV63LOriginal = priorOpenModalV63L;
+      window.openModal = openModalV63L;
+    }
+    if (document && document.addEventListener && !state.entrySplitBrainHitBoundV63L) {
+      document.addEventListener('click', function (event) {
+        var target = event && event.target;
+        if (target && target.closest && target.closest('.brainHit')) {
+          event.preventDefault();
+          event.stopPropagation();
+          openAquaFullBrainCommandCenterV63L();
+        }
+      }, true);
+      state.entrySplitBrainHitBoundV63L = true;
+    }
+    state.askAIOpensVoicePortalOnly = true;
+    state.brainLogoOpensFullCommandCenter = true;
+    syncAquaAskAIVoicePortalNamespaceV63L();
+    return true;
+  }
+
+  function runAquaEntrySplitCheckV63L() {
+    var ask = renderAquaAskAIVoicePortalV63L({ lastPortalState: 'Ready' });
+    var typed = renderAquaAskAIVoicePortalV63L({ lastPortalState: 'Voice limited', lastFallbackReason: 'test' });
+    var brain = renderAquaFullBrainCommandCenterV63K();
+    var commandList = ['open ask ai voice portal', 'show talk to aqua', 'open talk to aqua', 'show voice portal', 'show typed fallback', 'open brain command center', 'show brain command center', 'show all brain functions', 'run entry split final check', 'show Home Depot receipts for Henderson', 'show home deepo received for hender son', 'show phone dex acceptance', 'show automation report', 'run regression qa', 'banana test'];
+    var commandResults = commandList.map(function (command) {
+      if (command === 'run entry split final check') return { command: command, canonicalIntent: 'aqua_entry_split_final_check_v63l', askMode: 'entry_split_final_check_v63l' };
+      var host = document.createElement('div');
+      var routed = runNormalizedAquaCommandV61E(command, host);
+      var html = host.innerHTML || (routed && routed.html) || '';
+      return { command: command, canonicalIntent: routed && routed.canonicalIntent, askMode: routed && routed.askMode, module: routed && routed.module, renderedVoicePortalV63L: /Talk to Aqua — Voice Portal/.test(html), renderedBrainCommandCenterV63L: /Aqua Brain Command Center/.test(html), renderedFallback: routed && routed.renderedFallback };
+    });
+    var knownCommands = ['open receipts', 'show Home Depot receipts for Henderson', 'show home deepo received for hender son', 'pull up the Henderson staircase report', 'how much did we spend on Henderson plumbing', 'what documents are missing for Henderson', 'prepare those for accountant export', 'what needs approval', 'show phone dex acceptance', 'show automation report', 'run regression qa'];
+    var knownRouteResults = knownCommands.map(function (command) { var routed = routeAquaVoicePortalCommandV63L(command); return { command: command, canonicalIntent: routed && routed.canonicalIntent, module: routed && routed.module, renderedFallback: routed && routed.renderedFallback, transitioned: Boolean((routed && (routed.routeHtml || routed.html || routed.module))) }; });
+    var shortcut = renderAquaFullBrainCommandCenterV63K();
+    var auto = commandResults.filter(function (r) { return r.command === 'show automation report'; })[0];
+    var reg = commandResults.filter(function (r) { return r.command === 'run regression qa'; })[0];
+    var banana = commandResults.filter(function (r) { return r.command === 'banana test'; })[0];
+    var checks = [
+      { name: 'askAIVoicePortalExists', passed: /data-aqua-v63l-voice-portal/.test(ask), expected: 'Talk to Aqua — Voice Portal helper renders', actual: ask.slice(0, 140), likelyHandler: 'renderAquaAskAIVoicePortalV63L' },
+      { name: 'askAIOpensVoicePortalOnly', passed: commandResults.slice(0, 4).every(function (r) { return r.canonicalIntent === 'aqua_ask_ai_voice_portal_v63l' && r.renderedVoicePortalV63L; }), expected: 'Ask AI commands open only voice portal', actual: commandResults.slice(0, 4), likelyHandler: 'openAquaAskAIVoicePortalV63L / detectAquaAskAIVoicePortalCommandV63L' },
+      { name: 'askAIShowsLargeLogoOrBrain', passed: /data-aqua-v63l-large-logo-or-brain/.test(ask) && /aqua-v63l-orb/.test(ask), expected: 'large pulsing Aqua brain/logo in portal', actual: /data-aqua-v63l-large-logo-or-brain/.test(ask), likelyHandler: 'renderAquaAskAIVoicePortalV63L' },
+      { name: 'askAIShowsTapToSpeakPrimary', passed: /data-aqua-v63l-tap-to-speak-primary/.test(ask) && /Tap to Speak to Aqua/.test(ask), expected: 'Tap to Speak is primary', actual: /Tap to Speak/.test(ask), likelyHandler: 'renderAquaAskAIVoicePortalV63L' },
+      { name: 'askAITranscriptSecondary', passed: /data-aqua-v63l-transcript-secondary/.test(ask) && /<details/.test(ask), expected: 'transcript is collapsed/secondary', actual: /data-aqua-v63l-transcript-secondary/.test(ask), likelyHandler: 'renderAquaAskAIVoicePortalV63L' },
+      { name: 'askAITypedFallbackSecondary', passed: /data-aqua-v63l-typed-fallback-secondary/.test(ask) && /display:none/.test(ask) && /display:block/.test(typed), expected: 'typed command is secondary fallback', actual: /data-aqua-v63l-typed-fallback-secondary/.test(ask), likelyHandler: 'showAquaVoicePortalTypedFallbackV63L' },
+      { name: 'askAIDoesNotShowFullCommandCenterFirst', passed: !/data-aqua-v63k-module-routes|data-aqua-v63l-module-routes|Automation \/ QA Tools|Acceptance Tools/.test(ask), expected: 'Ask AI portal has no full command center/tools first', actual: /Module Routes|Automation \/ QA Tools|Acceptance Tools/.test(ask), likelyHandler: 'renderAquaAskAIVoicePortalV63L' },
+      { name: 'voicePortalRoutesThroughLatestRouter', passed: knownRouteResults.slice(0, 3).every(function (r) { return r.canonicalIntent && r.canonicalIntent !== 'unknown'; }), expected: 'voice portal route helper calls latest router', actual: knownRouteResults.slice(0, 3), likelyHandler: 'routeAquaVoicePortalCommandV63L' },
+      { name: 'voicePortalTransitionsToRequestedModule', passed: knownRouteResults.slice(0, 8).every(function (r) { return r.transitioned; }), expected: 'known commands transition to module/folder', actual: knownRouteResults.slice(0, 8), likelyHandler: 'transitionAquaVoicePortalToModuleV63L' },
+      { name: 'brainLogoOpensFullCommandCenter', passed: /Aqua Brain Command Center/.test(brain) && /data-aqua-v63k-module-routes/.test(brain), expected: 'brain logo opens full command center', actual: /Aqua Brain Command Center/.test(brain), likelyHandler: 'openAquaFullBrainCommandCenterV63L / bindAquaAskAIAndBrainEntriesV63L' },
+      { name: 'brainCommandCenterContainsAllTools', passed: /data-aqua-v63k-module-routes/.test(brain) && /data-aqua-v63k-automation-tools/.test(brain) && /data-aqua-v63k-acceptance-tools/.test(brain) && /Backend Readiness/.test(brain) && /Manual \/ QA Tools/.test(brain), expected: 'brain center contains modules/tools/automation/acceptance/backend/manual safety', actual: 'all tool markers present', likelyHandler: 'renderAquaFullBrainCommandCenterV63K' },
+      { name: 'brainCommandCenterContainsAskAIShortcut', passed: /data-aqua-v63k-ai-voice-shortcut/.test(brain), expected: 'brain center includes Ask AI shortcut', actual: /data-aqua-v63k-ai-voice-shortcut/.test(brain), likelyHandler: 'renderAquaFullBrainCommandCenterV63K' },
+      { name: 'askAIShortcutInsideBrainOpensVoicePortal', passed: /Talk to Aqua — Voice Command Center|Talk to Aqua — Voice Portal/.test(shortcut) && /openAquaAskAIShortcutV63K|openAquaAskAIVoicePortalV63L/.test(shortcut), expected: 'brain Ask AI shortcut opens voice portal', actual: /Talk to Aqua/.test(shortcut), likelyHandler: 'openAquaFullBrainCommandCenterV63L' },
+      { name: 'knownCommandsDoNotGenericFallback', passed: knownRouteResults.every(function (r) { return r.canonicalIntent && r.canonicalIntent !== 'unknown'; }), expected: 'known voice/typed commands never return generic fallback', actual: knownRouteResults, likelyHandler: 'routeAquaVoicePortalCommandV63L / runNormalizedAquaCommandV61E' },
+      { name: 'noAutoAlwaysListening', passed: !/continuous\s*=\s*true/.test(String(startAquaVoicePortalListenV63L)) && !/startAquaVoicePortalListenV63L\(\)/.test(String(openAquaAskAIVoicePortalV63L)), expected: 'no auto/always listening', actual: 'one-shot user tap only', likelyHandler: 'startAquaVoicePortalListenV63L' },
+      { name: 'noAudioStorage', passed: /No audio stored/.test(ask) && !/audioBlob|storedAudioPayload/.test(ask), expected: 'no audio storage', actual: /No audio stored/.test(ask), likelyHandler: 'aquaAskAIVoicePortalSafetyV63L' },
+      { name: 'automationReportStillWorks', passed: auto && auto.canonicalIntent === 'show_automation_report_v61t', expected: 'automation report still routes', actual: auto, likelyHandler: 'detectAutomationReportCommandV61T' },
+      { name: 'regressionQaStillWorks', passed: reg && reg.canonicalIntent === 'run_regression_qa', expected: 'regression qa still routes', actual: reg, likelyHandler: 'detectRegressionQACommandV61L' },
+      { name: 'unknownFallbackStillWorks', passed: banana && banana.canonicalIntent === 'unknown', expected: 'banana test still fallback', actual: banana, likelyHandler: 'renderLocalModuleFallbackV61E' }
+    ];
+    var failed = checks.filter(function (item) { return !item.passed; });
+    var report = Object.assign({ version: 'v63L', total: checks.length, passed: checks.length - failed.length, failed: failed.length, safeToMerge: failed.length === 0, mergeRecommendation: failed.length === 0 ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', checks: checks, commandResults: commandResults, knownRouteResults: knownRouteResults, repairPrompt: buildAquaEntrySplitRepairPromptV63L(failed) }, aquaAskAIVoicePortalSafetyV63L());
+    checks.forEach(function (item) { report[item.name] = item.passed === true; state[item.name] = item.passed === true; });
+    report.noAutoAlwaysListening = report.noAutoAlwaysListening === true;
+    window.aquaLastEntrySplitReportV63L = report;
+    syncAquaAskAIVoicePortalNamespaceV63L();
+    return report;
+  }
+
+  function buildAquaEntrySplitRepairPromptV63L(failed) {
+    if (!failed || !failed.length) return 'No v63L repair needed. Ask AI = beautiful voice portal only. Pulsating Brain = full Aqua Brain Command Center. Do not redesign Home. No backend/live AI. No audio storage / no always-listening.';
+    return failed.map(function (item) { return 'v63L repair required.\nFailed entry: ' + item.name + '\nExpected surface: ' + item.expected + '\nActual surface: ' + JSON.stringify(item.actual).slice(0, 700) + '\nAsk AI incorrectly opened full command center: ' + (/askAI|askAi/.test(item.name) && /Command Center|Module Routes|Automation/.test(JSON.stringify(item.actual))) + '\nBrain logo incorrectly opened voice-only portal: ' + (/brain/.test(item.name) && /Voice Portal/.test(JSON.stringify(item.actual))) + '\nLikely function/handler causing issue: ' + item.likelyHandler + '\nWhether AH_v54I-3.html binding is needed: only if openModal(\'ai\') or .brainHit cannot be intercepted safely.\nRequired file to fix: aqua-v61-extensions.js (preferred) or aqua-v61-regression-test.js for checks.\nReminder: do not redesign Home.\nReminder: no backend/live AI.\nReminder: no audio storage / no always-listening.'; }).join('\n\n');
+  }
+
+  function renderAquaEntrySplitFinalReportV63L(report) {
+    var safe = report || runAquaEntrySplitCheckV63L();
+    var rows = (safe.checks || []).map(function (item) { return '<tr><td>' + escapeHTMLV61D(item.name) + '</td><td>' + (item.passed ? '✅' : '❌') + '</td><td>' + escapeHTMLV61D(String(item.actual)) + '</td></tr>'; }).join('');
+    var body = '<section data-aqua-v63l-entry-split-final-report="true"><h3>v63L Ask AI Voice Portal / Brain Command Center Split Final Repair</h3><p>Ask AI = beautiful voice portal only. Pulsating Brain = full Aqua Brain Command Center.</p><table class="table"><tr><th>Check</th><th>Status</th><th>Actual</th></tr>' + rows + '</table><pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(safe, null, 2)) + '</pre><div class="note">' + escapeHTMLV61D(safe.repairPrompt || '') + '</div></section>';
+    return renderPremiumModuleShellV61Z({ title: 'v63L Ask AI Voice Portal / Brain Command Center Split Final Repair', subtitle: 'Final Ask AI / Brain entry split repair based on user video/feedback. Home visual design unchanged.', tag: 'v63L', chips: ['Ask AI = Voice Portal', 'Brain = Command Center', 'No Backend', 'No Audio Stored'], attrs: { 'data-aqua-v63l-entry-split-final-shell': 'true' }, body: body, safetyFooter: 'No backend calls, network calls, external AI/API calls, API keys, live record changes, exports, uploads, audio storage, or always-listening.' });
+  }
+
+  function syncAquaAskAIVoicePortalNamespaceV63L() {
+    window.AquaAskAIVoicePortalV63L = Object.assign(window.AquaAskAIVoicePortalV63L || {}, { version: 'v63L', localDemoOnly: true, storageKey: AQUA_ASK_AI_VOICE_PORTAL_KEY_V63L, openAquaAskAIVoicePortalV63L: openAquaAskAIVoicePortalV63L, renderAquaAskAIVoicePortalV63L: renderAquaAskAIVoicePortalV63L, startAquaVoicePortalListenV63L: startAquaVoicePortalListenV63L, stopAquaVoicePortalListenV63L: stopAquaVoicePortalListenV63L, handleAquaVoicePortalTranscriptV63L: handleAquaVoicePortalTranscriptV63L, routeAquaVoicePortalCommandV63L: routeAquaVoicePortalCommandV63L, transitionAquaVoicePortalToModuleV63L: transitionAquaVoicePortalToModuleV63L, showAquaVoicePortalTypedFallbackV63L: showAquaVoicePortalTypedFallbackV63L, closeAquaVoicePortalV63L: closeAquaVoicePortalV63L, openAquaFullBrainCommandCenterV63L: openAquaFullBrainCommandCenterV63L, bindAquaAskAIAndBrainEntriesV63L: bindAquaAskAIAndBrainEntriesV63L, runAquaEntrySplitCheckV63L: runAquaEntrySplitCheckV63L, getAquaAskAIVoicePortalStateV63L: getAquaAskAIVoicePortalStateV63L, renderAquaEntrySplitFinalReportV63L: renderAquaEntrySplitFinalReportV63L, safetyEnvelope: aquaAskAIVoicePortalSafetyV63L() });
+    return window.AquaAskAIVoicePortalV63L;
   }
 
   function renderAquaCompactAssistantShellV62VD(assistantState) {
@@ -8450,6 +8715,9 @@
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
 
+    var voicePortalIntentV63L = detectAquaAskAIVoicePortalCommandV63L(originalForPriorityV62O, normalizedForPriorityV62O);
+    if (voicePortalIntentV63L) return handleAquaAskAIVoicePortalCommandV63L(voicePortalIntentV63L, outputNode);
+
     var entryRoutingIntentV63K = detectAquaEntryRoutingCommandV63K(originalForPriorityV62O, normalizedForPriorityV62O);
     if (entryRoutingIntentV63K) return handleAquaEntryRoutingCommandV63K(entryRoutingIntentV63K, outputNode);
 
@@ -11208,7 +11476,9 @@
     var voiceCaptureReportV63J = runAquaVoiceCapturePrimaryCheckV63J();
     var voiceCaptureCommandResultsV63J = (voiceCaptureReportV63J.commandResults || []).map(function (item) { return { command: 'v63J known voice command: ' + item.command, expected: 'v63J known voice commands route through latest Aqua Brain router without generic fallback', actual: item, passed: item.genericDemo !== true && item.unknown !== true, errors: item.genericDemo || item.unknown ? ['Voice command generic/unknown fallback'] : [], suggestedFix: voiceCaptureReportV63J.repairPrompt }; }).concat((voiceCaptureReportV63J.checks || []).map(function (item) { return { command: 'v63J voice capture check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v63J voice capture check failed'], suggestedFix: voiceCaptureReportV63J.repairPrompt }; }));
     var entryRoutingReportV63K = runAquaEntryRoutingCheckV63K();
-    var entryRoutingCommandResultsV63K = (entryRoutingReportV63K.commandResults || []).map(function (item) { return { command: 'v63K entry command: ' + item.command, expected: 'v63K entry commands split Ask AI voice shortcut from full Brain Command Center', actual: item, passed: (/ask ai shortcut|talk to aqua|voice command center/.test(item.command) && item.canonicalIntent === 'aqua_ask_ai_shortcut_v63k') || (/brain command center|all brain functions|show command center/.test(item.command) && item.canonicalIntent === 'aqua_brain_command_center_v63k') || (/entry routing/.test(item.command) && item.canonicalIntent === 'aqua_entry_routing_repair_v63k') || (/phone dex acceptance/.test(item.command) && item.canonicalIntent === 'phone_dex_acceptance_v63h') || (/automation report/.test(item.command) && item.canonicalIntent === 'show_automation_report_v61t') || (/regression qa/.test(item.command) && item.canonicalIntent === 'run_regression_qa') || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: [], suggestedFix: entryRoutingReportV63K.repairPrompt }; }).concat((entryRoutingReportV63K.checks || []).map(function (item) { return { command: 'v63K entry routing check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v63K entry routing check failed'], suggestedFix: entryRoutingReportV63K.repairPrompt }; }));
+    var entryRoutingCommandResultsV63K = (entryRoutingReportV63K.commandResults || []).map(function (item) { return { command: 'v63K entry command: ' + item.command, expected: 'v63K entry commands split Ask AI voice shortcut from full Brain Command Center', actual: item, passed: (/ask ai shortcut|talk to aqua|voice command center/.test(item.command) && (item.canonicalIntent === 'aqua_ask_ai_shortcut_v63k' || item.canonicalIntent === 'aqua_ask_ai_voice_portal_v63l')) || (/brain command center|all brain functions|show command center/.test(item.command) && (item.canonicalIntent === 'aqua_brain_command_center_v63k' || item.canonicalIntent === 'aqua_brain_command_center_v63l')) || (/entry routing/.test(item.command) && item.canonicalIntent === 'aqua_entry_routing_repair_v63k') || (/phone dex acceptance/.test(item.command) && item.canonicalIntent === 'phone_dex_acceptance_v63h') || (/automation report/.test(item.command) && item.canonicalIntent === 'show_automation_report_v61t') || (/regression qa/.test(item.command) && item.canonicalIntent === 'run_regression_qa') || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: [], suggestedFix: entryRoutingReportV63K.repairPrompt }; }).concat((entryRoutingReportV63K.checks || []).map(function (item) { return { command: 'v63K entry routing check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v63K entry routing check failed'], suggestedFix: entryRoutingReportV63K.repairPrompt }; }));
+    var entrySplitReportV63L = runAquaEntrySplitCheckV63L();
+    var entrySplitCommandResultsV63L = (entrySplitReportV63L.commandResults || []).map(function (item) { return { command: 'v63L entry split command: ' + item.command, expected: 'v63L commands split Ask AI voice portal from full Brain Command Center', actual: item, passed: (/ask ai voice portal|talk to aqua|voice portal|typed fallback/.test(item.command) && item.canonicalIntent === 'aqua_ask_ai_voice_portal_v63l') || (/brain command center|all brain functions/.test(item.command) && item.canonicalIntent === 'aqua_brain_command_center_v63l') || (/entry split/.test(item.command) && item.canonicalIntent === 'aqua_entry_split_final_check_v63l') || (/home depot|home deepo/i.test(item.command) && item.canonicalIntent !== 'unknown') || (/phone dex acceptance/.test(item.command) && item.canonicalIntent === 'phone_dex_acceptance_v63h') || (/automation report/.test(item.command) && item.canonicalIntent === 'show_automation_report_v61t') || (/regression qa/.test(item.command) && item.canonicalIntent === 'run_regression_qa') || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: item.renderedFallback ? ['v63L command rendered fallback unexpectedly'] : [], suggestedFix: entrySplitReportV63L.repairPrompt }; }).concat((entrySplitReportV63L.checks || []).map(function (item) { return { command: 'v63L entry split check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v63L entry split check failed'], suggestedFix: entrySplitReportV63L.repairPrompt }; }));
     var phoneAcceptanceCommandListV63F = ['run module phone acceptance', 'show module phone acceptance', 'show opened module phone check', 'show phone module previews', 'show module visual failures', 'copy module phone acceptance', 'show polished receipts', 'show polished accounting', 'show polished SOW', 'show polished project folders', 'show automation report', 'run regression qa', 'banana test'];
     var phoneAcceptanceCommandResultsV63F = phoneAcceptanceCommandListV63F.map(function (command) {
       var host = document.createElement('div');
@@ -11222,7 +11492,7 @@
       var passed = isPhoneAcceptance || isPolished || isAutomation || isRegression || isFallback;
       return { command: command, expected: 'v63F phone/DeX opened-module visual acceptance routes safely', actual: Object.assign({ renderedModulePhoneAcceptanceV63F: isPhoneAcceptance, renderedPremiumPolishedModule: isPolished, premiumOperationalCardsRenderV63C: /^show polished SOW$/.test(command) && isPolished, premiumPortalCardsRenderV63D: /^show polished project folders$/.test(command) && isPolished, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['v63F phone acceptance command failed'], suggestedFix: passed ? '' : 'Update AquaPremiumModulePhoneAcceptanceV63F local/demo routing/rendering only. Do not redesign Home or activate backend/live actions.' };
     });
-    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneDexAcceptanceCommandResultsV63H, liveEntryRepairCommandResultsV63I, voiceCaptureCommandResultsV63J, entryRoutingCommandResultsV63K, phoneAcceptanceCommandResultsV63F, finalKeeperCommandResultsV63G, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
+    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneDexAcceptanceCommandResultsV63H, liveEntryRepairCommandResultsV63I, voiceCaptureCommandResultsV63J, entryRoutingCommandResultsV63K, entrySplitCommandResultsV63L, phoneAcceptanceCommandResultsV63F, finalKeeperCommandResultsV63G, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -11285,6 +11555,21 @@
       knownVoiceCommandsDoNotGenericFallback: voiceCaptureReportV63J.knownVoiceCommandsDoNotGenericFallback === true,
       voiceCaptureReportV63J: voiceCaptureReportV63J,
       entryRoutingReportV63K: entryRoutingReportV63K,
+      entrySplitReportV63L: entrySplitReportV63L,
+      askAIVoicePortalExists: entrySplitReportV63L.askAIVoicePortalExists === true,
+      askAIOpensVoicePortalOnly: entrySplitReportV63L.askAIOpensVoicePortalOnly === true,
+      askAIShowsLargeLogoOrBrain: entrySplitReportV63L.askAIShowsLargeLogoOrBrain === true,
+      askAIShowsTapToSpeakPrimary: entrySplitReportV63L.askAIShowsTapToSpeakPrimary === true,
+      askAITranscriptSecondary: entrySplitReportV63L.askAITranscriptSecondary === true,
+      askAITypedFallbackSecondary: entrySplitReportV63L.askAITypedFallbackSecondary === true,
+      askAIDoesNotShowFullCommandCenterFirst: entrySplitReportV63L.askAIDoesNotShowFullCommandCenterFirst === true,
+      voicePortalRoutesThroughLatestRouter: entrySplitReportV63L.voicePortalRoutesThroughLatestRouter === true,
+      voicePortalTransitionsToRequestedModule: entrySplitReportV63L.voicePortalTransitionsToRequestedModule === true,
+      brainLogoOpensFullCommandCenter: entrySplitReportV63L.brainLogoOpensFullCommandCenter === true,
+      brainCommandCenterContainsAllTools: entrySplitReportV63L.brainCommandCenterContainsAllTools === true,
+      askAIShortcutInsideBrainOpensVoicePortal: entrySplitReportV63L.askAIShortcutInsideBrainOpensVoicePortal === true,
+      knownCommandsDoNotGenericFallback: entrySplitReportV63L.knownCommandsDoNotGenericFallback === true,
+      noAutoAlwaysListening: entrySplitReportV63L.noAutoAlwaysListening === true,
       entryRouterExists: entryRoutingReportV63K.entryRouterExists === true,
       askAiShortcutOpensVoiceFirst: entryRoutingReportV63K.askAiShortcutOpensVoiceFirst === true,
       askAiShowsTapToSpeakPrimary: entryRoutingReportV63K.askAiShowsTapToSpeakPrimary === true,
@@ -12443,9 +12728,11 @@
   }
   if (window && typeof window.addEventListener === 'function') window.addEventListener('load', wireAskAIToCommandFlow, { once: true });
   bindAquaEntryPointsV63K();
-  if (window && typeof window.addEventListener === 'function') window.addEventListener('load', bindAquaEntryPointsV63K, { once: true });
+  syncAquaAskAIVoicePortalNamespaceV63L();
+  bindAquaAskAIAndBrainEntriesV63L();
+  if (window && typeof window.addEventListener === 'function') window.addEventListener('load', function () { bindAquaEntryPointsV63K(); bindAquaAskAIAndBrainEntriesV63L(); }, { once: true });
 
   installPremiumModuleShellStylesV61Z();
   installPremiumModuleShellStylesV63A();
-  console.log('Aqua Homes OS v63K extensions loaded: assistant command surface, data index query runtime, fuzzy language resolver, full interface control matrix, and e2e routing matrix active. Home untouched. Backend locked. No live AI, upload, export, or record change.');
+  console.log('Aqua Homes OS v63L extensions loaded: Ask AI voice portal split and Brain Command Center entry repair active. Home untouched. Backend locked. No live AI, upload, export, audio storage, or record change.');
 }());
