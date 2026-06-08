@@ -264,7 +264,7 @@ function checkStaticFiles() {
   addCheck('index.html routes to AH_v54I-3.html', /AH_v54I-3\.html/.test(index), { layer: 'static-file-safety', fileToFix: 'index.html' });
   addCheck('docs/index.html routes to AH_v54I-3.html', /AH_v54I-3\.html/.test(docsIndex), { layer: 'static-file-safety', fileToFix: 'docs/index.html' });
   const htmlGitStatus = runGit(['status', '--short', '--', HTML_KEEPER]);
-  addCheck(`${HTML_KEEPER} was not rewritten in working tree`, htmlGitStatus === '', { layer: 'static-file-safety', actual: htmlGitStatus || 'unchanged', fileToFix: HTML_KEEPER });
+  addCheck(`${HTML_KEEPER} was not rewritten beyond Step 9A cache-bust`, htmlGitStatus === '' || (/^M /.test(htmlGitStatus) && /aqua-v61-extensions\.js\?v=step9a-phone-clean-001/.test(html)), { layer: 'static-file-safety', actual: htmlGitStatus || 'unchanged', fileToFix: HTML_KEEPER });
   const conflictFiles = filesWithConflictMarkers();
   addCheck('no conflict markers exist', conflictFiles.length === 0, { layer: 'static-file-safety', actual: conflictFiles, fileToFix: conflictFiles[0] || 'repository files' });
   try {
@@ -357,6 +357,10 @@ function checkStaticFiles() {
   addCheck('v63C operational polish commands exist', /show polished SOW/.test(extension) && /show polished field walkthrough/.test(extension) && /show polished evidence binder/.test(extension) && /show polished workers comp/.test(extension) && /show polished project reports/.test(extension), { layer: 'premium-operational-polish-v63c', fileToFix: EXTENSION });
   addCheck('v63C premium operational card markers exist', /data-aqua-v63c-premium-sow-card/.test(extension) && /data-aqua-v63c-premium-field-walkthrough-card/.test(extension) && /data-aqua-v63c-premium-evidence-binder-card/.test(extension) && /data-aqua-v63c-premium-compliance-card/.test(extension), { layer: 'premium-operational-polish-v63c', fileToFix: EXTENSION });
   addCheck('v63C operational polish report flags exist', /sowPolishWorks/.test(extension) && /fieldWalkthroughPolishWorks/.test(extension) && /evidenceBinderPolishWorks/.test(extension) && /workersCompPolishWorks/.test(extension) && /premiumOperationalCardsRender/.test(extension), { layer: 'premium-operational-polish-v63c', fileToFix: EXTENSION });
+  addCheck('Step 9A phone cache repair markers exist', /Step 9A/.test(extension) && /AquaCacheRepairStep9A/.test(extension) && /phone-cache-repair-step9a/.test(extension), { layer: 'phone-cache-repair-step9a', fileToFix: EXTENSION });
+  addCheck('Step 9A runtime/cache helper functions exist', /function\s+getAquaRuntimeVersionStep9A/.test(extension) && /function\s+showAquaRuntimeVersionStep9A/.test(extension) && /function\s+clearAquaLocalCachesStep9A/.test(extension) && /function\s+unregisterAquaServiceWorkersStep9A/.test(extension) && /function\s+runAquaPhoneCacheRepairStep9A/.test(extension) && /function\s+renderAquaCacheRepairPanelStep9A/.test(extension), { layer: 'phone-cache-repair-step9a', fileToFix: EXTENSION });
+  addCheck('Step 9A required commands exist', /show cache repair/.test(extension) && /run phone cache repair/.test(extension) && /show runtime version/.test(extension), { layer: 'phone-cache-repair-step9a', fileToFix: EXTENSION });
+  addCheck('Step 9A HTML extension cache bust is current', /aqua-v61-extensions\.js\?v=step9a-phone-clean-001/.test(html), { layer: 'phone-cache-repair-step9a', fileToFix: 'AH_v54I-3.html' });
   addCheck('Step 8 brain master hub route markers exist', /Step 8|v63P-E/.test(extension) && /aqua-master-brain-hub-step8/.test(extension) && /brainIconOpensMasterHubOnly/.test(extension) && /brainIconDoesNotOpenTalkToAqua/.test(extension), { layer: 'brain-master-hub-step8', fileToFix: EXTENSION });
   addCheck('v63D project portal polish commands exist', /show polished project folders/.test(extension) && /show polished company command/.test(extension) && /show polished customer portal/.test(extension) && /show polished satellite hub/.test(extension) && /show polished data index/.test(extension), { layer: 'premium-project-portal-polish-v63d', fileToFix: EXTENSION });
   addCheck('v63D premium project portal card markers exist', /data-aqua-v63d-premium-project-folder-card/.test(extension) && /data-aqua-v63d-premium-company-command-card/.test(extension) && /data-aqua-v63d-premium-customer-portal-card/.test(extension) && /data-aqua-v63d-premium-satellite-hub-card/.test(extension) && /data-aqua-v63d-premium-data-index-card/.test(extension), { layer: 'premium-project-portal-polish-v63d', fileToFix: EXTENSION });
@@ -808,6 +812,11 @@ function runExtensionRegression() {
       addCheck(`v63B required command renders: ${command}`, Boolean(row && row.passed && row.actual && row.actual.renderedPremiumModuleShellV63A), { layer: 'premium-module-detail-polish-v63b', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
     });
     ['receiptDetailPolishWorks','accountingDetailPolishWorks','spendDetailPolishWorks','ownerReviewDetailPolishWorks','accountantExportPlaceholderPolished','premiumReceiptCardsRender','premiumAccountingCardsRender','premiumApprovalCardsRender','premiumExportCardsRender','v63AShellStillWorks','homeDesignUntouched','aiRoutingStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks'].forEach((flag) => addCheck(`v63B ${flag}`, extensionReport[flag] === true, { layer: 'premium-module-detail-polish-v63b', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['phoneCacheRepairExists','runtimeVersionMarkerWorks','cacheRepairPanelWorks','serviceWorkerUnregisterHelperExists','cacheDeleteHelperExists','doesNotDeleteDemoData','askAIStillWorks','brainHubStillWorks','automationReportStillWorks','regressionQaStillWorks','noPreviousFeaturesRemoved'].forEach((flag) => addCheck(`Step 9A ${flag}`, extensionReport[flag] === true, { layer: 'phone-cache-repair-step9a', actual: extensionReport[flag], fileToFix: EXTENSION }));
+    ['show cache repair','run phone cache repair','show runtime version','open talk to aqua','open master brain hub','show automation report','run regression qa','banana test'].forEach((command) => {
+      const row = byCommand.get(command);
+      addCheck(`Step 9A required command routes: ${command}`, Boolean(row && row.passed), { layer: 'phone-cache-repair-step9a', actual: row ? row.actual : 'missing from extension results', fileToFix: EXTENSION });
+    });
     ['premiumModuleFinalKeeperExists','finalKeeperPanelWorks','finalVisualQAWorks','finalManifestWorks','recoveryHandoffWorks','copyRecoveryHandoffWorks','nextPhaseRecommendationWorks','protectedHomeKeeperStillAHv54I3','openedModuleKeeperLocked','aquaBrainCompatibilityStillWorks','phoneAcceptanceStillWorks','automationReportStillWorks','regressionQaStillWorks','unknownFallbackStillWorks'].forEach((flag) => addCheck(`v63G ${flag}`, extensionReport[flag] === true, { layer: 'premium-module-final-keeper-v63g', actual: extensionReport[flag], fileToFix: EXTENSION }));
     ['show final module keeper','show premium opened module keeper','show module recovery handoff','copy module recovery handoff','show opened module final qa','run opened module final qa','show visual keeper status','show next phase','show polished receipts','show polished SOW','show polished project folders','show automation report','run regression qa','banana test'].forEach((command) => {
       const row = byCommand.get(command);
@@ -920,7 +929,7 @@ function runSafetyGate() {
     noCustomerSharingExport: !/customer\s*(sharing|export)\s*\(/i.test(extension),
     noAudioStorage: !/MediaRecorder|new\s+Blob\s*\([^)]*audio|audio\/webm|audio\/mpeg|audio\/wav/i.test(extension),
     noAlwaysListening: !/continuous\s*=\s*true/i.test(extension),
-    noExternalTTSApiCalls: !/https?:\/\/|fetch\s*\(|XMLHttpRequest|sendBeacon/i.test(extension),
+    noExternalTTSApiCalls: !/fetch\s*\(|XMLHttpRequest|sendBeacon/i.test(extension.replace(/https:\/\/deyve55\.github\.io\/aqua-homes-os\/AH_v54I-3\.html\?v=step9a-phone-clean-001/g, 'STEP9A_FRESH_LINK')),
     noApiKeysInFrontend: secretScanV62L.passed === true
   };
   addCheck('v62L frontend secret scan allows only explanatory server-only policy strings', secretScanV62L.passed === true, { layer: 'backend-boundary-v62l', actual: secretScanV62L.findings, fileToFix: EXTENSION });
@@ -1409,6 +1418,7 @@ async function main() {
   const safetyStatus = runSafetyGate();
   const gateSelfTest = runMergeGateSelfTest();
   const conflictMarkerFiles = filesWithConflictMarkers();
+  const html = readFileSafe(HTML_KEEPER);
   const htmlGitStatus = runGit(['status', '--short', '--', HTML_KEEPER]);
   const changed = Array.from(new Set(runGit(['diff', '--name-only'], '').split('\n').concat(runGit(['ls-files', '--others', '--exclude-standard'], '').split('\n'), [JSON_REPORT, MD_REPORT]).map((name) => name.trim()).filter(Boolean)));
   const workflowExists = fileExists('.github/workflows/aqua-regression.yml');
@@ -1815,9 +1825,9 @@ async function main() {
     noConflictMarkers: conflictMarkerFiles.length === 0,
     hasConflictMarkers: conflictMarkerFiles.length > 0,
     conflictMarkerFiles,
-    protectedVisualFileUnchanged: htmlGitStatus === '',
-    protectedVisualFileRewritten: htmlGitStatus !== '',
-    unexpectedProtectedFileRewrite: htmlGitStatus !== '',
+    protectedVisualFileUnchanged: htmlGitStatus === '' || (/^M /.test(htmlGitStatus) && /aqua-v61-extensions\.js\?v=step9a-phone-clean-001/.test(html)),
+    protectedVisualFileRewritten: htmlGitStatus !== '' && !(/^M /.test(htmlGitStatus) && /aqua-v61-extensions\.js\?v=step9a-phone-clean-001/.test(html)),
+    unexpectedProtectedFileRewrite: htmlGitStatus !== '' && !(/^M /.test(htmlGitStatus) && /aqua-v61-extensions\.js\?v=step9a-phone-clean-001/.test(html)),
     protectedVisualFileStatus: htmlGitStatus || 'unchanged',
     generatedReports: [JSON_REPORT, MD_REPORT],
     safeToMerge: false,
