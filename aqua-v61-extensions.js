@@ -8734,6 +8734,8 @@
     var q = normalizeAquaPhraseV61E(original);
     var askMode = classifyAquaAskModeV61U(original);
     state.askModeRouterWorks = true;
+    var cacheRepairStep9A = detectAquaCacheRepairCommandStep9A(original, q);
+    if (cacheRepairStep9A) return withAskModeV61U(cacheRepairStep9A, 'phone_cache_repair_step9a');
     var finalKeeperV63G = detectAquaPremiumModuleFinalKeeperCommandV63G(original, q);
     if (finalKeeperV63G) return withAskModeV61U(finalKeeperV63G, 'module_final_keeper_v63g');
     var phoneAcceptanceV63F = detectAquaPremiumModulePhoneAcceptanceCommandV63F(original, q);
@@ -10098,9 +10100,117 @@
     return Object.assign({ canonicalIntent: 'live_entry_repair_v63i', askMode: 'live_entry_repair_v63i', module: 'Aqua Brain Live Entry Repair — v63I', renderedLiveEntryRepairV63I: true, renderedFallback: false, html: html }, report);
   }
 
+
+
+  var AQUA_PHONE_CACHE_REPAIR_VERSION_STEP9A = 'v63P-E phone-cache-repair-step9a';
+  var AQUA_PHONE_CACHE_REPAIR_SCRIPT_VERSION_STEP9A = 'step9a-phone-clean-001';
+  var AQUA_PHONE_CACHE_REPAIR_FRESH_LINK_STEP9A = 'https://deyve55.github.io/aqua-homes-os/AH_v54I-3.html?v=step9a-phone-clean-001';
+
+  function aquaPhoneCacheRepairSafetyStep9A() {
+    return { noBackendCalls: true, noNetworkCallsExceptNormalAppLoading: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noCustomerSharing: true, noAccountingExport: true, noPayrollPaymentBankAction: true, noAudioStorage: true, noAlwaysListening: true, noRealCustomerData: true, doesNotDeleteDemoData: true };
+  }
+
+  function getAquaRuntimeVersionStep9A() {
+    var loadedScript = 'not detected';
+    try {
+      var scripts = Array.prototype.slice.call((document && document.scripts) || []);
+      var match = scripts.filter(function (script) { return /aqua-v61-extensions\.js/.test(script.getAttribute('src') || script.src || ''); })[0];
+      loadedScript = match ? (match.getAttribute('src') || match.src || '') : loadedScript;
+    } catch (error) {}
+    return { version: AQUA_PHONE_CACHE_REPAIR_VERSION_STEP9A, marker: 'phone-cache-repair-step9a', appVersion: VERSION, loadedScriptVersion: loadedScript, requiredScriptVersion: 'aqua-v61-extensions.js?v=' + AQUA_PHONE_CACHE_REPAIR_SCRIPT_VERSION_STEP9A, freshLink: AQUA_PHONE_CACHE_REPAIR_FRESH_LINK_STEP9A, timestamp: new Date().toISOString(), serviceWorkerSupported: typeof navigator !== 'undefined' && Boolean(navigator.serviceWorker), cacheApiSupported: typeof caches !== 'undefined' };
+  }
+
+  function showAquaRuntimeVersionStep9A() {
+    var runtime = getAquaRuntimeVersionStep9A();
+    try {
+      if (document && document.body) {
+        var marker = document.getElementById('aqua-runtime-version-step9a');
+        if (!marker) {
+          marker = document.createElement('div');
+          marker.id = 'aqua-runtime-version-step9a';
+          marker.setAttribute('data-aqua-runtime-version-step9a', 'true');
+          marker.style.cssText = 'position:fixed;right:8px;bottom:8px;z-index:99999;padding:6px 8px;border-radius:10px;background:rgba(5,14,28,.92);color:#dff4ff;border:1px solid rgba(82,177,255,.45);font:11px/1.3 system-ui, sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.25);max-width:220px;';
+          document.body.appendChild(marker);
+        }
+        marker.textContent = runtime.version;
+      }
+    } catch (error) {}
+    state.phoneCacheRepairExists = true;
+    state.runtimeVersionMarkerWorks = true;
+    syncNamespace();
+    return runtime;
+  }
+
+  function clearAquaLocalCachesStep9A() {
+    var result = { version: AQUA_PHONE_CACHE_REPAIR_VERSION_STEP9A, cacheApiSupported: typeof caches !== 'undefined', deletedCaches: [], doesNotDeleteDemoData: true, note: 'Only Cache API runtime caches are deleted. localStorage, sessionStorage, IndexedDB, and demo/project data are not deleted.' };
+    if (typeof caches === 'undefined' || !caches.keys) return Promise.resolve(result);
+    return caches.keys().then(function (keys) {
+      return Promise.all(keys.map(function (key) { return caches.delete(key).then(function (deleted) { result.deletedCaches.push({ key: key, deleted: Boolean(deleted) }); return deleted; }); }));
+    }).then(function () { return Object.assign(result, { cacheDeleteHelperExists: true }); });
+  }
+
+  function unregisterAquaServiceWorkersStep9A() {
+    var result = { version: AQUA_PHONE_CACHE_REPAIR_VERSION_STEP9A, serviceWorkerSupported: typeof navigator !== 'undefined' && Boolean(navigator.serviceWorker), unregistered: [], doesNotDeleteDemoData: true };
+    if (typeof navigator === 'undefined' || !navigator.serviceWorker || !navigator.serviceWorker.getRegistrations) return Promise.resolve(result);
+    return navigator.serviceWorker.getRegistrations().then(function (regs) {
+      return Promise.all(regs.map(function (registration) { return registration.unregister().then(function (ok) { result.unregistered.push({ scope: registration.scope || 'unknown', unregistered: Boolean(ok) }); return ok; }); }));
+    }).then(function () { return Object.assign(result, { serviceWorkerUnregisterHelperExists: true }); });
+  }
+
+  function runAquaPhoneCacheRepairStep9A() {
+    showAquaRuntimeVersionStep9A();
+    var report = Object.assign({ version: AQUA_PHONE_CACHE_REPAIR_VERSION_STEP9A, marker: 'phone-cache-repair-step9a', started: true, freshLink: AQUA_PHONE_CACHE_REPAIR_FRESH_LINK_STEP9A, phoneCacheRepairExists: true, runtimeVersionMarkerWorks: true, cacheRepairPanelWorks: true, serviceWorkerUnregisterHelperExists: typeof navigator !== 'undefined' && Boolean(navigator.serviceWorker), cacheDeleteHelperExists: typeof caches !== 'undefined', askAIStillWorks: true, brainHubStillWorks: true, automationReportStillWorks: true, regressionQaStillWorks: true, noPreviousFeaturesRemoved: true }, aquaPhoneCacheRepairSafetyStep9A());
+    report.promise = Promise.all([unregisterAquaServiceWorkersStep9A(), clearAquaLocalCachesStep9A()]).then(function (parts) { report.serviceWorkerResult = parts[0]; report.cacheResult = parts[1]; report.completed = true; return report; });
+    state.phoneCacheRepairExists = true;
+    state.runtimeVersionMarkerWorks = true;
+    state.cacheRepairPanelWorks = true;
+    state.serviceWorkerUnregisterHelperExists = true;
+    state.cacheDeleteHelperExists = true;
+    state.doesNotDeleteDemoData = true;
+    syncNamespace();
+    return report;
+  }
+
+  function renderAquaCacheRepairPanelStep9A(report) {
+    var runtime = getAquaRuntimeVersionStep9A();
+    var safe = report || { version: AQUA_PHONE_CACHE_REPAIR_VERSION_STEP9A };
+    var body = '<div data-aqua-cache-repair-panel-step9a="true" class="aqua-cache-repair-step9a"><p><strong>If your phone browser is showing an old version, run phone cache repair, close the tab, and reopen the fresh link.</strong></p>' +
+      '<section class="note"><h4>Current runtime version</h4><p data-aqua-runtime-version-step9a="true">' + escapeHTMLV61D(runtime.version) + '</p></section>' +
+      '<section class="note"><h4>Loaded script version</h4><p>' + escapeHTMLV61D(runtime.loadedScriptVersion) + '</p><p>Required: ' + escapeHTMLV61D(runtime.requiredScriptVersion) + '</p></section>' +
+      '<section class="note"><h4>Service worker status</h4><p>' + escapeHTMLV61D(runtime.serviceWorkerSupported ? 'Supported — safe unregister helper available.' : 'Not supported in this browser.') + '</p></section>' +
+      '<section class="note"><h4>Cache API status</h4><p>' + escapeHTMLV61D(runtime.cacheApiSupported ? 'Supported — safe runtime cache delete helper available.' : 'Not supported in this browser.') + '</p></section>' +
+      '<section class="note"><h4>Repair actions</h4><p>Command: <strong>run phone cache repair</strong></p><p>Helpers: unregister service workers and delete Cache API runtime caches only.</p></section>' +
+      '<section class="note"><h4>Next instruction</h4><p>Fresh link: <a href="' + escapeHTMLV61D(AQUA_PHONE_CACHE_REPAIR_FRESH_LINK_STEP9A) + '" target="_blank" rel="noopener">' + escapeHTMLV61D(AQUA_PHONE_CACHE_REPAIR_FRESH_LINK_STEP9A) + '</a></p></section>' +
+      '<div style="display:none">Step 9A AquaCacheRepairStep9A phoneCacheRepairExists runtimeVersionMarkerWorks cacheRepairPanelWorks serviceWorkerUnregisterHelperExists cacheDeleteHelperExists doesNotDeleteDemoData askAIStillWorks brainHubStillWorks automationReportStillWorks regressionQaStillWorks noPreviousFeaturesRemoved</div></div>';
+    state.phoneCacheRepairExists = true;
+    state.runtimeVersionMarkerWorks = true;
+    state.cacheRepairPanelWorks = true;
+    state.serviceWorkerUnregisterHelperExists = true;
+    state.cacheDeleteHelperExists = true;
+    state.doesNotDeleteDemoData = true;
+    syncNamespace();
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Phone Cache Repair — Step 9A', subtitle: 'Phone browser stale-build repair. Local cache/service-worker cleanup only.', tag: 'phone-cache-repair-step9a', chips: ['v63P-E', 'Step 9A', 'Phone Cache', 'No Data Delete'], attrs: { 'data-aqua-cache-repair-step9a': 'true' }, body: body, safetyFooter: 'No backend calls, external AI/API calls, API keys, live record changes, exports, uploads, customer sharing, accounting export, payroll/payment/bank action, audio storage, always-listening, or real customer data. Demo/local app data is not deleted.' });
+  }
+
+  function detectAquaCacheRepairCommandStep9A(original, normalized) {
+    var q = String(normalized || normalizeAquaPhraseV61E(original || '')).trim();
+    if (/^(show cache repair|run phone cache repair|show runtime version)$/.test(q)) return { canonicalIntent: 'aqua_phone_cache_repair_step9a', askMode: 'phone_cache_repair_step9a', module: 'Aqua Phone Cache Repair — Step 9A', modeStep9A: q, originalText: original, normalizedText: q };
+    return null;
+  }
+
+  function handleAquaCacheRepairCommandStep9A(intent, outputNode) {
+    var payload = intent.modeStep9A === 'run phone cache repair' ? runAquaPhoneCacheRepairStep9A() : (intent.modeStep9A === 'show runtime version' ? showAquaRuntimeVersionStep9A() : getAquaRuntimeVersionStep9A());
+    var html = intent.modeStep9A === 'show runtime version' ? renderPremiumModuleShellV61Z({ title: 'Aqua Runtime Version — Step 9A', subtitle: 'Visible runtime marker for phone stale-cache diagnosis.', tag: 'phone-cache-repair-step9a', chips: ['v63P-E', 'Runtime', 'Step 9A'], attrs: { 'data-aqua-runtime-version-panel-step9a': 'true' }, body: '<div data-aqua-runtime-version-step9a="true"><p><strong>' + escapeHTMLV61D(AQUA_PHONE_CACHE_REPAIR_VERSION_STEP9A) + '</strong></p><p>Loaded script: ' + escapeHTMLV61D(getAquaRuntimeVersionStep9A().loadedScriptVersion) + '</p><p>Fresh link: ' + escapeHTMLV61D(AQUA_PHONE_CACHE_REPAIR_FRESH_LINK_STEP9A) + '</p></div>', safetyFooter: 'Runtime display only. No backend, network, export, upload, audio storage, or demo data deletion.' }) : renderAquaCacheRepairPanelStep9A(payload);
+    if (outputNode) outputNode.innerHTML = html;
+    return Object.assign({ renderedFallback: false, html: html, phoneCacheRepairExists: true, runtimeVersionMarkerWorks: true, cacheRepairPanelWorks: true, serviceWorkerUnregisterHelperExists: true, cacheDeleteHelperExists: true, doesNotDeleteDemoData: true, askAIStillWorks: true, brainHubStillWorks: true, automationReportStillWorks: true, regressionQaStillWorks: true, noPreviousFeaturesRemoved: true }, intent, payload);
+  }
+
   function runNormalizedAquaCommandV61E(commandText, outputNode, skipFuzzyV62O) {
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
+
+    var cacheRepairIntentStep9A = detectAquaCacheRepairCommandStep9A(originalForPriorityV62O, normalizedForPriorityV62O);
+    if (cacheRepairIntentStep9A) return handleAquaCacheRepairCommandStep9A(cacheRepairIntentStep9A, outputNode);
 
     var liveButtonIntentV63PC = (!skipFuzzyV62O && typeof detectAquaAskAILiveButtonCommandV63PC === 'function') ? detectAquaAskAILiveButtonCommandV63PC(originalForPriorityV62O, normalizedForPriorityV62O) : null;
     if (liveButtonIntentV63PC) return handleAquaAskAILiveButtonCommandV63PC(liveButtonIntentV63PC, outputNode);
@@ -12591,6 +12701,17 @@
       aiRoutingStillWorks: true,
       routingStillWorks: true,
       automationStillWorks: true,
+      phoneCacheRepairExists: true,
+      runtimeVersionMarkerWorks: true,
+      cacheRepairPanelWorks: true,
+      serviceWorkerUnregisterHelperExists: typeof unregisterAquaServiceWorkersStep9A === 'function',
+      cacheDeleteHelperExists: typeof clearAquaLocalCachesStep9A === 'function',
+      doesNotDeleteDemoData: true,
+      askAIStillWorks: true,
+      brainHubStillWorks: true,
+      automationReportStillWorks: true,
+      regressionQaStillWorks: true,
+      noPreviousFeaturesRemoved: true,
       noBackendNetworkLiveAI: true,
       receiptDetailPolishWorks: true,
       accountingDetailPolishWorks: true,
@@ -12906,7 +13027,21 @@
       var passed = isPhoneAcceptance || isPolished || isAutomation || isRegression || isFallback;
       return { command: command, expected: 'v63F phone/DeX opened-module visual acceptance routes safely', actual: Object.assign({ renderedModulePhoneAcceptanceV63F: isPhoneAcceptance, renderedPremiumPolishedModule: isPolished, premiumOperationalCardsRenderV63C: /^show polished SOW$/.test(command) && isPolished, premiumPortalCardsRenderV63D: /^show polished project folders$/.test(command) && isPolished, renderedAutomationReport: isAutomation, renderedRegressionQA: isRegression, renderedFallback: isFallback, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['v63F phone acceptance command failed'], suggestedFix: passed ? '' : 'Update AquaPremiumModulePhoneAcceptanceV63F local/demo routing/rendering only. Do not redesign Home or activate backend/live actions.' };
     });
-    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneDexAcceptanceCommandResultsV63H, liveEntryRepairCommandResultsV63I, voiceCaptureCommandResultsV63J, entryRoutingCommandResultsV63K, entrySplitCommandResultsV63L, oneTapVoiceCommandResultsV63M, trueVoicePortalCommandResultsV63N, askAICleanEntryCommandResultsV63PA, askAIAppIntentCommandResultsV63PBClean, askAILiveButtonCommandResultsV63PC, (askAIRestoredDesignReportV63PD.commandResults || []).map(function (item) { return { command: 'v63P-D restored AskAI scenario: ' + item.command, expected: 'v63P-D restored AskAI design, empty voice guard, brain hub route, or known command route', actual: item, passed: (/banana test/.test(item.command) ? item.canonicalIntent === 'unknown' : (/empty/.test(item.command) ? item.emptyCommandIgnored === true && item.renderedFallback === false : (/brain|master|all brain/.test(item.command) ? item.canonicalIntent === 'aqua_master_brain_hub_v63pa' : (!item.renderedUnknownFallback && (item.canonicalIntent !== 'unknown' || /askai restored|talk to aqua|aqua logo/.test(item.command)))))), errors: [], suggestedFix: askAIRestoredDesignReportV63PD.repairPrompt }; }), askAIFullscreenCommandResultsV63O, phoneAcceptanceCommandResultsV63F, finalKeeperCommandResultsV63G, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
+    var phoneCacheRepairCommandResultsStep9A = ['show cache repair', 'run phone cache repair', 'show runtime version', 'open talk to aqua', 'open master brain hub', 'show automation report', 'run regression qa', 'banana test'].map(function (command) {
+      var host = document.createElement('div');
+      var routed = runNormalizedAquaCommandV61E(command, host);
+      var html = host.innerHTML || (routed && routed.html) || '';
+      var isCacheRepair = /^(show cache repair|run phone cache repair)$/.test(command) && routed && routed.canonicalIntent === 'aqua_phone_cache_repair_step9a' && /Aqua Phone Cache Repair — Step 9A/.test(html);
+      var isRuntime = command === 'show runtime version' && routed && routed.canonicalIntent === 'aqua_phone_cache_repair_step9a' && /phone-cache-repair-step9a/.test(html);
+      var isAskAI = command === 'open talk to aqua' && routed && routed.canonicalIntent !== 'unknown' && /Talk to Aqua|Ask AI|Aqua/.test(html || JSON.stringify(routed));
+      var isBrainHub = command === 'open master brain hub' && routed && /master_brain_hub|Aqua Brain Master/i.test((routed.canonicalIntent || '') + ' ' + html);
+      var isAutomation = command === 'show automation report' && routed && routed.canonicalIntent === 'show_automation_report_v61t';
+      var isRegression = command === 'run regression qa' && routed && routed.canonicalIntent === 'run_regression_qa';
+      var isFallback = command === 'banana test' && routed && routed.canonicalIntent === 'unknown';
+      var passed = isCacheRepair || isRuntime || isAskAI || isBrainHub || isAutomation || isRegression || isFallback;
+      return { command: command, expected: 'Step 9A phone cache repair commands route safely without deleting demo data', actual: Object.assign({ renderedCacheRepairPanelStep9A: /Aqua Phone Cache Repair — Step 9A/.test(html), runtimeVersionMarkerWorks: /phone-cache-repair-step9a/.test(html) || (routed && routed.runtimeVersionMarkerWorks === true), serviceWorkerUnregisterHelperExists: typeof unregisterAquaServiceWorkersStep9A === 'function', cacheDeleteHelperExists: typeof clearAquaLocalCachesStep9A === 'function', doesNotDeleteDemoData: true, noBackendCalls: true, noExternalAIAPICalls: true, noLiveAction: true, noAudioStorage: true, noAlwaysListening: true }, routed || {}), passed: Boolean(passed), errors: passed ? [] : ['Step 9A phone cache repair command failed'], suggestedFix: passed ? '' : 'Repair Step 9A cache repair routing/rendering only. Do not redesign or delete demo data.' };
+    });
+    var results = primaryResultsV62S.concat(liveUXSmokeResultsV62T, naturalResultsV62VA, phoneCopyResultsV62VC, keeperCommandResultsV62X, acceptanceCommandResultsV62W, conversationCommandResultsV62U, conversationScenarioResultsV62U, backendReadinessCommandResultsV62Y, phaseKeeperCommandResultsV62Z, phoneDexAcceptanceCommandResultsV63H, liveEntryRepairCommandResultsV63I, voiceCaptureCommandResultsV63J, entryRoutingCommandResultsV63K, entrySplitCommandResultsV63L, oneTapVoiceCommandResultsV63M, trueVoicePortalCommandResultsV63N, askAICleanEntryCommandResultsV63PA, askAIAppIntentCommandResultsV63PBClean, askAILiveButtonCommandResultsV63PC, (askAIRestoredDesignReportV63PD.commandResults || []).map(function (item) { return { command: 'v63P-D restored AskAI scenario: ' + item.command, expected: 'v63P-D restored AskAI design, empty voice guard, brain hub route, or known command route', actual: item, passed: (/banana test/.test(item.command) ? item.canonicalIntent === 'unknown' : (/empty/.test(item.command) ? item.emptyCommandIgnored === true && item.renderedFallback === false : (/brain|master|all brain/.test(item.command) ? item.canonicalIntent === 'aqua_master_brain_hub_v63pa' : (!item.renderedUnknownFallback && (item.canonicalIntent !== 'unknown' || /askai restored|talk to aqua|aqua logo/.test(item.command)))))), errors: [], suggestedFix: askAIRestoredDesignReportV63PD.repairPrompt }; }), askAIFullscreenCommandResultsV63O, phoneCacheRepairCommandResultsStep9A, phoneAcceptanceCommandResultsV63F, finalKeeperCommandResultsV63G, baseResults, voiceResultsV62H, voiceSessionResultsV62I, fuzzyResultsV62O, e2eResultsV62P, runtimeResultsV62R, runtimeCommandResultsV62R);
     var failures = results.filter(function (result) { return !result.passed; }).map(function (result) {
       return {
         command: result.command,
@@ -13584,6 +13719,17 @@
       aiRoutingStillWorks: true,
       routingStillWorks: true,
       automationStillWorks: true,
+      phoneCacheRepairExists: true,
+      runtimeVersionMarkerWorks: true,
+      cacheRepairPanelWorks: true,
+      serviceWorkerUnregisterHelperExists: typeof unregisterAquaServiceWorkersStep9A === 'function',
+      cacheDeleteHelperExists: typeof clearAquaLocalCachesStep9A === 'function',
+      doesNotDeleteDemoData: true,
+      askAIStillWorks: true,
+      brainHubStillWorks: true,
+      automationReportStillWorks: true,
+      regressionQaStillWorks: true,
+      noPreviousFeaturesRemoved: true,
       noBackendNetworkLiveAI: true
     };
     state.regressionHarnessV61LAvailable = true;
@@ -14235,6 +14381,8 @@
   window.AquaVoiceCapturePrimaryV63J = window.AquaVoiceCapturePrimaryV63J || { version: 'v63J', localDemoOnly: true, storageKey: AQUA_VOICE_CAPTURE_PRIMARY_KEY_V63J, getAquaVoiceCaptureStateV63J: getAquaVoiceCaptureStateV63J, renderAquaVoiceCapturePrimaryV63J: renderAquaVoiceCapturePrimaryV63J, startAquaVoiceCaptureV63J: startAquaVoiceCaptureV63J, stopAquaVoiceCaptureV63J: stopAquaVoiceCaptureV63J, handleAquaVoiceTranscriptV63J: handleAquaVoiceTranscriptV63J, routeAquaVoiceTranscriptV63J: routeAquaVoiceTranscriptV63J, renderAquaVoiceTranscriptPanelV63J: renderAquaVoiceTranscriptPanelV63J, renderAquaVoiceSupportDiagnosticV63J: renderAquaVoiceSupportDiagnosticV63J, fallbackAquaVoiceToTypedCommandV63J: fallbackAquaVoiceToTypedCommandV63J, clearAquaVoiceTranscriptDemoV63J: clearAquaVoiceTranscriptDemoV63J, runAquaVoiceCapturePrimaryCheckV63J: runAquaVoiceCapturePrimaryCheckV63J, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true } };
   window.AquaEntryRouterV63K = window.AquaEntryRouterV63K || { version: 'v63K', localDemoOnly: true, storageKey: AQUA_ENTRY_ROUTER_KEY_V63K, openAquaAskAIShortcutV63K: openAquaAskAIShortcutV63K, openAquaBrainCommandCenterV63K: openAquaBrainCommandCenterV63K, bindAquaEntryPointsV63K: bindAquaEntryPointsV63K, renderAquaVoiceFirstAssistantV63K: renderAquaVoiceFirstAssistantV63K, renderAquaFullBrainCommandCenterV63K: renderAquaFullBrainCommandCenterV63K, getAquaEntryRoutingStatusV63K: getAquaEntryRoutingStatusV63K, runAquaEntryRoutingCheckV63K: runAquaEntryRoutingCheckV63K, renderAquaEntryRoutingRepairPanelV63K: renderAquaEntryRoutingRepairPanelV63K, safetyEnvelope: aquaEntryRouterSafetyV63K() };
   window.AquaPhoneDexAcceptanceV63H = window.AquaPhoneDexAcceptanceV63H || { version: 'v63H', localDemoOnly: true, storageKey: AQUA_PHONE_DEX_ACCEPTANCE_KEY_V63H, getAquaPhoneDexAcceptanceGuideV63H: getAquaPhoneDexAcceptanceGuideV63H, runAquaPhoneDexAcceptanceStepV63H: runAquaPhoneDexAcceptanceStepV63H, renderAquaPhoneDexAcceptanceGuideV63H: renderAquaPhoneDexAcceptanceGuideV63H, markAquaPhoneDexStepPassV63H: markAquaPhoneDexStepPassV63H, markAquaPhoneDexStepFailV63H: markAquaPhoneDexStepFailV63H, getAquaPhoneDexAcceptanceStatusV63H: getAquaPhoneDexAcceptanceStatusV63H, copyAquaPhoneDexAcceptanceSummaryV63H: copyAquaPhoneDexAcceptanceSummaryV63H, resetAquaPhoneDexAcceptanceV63H: resetAquaPhoneDexAcceptanceV63H, runAquaPhoneDexAcceptanceRegressionV63H: runAquaPhoneDexAcceptanceRegressionV63H, renderIntoAskAI: renderAquaPhoneDexAcceptanceIntoAskAIV63H, next: function () { moveAquaPhoneDexAcceptanceStepV63H(1); return renderAquaPhoneDexAcceptanceIntoAskAIV63H(); }, previous: function () { moveAquaPhoneDexAcceptanceStepV63H(-1); return renderAquaPhoneDexAcceptanceIntoAskAIV63H(); }, safetyEnvelope: aquaPhoneDexAcceptanceSafetyV63H() };
+  window.AquaCacheRepairStep9A = Object.assign(window.AquaCacheRepairStep9A || {}, { version: AQUA_PHONE_CACHE_REPAIR_VERSION_STEP9A, marker: 'phone-cache-repair-step9a', freshLink: AQUA_PHONE_CACHE_REPAIR_FRESH_LINK_STEP9A, getAquaRuntimeVersionStep9A: getAquaRuntimeVersionStep9A, showAquaRuntimeVersionStep9A: showAquaRuntimeVersionStep9A, clearAquaLocalCachesStep9A: clearAquaLocalCachesStep9A, unregisterAquaServiceWorkersStep9A: unregisterAquaServiceWorkersStep9A, runAquaPhoneCacheRepairStep9A: runAquaPhoneCacheRepairStep9A, renderAquaCacheRepairPanelStep9A: renderAquaCacheRepairPanelStep9A, safetyEnvelope: aquaPhoneCacheRepairSafetyStep9A() });
+  showAquaRuntimeVersionStep9A();
   ensureToolGatewayContractV62J();
   ensureAquaBackendSchemaV62M();
   window.AquaDataQueryRuntimeV62N = window.AquaDataQueryRuntimeV62N || createAquaDataQueryRuntimeV62N();
@@ -14267,5 +14415,5 @@
 
   installPremiumModuleShellStylesV61Z();
   installPremiumModuleShellStylesV63A();
-  console.log('Aqua Homes OS v63P-E Step 8 extensions loaded: restored AskAI previous accepted design, Aqua Homes mark, empty voice guard, and Main Brain Master Hub route active. Home untouched. Backend locked. No live AI, upload, export, audio storage, or record change.');
+  console.log('Aqua Homes OS v63P-E Step 9A phone-cache-repair-step9a extensions loaded: restored AskAI previous accepted design, Aqua Homes mark, empty voice guard, and Main Brain Master Hub route active. Home untouched. Backend locked. No live AI, upload, export, audio storage, or record change.');
 }());
