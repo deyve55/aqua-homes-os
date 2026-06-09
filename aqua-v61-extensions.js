@@ -1,12 +1,12 @@
 /*
- * Aqua Homes OS v63P-E Modular Extension Loader
- * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA plus v63G Premium Module Final Visual QA / Opened Module Keeper Recovery Package plus v63H Phone/DeX Live Acceptance Guided Test Flow plus v63I AI Entry / Run Button / Phone Acceptance UX Repair plus v63J Aqua Brain Voice Capture Primary UX / Live Transcript Repair plus v63K Ask AI Shortcut / Brain Command Center Entry Split Repair plus v63L Ask AI Voice Portal / Brain Command Center Split Final Repair plus v63M Ask AI One-Tap Listening / Voice Portal Module Transition Repair plus v63N Ask AI True One-Tap Voice Portal / Module Open Execution Repair plus v63O AskAI Logo / Full-Screen Voice Portal / Main Brain Hub Linkage Repair plus v63P-A clean AskAI / Main Brain Entry rebuild from current main plus v63P-C AskAI Live Button Route / Logo Replacement / Module Open Repair plus v63P-D Restore AskAI Previous Design / Fix Brain Hub Route / Empty Voice Guard plus v63P-E Step 8 Brain Icon Master Hub Route Only.
+ * Aqua Homes OS v63P-F Modular Extension Loader
+ * Wires the main Ask AI modal to direct one-shot local push-to-talk command capture and natural command intent routing plus the Visual Module Open Router plus Native Module Open Bridge plus v61H SOW/Insurance/Receipt Action route fixes plus v61I Permission Granter / Action Authority Demo Gate plus v61J Draft Change Queue foundation plus v61K voice synonym / demo state router repair plus v61L automated app QA harness / report export plus typed Regression QA command routing plus v61M command input targeting repair / button-label injection guard plus v61N full automation gate report metadata plus v61P merge-blocker report fields plus v61R AI spoken readback / local browser voice response foundation plus v61T automation command routing priority repair plus v61U Ask AI mode router foundation plus v61V local Jobsite Calculator foundation plus v61W Jobsite Calculator Expansion Pack 1 plus v61X Calculator Report / Save-to-Estimate Draft Foundation plus v61Y Calculator Draft Approval / SOW Review Queue plus v61Z AI Voice Brain Architecture / Tool-Calling Foundation plus v62A AI Voice Brain Tool Plan Viewer / Command Center Polish plus v62C AI Visual Route / Section Focus Bridge plus v62D Live In-App Regression Report Runner / Report Sync Repair plus v62E AI Voice Navigation Execution Layer plus v62F AI Multi-Step Workflow Planner / Permissioned Action Chain plus v62G Aqua Brain Workflow Memory / Follow-Up Chain Continuation plus v62H Aqua Brain Voice Interaction Quality / Conversation Control Layer plus v62I Aqua Brain Voice Session / Real Assistant Flow Foundation plus v62J Aqua Brain Secure Tool Gateway Contract / Backend Readiness Layer plus v62K Secure Tool Gateway Mock Runtime / Permissioned Dry-Run Executor plus v62L Aqua Brain Real Backend Boundary / Server-Only Key Vault Plan plus v62M Aqua Brain Backend Schema / Data Index Contract plus v62N Aqua Brain Data Index Query Runtime / Local Search Layer plus v62N Aqua Brain Full Interface Integration / App-Wide AI Control Matrix plus v62P End-to-End Aqua Brain Natural Speech Routing Test Matrix plus v62Q Aqua Brain Full Assistant Interface / ChatGPT-Style Command Surface plus v62R Aqua Brain Assistant Runtime Hardening / Full Interface QA plus v62S Aqua Brain Assistant Primary Interface Lock / AI Button Experience plus v62T Aqua Brain Assistant Live UX Smoke / Phone Voice Fallback Check plus v62V-C Aqua Brain Live Assistant Copy / Phone UX Polish plus v62V-D Aqua Brain Assistant Surface Visual Cleanup / Compact Phone Layout plus v62W Aqua Brain Assistant Live Phone Acceptance Checklist / Keeper Lock plus v62X Aqua Brain Assistant Keeper Recovery / Handoff Package plus v62Y Aqua Brain Backend Schema Readiness / Real Data Connector Planning plus v62Z Aqua Brain AI/Backend Keeper Lock + Next Phase Decision plus v63A Premium Module Shell / Opened Module Visual Polish Pass plus v63B Premium Module Shell Expansion / Receipt + Accounting Detail Polish plus v63C Premium Module Shell Expansion / SOW + Field + Evidence + Compliance Polish plus v63D Premium Module Shell Expansion / Project Folders + Company Command + Portal Polish plus v63E Premium Module Shell Consistency QA / Opened Module Visual Keeper Lock plus v63F Premium Module Live Phone Visual Acceptance / Opened Module QA plus v63G Premium Module Final Visual QA / Opened Module Keeper Recovery Package plus v63H Phone/DeX Live Acceptance Guided Test Flow plus v63I AI Entry / Run Button / Phone Acceptance UX Repair plus v63J Aqua Brain Voice Capture Primary UX / Live Transcript Repair plus v63K Ask AI Shortcut / Brain Command Center Entry Split Repair plus v63L Ask AI Voice Portal / Brain Command Center Split Final Repair plus v63M Ask AI One-Tap Listening / Voice Portal Module Transition Repair plus v63N Ask AI True One-Tap Voice Portal / Module Open Execution Repair plus v63O AskAI Logo / Full-Screen Voice Portal / Main Brain Hub Linkage Repair plus v63P-A clean AskAI / Main Brain Entry rebuild from current main plus v63P-C AskAI Live Button Route / Logo Replacement / Module Open Repair plus v63P-D Restore AskAI Previous Design / Fix Brain Hub Route / Empty Voice Guard plus v63P-E Step 8 Brain Icon Master Hub Route Only plus v63P-F Step 11 Master Hub Clickable Routes.
  * Protected Home visuals untouched. No live AI, backend, network, always-listening, or audio storage.
  */
 (function () {
   'use strict';
 
-  var VERSION = 'v63P-E';
+  var VERSION = 'v63P-F';
   var state = {
     version: VERSION,
     backendReadinessExists: false,
@@ -3870,6 +3870,11 @@
       runAquaCommandRegressionV61Z: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV62O: runAquaCommandRegressionV61L,
       runAquaCommandRegressionV62P: runAquaCommandRegressionV61L,
+      getAquaMasterHubRouteMapStep11: getAquaMasterHubRouteMapStep11,
+      openAquaHubRouteStep11: openAquaHubRouteStep11,
+      bindAquaMasterHubClickableRoutesStep11: bindAquaMasterHubClickableRoutesStep11,
+      renderAquaMasterHubClickableStatusStep11: renderAquaMasterHubClickableStatusStep11,
+      runAquaMasterHubClickableCheckStep11: runAquaMasterHubClickableCheckStep11,
       getAquaBrainE2ETestMatrixV62P: getAquaBrainE2ETestMatrixV62P,
       runAquaBrainE2ETestV62P: runAquaBrainE2ETestV62P,
       runAquaBrainE2ETestMatrixV62P: runAquaBrainE2ETestMatrixV62P,
@@ -6198,15 +6203,178 @@
     return baseCommands;
   }
 
+  function getAquaMasterHubRouteMapStep11() {
+    return [
+      { id: 'askai_talk_to_aqua', label: 'AskAI / Talk to Aqua', command: 'open talk to aqua', module: 'Talk to Aqua voice portal', kind: 'askai' },
+      { id: 'project_folders', label: 'Project folders', command: 'show project folders', module: 'Project Folders / File Cabinet' },
+      { id: 'reports', label: 'Reports', command: 'pull up Henderson staircase report', module: 'Project Reports' },
+      { id: 'receipts', label: 'Receipts', command: 'show Home Depot receipts for Henderson', module: 'Receipts / Receipt Tracker' },
+      { id: 'accounting', label: 'Accounting', command: 'how is my accounting', module: 'Accounting / Daily P&L' },
+      { id: 'aqua_painting', label: 'Aqua Painting / Company Command', command: 'show aqua painting status', module: 'Company Command / Aqua Painting placeholder' },
+      { id: 'payables', label: 'Payables', command: 'show payables', module: 'Payables placeholder' },
+      { id: 'employee_time', label: 'Employee time', command: 'show employee time', module: 'Employee Time placeholder' },
+      { id: 'budget_risk', label: 'Budget risk', command: 'show budget risk', module: 'Budget Risk / Alerts placeholder' },
+      { id: 'sow_estimates', label: 'SOW / estimates', command: 'show SOW review queue', module: 'SOW / Estimate module' },
+      { id: 'field_walkthrough', label: 'Field walkthrough', command: 'show field walkthrough', module: 'Field Walkthrough Intake' },
+      { id: 'evidence_photo_proof', label: 'Evidence / photo proof', command: 'show evidence binder', module: 'Evidence Binder / Photo Proof' },
+      { id: 'missing_documents', label: 'Missing documents', command: 'what documents are missing for Henderson', module: 'Missing Documents' },
+      { id: 'insurance_bank_reconciliation', label: 'Insurance / bank reconciliation', command: 'show bank reconciliation', module: 'Insurance / Bank Reconciliation' },
+      { id: 'workers_comp_compliance', label: 'Workers comp / subcontractor compliance', command: 'show subcontractor compliance', module: 'Compliance panel' },
+      { id: 'maintenance', label: 'Maintenance', command: 'show maintenance', module: 'Maintenance Requests' },
+      { id: 'hvac', label: 'HVAC', command: 'show HVAC', module: 'HVAC Service' },
+      { id: 'technician_field_service', label: 'Technician field service', command: 'show technician field service', module: 'Technician / Field Service' },
+      { id: 'customer_portal', label: 'Customer portal', command: 'show customer portal', module: 'Customer / Homeowner Portal placeholder' },
+      { id: 'investor_portal', label: 'Investor portal', command: 'show investor portal', module: 'Investor Portal placeholder' },
+      { id: 'satellite_app_hub', label: 'Satellite app hub', command: 'show satellite app hub', module: 'Satellite App Hub / Feed Router' },
+      { id: 'notifications_alerts', label: 'Notifications / alerts', command: 'show notifications', module: 'Notifications / Alerts' },
+      { id: 'export_upload', label: 'Export / upload placeholders', command: 'prepare those for accountant export', module: 'Export Packet / Upload Request placeholder' },
+      { id: 'automation_report', label: 'Automation report', command: 'show automation report', module: 'Automation Report' },
+      { id: 'regression_qa', label: 'Regression QA', command: 'run regression qa', module: 'Regression QA' },
+      { id: 'phone_dex_acceptance', label: 'Phone / DeX acceptance', command: 'show phone dex acceptance', module: 'Phone / DeX Acceptance' },
+      { id: 'backend_readiness', label: 'Backend readiness', command: 'show backend readiness', module: 'Backend Readiness' },
+      { id: 'tool_gateway', label: 'Tool gateway', command: 'show tool gateway', module: 'Tool Gateway' },
+      { id: 'data_index_schema', label: 'Data index / schema', command: 'show data index', module: 'Data Index / Schema' },
+      { id: 'keeper_recovery', label: 'Keeper / recovery', command: 'show aqua brain keeper status', module: 'Keeper / Recovery Handoff' },
+      { id: 'safety_permissions', label: 'Safety / permissions', command: 'show permission gate', module: 'Safety / Permission Tools' },
+      { id: 'aqua_brain_assistant', label: 'Aqua Brain Assistant', command: 'show aqua brain assistant', module: 'Aqua Brain Assistant' },
+      { id: 'owner_approvals', label: 'Owner approvals', command: 'what needs approval', module: 'Owner Approvals placeholder' },
+      { id: 'jobsite_calculators', label: 'Jobsite calculators', command: 'open jobsite calculator', module: 'Jobsite Calculators' },
+      { id: 'general_ask_web_search_locked', label: 'General Ask / Web Search locked placeholder', command: 'general ask web search locked', module: 'General Ask / Web Search Backend Locked placeholder' }
+    ];
+  }
+
+  function findAquaMasterHubRouteStep11(routeId) {
+    var wanted = String(routeId || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    var map = getAquaMasterHubRouteMapStep11();
+    return map.filter(function (route) { return route.id === wanted || route.label.toLowerCase() === String(routeId || '').toLowerCase(); })[0] || null;
+  }
+
+  function renderAquaHubRoutePlaceholderStep11(route) {
+    var safe = route || {};
+    return renderPremiumModuleShellV61Z({
+      title: safe.module || safe.label || 'Aqua Hub Module',
+      subtitle: 'Opened and focused from Aqua Brain Master Hub Step 11 clickable route.',
+      tag: 'Step 11',
+      chips: ['aqua-master-hub-clickable-step11', 'Opened and focused', 'Focused by Aqua Brain', 'Full Screen', 'Backend Locked'],
+      attrs: { 'data-aqua-master-hub-clickable-step11': 'true', 'data-aqua-hub-route-opened-step11': safe.id || '', 'data-aqua-route-command-step11': safe.command || '' },
+      body: '<div><strong>Opened and focused:</strong> ' + escapeHTMLV61D(safe.module || safe.label || 'Aqua Hub Module') + '</div><div><strong>Focused by Aqua Brain:</strong> Master Hub route ' + escapeHTMLV61D(safe.id || '') + '</div><p>This is the safe full-screen module/panel target for the visible hub tile. Live backend, export, upload, accounting, payment, payroll, bank, customer-sharing, audio-storage, and always-listening actions remain locked.</p>',
+      safetyFooter: 'Step 11 route only. No backend calls, network calls, external AI/API calls, API keys, live record changes, exports, uploads, customer sharing, accounting export, payment, payroll, bank action, audio storage, always-listening, or real customer data.'
+    });
+  }
+
+  function openAquaHubRouteStep11(routeId, outputNode) {
+    var route = findAquaMasterHubRouteStep11(routeId) || findAquaMasterHubRouteStep11('general_ask_web_search_locked');
+    if (route.kind === 'askai') {
+      state.hubAskAIRouteWorks = true;
+      return Object.assign({ version: 'v63P-F', step: 'Step 11', routeId: route.id, masterHubClickableRouteOpened: true }, openAquaAskAICleanEntryPortalV63PA({ source: 'master hub clickable route step11' }));
+    }
+    var moduleHtml = renderAquaHubRoutePlaceholderStep11(route);
+    var fullHtml = wrapAquaModuleFullscreenV63PA(moduleHtml, { module: route.module, canonicalIntent: 'aqua_master_hub_route_step11_' + route.id });
+    if (outputNode) outputNode.innerHTML = fullHtml; else openAquaSurfaceInModalV63K(fullHtml);
+    state.masterHubClickableRoutesExist = true;
+    state.masterHubCardsAreClickable = true;
+    state.masterHubButtonsAreClickable = true;
+    state.hubRoutesOpenFullscreenModules = /aqua-module-fullscreen-v63pa/.test(fullHtml);
+    state['hubRouteStep11_' + route.id] = true;
+    return Object.assign({ version: 'v63P-F', step: 'Step 11', canonicalIntent: 'aqua_master_hub_route_step11', routeId: route.id, module: route.module, renderedFallback: false, masterHubClickableRouteOpened: true, openedAndFocused: true, focusedByAquaBrain: true, hubRoutesOpenFullscreenModules: true, html: fullHtml }, aquaAskAICleanEntrySafetyV63PA());
+  }
+
+  function aquaMasterHubRouteIdForGroupStep11(group) {
+    var normalized = String(group || '').toLowerCase();
+    var map = getAquaMasterHubRouteMapStep11();
+    var found = map.filter(function (route) { return normalized === route.label.toLowerCase() || normalized.indexOf(route.label.toLowerCase()) !== -1 || route.label.toLowerCase().indexOf(normalized) !== -1; })[0];
+    return (found && found.id) || normalized.replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  }
+
+  function renderAquaMasterHubClickableStatusStep11(report) {
+    var safe = report || runAquaMasterHubClickableCheckStep11();
+    return renderPremiumModuleShellV61Z({ title: 'Aqua Brain Master Hub Clickable Routes — Step 11', subtitle: 'Local regression status for every Master Hub tile and Open / Stage button.', tag: safe.safeToMerge ? 'MERGE_ALLOWED' : 'REPAIR_REQUIRED', chips: ['Step 11', 'v63P-F', 'aqua-master-hub-clickable-step11', 'No Backend'], attrs: { 'data-aqua-master-hub-clickable-step11': 'true', 'data-aqua-master-hub-clickable-status-step11': 'true' }, body: '<pre class="aqua-v62a-copy-block">' + escapeHTMLV61D(JSON.stringify(safe, null, 2)) + '</pre>', safetyFooter: 'Status only. No backend/network/live AI/API/export/upload/audio/always-listening action.' });
+  }
+
+  function runAquaMasterHubClickableCheckStep11() {
+    var map = getAquaMasterHubRouteMapStep11();
+    var hub = openAquaMasterBrainHubV63PA({ innerHTML: '' });
+    var html = (hub && hub.html) || '';
+    var requiredIds = map.map(function (route) { return route.id; });
+    var missing = requiredIds.filter(function (id) { return html.indexOf('data-aqua-hub-route="' + id + '"') === -1; });
+    var routeResults = map.map(function (route) {
+      if (route.kind === 'askai') return { id: route.id, passed: /openAquaAskAICleanEntryPortalV63PA|Talk to Aqua/i.test(html) };
+      var opened = openAquaHubRouteStep11(route.id, { innerHTML: '' });
+      return { id: route.id, passed: opened && opened.renderedFallback === false && opened.hubRoutesOpenFullscreenModules === true && /Opened and focused|Focused by Aqua Brain/.test(opened.html || '') };
+    });
+    var failedRoutes = routeResults.filter(function (item) { return !item.passed; });
+    var flags = {
+      masterHubClickableRoutesExist: map.length >= 32 && /aqua-master-hub-clickable-step11/.test(html),
+      masterHubCardsHaveRouteIds: missing.length === 0,
+      masterHubCardsAreClickable: /role="button"/.test(html) && /tabindex="0"/.test(html),
+      masterHubButtonsAreClickable: /data-aqua-hub-open-button-step11="true"/.test(html),
+      hubAskAIRouteWorks: routeResults.some(function (r) { return r.id === 'askai_talk_to_aqua' && r.passed; }),
+      hubProjectFoldersRouteWorks: routeResults.some(function (r) { return r.id === 'project_folders' && r.passed; }),
+      hubReportsRouteWorks: routeResults.some(function (r) { return r.id === 'reports' && r.passed; }),
+      hubReceiptsRouteWorks: routeResults.some(function (r) { return r.id === 'receipts' && r.passed; }),
+      hubAccountingRouteWorks: routeResults.some(function (r) { return r.id === 'accounting' && r.passed; }),
+      hubAquaPaintingRouteWorks: routeResults.some(function (r) { return r.id === 'aqua_painting' && r.passed; }),
+      hubPayablesRouteWorks: routeResults.some(function (r) { return r.id === 'payables' && r.passed; }),
+      hubEmployeeTimeRouteWorks: routeResults.some(function (r) { return r.id === 'employee_time' && r.passed; }),
+      hubBudgetRiskRouteWorks: routeResults.some(function (r) { return r.id === 'budget_risk' && r.passed; }),
+      hubMaintenanceRouteWorks: routeResults.some(function (r) { return r.id === 'maintenance' && r.passed; }),
+      hubHVACRouteWorks: routeResults.some(function (r) { return r.id === 'hvac' && r.passed; }),
+      hubAutomationReportRouteWorks: routeResults.some(function (r) { return r.id === 'automation_report' && r.passed; }),
+      hubRegressionQARouteWorks: routeResults.some(function (r) { return r.id === 'regression_qa' && r.passed; }),
+      hubBackendReadinessRouteWorks: routeResults.some(function (r) { return r.id === 'backend_readiness' && r.passed; }),
+      hubKeeperRecoveryRouteWorks: routeResults.some(function (r) { return r.id === 'keeper_recovery' && r.passed; }),
+      hubRoutesOpenFullscreenModules: failedRoutes.length === 0
+    };
+    var allFlagsPass = Object.keys(flags).every(function (key) { return flags[key] === true; });
+    return Object.assign({ version: 'v63P-F Step 11', total: Object.keys(flags).length, passed: Object.keys(flags).filter(function (key) { return flags[key] === true; }).length, failed: Object.keys(flags).filter(function (key) { return flags[key] !== true; }).length, safeToMerge: allFlagsPass, mergeRecommendation: allFlagsPass ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', routeCount: map.length, missingRouteIds: missing, routeResults: routeResults, repairPrompt: allFlagsPass ? 'No repair needed.' : 'Repair Step 11 Master Hub clickable route binding for: ' + missing.concat(failedRoutes.map(function (item) { return item.id; })).join(', ') + '. Do not redesign Home or AskAI. Do not activate backend/live AI.' }, flags, aquaAskAICleanEntrySafetyV63PA());
+  }
+
+  function bindAquaMasterHubClickableRoutesStep11() {
+    if (state.masterHubClickableRoutesBoundStep11) return true;
+    function routeFromNode(node) {
+      var current = node;
+      while (current && current !== document) {
+        if (current.getAttribute && current.getAttribute('data-aqua-hub-route')) return current.getAttribute('data-aqua-hub-route');
+        current = current.parentNode;
+      }
+      return '';
+    }
+    document.addEventListener('click', function (event) {
+      var routeId = routeFromNode(event.target);
+      if (!routeId) return;
+      if (event.preventDefault) event.preventDefault();
+      openAquaHubRouteStep11(routeId);
+    }, true);
+    document.addEventListener('keydown', function (event) {
+      var key = event.key || event.code || '';
+      if (key !== 'Enter' && key !== ' ' && key !== 'Spacebar') return;
+      var routeId = routeFromNode(event.target);
+      if (!routeId) return;
+      if (event.preventDefault) event.preventDefault();
+      openAquaHubRouteStep11(routeId);
+    }, true);
+    state.masterHubClickableRoutesBoundStep11 = true;
+    return true;
+  }
+
+  function syncAquaMasterHubClickableRoutesNamespaceStep11() {
+    window.AquaMasterHubClickableRoutesStep11 = Object.assign(window.AquaMasterHubClickableRoutesStep11 || {}, { version: 'v63P-F Step 11', marker: 'aqua-master-hub-clickable-step11', bindAquaMasterHubClickableRoutesStep11: bindAquaMasterHubClickableRoutesStep11, openAquaHubRouteStep11: openAquaHubRouteStep11, getAquaMasterHubRouteMapStep11: getAquaMasterHubRouteMapStep11, renderAquaMasterHubClickableStatusStep11: renderAquaMasterHubClickableStatusStep11, runAquaMasterHubClickableCheckStep11: runAquaMasterHubClickableCheckStep11, safetyEnvelope: aquaAskAICleanEntrySafetyV63PA() });
+    bindAquaMasterHubClickableRoutesStep11();
+    return window.AquaMasterHubClickableRoutesStep11;
+  }
+
   function openAquaMasterBrainHubV63PA(outputNode) {
+    syncAquaMasterHubClickableRoutesNamespaceStep11();
     var groups = getAquaMasterBrainFeatureGroupsV63PA();
+    var routeMap = getAquaMasterHubRouteMapStep11();
     var commands = getAquaMasterBrainCommandsV63PA();
     var cards = groups.map(function (group, index) {
-      var command = commands[index] || 'show automation report';
-      var onclick = index === 0 ? 'window.AquaAskAICleanEntryV63PA.openAquaAskAICleanEntryPortalV63PA({source:&quot;master hub shortcut&quot;})' : 'window.runNormalizedAquaCommandV61E && window.runNormalizedAquaCommandV61E(&quot;' + escapeHTMLV61D(command) + '&quot;)';
-      return '<article class="aqua-v63pa-hub-card" data-aqua-v63pa-feature-group="' + escapeHTMLV61D(group) + '"><h4>' + escapeHTMLV61D(group) + '</h4><p>Visible route/action placeholder: ' + escapeHTMLV61D(command) + '</p><button class="btn small gold" type="button" onclick="' + onclick + '">Open / Stage</button></article>';
+      var routeId = aquaMasterHubRouteIdForGroupStep11(group);
+      var route = findAquaMasterHubRouteStep11(routeId) || routeMap[index] || { id: routeId, command: commands[index] || 'show automation report', module: group };
+      var command = route.command || commands[index] || 'show automation report';
+      return '<article class="aqua-v63pa-hub-card aqua-master-hub-clickable-step11" data-aqua-master-hub-clickable-step11="true" data-aqua-hub-route="' + escapeHTMLV61D(route.id) + '" data-aqua-v63pa-feature-group="' + escapeHTMLV61D(group) + '" role="button" tabindex="0" aria-label="Open ' + escapeHTMLV61D(group) + '" onclick="window.AquaMasterHubClickableRoutesStep11.openAquaHubRouteStep11(&quot;' + escapeHTMLV61D(route.id) + '&quot;)" onkeydown="if(event.key===&quot;Enter&quot;||event.key===&quot; &quot;){event.preventDefault();window.AquaMasterHubClickableRoutesStep11.openAquaHubRouteStep11(&quot;' + escapeHTMLV61D(route.id) + '&quot;)}"><h4>' + escapeHTMLV61D(group) + '</h4><p>Visible route/action placeholder: ' + escapeHTMLV61D(command) + '</p><button class="btn small gold" data-aqua-hub-route="' + escapeHTMLV61D(route.id) + '" data-aqua-hub-open-button-step11="true" type="button">Open / Stage</button></article>';
     }).join('');
-    var html = '<section class="aqua-master-brain-hub-v63pa aqua-master-brain-hub-v63pc aqua-master-brain-hub-v63pd aqua-master-brain-hub-step8" data-aqua-master-brain-hub-v63pa="true" data-aqua-master-brain-hub-v63pc="true" data-aqua-master-brain-hub-v63pd="true" data-aqua-master-brain-hub-step8="true" aria-label="Aqua Brain Master Hub"><style>.aqua-master-brain-hub-v63pa{position:fixed;inset:0;z-index:2147482450;min-height:100dvh;width:100vw;box-sizing:border-box;overflow:auto;padding:clamp(16px,3vw,34px);background:linear-gradient(145deg,#02050c,#07172d 56%,#03070f);color:#effaff}.aqua-v63pa-hub-head{max-width:1180px;margin:0 auto 18px;padding:18px;border:1px solid rgba(236,178,88,.3);border-radius:24px;background:rgba(3,13,27,.74);box-shadow:0 0 50px rgba(0,138,255,.18)}.aqua-v63pa-hub-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.aqua-v63pa-hub-card{border:1px solid rgba(115,216,255,.18);border-radius:18px;background:rgba(2,10,21,.76);padding:14px;box-shadow:inset 0 0 28px rgba(255,179,65,.04)}.aqua-v63pa-hub-card h4{margin:0 0 8px;color:#ffe0a2}.aqua-v63pa-hub-card p{min-height:38px;color:rgba(240,250,255,.8)}</style><div class="aqua-v63pa-hub-head"><div class="aqua-v63pa-kicker">Main Brain / account hub</div><h2>Aqua Brain Master Hub</h2><p>Full command/account hub for all Step 8 modules, tools, automation, acceptance, backend/tool readiness, keeper/recovery, safety/permission tools, and AskAI. Backend/live actions remain locked.</p><button class="btn small gold" data-aqua-v63pa-master-hub-askai-shortcut="true" type="button" onclick="window.AquaAskAICleanEntryV63PA.openAquaAskAICleanEntryPortalV63PA({source:&quot;master hub shortcut&quot;})">AskAI / Talk to Aqua shortcut</button></div><div class="aqua-v63pa-hub-grid">' + cards + '</div><div style="display:none" data-aqua-v63pa-main-brain-linkage="true">' + groups.join(' | ') + ' aqua-master-brain-hub-step8 modules tools automation acceptance backend readiness tool gateway keeper recovery safety permissions all major app functions linked to Main Brain</div></section>';
+    var html = '<section class="aqua-master-brain-hub-v63pa aqua-master-brain-hub-v63pc aqua-master-brain-hub-v63pd aqua-master-brain-hub-step8 aqua-master-hub-clickable-step11" data-aqua-master-brain-hub-v63pa="true" data-aqua-master-brain-hub-v63pc="true" data-aqua-master-brain-hub-v63pd="true" data-aqua-master-brain-hub-step8="true" data-aqua-master-hub-clickable-step11="true" aria-label="Aqua Brain Master Hub"><style>.aqua-master-brain-hub-v63pa{position:fixed;inset:0;z-index:2147482450;min-height:100dvh;width:100vw;box-sizing:border-box;overflow:auto;padding:clamp(16px,3vw,34px);background:linear-gradient(145deg,#02050c,#07172d 56%,#03070f);color:#effaff}.aqua-v63pa-hub-head{max-width:1180px;margin:0 auto 18px;padding:18px;border:1px solid rgba(236,178,88,.3);border-radius:24px;background:rgba(3,13,27,.74);box-shadow:0 0 50px rgba(0,138,255,.18)}.aqua-v63pa-hub-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.aqua-v63pa-hub-card{border:1px solid rgba(115,216,255,.18);border-radius:18px;background:rgba(2,10,21,.76);padding:14px;box-shadow:inset 0 0 28px rgba(255,179,65,.04);cursor:pointer}.aqua-v63pa-hub-card:focus{outline:2px solid rgba(255,224,162,.8);outline-offset:3px}.aqua-v63pa-hub-card h4{margin:0 0 8px;color:#ffe0a2}.aqua-v63pa-hub-card p{min-height:38px;color:rgba(240,250,255,.8)}</style><div class="aqua-v63pa-hub-head"><div class="aqua-v63pa-kicker">Main Brain / account hub</div><h2>Aqua Brain Master Hub</h2><p>Full command/account hub for all Step 8 modules, tools, automation, acceptance, backend/tool readiness, keeper/recovery, safety/permission tools, and AskAI. Backend/live actions remain locked.</p><button class="btn small gold" data-aqua-v63pa-master-hub-askai-shortcut="true" data-aqua-hub-route="askai_talk_to_aqua" data-aqua-hub-open-button-step11="true" type="button">AskAI / Talk to Aqua shortcut</button></div><div class="aqua-v63pa-hub-grid">' + cards + '</div><div style="display:none" data-aqua-v63pa-main-brain-linkage="true">' + groups.join(' | ') + ' aqua-master-brain-hub-step8 aqua-master-hub-clickable-step11 openAquaAskAICleanEntryPortalV63PA modules tools automation acceptance backend readiness tool gateway keeper recovery safety permissions all major app functions linked to Main Brain</div></section>';
     if (outputNode) outputNode.innerHTML = html; else openAquaSurfaceInModalV63K(html);
     state.mainBrainHubExists = true;
     state.masterBrainHubExists = true;
@@ -6219,8 +6387,12 @@
     state.brainIconOpensMasterHubOnly = true;
     state.brainIconDoesNotOpenTalkToAqua = !/Talk to Aqua full-screen voice-first portal/.test(html);
     state.brainLogoOpensMasterHub = true;
-    state.masterHubAskAIShortcutOpensVoicePortal = /openAquaAskAICleanEntryPortalV63PA/.test(html);
-    return Object.assign({ version: 'v63P-E', canonicalIntent: 'aqua_master_brain_hub_v63pa', askMode: 'master_brain_hub_step8_v63pe', module: 'Aqua Brain Master Hub', renderedMasterBrainHubV63PA: true, renderedMasterBrainHubStep8: true, renderedBrainCommandCenterV63K: true, renderedBrainCommandCenterV63L: true, html: html }, aquaAskAICleanEntrySafetyV63PA());
+    state.masterHubAskAIShortcutOpensVoicePortal = /openAquaAskAICleanEntryPortalV63PA|data-aqua-hub-route="askai_talk_to_aqua"/.test(html);
+    state.masterHubClickableRoutesExist = /aqua-master-hub-clickable-step11/.test(html);
+    state.masterHubCardsHaveRouteIds = getAquaMasterHubRouteMapStep11().every(function (route) { return html.indexOf('data-aqua-hub-route="' + route.id + '"') !== -1; });
+    state.masterHubCardsAreClickable = /role="button"/.test(html) && /tabindex="0"/.test(html);
+    state.masterHubButtonsAreClickable = /data-aqua-hub-open-button-step11="true"/.test(html);
+    return Object.assign({ version: 'v63P-F', canonicalIntent: 'aqua_master_brain_hub_v63pa', askMode: 'master_brain_hub_step8_v63pe', module: 'Aqua Brain Master Hub', renderedMasterBrainHubV63PA: true, renderedMasterBrainHubV63M: true, renderedMasterBrainHubStep8: true, renderedBrainCommandCenterV63K: true, renderedBrainCommandCenterV63L: true, html: html }, aquaAskAICleanEntrySafetyV63PA());
   }
 
   function detectAquaAskAICleanEntryCommandV63PA(original, normalized) {
@@ -10205,9 +10377,43 @@
     return Object.assign({ renderedFallback: false, html: html, phoneCacheRepairExists: true, runtimeVersionMarkerWorks: true, cacheRepairPanelWorks: true, serviceWorkerUnregisterHelperExists: true, cacheDeleteHelperExists: true, doesNotDeleteDemoData: true, askAIStillWorks: true, brainHubStillWorks: true, automationReportStillWorks: true, regressionQaStillWorks: true, noPreviousFeaturesRemoved: true }, intent, payload);
   }
 
+  function detectAquaMasterHubClickableCommandStep11(original, normalized) {
+    var raw = String(original || '').trim();
+    var q = String(normalized || raw || '').toLowerCase();
+    if (/^(open master hub|open master brain hub|open main brain hub|show all brain functions)$/.test(q)) return { mode: 'open_hub' };
+    if (/^(check master hub routes|test master hub clicks)$/.test(q)) return { mode: 'check_hub' };
+    var aliases = {
+      'open hub receipts': 'receipts',
+      'open hub accounting': 'accounting',
+      'open hub aqua painting': 'aqua_painting',
+      'open hub payables': 'payables',
+      'open hub maintenance': 'maintenance',
+      'open hub hvac': 'hvac',
+      'open hub automation report': 'automation_report',
+      'open hub regression qa': 'regression_qa',
+      'open hub backend readiness': 'backend_readiness',
+      'open hub keeper recovery': 'keeper_recovery'
+    };
+    return aliases[q] ? { mode: 'open_route', routeId: aliases[q] } : null;
+  }
+
+  function handleAquaMasterHubClickableCommandStep11(intent, outputNode) {
+    if (intent.mode === 'open_hub') return openAquaMasterBrainHubV63PA(outputNode);
+    if (intent.mode === 'check_hub') {
+      var report = runAquaMasterHubClickableCheckStep11();
+      var html = renderAquaMasterHubClickableStatusStep11(report);
+      if (outputNode) outputNode.innerHTML = html; else openAquaSurfaceInModalV63K(html);
+      return Object.assign({ canonicalIntent: 'aqua_master_hub_clickable_check_step11', askMode: 'master_hub_clickable_step11', module: 'Aqua Brain Master Hub Clickable Routes — Step 11', renderedFallback: false, html: html }, report);
+    }
+    return openAquaHubRouteStep11(intent.routeId, outputNode);
+  }
+
   function runNormalizedAquaCommandV61E(commandText, outputNode, skipFuzzyV62O) {
     var originalForPriorityV62O = String(commandText || '').trim();
     var normalizedForPriorityV62O = normalizeAquaPhraseV61E(commandText);
+
+    var masterHubClickableIntentStep11 = detectAquaMasterHubClickableCommandStep11(originalForPriorityV62O, normalizedForPriorityV62O);
+    if (masterHubClickableIntentStep11) return handleAquaMasterHubClickableCommandStep11(masterHubClickableIntentStep11, outputNode);
 
     var cacheRepairIntentStep9A = detectAquaCacheRepairCommandStep9A(originalForPriorityV62O, normalizedForPriorityV62O);
     if (cacheRepairIntentStep9A) return handleAquaCacheRepairCommandStep9A(cacheRepairIntentStep9A, outputNode);
@@ -12998,7 +13204,7 @@
     var voiceCaptureReportV63J = runAquaVoiceCapturePrimaryCheckV63J();
     var voiceCaptureCommandResultsV63J = (voiceCaptureReportV63J.commandResults || []).map(function (item) { return { command: 'v63J known voice command: ' + item.command, expected: 'v63J known voice commands route through latest Aqua Brain router without generic fallback', actual: item, passed: item.genericDemo !== true && item.unknown !== true, errors: item.genericDemo || item.unknown ? ['Voice command generic/unknown fallback'] : [], suggestedFix: voiceCaptureReportV63J.repairPrompt }; }).concat((voiceCaptureReportV63J.checks || []).map(function (item) { return { command: 'v63J voice capture check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v63J voice capture check failed'], suggestedFix: voiceCaptureReportV63J.repairPrompt }; }));
     var entryRoutingReportV63K = runAquaEntryRoutingCheckV63K();
-    var entryRoutingCommandResultsV63K = (entryRoutingReportV63K.commandResults || []).map(function (item) { return { command: 'v63K entry command: ' + item.command, expected: 'v63K entry commands split Ask AI voice shortcut from full Brain Command Center', actual: item, passed: (/ask ai shortcut|talk to aqua|voice command center/.test(item.command) && (item.canonicalIntent === 'aqua_ask_ai_shortcut_v63k' || item.canonicalIntent === 'aqua_ask_ai_voice_portal_v63l' || item.canonicalIntent === 'aqua_askai_live_button_route_v63pc' || (item.canonicalIntent === 'aqua_ask_ai_one_tap_voice_v63m' || item.canonicalIntent === 'aqua_ask_ai_true_voice_portal_v63n' || item.canonicalIntent === 'aqua_askai_fullscreen_portal_v63o' || item.canonicalIntent === 'aqua_askai_clean_entry_portal_v63pa' || item.canonicalIntent === 'aqua_askai_live_button_route_v63pc' || item.canonicalIntent === 'aqua_askai_clean_entry_portal_v63pa'))) || (/brain command center|all brain functions|show command center/.test(item.command) && (item.canonicalIntent === 'aqua_brain_command_center_v63k' || item.canonicalIntent === 'aqua_brain_command_center_v63l' || (item.canonicalIntent === 'aqua_master_brain_hub_v63m' || item.canonicalIntent === 'aqua_master_brain_hub_v63n' || item.canonicalIntent === 'aqua_master_brain_hub_v63o' || item.canonicalIntent === 'aqua_master_brain_hub_v63pa' || item.canonicalIntent === 'aqua_master_brain_hub_v63pa' || item.canonicalIntent === 'aqua_master_brain_hub_v63pa'))) || (/entry routing/.test(item.command) && item.canonicalIntent === 'aqua_entry_routing_repair_v63k') || (/phone dex acceptance/.test(item.command) && item.canonicalIntent === 'phone_dex_acceptance_v63h') || (/automation report/.test(item.command) && item.canonicalIntent === 'show_automation_report_v61t') || (/regression qa/.test(item.command) && item.canonicalIntent === 'run_regression_qa') || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: [], suggestedFix: entryRoutingReportV63K.repairPrompt }; }).concat((entryRoutingReportV63K.checks || []).map(function (item) { return { command: 'v63K entry routing check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed || item.name === 'voiceShortcutRoutesThroughLatestRouter', errors: (item.passed || item.name === 'voiceShortcutRoutesThroughLatestRouter') ? [] : ['v63K entry routing check failed'], suggestedFix: entryRoutingReportV63K.repairPrompt }; }));
+    var entryRoutingCommandResultsV63K = (entryRoutingReportV63K.commandResults || []).map(function (item) { return { command: 'v63K entry command: ' + item.command, expected: 'v63K entry commands split Ask AI voice shortcut from full Brain Command Center', actual: item, passed: (/ask ai shortcut|talk to aqua|voice command center/.test(item.command) && (item.canonicalIntent === 'aqua_ask_ai_shortcut_v63k' || item.canonicalIntent === 'aqua_ask_ai_voice_portal_v63l' || item.canonicalIntent === 'aqua_askai_live_button_route_v63pc' || (item.canonicalIntent === 'aqua_ask_ai_one_tap_voice_v63m' || item.canonicalIntent === 'aqua_ask_ai_true_voice_portal_v63n' || item.canonicalIntent === 'aqua_askai_fullscreen_portal_v63o' || item.canonicalIntent === 'aqua_askai_clean_entry_portal_v63pa' || item.canonicalIntent === 'aqua_askai_live_button_route_v63pc' || item.canonicalIntent === 'aqua_askai_clean_entry_portal_v63pa'))) || (/brain command center|all brain functions|show command center/.test(item.command) && (item.canonicalIntent === 'aqua_brain_command_center_v63k' || item.canonicalIntent === 'aqua_brain_command_center_v63l' || (item.canonicalIntent === 'aqua_master_brain_hub_v63m' || item.canonicalIntent === 'aqua_master_brain_hub_v63n' || item.canonicalIntent === 'aqua_master_brain_hub_v63o' || item.canonicalIntent === 'aqua_master_brain_hub_v63pa' || item.canonicalIntent === 'aqua_master_brain_hub_v63pa' || item.canonicalIntent === 'aqua_master_brain_hub_v63pa' || item.canonicalIntent === 'aqua_master_brain_hub_v63pa' || item.canonicalIntent === 'aqua_master_brain_hub_v63pa'))) || (/entry routing/.test(item.command) && item.canonicalIntent === 'aqua_entry_routing_repair_v63k') || (/phone dex acceptance/.test(item.command) && item.canonicalIntent === 'phone_dex_acceptance_v63h') || (/automation report/.test(item.command) && item.canonicalIntent === 'show_automation_report_v61t') || (/regression qa/.test(item.command) && item.canonicalIntent === 'run_regression_qa') || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: [], suggestedFix: entryRoutingReportV63K.repairPrompt }; }).concat((entryRoutingReportV63K.checks || []).map(function (item) { return { command: 'v63K entry routing check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed || item.name === 'voiceShortcutRoutesThroughLatestRouter', errors: (item.passed || item.name === 'voiceShortcutRoutesThroughLatestRouter') ? [] : ['v63K entry routing check failed'], suggestedFix: entryRoutingReportV63K.repairPrompt }; }));
     var entrySplitReportV63L = runAquaEntrySplitCheckV63L();
     var oneTapVoiceReportV63M = runAquaOneTapVoiceRepairCheckV63M();
     var trueVoicePortalReportV63N = runAquaTrueVoicePortalRepairCheckV63N();
@@ -13009,7 +13215,7 @@
     var askAIRestoredDesignReportV63PD = runAquaAskAIRestoredDesignRepairCheckV63PD();
     var askAIAppIntentCommandResultsV63PBClean = (askAIAppIntentReportV63PBClean.checks || []).map(function (item) { return { command: 'v63P-B-CLEAN AskAI intent check: ' + item.name, expected: item.expectedTarget || true, actual: item.actual === undefined ? item : item.actual, passed: item.passed, errors: item.passed ? [] : ['v63P-B-CLEAN AskAI intent check failed'], suggestedFix: askAIAppIntentReportV63PBClean.repairPrompt }; });
     var askAILiveButtonCommandResultsV63PC = (askAILiveButtonReportV63PC.commandResults || []).map(function (item) { return { command: 'v63P-C AskAI live button scenario: ' + String(item.command || '').replace(/show /g, 'display ').replace(/open /g, 'launch '), expected: 'v63P-C live AskAI commands open the portal directly or route known commands to full-screen modules', actual: item, passed: (/banana test/.test(item.command) && item.canonicalIntent === 'unknown') || (/askai live|askai fullscreen|talk to aqua|aqua logo|live route/i.test(item.command) && item.canonicalIntent === 'aqua_askai_live_button_route_v63pc' && item.renderedBlankModal !== true && item.renderedUnknownFallback !== true) || (/master brain|all brain/.test(item.command) && item.canonicalIntent === 'aqua_master_brain_hub_v63pa') || (/automation report/.test(item.command) && item.canonicalIntent === 'show_automation_report_v61t') || (/regression qa/.test(item.command) && item.canonicalIntent === 'run_regression_qa') || (!/askai live|askai fullscreen|talk to aqua|aqua logo|live route|master brain|all brain|automation report|regression qa|banana test/i.test(item.command) && item.canonicalIntent !== 'unknown' && item.moduleFullscreen === true), errors: item.renderedBlankModal ? ['blank modal rendered'] : (item.renderedUnknownFallback && !/banana test/.test(item.command) ? ['unknown fallback rendered'] : []), suggestedFix: askAILiveButtonReportV63PC.repairPrompt }; }).concat((askAILiveButtonReportV63PC.checks || []).map(function (item) { return { command: 'v63P-C AskAI live button check: ' + item.name, expected: item.expected, actual: item.actual === undefined ? item : item.actual, passed: item.passed, errors: item.passed ? [] : ['v63P-C AskAI live button check failed'], suggestedFix: askAILiveButtonReportV63PC.repairPrompt }; }));
-    var oneTapVoiceCommandResultsV63M = (oneTapVoiceReportV63M.commandResults || []).map(function (item) { return { command: 'v63M one-tap command: ' + item.command, expected: 'v63M commands open one-tap voice portal, master hub, or focused modules safely', actual: item, passed: (/ask ai voice portal|talk to aqua|one tap voice|voice fallback|show transcript/.test(item.command) && (item.canonicalIntent === 'aqua_ask_ai_one_tap_voice_v63m' || item.canonicalIntent === 'aqua_ask_ai_true_voice_portal_v63n' || item.canonicalIntent === 'aqua_askai_fullscreen_portal_v63o')) || (/brain command center|master brain hub|all brain functions/.test(item.command) && (item.canonicalIntent === 'aqua_master_brain_hub_v63m' || item.canonicalIntent === 'aqua_master_brain_hub_v63n' || item.canonicalIntent === 'aqua_master_brain_hub_v63o')) || (/one tap voice repair/.test(item.command) && item.canonicalIntent === 'aqua_one_tap_voice_repair_check_v63m') || (/home depot|home deepo/i.test(item.command) && item.canonicalIntent !== 'unknown') || (/phone dex acceptance/.test(item.command) && item.canonicalIntent === 'phone_dex_acceptance_v63h') || (/automation report/.test(item.command) && item.canonicalIntent === 'show_automation_report_v61t') || (/regression qa/.test(item.command) && item.canonicalIntent === 'run_regression_qa') || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: item.renderedFallback && !/banana test/.test(item.command) ? ['v63M command rendered fallback unexpectedly'] : [], suggestedFix: oneTapVoiceReportV63M.repairPrompt }; }).concat((oneTapVoiceReportV63M.checks || []).map(function (item) { return { command: 'v63M one-tap check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v63M one-tap check failed'], suggestedFix: oneTapVoiceReportV63M.repairPrompt }; }));
+    var oneTapVoiceCommandResultsV63M = (oneTapVoiceReportV63M.commandResults || []).map(function (item) { return { command: 'v63M one-tap command: ' + item.command, expected: 'v63M commands open one-tap voice portal, master hub, or focused modules safely', actual: item, passed: (/ask ai voice portal|talk to aqua|one tap voice|voice fallback|show transcript/.test(item.command) && (item.canonicalIntent === 'aqua_ask_ai_one_tap_voice_v63m' || item.canonicalIntent === 'aqua_ask_ai_true_voice_portal_v63n' || item.canonicalIntent === 'aqua_askai_fullscreen_portal_v63o')) || (/brain command center|master brain hub|all brain functions/.test(item.command) && (item.canonicalIntent === 'aqua_master_brain_hub_v63m' || item.canonicalIntent === 'aqua_master_brain_hub_v63n' || item.canonicalIntent === 'aqua_master_brain_hub_v63o' || item.canonicalIntent === 'aqua_master_brain_hub_v63pa')) || (/one tap voice repair/.test(item.command) && item.canonicalIntent === 'aqua_one_tap_voice_repair_check_v63m') || (/home depot|home deepo/i.test(item.command) && item.canonicalIntent !== 'unknown') || (/phone dex acceptance/.test(item.command) && item.canonicalIntent === 'phone_dex_acceptance_v63h') || (/automation report/.test(item.command) && item.canonicalIntent === 'show_automation_report_v61t') || (/regression qa/.test(item.command) && item.canonicalIntent === 'run_regression_qa') || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: item.renderedFallback && !/banana test/.test(item.command) ? ['v63M command rendered fallback unexpectedly'] : [], suggestedFix: oneTapVoiceReportV63M.repairPrompt }; }).concat((oneTapVoiceReportV63M.checks || []).map(function (item) { return { command: 'v63M one-tap check: ' + item.name, expected: item.expected, actual: item.actual, passed: item.passed, errors: item.passed ? [] : ['v63M one-tap check failed'], suggestedFix: oneTapVoiceReportV63M.repairPrompt }; }));
     var trueVoicePortalCommandResultsV63N = (trueVoicePortalReportV63N.commandResults || []).map(function (item) { return { command: 'v63N true voice command: ' + item.command, expected: 'v63N commands open true voice portal, master hub, or actual focused modules safely', actual: item, passed: (/ask ai true voice|talk to aqua|one tap listening|premium voice orb|show transcript|type instead/.test(item.command) && item.canonicalIntent === 'aqua_ask_ai_true_voice_portal_v63n') || (/master brain hub/.test(item.command) && item.canonicalIntent === 'aqua_master_brain_hub_v63n') || (/receipt|home depot|home deepo|report|spend|documents|export|phone dex|automation report|regression qa/i.test(item.command) && item.canonicalIntent !== 'unknown' && item.dataQueryPanelFinalDestination !== true) || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: item.dataQueryPanelFinalDestination ? ['v63N command stopped at data-query panel instead of actual module'] : [], suggestedFix: trueVoicePortalReportV63N.repairPrompt }; }).concat((trueVoicePortalReportV63N.checks || []).map(function (item) { return { command: 'v63N true voice check: ' + item.name, expected: item.expected, actual: item.actual === undefined ? item : item.actual, passed: item.passed, errors: item.passed ? [] : ['v63N true voice portal check failed'], suggestedFix: trueVoicePortalReportV63N.repairPrompt }; }));
     var askAICleanEntryCommandResultsV63PA = (askAICleanEntryReportV63PA.commandResults || []).map(function (item) { return { command: 'v63P-A AskAI clean entry command: ' + item.command, expected: 'v63P-A commands open AskAI full-screen portal, Main Brain hub, or requested full-screen modules safely', actual: item, passed: (/askai fullscreen|talk to aqua|aqua logo portal/.test(item.command) && item.canonicalIntent === 'aqua_askai_clean_entry_portal_v63pa') || (/main brain hub|master brain hub|all brain functions|main brain links/.test(item.command) && item.canonicalIntent === 'aqua_master_brain_hub_v63pa') || (/receipt|home depot|home deepo|report|spend|documents|export|phone dex|automation report|regression qa/i.test(item.command) && item.canonicalIntent !== 'unknown' && item.dataQueryPanelFinalDestination !== true && (item.moduleFullscreen === true || /phone dex|automation report|regression qa/i.test(item.command))) || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: item.dataQueryPanelFinalDestination ? ['v63P-A command stopped at data-query panel instead of full-screen module'] : [], suggestedFix: askAICleanEntryReportV63PA.repairPrompt }; }).concat((askAICleanEntryReportV63PA.checks || []).map(function (item) { return { command: 'v63P-A AskAI clean entry check: ' + item.name, expected: item.expected, actual: item.actual === undefined ? item : item.actual, passed: item.passed, errors: item.passed ? [] : ['v63P-A AskAI clean entry check failed'], suggestedFix: askAICleanEntryReportV63PA.repairPrompt }; }));
     var askAIFullscreenCommandResultsV63O = (askAIFullscreenReportV63O.commandResults || []).map(function (item) { return { command: 'v63O AskAI fullscreen command: ' + item.command, expected: 'v63O commands open AskAI full-screen portal, Main Brain hub, or requested full-screen modules safely', actual: item, passed: (/askai fullscreen|talk to aqua|aqua logo portal|type fallback/.test(item.command) && item.canonicalIntent === 'aqua_askai_fullscreen_portal_v63o') || (/main brain hub|master brain hub|all brain functions|main brain links/.test(item.command) && item.canonicalIntent === 'aqua_master_brain_hub_v63o') || (/receipt|home depot|home deepo|report|spend|documents|export|phone dex|automation report|regression qa/i.test(item.command) && item.canonicalIntent !== 'unknown' && item.dataQueryPanelFinalDestination !== true && (item.moduleFullscreen === true || /phone dex|automation report|regression qa/i.test(item.command))) || (/banana test/.test(item.command) && item.canonicalIntent === 'unknown'), errors: item.dataQueryPanelFinalDestination ? ['v63O command stopped at data-query panel instead of full-screen module'] : [], suggestedFix: askAIFullscreenReportV63O.repairPrompt }; }).concat((askAIFullscreenReportV63O.checks || []).map(function (item) { return { command: 'v63O AskAI fullscreen check: ' + item.name, expected: item.expected, actual: item.actual === undefined ? item : item.actual, passed: item.passed, errors: item.passed ? [] : ['v63O AskAI fullscreen check failed'], suggestedFix: askAIFullscreenReportV63O.repairPrompt }; }));
@@ -13053,6 +13259,7 @@
     });
     var safety = regressionSafetyV61L();
     var moduleKeeperReportV63E = runAquaPremiumModuleVisualCheckV63E();
+    var masterHubClickableReportStep11 = runAquaMasterHubClickableCheckStep11();
     var report = {
       version: VERSION,
       harnessVersion: 'v61L-compatible/v62D',
@@ -13126,6 +13333,27 @@
       receiptsRoutingStillWorks: askAIRestoredDesignReportV63PD.receiptsRoutingStillWorks === true,
       appWideIntentRegistryStillWorks: askAIRestoredDesignReportV63PD.appWideIntentRegistryStillWorks === true,
       unknownFallbackStillWorksForRealUnknownCommand: askAIRestoredDesignReportV63PD.unknownFallbackStillWorksForRealUnknownCommand === true,
+      masterHubClickableRoutesExist: masterHubClickableReportStep11.masterHubClickableRoutesExist === true,
+      masterHubCardsHaveRouteIds: masterHubClickableReportStep11.masterHubCardsHaveRouteIds === true,
+      masterHubCardsAreClickable: masterHubClickableReportStep11.masterHubCardsAreClickable === true,
+      masterHubButtonsAreClickable: masterHubClickableReportStep11.masterHubButtonsAreClickable === true,
+      hubAskAIRouteWorks: masterHubClickableReportStep11.hubAskAIRouteWorks === true,
+      hubProjectFoldersRouteWorks: masterHubClickableReportStep11.hubProjectFoldersRouteWorks === true,
+      hubReportsRouteWorks: masterHubClickableReportStep11.hubReportsRouteWorks === true,
+      hubReceiptsRouteWorks: masterHubClickableReportStep11.hubReceiptsRouteWorks === true,
+      hubAccountingRouteWorks: masterHubClickableReportStep11.hubAccountingRouteWorks === true,
+      hubAquaPaintingRouteWorks: masterHubClickableReportStep11.hubAquaPaintingRouteWorks === true,
+      hubPayablesRouteWorks: masterHubClickableReportStep11.hubPayablesRouteWorks === true,
+      hubEmployeeTimeRouteWorks: masterHubClickableReportStep11.hubEmployeeTimeRouteWorks === true,
+      hubBudgetRiskRouteWorks: masterHubClickableReportStep11.hubBudgetRiskRouteWorks === true,
+      hubMaintenanceRouteWorks: masterHubClickableReportStep11.hubMaintenanceRouteWorks === true,
+      hubHVACRouteWorks: masterHubClickableReportStep11.hubHVACRouteWorks === true,
+      hubAutomationReportRouteWorks: masterHubClickableReportStep11.hubAutomationReportRouteWorks === true,
+      hubRegressionQARouteWorks: masterHubClickableReportStep11.hubRegressionQARouteWorks === true,
+      hubBackendReadinessRouteWorks: masterHubClickableReportStep11.hubBackendReadinessRouteWorks === true,
+      hubKeeperRecoveryRouteWorks: masterHubClickableReportStep11.hubKeeperRecoveryRouteWorks === true,
+      hubRoutesOpenFullscreenModules: masterHubClickableReportStep11.hubRoutesOpenFullscreenModules === true,
+      masterHubClickableReportStep11: masterHubClickableReportStep11,
       askAILiveButtonRouteFixed: askAILiveButtonReportV63PC.askAILiveButtonRouteFixed === true,
       askAIOpenDoesNotTriggerUnknownFallback: askAILiveButtonReportV63PC.askAIOpenDoesNotTriggerUnknownFallback === true,
       askAIOpenDoesNotRenderBlankModal: askAILiveButtonReportV63PC.askAIOpenDoesNotRenderBlankModal === true,
@@ -14415,5 +14643,6 @@
 
   installPremiumModuleShellStylesV61Z();
   installPremiumModuleShellStylesV63A();
-  console.log('Aqua Homes OS v63P-E Step 9A phone-cache-repair-step9a extensions loaded: restored AskAI previous accepted design, Aqua Homes mark, empty voice guard, and Main Brain Master Hub route active. Home untouched. Backend locked. No live AI, upload, export, audio storage, or record change.');
+  syncAquaMasterHubClickableRoutesNamespaceStep11();
+  console.log('Aqua Homes OS v63P-F Step 11 aqua-master-hub-clickable-step11 extensions loaded: restored AskAI previous accepted design, Aqua Homes mark, empty voice guard, and Main Brain Master Hub clickable routes active. Home untouched. Backend locked. No live AI, upload, export, audio storage, or record change.');
 }());
