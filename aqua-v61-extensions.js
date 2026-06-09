@@ -6716,7 +6716,7 @@
     if (route.type === 'askai') {
       var ask = openAquaAskAICleanEntryPortalV63PA({ source: 'aqua-master-hub-clickable-step11' });
       state.hubAskAIRouteWorks = true;
-      return Object.assign({}, ask, { version: 'v63P-F Step 11', canonicalIntent: 'aqua_master_hub_route_step11', routeId: route.id, masterHubRouteOpenedStep11: true, hubRouteTarget: route.target }, aquaAskAILiveButtonSafetyV63PC());
+      return Object.assign({}, ask, { version: 'v63P-F Step 11', canonicalIntent: 'aqua_master_hub_route_step11', routeId: route.id, masterHubRouteOpenedStep11: true, hubRouteTarget: route.target, moduleFullscreen: true, openedAndFocused: true, focusedByAquaBrain: true }, aquaAskAILiveButtonSafetyV63PC());
     }
     var routed = null;
     if (route.type === 'command') routed = runNormalizedAquaCommandV61E(route.command, outputNode, true);
@@ -6734,9 +6734,42 @@
     return Object.assign({}, routed || {}, { version: 'v63P-F Step 11', canonicalIntent: 'aqua_master_hub_route_step11', routeId: route.id, module: route.target, html: innerHtml, masterHubRouteOpenedStep11: true, hubRouteTarget: route.target, moduleFullscreen: true, renderedFallback: false, openedAndFocused: true, focusedByAquaBrain: true }, aquaAskAILiveButtonSafetyV63PC());
   }
 
+  function hydrateAquaMasterHubClickableCardsStep11(rootNode) {
+    if (!rootNode || !rootNode.querySelectorAll) return { hydratedCards: 0, hydratedButtons: 0 };
+    var routeMap = getAquaMasterHubRouteMapStep11();
+    var labelToRoute = {};
+    routeMap.forEach(function (route) { labelToRoute[String(route.label || '').toLowerCase()] = route.id; });
+    var hydratedCards = 0;
+    var hydratedButtons = 0;
+    Array.prototype.slice.call(rootNode.querySelectorAll('.aqua-v63pa-hub-card,[data-aqua-v63pa-feature-group]')).forEach(function (card) {
+      var routeId = card.getAttribute('data-aqua-hub-route');
+      var group = card.getAttribute('data-aqua-v63pa-feature-group') || '';
+      if (!routeId && labelToRoute[String(group).toLowerCase()]) routeId = labelToRoute[String(group).toLowerCase()];
+      if (!routeId) return;
+      card.setAttribute('data-aqua-hub-route', routeId);
+      card.setAttribute('data-aqua-master-hub-clickable-step11', 'true');
+      card.setAttribute('role', card.getAttribute('role') || 'button');
+      card.setAttribute('tabindex', card.getAttribute('tabindex') || '0');
+      card.setAttribute('aria-label', card.getAttribute('aria-label') || ('Open ' + (group || routeId)));
+      hydratedCards += 1;
+      Array.prototype.slice.call(card.querySelectorAll('button')).forEach(function (button) {
+        if (!button.getAttribute('data-aqua-hub-route')) button.setAttribute('data-aqua-hub-route', routeId);
+        button.setAttribute('data-aqua-hub-open-button-step11', 'true');
+        button.setAttribute('type', button.getAttribute('type') || 'button');
+        hydratedButtons += 1;
+      });
+    });
+    state.masterHubHydratedCardsStep11 = hydratedCards;
+    state.masterHubHydratedButtonsStep11 = hydratedButtons;
+    return { hydratedCards: hydratedCards, hydratedButtons: hydratedButtons };
+  }
+
   function bindAquaMasterHubClickableRoutesStep11() {
-    if (document && document.addEventListener && !state.masterHubClickableRouteBindingStep11) {
+    if (typeof document === 'undefined') { syncAquaMasterHubClickableRoutesStep11(); return false; }
+    hydrateAquaMasterHubClickableCardsStep11(document);
+    if (document.addEventListener && !state.masterHubClickableRouteBindingStep11) {
       document.addEventListener('click', function (event) {
+        hydrateAquaMasterHubClickableCardsStep11(document);
         var target = event && event.target;
         var routeNode = target && target.closest && target.closest('[data-aqua-hub-route]');
         if (!routeNode) return;
@@ -6747,6 +6780,7 @@
         openAquaHubRouteStep11(routeId);
       }, true);
       document.addEventListener('keydown', function (event) {
+        hydrateAquaMasterHubClickableCardsStep11(document);
         var target = event && event.target;
         var routeNode = target && target.closest && target.closest('[data-aqua-hub-route]');
         if (!routeNode || (event.key !== 'Enter' && event.key !== ' ')) return;
@@ -6822,7 +6856,7 @@
     var match = q.match(/^open hub (.+)$/);
     if (match) {
       var phrase = match[1];
-      var aliasMap = { 'receipts': 'receipts', 'receipt': 'receipts', 'accounting': 'accounting', 'aqua painting': 'aqua-painting', 'painting': 'aqua-painting', 'payables': 'payables', 'maintenance': 'maintenance', 'hvac': 'hvac', 'automation report': 'automation-report', 'automation': 'automation-report', 'regression qa': 'regression-qa', 'backend readiness': 'backend-readiness', 'keeper recovery': 'keeper-recovery', 'employee time': 'employee-time', 'budget risk': 'budget-risk', 'project folders': 'project-folders', 'reports': 'reports', 'report': 'reports' };
+      var aliasMap = { 'askai': 'askai-talk-to-aqua', 'ask ai': 'askai-talk-to-aqua', 'talk to aqua': 'askai-talk-to-aqua', 'receipts': 'receipts', 'receipt': 'receipts', 'accounting': 'accounting', 'aqua painting': 'aqua-painting', 'painting': 'aqua-painting', 'company command': 'aqua-painting', 'payables': 'payables', 'maintenance': 'maintenance', 'hvac': 'hvac', 'automation report': 'automation-report', 'automation': 'automation-report', 'regression qa': 'regression-qa', 'backend readiness': 'backend-readiness', 'keeper recovery': 'keeper-recovery', 'keeper': 'keeper-recovery', 'employee time': 'employee-time', 'budget risk': 'budget-risk', 'project folders': 'project-folders', 'project folder': 'project-folders', 'reports': 'reports', 'report': 'reports', 'sow estimates': 'sow-estimates', 'sow': 'sow-estimates', 'estimates': 'sow-estimates', 'field walkthrough': 'field-walkthrough', 'evidence photo proof': 'evidence-photo-proof', 'evidence': 'evidence-photo-proof', 'photo proof': 'evidence-photo-proof', 'missing documents': 'missing-documents', 'insurance bank reconciliation': 'insurance-bank-reconciliation', 'bank reconciliation': 'insurance-bank-reconciliation', 'workers comp': 'workers-comp-compliance', 'subcontractor compliance': 'workers-comp-compliance', 'technician field service': 'technician-field-service', 'field service': 'technician-field-service', 'customer portal': 'customer-portal', 'investor portal': 'investor-portal', 'satellite app hub': 'satellite-app-hub', 'notifications alerts': 'notifications-alerts', 'notifications': 'notifications-alerts', 'alerts': 'notifications-alerts', 'export upload': 'export-upload', 'export': 'export-upload', 'upload': 'export-upload', 'phone dex acceptance': 'phone-dex-acceptance', 'phone acceptance': 'phone-dex-acceptance', 'tool gateway': 'tool-gateway', 'data index schema': 'data-index-schema', 'data index': 'data-index-schema', 'safety permissions': 'safety-permissions', 'permissions': 'safety-permissions', 'general ask web search locked': 'general-query-search-locked', 'web search': 'general-query-search-locked' };
       return { modeStep11: 'open_hub_route', routeId: aliasMap[phrase] || phrase.replace(/\s+/g, '-') };
     }
     return null;
@@ -6837,7 +6871,7 @@
   }
 
   function syncAquaMasterHubClickableRoutesStep11() {
-    window.AquaMasterHubClickableRoutesStep11 = Object.assign(window.AquaMasterHubClickableRoutesStep11 || {}, { version: 'v63P-F Step 11', marker: 'aqua-master-hub-clickable-step11', getAquaMasterHubRouteMapStep11: getAquaMasterHubRouteMapStep11, bindAquaMasterHubClickableRoutesStep11: bindAquaMasterHubClickableRoutesStep11, openAquaHubRouteStep11: openAquaHubRouteStep11, renderAquaMasterHubClickableStatusStep11: renderAquaMasterHubClickableStatusStep11, runAquaMasterHubClickableCheckStep11: runAquaMasterHubClickableCheckStep11, safetyEnvelope: aquaAskAILiveButtonSafetyV63PC() });
+    window.AquaMasterHubClickableRoutesStep11 = Object.assign(window.AquaMasterHubClickableRoutesStep11 || {}, { version: 'v63P-F Step 11', marker: 'aqua-master-hub-clickable-step11', getAquaMasterHubRouteMapStep11: getAquaMasterHubRouteMapStep11, hydrateAquaMasterHubClickableCardsStep11: hydrateAquaMasterHubClickableCardsStep11, bindAquaMasterHubClickableRoutesStep11: bindAquaMasterHubClickableRoutesStep11, openAquaHubRouteStep11: openAquaHubRouteStep11, renderAquaMasterHubClickableStatusStep11: renderAquaMasterHubClickableStatusStep11, runAquaMasterHubClickableCheckStep11: runAquaMasterHubClickableCheckStep11, safetyEnvelope: aquaAskAILiveButtonSafetyV63PC() });
     return window.AquaMasterHubClickableRoutesStep11;
   }
 
