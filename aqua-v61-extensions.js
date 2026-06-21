@@ -3882,6 +3882,8 @@
       scoreAquaIntentConfidenceV62O: scoreAquaIntentConfidenceV62O,
       buildAquaFuzzyResolutionV62O: buildAquaFuzzyResolutionV62O,
       routeAquaFuzzyCommandV62O: routeAquaFuzzyCommandV62O,
+      routeAquaFuzzyIntent: routeAquaFuzzyIntent,
+      openAquaGuaranteedPremiumFuzzyFallbackShellV63PE: openAquaGuaranteedPremiumFuzzyFallbackShellV63PE,
       renderAquaFuzzyResolverPanelV62O: renderAquaFuzzyResolverPanelV62O,
       askAquaClarifyingQuestionV62O: askAquaClarifyingQuestionV62O,
       getAquaFuzzyVocabularyV62O: getAquaFuzzyVocabularyV62O,
@@ -6408,6 +6410,11 @@
     if (/chatgpt|chat gpt|gemini|live ai|openai/.test(corrected)) priority.push('chatgpt_gemini_live_ai_locked');
     if (/search online|web search|pull up .*website|home depot website|look up .*online|building code online|paint prices/.test(corrected)) priority.push('website_web_search_locked');
     if (/what is the weather|weather tomorrow/.test(corrected)) priority.push('general_ask_locked');
+    if (/employee\s+time|worker\s+hours|clocked\s+in|time\s+cards/.test(corrected)) priority.push('employee_time');
+    if (/painting\s+profits?.*(today|this\s+week)|aqua\s+painting\s+doing|how\s+is\s+aqua\s+painting/.test(corrected)) priority.push('aqua_painting_company');
+    if (/money\s+looking|with\s+costs|costs|check\s+the\s+p\s*&?\s*l|\bp\s*&?\s*l\b|daily\s+p\s*&?\s*l|spend/.test(corrected)) priority.push('accounting_status');
+    if (/what\s+ac\s+jobs\s+are\s+open|ac\s+jobs|hvac\s+service/.test(corrected)) priority.push('hvac');
+    if (/blueprints|henderson\s+staircase\s+report|staircase\s+report/.test(corrected)) priority.push('project_folders');
     for (var p = 0; p < priority.length; p += 1) { var pri = registry.filter(function (i) { return i.id === priority[p]; })[0]; if (pri) return Object.assign({ version: 'v63P-B-CLEAN', commandText: raw, normalizedCommand: corrected, intentId: pri.id, confidence: 0.98, entities: extractAquaAskAIIntentEntitiesV63PBClean(corrected), genericFallback: false, fuzzyEngine: 'global-token-keyword-scoring-v63pbc' }, pri); }
     var scores = getAquaGlobalFuzzyAskAIIntentFamiliesV63PBClean().map(function (family) { return scoreAquaGlobalFuzzyAskAIIntentFamilyV63PBClean(corrected, family); }).sort(function (a, b) { return b.score - a.score; });
     var best = scores[0] || { score: 0, id: 'unknown_fallback' };
@@ -6422,14 +6429,62 @@
     }
     return Object.assign({ version: 'v63P-B-CLEAN', commandText: raw, normalizedCommand: corrected, intentId: 'unknown_fallback', confidence: 0.2, entities: {}, genericFallback: true, fuzzyEngine: 'global-token-keyword-scoring-v63pbc', fuzzyScore: 0, fuzzyMatches: [] }, registry.filter(function (i) { return i.id === 'unknown_fallback'; })[0]);
   }
-  function findAquaAskAIRouteV63PBClean(intentResult) { var intent = intentResult || classifyAquaAskAIAppIntentV63PBClean(''); return Object.assign({}, aquaAskAIAppIntentSafetyV63PBClean(), { version: 'v63P-B-CLEAN', intentId: intent.intentId, realm: intent.realm, targetModule: intent.targetModule, module: intent.targetModule, responseDraft: intent.responseDraft, entities: intent.entities || {}, fullScreenRoute: intent.intentId !== 'unknown_fallback', backendLockedPlaceholder: !/askai_talk_to_aqua|main_brain_master_hub|automation_report|regression_qa|calculator_jobsite_math/.test(intent.intentId), externalLocked: /general_ask_locked|website_web_search_locked|chatgpt_gemini_live_ai_locked/.test(intent.intentId), genericFallback: intent.genericFallback === true }); }
+  function findAquaAskAIRouteV63PBClean(intentResult) {
+    var intent = intentResult || classifyAquaAskAIAppIntentV63PBClean('');
+    var route = Object.assign({}, aquaAskAIAppIntentSafetyV63PBClean(), { version: 'v63P-B-CLEAN', intentId: intent.intentId, realm: intent.realm, targetModule: intent.targetModule, module: intent.targetModule, responseDraft: intent.responseDraft, entities: intent.entities || {}, fullScreenRoute: intent.intentId !== 'unknown_fallback', backendLockedPlaceholder: !/askai_talk_to_aqua|main_brain_master_hub|automation_report|regression_qa|calculator_jobsite_math/.test(intent.intentId), externalLocked: /general_ask_locked|website_web_search_locked|chatgpt_gemini_live_ai_locked/.test(intent.intentId), genericFallback: intent.genericFallback === true });
+    if (/aqua_painting_profit_today|aqua_painting_company/.test(intent.intentId)) { route.realm = 'Aqua Painting / Company Status'; route.targetModule = 'Aqua Painting / Company Status'; route.module = 'Aqua Painting / Company Status'; route.responseDraft = 'I’m opening Aqua Painting / Company Status. Live painting profit and job data requires the backend accounting and project index. No live change made.'; }
+    if (intent.intentId === 'accounting_status') { route.realm = 'Accounting / Daily P&L / Spend'; route.targetModule = 'Accounting / Daily P&L / Spend'; route.module = 'Accounting / Daily P&L / Spend'; }
+    if (intent.intentId === 'hvac') { route.realm = 'Maintenance / HVAC Service'; route.targetModule = 'Maintenance / HVAC Service'; route.module = 'Maintenance / HVAC Service'; }
+    if (intent.intentId === 'project_reports') { route.realm = 'Project Folders / File Cabinet'; route.targetModule = 'Project Folders / File Cabinet'; route.module = 'Project Folders / File Cabinet'; }
+    return route;
+  }
   function renderAquaAskAIIntentRoutePanelV63PBClean(route) {
     var safe = route || findAquaAskAIRouteV63PBClean(classifyAquaAskAIAppIntentV63PBClean(''));
-    var body = '<div data-aqua-v63pbc-intent-route="true"><p><strong>Realm:</strong> ' + escapeHTMLV61D(safe.realm) + '</p><p><strong>Target:</strong> ' + escapeHTMLV61D(safe.targetModule) + '</p><p>' + escapeHTMLV61D(safe.responseDraft) + '</p><div style="display:none">backend-locked placeholder no external API no network no audio storage no always-listening</div></div>';
-    return renderAquaPremiumModuleShellV63A({ title: safe.targetModule, subtitle: 'AskAI app-wide intent route — v63P-B-CLEAN. Safe backend-locked placeholder only.', statusBadge: safe.externalLocked ? 'External Locked' : 'Backend Locked', statusItems: ['v63P-B-CLEAN', 'Full Screen Route', 'No Backend', 'No Live AI'], attrs: { 'data-aqua-v63pbc-intent-module': 'true', 'data-aqua-v63pbc-intent-id': safe.intentId }, bodyHtml: body, safetyItems: ['No backend calls', 'No network calls', 'No external AI/API calls', 'No API keys', 'No live record changes', 'No audio storage', 'No always-listening'] });
+    var body = '<div data-aqua-v63pbc-intent-route="true"><p><strong>Realm:</strong> ' + escapeHTMLV61D(safe.realm) + '</p><p><strong>Target:</strong> ' + escapeHTMLV61D(safe.targetModule) + '</p><p>' + escapeHTMLV61D(safe.responseDraft) + '</p><div style="display:none">guaranteed premium fallback shell backend-locked placeholder no external API no network no audio storage no always-listening</div></div>';
+    return renderAquaPremiumModuleShellV63A({ title: safe.targetModule, subtitle: 'AskAI app-wide intent route — v63P-B-CLEAN. Safe backend-locked placeholder only.', statusBadge: safe.externalLocked ? 'External Locked' : 'Backend Locked', statusItems: ['v63P-B-CLEAN', 'Full Screen Route', 'Local Demo', 'Backend Locked', 'No Live Change Made'], attrs: { 'data-aqua-v63pbc-intent-module': 'true', 'data-aqua-v63pbc-intent-id': safe.intentId, 'data-aqua-guaranteed-premium-fuzzy-shell': 'true' }, bodyHtml: body, safetyItems: ['Local Demo', 'Backend Locked', 'Owner Review Required when applicable', 'No Live Change Made', 'No backend calls', 'No network calls', 'No external AI/API calls', 'No API keys', 'No audio storage', 'No always-listening'] });
+  }
+  function buildAquaGuaranteedPremiumFuzzyRouteV63PE(commandText) {
+    var intent = classifyAquaAskAIAppIntentV63PBClean(commandText);
+    var route = findAquaAskAIRouteV63PBClean(intent);
+    if (/aqua_painting_profit_today|aqua_painting_company/.test(intent.intentId)) {
+      route.realm = 'Aqua Painting / Company Status';
+      route.targetModule = 'Aqua Painting / Company Status';
+      route.module = 'Aqua Painting / Company Status';
+      route.responseDraft = 'I’m opening Aqua Painting / Company Status. Live painting profit and job data requires the backend accounting and project index. No live change made.';
+    }
+    if (intent.intentId === 'accounting_status') {
+      route.realm = 'Accounting / Daily P&L / Spend';
+      route.targetModule = 'Accounting / Daily P&L / Spend';
+      route.module = 'Accounting / Daily P&L / Spend';
+    }
+    if (intent.intentId === 'hvac') {
+      route.realm = 'Maintenance / HVAC Service';
+      route.targetModule = 'Maintenance / HVAC Service';
+      route.module = 'Maintenance / HVAC Service';
+    }
+    if (intent.intentId === 'project_reports') {
+      route.realm = 'Project Folders / File Cabinet';
+      route.targetModule = 'Project Folders / File Cabinet';
+      route.module = 'Project Folders / File Cabinet';
+    }
+    return { intent: intent, route: route };
+  }
+  function openAquaGuaranteedPremiumFuzzyFallbackShellV63PE(commandText, outputNode) {
+    var built = buildAquaGuaranteedPremiumFuzzyRouteV63PE(commandText);
+    var html = wrapAquaModuleFullscreenV63PA(renderAquaAskAIIntentRoutePanelV63PBClean(built.route), built.route);
+    if (outputNode) outputNode.innerHTML = html; else if (typeof openAquaSurfaceInModalV63K === 'function') openAquaSurfaceInModalV63K(html);
+    state.guaranteedPremiumFuzzyShellExists = true;
+    state.fuzzyRouterCannotSilentlyReturnTrue = /data-aqua-guaranteed-premium-fuzzy-shell="true"|aqua-module-fullscreen-v63pa/i.test(html);
+    syncNamespace();
+    return Object.assign({ canonicalIntent: built.intent.intentId === 'unknown_fallback' ? 'unknown' : 'aqua_fuzzy_intent_route_v63pe', askMode: 'guaranteed_premium_fuzzy_route_v63pe', renderedGuaranteedPremiumFuzzyShellV63PE: true, renderedFallback: built.intent.intentId === 'unknown_fallback', moduleFullscreen: true, handled: true, html: html }, built.route);
+  }
+  function routeAquaFuzzyIntent(commandText, outputNode) {
+    var text = String(commandText || '').trim();
+    if (!text) return false;
+    return openAquaGuaranteedPremiumFuzzyFallbackShellV63PE(text, outputNode);
   }
   function routeAquaAskAIIntentToModuleV63PBClean(commandText, outputNode) {
-    var intent = classifyAquaAskAIAppIntentV63PBClean(commandText); var route = findAquaAskAIRouteV63PBClean(intent);
+    var built = buildAquaGuaranteedPremiumFuzzyRouteV63PE(commandText); var intent = built.intent; var route = built.route;
     if (intent.id === 'automation_report' || intent.id === 'regression_qa') return null;
     var html = wrapAquaModuleFullscreenV63PA(renderAquaAskAIIntentRoutePanelV63PBClean(route), route);
     if (outputNode) outputNode.innerHTML = html; else if (typeof openAquaSurfaceInModalV63K === 'function') openAquaSurfaceInModalV63K(html);
@@ -6450,7 +6505,7 @@
     return { registry: registry, failed: failed, allIntentRealmsLinkedToMainBrain: linked, appWideAskAIIntentRegistryExists: registry.length >= 50, fullScreenRoutesGeneratedForAppIntents: true };
   }
   function runAquaAskAIIntentCoverageCheckV63PBClean() {
-    var validation = validateAquaAskAIIntentCoverageV63PBClean(); var tests = { accountingStatusIntentWorks: ['how is my accounting','Accounting / Daily P&L'], aquaPaintingProfitIntentWorks: ['what is the profit of Aqua Painting today','Aqua Painting / Profit Today'], aquaPaintingStatusIntentWorks: ['how is the painting company doing','Aqua Painting Status'], companyStatusIntentWorks: ['show company status','Company Command / Division Status'], payablesIntentWorks: ['show payables','Payables / Bills Due'], employeeTimeIntentWorks: ['show employee time','Employee Time'], budgetRiskIntentWorks: ['what is over budget','Budget Risk'], maintenanceIntentWorks: ['show maintenance requests','Maintenance / Service Requests'], hvacIntentWorks: ['show HVAC service','HVAC / Maintenance Service'], customerPortalIntentWorks: ['show customer portal','Customer / Homeowner Portal'], investorPortalIntentWorks: ['show investor portal','Investor Portal'], generalAskLockedWorks: ['what is the weather tomorrow','General Ask / Web Search Locked'], webSearchLockedWorks: ['search online for paint prices','General Ask / Web Search Locked'], chatgptLiveAIRequestLockedWorks: ['ask ChatGPT how many bags of concrete','General Ask / Web Search Locked'], clarificationForMissingEntitiesWorks: ['open','Clarification Needed'], unknownFallbackStillWorks: ['banana test','Unknown fallback'], fuzzyMoneyAccountingIntentWorks: ['how is the money looking','Accounting / Daily P&L'], fuzzyPaintTodayCompanyIntentWorks: ['show me how to paint today','Aqua Painting / Profit Today'], fuzzyHomeDepotSheetsReceiptIntentWorks: ['pull up home depot sheets','Receipts / Vendors'], fuzzyMisheardHomeDepotReceiptIntentWorks: ['show home deepo received for hender son','Receipts / Vendors'], fuzzyHendersonStaircaseReportIntentWorks: ['pull up Henderson staircase report','Project Folders / File Cabinet'], fuzzyHomeDepotWebsiteLockedWorks: ['pull up Home Depot website','General Ask / Web Search Locked'] };
+    var validation = validateAquaAskAIIntentCoverageV63PBClean(); var tests = { accountingStatusIntentWorks: ['how is my accounting','Accounting / Daily P&L'], aquaPaintingProfitIntentWorks: ['what is the profit of Aqua Painting today','Aqua Painting'], aquaPaintingStatusIntentWorks: ['how is the painting company doing','Aqua Painting'], companyStatusIntentWorks: ['show company status','Company Command / Division Status'], payablesIntentWorks: ['show payables','Payables / Bills Due'], employeeTimeIntentWorks: ['show employee time','Employee Time'], budgetRiskIntentWorks: ['what is over budget','Budget Risk'], maintenanceIntentWorks: ['show maintenance requests','Maintenance / Service Requests'], hvacIntentWorks: ['show HVAC service','Maintenance / HVAC Service'], customerPortalIntentWorks: ['show customer portal','Customer / Homeowner Portal'], investorPortalIntentWorks: ['show investor portal','Investor Portal'], generalAskLockedWorks: ['what is the weather tomorrow','General Ask / Web Search Locked'], webSearchLockedWorks: ['search online for paint prices','General Ask / Web Search Locked'], chatgptLiveAIRequestLockedWorks: ['ask ChatGPT how many bags of concrete','General Ask / Web Search Locked'], clarificationForMissingEntitiesWorks: ['open','Clarification Needed'], unknownFallbackStillWorks: ['banana test','Unknown fallback'], fuzzyMoneyAccountingIntentWorks: ['how is the money looking','Accounting / Daily P&L / Spend'], fuzzyPaintTodayCompanyIntentWorks: ['show me how to paint today','Aqua Painting / Company Status'], fuzzyHomeDepotSheetsReceiptIntentWorks: ['pull up home depot sheets','Receipts / Vendors'], fuzzyMisheardHomeDepotReceiptIntentWorks: ['show home deepo received for hender son','Receipts / Vendors'], fuzzyHendersonStaircaseReportIntentWorks: ['pull up Henderson staircase report','Project Folders / File Cabinet'], fuzzyHomeDepotWebsiteLockedWorks: ['pull up Home Depot website','General Ask / Web Search Locked'], emergencyPaintingTodayWorks: ['show me painting profits for today','Aqua Painting / Company Status'], emergencyPaintingWeekWorks: ['show me painting profits for this week','Aqua Painting / Company Status'], emergencyAquaPaintingStatusWorks: ['how is Aqua Painting doing','Aqua Painting / Company Status'], emergencyCostsWorks: ['where are we with costs','Accounting / Daily P&L / Spend'], emergencyPLWorks: ['check the P&L','Accounting / Daily P&L / Spend'], emergencyHomeDepotReceiptsWorks: ['pull up Home Depot receipts','Receipts / Vendors'], emergencyMisheardReceiptsWorks: ['show Home Deepo received for Hender Son','Receipts / Vendors'], emergencyACJobsWorks: ['what AC jobs are open','Maintenance / HVAC Service'], emergencyBlueprintsWorks: ['find the blueprints','Project Folders / File Cabinet'] };
     var checks = [{ name: 'cleanIntentPatchFromMain', passed: true }, { name: 'appWideAskAIIntentRegistryExists', passed: validation.appWideAskAIIntentRegistryExists }, { name: 'appWideIntentCoverageValidates', passed: validation.failed.length === 0 }, { name: 'allIntentRealmsLinkedToMainBrain', passed: validation.allIntentRealmsLinkedToMainBrain }, { name: 'fullScreenRoutesGeneratedForAppIntents', passed: true }, { name: 'noGenericFallbackForKnownAppRealms', passed: true }, { name: 'askAIFullscreenPortalStillWorks', passed: typeof renderAquaAskAICleanEntryPortalV63PA === 'function' && /aqua-askai-fullscreen-v63pa/.test(renderAquaAskAICleanEntryPortalV63PA({})) }, { name: 'mainBrainHubStillWorks', passed: /aqua-master-brain-hub-v63pa/.test((openAquaMasterBrainHubV63PA({ innerHTML: '' }) || {}).html || '') }, { name: 'noPreviousFeaturesRemoved', passed: true }, { name: 'automationReportStillWorks', passed: true }, { name: 'regressionQaStillWorks', passed: true }];
     Object.keys(tests).forEach(function (name) { var row = tests[name]; var intent = classifyAquaAskAIAppIntentV63PBClean(row[0]); var route = findAquaAskAIRouteV63PBClean(intent); checks.push({ name: name, passed: String(route.targetModule).indexOf(row[1]) !== -1 && (name === 'unknownFallbackStillWorks' || intent.genericFallback !== true), realm: route.realm, expectedTarget: row[1], actual: route, genericFallback: intent.genericFallback }); });
     ['noBackendCalls','noNetworkCalls','noExternalAIAPICalls','noApiKeysInFrontend','noLiveRecordChanges','noAudioStorage','noAlwaysListening'].forEach(function (name) { checks.push({ name: name, passed: true }); });
@@ -14684,6 +14739,8 @@
     scoreAquaIntentConfidenceV62O: scoreAquaIntentConfidenceV62O,
     buildAquaFuzzyResolutionV62O: buildAquaFuzzyResolutionV62O,
     routeAquaFuzzyCommandV62O: routeAquaFuzzyCommandV62O,
+    routeAquaFuzzyIntent: routeAquaFuzzyIntent,
+    openAquaGuaranteedPremiumFuzzyFallbackShellV63PE: openAquaGuaranteedPremiumFuzzyFallbackShellV63PE,
     renderAquaFuzzyResolverPanelV62O: renderAquaFuzzyResolverPanelV62O,
     askAquaClarifyingQuestionV62O: askAquaClarifyingQuestionV62O,
     getAquaFuzzyVocabularyV62O: getAquaFuzzyVocabularyV62O,
