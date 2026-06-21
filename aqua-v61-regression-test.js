@@ -87,7 +87,7 @@ function trackedTextFiles() {
 }
 
 function filesWithConflictMarkers() {
-  const conflictPattern = /^(<<<<<<<|=======|>>>>>>>) /m;
+  const conflictPattern = /^(<<<<<<<|=======|>>>>>>>|«««««««|»»»»»»»)/m;
   return trackedTextFiles().filter((file) => conflictPattern.test(readFileSafe(file)));
 }
 
@@ -395,6 +395,21 @@ function checkStaticFiles() {
   addCheck('v63P-A clean entry report flag exists', /cleanEntryPatchFromMain/.test(extension) && /Ask Aqua where you want to go\./.test(extension) && /User-tap only\. No always-listening\. No audio stored\./.test(extension), { layer: 'askai-clean-entry-v63pa', fileToFix: EXTENSION });
   addCheck('v63P-B-CLEAN app-wide AskAI intent namespace exists', /window\.AquaAskAIAppIntentRegistryV63PBClean/.test(extension) && /function\s+getAquaAskAIAppIntentRegistryV63PBClean/.test(extension) && /function\s+classifyAquaAskAIAppIntentV63PBClean/.test(extension) && /function\s+runAquaAskAIIntentCoverageCheckV63PBClean/.test(extension), { layer: 'askai-intent-registry-v63pbc-clean', fileToFix: EXTENSION });
   addCheck('v63P-B-CLEAN required intent markers exist', /v63P-B-CLEAN/.test(extension) && /aquaAskAIAppIntentRegistryV63PBClean/.test(extension) && /Accounting \/ Daily P&L/.test(extension) && /Aqua Painting \/ Profit Today/.test(extension) && /General Ask \/ Web Search Locked/.test(extension), { layer: 'askai-intent-registry-v63pbc-clean', fileToFix: EXTENSION });
+  [
+    ['how is my accounting', /Accounting \/ Daily P&L|Accounting \/ Daily P&L \/ Spend/],
+    ['what is the profit of Aqua Painting today', /Aqua Painting \/ Profit Today|Aqua Painting \/ Company Status/],
+    ['show payables', /Payables \/ Bills Due|Payables \/ Accounting/],
+    ['show HVAC service', /HVAC \/ Maintenance Service|Maintenance \/ HVAC Service/],
+    ['pull up Home Depot website', /General Ask \/ Web Search Locked|Web\/Search Backend-Locked placeholder/],
+    ['banana test', /Unknown fallback|unknown_fallback/],
+    ['show me how to paint today', /Aqua Painting \/ Profit Today|Aqua Painting \/ Company Status/],
+    ['how is the money looking', /Accounting \/ Daily P&L|Accounting \/ Daily P&L \/ Spend/],
+    ['pull up home depot sheets', /Receipts \/ Vendors/],
+    ['show home deepo received for hender son', /Receipts \/ Vendors/],
+    ['pull up Henderson staircase report', /Project Folders \/ File Cabinet/]
+  ].forEach(([command, expectedRoute]) => {
+    addCheck(`v63P-B-CLEAN fuzzy AskAI regression case remains included: ${command}`, extension.includes(command) && expectedRoute.test(extension), { layer: 'global-fuzzy-askai-intent-routing', expected: String(expectedRoute), fileToFix: EXTENSION });
+  });
   addCheck('Global Fuzzy AskAI intent routing engine markers exist', /getAquaGlobalFuzzyAskAIIntentFamiliesV63PBClean/.test(extension) && /scoreAquaGlobalFuzzyAskAIIntentFamilyV63PBClean/.test(extension) && /global-token-keyword-scoring-v63pbc/.test(extension), { layer: 'global-fuzzy-askai-intent-routing', fileToFix: EXTENSION });
   addCheck('v63P-C live AskAI button repair markers exist', /v63P-C/.test(extension) && /openAquaAskAIFromLiveButtonV63PC/.test(extension) && /askAILiveButtonRouteFixed/.test(extension) && /data-aqua-askai-logo="v63PC"/.test(extension) && /aqua-askai-logo-mark-v63pc/.test(extension) && /aqua-askai-fullscreen-v63pc/.test(extension) && /aqua-module-fullscreen-v63pc/.test(extension) && /aqua-master-brain-hub-v63pc/.test(extension), { layer: 'askai-live-button-route-v63pc', fileToFix: EXTENSION });
   addCheck('v63P-D restored AskAI design brain route empty guard markers exist', /v63P-D/.test(extension) && /aqua-askai-restored-design-v63pd/.test(extension) && /data-aqua-askai-logo="v63PD"/.test(extension) && /aqua-askai-logo-mark-v63pd/.test(extension) && /renderAquaAskAINoTranscriptGuardV63PD/.test(extension) && /emptyVoiceDoesNotTriggerUnknownFallback/.test(extension) && /brainIconOpensMasterHubOnly/.test(extension) && /aqua-master-brain-hub-v63pd/.test(extension), { layer: 'askai-restored-design-v63pd', fileToFix: EXTENSION });
