@@ -1,8 +1,8 @@
 {
   "project_name": "Aqua Homes AI Construction OS",
-  "current_stage": "Fixing heroRight click handler loop",
-  "last_action_performed": "Drafting code repair plan",
-  "gemini_review_status": "PENDING",
-  "next_step_priority": "Apply extensions.js patch once Dave approves",
+  "current_stage": "Autonomous handoff tracking rule active",
+  "last_action_performed": "Recorded requirement to update ai-handoff-state.json after every successful code update, test run, or debugging step",
+  "gemini_review_status": "AWAITING_REVIEW",
+  "next_step_priority": "Keep ai-handoff-state.json updated as final action after each successful automation/debug/test step",
   "blocking_issues": ["Race condition on heroRight catching AskAI trigger"]
 }
