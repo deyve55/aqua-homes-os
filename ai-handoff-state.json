@@ -1,8 +1,8 @@
 {
   "project_name": "Aqua Homes AI Construction OS",
-  "current_stage": "heroRight routing loop repair finalized and regression-passed",
-  "last_action_performed": "Finalized heroRight repair commit b9f6141cac0a3f46d8744d95be29e56da4e27d3a; verified aqua-v61-extensions.js removes heroRight from legacy AskAI trigger, binds heroRight to authoritative Brain guard, and regression report shows 1371 total, 1371 passed, 0 failed, safeToMerge true, MERGE_ALLOWED",
+  "current_stage": "heroRight routing repair deployed to main",
+  "last_action_performed": "Deployment confirmed for heroRight repair commit b9f6141cac0a3f46d8744d95be29e56da4e27d3a with regression gate passed: failed 0, safeToMerge true, MERGE_ALLOWED",
   "gemini_review_status": "AWAITING_REVIEW",
-  "next_step_priority": "Phone live-test the repaired Brain/Main Brain behavior after Unknown Command Fallback, then approve or report any remaining loop",
+  "next_step_priority": "Await live phone validation of deployed routing behavior",
   "blocking_issues": []
 }
