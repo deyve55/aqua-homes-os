@@ -412,6 +412,27 @@ function checkStaticFiles() {
     addCheck(`v63P-B-CLEAN fuzzy AskAI regression case remains included: ${command}`, extension.includes(command) && expectedRoute.test(extension), { layer: 'global-fuzzy-askai-intent-routing', expected: String(expectedRoute), fileToFix: EXTENSION });
   });
   addCheck('Global Fuzzy AskAI intent routing engine markers exist', /getAquaGlobalFuzzyAskAIIntentFamiliesV63PBClean/.test(extension) && /scoreAquaGlobalFuzzyAskAIIntentFamilyV63PBClean/.test(extension) && /global-token-keyword-scoring-v63pbc/.test(extension), { layer: 'global-fuzzy-askai-intent-routing', fileToFix: EXTENSION });
+  addCheck('Emergency fuzzy router exists', /function\s+routeAquaFuzzyIntent\s*\(/.test(extension), { layer: 'emergency-fuzzy-routing-repair', fileToFix: EXTENSION });
+  addCheck('Guaranteed fallback premium shell exists', /function\s+openAquaGuaranteedPremiumFuzzyFallbackShellV63PE\s*\(/.test(extension) && /data-aqua-guaranteed-premium-fuzzy-shell/.test(extension), { layer: 'emergency-fuzzy-routing-repair', fileToFix: EXTENSION });
+  addCheck('Fuzzy router cannot silently return true without opening a panel', /routeAquaFuzzyIntent[\s\S]*return openAquaGuaranteedPremiumFuzzyFallbackShellV63PE/.test(extension) && /fuzzyRouterCannotSilentlyReturnTrue/.test(extension), { layer: 'emergency-fuzzy-routing-repair', fileToFix: EXTENSION });
+  [
+    ['show me painting profits for today', /Aqua Painting \/ Company Status/],
+    ['show me painting profits for this week', /Aqua Painting \/ Company Status/],
+    ['how is Aqua Painting doing', /Aqua Painting \/ Company Status/],
+    ['how is the money looking', /Accounting \/ Daily P&L \/ Spend/],
+    ['where are we with costs', /Accounting \/ Daily P&L \/ Spend/],
+    ['check the P&L', /Accounting \/ Daily P&L \/ Spend/],
+    ['pull up Home Depot receipts', /Receipts \/ Vendors/],
+    ['show Home Deepo received for Hender Son', /Receipts \/ Vendors/],
+    ['show HVAC service', /Maintenance \/ HVAC Service/],
+    ['what AC jobs are open', /Maintenance \/ HVAC Service/],
+    ['pull up Henderson staircase report', /Project Folders \/ File Cabinet/],
+    ['find the blueprints', /Project Folders \/ File Cabinet/],
+    ['pull up Home Depot website', /General Ask \/ Web Search Locked/],
+    ['banana test', /Unknown fallback|unknown_fallback/]
+  ].forEach(([command, expectedRoute]) => {
+    addCheck(`Emergency natural language route covered: ${command}`, extension.includes(command) && expectedRoute.test(extension), { layer: 'emergency-fuzzy-routing-repair', expected: String(expectedRoute), fileToFix: EXTENSION });
+  });
   addCheck('v63P-C live AskAI button repair markers exist', /v63P-C/.test(extension) && /openAquaAskAIFromLiveButtonV63PC/.test(extension) && /askAILiveButtonRouteFixed/.test(extension) && /data-aqua-askai-logo="v63PC"/.test(extension) && /aqua-askai-logo-mark-v63pc/.test(extension) && /aqua-askai-fullscreen-v63pc/.test(extension) && /aqua-module-fullscreen-v63pc/.test(extension) && /aqua-master-brain-hub-v63pc/.test(extension), { layer: 'askai-live-button-route-v63pc', fileToFix: EXTENSION });
   addCheck('v63P-D restored AskAI design brain route empty guard markers exist', /v63P-D/.test(extension) && /aqua-askai-restored-design-v63pd/.test(extension) && /data-aqua-askai-logo="v63PD"/.test(extension) && /aqua-askai-logo-mark-v63pd/.test(extension) && /renderAquaAskAINoTranscriptGuardV63PD/.test(extension) && /emptyVoiceDoesNotTriggerUnknownFallback/.test(extension) && /brainIconOpensMasterHubOnly/.test(extension) && /aqua-master-brain-hub-v63pd/.test(extension), { layer: 'askai-restored-design-v63pd', fileToFix: EXTENSION });
   addCheck('v63I live entry repair namespace exists', /window\.AquaLiveEntryRepairV63I/.test(extension) && /function\s+runAquaLiveEntryRepairCheckV63I/.test(extension) && /function\s+renderAquaLiveEntryRepairPanelV63I/.test(extension) && /Aqua Brain Live Entry Repair — v63I/.test(extension), { layer: 'live-entry-repair-v63i', fileToFix: EXTENSION });
