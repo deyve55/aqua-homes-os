@@ -87,7 +87,8 @@ function trackedTextFiles() {
 }
 
 function filesWithConflictMarkers() {
-  const conflictPattern = /^(<<<<<<<|=======|>>>>>>>|«««««««|»»»»»»»)/m;
+  const conflictMarkers = ['<', '=', '>', '«', '»'].map((char) => `${char}{7}`);
+  const conflictPattern = new RegExp(`^(${conflictMarkers.join('|')})`, 'm');
   return trackedTextFiles().filter((file) => conflictPattern.test(readFileSafe(file)));
 }
 
