@@ -72,6 +72,24 @@ function fileExists(file) {
   return fs.existsSync(rel(file));
 }
 
+function extractFunctionSource(source, functionName) {
+  const signature = new RegExp(`function\\s+${functionName}\\s*\\(`);
+  const match = signature.exec(source);
+  if (!match) return '';
+  const bodyStart = source.indexOf('{', match.index);
+  if (bodyStart < 0) return '';
+  let depth = 0;
+  for (let index = bodyStart; index < source.length; index += 1) {
+    const char = source[index];
+    if (char === '{') depth += 1;
+    if (char === '}') {
+      depth -= 1;
+      if (depth === 0) return source.slice(match.index, index + 1);
+    }
+  }
+  return '';
+}
+
 function trackedTextFiles() {
   return runGit(['ls-files'], '').split('\n').map((name) => name.trim()).filter(Boolean).filter((name) => {
     const filePath = rel(name);
@@ -274,6 +292,24 @@ function checkStaticFiles() {
   } catch (error) {
     addCheck(`no syntax errors in ${EXTENSION}`, false, { layer: 'static-file-safety', actual: String(error.stderr || error.message), fileToFix: EXTENSION });
   }
+  const mainAskAITriggerSource = extractFunctionSource(extension, 'isMainAskAITriggerV61D');
+  const voicePortalRouteSource = extractFunctionSource(extension, 'routeAquaVoicePortalCommandV63L');
+  const architectureGuardSource = extractFunctionSource(extension, 'enforceAquaArchitectureCore');
+  addCheck('architecture core: isMainAskAITriggerV61D source exists', mainAskAITriggerSource.length > 0, { layer: 'architecture-core-routing-loop', fileToFix: EXTENSION });
+  addCheck('architecture core: isMainAskAITriggerV61D does not contain brainHit', mainAskAITriggerSource.length > 0 && !/brainHit/.test(mainAskAITriggerSource), { layer: 'architecture-core-routing-loop', fileToFix: EXTENSION });
+  addCheck('architecture core: isMainAskAITriggerV61D does not contain logoWrap', mainAskAITriggerSource.length > 0 && !/logoWrap/.test(mainAskAITriggerSource), { layer: 'architecture-core-routing-loop', fileToFix: EXTENSION });
+  addCheck('architecture core: isMainAskAITriggerV61D still recognizes Ask Aqua AI / Ask AI', mainAskAITriggerSource.includes('Ask Aqua AI|Ask AI') && mainAskAITriggerSource.includes('heroRight') && mainAskAITriggerSource.includes('openModal') && mainAskAITriggerSource.includes('ai'), { layer: 'architecture-core-routing-loop', fileToFix: EXTENSION });
+  addCheck('architecture core: routeAquaVoicePortalCommandV63L has empty input guard', /var\s+trimmed\s*=\s*\(commandText\s*\|\|\s*''\)\.trim\(\)/.test(voicePortalRouteSource) && /if\s*\(\s*!trimmed\s*\)/.test(voicePortalRouteSource), { layer: 'architecture-core-empty-prompt', fileToFix: EXTENSION });
+  addCheck('architecture core: empty input returns canonicalIntent empty_prompt', /canonicalIntent:\s*'empty_prompt'/.test(voicePortalRouteSource), { layer: 'architecture-core-empty-prompt', fileToFix: EXTENSION });
+  addCheck('architecture core: empty input returns module Talk to Aqua', /module:\s*'Talk to Aqua'/.test(voicePortalRouteSource), { layer: 'architecture-core-empty-prompt', fileToFix: EXTENSION });
+  addCheck('architecture core: empty input does not return Unknown command fallback', voicePortalRouteSource.slice(0, voicePortalRouteSource.indexOf('runNormalizedAquaCommandV61E')).indexOf("Unknown command fallback") === -1, { layer: 'architecture-core-empty-prompt', fileToFix: EXTENSION });
+  addCheck('architecture core: empty input guard runs before old routing', voicePortalRouteSource.indexOf('if (!trimmed)') > -1 && voicePortalRouteSource.indexOf('if (!trimmed)') < voicePortalRouteSource.indexOf('runNormalizedAquaCommandV61E'), { layer: 'architecture-core-empty-prompt', fileToFix: EXTENSION });
+  addCheck('architecture core: enforceAquaArchitectureCore exists', architectureGuardSource.length > 0, { layer: 'architecture-core-guard', fileToFix: EXTENSION });
+  addCheck('architecture core: AquaArchitectureCoreGuard exists', /window\.AquaArchitectureCoreGuard/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });
+  addCheck('architecture core: openBrainHubAuthoritative exists', /function\s+openBrainHubAuthoritative/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });
+  addCheck('architecture core: openAskAIAuthoritative exists', /function\s+openAskAIAuthoritative/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });
+  addCheck('architecture core: stopImmediatePropagation is used in Brain click guard', /stopImmediatePropagation/.test(architectureGuardSource) && /document\.addEventListener\("click"[\s\S]*callStop\(event\)/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });
+  addCheck('architecture core: Brain route and AskAI route are separate', /key === "ai"[\s\S]*openAskAIAuthoritative/.test(architectureGuardSource) && /key === "brainhub" \|\| key === "brain"[\s\S]*openBrainHubAuthoritative/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });
   addCheck('v61R speech readback function exists', /function\s+speakAquaSummaryV61R/.test(extension) && /speechSynthesis/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
   addCheck('v61R Speak Summary button exists', /Speak Summary/.test(extension) && /data-aqua-v61r-speak-summary/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
   addCheck('v61R Stop Speaking button exists', /Stop Speaking/.test(extension) && /data-aqua-v61r-stop-speaking/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });

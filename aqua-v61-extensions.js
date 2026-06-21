@@ -5021,6 +5021,22 @@
   }
 
   function routeAquaVoicePortalCommandV63L(commandText) {
+    var trimmed = (commandText || '').trim();
+    if (!trimmed) {
+      return {
+        version: 'v63L',
+        commandText: '',
+        normalizedCommand: '',
+        canonicalIntent: 'empty_prompt',
+        renderedFallback: false,
+        module: 'Talk to Aqua',
+        uiAction: 'show_catch_phrase',
+        message: "I didn't catch that. Try again or type instead.",
+        noLiveAction: true,
+        backendLocked: true
+      };
+    }
+
     var host = document.createElement('div');
     var routed = runNormalizedAquaCommandV61E(commandText, host);
     var html = host.innerHTML || (routed && routed.html) || '';
@@ -11545,7 +11561,11 @@
     while (node && node !== document.body) {
       var onclick = node.getAttribute && node.getAttribute('onclick');
       var text = node.textContent || '';
-      if (onclick && /openModal\(['"]ai['"]\)/.test(onclick) && (/Ask Aqua AI|Ask AI/i.test(text) || /heroRight|brainHit|logoWrap/.test(node.className || ''))) return true;
+      if (
+        onclick &&
+        /openModal\(['"]ai['"]\)/.test(onclick) &&
+        (/Ask Aqua AI|Ask AI/i.test(text) || /heroRight/.test(node.className || ''))
+      ) return true;
       node = node.parentElement;
     }
     return false;
@@ -14788,3 +14808,130 @@
   installPremiumModuleShellStylesV63A();
   console.log('Aqua Homes OS v63P-F Step 11 aqua-master-hub-clickable-step11 extensions loaded: restored AskAI previous accepted design, Aqua Homes mark, empty voice guard, and Main Brain Master Hub route active. Home untouched. Backend locked. No live AI, upload, export, audio storage, or record change.');
 }());
+
+(function enforceAquaArchitectureCore() {
+  "use strict";
+
+  function callStop(event) {
+    if (!event) return;
+    if (event.cancelable) event.preventDefault();
+    if (typeof event.stopImmediatePropagation === "function") {
+      event.stopImmediatePropagation();
+    } else if (typeof event.stopPropagation === "function") {
+      event.stopPropagation();
+    }
+  }
+
+  function isBrainEntry(target) {
+    return Boolean(
+      target &&
+      target.closest &&
+      target.closest(".brainHit, .logoWrap")
+    );
+  }
+
+  function purgeLegacyBindings() {
+    if (!document || !document.querySelectorAll) return;
+
+    var brainElements = document.querySelectorAll(".brainHit, .logoWrap");
+    brainElements.forEach(function purgeBrainInlineHandler(el) {
+      if (el && el.getAttribute && el.getAttribute("onclick")) {
+        el.removeAttribute("onclick");
+      }
+    });
+  }
+
+  function openBrainHubAuthoritative() {
+    if (typeof openAquaFullBrainCommandCenterV63L === "function") {
+      return openAquaFullBrainCommandCenterV63L();
+    }
+
+    if (
+      window.AquaStablePhoneRuntimeV64A &&
+      typeof window.AquaStablePhoneRuntimeV64A.openBrainHub === "function"
+    ) {
+      return window.AquaStablePhoneRuntimeV64A.openBrainHub();
+    }
+
+    if (
+      window.AquaBrainRoutes &&
+      typeof window.AquaBrainRoutes.open === "function"
+    ) {
+      return window.AquaBrainRoutes.open("brainhub", {
+        source: "Aqua architecture core guard",
+        title: "Aqua Brain Master Hub",
+        backendLocked: true,
+        noLiveChangeMade: true
+      });
+    }
+
+    return false;
+  }
+
+  function openAskAIAuthoritative() {
+    if (typeof openAquaAskAIVoicePortalV63L === "function") {
+      return openAquaAskAIVoicePortalV63L();
+    }
+
+    if (
+      window.AquaStablePhoneRuntimeV64A &&
+      typeof window.AquaStablePhoneRuntimeV64A.openAskAI === "function"
+    ) {
+      return window.AquaStablePhoneRuntimeV64A.openAskAI();
+    }
+
+    return false;
+  }
+
+  if (
+    typeof window.openModal === "function" &&
+    !window.openModal.__aquaArchitectureCoreWrapped
+  ) {
+    var structuralPriorOpenModal = window.openModal.__aquaV63LOriginal || window.openModal;
+
+    function openModalArchitectureCore(key) {
+      if (key === "ai") {
+        return openAskAIAuthoritative();
+      }
+
+      if (key === "brainhub" || key === "brain") {
+        return openBrainHubAuthoritative();
+      }
+
+      return structuralPriorOpenModal.apply(this, arguments);
+    }
+
+    openModalArchitectureCore.__aquaArchitectureCoreWrapped = true;
+    openModalArchitectureCore.__aquaArchitectureCoreOriginal = structuralPriorOpenModal;
+    window.openModal = openModalArchitectureCore;
+  }
+
+  if (document && document.addEventListener && !document.__aquaArchitectureCoreBrainGuardBound) {
+    document.addEventListener("click", function enforceBrainEntry(event) {
+      var target = event && event.target;
+
+      if (!isBrainEntry(target)) {
+        return;
+      }
+
+      callStop(event);
+      openBrainHubAuthoritative();
+    }, true);
+
+    document.__aquaArchitectureCoreBrainGuardBound = true;
+  }
+
+  if (document && document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", purgeLegacyBindings, { once: true });
+  } else {
+    purgeLegacyBindings();
+  }
+
+  window.AquaArchitectureCoreGuard = {
+    version: "v64-architecture-core-guard",
+    purgeLegacyBindings: purgeLegacyBindings,
+    openBrainHub: openBrainHubAuthoritative,
+    openAskAI: openAskAIAuthoritative,
+    isBrainEntry: isBrainEntry
+  };
+})();
