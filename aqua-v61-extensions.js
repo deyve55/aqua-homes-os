@@ -4939,6 +4939,19 @@
     safe.lastOpenedModule = String(safe.lastOpenedModule || '').slice(0, 160);
     safe.lastFallbackReason = String(safe.lastFallbackReason || '').slice(0, 180);
     safe.timestamp = String(safe.timestamp || new Date().toISOString()).slice(0, 40);
+
+    // Unknown Fallback must not persist: keep fallback/unknown routing temporary and in memory only.
+    if (safe.lastRoute === 'unknown' || safe.lastOpenedModule === 'Unknown command fallback') {
+      window.__aquaFallbackActive = true;
+      window.__aquaUnknownFallbackActive = true;
+      window.__aquaLastUnknownCommand = safe.lastHeardText || '';
+      window.__aquaLastFallbackRoute = safe.lastRoute || '';
+      window.__aquaLastFallbackReason = safe.lastFallbackReason || '';
+      safe.lastRoute = '';
+      safe.lastOpenedModule = '';
+      safe.lastFallbackReason = '';
+    }
+
     try { window.localStorage.setItem(AQUA_ASK_AI_VOICE_PORTAL_KEY_V63L, JSON.stringify(safe)); } catch (error) {}
     window.aquaAskAIVoicePortalStateV63L = safe;
     return safe;
@@ -14809,6 +14822,130 @@
   console.log('Aqua Homes OS v63P-F Step 11 aqua-master-hub-clickable-step11 extensions loaded: restored AskAI previous accepted design, Aqua Homes mark, empty voice guard, and Main Brain Master Hub route active. Home untouched. Backend locked. No live AI, upload, export, audio storage, or record change.');
 }());
 
+
+function resetAquaFallbackStateV64B(reason) {
+  "use strict";
+
+  var resetReason = reason || "manual_reset";
+
+  window.__aquaFallbackActive = false;
+  window.__aquaUnknownFallbackActive = false;
+  window.__aquaActiveFallback = false;
+  window.__aquaLastUnknownCommand = "";
+  window.__aquaLastFallbackRoute = "";
+  window.__aquaLastFallbackReason = "";
+  window.__aquaForceUnknownFallback = false;
+
+  if (window.__aquaActiveRoute && window.__aquaActiveRoute.canonicalIntent === "unknown") {
+    window.__aquaActiveRoute = null;
+  }
+
+  if (window.__aquaActiveRoute && window.__aquaActiveRoute.module === "Unknown command fallback") {
+    window.__aquaActiveRoute = null;
+  }
+
+  if (window.__aquaStableRuntimeState) {
+    window.__aquaStableRuntimeState.isFallback = false;
+    window.__aquaStableRuntimeState.fallbackActive = false;
+    window.__aquaStableRuntimeState.unknownFallbackActive = false;
+    window.__aquaStableRuntimeState.activeModule = "main";
+    window.__aquaStableRuntimeState.activeRoute = "main";
+    window.__aquaStableRuntimeState.lastUnknownCommand = "";
+    window.__aquaStableRuntimeState.lastFallbackReason = "";
+  }
+
+  if (window.AquaStablePhoneRuntimeV64A && window.AquaStablePhoneRuntimeV64A.state) {
+    window.AquaStablePhoneRuntimeV64A.state.isFallback = false;
+    window.AquaStablePhoneRuntimeV64A.state.fallbackActive = false;
+    window.AquaStablePhoneRuntimeV64A.state.unknownFallbackActive = false;
+    window.AquaStablePhoneRuntimeV64A.state.activeModule = "main";
+    window.AquaStablePhoneRuntimeV64A.state.activeRoute = "main";
+    window.AquaStablePhoneRuntimeV64A.state.lastUnknownCommand = "";
+    window.AquaStablePhoneRuntimeV64A.state.lastFallbackReason = "";
+  }
+
+  try {
+    ["localStorage", "sessionStorage"].forEach(function clearStorage(storageName) {
+      var storage = window[storageName];
+      if (!storage) return;
+
+      var keysToRemove = [];
+
+      for (var i = 0; i < storage.length; i += 1) {
+        var key = storage.key(i);
+        if (!key) continue;
+
+        var lowerKey = String(key).toLowerCase();
+
+        var lowerValue = "";
+        try {
+          lowerValue = String(storage.getItem(key) || "").toLowerCase();
+        } catch (error) {
+          lowerValue = "";
+        }
+
+        if (
+          lowerKey.indexOf("aqua") !== -1 &&
+          (
+            lowerKey.indexOf("fallback") !== -1 ||
+            lowerKey.indexOf("unknown") !== -1 ||
+            lowerKey.indexOf("errorroute") !== -1 ||
+            lowerKey.indexOf("activeroute") !== -1 ||
+            lowerKey.indexOf("activemodule") !== -1 ||
+            lowerKey.indexOf("lastcommand") !== -1 ||
+            lowerValue.indexOf("unknown command fallback") !== -1 ||
+            lowerValue.indexOf('"lastroute":"unknown"') !== -1 ||
+            lowerValue.indexOf('"lastopenedmodule":"unknown') !== -1
+          )
+        ) {
+          keysToRemove.push(key);
+        }
+      }
+
+      keysToRemove.forEach(function removeAquaFallbackKey(key) {
+        storage.removeItem(key);
+      });
+    });
+  } catch (error) {
+    // Storage cleanup must never break navigation.
+  }
+
+  if (document && document.body) {
+    document.body.classList.remove(
+      "aqua-unknown-fallback-active",
+      "aqua-fallback-active",
+      "unknown-fallback-active",
+      "fallback-active"
+    );
+
+    document.body.removeAttribute("data-aqua-fallback");
+    document.body.removeAttribute("data-aqua-unknown");
+    document.body.removeAttribute("data-aqua-error-route");
+
+    if (document.body.getAttribute("data-aqua-active-route") === "unknown") {
+      document.body.removeAttribute("data-aqua-active-route");
+    }
+  }
+
+  try {
+    window.dispatchEvent(new CustomEvent("aqua:fallback-state-reset", {
+      detail: {
+        reason: resetReason,
+        activeModule: "main",
+        activeRoute: "main",
+        fallbackActive: false,
+        noLiveChangeMade: true
+      }
+    }));
+  } catch (error) {
+    // Safe no-op.
+  }
+
+  return true;
+}
+
+window.resetAquaFallbackStateV64B = resetAquaFallbackStateV64B;
+
 (function enforceAquaArchitectureCore() {
   "use strict";
 
@@ -14842,6 +14979,8 @@
   }
 
   function openBrainHubAuthoritative() {
+    resetAquaFallbackStateV64B("brain_icon_open_master_hub");
+
     if (typeof openAquaFullBrainCommandCenterV63L === "function") {
       return openAquaFullBrainCommandCenterV63L();
     }
@@ -14869,6 +15008,8 @@
   }
 
   function openAskAIAuthoritative() {
+    resetAquaFallbackStateV64B("askai_open_talk_to_aqua");
+
     if (typeof openAquaAskAIVoicePortalV63L === "function") {
       return openAquaAskAIVoicePortalV63L();
     }
@@ -14933,5 +15074,64 @@
     openBrainHub: openBrainHubAuthoritative,
     openAskAI: openAskAIAuthoritative,
     isBrainEntry: isBrainEntry
+  };
+})();
+
+(function enforceAquaFallbackExitResetV64B() {
+  "use strict";
+
+  function isFallbackOrAskAICloseBack(target) {
+    if (!target || !target.closest) return false;
+
+    var closeLike = target.closest(
+      "[data-aqua-close], [data-aqua-back], [data-close], [data-back], .aqua-close, .aqua-back, .close, .back, button"
+    );
+
+    if (!closeLike) return false;
+
+    var text = (closeLike.textContent || "").toLowerCase().trim();
+    var label = (
+      closeLike.getAttribute("aria-label") ||
+      closeLike.getAttribute("title") ||
+      closeLike.getAttribute("data-action") ||
+      ""
+    ).toLowerCase();
+
+    var saysCloseBack =
+      text === "close" ||
+      text === "back" ||
+      text.indexOf("close") !== -1 ||
+      text.indexOf("back") !== -1 ||
+      text.indexOf("exit") !== -1 ||
+      text.indexOf("done") !== -1 ||
+      label.indexOf("close") !== -1 ||
+      label.indexOf("back") !== -1 ||
+      label.indexOf("exit") !== -1;
+
+    if (!saysCloseBack) return false;
+
+    return Boolean(
+      target.closest(
+        "#aquaAskAIOverlay, #aquaVoicePortal, #aquaUnknownFallback, .aqua-voice-portal, .talk-to-aqua, .unknown-fallback, .aqua-fallback, [data-aqua-askai], [data-aqua-fallback]"
+      )
+    );
+  }
+
+  if (document && document.addEventListener && !document.__aquaFallbackExitResetV64BBound) {
+    document.addEventListener("click", function resetFallbackOnCloseBack(event) {
+      if (!isFallbackOrAskAICloseBack(event.target)) {
+        return;
+      }
+
+      resetAquaFallbackStateV64B("close_back_exit_reset");
+    }, true);
+
+    document.__aquaFallbackExitResetV64BBound = true;
+  }
+
+  window.AquaFallbackExitResetV64B = {
+    version: "v64b-fallback-exit-reset",
+    isFallbackOrAskAICloseBack: isFallbackOrAskAICloseBack,
+    reset: resetAquaFallbackStateV64B
   };
 })();

@@ -310,6 +310,34 @@ function checkStaticFiles() {
   addCheck('architecture core: openAskAIAuthoritative exists', /function\s+openAskAIAuthoritative/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });
   addCheck('architecture core: stopImmediatePropagation is used in Brain click guard', /stopImmediatePropagation/.test(architectureGuardSource) && /document\.addEventListener\("click"[\s\S]*callStop\(event\)/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });
   addCheck('architecture core: Brain route and AskAI route are separate', /key === "ai"[\s\S]*openAskAIAuthoritative/.test(architectureGuardSource) && /key === "brainhub" \|\| key === "brain"[\s\S]*openBrainHubAuthoritative/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });
+  const fallbackResetSourceV64B = extractFunctionSource(extension, 'resetAquaFallbackStateV64B');
+  const brainAuthoritativeSourceV64B = extractFunctionSource(extension, 'openBrainHubAuthoritative');
+  const askAuthoritativeSourceV64B = extractFunctionSource(extension, 'openAskAIAuthoritative');
+  const voiceEmptyGuardSourceV64B = voicePortalRouteSource.slice(0, voicePortalRouteSource.indexOf('var host = document.createElement'));
+  const askVoiceSaveSourceV64B = extractFunctionSource(extension, 'saveAquaAskAIVoicePortalStateV63L');
+  const brainResetIndexV64B = brainAuthoritativeSourceV64B.indexOf('resetAquaFallbackStateV64B("brain_icon_open_master_hub")');
+  const brainFirstRouteIndexV64B = Math.min.apply(null, [
+    brainAuthoritativeSourceV64B.indexOf('openAquaFullBrainCommandCenterV63L'),
+    brainAuthoritativeSourceV64B.indexOf('AquaStablePhoneRuntimeV64A'),
+    brainAuthoritativeSourceV64B.indexOf('AquaBrainRoutes')
+  ].filter(function (index) { return index > -1; }));
+  const askResetIndexV64B = askAuthoritativeSourceV64B.indexOf('resetAquaFallbackStateV64B("askai_open_talk_to_aqua")');
+  const askFirstRouteIndexV64B = Math.min.apply(null, [
+    askAuthoritativeSourceV64B.indexOf('openAquaAskAIVoicePortalV63L'),
+    askAuthoritativeSourceV64B.indexOf('AquaStablePhoneRuntimeV64A')
+  ].filter(function (index) { return index > -1; }));
+  addCheck('v64B fallback reset helper exists', fallbackResetSourceV64B.length > 0, { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B fallback reset clears active fallback flags', /__aquaFallbackActive\s*=\s*false/.test(fallbackResetSourceV64B) && /__aquaUnknownFallbackActive\s*=\s*false/.test(fallbackResetSourceV64B) && /__aquaActiveFallback\s*=\s*false/.test(fallbackResetSourceV64B), { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B fallback reset clears Unknown command state', /__aquaLastUnknownCommand\s*=\s*""/.test(fallbackResetSourceV64B) && /canonicalIntent === "unknown"/.test(fallbackResetSourceV64B) && /Unknown command fallback/.test(fallbackResetSourceV64B), { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B Brain open resets fallback before opening Master Hub', brainResetIndexV64B > -1 && brainResetIndexV64B < brainFirstRouteIndexV64B, { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B AskAI open resets fallback before opening Talk to Aqua', askResetIndexV64B > -1 && askResetIndexV64B < askFirstRouteIndexV64B, { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B close/back reset guard exists', /function\s+enforceAquaFallbackExitResetV64B|enforceAquaFallbackExitResetV64B/.test(extension) && /close_back_exit_reset/.test(extension) && /AquaFallbackExitResetV64B/.test(extension), { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B Unknown Fallback is not persisted to storage', /Unknown Fallback must not persist/.test(askVoiceSaveSourceV64B) && /safe\.lastRoute\s*=\s*''/.test(askVoiceSaveSourceV64B) && /safe\.lastOpenedModule\s*=\s*''/.test(askVoiceSaveSourceV64B), { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B empty AskAI input returns canonicalIntent empty_prompt', /canonicalIntent:\s*'empty_prompt'/.test(voiceEmptyGuardSourceV64B), { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B empty AskAI input returns module Talk to Aqua', /module:\s*'Talk to Aqua'/.test(voiceEmptyGuardSourceV64B), { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B empty AskAI input does not return Unknown Fallback', !/Unknown command fallback/.test(voiceEmptyGuardSourceV64B) && /renderedFallback:\s*false/.test(voiceEmptyGuardSourceV64B), { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B banana test can still route to Unknown Fallback', /banana test/.test(extension) && /canonicalIntent === 'unknown'/.test(extension) && /Unknown command fallback/.test(extension), { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
+  addCheck('v64B Brain route and AskAI route remain separate', /key === "ai"[\s\S]*openAskAIAuthoritative/.test(architectureGuardSource) && /key === "brainhub" \|\| key === "brain"[\s\S]*openBrainHubAuthoritative/.test(architectureGuardSource), { layer: 'fallback-persistence-v64b', fileToFix: EXTENSION });
   addCheck('v61R speech readback function exists', /function\s+speakAquaSummaryV61R/.test(extension) && /speechSynthesis/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
   addCheck('v61R Speak Summary button exists', /Speak Summary/.test(extension) && /data-aqua-v61r-speak-summary/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
   addCheck('v61R Stop Speaking button exists', /Stop Speaking/.test(extension) && /data-aqua-v61r-stop-speaking/.test(extension), { layer: 'spoken-readback-v61r', fileToFix: EXTENSION });
