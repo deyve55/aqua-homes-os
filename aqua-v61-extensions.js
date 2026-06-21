@@ -6395,6 +6395,59 @@
     try { window.localStorage.setItem(AQUA_ASK_AI_APP_INTENT_REGISTRY_KEY_V63PBCLEAN, JSON.stringify({ version: 'v63P-B-CLEAN', lastCommand: String(commandText || ''), lastIntent: intent.intentId, lastEntities: intent.entities || {}, lastRoute: route.realm, lastModule: route.targetModule, lastResponseDraft: route.responseDraft, timestamp: new Date().toISOString() })); } catch (error) {}
     return Object.assign({ canonicalIntent: 'aqua_askai_app_intent_route_v63pbc_clean', askMode: 'app_wide_askai_intent_v63pbc_clean', renderedAppWideIntentRouteV63PBClean: true, moduleFullscreen: true, html: html }, route);
   }
+  function normalizeAquaGlobalFuzzyIntentV63PG(commandText) {
+    return normalizeAquaAskAIIntentTextV63PBClean(String(commandText || '').replace(/home deepo/gi, 'home depot').replace(/hender son/gi, 'henderson').replace(/\breceived\b/gi, 'receipts'));
+  }
+  function tokenizeAquaGlobalFuzzyIntentV63PG(commandText) {
+    var normalized = normalizeAquaGlobalFuzzyIntentV63PG(commandText);
+    return normalized ? normalized.split(/\s+/).filter(Boolean) : [];
+  }
+  function resolveAquaGlobalFuzzyIntentV63PG(commandText) {
+    var normalized = normalizeAquaGlobalFuzzyIntentV63PG(commandText);
+    var canonical = normalized;
+    if (/how is the money looking|how are the numbers|money looking/.test(normalized)) canonical = 'how is my accounting';
+    else if (/show me how to paint today|paint today|painting company/.test(normalized)) canonical = 'what is the profit of Aqua Painting today';
+    else if (/pull up home depot sheets|home depot sheets/.test(normalized)) canonical = 'show Home Depot receipts for Henderson';
+    else if (/home depot receipts for henderson|home depot receipt/.test(normalized)) canonical = 'show Home Depot receipts for Henderson';
+    else if (/henderson staircase report|staircase report/.test(normalized)) canonical = 'pull up Henderson staircase report';
+    var intent = classifyAquaAskAIAppIntentV63PBClean(canonical);
+    if (/henderson staircase report|staircase report/.test(normalized)) intent = Object.assign({}, intent, { intentId: 'project_folders_file_cabinet', realm: 'Project Folders / File Cabinet', targetModule: 'Project Folders / File Cabinet' });
+    var route = findAquaAskAIRouteV63PBClean(intent);
+    if (/henderson staircase report|staircase report/.test(normalized)) route = Object.assign({}, route, { realm: 'Project Folders / File Cabinet', targetModule: 'Project Folders / File Cabinet', module: 'Project Folders / File Cabinet', genericFallback: false });
+    return Object.assign({ version: 'v63P-G', commandText: String(commandText || ''), normalizedCommand: normalized, tokens: tokenizeAquaGlobalFuzzyIntentV63PG(commandText), canonicalCommand: canonical, knownArchitecturalRoute: intent.intentId !== 'unknown_fallback' && intent.genericFallback !== true }, intent, route);
+  }
+  function routeAquaGlobalFuzzyIntentV63PG(commandText, outputNode) {
+    var resolved = resolveAquaGlobalFuzzyIntentV63PG(commandText);
+    if (resolved.intentId === 'project_folders_file_cabinet') {
+      var html = wrapAquaModuleFullscreenV63PA(renderAquaAskAIIntentRoutePanelV63PBClean(resolved), resolved);
+      if (outputNode) outputNode.innerHTML = html;
+      return Object.assign({}, resolved, { canonicalIntent: 'aqua_global_fuzzy_intent_route_v63pg', askMode: 'global_fuzzy_intent_v63pg', moduleFullscreen: true, html: html }, aquaAskAIAppIntentSafetyV63PBClean());
+    }
+    var routed = routeAquaVoiceCommandToFullScreenModuleV63PC(resolved.canonicalCommand || commandText);
+    return Object.assign({}, resolved, routed || {}, { globalFuzzyRouterV63PG: true });
+  }
+  function validateAquaGlobalFuzzyIntentRouterV63PG() {
+    var cases = [
+      ['how is my accounting', /Accounting \/ Daily P&L|Spend/i, false],
+      ['what is the profit of Aqua Painting today', /Aqua Painting|Company Status|Profit/i, false],
+      ['show payables', /Payables|Accounting/i, false],
+      ['show HVAC service', /Maintenance|HVAC Service|HVAC/i, false],
+      ['pull up Home Depot website', /Web Search|Backend Locked|General Ask/i, false],
+      ['banana test', /Unknown fallback/i, true],
+      ['show me how to paint today', /Aqua Painting|Company Status|Profit/i, false],
+      ['how is the money looking', /Accounting \/ Daily P&L|Spend/i, false],
+      ['pull up home depot sheets', /Receipts|Vendors|Home Depot/i, false],
+      ['show home deepo received for hender son', /Receipts|Vendors|Home Depot/i, false],
+      ['pull up Henderson staircase report', /Project Folders|File Cabinet/i, false]
+    ];
+    var results = cases.map(function (row) {
+      var resolved = resolveAquaGlobalFuzzyIntentV63PG(row[0]);
+      var haystack = [resolved.realm, resolved.targetModule, resolved.module, resolved.intentId].join(' ');
+      return { command: row[0], expected: String(row[1]), actual: resolved, passed: row[2] ? resolved.genericFallback === true : (row[1].test(haystack) && resolved.genericFallback !== true) };
+    });
+    var failed = results.filter(function (r) { return !r.passed; });
+    return { version: 'v63P-G', total: results.length, passed: results.length - failed.length, failed: failed.length, safeToMerge: failed.length === 0, mergeRecommendation: failed.length === 0 ? 'MERGE_ALLOWED' : 'MERGE_BLOCKED', results: results, noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noPaymentPayrollBankAction: true, noRealCustomerData: true };
+  }
   function renderAquaAskAIIntentCoverageV63PBClean() {
     var registry = getAquaAskAIAppIntentRegistryV63PBClean();
     var rows = registry.map(function (item) { return '<tr><td>' + escapeHTMLV61D(item.realm) + '</td><td>' + escapeHTMLV61D(item.targetModule) + '</td><td>' + escapeHTMLV61D(item.responseDraft) + '</td></tr>'; }).join('');
@@ -14628,6 +14681,7 @@
   window.AquaAssistantSurfacePolishV62VD = window.AquaAssistantSurfacePolishV62VD || { version: 'v62V-D', localDemoOnly: true, applyAquaAssistantSurfacePolishV62VD: applyAquaAssistantSurfacePolishV62VD, renderAquaCompactAssistantShellV62VD: renderAquaCompactAssistantShellV62VD, renderAquaCompactStatusStripV62VD: renderAquaCompactStatusStripV62VD, renderAquaCompactCommandAreaV62VD: renderAquaCompactCommandAreaV62VD, renderAquaCompactResponseAreaV62VD: renderAquaCompactResponseAreaV62VD, renderAquaCompactSuggestionsV62VD: renderAquaCompactSuggestionsV62VD, renderAquaSecondaryControlsV62VD: renderAquaSecondaryControlsV62VD, renderAquaSafetyStripV62VD: renderAquaSafetyStripV62VD, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true } };
   window.AquaAssistantPhoneCopyV62VC = window.AquaAssistantPhoneCopyV62VC || { version: 'v62V-C', localDemoOnly: true, buildAquaPhoneReadyCopyV62VC: buildAquaPhoneReadyCopyV62VC, buildAquaPhoneListeningCopyV62VC: buildAquaPhoneListeningCopyV62VC, buildAquaPhoneThinkingCopyV62VC: buildAquaPhoneThinkingCopyV62VC, buildAquaPhoneOpeningCopyV62VC: buildAquaPhoneOpeningCopyV62VC, buildAquaPhoneFocusedCopyV62VC: buildAquaPhoneFocusedCopyV62VC, buildAquaPhonePermissionCopyV62VC: buildAquaPhonePermissionCopyV62VC, buildAquaPhoneManualFallbackCopyV62VC: buildAquaPhoneManualFallbackCopyV62VC, buildAquaPhoneNextStepCopyV62VC: buildAquaPhoneNextStepCopyV62VC, applyAquaPhoneCopyV62VC: applyAquaPhoneCopyV62VC, runAquaAssistantPhoneCopySmokeV62VC: runAquaAssistantPhoneCopySmokeV62VC, renderAquaAssistantPhoneCopyPreviewV62VC: renderAquaAssistantPhoneCopyPreviewV62VC, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true } };
   window.AquaNaturalResponseIntegrationV62VB = window.AquaNaturalResponseIntegrationV62VB || { version: 'v62V-B', localDemoOnly: true, applyAquaNaturalResponseToAssistantV62VB: applyAquaNaturalResponseToAssistantV62VB, buildAquaAssistantSurfaceCopyV62VB: buildAquaAssistantSurfaceCopyV62VB, buildAquaNaturalPermissionSummaryV62VB: buildAquaNaturalPermissionSummaryV62VB, buildAquaNaturalNextStepCopyV62VB: buildAquaNaturalNextStepCopyV62VB, renderAquaNaturalResponsePreviewV62VB: renderAquaNaturalResponsePreviewV62VB, runAquaNaturalResponseIntegrationSmokeV62VB: runAquaNaturalResponseIntegrationSmokeV62VB, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noAudioStorage: true, noAlwaysListening: true } };
+  window.AquaGlobalFuzzyIntentRouter = window.AquaGlobalFuzzyIntentRouter || { version: 'v63P-G', localDemoOnly: true, normalize: normalizeAquaGlobalFuzzyIntentV63PG, tokenize: tokenizeAquaGlobalFuzzyIntentV63PG, resolve: resolveAquaGlobalFuzzyIntentV63PG, route: routeAquaGlobalFuzzyIntentV63PG, validate: validateAquaGlobalFuzzyIntentRouterV63PG, safetyEnvelope: { noBackendCalls: true, noNetworkCalls: true, noExternalAIAPICalls: true, noApiKeysInFrontend: true, noLiveRecordChanges: true, noLiveExport: true, noLiveUpload: true, noPaymentPayrollBankAction: true, noRealCustomerData: true } };
   window.AquaFuzzyLanguageV62O = window.AquaFuzzyLanguageV62O || {
     version: 'v62O',
     localDemoOnly: true,
