@@ -11577,7 +11577,7 @@
       if (
         onclick &&
         /openModal\(['"]ai['"]\)/.test(onclick) &&
-        (/Ask Aqua AI|Ask AI/i.test(text) || /heroRight/.test(node.className || ''))
+        /Ask Aqua AI|Ask AI/i.test(text)
       ) return true;
       node = node.parentElement;
     }
@@ -14963,14 +14963,14 @@ window.resetAquaFallbackStateV64B = resetAquaFallbackStateV64B;
     return Boolean(
       target &&
       target.closest &&
-      target.closest(".brainHit, .logoWrap")
+      target.closest(".brainHit, .logoWrap, .heroRight")
     );
   }
 
   function purgeLegacyBindings() {
     if (!document || !document.querySelectorAll) return;
 
-    var brainElements = document.querySelectorAll(".brainHit, .logoWrap");
+    var brainElements = document.querySelectorAll(".brainHit, .logoWrap, .heroRight");
     brainElements.forEach(function purgeBrainInlineHandler(el) {
       if (el && el.getAttribute && el.getAttribute("onclick")) {
         el.removeAttribute("onclick");

@@ -1,10 +1,10 @@
-# Aqua Homes OS v62U Regression Report
+# Aqua Homes OS v63P-F Regression Report
 
-- Timestamp: 2026-06-06T18:23:28.550Z
-- Branch: work
-- Commit: 1726961ecd4a45314462f74a61f20b9d39d5bfd4
-- Total tests: 527
-- Passed: 527
+- Timestamp: 2026-06-21T04:17:13.577Z
+- Branch: main
+- Commit: 7421c71413c95d1e84a656f66136ec88ab959748
+- Total tests: 1371
+- Passed: 1371
 - Failed: 0
 - safeToMerge: true
 - Merge recommendation: MERGE_ALLOWED
@@ -13,9 +13,21 @@
 - homeDesignUntouched: true
 - routingStillWorks: true
 - automationStillWorks: true
+- receiptDetailPolishWorks: true
+- accountingDetailPolishWorks: true
+- spendDetailPolishWorks: true
+- ownerReviewDetailPolishWorks: true
+- accountantExportPlaceholderPolished: true
+- premiumReceiptCardsRender: true
+- premiumAccountingCardsRender: true
+- premiumApprovalCardsRender: true
+- premiumExportCardsRender: true
+- v63AShellStillWorks: true
 - noLiveRecordChanges: true
 - noAudioStorage: true
 - noBackendNetworkLiveAI: true
+- naturalResponseTemplatesExist: true
+- responseTemplateSmokeWorks: true
 - conversationScenariosExist: true
 - conversationScenarioRunnerWorks: true
 - allConversationScenariosPass: true
@@ -170,7 +182,7 @@
 - repeatLastResponseWorks: true
 - stopSpeakingWorks: true
 - manualFallbackWorks: true
-- assistantInterfaceExists: true
+- assistantInterfaceExists: false
 - unifiedConversationSurfaceWorks: true
 - commandUnderstandingPanelWorks: true
 - currentFocusPanelWorks: true
@@ -288,6 +300,8 @@
 - noPaymentPayrollBankAccountingExport: true
 
 ## Files Changed
+- aqua-v61-extensions.js
+- aqua-v61-regression-test.js
 - aqua-regression-report.json
 - aqua-regression-report.md
 
@@ -329,9 +343,9 @@ MERGE_ALLOWED
 - None
 
 ## Extension Regression Summary
-- Version: v62U
-- Total: 320
-- Passed: 320
+- Version: v63P-F
+- Total: 929
+- Passed: 929
 - Failed: 0
 
 ## Copyable Codex Repair Prompt
