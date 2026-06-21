@@ -1,0 +1,92 @@
+name: Temporary HeroRight Repair Autopatch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/hero-right-repair-autopatch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Patch heroRight routing and regression checks
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          ext_path = Path('aqua-v61-extensions.js')
+          test_path = Path('aqua-v61-regression-test.js')
+
+          ext = ext_path.read_text(encoding='utf-8')
+          old_trigger = "(/Ask Aqua AI|Ask AI/i.test(text) || /heroRight/.test(node.className || ''))"
+          new_trigger = "/Ask Aqua AI|Ask AI/i.test(text)"
+          if old_trigger not in ext:
+              raise SystemExit('Expected legacy .heroRight AskAI trigger not found')
+          ext = ext.replace(old_trigger, new_trigger, 1)
+
+          old_guard = 'target.closest(".brainHit, .logoWrap")'
+          new_guard = 'target.closest(".brainHit, .logoWrap, .heroRight")'
+          if old_guard not in ext:
+              raise SystemExit('Expected authoritative brain guard selector not found')
+          ext = ext.replace(old_guard, new_guard, 1)
+
+          old_purge = 'document.querySelectorAll(".brainHit, .logoWrap")'
+          new_purge = 'document.querySelectorAll(".brainHit, .logoWrap, .heroRight")'
+          if old_purge not in ext:
+              raise SystemExit('Expected purgeLegacyBindings selector not found')
+          ext = ext.replace(old_purge, new_purge, 1)
+
+          if "(/Ask Aqua AI|Ask AI/i.test(text) || /heroRight/.test" in ext:
+              raise SystemExit('Legacy .heroRight AskAI trigger still present after patch')
+          if 'target.closest(".brainHit, .logoWrap, .heroRight")' not in ext:
+              raise SystemExit('Authoritative .heroRight brain guard missing after patch')
+          if 'document.querySelectorAll(".brainHit, .logoWrap, .heroRight")' not in ext:
+              raise SystemExit('Legacy binding purge does not include .heroRight after patch')
+
+          ext_path.write_text(ext, encoding='utf-8')
+
+          test = test_path.read_text(encoding='utf-8')
+          old_check = "addCheck('architecture core: isMainAskAITriggerV61D still recognizes Ask Aqua AI / Ask AI', mainAskAITriggerSource.includes('Ask Aqua AI|Ask AI') && mainAskAITriggerSource.includes('heroRight') && mainAskAITriggerSource.includes('openModal') && mainAskAITriggerSource.includes('ai'), { layer: 'architecture-core-routing-loop', fileToFix: EXTENSION });"
+          new_check = "addCheck('architecture core: isMainAskAITriggerV61D still recognizes Ask Aqua AI / Ask AI without heroRight', mainAskAITriggerSource.includes('Ask Aqua AI|Ask AI') && !mainAskAITriggerSource.includes('heroRight') && mainAskAITriggerSource.includes('openModal') && mainAskAITriggerSource.includes('ai'), { layer: 'architecture-core-routing-loop', fileToFix: EXTENSION });"
+          if old_check not in test:
+              raise SystemExit('Expected legacy regression check not found')
+          test = test.replace(old_check, new_check, 1)
+
+          anchor = "addCheck('architecture core: Brain route and AskAI route are separate', /key === \"ai\"[\\s\\S]*openAskAIAuthoritative/.test(architectureGuardSource) && /key === \"brainhub\" \\|\\| key === \"brain\"[\\s\\S]*openBrainHubAuthoritative/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });"
+          insert = """\n  addCheck('architecture core: authoritative Brain guard owns heroRight', /\\.brainHit, \\.logoWrap, \\.heroRight/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });\n  addCheck('architecture core: purgeLegacyBindings strips heroRight inline handlers', /querySelectorAll\\(\"\\.brainHit, \\.logoWrap, \\.heroRight\"\\)/.test(architectureGuardSource) && /removeAttribute\\(\"onclick\"\\)/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });\n  addCheck('architecture core: heroRight Brain route resets fallback before Master Hub', /target\\.closest\\(\"\\.brainHit, \\.logoWrap, \\.heroRight\"\\)/.test(architectureGuardSource) && /callStop\\(event\\)[\\s\\S]*openBrainHubAuthoritative\\(\\)/.test(architectureGuardSource) && /resetAquaFallbackStateV64B\\(\"brain_icon_open_master_hub\"\\)/.test(architectureGuardSource), { layer: 'architecture-core-guard', fileToFix: EXTENSION });"""
+          if insert.strip() not in test:
+              if anchor not in test:
+                  raise SystemExit('Expected architecture guard anchor not found')
+              test = test.replace(anchor, anchor + insert, 1)
+
+          test_path.write_text(test, encoding='utf-8')
+          PY
+
+      - name: Run regression gate
+        shell: bash
+        run: |
+          node --check aqua-v61-extensions.js
+          node aqua-v61-regression-test.js
+          node -e "const r=require('./aqua-regression-report.json'); if (r.failed !== 0 || r.safeToMerge !== true || r.mergeRecommendation !== 'MERGE_ALLOWED') { console.error(JSON.stringify({failed:r.failed,safeToMerge:r.safeToMerge,mergeRecommendation:r.mergeRecommendation}, null, 2)); process.exit(1); } console.log(JSON.stringify({failed:r.failed,safeToMerge:r.safeToMerge,mergeRecommendation:r.mergeRecommendation}, null, 2));"
+
+      - name: Commit repair and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "Aqua Homes Automator"
+          git config user.email "actions@github.com"
+          git rm .github/workflows/hero-right-repair-autopatch.yml
+          git add aqua-v61-extensions.js aqua-v61-regression-test.js aqua-regression-report.json aqua-regression-report.md
+          git commit -m "Fix heroRight brain routing loop"
+          git push origin main
