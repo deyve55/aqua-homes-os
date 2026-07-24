@@ -36,7 +36,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        hideSystemUi();
 
         webView = new WebView(this);
         webView.setBackgroundColor(Color.BLACK);
@@ -52,6 +51,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         webView.setWebChromeClient(new WebChromeClient());
         webView.addJavascriptInterface(new AquaBridge(), "AquaBridge");
         setContentView(webView);
+        hideSystemUi();
         webView.loadUrl("file:///android_asset/public/index.html");
 
         textToSpeech = new TextToSpeech(this, this);
