@@ -1,0 +1,23 @@
+{
+  "name": "Aqua Sentient OS",
+  "short_name": "Aqua",
+  "description": "Aqua Sentient OS command center for Dave.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#01070c",
+  "theme_color": "#010b13",
+  "icons": [
+    {
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

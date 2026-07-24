@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#010b13" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Aqua Sentient OS</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./assets/icon-192.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="sentinel state-idle" id="sentinel">
+      <div class="os-surface" id="osSurface">
+        <img class="exact-layer header-layer" src="./assets/ui-header.png" alt="" />
+        <img class="exact-layer hero-layer" src="./assets/ui-hero.png" alt="" />
+
+        <button
+          class="voice-hotspot"
+          id="voiceButton"
+          aria-label="Talk to Aqua"
+          type="button"
+        ></button>
+        <div class="listening-shimmer" aria-hidden="true"></div>
+        <div class="speaking-core" aria-hidden="true"></div>
+
+        <div class="command-stage">
+          <section
+            class="command-deck"
+            id="commandDeck"
+            aria-label="Aqua command-card carousel"
+          >
+            <img class="deck-reference" src="./assets/ui-deck.png" alt="" />
+            <div id="cardLayers"></div>
+            <button
+              class="deck-arrow previous"
+              id="previousCard"
+              aria-label="Previous card"
+              type="button"
+            ></button>
+            <button
+              class="deck-arrow next"
+              id="nextCard"
+              aria-label="Next card"
+              type="button"
+            ></button>
+          </section>
+
+          <section class="intelligence-panels" aria-label="Priority intelligence">
+            <img class="exact-layer" src="./assets/ui-alerts.png" alt="" />
+            <button
+              class="panel-hotspot budget"
+              id="budgetPanel"
+              aria-label="Open budget exception"
+              type="button"
+            ></button>
+            <button
+              class="panel-hotspot risk"
+              id="riskPanel"
+              aria-label="Open schedule risk"
+              type="button"
+            ></button>
+          </section>
+        </div>
+
+        <nav class="bottom-rail" aria-label="Primary navigation">
+          <img class="exact-layer" src="./assets/ui-nav.png" alt="" />
+          <button class="active" aria-label="Home" type="button"></button>
+          <button aria-label="Messages" type="button"></button>
+          <button aria-label="Data Hub" type="button"></button>
+          <button aria-label="Settings" type="button"></button>
+          <button aria-label="Sign Out" type="button"></button>
+        </nav>
+
+        <div class="transcript" id="transcript" hidden></div>
+      </div>
+
+      <section class="detail-sheet closed" id="detailSheet" aria-label="Card details">
+        <div class="sheet-handle"></div>
+        <button class="sheet-close" id="closeSheet" aria-label="Close details" type="button">
+          ×
+        </button>
+        <p class="sheet-eyebrow" id="sheetEyebrow"></p>
+        <h1 id="sheetTitle"></h1>
+        <div class="sheet-metric">
+          <strong id="sheetMetric"></strong>
+          <span id="sheetSubmetric"></span>
+        </div>
+        <div class="detail-chart" aria-hidden="true">
+          <i style="height: 32%"></i><i style="height: 48%"></i>
+          <i style="height: 42%"></i><i style="height: 61%"></i>
+          <i style="height: 54%"></i><i style="height: 76%"></i>
+          <i style="height: 69%"></i><i style="height: 88%"></i>
+          <i style="height: 73%"></i><i style="height: 92%"></i>
+          <i style="height: 82%"></i><i style="height: 96%"></i>
+        </div>
+        <h2>Aqua Brief</h2>
+        <p class="detail-note" id="sheetNote"></p>
+        <p class="demo-note">Demonstration data · not connected to live company records</p>
+        <div class="sheet-actions">
+          <button id="askAqua" type="button">Ask Aqua</button>
+          <button id="toggleDepth" type="button">Go deeper</button>
+        </div>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

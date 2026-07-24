@@ -1,0 +1,95 @@
+name: Build Aqua Sentient OS direct APK
+
+on:
+  push:
+    branches:
+      - agent/aqua-sentient-os-direct-apk-v0.2.0-20260724
+    paths:
+      - "android-app/**"
+      - "sentient-os-web/**"
+      - ".github/workflows/aqua-sentient-os-release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aqua-sentient-os-v0.2.0
+  cancel-in-progress: false
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+
+      - name: Restore the approved straight visual layers
+        run: |
+          mkdir -p sentient-os-web/assets
+          cat sentient-os-assets/approved-ui-front-master.b64.part-* \
+            | base64 --decode > /tmp/approved-ui-front-master.png
+          if command -v magick >/dev/null 2>&1; then
+            IMAGE_TOOL=magick
+          else
+            IMAGE_TOOL=convert
+          fi
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x80+0+0 +repage sentient-os-web/assets/ui-header.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x820+0+80 +repage sentient-os-web/assets/ui-hero.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x430+0+900 +repage sentient-os-web/assets/ui-deck.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x400+0+1330 +repage sentient-os-web/assets/ui-alerts.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x82+0+1730 +repage sentient-os-web/assets/ui-nav.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 126x258+46+928 +repage sentient-os-web/assets/card-overview-front-v11.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 132x245+182+941 +repage sentient-os-web/assets/card-site-intelligence-front-v11.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 194x282+325+942 +repage sentient-os-web/assets/card-financial-command-front-v11.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 135x243+529+944 +repage sentient-os-web/assets/card-operations-front-v11.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 135x258+676+927 +repage sentient-os-web/assets/card-risk-monitor-front-v11.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x868+0+80 +repage -resize 192x192 sentient-os-web/assets/icon-192.png
+          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x868+0+80 +repage -resize 512x512 sentient-os-web/assets/icon-512.png
+          test "$(identify -format '%wx%h' /tmp/approved-ui-front-master.png)" = "868x1812"
+
+      - name: Install the approved web interface into the APK
+        run: |
+          mkdir -p android-app/app/src/main/assets/public
+          cp -R sentient-os-web/. android-app/app/src/main/assets/public/
+
+      - name: Build the test APK
+        working-directory: android-app
+        run: gradle --no-daemon :app:assembleDebug
+
+      - name: Prepare verified release files
+        run: |
+          mkdir -p release
+          cp android-app/app/build/outputs/apk/debug/app-debug.apk release/AquaSentientOS-v0.2.0-test.apk
+          sha256sum release/AquaSentientOS-v0.2.0-test.apk > release/AquaSentientOS-v0.2.0-test.apk.sha256
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AquaSentientOS-v0.2.0-test
+          path: release/*
+          if-no-files-found: error
+
+      - name: Publish direct GitHub download
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: aqua-sentient-os-v0.2.0-test
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" release/* --clobber
+          else
+            gh release create "$RELEASE_TAG" release/* \
+              --title "Aqua Sentient OS v0.2.0 Test" \
+              --notes "Self-contained Fold 7 test APK. Opens directly without ChatGPT sign-in. Includes the approved straight visual layers, responsive lower navigation, enlarged command stage, card swiping, detail views, and local voice navigation."
+          fi
