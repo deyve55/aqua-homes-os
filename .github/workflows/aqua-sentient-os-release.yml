@@ -1,4 +1,4 @@
-name: Build Aqua Sentient OS Fold 7 APK v0.2.1
+name: Build Aqua Sentient OS Fold 7 Full Installer v0.2.2
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: aqua-sentient-os-v0.2.1-fold7
+  group: aqua-sentient-os-v0.2.2-fold7-full
   cancel-in-progress: false
 
 jobs:
@@ -70,45 +70,84 @@ jobs:
           mkdir -p android-app/app/src/main/assets/public
           cp -R sentient-os-web/. android-app/app/src/main/assets/public/
 
-      - name: Build conflict-free Fold 7 test APK
+      - name: Create dedicated Aqua test release certificate
+        run: |
+          keytool -genkeypair \
+            -keystore "$RUNNER_TEMP/aqua-sentient-fold7-test.keystore" \
+            -storepass "AquaSentientTest2026" \
+            -keypass "AquaSentientTest2026" \
+            -alias "aqua-sentient-fold7-test" \
+            -keyalg RSA \
+            -keysize 3072 \
+            -validity 3650 \
+            -dname "CN=Aqua Sentient OS Fold 7 Test, OU=Aqua Homes OS, O=Aqua Homes Design Group, L=Hudson, ST=Massachusetts, C=US"
+          {
+            echo "AQUA_TEST_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentient-fold7-test.keystore"
+            echo "AQUA_TEST_KEYSTORE_PASSWORD=AquaSentientTest2026"
+            echo "AQUA_TEST_KEY_ALIAS=aqua-sentient-fold7-test"
+            echo "AQUA_TEST_KEY_PASSWORD=AquaSentientTest2026"
+          } >> "$GITHUB_ENV"
+
+      - name: Build complete release-signed base APK
         working-directory: android-app
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
+        run: gradle --no-daemon --stacktrace :app:assembleRelease
 
       - name: Verify APK with Android tools
         run: |
           BUILD_TOOLS="$ANDROID_HOME/build-tools/35.0.0"
-          APK="android-app/app/build/outputs/apk/debug/app-debug.apk"
+          APK="android-app/app/build/outputs/apk/release/app-release.apk"
           "$BUILD_TOOLS/zipalign" -c -P 16 -v 4 "$APK"
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK"
           "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/badging.txt
-          grep -q "package: name='com.aquahomes.sentientos.fold7test'" /tmp/badging.txt
-          grep -q "versionCode='2026072403'" /tmp/badging.txt
+          grep -q "package: name='com.aquahomes.sentientos.fold7full'" /tmp/badging.txt
+          grep -q "versionCode='2026072404'" /tmp/badging.txt
           grep -q "sdkVersion:'26'" /tmp/badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/badging.txt
+          unzip -l "$APK" | grep -q "assets/public/index.html"
+          unzip -l "$APK" | grep -q "assets/public/assets/ui-hero.png"
           unzip -t "$APK"
+
+      - name: Prove clean install and launch on Android
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb uninstall com.aquahomes.sentientos.fold7full || true
+            adb install android-app/app/build/outputs/apk/release/app-release.apk
+            adb shell am start -W -n com.aquahomes.sentientos.fold7full/com.aquahomes.sentientos.MainActivity
+            sleep 3
+            test -n "$(adb shell pidof com.aquahomes.sentientos.fold7full)"
+            adb shell dumpsys package com.aquahomes.sentientos.fold7full | grep -q "versionCode=2026072404"
+            adb exec-out screencap -p > /tmp/aqua-sentient-v0.2.2-launch.png
+            test -s /tmp/aqua-sentient-v0.2.2-launch.png
 
       - name: Prepare release files
         run: |
           mkdir -p release
-          cp android-app/app/build/outputs/apk/debug/app-debug.apk release/AquaSentientOS-v0.2.1-fold7-test.apk
-          sha256sum release/AquaSentientOS-v0.2.1-fold7-test.apk > release/AquaSentientOS-v0.2.1-fold7-test.apk.sha256
+          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentientOS-v0.2.2-FULL-INSTALLER.apk
+          cp /tmp/aqua-sentient-v0.2.2-launch.png release/AquaSentientOS-v0.2.2-launch-proof.png
+          sha256sum release/AquaSentientOS-v0.2.2-FULL-INSTALLER.apk > release/AquaSentientOS-v0.2.2-FULL-INSTALLER.apk.sha256
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentientOS-v0.2.1-fold7-test
+          name: AquaSentientOS-v0.2.2-FULL-INSTALLER
           path: release/*
           if-no-files-found: error
 
-      - name: Publish corrected direct GitHub download
+      - name: Publish full standalone GitHub installer
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: aqua-sentient-os-v0.2.1-fold7-test
+          RELEASE_TAG: aqua-sentient-os-v0.2.2-full-installer
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" release/* --clobber
           else
             gh release create "$RELEASE_TAG" release/* \
-              --title "Aqua Sentient OS v0.2.1 Fold 7 Test" \
-              --notes "Corrected self-contained Fold 7 test APK with conflict-free package identity. Verified with Android zipalign, apksigner, aapt manifest/SDK checks, and archive integrity checks. Opens directly without ChatGPT sign-in and preserves the approved straight visual interface."
+              --title "Aqua Sentient OS v0.2.2 Full Standalone Installer" \
+              --notes "Complete release-signed base APK. Requires no prior Aqua app. The release gate performs a clean adb install and launches Aqua on an Android 15 emulator before publication. Includes the approved straight visual interface inside the APK and does not redirect through ChatGPT."
           fi
