@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.media.AudioFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -30,6 +31,7 @@ public final class MainActivity extends Activity implements RecognitionListener 
     private SpeechRecognizer speechRecognizer;
     private TextToSpeech textToSpeech;
     private boolean ttsReady;
+    private volatile int ttsAudioFormat = AudioFormat.ENCODING_PCM_16BIT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public final class MainActivity extends Activity implements RecognitionListener 
         getWindow().setNavigationBarColor(Color.rgb(2, 7, 13));
 
         webView = new WebView(this);
+        webView.setSoundEffectsEnabled(false);
         setContentView(webView);
         configureWebView();
         configureTextToSpeech();
@@ -90,6 +93,32 @@ public final class MainActivity extends Activity implements RecognitionListener 
                                         }
 
                                         @Override
+                                        public void onBeginSynthesis(
+                                                String utteranceId,
+                                                int sampleRateInHz,
+                                                int audioFormat,
+                                                int channelCount) {
+                                            if (AQUA_UTTERANCE_ID.equals(utteranceId)) {
+                                                ttsAudioFormat = audioFormat;
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onAudioAvailable(
+                                                String utteranceId, byte[] audio) {
+                                            if (!AQUA_UTTERANCE_ID.equals(utteranceId)) {
+                                                return;
+                                            }
+                                            double energy =
+                                                    normalizedAudioEnergy(audio, ttsAudioFormat);
+                                            evaluate(
+                                                    "window.Aqua && window.Aqua.onNativeEnergy("
+                                                            + String.format(
+                                                                    Locale.US, "%.3f", energy)
+                                                            + ")");
+                                        }
+
+                                        @Override
                                         public void onRangeStart(
                                                 String utteranceId, int start, int end, int frame) {
                                             if (AQUA_UTTERANCE_ID.equals(utteranceId)) {
@@ -119,6 +148,44 @@ public final class MainActivity extends Activity implements RecognitionListener 
                                     });
                             ttsReady = true;
                         });
+    }
+
+    private static double normalizedAudioEnergy(byte[] audio, int audioFormat) {
+        if (audio == null || audio.length == 0) {
+            return 0.0;
+        }
+
+        double sumOfSquares = 0.0;
+        int sampleCount = 0;
+
+        if (audioFormat == AudioFormat.ENCODING_PCM_16BIT) {
+            for (int index = 0; index + 1 < audio.length; index += 2) {
+                short sample =
+                        (short) ((audio[index] & 0xff) | ((audio[index + 1] & 0xff) << 8));
+                double normalized = sample / 32768.0;
+                sumOfSquares += normalized * normalized;
+                sampleCount += 1;
+            }
+        } else if (audioFormat == AudioFormat.ENCODING_PCM_8BIT) {
+            for (byte value : audio) {
+                double normalized = ((value & 0xff) - 128) / 128.0;
+                sumOfSquares += normalized * normalized;
+                sampleCount += 1;
+            }
+        } else {
+            for (byte value : audio) {
+                double normalized = value / 128.0;
+                sumOfSquares += normalized * normalized;
+                sampleCount += 1;
+            }
+        }
+
+        if (sampleCount == 0) {
+            return 0.0;
+        }
+
+        double rms = Math.sqrt(sumOfSquares / sampleCount);
+        return Math.min(1.0, Math.sqrt(rms) * 1.9);
     }
 
     private void beginListening() {

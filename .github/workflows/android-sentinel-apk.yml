@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - agent/aqua-sentinel-role-demo-v63
+      - agent/aqua-sentinel-fixed-frame-v631
   pull_request:
     branches:
       - main
@@ -53,7 +54,7 @@ jobs:
         with:
           gradle-version: "8.9"
 
-      - name: Build installable role-proof APK
+      - name: Build installable fixed-frame proof APK
         working-directory: android
         run: gradle --no-daemon :app:assembleDebug
 
@@ -61,14 +62,14 @@ jobs:
         run: |
           mkdir -p dist
           cp android/app/build/outputs/apk/debug/app-debug.apk \
-            dist/Aqua-Sentinel-OS-v0.63.0-role-proof.apk
-          sha256sum dist/Aqua-Sentinel-OS-v0.63.0-role-proof.apk \
-            > dist/Aqua-Sentinel-OS-v0.63.0-role-proof.apk.sha256
+            dist/Aqua-Sentinel-OS-v0.63.1-fixed-frame.apk
+          sha256sum dist/Aqua-Sentinel-OS-v0.63.1-fixed-frame.apk \
+            > dist/Aqua-Sentinel-OS-v0.63.1-fixed-frame.apk.sha256
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Aqua-Sentinel-OS-v0.63.0-role-proof
+          name: Aqua-Sentinel-OS-v0.63.1-fixed-frame
           path: dist/*
           if-no-files-found: error
           retention-days: 30
