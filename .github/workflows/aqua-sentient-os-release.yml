@@ -35,29 +35,38 @@ jobs:
         with:
           gradle-version: "8.10.2"
 
-      - name: Restore the approved straight visual layers
+      - name: Verify the approved straight visual layers
         run: |
-          mkdir -p sentient-os-web/assets
           cat sentient-os-assets/approved-ui-front-master.b64.part-* \
             | base64 --decode > /tmp/approved-ui-front-master.png
-          if command -v magick >/dev/null 2>&1; then
-            IMAGE_TOOL=magick
-          else
-            IMAGE_TOOL=convert
-          fi
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x80+0+0 +repage sentient-os-web/assets/ui-header.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x820+0+80 +repage sentient-os-web/assets/ui-hero.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x430+0+900 +repage sentient-os-web/assets/ui-deck.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x400+0+1330 +repage sentient-os-web/assets/ui-alerts.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x82+0+1730 +repage sentient-os-web/assets/ui-nav.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 126x258+46+928 +repage sentient-os-web/assets/card-overview-front-v11.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 132x245+182+941 +repage sentient-os-web/assets/card-site-intelligence-front-v11.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 194x282+325+942 +repage sentient-os-web/assets/card-financial-command-front-v11.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 135x243+529+944 +repage sentient-os-web/assets/card-operations-front-v11.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 135x258+676+927 +repage sentient-os-web/assets/card-risk-monitor-front-v11.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x868+0+80 +repage -resize 192x192 sentient-os-web/assets/icon-192.png
-          "$IMAGE_TOOL" /tmp/approved-ui-front-master.png -crop 868x868+0+80 +repage -resize 512x512 sentient-os-web/assets/icon-512.png
-          test "$(identify -format '%wx%h' /tmp/approved-ui-front-master.png)" = "868x1812"
+          python3 - <<'PY'
+          import struct
+          from pathlib import Path
+
+          image = Path("/tmp/approved-ui-front-master.png").read_bytes()
+          assert image[:8] == b"\x89PNG\r\n\x1a\n"
+          width, height = struct.unpack(">II", image[16:24])
+          assert (width, height) == (868, 1812)
+
+          required = (
+              "ui-header.png",
+              "ui-hero.png",
+              "ui-deck.png",
+              "ui-alerts.png",
+              "ui-nav.png",
+              "card-overview-front-v11.png",
+              "card-site-intelligence-front-v11.png",
+              "card-financial-command-front-v11.png",
+              "card-operations-front-v11.png",
+              "card-risk-monitor-front-v11.png",
+              "icon-192.png",
+              "icon-512.png",
+          )
+          assets = Path("sentient-os-web/assets")
+          for name in required:
+              path = assets / name
+              assert path.is_file() and path.stat().st_size > 0, name
+          PY
 
       - name: Install the approved web interface into the APK
         run: |
