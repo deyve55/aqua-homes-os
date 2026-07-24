@@ -10,11 +10,15 @@ android {
         applicationId = "com.aquahomes.sentientos"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026072402
-        versionName = "0.2.0-test"
+        versionCode = 2026072403
+        versionName = "0.2.1-fold7"
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".fold7test"
+            versionNameSuffix = "-debug"
+        }
         release {
             isMinifyEnabled = false
         }
