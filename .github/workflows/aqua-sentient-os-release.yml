@@ -1,4 +1,4 @@
-name: Build Aqua Sentient OS direct APK
+name: Build Aqua Sentient OS Fold 7 APK v0.2.1
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: aqua-sentient-os-v0.2.0
+  group: aqua-sentient-os-v0.2.1-fold7
   cancel-in-progress: false
 
 jobs:
@@ -30,37 +30,34 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android verification tools
+        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.10.2"
 
-      - name: Verify the approved straight visual layers
+      - name: Verify approved straight visual layers
         run: |
           cat sentient-os-assets/approved-ui-front-master.b64.part-* \
             | base64 --decode > /tmp/approved-ui-front-master.png
           python3 - <<'PY'
           import struct
           from pathlib import Path
-
           image = Path("/tmp/approved-ui-front-master.png").read_bytes()
           assert image[:8] == b"\x89PNG\r\n\x1a\n"
-          width, height = struct.unpack(">II", image[16:24])
-          assert (width, height) == (868, 1812)
-
+          assert struct.unpack(">II", image[16:24]) == (868, 1812)
           required = (
-              "ui-header.png",
-              "ui-hero.png",
-              "ui-deck.png",
-              "ui-alerts.png",
-              "ui-nav.png",
-              "card-overview-front-v11.png",
+              "ui-header.png", "ui-hero.png", "ui-deck.png", "ui-alerts.png",
+              "ui-nav.png", "card-overview-front-v11.png",
               "card-site-intelligence-front-v11.png",
               "card-financial-command-front-v11.png",
               "card-operations-front-v11.png",
-              "card-risk-monitor-front-v11.png",
-              "icon-192.png",
-              "icon-512.png",
+              "card-risk-monitor-front-v11.png", "icon-192.png", "icon-512.png",
           )
           assets = Path("sentient-os-web/assets")
           for name in required:
@@ -68,37 +65,50 @@ jobs:
               assert path.is_file() and path.stat().st_size > 0, name
           PY
 
-      - name: Install the approved web interface into the APK
+      - name: Install approved web interface into APK
         run: |
           mkdir -p android-app/app/src/main/assets/public
           cp -R sentient-os-web/. android-app/app/src/main/assets/public/
 
-      - name: Build the test APK
+      - name: Build conflict-free Fold 7 test APK
         working-directory: android-app
-        run: gradle --no-daemon :app:assembleDebug
+        run: gradle --no-daemon --stacktrace :app:assembleDebug
 
-      - name: Prepare verified release files
+      - name: Verify APK with Android tools
+        run: |
+          BUILD_TOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          APK="android-app/app/build/outputs/apk/debug/app-debug.apk"
+          "$BUILD_TOOLS/zipalign" -c -P 16 -v 4 "$APK"
+          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK"
+          "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/badging.txt
+          grep -q "package: name='com.aquahomes.sentientos.fold7test'" /tmp/badging.txt
+          grep -q "versionCode='2026072403'" /tmp/badging.txt
+          grep -q "sdkVersion:'26'" /tmp/badging.txt
+          grep -q "targetSdkVersion:'35'" /tmp/badging.txt
+          unzip -t "$APK"
+
+      - name: Prepare release files
         run: |
           mkdir -p release
-          cp android-app/app/build/outputs/apk/debug/app-debug.apk release/AquaSentientOS-v0.2.0-test.apk
-          sha256sum release/AquaSentientOS-v0.2.0-test.apk > release/AquaSentientOS-v0.2.0-test.apk.sha256
+          cp android-app/app/build/outputs/apk/debug/app-debug.apk release/AquaSentientOS-v0.2.1-fold7-test.apk
+          sha256sum release/AquaSentientOS-v0.2.1-fold7-test.apk > release/AquaSentientOS-v0.2.1-fold7-test.apk.sha256
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentientOS-v0.2.0-test
+          name: AquaSentientOS-v0.2.1-fold7-test
           path: release/*
           if-no-files-found: error
 
-      - name: Publish direct GitHub download
+      - name: Publish corrected direct GitHub download
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: aqua-sentient-os-v0.2.0-test
+          RELEASE_TAG: aqua-sentient-os-v0.2.1-fold7-test
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" release/* --clobber
           else
             gh release create "$RELEASE_TAG" release/* \
-              --title "Aqua Sentient OS v0.2.0 Test" \
-              --notes "Self-contained Fold 7 test APK. Opens directly without ChatGPT sign-in. Includes the approved straight visual layers, responsive lower navigation, enlarged command stage, card swiping, detail views, and local voice navigation."
+              --title "Aqua Sentient OS v0.2.1 Fold 7 Test" \
+              --notes "Corrected self-contained Fold 7 test APK with conflict-free package identity. Verified with Android zipalign, apksigner, aapt manifest/SDK checks, and archive integrity checks. Opens directly without ChatGPT sign-in and preserves the approved straight visual interface."
           fi
