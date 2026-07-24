@@ -1,5 +1,12 @@
-const CACHE = "aqua-sentinel-role-proof-v63";
-const FILES = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest"];
+const CACHE = "aqua-sentinel-ui-personality-v64";
+const FILES = [
+  "./",
+  "./index.html",
+  "./styles.css",
+  "./v64.css",
+  "./app.js",
+  "./manifest.webmanifest",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(FILES)));

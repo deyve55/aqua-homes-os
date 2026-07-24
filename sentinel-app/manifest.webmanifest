@@ -1,7 +1,7 @@
 {
   "name": "Aqua Sentinel OS",
   "short_name": "Aqua",
-  "description": "Aqua Sentinel OS role-demonstration shell",
+  "description": "Aqua Sentinel OS interactive UI and personality proof",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#02070d",

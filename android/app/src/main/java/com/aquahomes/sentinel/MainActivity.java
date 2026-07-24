@@ -14,6 +14,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.Voice;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -81,8 +82,9 @@ public final class MainActivity extends Activity implements RecognitionListener 
                                 return;
                             }
                             textToSpeech.setLanguage(Locale.US);
-                            textToSpeech.setSpeechRate(1.04f);
-                            textToSpeech.setPitch(0.92f);
+                            selectBestLocalVoice();
+                            textToSpeech.setSpeechRate(1.03f);
+                            textToSpeech.setPitch(0.96f);
                             textToSpeech.setOnUtteranceProgressListener(
                                     new UtteranceProgressListener() {
                                         @Override
@@ -150,6 +152,29 @@ public final class MainActivity extends Activity implements RecognitionListener 
                         });
     }
 
+    private void selectBestLocalVoice() {
+        if (textToSpeech.getVoices() == null) {
+            return;
+        }
+
+        Voice bestVoice = null;
+        for (Voice voice : textToSpeech.getVoices()) {
+            if (voice == null
+                    || voice.isNetworkConnectionRequired()
+                    || voice.getLocale() == null
+                    || !Locale.ENGLISH.getLanguage().equals(voice.getLocale().getLanguage())) {
+                continue;
+            }
+            if (bestVoice == null || voice.getQuality() > bestVoice.getQuality()) {
+                bestVoice = voice;
+            }
+        }
+
+        if (bestVoice != null) {
+            textToSpeech.setVoice(bestVoice);
+        }
+    }
+
     private static double normalizedAudioEnergy(byte[] audio, int audioFormat) {
         if (audio == null || audio.length == 0) {
             return 0.0;
@@ -214,7 +239,28 @@ public final class MainActivity extends Activity implements RecognitionListener 
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
         intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
         intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true);
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 700L);
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 850L);
+        intent.putExtra(
+                RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 500L);
         speechRecognizer.startListening(intent);
+    }
+
+    private void stopListening() {
+        if (speechRecognizer == null) {
+            return;
+        }
+        speechRecognizer.cancel();
+        speechRecognizer.destroy();
+        speechRecognizer = null;
+    }
+
+    private void releaseSpeechRecognizer() {
+        if (speechRecognizer == null) {
+            return;
+        }
+        speechRecognizer.destroy();
+        speechRecognizer = null;
     }
 
     private void speak(String text) {
@@ -261,11 +307,13 @@ public final class MainActivity extends Activity implements RecognitionListener 
 
     @Override
     public void onError(int error) {
+        releaseSpeechRecognizer();
         evaluate("window.Aqua && window.Aqua.onNativeError(" + error + ")");
     }
 
     @Override
     public void onResults(Bundle results) {
+        releaseSpeechRecognizer();
         ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         String best = matches == null || matches.isEmpty() ? "" : matches.get(0);
         evaluate("window.Aqua && window.Aqua.onNativeHeard(" + quote(best) + ")");
@@ -277,8 +325,7 @@ public final class MainActivity extends Activity implements RecognitionListener 
                 partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         if (matches != null && !matches.isEmpty()) {
             evaluate(
-                    "document.querySelector('[data-transcript]').textContent="
-                            + quote(matches.get(0)));
+                    "window.Aqua && window.Aqua.onNativePartial(" + quote(matches.get(0)) + ")");
         }
     }
 
@@ -330,6 +377,11 @@ public final class MainActivity extends Activity implements RecognitionListener 
         @JavascriptInterface
         public void listen() {
             mainHandler.post(MainActivity.this::beginListening);
+        }
+
+        @JavascriptInterface
+        public void stopListening() {
+            mainHandler.post(MainActivity.this::stopListening);
         }
 
         @JavascriptInterface
