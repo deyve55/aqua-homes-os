@@ -10,8 +10,8 @@ android {
         applicationId "com.aquahomes.sentinel"
         minSdk 26
         targetSdk 35
-        versionCode 2026072401
-        versionName "0.63.0-role-proof"
+        versionCode 2026072402
+        versionName "0.63.1-fixed-frame"
     }
 
     buildTypes {

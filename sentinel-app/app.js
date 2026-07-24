@@ -84,6 +84,8 @@ let activeIndex = 2;
 let touchStartX = null;
 let toastTimer = null;
 let fallbackSpeechTimer = null;
+let voiceEnergyTimer = null;
+let lastNativeEnergyAt = 0;
 let currentReplyWords = [];
 let currentState = "idle";
 
@@ -174,10 +176,32 @@ function showToast(message = "Development preview — backend connection comes n
   }, 2600);
 }
 
-function triggerVoicePulse() {
+function resetVoiceEnergy() {
+  shell.style.setProperty("--voice-core-scale", "1");
+  shell.style.setProperty("--voice-core-glow", "22px");
+  shell.style.setProperty("--voice-core-spread", "7px");
+}
+
+function setVoiceEnergy(rawLevel, holdMilliseconds = 95, fromNativeAudio = false) {
+  const level = Math.min(1, Math.max(0, Number(rawLevel) || 0));
+  if (fromNativeAudio) lastNativeEnergyAt = Date.now();
+
+  shell.style.setProperty("--voice-core-scale", (1 + level * 0.48).toFixed(3));
+  shell.style.setProperty("--voice-core-glow", `${Math.round(22 + level * 24)}px`);
+  shell.style.setProperty("--voice-core-spread", `${Math.round(7 + level * 7)}px`);
+
+  clearTimeout(voiceEnergyTimer);
+  voiceEnergyTimer = setTimeout(resetVoiceEnergy, holdMilliseconds);
+}
+
+function triggerVoicePulse(fallbackEnergy = 0.62) {
   shell.classList.remove("voice-pulse");
   void shell.offsetWidth;
   shell.classList.add("voice-pulse");
+
+  if (Date.now() - lastNativeEnergyAt > 150) {
+    setVoiceEnergy(fallbackEnergy, 125);
+  }
 }
 
 function renderSpokenWord(activeWordIndex) {
@@ -213,7 +237,9 @@ function beginSpeaking() {
 
 function finishSpeaking() {
   clearTimeout(fallbackSpeechTimer);
+  clearTimeout(voiceEnergyTimer);
   shell.classList.remove("voice-pulse");
+  resetVoiceEnergy();
   transcript.textContent = REPLY;
   setState("idle");
 }
@@ -322,6 +348,11 @@ window.Aqua = {
     const index = wordIndexFromCharacter(Number(start) || 0);
     renderSpokenWord(index);
     triggerVoicePulse();
+  },
+  onNativeEnergy(level) {
+    if (currentState === "speaking") {
+      setVoiceEnergy(level, 95, true);
+    }
   },
   onNativeDone() {
     finishSpeaking();

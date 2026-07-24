@@ -84,6 +84,40 @@ test("Every outgoing word can restart the directional voice pulse", async () => 
   );
 });
 
+test("Architectural A stays fixed while only center light and beams react", async () => {
+  const styles = await read("sentinel-app/styles.css");
+
+  assert.match(
+    styles,
+    /\.sentinel-shell\[data-aqua-state\] \.architectural-a,\s*\.sentinel-shell\.voice-pulse \.architectural-a\s*{\s*animation: none;\s*transform: none;/,
+  );
+  assert.doesNotMatch(styles, /@keyframes voiceLift/);
+  assert.match(styles, /--voice-core-scale/);
+  assert.match(styles, /\.sentinel-shell\.voice-pulse \.voice-plane/);
+});
+
+test("Native outgoing audio energy drives the center light and microphone tap is silent", async () => {
+  const [script, activity] = await Promise.all([
+    read("sentinel-app/app.js"),
+    read("android/app/src/main/java/com/aquahomes/sentinel/MainActivity.java"),
+  ]);
+
+  assert.match(script, /onNativeEnergy\(level\)/);
+  assert.match(script, /setVoiceEnergy\(level, 95, true\)/);
+  assert.match(activity, /onAudioAvailable/);
+  assert.match(activity, /normalizedAudioEnergy/);
+  assert.match(activity, /setSoundEffectsEnabled\(false\)/);
+});
+
+test("Fixed-frame APK has a distinct review version", async () => {
+  const appBuild = await read("android/app/build.gradle");
+  const workflow = await read(".github/workflows/android-sentinel-apk.yml");
+
+  assert.match(appBuild, /versionCode 2026072402/);
+  assert.match(appBuild, /versionName "0\.63\.1-fixed-frame"/);
+  assert.match(workflow, /Aqua-Sentinel-OS-v0\.63\.1-fixed-frame\.apk/);
+});
+
 test("Protected keeper files remain available", async () => {
   const keeper = await read("AQUA_HOMES_OS_CURRENT_KEEPER.md");
   const protectedHome = await read("AH_v54I-3.html");
