@@ -18,8 +18,8 @@ function renderCards(){
  cards.forEach((card,index)=>{
   const offset=relative(index),button=document.createElement("button");
   button.type="button";button.className=`command-card${offset===0?" active":""}`;
-  const left={[-2]:1,[-1]:18,[0]:37.5,[1]:62,[2]:79}[offset];
-  const scale=offset===0?1.13:Math.abs(offset)===1?.92:.82;
+  const left={[-2]:-2,[-1]:22,[0]:50,[1]:78,[2]:102}[offset];
+  const scale=offset===0?1.04:Math.abs(offset)===1?.88:.76;
   const rotate=offset*-7;
   button.style.left=`${left}%`;button.style.zIndex=String(5-Math.abs(offset));button.style.opacity=Math.abs(offset)===2?".72":"1";
   button.style.transform=`translateX(-50%) scale(${scale}) rotateY(${rotate}deg)`;
