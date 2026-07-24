@@ -1,4 +1,4 @@
-name: Build Aqua Sentient OS Fold 7 Full Installer v0.2.2
+name: Build Aqua Sentinel OS Functional Test v0.3.0
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: aqua-sentient-os-v0.2.2-fold7-full
+  group: aqua-sentinel-os-v0.3.0-functional-test
   cancel-in-progress: false
 
 jobs:
@@ -100,7 +100,7 @@ jobs:
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK"
           "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/badging.txt
           grep -q "package: name='com.aquahomes.sentientos.fold7full'" /tmp/badging.txt
-          grep -q "versionCode='2026072404'" /tmp/badging.txt
+          grep -q "versionCode='2026072405'" /tmp/badging.txt
           grep -q "sdkVersion:'26'" /tmp/badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/badging.txt
           unzip -l "$APK" | grep -q "assets/public/index.html"
@@ -122,35 +122,35 @@ jobs:
             adb logcat -c
             adb shell am start -W -n com.aquahomes.sentientos.fold7full/com.aquahomes.sentientos.MainActivity
             sleep 3
-            adb logcat -d > /tmp/aqua-sentient-v0.2.2-logcat.txt
-            adb shell pidof com.aquahomes.sentientos.fold7full | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentient-v0.2.2-logcat.txt || true; exit 1)
-            adb shell dumpsys package com.aquahomes.sentientos.fold7full | grep -q "versionCode=2026072404"
-            adb exec-out screencap -p > /tmp/aqua-sentient-v0.2.2-launch.png
-            test -s /tmp/aqua-sentient-v0.2.2-launch.png
+            adb logcat -d > /tmp/aqua-sentinel-v0.3.0-logcat.txt
+            adb shell pidof com.aquahomes.sentientos.fold7full | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.3.0-logcat.txt || true; exit 1)
+            adb shell dumpsys package com.aquahomes.sentientos.fold7full | grep -q "versionCode=2026072405"
+            adb exec-out screencap -p > /tmp/aqua-sentinel-v0.3.0-launch.png
+            test -s /tmp/aqua-sentinel-v0.3.0-launch.png
 
       - name: Prepare release files
         run: |
           mkdir -p release
-          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentientOS-v0.2.2-FULL-INSTALLER.apk
-          cp /tmp/aqua-sentient-v0.2.2-launch.png release/AquaSentientOS-v0.2.2-launch-proof.png
-          sha256sum release/AquaSentientOS-v0.2.2-FULL-INSTALLER.apk > release/AquaSentientOS-v0.2.2-FULL-INSTALLER.apk.sha256
+          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.3.0-FUNCTIONAL-TEST.apk
+          cp /tmp/aqua-sentinel-v0.3.0-launch.png release/AquaSentinelOS-v0.3.0-launch-proof.png
+          sha256sum release/AquaSentinelOS-v0.3.0-FUNCTIONAL-TEST.apk > release/AquaSentinelOS-v0.3.0-FUNCTIONAL-TEST.apk.sha256
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentientOS-v0.2.2-FULL-INSTALLER
+          name: AquaSentinelOS-v0.3.0-FUNCTIONAL-TEST
           path: release/*
           if-no-files-found: error
 
       - name: Publish full standalone GitHub installer
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: aqua-sentient-os-v0.2.2-full-installer
+          RELEASE_TAG: aqua-sentinel-os-v0.3.0-functional-test
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" release/* --clobber
           else
             gh release create "$RELEASE_TAG" release/* \
-              --title "Aqua Sentient OS v0.2.2 Full Standalone Installer" \
-              --notes "Complete release-signed base APK. Requires no prior Aqua app. The release gate performs a clean adb install and launches Aqua on an Android 15 emulator before publication. Includes the approved straight visual interface inside the APK and does not redirect through ChatGPT."
+              --title "Aqua Sentinel OS v0.3.0 Functional Test" \
+              --notes "Complete standalone functional test APK. Requires no prior Aqua app. Clean-installs and launches on an empty Android emulator before publication. Includes the approved Aqua hero, live obsidian carousel, readable demo intelligence, touch controls, native speech input/output, local conversational command handling, and visible information checks. Protected live-model routing is not represented as connected."
           fi

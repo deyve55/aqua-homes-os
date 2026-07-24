@@ -2,107 +2,72 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
-    />
-    <meta name="theme-color" content="#010b13" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <title>Aqua Sentient OS</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#01070c" />
+    <title>Aqua Sentinel OS</title>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="icon" href="./assets/icon-192.png" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="sentinel state-idle" id="sentinel">
-      <div class="os-surface" id="osSurface">
-        <img class="exact-layer header-layer" src="./assets/ui-header.png" alt="" />
-        <img class="exact-layer hero-layer" src="./assets/ui-hero.png" alt="" />
+    <main id="sentinel" class="sentinel state-idle">
+      <header class="project-header">
+        <div class="brand"><b>AQUA</b><small>SENTINEL OS</small></div>
+        <div class="project"><strong>Northshore Mega Project</strong><span>Site ID: NS-8847 &nbsp;•&nbsp; Tower A</span></div>
+        <div class="operator"><i></i><span>Dave · Owner</span></div>
+      </header>
 
-        <button
-          class="voice-hotspot"
-          id="voiceButton"
-          aria-label="Talk to Aqua"
-          type="button"
-        ></button>
-        <div class="listening-shimmer" aria-hidden="true"></div>
-        <div class="speaking-core" aria-hidden="true"></div>
-
-        <div class="command-stage">
-          <section
-            class="command-deck"
-            id="commandDeck"
-            aria-label="Aqua command-card carousel"
-          >
-            <img class="deck-reference" src="./assets/ui-deck.png" alt="" />
-            <div id="cardLayers"></div>
-            <button
-              class="deck-arrow previous"
-              id="previousCard"
-              aria-label="Previous card"
-              type="button"
-            ></button>
-            <button
-              class="deck-arrow next"
-              id="nextCard"
-              aria-label="Next card"
-              type="button"
-            ></button>
-          </section>
-
-          <section class="intelligence-panels" aria-label="Priority intelligence">
-            <img class="exact-layer" src="./assets/ui-alerts.png" alt="" />
-            <button
-              class="panel-hotspot budget"
-              id="budgetPanel"
-              aria-label="Open budget exception"
-              type="button"
-            ></button>
-            <button
-              class="panel-hotspot risk"
-              id="riskPanel"
-              aria-label="Open schedule risk"
-              type="button"
-            ></button>
-          </section>
-        </div>
-
-        <nav class="bottom-rail" aria-label="Primary navigation">
-          <img class="exact-layer" src="./assets/ui-nav.png" alt="" />
-          <button class="active" aria-label="Home" type="button"></button>
-          <button aria-label="Messages" type="button"></button>
-          <button aria-label="Data Hub" type="button"></button>
-          <button aria-label="Settings" type="button"></button>
-          <button aria-label="Sign Out" type="button"></button>
-        </nav>
-
-        <div class="transcript" id="transcript" hidden></div>
-      </div>
-
-      <section class="detail-sheet closed" id="detailSheet" aria-label="Card details">
-        <div class="sheet-handle"></div>
-        <button class="sheet-close" id="closeSheet" aria-label="Close details" type="button">
-          ×
+      <section class="aqua-hero" aria-label="Aqua voice assistant">
+        <img src="./assets/ui-hero.png" alt="Aqua Sentinel voice emblem" />
+        <button id="voiceButton" class="voice-button" type="button" aria-label="Talk to Aqua">
+          <span class="voice-bars" aria-hidden="true">▮▯▮▯▮</span><b>Tap to speak</b>
         </button>
-        <p class="sheet-eyebrow" id="sheetEyebrow"></p>
-        <h1 id="sheetTitle"></h1>
-        <div class="sheet-metric">
-          <strong id="sheetMetric"></strong>
-          <span id="sheetSubmetric"></span>
-        </div>
-        <div class="detail-chart" aria-hidden="true">
-          <i style="height: 32%"></i><i style="height: 48%"></i>
-          <i style="height: 42%"></i><i style="height: 61%"></i>
-          <i style="height: 54%"></i><i style="height: 76%"></i>
-          <i style="height: 69%"></i><i style="height: 88%"></i>
-          <i style="height: 73%"></i><i style="height: 92%"></i>
-          <i style="height: 82%"></i><i style="height: 96%"></i>
-        </div>
-        <h2>Aqua Brief</h2>
-        <p class="detail-note" id="sheetNote"></p>
-        <p class="demo-note">Demonstration data · not connected to live company records</p>
+        <div id="transcript" class="transcript" hidden></div>
+      </section>
+
+      <section class="carousel-shell" aria-label="Command carousel">
+        <button id="previousCard" class="arrow previous" type="button" aria-label="Previous card">‹</button>
+        <div id="cardLayers" class="card-deck"></div>
+        <button id="nextCard" class="arrow next" type="button" aria-label="Next card">›</button>
+        <div id="cardDots" class="card-dots" aria-label="Select command card"></div>
+      </section>
+
+      <section class="intelligence-panels" aria-label="Priority intelligence">
+        <button id="budgetPanel" class="intel-card" type="button">
+          <span class="intel-head"><i>01</i><b>Budget Exception</b><em class="confirmed">Confirmed</em></span>
+          <strong>Rebar Procurement</strong><small>Tower A &nbsp;•&nbsp; Level 34</small>
+          <span class="intel-row"><label>Variance</label><b class="gold">+$237,450</b></span>
+          <span class="intel-row"><label>Impact</label><b>2.1% of budget</b></span>
+          <span class="intel-foot">✓ Reviewed and approved <b>›</b></span>
+        </button>
+        <button id="riskPanel" class="intel-card" type="button">
+          <span class="intel-head"><i>02</i><b>Schedule Risk</b><em class="attention">Needs Attention</em></span>
+          <strong>Concrete Pour Delay</strong><small>Tower A &nbsp;•&nbsp; Level 27</small>
+          <span class="intel-row"><label>Delay</label><b class="red">3 Days</b></span>
+          <span class="intel-row"><label>Impact</label><b class="red">Critical Path</b></span>
+          <span class="intel-foot warning">! Action required <b>›</b></span>
+        </button>
+      </section>
+
+      <nav class="bottom-rail" aria-label="Primary navigation">
+        <button class="active" type="button" data-label="Home"><b>⬡</b><span>Home</span></button>
+        <button type="button" data-label="Messages"><b>▱</b><span>Messages</span></button>
+        <button type="button" data-label="Data Hub"><b>◇</b><span>Data Hub</span></button>
+        <button type="button" data-label="Settings"><b>☷</b><span>Settings</span></button>
+        <button type="button" data-label="Sign Out"><b>⇥</b><span>Sign Out</span></button>
+      </nav>
+
+      <section id="detailSheet" class="detail-sheet closed" aria-label="Card details">
+        <div class="sheet-handle"></div>
+        <button id="closeSheet" class="sheet-close" type="button" aria-label="Close details">×</button>
+        <p id="sheetEyebrow"></p><h1 id="sheetTitle"></h1>
+        <div class="sheet-metric"><strong id="sheetMetric"></strong><span id="sheetSubmetric"></span></div>
+        <div class="detail-chart" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <h2>Aqua Brief</h2><p id="sheetNote"></p>
+        <div id="checkResult" class="check-result" hidden></div>
+        <small class="demo-note">Demonstration data · not connected to live company records</small>
         <div class="sheet-actions">
           <button id="askAqua" type="button">Ask Aqua</button>
+          <button id="checkInformation" type="button">Check information</button>
           <button id="toggleDepth" type="button">Go deeper</button>
         </div>
       </section>

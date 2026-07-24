@@ -1,4 +1,4 @@
-const CACHE_NAME = "aqua-sentient-os-v0.2.0";
+const CACHE_NAME = "aqua-sentinel-os-v0.3.0-functional-test";
 const APP_FILES = [
   "./",
   "./index.html",
@@ -7,16 +7,7 @@ const APP_FILES = [
   "./manifest.webmanifest",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
-  "./assets/ui-header.png",
   "./assets/ui-hero.png",
-  "./assets/ui-deck.png",
-  "./assets/ui-alerts.png",
-  "./assets/ui-nav.png",
-  "./assets/card-overview-front-v11.png",
-  "./assets/card-site-intelligence-front-v11.png",
-  "./assets/card-financial-command-front-v11.png",
-  "./assets/card-operations-front-v11.png",
-  "./assets/card-risk-monitor-front-v11.png"
 ];
 
 self.addEventListener("install", (event) => {
