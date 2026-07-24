@@ -23,8 +23,8 @@ android {
         applicationId = "com.aquahomes.sentientos.fold7full"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026072405
-        versionName = "0.3.0-functional-test"
+        versionCode = 2026072406
+        versionName = "0.3.1-fold7-layout"
     }
 
     buildTypes {
