@@ -123,10 +123,7 @@ jobs:
             adb shell am start -W -n com.aquahomes.sentientos.fold7full/com.aquahomes.sentientos.MainActivity
             sleep 3
             adb logcat -d > /tmp/aqua-sentient-v0.2.2-logcat.txt
-            if ! adb shell pidof com.aquahomes.sentientos.fold7full >/tmp/aqua-sentient-v0.2.2-pid.txt; then
-              grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentient-v0.2.2-logcat.txt || true
-              exit 1
-            fi
+            adb shell pidof com.aquahomes.sentientos.fold7full | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentient-v0.2.2-logcat.txt || true; exit 1)
             adb shell dumpsys package com.aquahomes.sentientos.fold7full | grep -q "versionCode=2026072404"
             adb exec-out screencap -p > /tmp/aqua-sentient-v0.2.2-launch.png
             test -s /tmp/aqua-sentient-v0.2.2-launch.png
