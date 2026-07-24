@@ -6,21 +6,32 @@ android {
     namespace = "com.aquahomes.sentientos"
     compileSdk = 35
 
+    signingConfigs {
+        create("aquaTestRelease") {
+            storeFile = file(System.getenv("AQUA_TEST_KEYSTORE_PATH"))
+            storePassword = System.getenv("AQUA_TEST_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("AQUA_TEST_KEY_ALIAS")
+            keyPassword = System.getenv("AQUA_TEST_KEY_PASSWORD")
+            enableV1Signing = true
+            enableV2Signing = true
+            enableV3Signing = true
+            enableV4Signing = true
+        }
+    }
+
     defaultConfig {
-        applicationId = "com.aquahomes.sentientos"
+        applicationId = "com.aquahomes.sentientos.fold7full"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026072403
-        versionName = "0.2.1-fold7"
+        versionCode = 2026072404
+        versionName = "0.2.2-fold7-full"
     }
 
     buildTypes {
-        debug {
-            applicationIdSuffix = ".fold7test"
-            versionNameSuffix = "-debug"
-        }
         release {
             isMinifyEnabled = false
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("aquaTestRelease")
         }
     }
 
