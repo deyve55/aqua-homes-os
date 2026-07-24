@@ -121,7 +121,15 @@ jobs:
             adb install --no-incremental android-app/app/build/outputs/apk/release/app-release.apk
             adb logcat -c
             adb shell am start -W -n com.aquahomes.sentientos.fold7full/com.aquahomes.sentientos.MainActivity
-            sleep 3
+            for attempt in $(seq 1 20); do
+              sleep 2
+              adb shell uiautomator dump /sdcard/aqua-window.xml >/dev/null 2>&1 || true
+              adb pull /sdcard/aqua-window.xml /tmp/aqua-window.xml >/dev/null 2>&1 || true
+              if grep -Eq "Northshore Mega Project|Tap to speak|AQUA SENTINEL OS" /tmp/aqua-window.xml 2>/dev/null; then
+                break
+              fi
+            done
+            grep -Eq "Northshore Mega Project|Tap to speak|AQUA SENTINEL OS" /tmp/aqua-window.xml
             adb logcat -d > /tmp/aqua-sentinel-v0.3.1-logcat.txt
             adb shell pidof com.aquahomes.sentientos.fold7full | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.3.1-logcat.txt || true; exit 1)
             adb shell dumpsys package com.aquahomes.sentientos.fold7full | grep -q "versionCode=2026072406"
