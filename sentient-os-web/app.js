@@ -1,6 +1,6 @@
 const apps = [
   {
-    name: "Aqua Homes OS",
+    name: "Aqua Sentinel",
     short: "MAIN BRAIN",
     icon: "A",
     color: "#14dfff",
@@ -161,6 +161,9 @@ let active = 0;
 let rotating = false;
 let rotationTimer = null;
 let drag = null;
+let inertiaFrame = null;
+let suppressCardClickUntil = 0;
+const CARD_STEP_PX = 72;
 let authenticated = false;
 let authenticatedEmail = "";
 let sound = true;
@@ -238,6 +241,7 @@ function renderCards() {
       </div>
     `;
     card.addEventListener("click", () => {
+      if (performance.now() < suppressCardClickUntil) return;
       if (position !== 0) {
         centerApp(index, false);
         return;
@@ -674,14 +678,60 @@ document.querySelectorAll(".bottom-rail button").forEach((button) => {
   button.addEventListener("click", () => openPanel(button.dataset.panel));
 });
 
+function stopDeckInertia() {
+  if (inertiaFrame !== null) cancelAnimationFrame(inertiaFrame);
+  inertiaFrame = null;
+}
+
+function stepDeck(direction) {
+  active = (active + direction + apps.length) % apps.length;
+  closeOverlays();
+  render();
+}
+
+function coastDeck(initialVelocity) {
+  stopDeckInertia();
+  rotating = true;
+  appDeck.classList.remove("is-settled");
+  appDeck.classList.add("is-rotating");
+  let velocity = Math.max(-2.4, Math.min(2.4, initialVelocity));
+  let position = 0;
+  let lastTime = performance.now();
+  const coast = (now) => {
+    const elapsed = Math.min(34, now - lastTime);
+    lastTime = now;
+    position += velocity * elapsed;
+    while (Math.abs(position) >= CARD_STEP_PX) {
+      const direction = position < 0 ? 1 : -1;
+      stepDeck(direction);
+      position += direction * CARD_STEP_PX;
+    }
+    cardsTrack.style.transform = `translateX(${position}px)`;
+    velocity *= Math.pow(0.92, elapsed / 16.67);
+    if (Math.abs(velocity) > 0.035) {
+      inertiaFrame = requestAnimationFrame(coast);
+      return;
+    }
+    cardsTrack.style.transform = "";
+    inertiaFrame = null;
+    finishRotation(false);
+  };
+  inertiaFrame = requestAnimationFrame(coast);
+}
+
 appDeck.addEventListener("pointerdown", (event) => {
   if (event.pointerType === "mouse" && event.button !== 0) return;
+  stopDeckInertia();
+  clearTimeout(rotationTimer);
+  rotating = false;
   drag = {
     pointerId: event.pointerId,
     startX: event.clientX,
     startY: event.clientY,
     lastX: event.clientX,
-    startedAt: performance.now(),
+    lastTime: performance.now(),
+    velocityX: 0,
+    residualX: 0,
     horizontal: false,
   };
   appDeck.setPointerCapture?.(event.pointerId);
@@ -689,35 +739,58 @@ appDeck.addEventListener("pointerdown", (event) => {
 
 appDeck.addEventListener("pointermove", (event) => {
   if (!drag || event.pointerId !== drag.pointerId) return;
-  const deltaX = event.clientX - drag.startX;
-  const deltaY = event.clientY - drag.startY;
-  if (!drag.horizontal && Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15) {
+  const totalX = event.clientX - drag.startX;
+  const totalY = event.clientY - drag.startY;
+  const now = performance.now();
+  if (!drag.horizontal && Math.abs(totalX) > 8 && Math.abs(totalX) > Math.abs(totalY) * 1.08) {
     drag.horizontal = true;
+    rotating = true;
+    appDeck.classList.remove("is-settled");
+    appDeck.classList.add("is-rotating");
   }
-  if (drag.horizontal) {
-    event.preventDefault();
-    drag.lastX = event.clientX;
-    cardsTrack.style.transform = `translateX(${Math.max(-42, Math.min(42, deltaX * 0.22))}px)`;
+  if (!drag.horizontal) return;
+  event.preventDefault();
+  const frameX = event.clientX - drag.lastX;
+  const frameTime = Math.max(1, now - drag.lastTime);
+  drag.velocityX = drag.velocityX * 0.65 + (frameX / frameTime) * 0.35;
+  drag.residualX += frameX;
+  while (Math.abs(drag.residualX) >= CARD_STEP_PX) {
+    const direction = drag.residualX < 0 ? 1 : -1;
+    stepDeck(direction);
+    drag.residualX += direction * CARD_STEP_PX;
   }
+  cardsTrack.style.transform = `translateX(${drag.residualX}px)`;
+  drag.lastX = event.clientX;
+  drag.lastTime = now;
 });
 
 function finishDeckDrag(event, cancelled = false) {
   if (!drag || event.pointerId !== drag.pointerId) return;
-  const deltaX = event.clientX - drag.startX;
-  const elapsed = Math.max(1, performance.now() - drag.startedAt);
-  const velocity = Math.abs(deltaX) / elapsed;
-  const shouldRotate = !cancelled && drag.horizontal && (Math.abs(deltaX) >= 34 || velocity >= 0.32);
-  cardsTrack.style.transform = "";
+  const wasHorizontal = drag.horizontal;
+  const velocityX = cancelled ? 0 : drag.velocityX;
+  const residualX = drag.residualX;
   try { appDeck.releasePointerCapture?.(event.pointerId); } catch {}
   drag = null;
-  if (shouldRotate) rotate(deltaX < 0 ? 1 : -1);
+  if (!wasHorizontal) {
+    cardsTrack.style.transform = "";
+    return;
+  }
+  suppressCardClickUntil = performance.now() + 450;
+  if (Math.abs(velocityX) >= 0.16) {
+    coastDeck(velocityX);
+    return;
+  }
+  if (Math.abs(residualX) >= CARD_STEP_PX * 0.42) {
+    stepDeck(residualX < 0 ? 1 : -1);
+  }
+  cardsTrack.style.transform = "";
+  finishRotation(false);
 }
 
 appDeck.addEventListener("pointerup", (event) => finishDeckDrag(event));
 appDeck.addEventListener("pointercancel", (event) => finishDeckDrag(event, true));
-appDeck.addEventListener("lostpointercapture", () => {
-  cardsTrack.style.transform = "";
-  drag = null;
+appDeck.addEventListener("lostpointercapture", (event) => {
+  if (drag && event.pointerId === drag.pointerId) finishDeckDrag(event, true);
 });
 
 render();
