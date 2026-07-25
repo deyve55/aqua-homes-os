@@ -7,7 +7,9 @@
     <application
         android:allowBackup="false"
         android:fullBackupContent="false"
-        android:label="Aqua Sentinel OS"
+        android:icon="@drawable/aqua_sentinel_launcher"
+        android:roundIcon="@drawable/aqua_sentinel_launcher"
+        android:label="Aqua Sentinel"
         android:supportsRtl="true"
         android:usesCleartextTraffic="false"
         android:theme="@android:style/Theme.Material.NoActionBar">
