@@ -241,3 +241,62 @@
   line-height:1.2;
   text-align:center;
 }
+
+
+/* Aqua Sentinel v0.4.2 Fold physical-device corrections. */
+@media (max-width:600px){
+  .os-surface{
+    min-height:100svh;
+    padding-top:clamp(34px,7svh,64px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .app-deck{touch-action:pan-y pinch-zoom}
+  .app-deck .app-card.pos--1{transform:translateZ(-30px) rotateY(18deg)}
+  .app-deck .app-card.pos-1{transform:translateZ(-30px) rotateY(-18deg)}
+  .app-deck .app-card.pos--2{transform:translateZ(-96px) rotateY(30deg)}
+  .app-deck .app-card.pos-2{transform:translateZ(-96px) rotateY(-30deg)}
+}
+.card-placeholder-orbit{
+  top:16%;
+  width:42%;
+  border:0;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+}
+.card-placeholder-orbit:before,.card-placeholder-orbit:after{display:none}
+.card-placeholder>strong{
+  position:absolute;
+  z-index:2;
+  left:0;
+  right:0;
+  top:20%;
+  color:var(--app-color);
+  font-size:clamp(15px,3.2cqw,28px);
+  font-weight:400;
+  text-align:center;
+  text-shadow:0 0 5px #fff,0 0 16px var(--app-color);
+}
+.card-placeholder>small{
+  position:absolute;
+  left:7%;
+  right:7%;
+  top:56%;
+  overflow:hidden;
+  color:#f0fbff;
+  font-size:clamp(5px,.9cqw,9px);
+  text-align:center;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.card-placeholder>em{
+  position:absolute;
+  left:7%;
+  right:7%;
+  bottom:9%;
+  color:#638690;
+  font-size:clamp(3px,.53cqw,5px);
+  font-style:normal;
+  letter-spacing:.12em;
+  text-align:center;
+}
