@@ -185,6 +185,7 @@ const authSubmit = document.getElementById("authSubmit");
 const authMessage = document.getElementById("authMessage");
 const toast = document.getElementById("sentinelToast");
 const aquaStateLabel = document.getElementById("aquaStateLabel");
+let speechBeatTimer = null;
 
 function relative(index) {
   let value = (index - active + apps.length) % apps.length;
@@ -193,9 +194,21 @@ function relative(index) {
 }
 
 function setAquaState(state) {
+  clearTimeout(speechBeatTimer);
   sentinel.className = `sentinel state-${state}`;
   aquaStateLabel.textContent = stateLabels[state] || stateLabels.idle;
 }
+
+window.pulseAquaSpeech = () => {
+  if (!sentinel.classList.contains("state-speaking")) return;
+  sentinel.classList.remove("speech-beat");
+  void sentinel.offsetWidth;
+  sentinel.classList.add("speech-beat");
+  clearTimeout(speechBeatTimer);
+  speechBeatTimer = setTimeout(() => {
+    sentinel.classList.remove("speech-beat");
+  }, 180);
+};
 
 let toastTimer = null;
 function notify(message) {

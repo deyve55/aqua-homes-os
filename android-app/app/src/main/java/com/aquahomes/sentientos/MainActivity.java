@@ -342,6 +342,16 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     }
 
                     @Override
+                    public void onRangeStart(
+                        String utteranceId,
+                        int start,
+                        int end,
+                        int frame
+                    ) {
+                        evaluateJavascript("window.pulseAquaSpeech?.();");
+                    }
+
+                    @Override
                     public void onDone(String utteranceId) {
                         evaluateJavascript("window.setAquaSpeaking(false);");
                     }

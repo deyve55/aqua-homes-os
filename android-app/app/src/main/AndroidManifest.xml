@@ -7,8 +7,8 @@
     <application
         android:allowBackup="false"
         android:fullBackupContent="false"
-        android:icon="@drawable/aqua_sentinel_launcher"
-        android:roundIcon="@drawable/aqua_sentinel_launcher"
+        android:icon="@mipmap/aqua_sentinel_launcher"
+        android:roundIcon="@mipmap/aqua_sentinel_launcher"
         android:label="Aqua Sentinel"
         android:supportsRtl="true"
         android:usesCleartextTraffic="false"
