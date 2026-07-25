@@ -416,32 +416,64 @@
   .app-deck .app-card.pos-2{left:78.3%;top:7.5%;width:21.7%;height:69%}
 }
 
-/* Aqua Sentinel v0.4.6 Fold design-freeze correction.
-   Preserve the approved hero pixels; restore their physical-device scale and punch. */
+/* Aqua Sentinel v0.4.7 Fold physical-device repair.
+   Keep each region in its approved frame: no hero mask, no screen-scale zoom,
+   no oversized center card, and the smallest usable bottom rail. */
 html,body,.sentinel,.os-surface,.aqua-hero{background:#000}
 .sentinel{background:#000}
-.aqua-hero{isolation:isolate}
+.aqua-hero{
+  isolation:isolate;
+  aspect-ratio:868/840;
+}
 .hero-art{
-  inset:-2.8% -5.2% -2.8%;
+  inset:0;
   background-color:#000;
-  background-position:center 44%;
-  background-size:110.4% 110.4%;
-  filter:brightness(1.16) contrast(1.14) saturate(1.1);
+  background-position:center;
+  background-size:100% 100%;
+  filter:brightness(1.15) contrast(1.15) saturate(1.1);
 }
 .aqua-hero:after{
   content:"";
   position:absolute;
   z-index:2;
-  inset:0 0 auto;
-  height:15%;
-  background:linear-gradient(180deg,#000 0%,#000 38%,rgba(0,0,0,.88) 64%,transparent 100%);
+  left:8%;
+  right:8%;
+  top:9%;
+  bottom:35%;
+  opacity:0;
+  background:
+    radial-gradient(ellipse at 50% 70%,rgba(255,255,255,.88) 0 1%,rgba(55,223,255,.52) 2.5%,rgba(0,172,255,.22) 9%,transparent 31%),
+    conic-gradient(from 205deg at 50% 70%,transparent 0 18%,rgba(44,218,255,.18) 24%,transparent 31% 69%,rgba(44,218,255,.18) 76%,transparent 82%);
+  filter:drop-shadow(0 0 14px rgba(39,214,255,.72));
   pointer-events:none;
 }
+.state-speaking .aqua-hero:after{
+  animation:aqua-core-rise-out .86s cubic-bezier(.16,.68,.22,1) infinite;
+}
 .aqua-state-label{display:none}
-.bottom-rail{height:clamp(58px,8.2cqw,70px);background:#000}
-.bottom-rail button{gap:2px}
-.bottom-rail button span{font-size:clamp(16px,2.65cqw,22px)}
+.app-deck .app-card.pos-0{
+  left:35.7%;
+  top:7.5%;
+  width:28.6%;
+  height:76%;
+  transform:translateZ(92px) rotateY(0deg);
+}
+.bottom-rail{
+  height:clamp(46px,6.4cqw,54px);
+  min-height:46px;
+  background:#000;
+}
+.bottom-rail button{gap:0}
+.bottom-rail button span{font-size:clamp(14px,2.25cqw,19px);line-height:1}
+.bottom-rail button small{font-size:clamp(6px,1.05cqw,9px);line-height:1.1}
+@keyframes aqua-core-rise-out{
+  0%{opacity:0;transform:translateY(8%) scale(.34,.22)}
+  14%{opacity:1}
+  64%{opacity:.84;transform:translateY(-5%) scale(1.02,.94)}
+  100%{opacity:0;transform:translateY(-13%) scale(1.24,1.2)}
+}
 @media(max-width:600px){
-  .os-surface{padding-top:0;background:#000}
+  .os-surface{padding-top:clamp(8px,1.8svh,16px);background:#000}
   .aqua-hero{aspect-ratio:868/840}
+  .app-deck .app-card.pos-0{left:35.7%;top:7.5%;width:28.6%;height:76%;transform:translateZ(92px) rotateY(0deg)}
 }
