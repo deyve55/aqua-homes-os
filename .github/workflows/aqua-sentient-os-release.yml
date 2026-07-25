@@ -3,7 +3,7 @@ name: Build Aqua Sentinel OS v0.4.1 Production Candidate
 on:
   push:
     branches:
-      - "agent/aqua-sentinel-production-apk-*"
+      - "agent/aqua-sentinel-production-apk-v0.4.1-20260725"
     paths:
       - "android-app/**"
       - "sentient-os-web/**"
