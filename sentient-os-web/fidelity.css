@@ -300,3 +300,21 @@
   letter-spacing:.12em;
   text-align:center;
 }
+
+/* Aqua Sentinel v0.4.3 carousel scale and kinetic-motion correction. */
+.app-deck{touch-action:pan-y pinch-zoom}
+.app-deck .cards-track{will-change:transform}
+.app-deck.is-rotating .app-card{transition:left .12s linear,top .12s linear,width .12s linear,height .12s linear,transform .12s linear,filter .12s linear,opacity .12s linear}
+.app-deck .app-card.pos-0{left:34.8%;top:4.5%;width:30.4%;height:80%}
+.app-deck .app-card.pos--1{left:15.8%;top:7%;width:22.2%;height:72%}
+.app-deck .app-card.pos-1{left:62%;top:7%;width:22.2%;height:72%}
+.app-deck .app-card.pos--2{left:0;top:9%;width:20.5%;height:66%}
+.app-deck .app-card.pos-2{left:79.5%;top:9%;width:20.5%;height:66%}
+.app-card[style*="#14dfff"] .card-placeholder{background:radial-gradient(circle at 50% 28%,rgba(0,141,199,.16),transparent 27%),linear-gradient(160deg,#03090d,#000 68%)}
+@media(max-width:600px){
+  .app-deck .app-card.pos-0{left:34.8%;top:4.5%;width:30.4%;height:80%}
+  .app-deck .app-card.pos--1{left:15.8%;top:7%;width:22.2%;height:72%}
+  .app-deck .app-card.pos-1{left:62%;top:7%;width:22.2%;height:72%}
+  .app-deck .app-card.pos--2{left:0;top:9%;width:20.5%;height:66%}
+  .app-deck .app-card.pos-2{left:79.5%;top:9%;width:20.5%;height:66%}
+}
