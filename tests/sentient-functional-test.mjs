@@ -152,3 +152,18 @@ test("Fold card-presence correction enlarges the complete carousel stack togethe
   assert.match(fidelity, /\.app-deck \.app-card\.pos--2\{left:0;top:7\.5%;width:21\.7%;height:69%/);
   assert.match(fidelity, /\.app-deck \.app-card\.pos-2\{left:78\.3%;top:7\.5%;width:21\.7%;height:69%/);
 });
+
+test("v0.4.7 keeps the carousel stack, protects the front border, and activates Aqua silently", async () => {
+  const [fidelity, activity] = await Promise.all([
+    read("sentient-os-web/fidelity.css"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+  ]);
+  assert.match(fidelity, /v0\.4\.7 Fold physical-device repair/);
+  assert.match(fidelity, /\.aqua-hero\{[\s\S]*aspect-ratio:868\/840/);
+  assert.match(fidelity, /\.hero-art\{[\s\S]*inset:0;[\s\S]*background-size:100% 100%/);
+  assert.match(fidelity, /\.app-deck \.app-card\.pos-0\{[\s\S]*top:7\.5%;[\s\S]*width:28\.6%;[\s\S]*height:76%/);
+  assert.match(fidelity, /\.bottom-rail\{[\s\S]*height:clamp\(46px,6\.4cqw,54px\)/);
+  assert.match(fidelity, /@keyframes aqua-core-rise-out/);
+  assert.match(activity, /webView\.setSoundEffectsEnabled\(false\)/);
+  assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
+});
