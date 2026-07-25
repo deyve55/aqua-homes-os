@@ -41,6 +41,29 @@ test("the centered carousel card snaps face-on before it can open", async () => 
   assert.match(script, /rotationTimer = setTimeout\(\(\) => finishRotation/);
 });
 
+test("APK mirrors the approved native placeholder carousel", async () => {
+  const [script, fidelity] = await Promise.all([
+    read("sentient-os-web/app.js"),
+    read("sentient-os-web/fidelity.css"),
+  ]);
+
+  assert.match(script, /class="card-placeholder"/);
+  assert.match(script, /APP INTERFACE RESERVED/);
+  assert.doesNotMatch(script, /image\.src = `\.\/assets\/\$\{app\.art\}`/);
+  assert.match(fidelity, /\.card-placeholder-orbit\{/);
+  assert.match(fidelity, /left:34%;[\s\S]*width:32%;[\s\S]*height:2px/);
+  assert.match(
+    fidelity,
+    /\.app-deck \.app-card\.pos-0\{[^}]*top:7\.5%;[^}]*rotateY\(0deg\)/,
+  );
+  assert.match(
+    fidelity,
+    /\.app-deck \.app-card\.pos--1\{[^}]*top:10%;[^}]*rotateY\(33deg\)/,
+  );
+  assert.match(fidelity, /@keyframes rail-beacon-sweep/);
+  assert.match(fidelity, /\.aqua-state-label\{[\s\S]*min-width:max-content/);
+});
+
 test("native voice uses authenticated Aqua Brain and not local scripted answers", async () => {
   const [script, activity] = await Promise.all([
     read("sentient-os-web/app.js"),
