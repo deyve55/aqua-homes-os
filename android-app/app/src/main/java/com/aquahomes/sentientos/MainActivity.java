@@ -16,6 +16,7 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -110,6 +111,26 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
     private class LockedWebViewClient extends WebViewClient {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            if (!url.startsWith(LOCAL_APP_PREFIX)) {
+                return;
+            }
+            view.evaluateJavascript(
+                "Boolean(document.getElementById('sentinel')" +
+                    " && document.getElementById('appDeck')" +
+                    " && document.getElementById('primaryDashboard'))",
+                value -> {
+                    if ("true".equals(value)) {
+                        Log.i("AquaSentinel", "AQUA_SENTINEL_UI_READY");
+                    } else {
+                        Log.e("AquaSentinel", "AQUA_SENTINEL_UI_INCOMPLETE");
+                    }
+                }
+            );
+        }
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             Uri uri = request.getUrl();
