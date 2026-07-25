@@ -94,7 +94,7 @@ test("Fold APK has protected top space, kinetic drag, and approved Sentinel OS l
     read("sentient-os-web/fidelity.css"),
     read("android-app/app/src/main/AndroidManifest.xml"),
     read("android-app/app/src/main/res/mipmap-anydpi-v26/aqua_sentinel_launcher.xml"),
-    readBytes("android-app/icon-source/AquaSentinel-SentinelOS-approved.png"),
+    readBytes("android-app/icon-source/AquaSentinel-BrainCircuit-approved-v045.png"),
     readBytes("android-app/app/src/main/res/mipmap-xxxhdpi/aqua_sentinel_launcher.png"),
     readBytes("android-app/app/src/main/res/mipmap-xxxhdpi/aqua_sentinel_launcher_foreground.png"),
   ]);
@@ -113,7 +113,7 @@ test("Fold APK has protected top space, kinetic drag, and approved Sentinel OS l
   assert.match(adaptiveIcon, /@mipmap\/aqua_sentinel_launcher_foreground/);
   assert.equal(
     createHash("sha256").update(approvedIcon).digest("hex"),
-    "dbdb7269f38d37461fc777968d7987af6650f0ffd477f7442da1d54ffe09e452",
+    "bc1e014886d19f10ee1b8afdca2f5bc99d6d9c9ff103c2b359cc9457da80f6c5",
   );
   assert.equal(approvedIcon.readUInt32BE(16), 512);
   assert.equal(approvedIcon.readUInt32BE(20), 512);
