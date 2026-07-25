@@ -1,12 +1,13 @@
-name: Build Aqua Sentinel OS Fold 7 Layout v0.3.1
+name: Build Aqua Sentinel OS v0.4.0 Production Candidate
 
 on:
   push:
     branches:
-      - agent/aqua-sentient-os-direct-apk-v0.2.0-20260724
+      - "agent/aqua-sentinel-production-apk-*"
     paths:
       - "android-app/**"
       - "sentient-os-web/**"
+      - "tests/sentient-functional-test.mjs"
       - ".github/workflows/aqua-sentient-os-release.yml"
   workflow_dispatch:
 
@@ -14,15 +15,24 @@ permissions:
   contents: write
 
 concurrency:
-  group: aqua-sentinel-os-v0.3.1-functional-test
+  group: aqua-sentinel-os-v0.4.0-production-candidate
   cancel-in-progress: false
 
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run Sentinel production contract tests
+        run: node --test tests/sentient-functional-test.mjs
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -41,70 +51,77 @@ jobs:
         with:
           gradle-version: "8.10.2"
 
-      - name: Verify approved straight visual layers
+      - name: Verify approved visual source
         run: |
-          cat sentient-os-assets/approved-ui-front-master.b64.part-* \
-            | base64 --decode > /tmp/approved-ui-front-master.png
           python3 - <<'PY'
+          import hashlib
           import struct
           from pathlib import Path
-          image = Path("/tmp/approved-ui-front-master.png").read_bytes()
-          assert image[:8] == b"\x89PNG\r\n\x1a\n"
-          assert struct.unpack(">II", image[16:24]) == (868, 1812)
-          required = (
-              "ui-header.png", "ui-hero.png", "ui-deck.png", "ui-alerts.png",
-              "ui-nav.png", "card-overview-front-v11.png",
-              "card-site-intelligence-front-v11.png",
-              "card-financial-command-front-v11.png",
-              "card-operations-front-v11.png",
-              "card-risk-monitor-front-v11.png", "icon-192.png", "icon-512.png",
-          )
+
+          expected = {
+              "ui-hero-front-v11.png": "d78335f4ccf77cebad9dba7d985bce979aff3e31272c4c6a85bc3f211f482df7",
+              "card-financial-command-front-v11.png": "3b7bf631b4a6180d1ab2bf47ce5ec4c82dad65b0dab2e4b9f4c6247da4bc5ff1",
+              "card-operations-front-v11.png": "3f8f4ebf8a500d1d74ce4b728955bed1ceea25066eb2c5754f3db1f7ff67d249",
+              "card-overview-front-v11.png": "d74b1b74e62e310d89d6f900f7e9d468a7bae19aa3c84a16751af68bfd31114a",
+              "card-risk-monitor-front-v11.png": "1447febbbf1245e73ee177a6bb0ae91ad3e09612e6edd57de0c1a90166940d8c",
+              "card-site-intelligence-front-v11.png": "3bba50e8dc2f55f534a39e5b60de928dffcf52486b1f40cd8935455455c70055",
+          }
           assets = Path("sentient-os-web/assets")
-          for name in required:
+          for name, digest in expected.items():
               path = assets / name
               assert path.is_file() and path.stat().st_size > 0, name
+              actual = hashlib.sha256(path.read_bytes()).hexdigest()
+              assert actual == digest, (name, actual)
+
+          hero = (assets / "ui-hero-front-v11.png").read_bytes()
+          assert hero[:8] == b"\x89PNG\r\n\x1a\n"
+          width, height = struct.unpack(">II", hero[16:24])
+          assert width > 500 and height > 500, (width, height)
           PY
 
-      - name: Install approved web interface into APK
+      - name: Install approved interface into APK
         run: |
           mkdir -p android-app/app/src/main/assets/public
           cp -R sentient-os-web/. android-app/app/src/main/assets/public/
 
-      - name: Create dedicated Aqua test release certificate
+      - name: Create release candidate certificate
         run: |
+          KEY_PASSWORD="$(openssl rand -hex 24)"
           keytool -genkeypair \
-            -keystore "$RUNNER_TEMP/aqua-sentient-fold7-test.keystore" \
-            -storepass "AquaSentientTest2026" \
-            -keypass "AquaSentientTest2026" \
-            -alias "aqua-sentient-fold7-test" \
+            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.4.0.keystore" \
+            -storepass "$KEY_PASSWORD" \
+            -keypass "$KEY_PASSWORD" \
+            -alias "aqua-sentinel-v0.4.0" \
             -keyalg RSA \
             -keysize 3072 \
             -validity 3650 \
-            -dname "CN=Aqua Sentient OS Fold 7 Test, OU=Aqua Homes OS, O=Aqua Homes Design Group, L=Hudson, ST=Massachusetts, C=US"
+            -dname "CN=Aqua Sentinel OS Production Candidate, OU=Aqua Homes OS, O=Aqua Homes Design Group, L=Hudson, ST=Massachusetts, C=US"
           {
-            echo "AQUA_TEST_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentient-fold7-test.keystore"
-            echo "AQUA_TEST_KEYSTORE_PASSWORD=AquaSentientTest2026"
-            echo "AQUA_TEST_KEY_ALIAS=aqua-sentient-fold7-test"
-            echo "AQUA_TEST_KEY_PASSWORD=AquaSentientTest2026"
+            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.4.0.keystore"
+            echo "AQUA_RELEASE_KEYSTORE_PASSWORD=$KEY_PASSWORD"
+            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.4.0"
+            echo "AQUA_RELEASE_KEY_PASSWORD=$KEY_PASSWORD"
           } >> "$GITHUB_ENV"
 
-      - name: Build complete release-signed base APK
+      - name: Build release APK
         working-directory: android-app
         run: gradle --no-daemon --stacktrace :app:assembleRelease
 
-      - name: Verify APK with Android tools
+      - name: Verify APK package, signing, and embedded interface
         run: |
           BUILD_TOOLS="$ANDROID_HOME/build-tools/35.0.0"
           APK="android-app/app/build/outputs/apk/release/app-release.apk"
           "$BUILD_TOOLS/zipalign" -c -P 16 -v 4 "$APK"
-          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK"
-          "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/badging.txt
-          grep -q "package: name='com.aquahomes.sentientos.fold7full'" /tmp/badging.txt
-          grep -q "versionCode='2026072406'" /tmp/badging.txt
-          grep -q "sdkVersion:'26'" /tmp/badging.txt
-          grep -q "targetSdkVersion:'35'" /tmp/badging.txt
+          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/aqua-sentinel-certificate.txt
+          "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/aqua-sentinel-badging.txt
+          grep -q "package: name='com.aquahomes.sentinel'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionCode='2026072501'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionName='0.4.0-production-candidate'" /tmp/aqua-sentinel-badging.txt
+          grep -q "sdkVersion:'26'" /tmp/aqua-sentinel-badging.txt
+          grep -q "targetSdkVersion:'35'" /tmp/aqua-sentinel-badging.txt
           unzip -l "$APK" | grep -q "assets/public/index.html"
-          unzip -l "$APK" | grep -q "assets/public/assets/ui-hero.png"
+          unzip -l "$APK" | grep -q "assets/public/assets/ui-hero-front-v11.png"
+          unzip -l "$APK" | grep -q "assets/public/fidelity.css"
           unzip -t "$APK"
 
       - name: Prove clean install and launch on Android
@@ -117,48 +134,58 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
-            adb uninstall com.aquahomes.sentientos.fold7full || true
+            adb uninstall com.aquahomes.sentinel || true
             adb install --no-incremental android-app/app/build/outputs/apk/release/app-release.apk
             adb logcat -c
-            adb shell am start -W -n com.aquahomes.sentientos.fold7full/com.aquahomes.sentientos.MainActivity
+            adb shell am start -W -n com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity
             for attempt in $(seq 1 20); do
               sleep 2
               adb shell uiautomator dump /sdcard/aqua-window.xml >/dev/null 2>&1 || true
               adb pull /sdcard/aqua-window.xml /tmp/aqua-window.xml >/dev/null 2>&1 || true
-              if grep -Eq "Northshore Mega Project|Tap to speak|AQUA SENTINEL OS" /tmp/aqua-window.xml 2>/dev/null; then
+              if grep -Eq "Owner access|Connect Aqua Brain|AQUA SENTINEL OS" /tmp/aqua-window.xml 2>/dev/null; then
                 break
               fi
             done
-            grep -Eq "Northshore Mega Project|Tap to speak|AQUA SENTINEL OS" /tmp/aqua-window.xml
-            adb logcat -d > /tmp/aqua-sentinel-v0.3.1-logcat.txt
-            adb shell pidof com.aquahomes.sentientos.fold7full | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.3.1-logcat.txt || true; exit 1)
-            adb shell dumpsys package com.aquahomes.sentientos.fold7full | grep -q "versionCode=2026072406"
-            adb exec-out screencap -p > /tmp/aqua-sentinel-v0.3.1-launch.png
-            test -s /tmp/aqua-sentinel-v0.3.1-launch.png
+            grep -Eq "Owner access|Connect Aqua Brain|AQUA SENTINEL OS" /tmp/aqua-window.xml
+            adb logcat -d > /tmp/aqua-sentinel-v0.4.0-logcat.txt
+            adb shell pidof com.aquahomes.sentinel | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.4.0-logcat.txt || true; exit 1)
+            adb shell dumpsys package com.aquahomes.sentinel | grep -q "versionCode=2026072501"
+            adb exec-out screencap -p > /tmp/aqua-sentinel-v0.4.0-launch.png
+            test -s /tmp/aqua-sentinel-v0.4.0-launch.png
 
-      - name: Prepare release files
+      - name: Prepare release files and checksums
         run: |
           mkdir -p release
-          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.3.1-FUNCTIONAL-TEST.apk
-          cp /tmp/aqua-sentinel-v0.3.1-launch.png release/AquaSentinelOS-v0.3.1-launch-proof.png
-          sha256sum release/AquaSentinelOS-v0.3.1-FUNCTIONAL-TEST.apk > release/AquaSentinelOS-v0.3.1-FUNCTIONAL-TEST.apk.sha256
+          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.4.0-PRODUCTION-CANDIDATE.apk
+          cp /tmp/aqua-sentinel-v0.4.0-launch.png release/AquaSentinelOS-v0.4.0-launch-proof.png
+          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.4.0-certificate.txt
+          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.4.0-package.txt
+          {
+            echo "commit=$GITHUB_SHA"
+            echo "workflow_run=$GITHUB_RUN_ID"
+            echo "package=com.aquahomes.sentinel"
+            echo "version=0.4.0-production-candidate"
+            echo "target_sdk=35"
+            echo "min_sdk=26"
+          } > release/AquaSentinelOS-v0.4.0-provenance.txt
+          sha256sum release/AquaSentinelOS-v0.4.0-PRODUCTION-CANDIDATE.apk > release/AquaSentinelOS-v0.4.0-PRODUCTION-CANDIDATE.apk.sha256
 
-      - name: Upload workflow artifact
+      - name: Upload verified installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.3.1-FUNCTIONAL-TEST
+          name: AquaSentinelOS-v0.4.0-PRODUCTION-CANDIDATE
           path: release/*
           if-no-files-found: error
 
-      - name: Publish full standalone GitHub installer
+      - name: Publish standalone installer release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: aqua-sentinel-os-v0.3.1-functional-test
+          RELEASE_TAG: aqua-sentinel-os-v0.4.0-production-candidate
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" release/* --clobber
           else
             gh release create "$RELEASE_TAG" release/* \
-              --title "Aqua Sentinel OS v0.3.1 Functional Test" \
-              --notes "Corrected standalone Fold 7 layout APK. Requires no prior Aqua app. Clean-installs and launches on an empty Android emulator before publication. Includes the approved Aqua hero, live obsidian carousel, readable demo intelligence, touch controls, native speech input/output, local conversational command handling, and visible information checks. Protected live-model routing is not represented as connected."
+              --title "Aqua Sentinel OS v0.4.0 Production Candidate" \
+              --notes "Standalone Android production candidate for direct owner testing. The approved Sentinel interface is packaged locally; the centered carousel card snaps face-on before opening; owner authentication uses Aqua's own secure backend rather than ChatGPT; session tokens are encrypted with Android Keystore; OpenAI credentials remain server-side; native speech input and output connect to the persistent Aqua Brain. The workflow verifies package metadata, signing, archive integrity, clean installation, process health, and launch on an empty Android emulator. This candidate uses a dedicated one-run release certificate and is not yet Google Play App Signing ready."
           fi

@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AquaSentientOS"
+rootProject.name = "AquaSentinelOS"
 include(":app")

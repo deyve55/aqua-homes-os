@@ -1,13 +1,13 @@
 {
-  "name": "Aqua Sentient OS",
-  "short_name": "Aqua",
-  "description": "Aqua Sentient OS command center for Dave.",
+  "name": "Aqua Sentinel OS",
+  "short_name": "Sentinel",
+  "description": "Secure Aqua ecosystem command intelligence and persistent business memory.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#01070c",
-  "theme_color": "#010b13",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "icons": [
     {
       "src": "./assets/icon-192.png",

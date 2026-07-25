@@ -5,9 +5,11 @@
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
 
     <application
-        android:allowBackup="true"
-        android:label="Aqua Sentient OS"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:label="Aqua Sentinel OS"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="false"
         android:theme="@android:style/Theme.Material.NoActionBar">
         <activity
             android:name=".MainActivity"

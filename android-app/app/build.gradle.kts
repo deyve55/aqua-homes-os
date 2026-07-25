@@ -7,11 +7,11 @@ android {
     compileSdk = 35
 
     signingConfigs {
-        create("aquaTestRelease") {
-            storeFile = file(System.getenv("AQUA_TEST_KEYSTORE_PATH"))
-            storePassword = System.getenv("AQUA_TEST_KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("AQUA_TEST_KEY_ALIAS")
-            keyPassword = System.getenv("AQUA_TEST_KEY_PASSWORD")
+        create("aquaRelease") {
+            storeFile = file(System.getenv("AQUA_RELEASE_KEYSTORE_PATH"))
+            storePassword = System.getenv("AQUA_RELEASE_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("AQUA_RELEASE_KEY_ALIAS")
+            keyPassword = System.getenv("AQUA_RELEASE_KEY_PASSWORD")
             enableV1Signing = true
             enableV2Signing = true
             enableV3Signing = true
@@ -20,18 +20,18 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.aquahomes.sentientos.fold7full"
+        applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026072406
-        versionName = "0.3.1-fold7-layout"
+        versionCode = 2026072501
+        versionName = "0.4.0-production-candidate"
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
             isDebuggable = false
-            signingConfig = signingConfigs.getByName("aquaTestRelease")
+            signingConfig = signingConfigs.getByName("aquaRelease")
         }
     }
 
