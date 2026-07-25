@@ -1,6 +1,16 @@
 name: Build Aqua Sentinel OS v0.4.5 Production Candidate
 
 on:
+  push:
+    branches:
+      - "agent/aqua-sentinel-production-apk-v0.4.1-20260725"
+    paths:
+      - "android-app/**"
+      - "encoded-assets/aqua-sentinel-launcher-v045/**"
+      - "scripts/restore-aqua-sentinel-launcher-v045.sh"
+      - "sentient-os-web/**"
+      - "tests/sentient-functional-test.mjs"
+      - ".github/workflows/aqua-sentient-os-release.yml"
   workflow_dispatch:
 
 permissions:
