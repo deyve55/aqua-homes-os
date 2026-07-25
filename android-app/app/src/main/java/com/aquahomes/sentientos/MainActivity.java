@@ -80,6 +80,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
         webView = new WebView(this);
         webView.setBackgroundColor(Color.BLACK);
+        webView.setSoundEffectsEnabled(false);
+        webView.setHapticFeedbackEnabled(false);
         configureWebView(webView.getSettings());
         webView.setWebViewClient(new LockedWebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
