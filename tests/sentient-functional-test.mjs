@@ -107,3 +107,22 @@ test("Android blocks cleartext traffic and backup extraction", async () => {
   assert.match(manifest, /android\.permission\.RECORD_AUDIO/);
   assert.match(manifest, /android\.permission\.INTERNET/);
 });
+
+
+test("Fold APK has protected top space, reliable drag, and approved launcher A", async () => {
+  const [script, fidelity, manifest, icon] = await Promise.all([
+    read("sentient-os-web/app.js"),
+    read("sentient-os-web/fidelity.css"),
+    read("android-app/app/src/main/AndroidManifest.xml"),
+    read("android-app/app/src/main/res/drawable/aqua_sentinel_launcher.xml"),
+  ]);
+  assert.match(fidelity, /padding-top:clamp\(34px,7svh,64px\)/);
+  assert.match(fidelity, /card-placeholder-orbit\{[\s\S]*border:0/);
+  assert.match(fidelity, /rotateY\(18deg\)/);
+  assert.match(script, /setPointerCapture/);
+  assert.match(script, /pointermove/);
+  assert.match(script, /velocity >= 0\.32/);
+  assert.match(manifest, /android:icon="@drawable\/aqua_sentinel_launcher"/);
+  assert.match(manifest, /android:roundIcon="@drawable\/aqua_sentinel_launcher"/);
+  assert.match(icon, /android:pathData="M54,22 L81,82/);
+});
