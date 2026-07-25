@@ -415,3 +415,33 @@
   .app-deck .app-card.pos--2{left:0;top:7.5%;width:21.7%;height:69%}
   .app-deck .app-card.pos-2{left:78.3%;top:7.5%;width:21.7%;height:69%}
 }
+
+/* Aqua Sentinel v0.4.6 Fold design-freeze correction.
+   Preserve the approved hero pixels; restore their physical-device scale and punch. */
+html,body,.sentinel,.os-surface,.aqua-hero{background:#000}
+.sentinel{background:#000}
+.aqua-hero{isolation:isolate}
+.hero-art{
+  inset:-2.8% -5.2% -2.8%;
+  background-color:#000;
+  background-position:center 44%;
+  background-size:110.4% 110.4%;
+  filter:brightness(1.16) contrast(1.14) saturate(1.1);
+}
+.aqua-hero:after{
+  content:"";
+  position:absolute;
+  z-index:2;
+  inset:0 0 auto;
+  height:15%;
+  background:linear-gradient(180deg,#000 0%,#000 38%,rgba(0,0,0,.88) 64%,transparent 100%);
+  pointer-events:none;
+}
+.aqua-state-label{display:none}
+.bottom-rail{height:clamp(58px,8.2cqw,70px);background:#000}
+.bottom-rail button{gap:2px}
+.bottom-rail button span{font-size:clamp(16px,2.65cqw,22px)}
+@media(max-width:600px){
+  .os-surface{padding-top:0;background:#000}
+  .aqua-hero{aspect-ratio:868/840}
+}
