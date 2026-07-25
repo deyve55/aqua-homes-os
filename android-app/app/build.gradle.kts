@@ -23,8 +23,8 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026072507
-        versionName = "0.4.6-test-candidate"
+        versionCode = 2026072508
+        versionName = "0.4.7-test-candidate"
     }
 
     buildTypes {
