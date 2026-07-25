@@ -1,4 +1,4 @@
-name: Build Aqua Sentinel OS v0.4.7 Test Candidate
+name: Build Aqua Sentinel OS v0.4.8 Test Candidate
 
 on:
   push:
@@ -18,7 +18,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: aqua-sentinel-os-v0.4.7-test-candidate
+  group: aqua-sentinel-os-v0.4.8-test-candidate
   cancel-in-progress: false
 
 jobs:
@@ -110,18 +110,18 @@ jobs:
         run: |
           KEY_PASSWORD="$(openssl rand -hex 24)"
           keytool -genkeypair \
-            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.4.7.keystore" \
+            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.4.8.keystore" \
             -storepass "$KEY_PASSWORD" \
             -keypass "$KEY_PASSWORD" \
-            -alias "aqua-sentinel-v0.4.7" \
+            -alias "aqua-sentinel-v0.4.8" \
             -keyalg RSA \
             -keysize 3072 \
             -validity 3650 \
-            -dname "CN=Aqua Sentinel OS v0.4.7 Test Candidate, OU=Aqua Homes OS, O=Aqua Homes Design Group, L=Hudson, ST=Massachusetts, C=US"
+            -dname "CN=Aqua Sentinel OS v0.4.8 Test Candidate, OU=Aqua Homes OS, O=Aqua Homes Design Group, L=Hudson, ST=Massachusetts, C=US"
           {
-            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.4.7.keystore"
+            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.4.8.keystore"
             echo "AQUA_RELEASE_KEYSTORE_PASSWORD=$KEY_PASSWORD"
-            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.4.7"
+            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.4.8"
             echo "AQUA_RELEASE_KEY_PASSWORD=$KEY_PASSWORD"
           } >> "$GITHUB_ENV"
 
@@ -137,8 +137,8 @@ jobs:
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/aqua-sentinel-certificate.txt
           "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/aqua-sentinel-badging.txt
           grep -q "package: name='com.aquahomes.sentinel'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionCode='2026072508'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionName='0.4.7-test-candidate'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionCode='2026072509'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionName='0.4.8-test-candidate'" /tmp/aqua-sentinel-badging.txt
           grep -q "sdkVersion:'26'" /tmp/aqua-sentinel-badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/aqua-sentinel-badging.txt
           unzip -l "$APK" | grep -q "assets/public/index.html"
@@ -162,46 +162,46 @@ jobs:
             adb logcat -c
             adb shell am start -W -n com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity
             for attempt in $(seq 1 20); do sleep 2; if adb logcat -d | grep -q "AQUA_SENTINEL_UI_READY"; then break; fi; done
-            adb logcat -d > /tmp/aqua-sentinel-v0.4.7-logcat.txt
-            grep -q "AQUA_SENTINEL_UI_READY" /tmp/aqua-sentinel-v0.4.7-logcat.txt
-            adb shell pidof com.aquahomes.sentinel | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.4.7-logcat.txt || true; exit 1)
-            adb shell dumpsys package com.aquahomes.sentinel | grep -q "versionCode=2026072508"
-            adb exec-out screencap -p > /tmp/aqua-sentinel-v0.4.7-launch.png
-            test -s /tmp/aqua-sentinel-v0.4.7-launch.png
+            adb logcat -d > /tmp/aqua-sentinel-v0.4.8-logcat.txt
+            grep -q "AQUA_SENTINEL_UI_READY" /tmp/aqua-sentinel-v0.4.8-logcat.txt
+            adb shell pidof com.aquahomes.sentinel | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.4.8-logcat.txt || true; exit 1)
+            adb shell dumpsys package com.aquahomes.sentinel | grep -q "versionCode=2026072509"
+            adb exec-out screencap -p > /tmp/aqua-sentinel-v0.4.8-launch.png
+            test -s /tmp/aqua-sentinel-v0.4.8-launch.png
 
       - name: Prepare release files and checksums
         run: |
           mkdir -p release
-          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.4.7-TEST-CANDIDATE.apk
-          cp /tmp/aqua-sentinel-v0.4.7-launch.png release/AquaSentinelOS-v0.4.7-launch-proof.png
-          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.4.7-certificate.txt
-          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.4.7-package.txt
+          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.4.8-TEST-CANDIDATE.apk
+          cp /tmp/aqua-sentinel-v0.4.8-launch.png release/AquaSentinelOS-v0.4.8-launch-proof.png
+          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.4.8-certificate.txt
+          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.4.8-package.txt
           {
             echo "commit=$GITHUB_SHA"
             echo "workflow_run=$GITHUB_RUN_ID"
             echo "package=com.aquahomes.sentinel"
-            echo "version=0.4.7-test-candidate"
+            echo "version=0.4.8-test-candidate"
             echo "target_sdk=35"
             echo "min_sdk=26"
-          } > release/AquaSentinelOS-v0.4.7-provenance.txt
-          sha256sum release/AquaSentinelOS-v0.4.7-TEST-CANDIDATE.apk > release/AquaSentinelOS-v0.4.7-TEST-CANDIDATE.apk.sha256
+          } > release/AquaSentinelOS-v0.4.8-provenance.txt
+          sha256sum release/AquaSentinelOS-v0.4.8-TEST-CANDIDATE.apk > release/AquaSentinelOS-v0.4.8-TEST-CANDIDATE.apk.sha256
 
       - name: Upload verified installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.4.7-TEST-CANDIDATE
+          name: AquaSentinelOS-v0.4.8-TEST-CANDIDATE
           path: release/*
           if-no-files-found: error
 
       - name: Publish standalone installer release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: aqua-sentinel-os-v0.4.7-test-candidate
+          RELEASE_TAG: aqua-sentinel-os-v0.4.8-test-candidate
         run: |
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" release/* --clobber
           else
             gh release create "$RELEASE_TAG" release/* \
-              --title "Aqua Sentinel OS v0.4.7 Test Candidate" \
-              --notes "Fold 7 physical-device repair: the complete interface is lowered slightly on solid Obsidian black, Aqua is taller without clipping or masking her crown, only the front carousel card is reduced and lowered so its complete cyan/Obsidian top border remains visible, the surrounding carousel cards retain their approved dimensions, and the bottom rail remains compact. Aqua speaking energy repeatedly rises and expands from the center core. Native WebView tap sound and haptic feedback are disabled for silent Aqua activation. The approved hero and launcher artwork remain unchanged. AquaTalk uses the authenticated server-side provider route; no provider secret ships in the APK or repository. The workflow verifies package metadata, signing, archive integrity, clean installation, process health, and launch on an empty Android emulator. This candidate uses a dedicated release certificate and is not yet Google Play App Signing ready."
+              --title "Aqua Sentinel OS v0.4.8 Test Candidate" \
+              --notes "Fold 7 lower-screen surgical balance: the approved Aqua hero and carousel remain untouched. The two lower dashboard cards are slightly taller, the bottom navigation rail uses less unused black height, and its icons and labels are larger for field readability. The complete v0.4.7 unclipped-Aqua, protected front-card border, silent activation, and speaking-energy behavior remain intact. AquaTalk uses the authenticated server-side provider route; no provider secret ships in the APK or repository. The workflow verifies package metadata, signing, archive integrity, clean installation, process health, and launch on an empty Android emulator. This candidate uses a dedicated release certificate and is not yet Google Play App Signing ready."
           fi

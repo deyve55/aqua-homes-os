@@ -167,3 +167,17 @@ test("v0.4.7 keeps the carousel stack, protects the front border, and activates 
   assert.match(activity, /webView\.setSoundEffectsEnabled\(false\)/);
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
+
+test("v0.4.8 redistributes only the lower-screen space into cards and readable navigation", async () => {
+  const fidelity = await read("sentient-os-web/fidelity.css");
+  assert.match(fidelity, /v0\.4\.8 lower-screen surgical balance/);
+  assert.match(fidelity, /\.aqua-hero\{[\s\S]*aspect-ratio:868\/875/);
+  assert.match(fidelity, /\.aqua-hero:after\{[\s\S]*display:none/);
+  assert.match(fidelity, /\.state-speaking \.voice-core:before\{[\s\S]*speak-energy-crossbar/);
+  assert.match(fidelity, /\.state-speaking \.voice-core:after\{[\s\S]*bottom:50%;[\s\S]*speak-energy-up/);
+  assert.match(fidelity, /\.app-dashboard\{[\s\S]*padding:1\.1% 2\.8% 2%/);
+  assert.match(fidelity, /\.app-dashboard \.dashboard-card\{[\s\S]*min-height:clamp\(178px,32\.5cqw,282px\)/);
+  assert.match(fidelity, /\.bottom-rail\{[\s\S]*height:clamp\(48px,6cqw,52px\);[\s\S]*min-height:48px/);
+  assert.match(fidelity, /\.bottom-rail button span\{[\s\S]*font-size:clamp\(18px,2\.65cqw,22px\)/);
+  assert.match(fidelity, /\.bottom-rail button small\{[\s\S]*font-size:clamp\(8px,1\.28cqw,11px\)/);
+});
