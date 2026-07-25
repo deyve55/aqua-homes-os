@@ -113,8 +113,10 @@ test("Fold APK has protected top space, kinetic drag, and approved Sentinel OS l
   assert.match(adaptiveIcon, /@mipmap\/aqua_sentinel_launcher_foreground/);
   assert.equal(
     createHash("sha256").update(approvedIcon).digest("hex"),
-    "476a6094bf138893f0a3f2d07a8c0a33db67b45e8a702303ce8ccda9b22c0b96",
+    "dbdb7269f38d37461fc777968d7987af6650f0ffd477f7442da1d54ffe09e452",
   );
+  assert.equal(approvedIcon.readUInt32BE(16), 512);
+  assert.equal(approvedIcon.readUInt32BE(20), 512);
   assert.equal(legacyIcon.readUInt32BE(16), 192);
   assert.equal(legacyIcon.readUInt32BE(20), 192);
   assert.equal(adaptiveForeground.readUInt32BE(16), 432);
