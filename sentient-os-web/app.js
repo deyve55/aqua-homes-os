@@ -160,7 +160,7 @@ const stateLabels = {
 let active = 0;
 let rotating = false;
 let rotationTimer = null;
-let dragX = null;
+let drag = null;
 let authenticated = false;
 let authenticatedEmail = "";
 let sound = true;
@@ -675,16 +675,49 @@ document.querySelectorAll(".bottom-rail button").forEach((button) => {
 });
 
 appDeck.addEventListener("pointerdown", (event) => {
-  dragX = event.clientX;
+  if (event.pointerType === "mouse" && event.button !== 0) return;
+  drag = {
+    pointerId: event.pointerId,
+    startX: event.clientX,
+    startY: event.clientY,
+    lastX: event.clientX,
+    startedAt: performance.now(),
+    horizontal: false,
+  };
+  appDeck.setPointerCapture?.(event.pointerId);
 });
-appDeck.addEventListener("pointerup", (event) => {
-  if (dragX !== null && Math.abs(event.clientX - dragX) > 28) {
-    rotate(event.clientX < dragX ? 1 : -1);
+
+appDeck.addEventListener("pointermove", (event) => {
+  if (!drag || event.pointerId !== drag.pointerId) return;
+  const deltaX = event.clientX - drag.startX;
+  const deltaY = event.clientY - drag.startY;
+  if (!drag.horizontal && Math.abs(deltaX) > 10 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15) {
+    drag.horizontal = true;
   }
-  dragX = null;
+  if (drag.horizontal) {
+    event.preventDefault();
+    drag.lastX = event.clientX;
+    cardsTrack.style.transform = `translateX(${Math.max(-42, Math.min(42, deltaX * 0.22))}px)`;
+  }
 });
-appDeck.addEventListener("pointercancel", () => {
-  dragX = null;
+
+function finishDeckDrag(event, cancelled = false) {
+  if (!drag || event.pointerId !== drag.pointerId) return;
+  const deltaX = event.clientX - drag.startX;
+  const elapsed = Math.max(1, performance.now() - drag.startedAt);
+  const velocity = Math.abs(deltaX) / elapsed;
+  const shouldRotate = !cancelled && drag.horizontal && (Math.abs(deltaX) >= 34 || velocity >= 0.32);
+  cardsTrack.style.transform = "";
+  try { appDeck.releasePointerCapture?.(event.pointerId); } catch {}
+  drag = null;
+  if (shouldRotate) rotate(deltaX < 0 ? 1 : -1);
+}
+
+appDeck.addEventListener("pointerup", (event) => finishDeckDrag(event));
+appDeck.addEventListener("pointercancel", (event) => finishDeckDrag(event, true));
+appDeck.addEventListener("lostpointercapture", () => {
+  cardsTrack.style.transform = "";
+  drag = null;
 });
 
 render();
