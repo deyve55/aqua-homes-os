@@ -229,11 +229,14 @@ function renderCards() {
       "aria-label",
       position === 0 ? `Open ${app.name}` : `Move ${app.name} to center`,
     );
-    const image = document.createElement("img");
-    image.src = `./assets/${app.art}`;
-    image.alt = "";
-    image.draggable = false;
-    card.appendChild(image);
+    card.innerHTML = `
+      <div class="card-placeholder" aria-hidden="true">
+        <span class="card-placeholder-orbit"></span>
+        <strong>${escapeHtml(app.icon)}</strong>
+        <small>${escapeHtml(app.name)}</small>
+        <em>APP INTERFACE RESERVED</em>
+      </div>
+    `;
     card.addEventListener("click", () => {
       if (position !== 0) {
         centerApp(index, false);
