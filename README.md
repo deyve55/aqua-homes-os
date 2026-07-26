@@ -1,5 +1,16 @@
 # aqua-homes-os
-Aqua Homes AI Construction OS prototype
+
+Aqua Homes AI Construction OS prototype and current Aqua Sentinel application-source authority.
+
+## Mandatory continuity start
+
+Before changing Sentinel code, read:
+
+1. [Master Project Handoff](docs/handoffs/MASTER-PROJECT-HANDOFF.md)
+2. [Sentinel Switch, Backend, and SDK Contract](docs/contracts/AQUA-SENTINEL-SWITCH-BACKEND-SDK-CONTRACT.md)
+3. The Golden Goose new-chat preflight on the branch recorded in the handoff.
+
+Say: **“Golden Goose: check the repository and continue from the master handoff.”**
 
 ## Structured App Preview
 
