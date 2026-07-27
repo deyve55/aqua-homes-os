@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0.0",
+  "state_id": "APP-LEGACY-OS-000-CURRENT-STATE-2026-07-26",
+  "status": "PHASE_4_CONTINUITY_CANDIDATE_NOT_MERGED",
+  "owner_and_final_human_authority": "Dave (Deyve)",
+  "project": {
+    "id": "APP-LEGACY-OS-000",
+    "official_name": "Aqua Homes OS Legacy Reference",
+    "repository": "deyve55/aqua-homes-os",
+    "classification": "REFERENCE_ONLY"
+  },
+  "source_snapshot": {
+    "branch": "recovery/phase-1-freeze-20260726",
+    "commit_sha": "fa51b7e45d3cdaf3bacd01be9574ba5bb3806cdd",
+    "captured_local_date": "2026-07-26",
+    "immutable_description_target": true
+  },
+  "continuity": {
+    "branch": "recovery/phase-4-continuity-contract-20260726",
+    "agents_path": "AGENTS.md",
+    "handoff_path": "docs/handoffs/MASTER-PROJECT-HANDOFF.md",
+    "handoff_blob_sha": "bae3f71ebd56c3a46b01153ee31d58f3dc75c952",
+    "handoff_size_bytes": 12164,
+    "handoff_sha256": "a1a8e9ae91395a7b315438debb654f400d5be04ded80eabbf8613f1c9b57ea73",
+    "continuity_parent_commit_sha": "8f0a56f012906d45e729dbfde7b5cdfaeced796b",
+    "current_state_commit_sha": "SELF_REFERENCE_NOT_RECORDED; VERIFY BRANCH HEAD OR PR HEAD",
+    "one_active_handoff": true,
+    "update_required_after_every_meaningful_checkpoint": true,
+    "competing_current_handoffs_forbidden": true
+  },
+  "golden_goose_pin": {
+    "repository": "deyve55/Golden-goose-engineering-manual-",
+    "branch": "recovery/phase-3-golden-goose-reconciliation-20260726",
+    "commit_sha": "114ab91c4038422181ba68029173ddc8aecd5e32",
+    "manual_path": "governance/GOLDEN-GOOSE-ENGINEERING-MANUAL.md",
+    "manual_version": "1.2.1-REPOSITORY-IMPORT-01",
+    "manifest_path": "registry/AQUA-ECOSYSTEM-OPERATIONAL-MANIFEST.json",
+    "status": "PHASE_3_RECONCILIATION_CANDIDATE_NOT_CANONICAL"
+  },
+  "version": {
+    "app_version": "0.64.0 legacy package identity",
+    "version_code_or_build_number": null
+  },
+  "pull_request": {
+    "number": null,
+    "state": "NONE_FOR_SOURCE_BRANCH",
+    "note": "No active product PR; historical PRs preserved."
+  },
+  "pull_request_note": "No active product PR; historical PRs preserved.",
+  "verification": {
+    "application_source_changed_by_phase_4": false,
+    "local_tests_run_by_phase_4": false,
+    "source_files_read": true,
+    "repository_metadata_verified": true,
+    "ci_runs": [],
+    "artifacts": [
+      {
+        "status": "PRESERVED_ENGINEERING_EVIDENCE",
+        "name": "legacy Sentinel reference artifact",
+        "durable_release": false
+      }
+    ],
+    "physical_device_status": "NOT APPLICABLE TO ACTIVE PRODUCT AUTHORITY",
+    "live_deployment_changed_by_phase_4": false
+  },
+  "cross_app_relationships": [],
+  "truth_states": {
+    "preserved": true,
+    "implemented": "SOURCE_BRANCH_EXISTS",
+    "ci_verified": false,
+    "artifact_produced": true,
+    "physically_verified": false,
+    "accepted_releasable": false,
+    "live_deployed": false,
+    "canonical": false
+  },
+  "blockers": [
+    "many historical branches and version labels",
+    "older documents may still misidentify active OS"
+  ],
+  "latest_owner_direction": "Keep Golden Goose as the engineering constitution/software-company operating system; require each app repository to update its one handoff and machine state continuously; keep app work isolated; monthly Gemini–Codex review; Claude remains inactive until Dave explicitly activates a three-model workflow.",
+  "exact_next_action": "No active development. Request Dave's explicit surgical migration approval before reusing a component in Aqua-sentient-os.",
+  "required_update_triggers": [
+    "source branch or commit",
+    "app version/build number",
+    "pull request",
+    "tests/workflow",
+    "artifact/checksum/release",
+    "deployment",
+    "physical device or field result",
+    "known defect or blocker",
+    "Golden Goose or SDK adoption",
+    "exact next action"
+  ],
+  "safety": {
+    "secrets_committed": false,
+    "application_code_changed_by_phase_4": false,
+    "merge_performed": false,
+    "deployment_performed": false,
+    "phase_one_recovery_anchor_mutated": false
+  }
+}
