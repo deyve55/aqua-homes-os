@@ -38,9 +38,12 @@ request_id: exact request UUID
 snapshot_json: UTF-8 JSON, maximum 384 KiB
 ```
 
-Sentinel accepts a response only when Android reports that the sender UID owns
-the exact installed package to which Sentinel sent the request. Unknown,
-unsolicited, malformed, or oversized responses are rejected.
+On Android 14 and newer, Sentinel accepts a response only when Android reports
+that the sender UID owns the exact installed package to which Sentinel sent the
+request. On Android 8 through 13, the explicit request's cryptographically
+random, single-use `request_id` is the response capability; Sentinel removes it
+on first use so unsolicited and replayed responses are rejected. Malformed or
+oversized responses are rejected on every supported version.
 
 ## Snapshot JSON
 

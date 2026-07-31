@@ -83,7 +83,9 @@ test("carousel previews and lower intelligence cards use verified refreshable sn
   assert.doesNotMatch(script, /value: "\$184K"/);
   assert.match(native, /REQUEST_HOME_SNAPSHOT/);
   assert.match(native, /HOME_SNAPSHOT_RESPONSE/);
-  assert.match(native, /getPackagesForUid\(getSendingUid\(\)\)/);
+  assert.match(native, /Build\.VERSION\.SDK_INT >= Build\.VERSION_CODES\.UPSIDE_DOWN_CAKE/);
+  assert.match(native, /getPackagesForUid\(getSentFromUid\(\)\)/);
+  assert.match(native, /pendingSnapshots\.remove\(requestId\)/);
   assert.match(native, /MAX_SNAPSHOT_BYTES/);
   assert.match(contract, /Aqua CRM[\s\S]*Aqua Receipts/);
   assert.match(contract, /awaiting-live-connection/);

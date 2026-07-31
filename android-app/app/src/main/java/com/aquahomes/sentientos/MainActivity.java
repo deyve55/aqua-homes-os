@@ -110,10 +110,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             if (requestId == null || snapshotJson == null) return;
             SnapshotRequest request = pendingSnapshots.remove(requestId);
             if (request == null) return;
-            String[] senderPackages = getPackageManager().getPackagesForUid(getSendingUid());
-            if (senderPackages == null || !Arrays.asList(senderPackages).contains(request.packageName)) {
-                deliverSnapshot(request.appName, "", "rejected-untrusted-sender");
-                return;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                String[] senderPackages = getPackageManager().getPackagesForUid(getSentFromUid());
+                if (senderPackages == null || !Arrays.asList(senderPackages).contains(request.packageName)) {
+                    deliverSnapshot(request.appName, "", "rejected-untrusted-sender");
+                    return;
+                }
             }
             if (snapshotJson.getBytes(StandardCharsets.UTF_8).length > MAX_SNAPSHOT_BYTES) {
                 deliverSnapshot(request.appName, "", "rejected-oversize");
