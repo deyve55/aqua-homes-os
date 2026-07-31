@@ -217,7 +217,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.5.2 packages truthful local previews and synchronized lower cards", async () => {
+test("v0.5.3 isolates customer-preview snapshots and synchronizes lower cards", async () => {
   const [gradle, workflow, script, html, fidelity] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -225,9 +225,11 @@ test("v0.5.2 packages truthful local previews and synchronized lower cards", asy
     read("sentient-os-web/index.html"),
     read("sentient-os-web/fidelity.css"),
   ]);
-  assert.match(gradle, /versionCode = 2026073105/);
-  assert.match(gradle, /versionName = "0\.5\.2-carousel-cards-capture-test"/);
-  assert.match(workflow, /AquaSentinelOS-v0\.5\.2-CAROUSEL-CARDS-CAPTURE-TEST\.apk/);
+  assert.match(gradle, /versionCode = 2026073106/);
+  assert.match(gradle, /versionName = "0\.5\.3-customer-preview-filing-test"/);
+  assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
+  assert.match(workflow, /AquaSentinelOS-v0\.5\.3-CUSTOMER-PREVIEW-FILING-TEST\.apk/);
+  assert.match(workflow, /-Paqua\.customerPreview=true/);
   assert.match(script, /renderFallbackPreview/);
   assert.match(script, /Live · confirmed/);
   assert.match(script, /label: "Local preview", className: "preview"/);
@@ -277,11 +279,12 @@ test("v0.5.0 compact rail and filing cabinet share one protected widget inbox", 
   assert.match(capture, /FilingStore\.enqueue/);
   assert.match(manifest, /\.AquaCommandWidget/);
   assert.match(manifest, /\.QuickCaptureActivity/);
+  assert.match(manifest, /com\.aquasoftware\.sentinel\.action\.FILE/);
   assert.match(manifest, /\.EvidenceProvider/);
   assert.match(contract, /Capture acknowledgement must never be represented as remote confirmation/);
 });
 
-test("v0.5.2 keeps the approved app covers while making finger rotation low-friction", async () => {
+test("v0.5.3 preserves app covers and places the full name below the sound bar", async () => {
   const [html, script, fidelity, ...carouselAssets] = await Promise.all([
     read("sentient-os-web/index.html"),
     read("sentient-os-web/app.js"),
@@ -295,7 +298,7 @@ test("v0.5.2 keeps the approved app covers while making finger rotation low-fric
   }
   assert.match(script, /function renderCarouselCover/);
   assert.match(html, /id="selectedAppLabel" class="selected-app-label"/);
-  assert.match(script, /selectedAppLabel\.textContent = selected\.cardName/);
+  assert.match(script, /selectedAppLabel\.textContent = selected\.name/);
   assert.match(script, /class="carousel-art"/);
   assert.match(script, /assets\/carousel-v2\/\$\{escapeHtml\(app\.motion\)\}\.webp/);
   assert.doesNotMatch(script, /class="carousel-state/);
@@ -327,27 +330,29 @@ test("v0.5.2 keeps the approved app covers while making finger rotation low-fric
   assert.match(fidelity, /v0\.5\.2 owner field-test correction: free touch, visible app UI, balanced rail/);
   assert.match(fidelity, /touch-action:none!important/);
   assert.match(fidelity, /height:clamp\(50px,7cqw,58px\)/);
-  assert.match(fidelity, /\.selected-app-label\{[\s\S]*top:0;[\s\S]*font-size:clamp\(11px,2\.9cqw,18px\);[\s\S]*font-weight:800/);
-  assert.match(fidelity, /\.app-deck\.is-settled \.selected-app-label\{[\s\S]*animation:selected-app-reveal 2\.7s/);
+  assert.match(fidelity, /\.aqua-hero \.selected-app-label\{[\s\S]*left:27%;[\s\S]*right:27%;[\s\S]*bottom:1\.35%;[\s\S]*font-size:clamp\(11px,2\.35cqw,20px\)/);
+  assert.match(fidelity, /\.selected-app-label\.is-visible\{[\s\S]*animation:selected-app-reveal 2s/);
+  assert.match(fidelity, /\.aqua-state-label\{[\s\S]*display:block;[\s\S]*bottom:13\.6%/);
+  assert.match(script, /idle: "Tap to speak to Aqua"/);
   assert.match(fidelity, /@keyframes selected-app-reveal\{[\s\S]*100%\{opacity:0/);
   assert.match(fidelity, /\.dashboard-card header b\.preview/);
   assert.match(fidelity, /\.carousel-art\{[\s\S]*object-fit:cover/);
   assert.match(fidelity, /animation-play-state:paused!important/);
   assert.match(fidelity, /\.app-deck\.is-settled \.app-card\.active \.carousel-motion[\s\S]*animation-play-state:running!important/);
-  assert.match(fidelity, /\.app-deck\.is-settled \.selected-app-label/);
+  assert.match(script, /function revealSelectedAppLabel/);
   assert.match(fidelity, /@keyframes receipt-scan[^}]*[\s\S]*top:82%/);
   assert.match(fidelity, /@keyframes vault-door-open/);
   assert.match(fidelity, /@keyframes crm-token-flow/);
   assert.match(fidelity, /\.screen-lower \.dashboard-screen-sheet\{top:-100%\}/);
 });
 
-test("v0.5.2 resolves, records, and truthfully saves every widget capture route", async () => {
+test("v0.5.3 resolves, saves, and returns widget captures to the file cabinet", async () => {
   const [widget, capture, styles, workflow, widgetVerifier] = await Promise.all([
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
     read("android-app/app/src/main/res/values/styles.xml"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
-    read("scripts/verify-aqua-sentinel-widget-actions-v052.sh"),
+    read("scripts/verify-aqua-sentinel-widget-actions-v053.sh"),
   ]);
   assert.match(widget, /PendingIntent\.FLAG_UPDATE_CURRENT \| PendingIntent\.FLAG_IMMUTABLE/);
   assert.match(widget, /setPackage\(context\.getPackageName\(\)\)/);
@@ -362,8 +367,13 @@ test("v0.5.2 resolves, records, and truthfully saves every widget capture route"
   assert.match(capture, /STATE_EVIDENCE_PATH/);
   assert.match(capture, /protected void onNewIntent/);
   assert.match(capture, /evidenceFile\.length\(\) > 0/);
+  assert.match(capture, /recoverReturnedMedia\(requestCode, data\)/);
+  assert.match(capture, /source=returned-uri/);
+  assert.match(capture, /source=returned-thumbnail/);
+  assert.match(capture, /private void openFilingCabinet\(\)/);
+  assert.match(capture, /putExtra\("open_filing", true\)/);
   assert.match(styles, /<item name="android:clickable">true<\/item>/);
-  assert.match(workflow, /bash scripts\/verify-aqua-sentinel-widget-actions-v052\.sh/);
+  assert.match(workflow, /bash scripts\/verify-aqua-sentinel-widget-actions-v053\.sh/);
   assert.match(widgetVerifier, /for mode in ask voice photo video/);
   assert.match(widgetVerifier, /AQUA_WIDGET_ACTION_RECEIVED mode=\$mode/);
   assert.match(widgetVerifier, /AQUA_CAPTURE_ROUTE mode=\$mode/);

@@ -146,7 +146,7 @@ const apps = [
 ];
 
 const stateLabels = {
-  idle: "TAP THE A TO SPEAK",
+  idle: "Tap to speak to Aqua",
   connecting: "AQUA IS CONNECTING",
   listening: "AQUA IS LISTENING",
   thinking: "AQUA IS ANALYZING",
@@ -167,7 +167,38 @@ let filingBriefAnnounced = false;
 let sound = true;
 let notifications = true;
 const liveSnapshots = new Map();
+const customerPreviewSnapshots = new Map();
 const snapshotStates = new Map();
+
+function enableCustomerPreviewIfAuthorized() {
+  let enabled = false;
+  try {
+    enabled = Boolean(window.AquaBridge?.isCustomerPreviewBuild?.());
+  } catch (_) {
+    enabled = false;
+  }
+  if (!enabled) return;
+  customerPreviewSnapshots.set("Aqua Knowledge Vault", {
+    previewOnly: true,
+    preview: {
+      eyebrow: "KNOWLEDGE VAULT · CUSTOMER PREVIEW",
+      title: "Enterprise Master Brain",
+      metric: "Current information",
+      value: "Ready",
+      tiles: ["Sources", "Syncs", "Code checks"],
+    },
+    primary: {
+      title: "Current Information",
+      value: "Customer view",
+      detail: "Codes, tax, safety and job knowledge preview",
+    },
+    secondary: {
+      title: "Sources · Syncs · Code Checks",
+      value: "Preview ready",
+      detail: "Synthetic test content until the verified app snapshot arrives",
+    },
+  });
+}
 
 const sentinel = document.getElementById("sentinel");
 const appDeck = document.getElementById("appDeck");
@@ -231,10 +262,11 @@ function escapeHtml(value) {
 }
 
 function selectedView(app) {
-  const snapshot = liveSnapshots.get(app.name);
+  const snapshot = liveSnapshots.get(app.name) || customerPreviewSnapshots.get(app.name);
   if (!snapshot) return app;
   return {
     ...app,
+    previewOnly: Boolean(snapshot.previewOnly),
     preview: { ...app.preview, ...(snapshot.preview || {}) },
     previewImage: snapshot.previewImage || null,
     capturedAt: snapshot.capturedAt || null,
@@ -329,6 +361,9 @@ function dashboardScreenMarkup(app, view, previewImageUrl, half) {
 function snapshotPresentation(app) {
   const raw = snapshotStates.get(app.name) || "awaiting-live-connection";
   const hasSnapshot = liveSnapshots.has(app.name);
+  if (!hasSnapshot && customerPreviewSnapshots.has(app.name)) {
+    return { label: "Customer preview", className: "preview" };
+  }
   if (raw === "needs-attention") return { label: "Needs attention", className: "needs-attention" };
   if (raw.includes("refresh")) return { label: hasSnapshot ? "Cached · refreshing" : "Refreshing", className: "refreshing" };
   if (hasSnapshot && /confirmed|live|connected/.test(raw)) return { label: "Live · confirmed", className: "confirmed" };
@@ -478,10 +513,12 @@ function applyDeckPosition(offsetPx, animate) {
 function renderDashboard() {
   const selected = selectedView(apps[active]);
   const presentation = snapshotPresentation(selected);
-  const updated = formatSnapshotTime(selected.capturedAt);
+  const updated = selected.previewOnly
+    ? "Test-build preview · not live data"
+    : formatSnapshotTime(selected.capturedAt);
   const previewImageUrl = safePreviewImage(selected.previewImage);
   appDashboard.style.setProperty("--app-color", selected.color);
-  selectedAppLabel.textContent = selected.cardName;
+  selectedAppLabel.textContent = selected.name;
   selectedAppLabel.style.setProperty("--app-color", selected.color);
   document.getElementById("primaryTitle").textContent = `${selected.cardName} · Upper`;
   document.getElementById("primaryDetail").textContent = selected.primaryDetail;
@@ -520,11 +557,18 @@ function render() {
   renderDashboard();
 }
 
+function revealSelectedAppLabel() {
+  selectedAppLabel.classList.remove("is-visible");
+  void selectedAppLabel.offsetWidth;
+  selectedAppLabel.classList.add("is-visible");
+}
+
 function finishRotation(openAfter) {
   rotating = false;
   appDeck.classList.remove("is-rotating");
   appDeck.classList.add("is-settled");
   renderDashboard();
+  revealSelectedAppLabel();
   deckDots.querySelectorAll("button").forEach((dot, index) => {
     dot.classList.toggle("active", index === active);
   });
@@ -543,6 +587,7 @@ function centerApp(index, openAfter) {
   rotating = true;
   appDeck.classList.remove("is-settled");
   appDeck.classList.add("is-rotating");
+  selectedAppLabel.classList.remove("is-visible");
   active = (index + apps.length) % apps.length;
   closeOverlays();
   render();
@@ -1044,6 +1089,7 @@ function coastDeck(initialVelocity) {
   rotating = true;
   appDeck.classList.remove("is-settled");
   appDeck.classList.add("is-rotating");
+  selectedAppLabel.classList.remove("is-visible");
   let velocity = Math.max(-3.4, Math.min(3.4, initialVelocity));
   let position = 0;
   let lastTime = performance.now();
@@ -1152,7 +1198,9 @@ appDeck.addEventListener("lostpointercapture", (event) => {
   if (drag && event.pointerId === drag.pointerId) finishDeckDrag(event, true);
 });
 
+enableCustomerPreviewIfAuthorized();
 render();
+requestAnimationFrame(revealSelectedAppLabel);
 requestSnapshot(apps[active]);
 setInterval(() => {
   if (document.visibilityState === "visible") requestSnapshot(apps[active]);

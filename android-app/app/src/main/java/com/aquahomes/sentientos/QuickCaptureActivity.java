@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,9 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -255,16 +259,53 @@ public class QuickCaptureActivity extends Activity {
         }
 
         boolean mediaRequest = requestCode == PHOTO_REQUEST || requestCode == VIDEO_REQUEST;
+        if (mediaRequest && !hasEvidenceBytes()) {
+            recoverReturnedMedia(requestCode, data);
+        }
         boolean cameraWroteEvidence = mediaRequest
-            && evidenceFile != null
-            && evidenceFile.isFile()
-            && evidenceFile.length() > 0;
+            && hasEvidenceBytes();
         if (!mediaRequest || (resultCode != RESULT_OK && !cameraWroteEvidence)) {
             deleteEmptyEvidence();
             finish();
             return;
         }
         saveMediaCapture(requestCode == VIDEO_REQUEST ? "video" : "photo");
+    }
+
+    private boolean hasEvidenceBytes() {
+        return evidenceFile != null && evidenceFile.isFile() && evidenceFile.length() > 0;
+    }
+
+    private void recoverReturnedMedia(int requestCode, Intent data) {
+        if (evidenceFile == null || data == null) return;
+        try {
+            Uri returnedUri = data.getData();
+            if (returnedUri != null) {
+                try (
+                    InputStream input = getContentResolver().openInputStream(returnedUri);
+                    OutputStream output = new FileOutputStream(evidenceFile)
+                ) {
+                    if (input == null) return;
+                    byte[] buffer = new byte[16 * 1024];
+                    int read;
+                    while ((read = input.read(buffer)) != -1) output.write(buffer, 0, read);
+                }
+                Log.i("AquaCommandWidget", "AQUA_CAPTURE_RECOVERED source=returned-uri");
+                return;
+            }
+            if (requestCode != PHOTO_REQUEST || data.getExtras() == null) return;
+            Object thumbnail = data.getExtras().get("data");
+            if (!(thumbnail instanceof Bitmap)) return;
+            try (OutputStream output = new FileOutputStream(evidenceFile)) {
+                if (!((Bitmap) thumbnail).compress(Bitmap.CompressFormat.JPEG, 95, output)) {
+                    throw new IllegalStateException("Photo thumbnail compression failed");
+                }
+            }
+            Log.i("AquaCommandWidget", "AQUA_CAPTURE_RECOVERED source=returned-thumbnail");
+        } catch (Exception error) {
+            Log.w("AquaCommandWidget", "AQUA_CAPTURE_RECOVERY_FAILED", error);
+            deleteEmptyEvidence();
+        }
     }
 
     private void completeVoice(ArrayList<String> results) {
@@ -284,11 +325,12 @@ public class QuickCaptureActivity extends Activity {
         if (saved) {
             Log.i("AquaCommandWidget", "AQUA_CAPTURE_SAVED type=voice");
             Toast.makeText(this, "Saved. Aqua added the voice text to the filing cabinet.", Toast.LENGTH_SHORT).show();
+            openFilingCabinet();
         } else {
             Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=voice reason=store");
             Toast.makeText(this, "Aqua could not save that voice text.", Toast.LENGTH_SHORT).show();
         }
-        finish();
+        if (!saved) finish();
     }
 
     private void saveMediaCapture(String type) {
@@ -308,11 +350,25 @@ public class QuickCaptureActivity extends Activity {
         if (item.length() > 0) {
             Log.i("AquaCommandWidget", "AQUA_CAPTURE_SAVED type=" + type + " bytes=" + evidenceFile.length());
             Toast.makeText(this, "Saved. Aqua protected the " + type + " in the filing inbox.", Toast.LENGTH_SHORT).show();
+            openFilingCabinet();
         } else {
             Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=" + type + " reason=store");
             evidenceFile.delete();
             Toast.makeText(this, "Aqua could not save that " + type + ".", Toast.LENGTH_SHORT).show();
         }
+        if (item.length() == 0) finish();
+    }
+
+    private void openFilingCabinet() {
+        startActivity(
+            new Intent(this, MainActivity.class)
+                .putExtra("open_filing", true)
+                .addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                )
+        );
         finish();
     }
 

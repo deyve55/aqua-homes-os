@@ -6,7 +6,7 @@ activity="$package/com.aquahomes.sentientos.QuickCaptureActivity"
 
 for mode in ask voice photo video; do
   action="com.aquasoftware.sentinel.action.${mode^^}"
-  evidence="/tmp/aqua-sentinel-v0.5.2-widget-${mode}.logcat.txt"
+  evidence="/tmp/aqua-sentinel-v0.5.3-widget-${mode}.logcat.txt"
 
   adb logcat -c
   adb shell am start -W \

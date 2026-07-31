@@ -37,6 +37,9 @@ Capture acknowledgement must never be represented as remote confirmation.
 The integrated widget uses explicit component intents. The action/deep-link
 surface is retained so the separately packaged Command Center widget can call
 the same Sentinel capture path when its missing source is restored.
+For compatibility with the external widget, Sentinel also accepts
+`com.aquasoftware.sentinel.action.FILE` and `aquasentinel://file` as aliases
+for the same quick voice-filing path.
 
 ## Item fields
 

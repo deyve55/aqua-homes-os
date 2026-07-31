@@ -23,8 +23,17 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026073105
-        versionName = "0.5.2-carousel-cards-capture-test"
+        versionCode = 2026073106
+        versionName = "0.5.3-customer-preview-filing-test"
+        buildConfigField(
+            "boolean",
+            "CUSTOMER_PREVIEW_SNAPSHOTS",
+            providers.gradleProperty("aqua.customerPreview").orElse("false").get()
+        )
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

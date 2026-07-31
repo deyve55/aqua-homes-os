@@ -959,6 +959,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
 
         @JavascriptInterface
+        public boolean isCustomerPreviewBuild() {
+            return BuildConfig.CUSTOMER_PREVIEW_SNAPSHOTS;
+        }
+
+        @JavascriptInterface
         public String getFilingInbox() {
             return FilingStore.inboxJson(MainActivity.this);
         }

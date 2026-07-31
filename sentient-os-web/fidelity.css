@@ -659,12 +659,12 @@ html,body,.sentinel,.os-surface,.aqua-hero{background:#000}
 .selected-app-label{
   position:absolute;
   z-index:30;
-  left:17%;
-  right:17%;
-  top:.5%;
+  left:27%;
+  right:27%;
+  bottom:1.35%;
   overflow:hidden;
   color:#fff;
-  font-size:clamp(8px,1.7cqw,15px);
+  font-size:clamp(11px,2.35cqw,20px);
   font-weight:700;
   letter-spacing:.04em;
   line-height:1.15;
@@ -675,7 +675,7 @@ html,body,.sentinel,.os-surface,.aqua-hero{background:#000}
   white-space:nowrap;
   pointer-events:none;
 }
-.app-deck.is-settled .selected-app-label{animation:selected-app-reveal 2.3s ease both}
+.selected-app-label.is-visible{animation:selected-app-reveal 2s ease both}
 .carousel-a{
   position:absolute;
   z-index:4;
@@ -820,10 +820,10 @@ html,body{overscroll-behavior:none}
   line-height:1.04;
   text-shadow:0 0 5px #fff,0 0 17px color-mix(in srgb,var(--app-color) 72%,transparent);
 }
-.app-deck.is-settled .selected-app-label{
-  animation:selected-app-reveal 2.7s cubic-bezier(.22,.72,.2,1) both;
+.selected-app-label.is-visible{
+  animation:selected-app-reveal 2s cubic-bezier(.22,.72,.2,1) both;
 }
-.app-deck.is-rotating .selected-app-label{
+.selected-app-label:not(.is-visible){
   opacity:0;
   transform:translateY(-3px);
 }
@@ -855,4 +855,36 @@ html,body{overscroll-behavior:none}
 }
 @media(max-width:600px){
   .dashboard-screen-crop{min-height:clamp(126px,26cqw,220px)}
+}
+
+/* Aqua Sentinel owner-approved v0.5.3 label placement.
+   Preserve the hero bitmap and mask only its baked instruction line. */
+.aqua-hero:before{
+  content:"";
+  position:absolute;
+  z-index:2;
+  left:0;
+  right:0;
+  bottom:0;
+  height:6.9%;
+  background:linear-gradient(180deg,rgba(0,3,7,0),#000 28%,#000 100%);
+  pointer-events:none;
+}
+.aqua-state-label{
+  display:block;
+  bottom:13.6%;
+  color:#d6e4e8;
+  font-family:Inter,system-ui,sans-serif;
+  font-size:clamp(7px,1.35cqw,11px);
+  font-weight:400;
+  letter-spacing:.015em;
+  text-transform:none;
+  text-shadow:0 1px 3px #000;
+}
+.aqua-hero .selected-app-label{
+  top:auto;
+  left:27%;
+  right:27%;
+  bottom:1.35%;
+  font-size:clamp(11px,2.35cqw,20px);
 }

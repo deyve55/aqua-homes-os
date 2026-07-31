@@ -59,6 +59,7 @@
             <intent-filter>
                 <action android:name="com.aquasoftware.sentinel.action.ASK" />
                 <action android:name="com.aquasoftware.sentinel.action.VOICE" />
+                <action android:name="com.aquasoftware.sentinel.action.FILE" />
                 <action android:name="com.aquasoftware.sentinel.action.PHOTO" />
                 <action android:name="com.aquasoftware.sentinel.action.VIDEO" />
                 <category android:name="android.intent.category.DEFAULT" />
