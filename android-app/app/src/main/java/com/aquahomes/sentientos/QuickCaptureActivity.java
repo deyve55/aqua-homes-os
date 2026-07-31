@@ -106,9 +106,9 @@ public class QuickCaptureActivity extends Activity {
             evidenceFile = new File(folder, System.currentTimeMillis() + (video ? ".mp4" : ".jpg"));
             Uri uri = EvidenceProvider.uriFor(this, evidenceFile);
             Intent intent = new Intent(video ? MediaStore.ACTION_VIDEO_CAPTURE : MediaStore.ACTION_IMAGE_CAPTURE)
-                .putExtra(MediaStore.EXTRA_OUTPUT, uri)
-                .setClipData(ClipData.newRawUri("Aqua filing evidence", uri))
-                .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                .putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            intent.setClipData(ClipData.newRawUri("Aqua filing evidence", uri));
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivityForResult(intent, video ? VIDEO_REQUEST : PHOTO_REQUEST);
         } catch (Exception error) {
             Toast.makeText(this, "Camera capture is not available.", Toast.LENGTH_SHORT).show();
