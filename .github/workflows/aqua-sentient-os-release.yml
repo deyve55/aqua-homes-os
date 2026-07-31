@@ -13,10 +13,24 @@ on:
       - "sentient-os-web/**"
       - "tests/sentient-functional-test.mjs"
       - ".github/workflows/aqua-sentient-os-release.yml"
+  pull_request:
+    branches:
+      - "main"
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "android-app/**"
+      - "encoded-assets/aqua-sentinel-launcher-v045/**"
+      - "scripts/restore-aqua-sentinel-launcher-v045.sh"
+      - "sentient-os-web/**"
+      - "tests/sentient-functional-test.mjs"
+      - ".github/workflows/aqua-sentient-os-release.yml"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: aqua-sentinel-os-v0.4.8-carousel-test
@@ -24,6 +38,7 @@ concurrency:
 
 jobs:
   build-apk:
+    if: github.event_name != 'pull_request' || github.head_ref == 'agent/aqua-sentinel-command-center-integration-20260730'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -193,16 +208,3 @@ jobs:
           name: AquaSentinelOS-v0.4.8-CAROUSEL-TEST
           path: release/*
           if-no-files-found: error
-
-      - name: Publish standalone installer release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: aqua-sentinel-os-v0.4.8-carousel-test
-        run: |
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" release/* --clobber
-          else
-            gh release create "$RELEASE_TAG" release/* \
-              --title "Aqua Sentinel OS v0.4.8 Carousel Test" \
-              --notes "Seven-app Sentinel carousel test for Aqua CRM, AquaDraw, AquaCam, Aqua Knowledge Vault, Aqua Timesheet, Aqua Books, and Aqua Receipts. Each centered card launches the installed satellite. Verified home-screen snapshots refresh on selection, foreground resume, and once per minute; the same snapshot drives both lower intelligence cards. Until a satellite adopts the v1.0 snapshot contract, Sentinel shows an awaiting-live-connection state and does not invent operational data. This test build uses a dedicated certificate and may require uninstalling the prior test build before installation."
-          fi
