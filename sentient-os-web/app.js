@@ -146,7 +146,7 @@ const apps = [
 ];
 
 const stateLabels = {
-  idle: "Tap to speak to Aqua",
+  idle: "Tap here to speak to Aqua",
   connecting: "AQUA IS CONNECTING",
   listening: "AQUA IS LISTENING",
   thinking: "AQUA IS ANALYZING",
@@ -166,6 +166,9 @@ let filingInbox = [];
 let filingBriefAnnounced = false;
 let sound = true;
 let notifications = true;
+const widgetMessageStorageKey = "aqua-sentinel-widget-messages-v1";
+let widgetMessages = loadWidgetMessages();
+let widgetCommandInFlight = null;
 const liveSnapshots = new Map();
 const customerPreviewSnapshots = new Map();
 const snapshotStates = new Map();
@@ -198,6 +201,61 @@ function enableCustomerPreviewIfAuthorized() {
       detail: "Synthetic test content until the verified app snapshot arrives",
     },
   });
+}
+
+function loadWidgetMessages() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(widgetMessageStorageKey) || "[]");
+    return Array.isArray(parsed) ? parsed.slice(0, 40) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveWidgetMessages() {
+  try {
+    localStorage.setItem(widgetMessageStorageKey, JSON.stringify(widgetMessages.slice(0, 40)));
+  } catch (_) {}
+}
+
+function recordWidgetMessage(role, text, state) {
+  const message = {
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    role,
+    text: String(text || "").trim(),
+    state,
+    createdAt: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
+  };
+  widgetMessages.unshift(message);
+  widgetMessages = widgetMessages.slice(0, 40);
+  saveWidgetMessages();
+  return message;
+}
+
+function flushNextWidgetCommand() {
+  if (!authenticated || widgetCommandInFlight) return;
+  const pending = [...widgetMessages]
+    .reverse()
+    .find((message) => message.role === "You" && message.state.startsWith("Saved locally"));
+  if (!pending) return;
+  pending.state = "Sending to Aqua";
+  widgetCommandInFlight = pending.id;
+  saveWidgetMessages();
+  window.receiveAquaText(pending.text);
+}
+
+function widgetMessagesMarkup() {
+  const messages = widgetMessages.length
+    ? widgetMessages.map((message) => `
+        <article class="widget-message ${message.role === "Aqua" ? "aqua" : "owner"}">
+          <header><strong>${escapeHtml(message.role)}</strong><small>${escapeHtml(message.createdAt)}</small></header>
+          <p>${escapeHtml(message.text)}</p>
+          <footer>${escapeHtml(message.state)}</footer>
+        </article>`).join("")
+    : `<div class="widget-message-empty">Messages fired from the Aqua Command Center widget will appear here.</div>`;
+  return `${systemHeader("Messages")}
+    <div class="widget-message-receipt">Command Center messages are saved locally first, then sent through Aqua when authenticated.</div>
+    <div class="widget-message-list">${messages}</div>`;
 }
 
 const sentinel = document.getElementById("sentinel");
@@ -750,19 +808,7 @@ function openPanel(kind) {
   }
 
   if (kind === "messages") {
-    systemPanel.innerHTML =
-      systemHeader("Messages") +
-      `<div class="panel-list">${apps
-        .slice(1, 5)
-        .map(
-          (app, index) => `
-            <button type="button" data-app="${index + 1}">
-              <i style="color:${app.color}">${escapeHtml(app.icon)}</i>
-              <span><strong>${escapeHtml(app.name)}</strong><small>${escapeHtml(app.activity[0])}</small></span>
-              <b>${index + 1}</b>
-            </button>`,
-        )
-        .join("")}</div>`;
+    systemPanel.innerHTML = widgetMessagesMarkup();
   } else if (kind === "files") {
     systemPanel.innerHTML = filingCabinetMarkup();
   } else if (kind === "data") {
@@ -934,23 +980,53 @@ window.receiveAquaText = (text) => {
   window.AquaBridge.askAqua(command, selected.name, JSON.stringify(context));
 };
 
+window.receiveWidgetCommand = (text) => {
+  const command = String(text || "").trim();
+  if (!command) return;
+  recordWidgetMessage("You", command, "Saved locally · awaiting Aqua");
+  openPanel("messages");
+  notify(authenticated ? "Command Center message received. Sending to Aqua." : "Command Center message saved locally.");
+  if (authenticated) {
+    flushNextWidgetCommand();
+  } else {
+    authMessage.textContent = "Your widget message is saved locally. Sign in to send it through Aqua Brain.";
+  }
+};
+
 window.receiveAquaResponse = (raw) => {
   try {
     const response = typeof raw === "string" ? JSON.parse(raw) : raw;
     applyAquaAction(response.action);
     const reply = String(response.reply || "I completed the request.");
+    if (widgetCommandInFlight) {
+      const delivered = widgetMessages.find((message) => message.id === widgetCommandInFlight);
+      if (delivered) delivered.state = "Delivered to Aqua";
+      widgetCommandInFlight = null;
+      saveWidgetMessages();
+    }
+    recordWidgetMessage("Aqua", reply, "Confirmed");
+    if (document.querySelector('[data-panel="messages"]')?.classList.contains("active")) {
+      openPanel("messages");
+    }
     notify(reply);
     if (sound && window.AquaBridge?.speak) {
       window.AquaBridge.speak(reply);
     } else {
       setAquaState("idle");
     }
+    flushNextWidgetCommand();
   } catch {
     window.receiveAquaError("Aqua received an unreadable secure response.");
   }
 };
 
 window.receiveAquaError = (message) => {
+  if (widgetCommandInFlight) {
+    const failed = widgetMessages.find((item) => item.id === widgetCommandInFlight);
+    if (failed) failed.state = "Needs attention · retained locally";
+    widgetCommandInFlight = null;
+    saveWidgetMessages();
+  }
   setAquaState("error");
   notify(String(message || "Aqua could not complete that request."));
   setTimeout(() => setAquaState("idle"), 3500);
@@ -979,6 +1055,7 @@ window.receiveAuthState = (raw) => {
     authPassword.value = "";
     setAquaState("idle");
     window.refreshFilingInbox();
+    flushNextWidgetCommand();
   }
 };
 

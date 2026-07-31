@@ -16,6 +16,9 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public class QuickCaptureActivity extends Activity {
     public static final String EXTRA_MODE = "capture_mode";
@@ -36,13 +40,17 @@ public class QuickCaptureActivity extends Activity {
     private static final int PHOTO_REQUEST = 202;
     private static final int VIDEO_REQUEST = 203;
     private static final int VOICE_PERMISSION_REQUEST = 204;
+    private static final int ASK_VOICE_REQUEST = 205;
     private static final String STATE_CAPTURE_LAUNCHED = "capture_launched";
     private static final String STATE_EVIDENCE_PATH = "evidence_path";
+    private static final String STATE_COMMAND_TEXT = "command_text";
     private String mode;
     private File evidenceFile;
     private String itemId;
     private boolean captureLaunched;
     private TextView status;
+    private EditText commandInput;
+    private boolean recognizingCommand;
     private SpeechRecognizer speechRecognizer;
 
     @Override
@@ -54,7 +62,14 @@ public class QuickCaptureActivity extends Activity {
         if (!restoredPath.isEmpty()) evidenceFile = new File(restoredPath);
         showOpeningSurface();
         logActionReceived();
-        if (captureLaunched) return;
+        if (captureLaunched) {
+            if ("ask".equals(mode)) {
+                showCommandSurface();
+                String restoredCommand = state.getString(STATE_COMMAND_TEXT, "");
+                if (commandInput != null) commandInput.setText(restoredCommand);
+            }
+            return;
+        }
         captureLaunched = true;
         getWindow().getDecorView().post(this::routeCapture);
     }
@@ -101,13 +116,7 @@ public class QuickCaptureActivity extends Activity {
 
     private void routeCapture() {
         if ("ask".equals(mode)) {
-            Log.i("AquaCommandWidget", "AQUA_CAPTURE_ROUTE mode=ask handler=MainActivity");
-            startActivity(
-                new Intent(this, MainActivity.class)
-                    .putExtra("start_voice", true)
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            );
-            finish();
+            showCommandSurface();
         } else if ("photo".equals(mode)) {
             captureMedia(false);
         } else if ("video".equals(mode)) {
@@ -117,10 +126,83 @@ public class QuickCaptureActivity extends Activity {
         }
     }
 
+    private void showCommandSurface() {
+        setContentView(R.layout.aqua_quick_command);
+        status = findViewById(R.id.widget_command_status);
+        commandInput = findViewById(R.id.widget_command_input);
+        Button speak = findViewById(R.id.widget_command_speak);
+        Button send = findViewById(R.id.widget_command_send);
+        Button open = findViewById(R.id.widget_command_open);
+
+        Log.i("AquaCommandWidget", "AQUA_CAPTURE_ROUTE mode=ask handler=QuickCommandComposer");
+        speak.setOnClickListener(view -> captureCommandVoice());
+        send.setOnClickListener(view -> submitCommand(commandInput.getText().toString()));
+        open.setOnClickListener(view -> openSentinelWithoutCommand());
+        commandInput.setOnEditorActionListener((view, actionId, event) -> {
+            submitCommand(commandInput.getText().toString());
+            return true;
+        });
+        commandInput.requestFocus();
+        commandInput.postDelayed(() -> {
+            InputMethodManager keyboard = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (keyboard != null) keyboard.showSoftInput(commandInput, InputMethodManager.SHOW_IMPLICIT);
+        }, 180);
+    }
+
+    private void captureCommandVoice() {
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            status.setText("Allow microphone access, or type your message below.");
+            requestPermissions(
+                new String[] { Manifest.permission.RECORD_AUDIO },
+                VOICE_PERMISSION_REQUEST
+            );
+            return;
+        }
+        startSpeechRecognition(true);
+    }
+
+    private void submitCommand(String rawText) {
+        String text = rawText == null ? "" : rawText.trim();
+        if (text.isEmpty()) {
+            status.setText("Type a message or tap Speak first.");
+            return;
+        }
+        String messageId = UUID.randomUUID().toString();
+        Log.i(
+            "AquaCommandWidget",
+            "AQUA_WIDGET_MESSAGE_SUBMITTED id=" + messageId + " characters=" + text.length()
+        );
+        startActivity(
+            new Intent(this, MainActivity.class)
+                .putExtra("widget_command", text)
+                .putExtra("widget_command_id", messageId)
+                .addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                )
+        );
+        Toast.makeText(this, "Message sent to Aqua.", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    private void openSentinelWithoutCommand() {
+        startActivity(
+            new Intent(this, MainActivity.class)
+                .addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                )
+        );
+        finish();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle state) {
         state.putBoolean(STATE_CAPTURE_LAUNCHED, captureLaunched);
         if (evidenceFile != null) state.putString(STATE_EVIDENCE_PATH, evidenceFile.getAbsolutePath());
+        if (commandInput != null) state.putString(STATE_COMMAND_TEXT, commandInput.getText().toString());
         super.onSaveInstanceState(state);
     }
 
@@ -134,40 +216,56 @@ public class QuickCaptureActivity extends Activity {
             );
             return;
         }
-        startSpeechRecognition();
+        startSpeechRecognition(false);
     }
 
-    private void startSpeechRecognition() {
+    private void startSpeechRecognition(boolean commandMode) {
         if (!SpeechRecognizer.isRecognitionAvailable(this)) {
-            captureVoiceWithSystemIntent();
+            if (commandMode) captureCommandVoiceWithSystemIntent();
+            else captureVoiceWithSystemIntent();
             return;
         }
         stopSpeechRecognition();
-        status.setText("Listening…\nTell Aqua what to file.");
+        recognizingCommand = commandMode;
+        status.setText(commandMode ? "Listening… Tell Aqua your message." : "Listening…\nTell Aqua what to file.");
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override public void onReadyForSpeech(Bundle params) {
-                Log.i("AquaCommandWidget", "AQUA_CAPTURE_ROUTE mode=voice handler=SpeechRecognizer");
+                Log.i(
+                    "AquaCommandWidget",
+                    "AQUA_CAPTURE_ROUTE mode=" + (recognizingCommand ? "ask-voice" : "voice") + " handler=SpeechRecognizer"
+                );
             }
             @Override public void onBeginningOfSpeech() { status.setText("Listening…"); }
             @Override public void onRmsChanged(float rmsdB) {}
             @Override public void onBufferReceived(byte[] buffer) {}
             @Override public void onEndOfSpeech() { status.setText("Aqua is saving your instruction…"); }
             @Override public void onError(int error) {
-                Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=voice error=" + error);
-                Toast.makeText(QuickCaptureActivity.this, "Aqua could not hear that. Please try again.", Toast.LENGTH_SHORT).show();
-                finish();
+                String failedMode = recognizingCommand ? "ask-voice" : "voice";
+                Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=" + failedMode + " error=" + error);
+                if (recognizingCommand) {
+                    status.setText("Aqua could not hear that. Type your message or try Speak again.");
+                    recognizingCommand = false;
+                } else {
+                    Toast.makeText(QuickCaptureActivity.this, "Aqua could not hear that. Please try again.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             }
             @Override public void onResults(Bundle results) {
-                completeVoice(results == null
+                ArrayList<String> matches = results == null
                     ? null
-                    : results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION));
+                    : results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                if (recognizingCommand) completeCommandVoice(matches);
+                else completeVoice(matches);
             }
             @Override public void onPartialResults(Bundle partialResults) {
                 ArrayList<String> partial = partialResults == null
                     ? null
                     : partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                if (partial != null && !partial.isEmpty()) status.setText("Heard: “" + partial.get(0) + "”");
+                if (partial != null && !partial.isEmpty()) {
+                    status.setText("Heard: “" + partial.get(0) + "”");
+                    if (recognizingCommand && commandInput != null) commandInput.setText(partial.get(0));
+                }
             }
             @Override public void onEvent(int eventType, Bundle params) {}
         });
@@ -177,6 +275,32 @@ public class QuickCaptureActivity extends Activity {
             .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
         speechRecognizer.startListening(intent);
+    }
+
+    private void completeCommandVoice(ArrayList<String> results) {
+        recognizingCommand = false;
+        String text = results == null || results.isEmpty() ? "" : results.get(0).trim();
+        if (text.isEmpty()) {
+            status.setText("No message was captured. Type it or try Speak again.");
+            return;
+        }
+        if (commandInput != null) commandInput.setText(text);
+        submitCommand(text);
+    }
+
+    private void captureCommandVoiceWithSystemIntent() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toLanguageTag())
+            .putExtra(RecognizerIntent.EXTRA_PROMPT, "Tell Aqua your message")
+            .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+        ResolveInfo handler = getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (handler == null) {
+            status.setText("Voice-to-text is unavailable. Type your message below.");
+            return;
+        }
+        Log.i("AquaCommandWidget", "AQUA_CAPTURE_ROUTE mode=ask-voice handler=" + handler.activityInfo.packageName);
+        startActivityForResult(intent, ASK_VOICE_REQUEST);
     }
 
     private void captureVoiceWithSystemIntent() {
@@ -238,15 +362,30 @@ public class QuickCaptureActivity extends Activity {
         super.onRequestPermissionsResult(requestCode, permissions, results);
         if (requestCode != VOICE_PERMISSION_REQUEST) return;
         if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {
-            startSpeechRecognition();
+            if ("ask".equals(mode)) startSpeechRecognition(true);
+            else startSpeechRecognition(false);
         } else {
-            captureVoiceWithSystemIntent();
+            if ("ask".equals(mode)) {
+                status.setText("Microphone access is off. Type your message below.");
+            } else {
+                captureVoiceWithSystemIntent();
+            }
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ASK_VOICE_REQUEST) {
+            if (resultCode != RESULT_OK) {
+                status.setText("Voice capture was canceled. Type your message or try again.");
+                return;
+            }
+            completeCommandVoice(data == null
+                ? null
+                : data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS));
+            return;
+        }
         if (requestCode == VOICE_REQUEST) {
             if (resultCode != RESULT_OK) {
                 finish();

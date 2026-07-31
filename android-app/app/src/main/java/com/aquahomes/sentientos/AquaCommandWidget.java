@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class AquaCommandWidget extends AppWidgetProvider {
@@ -45,6 +46,14 @@ public class AquaCommandWidget extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.widget_photo, action(context, "photo", 103));
         views.setOnClickPendingIntent(R.id.widget_file, action(context, "voice", 104));
         manager.updateAppWidget(id, views);
+        Log.i("AquaCommandWidget", "AQUA_WIDGET_READY id=" + id + " pending=" + pending);
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+        Log.i("AquaCommandWidget", "AQUA_WIDGET_ENABLED");
+        updateAll(context);
     }
 
     @Override

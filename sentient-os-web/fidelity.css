@@ -857,7 +857,7 @@ html,body{overscroll-behavior:none}
   .dashboard-screen-crop{min-height:clamp(126px,26cqw,220px)}
 }
 
-/* Aqua Sentinel owner-approved v0.5.3 label placement.
+/* Aqua Sentinel owner-approved v0.5.4 label placement.
    Preserve the hero bitmap and mask only its baked instruction line. */
 .aqua-hero:before{
   content:"";
@@ -872,7 +872,7 @@ html,body{overscroll-behavior:none}
 }
 .aqua-state-label{
   display:block;
-  bottom:13.6%;
+  bottom:.65%;
   color:#d6e4e8;
   font-family:Inter,system-ui,sans-serif;
   font-size:clamp(7px,1.35cqw,11px);
@@ -883,8 +883,19 @@ html,body{overscroll-behavior:none}
 }
 .aqua-hero .selected-app-label{
   top:auto;
-  left:27%;
-  right:27%;
-  bottom:1.35%;
-  font-size:clamp(11px,2.35cqw,20px);
+  left:20%;
+  right:20%;
+  bottom:4.15%;
+  font-size:clamp(12px,2.5cqw,21px);
 }
+
+.widget-message-receipt{margin:18px 0 12px;padding:12px 14px;border:1px solid rgba(47,176,210,.34);border-radius:10px;color:#9cc4ce;background:rgba(4,29,39,.72);font-size:12px;line-height:1.45}
+.widget-message-list{display:grid;gap:10px}
+.widget-message{padding:14px;border:1px solid #1b3c48;border-radius:12px;background:#041118}
+.widget-message.aqua{border-color:rgba(44,216,244,.46);background:linear-gradient(145deg,rgba(7,38,49,.95),rgba(2,15,21,.98))}
+.widget-message header{display:flex;justify-content:space-between;gap:12px;color:#dffaff}
+.widget-message header small{color:#6f929c}
+.widget-message p{margin:9px 0;color:#f5fcff;line-height:1.45}
+.widget-message footer{color:#3ce39a;font-size:11px}
+.widget-message.owner footer{color:#58dfff}
+.widget-message-empty{margin-top:18px;padding:24px;border:1px dashed #27515f;border-radius:12px;color:#7d9ba5;text-align:center;line-height:1.5}

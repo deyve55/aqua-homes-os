@@ -23,8 +23,8 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026073106
-        versionName = "0.5.3-customer-preview-filing-test"
+        versionCode = 2026073107
+        versionName = "0.5.4-command-center-message-test"
         buildConfigField(
             "boolean",
             "CUSTOMER_PREVIEW_SNAPSHOTS",

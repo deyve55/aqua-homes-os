@@ -265,6 +265,19 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     private void handleStartupIntent(Intent intent) {
         if (intent == null) return;
+        String widgetCommand = intent.getStringExtra("widget_command");
+        if (widgetCommand != null && !widgetCommand.trim().isEmpty()) {
+            String messageId = intent.getStringExtra("widget_command_id");
+            intent.removeExtra("widget_command");
+            intent.removeExtra("widget_command_id");
+            Log.i(
+                "AquaCommandWidget",
+                "AQUA_WIDGET_MESSAGE_DELIVERED id=" + (messageId == null ? "unknown" : messageId)
+            );
+            evaluateJavascript(
+                "window.receiveWidgetCommand?.(" + JSONObject.quote(widgetCommand.trim()) + ");"
+            );
+        }
         if (intent.getBooleanExtra("start_voice", false)) {
             intent.removeExtra("start_voice");
             evaluateJavascript("document.getElementById('aquaButton')?.click();");

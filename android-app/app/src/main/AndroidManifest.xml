@@ -55,6 +55,7 @@
             android:exported="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AquaQuickCaptureTheme">
             <intent-filter>
                 <action android:name="com.aquasoftware.sentinel.action.ASK" />
