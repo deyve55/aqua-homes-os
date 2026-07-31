@@ -4,12 +4,30 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
 
+    <queries>
+        <package android:name="com.aquasoftware.crm.fieldtest" />
+        <package android:name="com.aquasoftware.crm.test" />
+        <package android:name="com.aquasoftware.crm" />
+        <package android:name="com.aquahomesdesigngroup.draw.v0189option1" />
+        <package android:name="com.aquahomesdesigngroup.draw.v0187fresh" />
+        <package android:name="com.aquahomesdesigngroup.draw.beta" />
+        <package android:name="com.aquahomesdesigngroup.draw" />
+        <package android:name="com.aquahomesdesign.cam.obsidianpreview" />
+        <package android:name="com.aquahomesdesign.cam" />
+        <package android:name="com.aquahomes.knowledgevault" />
+        <package android:name="com.aquahomes.timesheet.engineering" />
+        <package android:name="com.aquahomes.timesheet" />
+        <package android:name="com.aquasoftware.aquabooks" />
+        <package android:name="com.aquasoftware.receipts.test" />
+        <package android:name="com.aquasoftware.receipts" />
+    </queries>
+
     <application
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/aqua_sentinel_launcher"
         android:roundIcon="@mipmap/aqua_sentinel_launcher"
-        android:label="Aqua Sentinel"
+        android:label="Aqua Sentinel OS"
         android:supportsRtl="true"
         android:usesCleartextTraffic="false"
         android:theme="@android:style/Theme.Material.NoActionBar">

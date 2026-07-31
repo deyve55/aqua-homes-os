@@ -97,6 +97,26 @@
   transition:left .42s cubic-bezier(.2,.8,.15,1),top .42s cubic-bezier(.2,.8,.15,1),width .42s cubic-bezier(.2,.8,.15,1),height .42s cubic-bezier(.2,.8,.15,1),transform .42s cubic-bezier(.2,.8,.15,1),filter .3s,opacity .3s
 }
 .app-card:before{display:none}
+.app-landing-preview{
+  position:relative;display:block;width:100%;height:100%;overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--app-color) 58%,#294d5c);border-radius:11px;
+  background:radial-gradient(circle at 50% 22%,color-mix(in srgb,var(--app-color) 15%,transparent),transparent 34%),linear-gradient(155deg,rgba(7,27,37,.98),rgba(0,4,7,.995) 67%);
+  box-shadow:inset 0 0 28px color-mix(in srgb,var(--app-color) 10%,transparent),inset 0 1px rgba(211,248,255,.14),0 0 9px color-mix(in srgb,var(--app-color) 13%,transparent);
+  pointer-events:none;-webkit-box-reflect:below 1px linear-gradient(to bottom,rgba(0,0,0,.16),rgba(0,0,0,.045) 28%,transparent 58%);text-align:left
+}
+.app-landing-preview:before{content:"";position:absolute;inset:3.5%;border:1px solid color-mix(in srgb,var(--app-color) 22%,transparent);border-radius:8px}
+.app-landing-preview header{position:absolute;left:9%;right:9%;top:8%;display:flex;align-items:center;gap:7%;color:var(--app-color)}
+.app-landing-preview header b{display:grid;place-items:center;width:20%;aspect-ratio:1;border:1px solid currentColor;border-radius:50%;font-size:clamp(5px,.9cqw,9px);font-weight:500}
+.app-landing-preview header span{overflow:hidden;font-size:clamp(3px,.52cqw,5px);letter-spacing:.12em;white-space:nowrap;text-overflow:ellipsis}
+.app-landing-preview h3{position:absolute;left:9%;right:9%;top:29%;margin:0;color:#effcff;font-size:clamp(4px,.73cqw,7px);font-weight:500;line-height:1.15}
+.app-landing-preview section{position:absolute;left:9%;right:9%;top:43%;padding:6% 7%;border:1px solid color-mix(in srgb,var(--app-color) 26%,#203b46);border-radius:5px;background:rgba(1,13,19,.72)}
+.app-landing-preview section small,.app-landing-preview section strong{display:block;margin:0}.app-landing-preview section small{color:#7397a1;font-size:clamp(3px,.48cqw,5px)}.app-landing-preview section strong{margin-top:3%;color:var(--app-color);font-size:clamp(7px,1.25cqw,12px);font-weight:500}
+.app-landing-preview>div{position:absolute;left:9%;right:9%;top:68%;display:grid;grid-template-columns:repeat(3,1fr);gap:4%}
+.app-landing-preview>div i{display:grid;place-items:center;height:clamp(10px,2cqw,18px);overflow:hidden;border:1px solid color-mix(in srgb,var(--app-color) 24%,#203b46);border-radius:3px;color:#91b4bd;background:color-mix(in srgb,var(--app-color) 5%,#031017);font-size:clamp(2px,.4cqw,4px);font-style:normal;white-space:nowrap}
+.app-landing-preview footer{position:absolute;left:8%;right:8%;bottom:6%;overflow:hidden;color:#71929b;font-size:clamp(3px,.48cqw,5px);letter-spacing:.1em;text-align:center;white-space:nowrap;text-overflow:ellipsis}
+.app-landing-preview.has-image img{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+.app-landing-preview.has-image footer{left:0;right:0;bottom:0;padding:5% 6% 4%;color:#d8f9ff;background:linear-gradient(transparent,rgba(0,4,7,.92));text-shadow:0 1px 3px #000}
+.app-deck .app-card.active .app-landing-preview{border-color:rgba(73,220,246,.84);box-shadow:inset 0 0 34px rgba(0,142,201,.16),inset 0 1px rgba(231,253,255,.22),0 0 16px rgba(23,198,234,.2)}
 .card-placeholder{
   position:relative;
   display:block;

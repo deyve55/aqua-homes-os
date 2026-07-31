@@ -1,150 +1,133 @@
 const apps = [
   {
-    name: "Aqua Sentinel",
-    short: "MAIN BRAIN",
+    name: "Aqua CRM",
+    short: "CUSTOMERS & JOBS",
     icon: "A",
-    color: "#14dfff",
-    status: "Ecosystem ready",
-    primaryTitle: "Ecosystem Health",
-    primaryValue: "7 registered",
-    primaryDetail: "Specialist manifests available in this build",
-    secondaryTitle: "Priority Command",
-    secondaryValue: "4 actions",
-    secondaryDetail: "Two owner approvals represented",
-    activity: [
-      "Aqua Cam field summary received",
-      "Knowledge Vault index represented",
-      "Timesheet review ready",
-    ],
-    widgets: ["Registry 7", "Aqua Brain live", "Owner secured"],
-    connected: true,
-    art: "card-financial-command-front-v11.png",
+    color: "#20dcff",
+    preview: { eyebrow: "COMMAND CENTER", title: "Good morning", metric: "Active Jobs", value: "—", tiles: ["Pipeline", "Clients", "Schedule"] },
+    packages: ["com.aquasoftware.crm.fieldtest", "com.aquasoftware.crm.test", "com.aquasoftware.crm"],
+    status: "CRM workspace ready",
+    primaryTitle: "Customer Operations",
+    primaryValue: "CRM",
+    primaryDetail: "Customers, leads, jobs, communications and scheduling",
+    secondaryTitle: "Sentinel Authority",
+    secondaryValue: "Full access",
+    secondaryDetail: "Authorized read, write, search and action interface",
+    activity: ["Customer command ready", "Job workspace ready", "Scheduling interface registered"],
+    widgets: ["Customers", "Jobs", "Pipeline"],
+    connected: false,
   },
   {
-    name: "Aqua Cam",
+    name: "AquaDraw",
+    short: "FINANCIAL DRAWS",
+    icon: "◇",
+    color: "#ffbd3c",
+    preview: { eyebrow: "AQUADRAW", title: "Company Financial Health", metric: "Available", value: "—", tiles: ["Clients", "Jobs", "SOW"] },
+    packages: ["com.aquahomesdesigngroup.draw.v0189option1", "com.aquahomesdesigngroup.draw.v0187fresh", "com.aquahomesdesigngroup.draw.beta", "com.aquahomesdesigngroup.draw"],
+    status: "Draw workspace ready",
+    primaryTitle: "Financial Health",
+    primaryValue: "Draws",
+    primaryDetail: "Budgets, SOW, requests, approvals and client portal",
+    secondaryTitle: "Selected Job",
+    secondaryValue: "Ready",
+    secondaryDetail: "Job financial context and draw workflow",
+    activity: ["Job landing page ready", "SOW interface registered", "Draw approval route ready"],
+    widgets: ["Budgets", "SOW", "Draws"],
+    connected: false,
+  },
+  {
+    name: "AquaCam",
     short: "FIELD VISION",
     icon: "◉",
     color: "#5fd9ff",
+    preview: { eyebrow: "AQUACAM", title: "Field Command", metric: "Today", value: "—", tiles: ["Clock In", "Capture", "Evidence"] },
+    packages: ["com.aquahomesdesign.cam.obsidianpreview", "com.aquahomesdesign.cam"],
     status: "Field workspace ready",
     primaryTitle: "Site Intelligence",
-    primaryValue: "14 zones",
-    primaryDetail: "92% sample verification · 2 review",
+    primaryValue: "Awaiting live data",
+    primaryDetail: "Sentinel has not received an AquaCam home snapshot yet",
     secondaryTitle: "Latest Capture",
-    secondaryValue: "8 min ago",
-    secondaryDetail: "Sample: Tower A · Level 34",
-    activity: [
-      "Walkthrough queued",
-      "Two zones need review",
-      "Photo comparison prepared",
-    ],
-    widgets: ["14 zones", "2 flags", "92% sample"],
+    secondaryValue: "Not confirmed",
+    secondaryDetail: "Open AquaCam or connect its Sentinel preview contract",
+    activity: ["Walkthrough interface ready", "Evidence review available", "Photo comparison available"],
+    widgets: ["Zones", "Flags", "Evidence"],
     connected: false,
-    art: "card-operations-front-v11.png",
   },
   {
-    name: "Knowledge Vault",
+    name: "Aqua Knowledge Vault",
     short: "CODE INTELLIGENCE",
     icon: "⌘",
     color: "#a88cff",
+    preview: { eyebrow: "KNOWLEDGE VAULT", title: "Active Job Knowledge", metric: "Jurisdictions", value: "—", tiles: ["Quick Q&A", "Quick Scan", "Field Scan"] },
+    packages: ["com.aquahomes.knowledgevault"],
     status: "Vault workspace ready",
     primaryTitle: "Knowledge Status",
-    primaryValue: "3 states",
-    primaryDetail: "MA · NH · ME represented",
+    primaryValue: "Awaiting live data",
+    primaryDetail: "Sentinel has not received a Knowledge Vault home snapshot yet",
     secondaryTitle: "Code Checks",
-    secondaryValue: "6 ready",
-    secondaryDetail: "Sample evidence and citations",
+    secondaryValue: "Not confirmed",
+    secondaryDetail: "Open Knowledge Vault or connect its Sentinel preview contract",
     activity: [
       "NH stair query prepared",
       "MA framing source indexed",
       "ME lookup awaiting gateway",
     ],
-    widgets: ["3 states", "6 checks", "Evidence mode"],
+    widgets: ["Jurisdictions", "Code checks", "Evidence mode"],
     connected: false,
-    art: "card-risk-monitor-front-v11.png",
-  },
-  {
-    name: "Aqua Draw",
-    short: "CLIENT PORTAL",
-    icon: "◇",
-    color: "#ffb52e",
-    status: "Draw workspace ready",
-    primaryTitle: "Available Draws",
-    primaryValue: "$184K",
-    primaryDetail: "Sample across 6 active projects",
-    secondaryTitle: "Client Attention",
-    secondaryValue: "3 replies",
-    secondaryDetail: "One sample approval due today",
-    activity: [
-      "Draw 4 ready for review",
-      "Three client replies represented",
-      "Photo proof organized",
-    ],
-    widgets: ["6 projects", "3 replies", "1 approval"],
-    connected: true,
-    art: "card-operations-front-v11.png",
   },
   {
     name: "Aqua Timesheet",
     short: "WORKFORCE",
     icon: "◷",
     color: "#41e39a",
+    preview: { eyebrow: "AQUA TIMESHEET", title: "Workforce Today", metric: "On Clock", value: "—", tiles: ["Clock", "Travel", "Payroll"] },
+    packages: ["com.aquahomes.timesheet.engineering", "com.aquahomes.timesheet"],
     status: "Timesheet workspace ready",
     primaryTitle: "Today’s Labor",
-    primaryValue: "47 on site",
-    primaryDetail: "96% sample time capture",
+    primaryValue: "Awaiting live data",
+    primaryDetail: "Sentinel has not received a Timesheet home snapshot yet",
     secondaryTitle: "Payroll Review",
-    secondaryValue: "2 exceptions",
-    secondaryDetail: "Sample owner review required",
-    activity: [
-      "Crew clock-in represented",
-      "Two exceptions flagged",
-      "Payroll summary prepared",
-    ],
-    widgets: ["47 crew", "96% capture", "2 exceptions"],
+    secondaryValue: "Not confirmed",
+    secondaryDetail: "Open Timesheet or connect its Sentinel preview contract",
+    activity: ["Crew clock-in available", "Exception review available", "Payroll summary available"],
+    widgets: ["Crew", "Capture", "Exceptions"],
     connected: false,
-    art: "card-risk-monitor-front-v11.png",
   },
   {
-    name: "Aqua Estimate",
-    short: "PROJECT COST",
+    name: "Aqua Books",
+    short: "ACCOUNTING",
     icon: "$",
     color: "#ffca54",
-    status: "Estimate workspace ready",
-    primaryTitle: "Open Estimates",
-    primaryValue: "$2.4M",
-    primaryDetail: "Sample: 8 estimates in progress",
-    secondaryTitle: "Margin Watch",
-    secondaryValue: "24.8%",
-    secondaryDetail: "Sample within target range",
-    activity: [
-      "Estimate revision represented",
-      "Vendor cost change flagged",
-      "Margin check prepared",
-    ],
-    widgets: ["8 open", "24.8% margin", "1 cost flag"],
+    preview: { eyebrow: "AQUA BOOKS", title: "Financial Command", metric: "Cash Position", value: "$—", tiles: ["Review", "Bills", "Reports"] },
+    packages: ["com.aquasoftware.aquabooks"],
+    status: "Books workspace ready",
+    primaryTitle: "Accounting Command",
+    primaryValue: "Books",
+    primaryDetail: "Ledger, bills, expenses, reconciliation and reporting",
+    secondaryTitle: "Financial Authority",
+    secondaryValue: "Protected",
+    secondaryDetail: "Aqua Books remains the accounting system of record",
+    activity: ["Review interface ready", "Bills interface registered", "Receipt intake boundary preserved"],
+    widgets: ["Review", "Bills", "Reports"],
     connected: false,
-    art: "card-overview-front-v11.png",
   },
   {
-    name: "Aqua Schedule",
-    short: "OPERATIONS",
-    icon: "▦",
-    color: "#32c7ff",
-    status: "Schedule workspace ready",
-    primaryTitle: "Today’s Execution",
-    primaryValue: "18 tasks",
-    primaryDetail: "Sample: 15 on track · 3 attention",
-    secondaryTitle: "Critical Path",
-    secondaryValue: "1 risk",
-    secondaryDetail: "Sample delivery · 10:15 AM",
-    activity: [
-      "Concrete delivery represented",
-      "Three tasks need attention",
-      "Crew handoff prepared",
-    ],
-    widgets: ["18 tasks", "15 on track", "1 risk"],
+    name: "Aqua Receipts",
+    short: "RECEIPT INTELLIGENCE",
+    icon: "▤",
+    color: "#ff8f72",
+    preview: { eyebrow: "AQUA RECEIPTS", title: "Receipt Command", metric: "Needs Attention", value: "—", tiles: ["Camera", "Inbox", "Projects"] },
+    packages: ["com.aquasoftware.receipts.test", "com.aquasoftware.receipts"],
+    status: "Receipts workspace ready",
+    primaryTitle: "Receipt Intake",
+    primaryValue: "Ready",
+    primaryDetail: "Photo, email, text, WhatsApp and project routing",
+    secondaryTitle: "Evidence State",
+    secondaryValue: "Truthful",
+    secondaryDetail: "Captured, queued and filed remain separate states",
+    activity: ["Camera intake ready", "Project routing registered", "Books handoff boundary preserved"],
+    widgets: ["Capture", "Inbox", "Projects"],
     connected: false,
-    art: "card-site-intelligence-front-v11.png",
   },
 ];
 
@@ -168,6 +151,8 @@ let authenticated = false;
 let authenticatedEmail = "";
 let sound = true;
 let notifications = true;
+const liveSnapshots = new Map();
+const snapshotStates = new Map();
 
 const sentinel = document.getElementById("sentinel");
 const appDeck = document.getElementById("appDeck");
@@ -229,6 +214,54 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+function selectedView(app) {
+  const snapshot = liveSnapshots.get(app.name);
+  if (!snapshot) return app;
+  return {
+    ...app,
+    preview: { ...app.preview, ...(snapshot.preview || {}) },
+    previewImage: snapshot.previewImage || null,
+    primaryTitle: snapshot.primary?.title || app.primaryTitle,
+    primaryValue: snapshot.primary?.value || app.primaryValue,
+    primaryDetail: snapshot.primary?.detail || app.primaryDetail,
+    secondaryTitle: snapshot.secondary?.title || app.secondaryTitle,
+    secondaryValue: snapshot.secondary?.value || app.secondaryValue,
+    secondaryDetail: snapshot.secondary?.detail || app.secondaryDetail,
+  };
+}
+
+function safePreviewImage(previewImage) {
+  if (!previewImage || typeof previewImage !== "object") return "";
+  const mimeType = previewImage.mimeType;
+  const base64 = previewImage.base64;
+  if (!/^(image\/webp|image\/png)$/.test(mimeType || "")) return "";
+  if (typeof base64 !== "string" || !/^[A-Za-z0-9+/=\r\n]+$/.test(base64)) return "";
+  return `data:${mimeType};base64,${base64.replace(/\s/g, "")}`;
+}
+
+function requestSnapshot(app) {
+  if (!window.AquaBridge?.requestAppSnapshot) return;
+  snapshotStates.set(app.name, "refreshing");
+  window.AquaBridge.requestAppSnapshot(app.name, JSON.stringify(app.packages));
+}
+
+window.refreshSelectedAppSnapshot = () => requestSnapshot(apps[active]);
+
+window.receiveAppSnapshot = (appName, snapshotJson, state) => {
+  const app = apps.find((item) => item.name === appName);
+  if (!app) return;
+  snapshotStates.set(appName, state || "awaiting");
+  if (snapshotJson) {
+    try {
+      const snapshot = JSON.parse(snapshotJson);
+      if (snapshot && typeof snapshot === "object") liveSnapshots.set(appName, snapshot);
+    } catch (_) {
+      snapshotStates.set(appName, "needs-attention");
+    }
+  }
+  render();
+};
+
 function renderCards() {
   cardsTrack.innerHTML = "";
   deckDots.innerHTML = "";
@@ -237,6 +270,8 @@ function renderCards() {
     const position = relative(index);
     if (Math.abs(position) > 2) return;
 
+    const view = selectedView(app);
+    const previewImageUrl = safePreviewImage(view.previewImage);
     const card = document.createElement("button");
     card.type = "button";
     card.className = `app-card pos-${position}${position === 0 ? " active" : ""}`;
@@ -246,13 +281,14 @@ function renderCards() {
       position === 0 ? `Open ${app.name}` : `Move ${app.name} to center`,
     );
     card.innerHTML = `
-      <div class="card-placeholder" aria-hidden="true">
-        <span class="card-placeholder-orbit"></span>
-        <strong>${escapeHtml(app.icon)}</strong>
-        <small>${escapeHtml(app.name)}</small>
-        <em>APP INTERFACE RESERVED</em>
-      </div>
-    `;
+      <div class="app-landing-preview${previewImageUrl ? " has-image" : ""}" aria-hidden="true">
+        ${previewImageUrl ? `<img src="${previewImageUrl}" alt="">` : `
+          <header><b>${escapeHtml(app.icon)}</b><span>${escapeHtml(view.preview.eyebrow)}</span></header>
+          <h3>${escapeHtml(view.preview.title)}</h3>
+          <section><small>${escapeHtml(view.preview.metric)}</small><strong>${escapeHtml(view.preview.value)}</strong></section>
+          <div>${view.preview.tiles.map((tile) => `<i>${escapeHtml(tile)}</i>`).join("")}</div>`}
+        <footer>${escapeHtml(app.name)} · ${escapeHtml(snapshotStates.get(app.name) || "awaiting live connection")}</footer>
+      </div>`;
     card.addEventListener("click", () => {
       if (performance.now() < suppressCardClickUntil) return;
       if (position !== 0) {
@@ -275,7 +311,7 @@ function renderCards() {
 }
 
 function renderDashboard() {
-  const selected = apps[active];
+  const selected = selectedView(apps[active]);
   appDashboard.style.setProperty("--app-color", selected.color);
   document.getElementById("primaryTitle").textContent = selected.primaryTitle;
   document.getElementById("primaryDetail").textContent = selected.primaryDetail;
@@ -299,6 +335,7 @@ function finishRotation(openAfter) {
   rotating = false;
   appDeck.classList.remove("is-rotating");
   appDeck.classList.add("is-settled");
+  requestSnapshot(apps[active]);
   if (openAfter) openWorkspace();
 }
 
@@ -310,6 +347,7 @@ function centerApp(index, openAfter) {
   active = (index + apps.length) % apps.length;
   closeOverlays();
   render();
+  requestSnapshot(apps[active]);
   rotationTimer = setTimeout(() => finishRotation(openAfter), 520);
 }
 
@@ -320,6 +358,10 @@ function rotate(direction) {
 function openWorkspace() {
   if (rotating) return;
   const selected = apps[active];
+  if (window.AquaBridge?.launchApp) {
+    window.AquaBridge.launchApp(selected.name, JSON.stringify(selected.packages));
+    return;
+  }
   workspace.style.setProperty("--app-color", selected.color);
   workspace.innerHTML = `
     <button class="workspace-close" type="button" aria-label="Return to Sentinel">‹</button>
@@ -807,6 +849,13 @@ appDeck.addEventListener("lostpointercapture", (event) => {
 });
 
 render();
+requestSnapshot(apps[active]);
+setInterval(() => {
+  if (document.visibilityState === "visible") requestSnapshot(apps[active]);
+}, 60_000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") requestSnapshot(apps[active]);
+});
 
 if (window.AquaBridge?.bootstrap) {
   window.AquaBridge.bootstrap();

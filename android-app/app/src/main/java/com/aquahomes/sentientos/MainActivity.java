@@ -2,7 +2,10 @@ package com.aquahomes.sentientos;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -29,6 +32,7 @@ import android.webkit.JavascriptInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -39,7 +43,11 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -67,12 +75,65 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private static final String ACCESS_TOKEN = "access_token";
     private static final String REFRESH_TOKEN = "refresh_token";
     private static final String USER_EMAIL = "user_email";
+    private static final String SNAPSHOT_STORE = "aqua_sentinel_home_snapshots_v1";
+    private static final String SNAPSHOT_REQUEST_ACTION =
+        "com.aquasoftware.sentinel.REQUEST_HOME_SNAPSHOT";
+    private static final String SNAPSHOT_RESPONSE_ACTION =
+        "com.aquasoftware.sentinel.HOME_SNAPSHOT_RESPONSE";
+    private static final String SNAPSHOT_CONTRACT_VERSION = "1.0";
+    private static final int MAX_SNAPSHOT_BYTES = 384 * 1024;
 
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private WebView webView;
     private SpeechRecognizer speechRecognizer;
     private TextToSpeech textToSpeech;
     private boolean listenAfterPermission;
+    private final Map<String, SnapshotRequest> pendingSnapshots = new HashMap<>();
+    private boolean snapshotReceiverRegistered;
+
+    private static class SnapshotRequest {
+        final String appName;
+        final String packageName;
+
+        SnapshotRequest(String appName, String packageName) {
+            this.appName = appName;
+            this.packageName = packageName;
+        }
+    }
+
+    private final BroadcastReceiver snapshotReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!SNAPSHOT_RESPONSE_ACTION.equals(intent.getAction())) return;
+            String requestId = intent.getStringExtra("request_id");
+            String snapshotJson = intent.getStringExtra("snapshot_json");
+            if (requestId == null || snapshotJson == null) return;
+            SnapshotRequest request = pendingSnapshots.remove(requestId);
+            if (request == null) return;
+            String[] senderPackages = getPackageManager().getPackagesForUid(getSendingUid());
+            if (senderPackages == null || !Arrays.asList(senderPackages).contains(request.packageName)) {
+                deliverSnapshot(request.appName, "", "rejected-untrusted-sender");
+                return;
+            }
+            if (snapshotJson.getBytes(StandardCharsets.UTF_8).length > MAX_SNAPSHOT_BYTES) {
+                deliverSnapshot(request.appName, "", "rejected-oversize");
+                return;
+            }
+            try {
+                JSONObject snapshot = new JSONObject(snapshotJson);
+                snapshot.put("sourcePackage", request.packageName);
+                snapshot.put("contractVersion", SNAPSHOT_CONTRACT_VERSION);
+                String verifiedJson = snapshot.toString();
+                getSharedPreferences(SNAPSHOT_STORE, MODE_PRIVATE)
+                    .edit()
+                    .putString(request.packageName, verifiedJson)
+                    .apply();
+                deliverSnapshot(request.appName, verifiedJson, "confirmed-live");
+            } catch (JSONException error) {
+                deliverSnapshot(request.appName, "", "needs-attention");
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +150,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         setContentView(webView);
         hideSystemUi();
         webView.loadUrl(LOCAL_APP_URL);
+
+        IntentFilter snapshotFilter = new IntentFilter(SNAPSHOT_RESPONSE_ACTION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(snapshotReceiver, snapshotFilter, Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(snapshotReceiver, snapshotFilter);
+        }
+        snapshotReceiverRegistered = true;
 
         textToSpeech = new TextToSpeech(this, this);
     }
@@ -178,6 +247,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     protected void onResume() {
         super.onResume();
         hideSystemUi();
+        evaluateJavascript("window.refreshSelectedAppSnapshot?.();");
     }
 
     @Override
@@ -330,6 +400,78 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         });
     }
 
+    private void launchRegisteredApp(String appName, String packageJson) {
+        runOnUiThread(() -> {
+            try {
+                JSONArray packages = new JSONArray(packageJson);
+                for (int index = 0; index < packages.length(); index++) {
+                    String packageName = packages.optString(index, "");
+                    if (packageName.isEmpty()) continue;
+                    Intent launch = getPackageManager().getLaunchIntentForPackage(packageName);
+                    if (launch == null) continue;
+                    launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    startActivity(launch);
+                    return;
+                }
+                sendError(appName + " is not installed on this phone.");
+            } catch (Exception error) {
+                sendError("Sentinel could not open " + appName + ".");
+            }
+        });
+    }
+
+    private String firstInstalledPackage(String packageJson) throws JSONException {
+        JSONArray packages = new JSONArray(packageJson);
+        for (int index = 0; index < packages.length(); index++) {
+            String packageName = packages.optString(index, "");
+            if (packageName.isEmpty()) continue;
+            if (getPackageManager().getLaunchIntentForPackage(packageName) != null) {
+                return packageName;
+            }
+        }
+        return "";
+    }
+
+    private void requestHomeSnapshot(String appName, String packageJson) {
+        runOnUiThread(() -> {
+            try {
+                String packageName = firstInstalledPackage(packageJson);
+                if (packageName.isEmpty()) {
+                    deliverSnapshot(appName, "", "not-installed");
+                    return;
+                }
+                String cached = getSharedPreferences(SNAPSHOT_STORE, MODE_PRIVATE)
+                    .getString(packageName, "");
+                if (!cached.isEmpty()) deliverSnapshot(appName, cached, "cached-refreshing");
+
+                String requestId = UUID.randomUUID().toString();
+                pendingSnapshots.put(requestId, new SnapshotRequest(appName, packageName));
+                Intent request = new Intent(SNAPSHOT_REQUEST_ACTION);
+                request.setPackage(packageName);
+                request.putExtra("contract_version", SNAPSHOT_CONTRACT_VERSION);
+                request.putExtra("request_id", requestId);
+                request.putExtra("response_action", SNAPSHOT_RESPONSE_ACTION);
+                request.putExtra("response_package", getPackageName());
+                sendBroadcast(request);
+                if (cached.isEmpty()) deliverSnapshot(appName, "", "awaiting-live-connection");
+            } catch (Exception error) {
+                deliverSnapshot(appName, "", "needs-attention");
+            }
+        });
+    }
+
+    private void deliverSnapshot(String appName, String snapshotJson, String state) {
+        evaluateJavascript(
+            "window.receiveAppSnapshot?.("
+                + JSONObject.quote(appName)
+                + ","
+                + JSONObject.quote(snapshotJson)
+                + ","
+                + JSONObject.quote(state)
+                + ");"
+        );
+    }
+
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
@@ -396,6 +538,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     @Override
     protected void onDestroy() {
+        if (snapshotReceiverRegistered) {
+            unregisterReceiver(snapshotReceiver);
+            snapshotReceiverRegistered = false;
+        }
         if (speechRecognizer != null) {
             speechRecognizer.destroy();
         }
@@ -775,6 +921,16 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             String uiContext
         ) {
             MainActivity.this.askAqua(text, selectedApp, uiContext);
+        }
+
+        @JavascriptInterface
+        public void launchApp(String appName, String packageJson) {
+            launchRegisteredApp(appName, packageJson);
+        }
+
+        @JavascriptInterface
+        public void requestAppSnapshot(String appName, String packageJson) {
+            requestHomeSnapshot(appName, packageJson);
         }
     }
 }

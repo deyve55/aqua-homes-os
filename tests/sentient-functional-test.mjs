@@ -34,20 +34,60 @@ test("the centered carousel card snaps face-on before it can open", async () => 
   assert.match(script, /rotationTimer = setTimeout\(\(\) => finishRotation/);
 });
 
-test("APK mirrors the approved native placeholder carousel", async () => {
-  const [script, fidelity] = await Promise.all([
+test("APK renders all seven satellite landing pages and launches installed apps", async () => {
+  const [script, fidelity, manifest] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("sentient-os-web/fidelity.css"),
+    read("android-app/app/src/main/AndroidManifest.xml"),
   ]);
-  assert.match(script, /class="card-placeholder"/);
-  assert.match(script, /APP INTERFACE RESERVED/);
-  assert.doesNotMatch(script, /image\.src = `\.\/assets\/\$\{app\.art\}`/);
-  assert.match(fidelity, /\.card-placeholder-orbit\{/);
+  assert.match(script, /class="app-landing-preview\$\{previewImageUrl/);
+  assert.doesNotMatch(script, /APP INTERFACE RESERVED/);
+  for (const app of ["Aqua CRM", "AquaDraw", "AquaCam", "Aqua Knowledge Vault", "Aqua Timesheet", "Aqua Books", "Aqua Receipts"]) assert.match(script, new RegExp(app));
+  assert.match(script, /AquaBridge\.launchApp/);
+  for (const packageName of [
+    "com.aquasoftware.crm.fieldtest",
+    "com.aquahomesdesigngroup.draw.beta",
+    "com.aquahomesdesign.cam.obsidianpreview",
+    "com.aquahomes.knowledgevault",
+    "com.aquahomes.timesheet.engineering",
+    "com.aquasoftware.aquabooks",
+    "com.aquasoftware.receipts.test",
+  ]) {
+    assert.match(script, new RegExp(packageName.replaceAll(".", "\\.")));
+    assert.match(manifest, new RegExp(packageName.replaceAll(".", "\\.")));
+  }
+  assert.match(fidelity, /\.app-landing-preview\{/);
   assert.match(fidelity, /left:34%;[\s\S]*width:32%;[\s\S]*height:2px/);
   assert.match(fidelity, /\.app-deck \.app-card\.pos-0\{[^}]*top:7\.5%;[^}]*rotateY\(0deg\)/);
   assert.match(fidelity, /\.app-deck \.app-card\.pos--1\{[^}]*top:10%;[^}]*rotateY\(33deg\)/);
   assert.match(fidelity, /@keyframes rail-beacon-sweep/);
   assert.match(fidelity, /\.aqua-state-label\{[\s\S]*min-width:max-content/);
+});
+
+test("carousel previews and lower intelligence cards use verified refreshable snapshots", async () => {
+  const [script, native, contract] = await Promise.all([
+    read("sentient-os-web/app.js"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+    read("docs/integration/AQUA-SENTINEL-HOME-SNAPSHOT-CONTRACT.md"),
+  ]);
+  assert.match(script, /const liveSnapshots = new Map\(\)/);
+  assert.match(script, /window\.receiveAppSnapshot/);
+  assert.match(script, /window\.refreshSelectedAppSnapshot/);
+  assert.match(script, /selectedView\(apps\[active\]\)/);
+  assert.match(script, /safePreviewImage/);
+  assert.match(script, /image\\\/webp\|image\\\/png/);
+  assert.match(script, /class=\"app-landing-preview\$\{previewImageUrl/);
+  assert.match(script, /60_000/);
+  assert.doesNotMatch(script, /value: "24"/);
+  assert.doesNotMatch(script, /value: "47"/);
+  assert.doesNotMatch(script, /value: "\$184K"/);
+  assert.match(native, /REQUEST_HOME_SNAPSHOT/);
+  assert.match(native, /HOME_SNAPSHOT_RESPONSE/);
+  assert.match(native, /getPackagesForUid\(getSendingUid\(\)\)/);
+  assert.match(native, /MAX_SNAPSHOT_BYTES/);
+  assert.match(contract, /Aqua CRM[\s\S]*Aqua Receipts/);
+  assert.match(contract, /awaiting-live-connection/);
+  assert.match(contract, /compressed current home-screen thumbnail/);
 });
 
 test("native voice uses authenticated Aqua Brain and not local scripted answers", async () => {
@@ -153,7 +193,7 @@ test("Fold card-presence correction enlarges the complete carousel stack togethe
   assert.match(fidelity, /\.app-deck \.app-card\.pos-2\{left:78\.3%;top:7\.5%;width:21\.7%;height:69%/);
 });
 
-test("v0.4.7 keeps the carousel stack, protects the front border, and activates Aqua silently", async () => {
+test("v0.4.8 preserves the v0.4.7 carousel geometry and silent Aqua activation", async () => {
   const [fidelity, activity] = await Promise.all([
     read("sentient-os-web/fidelity.css"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
