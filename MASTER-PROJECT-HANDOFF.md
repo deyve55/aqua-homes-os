@@ -71,16 +71,18 @@ inspected and rejected because it packages the obsolete `sentinel-app` tree.
 The latest recovered and correctly packaged Sentinel artifact is therefore the
 CI-verified v0.4.3 production candidate:
 
-- APK:
-  `downloads/aqua-sentinel-os/v0.4.3/AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.apk`
+- permanent GitHub release APK:
+  `https://github.com/deyve55/aqua-homes-os/releases/download/aqua-sentinel-os-v0.4.3-production-candidate/AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.apk`
 - APK SHA-256:
   `114c8689ffeeb7d3ca85c547277be44fae92aef7a6d7b33e6228347ac161dfb4`
-- complete artifact ZIP:
-  `downloads/aqua-sentinel-os/v0.4.3/AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.zip`
-- ZIP SHA-256:
+- the permanent release URL was downloaded again during this handoff and
+  matched the APK SHA-256 above;
+- original complete workflow artifact ZIP SHA-256:
   `1c3d20c9d45594d6b98df78f4d493611841a878b11d2423bee28adebd41847d6`
-- workflow run: `30171083473`
-- workflow artifact ID: `8622998931`
+- the package, checksum, certificate, provenance, and launch-proof records are
+  preserved under `downloads/aqua-sentinel-os/v0.4.3/`;
+- workflow artifact download:
+  use workflow run `30171083473`, artifact ID `8622998931`;
 - artifact source commit recorded by the package:
   `fb97e77b04a7df7b8016c47dc62d6797e68d1279`
 
@@ -189,7 +191,8 @@ outputs were not changed or committed. The GitHub workflow remains the
 authoritative full build environment.
 
 No new Android APK was built locally during this handoff. The preserved
-Sentinel v0.4.3 APK came from successful workflow run `30171083473`.
+Sentinel v0.4.3 APK came from successful workflow run `30171083473` and its
+permanent GitHub release download was reverified byte-for-byte by SHA-256.
 
 Minimum Sentinel checks:
 
