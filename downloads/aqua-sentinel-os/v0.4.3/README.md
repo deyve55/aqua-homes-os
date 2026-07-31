@@ -3,15 +3,20 @@
 This is the latest correctly recovered Sentinel APK artifact whose package
 contains the approved `sentient-os-web` interface.
 
-## Files
+## Permanent APK download
 
-- `AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.apk`
+`https://github.com/deyve55/aqua-homes-os/releases/download/aqua-sentinel-os-v0.4.3-production-candidate/AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.apk`
+
+This URL was downloaded and rehashed during the integration handoff. It
+matched the APK SHA-256 below.
+
+## Receipt files in this folder
+
 - `AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.apk.sha256`
-- `AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.zip`
 - `AquaSentinelOS-v0.4.3-certificate.txt`
+- `AquaSentinelOS-v0.4.3-launch-proof.png`
 - `AquaSentinelOS-v0.4.3-package.txt`
 - `AquaSentinelOS-v0.4.3-provenance.txt`
-- `AquaSentinelOS-v0.4.3-launch-proof.png`
 
 APK SHA-256:
 
