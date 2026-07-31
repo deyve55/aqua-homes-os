@@ -41,5 +41,40 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".QuickCaptureActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/AquaQuickCaptureTheme">
+            <intent-filter>
+                <action android:name="com.aquasoftware.sentinel.action.ASK" />
+                <action android:name="com.aquasoftware.sentinel.action.VOICE" />
+                <action android:name="com.aquasoftware.sentinel.action.PHOTO" />
+                <action android:name="com.aquasoftware.sentinel.action.VIDEO" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="aquasentinel" />
+            </intent-filter>
+        </activity>
+        <provider
+            android:name=".EvidenceProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+        <receiver
+            android:name=".AquaCommandWidget"
+            android:exported="true"
+            android:label="Aqua Command Center">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/aqua_command_widget_info" />
+        </receiver>
     </application>
 </manifest>

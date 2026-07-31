@@ -76,7 +76,7 @@
             <header>
               <span>01</span>
               <div><strong id="primaryTitle"></strong></div>
-              <b>Confirmed</b>
+              <b id="primaryBadge">Awaiting live connection</b>
             </header>
             <h3 id="primaryDetail"></h3>
             <div class="dashboard-row">
@@ -86,11 +86,11 @@
               <small>Source</small><strong id="primarySource"></strong>
             </div>
             <div class="dashboard-row">
-              <small>Status</small><strong>Confirmed</strong>
+              <small>Sync</small><strong id="primaryStatus">Awaiting live connection</strong>
             </div>
             <footer>
               <i>✓</i>
-              <span>Reviewed by Aqua Sentinel<br /><small>Updated just now</small></span>
+              <span>Selected app intelligence<br /><small id="primaryUpdated">No confirmed refresh yet</small></span>
               <b>›</b>
             </footer>
           </button>
@@ -103,7 +103,7 @@
             <header>
               <span>02</span>
               <div><strong id="secondaryTitle"></strong></div>
-              <b>Needs Attention</b>
+              <b id="secondaryBadge">Awaiting live connection</b>
             </header>
             <h3 id="secondaryDetail"></h3>
             <div class="dashboard-row">
@@ -113,11 +113,11 @@
               <small>Source</small><strong id="secondarySource"></strong>
             </div>
             <div class="dashboard-row">
-              <small>Status</small><strong>Needs Attention</strong>
+              <small>Sync</small><strong id="secondaryStatus">Awaiting live connection</strong>
             </div>
             <footer>
               <i>!</i>
-              <span>Action may be required<br /><small>Tap for full details</small></span>
+              <span>Selected app operations<br /><small id="secondaryUpdated">No confirmed refresh yet</small></span>
               <b>›</b>
             </footer>
           </button>
@@ -130,8 +130,9 @@
           <button type="button" data-panel="messages">
             <span>▣</span><small>Messages</small>
           </button>
-          <button type="button" data-panel="data">
-            <span>◇</span><small>Data Hub</small>
+          <button id="filingCabinetButton" type="button" data-panel="files">
+            <span class="file-cabinet-icon" aria-hidden="true"><i></i><i></i></span><small>Files</small>
+            <b id="filingPendingBadge" hidden>0</b>
           </button>
           <button type="button" data-panel="settings">
             <span>☷</span><small>Settings</small>

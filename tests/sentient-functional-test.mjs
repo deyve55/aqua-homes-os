@@ -40,7 +40,10 @@ test("APK renders all seven satellite landing pages and launches installed apps"
     read("sentient-os-web/fidelity.css"),
     read("android-app/app/src/main/AndroidManifest.xml"),
   ]);
-  assert.match(script, /class="app-landing-preview\$\{previewImageUrl/);
+  assert.match(script, /class="app-landing-preview layout-\$\{app\.name/);
+  for (const layout of ["mini-kpis", "mini-finance", "mini-viewfinder", "mini-search", "mini-clock", "mini-ledger", "mini-inbox"]) {
+    assert.match(script, new RegExp(layout));
+  }
   assert.doesNotMatch(script, /APP INTERFACE RESERVED/);
   for (const app of ["Aqua CRM", "AquaDraw", "AquaCam", "Aqua Knowledge Vault", "Aqua Timesheet", "Aqua Books", "Aqua Receipts"]) assert.match(script, new RegExp(app));
   assert.match(script, /AquaBridge\.launchApp/);
@@ -76,7 +79,11 @@ test("carousel previews and lower intelligence cards use verified refreshable sn
   assert.match(script, /selectedView\(apps\[active\]\)/);
   assert.match(script, /safePreviewImage/);
   assert.match(script, /image\\\/webp\|image\\\/png/);
-  assert.match(script, /class=\"app-landing-preview\$\{previewImageUrl/);
+  assert.match(script, /class=\"app-landing-preview layout-\$\{app\.name/);
+  assert.match(script, /snapshotPresentation/);
+  assert.match(script, /formatSnapshotTime/);
+  assert.match(script, /primaryStatus/);
+  assert.match(script, /secondaryStatus/);
   assert.match(script, /60_000/);
   assert.doesNotMatch(script, /value: "24"/);
   assert.doesNotMatch(script, /value: "47"/);
@@ -195,7 +202,7 @@ test("Fold card-presence correction enlarges the complete carousel stack togethe
   assert.match(fidelity, /\.app-deck \.app-card\.pos-2\{left:78\.3%;top:7\.5%;width:21\.7%;height:69%/);
 });
 
-test("v0.4.8 preserves the v0.4.7 carousel geometry and silent Aqua activation", async () => {
+test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation", async () => {
   const [fidelity, activity] = await Promise.all([
     read("sentient-os-web/fidelity.css"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
@@ -208,4 +215,67 @@ test("v0.4.8 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(fidelity, /@keyframes aqua-core-rise-out/);
   assert.match(activity, /webView\.setSoundEffectsEnabled\(false\)/);
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
+});
+
+test("v0.5.0 packages truthful bright app screens and synchronized lower cards", async () => {
+  const [gradle, workflow, script, html, fidelity] = await Promise.all([
+    read("android-app/app/build.gradle.kts"),
+    read(".github/workflows/aqua-sentient-os-release.yml"),
+    read("sentient-os-web/app.js"),
+    read("sentient-os-web/index.html"),
+    read("sentient-os-web/fidelity.css"),
+  ]);
+  assert.match(gradle, /versionCode = 2026073103/);
+  assert.match(gradle, /versionName = "0\.5\.0-filing-cabinet-test"/);
+  assert.match(workflow, /AquaSentinelOS-v0\.5\.0-FILING-CABINET-TEST\.apk/);
+  assert.match(script, /renderFallbackPreview/);
+  assert.match(script, /Live · confirmed/);
+  assert.match(html, /id="primaryStatus"/);
+  assert.match(html, /id="secondaryStatus"/);
+  assert.match(fidelity, /v0\.4\.9 app-screen clarity and synchronized command cards/);
+  assert.match(fidelity, /color:#fff/);
+});
+
+test("v0.5.0 compact rail and filing cabinet share one protected widget inbox", async () => {
+  const [html, fidelity, script, manifest, activity, store, widget, capture, contract] = await Promise.all([
+    read("sentient-os-web/index.html"),
+    read("sentient-os-web/fidelity.css"),
+    read("sentient-os-web/app.js"),
+    read("android-app/app/src/main/AndroidManifest.xml"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/FilingStore.java"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
+    read("docs/integration/AQUA-SENTINEL-FILING-INBOX-CONTRACT.md"),
+  ]);
+  assert.match(html, /id="filingCabinetButton"/);
+  assert.match(html, /class="file-cabinet-icon"/);
+  assert.match(html, /id="filingPendingBadge"/);
+  assert.match(fidelity, /v0\.5\.0 owner-approved compact rail and filing cabinet/);
+  assert.match(fidelity, /height:clamp\(34px,4\.7cqw,40px\)/);
+  assert.match(fidelity, /min-height:clamp\(194px,35\.5cqw,308px\)/);
+  assert.match(script, /Aqua File Cabinet/);
+  assert.match(script, /window\.receiveFilingInbox/);
+  assert.match(script, /needsClarification/);
+  assert.match(script, /Tell Aqua where this goes/);
+  assert.match(script, /Hey, you have \$\{pending\} pending/);
+  assert.match(activity, /getFilingInbox/);
+  assert.match(activity, /startFilingCapture/);
+  assert.match(activity, /startFilingClarification/);
+  assert.match(store, /AES\/GCM\/NoPadding/);
+  assert.match(store, /AndroidKeyStore/);
+  assert.match(store, /Aqua Books · Painting Company/);
+  assert.match(store, /"Queued"/);
+  assert.match(store, /static synchronized boolean clarify/);
+  assert.match(widget, /widget_ask/);
+  assert.match(widget, /widget_video/);
+  assert.match(widget, /widget_photo/);
+  assert.match(widget, /widget_file/);
+  assert.match(capture, /ACTION_IMAGE_CAPTURE/);
+  assert.match(capture, /ACTION_VIDEO_CAPTURE/);
+  assert.match(capture, /FilingStore\.enqueue/);
+  assert.match(manifest, /\.AquaCommandWidget/);
+  assert.match(manifest, /\.QuickCaptureActivity/);
+  assert.match(manifest, /\.EvidenceProvider/);
+  assert.match(contract, /Capture acknowledgement must never be represented as remote confirmation/);
 });

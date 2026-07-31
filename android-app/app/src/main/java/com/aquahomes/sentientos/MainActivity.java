@@ -90,6 +90,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private boolean listenAfterPermission;
     private final Map<String, SnapshotRequest> pendingSnapshots = new HashMap<>();
     private boolean snapshotReceiverRegistered;
+    private boolean webAppReady;
 
     private static class SnapshotRequest {
         final String appName;
@@ -197,6 +198,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 value -> {
                     if ("true".equals(value)) {
                         Log.i("AquaSentinel", "AQUA_SENTINEL_UI_READY");
+                        webAppReady = true;
+                        handleStartupIntent(getIntent());
                     } else {
                         Log.e("AquaSentinel", "AQUA_SENTINEL_UI_INCOMPLETE");
                     }
@@ -250,6 +253,26 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         super.onResume();
         hideSystemUi();
         evaluateJavascript("window.refreshSelectedAppSnapshot?.();");
+        evaluateJavascript("window.refreshFilingInbox?.();");
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (webAppReady) handleStartupIntent(intent);
+    }
+
+    private void handleStartupIntent(Intent intent) {
+        if (intent == null) return;
+        if (intent.getBooleanExtra("start_voice", false)) {
+            intent.removeExtra("start_voice");
+            evaluateJavascript("document.getElementById('aquaButton')?.click();");
+        }
+        if (intent.getBooleanExtra("open_filing", false)) {
+            intent.removeExtra("open_filing");
+            evaluateJavascript("window.openFilingCabinet?.();");
+        }
     }
 
     @Override
@@ -933,6 +956,30 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @JavascriptInterface
         public void requestAppSnapshot(String appName, String packageJson) {
             requestHomeSnapshot(appName, packageJson);
+        }
+
+        @JavascriptInterface
+        public String getFilingInbox() {
+            return FilingStore.inboxJson(MainActivity.this);
+        }
+
+        @JavascriptInterface
+        public void startFilingCapture(String mode) {
+            runOnUiThread(() -> {
+                Intent intent = new Intent(MainActivity.this, QuickCaptureActivity.class)
+                    .putExtra(QuickCaptureActivity.EXTRA_MODE, mode);
+                startActivity(intent);
+            });
+        }
+
+        @JavascriptInterface
+        public void startFilingClarification(String itemId) {
+            runOnUiThread(() -> {
+                Intent intent = new Intent(MainActivity.this, QuickCaptureActivity.class)
+                    .putExtra(QuickCaptureActivity.EXTRA_MODE, "clarify")
+                    .putExtra(QuickCaptureActivity.EXTRA_ITEM_ID, itemId);
+                startActivity(intent);
+            });
         }
     }
 }

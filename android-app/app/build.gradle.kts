@@ -23,8 +23,8 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026073101
-        versionName = "0.4.8-carousel-test"
+        versionCode = 2026073103
+        versionName = "0.5.0-filing-cabinet-test"
     }
 
     buildTypes {

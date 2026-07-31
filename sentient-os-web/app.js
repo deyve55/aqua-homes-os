@@ -149,6 +149,8 @@ let suppressCardClickUntil = 0;
 const CARD_STEP_PX = 72;
 let authenticated = false;
 let authenticatedEmail = "";
+let filingInbox = [];
+let filingBriefAnnounced = false;
 let sound = true;
 let notifications = true;
 const liveSnapshots = new Map();
@@ -221,6 +223,7 @@ function selectedView(app) {
     ...app,
     preview: { ...app.preview, ...(snapshot.preview || {}) },
     previewImage: snapshot.previewImage || null,
+    capturedAt: snapshot.capturedAt || null,
     primaryTitle: snapshot.primary?.title || app.primaryTitle,
     primaryValue: snapshot.primary?.value || app.primaryValue,
     primaryDetail: snapshot.primary?.detail || app.primaryDetail,
@@ -228,6 +231,72 @@ function selectedView(app) {
     secondaryValue: snapshot.secondary?.value || app.secondaryValue,
     secondaryDetail: snapshot.secondary?.detail || app.secondaryDetail,
   };
+}
+
+function renderFallbackPreview(app, view) {
+  const tile = (index) => escapeHtml(view.preview.tiles[index] || app.widgets[index] || "Open");
+  const sharedHeader = `
+    <div class="mini-appbar">
+      <b>${escapeHtml(app.icon)}</b>
+      <span>${escapeHtml(view.preview.eyebrow)}</span>
+      <i></i>
+    </div>`;
+  const layouts = {
+    "Aqua CRM": `
+      ${sharedHeader}
+      <h3>${escapeHtml(view.preview.title)}</h3>
+      <div class="mini-kpis"><i><small>${escapeHtml(view.preview.metric)}</small><strong>${escapeHtml(view.preview.value)}</strong></i><i><small>Today</small><strong>—</strong></i></div>
+      <div class="mini-list"><span><b></b>${tile(0)}<em>›</em></span><span><b></b>${tile(1)}<em>›</em></span><span><b></b>${tile(2)}<em>›</em></span></div>`,
+    AquaDraw: `
+      ${sharedHeader}
+      <h3>${escapeHtml(view.preview.title)}</h3>
+      <div class="mini-finance"><small>${escapeHtml(view.preview.metric)}</small><strong>${escapeHtml(view.preview.value)}</strong><i><b></b></i></div>
+      <div class="mini-budget"><span>${tile(0)}<b></b></span><span>${tile(1)}<b></b></span><span>${tile(2)}<b></b></span></div>`,
+    AquaCam: `
+      ${sharedHeader}
+      <h3>${escapeHtml(view.preview.title)}</h3>
+      <div class="mini-viewfinder"><i></i><span>LIVE FIELD VIEW</span><b>+</b></div>
+      <div class="mini-actions"><span>${tile(0)}</span><span>${tile(1)}</span><span>${tile(2)}</span></div>`,
+    "Aqua Knowledge Vault": `
+      ${sharedHeader}
+      <h3>${escapeHtml(view.preview.title)}</h3>
+      <div class="mini-search">Ask codes, tax, or compliance <b>⌕</b></div>
+      <div class="mini-docs"><span><b>§</b>${tile(0)}</span><span><b>✓</b>${tile(1)}</span><span><b>▤</b>${tile(2)}</span></div>`,
+    "Aqua Timesheet": `
+      ${sharedHeader}
+      <h3>${escapeHtml(view.preview.title)}</h3>
+      <div class="mini-clock"><small>${escapeHtml(view.preview.metric)}</small><strong>${escapeHtml(view.preview.value)}</strong><i>READY</i></div>
+      <div class="mini-week"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span></div>
+      <div class="mini-actions"><span>${tile(0)}</span><span>${tile(1)}</span><span>${tile(2)}</span></div>`,
+    "Aqua Books": `
+      ${sharedHeader}
+      <h3>${escapeHtml(view.preview.title)}</h3>
+      <div class="mini-ledger-head"><small>${escapeHtml(view.preview.metric)}</small><strong>${escapeHtml(view.preview.value)}</strong></div>
+      <div class="mini-ledger"><span>${tile(0)}<b>—</b></span><span>${tile(1)}<b>—</b></span><span>${tile(2)}<b>—</b></span></div>`,
+    "Aqua Receipts": `
+      ${sharedHeader}
+      <h3>${escapeHtml(view.preview.title)}</h3>
+      <div class="mini-inbox"><span><b>▣</b>${tile(0)}</span><span><b>✉</b>${tile(1)}</span><span><b>▤</b>${tile(2)}</span></div>
+      <div class="mini-receipt"><i></i><span><b>Receipt inbox</b><small>Awaiting confirmed items</small></span><em>›</em></div>`,
+  };
+  return layouts[app.name] || `${sharedHeader}<h3>${escapeHtml(view.preview.title)}</h3>`;
+}
+
+function snapshotPresentation(app) {
+  const raw = snapshotStates.get(app.name) || "awaiting-live-connection";
+  const hasSnapshot = liveSnapshots.has(app.name);
+  if (raw === "needs-attention") return { label: "Needs attention", className: "needs-attention" };
+  if (raw.includes("refresh")) return { label: hasSnapshot ? "Cached · refreshing" : "Refreshing", className: "refreshing" };
+  if (hasSnapshot && /confirmed|live|connected/.test(raw)) return { label: "Live · confirmed", className: "confirmed" };
+  if (hasSnapshot) return { label: "Verified snapshot", className: "confirmed" };
+  return { label: "Awaiting live connection", className: "awaiting" };
+}
+
+function formatSnapshotTime(value) {
+  if (!value) return "No confirmed refresh yet";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Confirmed time unavailable";
+  return `Updated ${date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
 }
 
 function safePreviewImage(previewImage) {
@@ -280,14 +349,11 @@ function renderCards() {
       "aria-label",
       position === 0 ? `Open ${app.name}` : `Move ${app.name} to center`,
     );
+    const presentation = snapshotPresentation(app);
     card.innerHTML = `
-      <div class="app-landing-preview${previewImageUrl ? " has-image" : ""}" aria-hidden="true">
-        ${previewImageUrl ? `<img src="${previewImageUrl}" alt="">` : `
-          <header><b>${escapeHtml(app.icon)}</b><span>${escapeHtml(view.preview.eyebrow)}</span></header>
-          <h3>${escapeHtml(view.preview.title)}</h3>
-          <section><small>${escapeHtml(view.preview.metric)}</small><strong>${escapeHtml(view.preview.value)}</strong></section>
-          <div>${view.preview.tiles.map((tile) => `<i>${escapeHtml(tile)}</i>`).join("")}</div>`}
-        <footer>${escapeHtml(app.name)} · ${escapeHtml(snapshotStates.get(app.name) || "awaiting live connection")}</footer>
+      <div class="app-landing-preview layout-${app.name.toLowerCase().replace(/[^a-z]+/g, "-")}${previewImageUrl ? " has-image" : ""}" aria-hidden="true">
+        ${previewImageUrl ? `<img src="${previewImageUrl}" alt="">` : renderFallbackPreview(app, view)}
+        <footer><span>${escapeHtml(app.name)}</span><b class="${presentation.className}">${escapeHtml(presentation.label)}</b></footer>
       </div>`;
     card.addEventListener("click", () => {
       if (performance.now() < suppressCardClickUntil) return;
@@ -312,11 +378,17 @@ function renderCards() {
 
 function renderDashboard() {
   const selected = selectedView(apps[active]);
+  const presentation = snapshotPresentation(selected);
+  const updated = formatSnapshotTime(selected.capturedAt);
   appDashboard.style.setProperty("--app-color", selected.color);
   document.getElementById("primaryTitle").textContent = selected.primaryTitle;
   document.getElementById("primaryDetail").textContent = selected.primaryDetail;
   document.getElementById("primaryValue").textContent = selected.primaryValue;
   document.getElementById("primarySource").textContent = selected.name;
+  document.getElementById("primaryStatus").textContent = presentation.label;
+  document.getElementById("primaryBadge").textContent = presentation.label;
+  document.getElementById("primaryBadge").className = presentation.className;
+  document.getElementById("primaryUpdated").textContent = updated;
   document.getElementById("secondaryTitle").textContent =
     selected.secondaryTitle;
   document.getElementById("secondaryDetail").textContent =
@@ -324,6 +396,10 @@ function renderDashboard() {
   document.getElementById("secondaryValue").textContent =
     selected.secondaryValue;
   document.getElementById("secondarySource").textContent = selected.name;
+  document.getElementById("secondaryStatus").textContent = presentation.label;
+  document.getElementById("secondaryBadge").textContent = presentation.label;
+  document.getElementById("secondaryBadge").className = presentation.className;
+  document.getElementById("secondaryUpdated").textContent = updated;
 }
 
 function render() {
@@ -454,6 +530,48 @@ function systemHeader(title) {
   `;
 }
 
+function filingTypeIcon(type) {
+  if (type === "photo") return "▧";
+  if (type === "video") return "▶";
+  return "▤";
+}
+
+function filingCabinetMarkup() {
+  const pending = filingInbox.filter((item) => item.needsClarification).length;
+  const routed = filingInbox.filter((item) => item.destination).length;
+  const items = filingInbox.length
+    ? filingInbox.map((item) => `
+        <article class="filing-item">
+          <header>
+            <i>${filingTypeIcon(item.type)}</i>
+            <span><strong>${escapeHtml(item.title || "Captured item")}</strong><small>${escapeHtml(item.destination || "Aqua needs a filing destination")}</small></span>
+            <b>${escapeHtml(item.state || "Saved Locally")}</b>
+          </header>
+          <p>${escapeHtml(item.note || "Evidence captured and protected.")}</p>
+          <small>${escapeHtml(item.createdLabel || "Captured just now")}</small>
+          ${item.needsClarification ? `<button class="filing-clarify" type="button" data-clarify-id="${escapeHtml(item.id)}">Tell Aqua where this goes</button>` : ""}
+        </article>`).join("")
+    : `<div class="filing-empty">The filing tray is clear. Voice, photo, and video captures from the Command Center will appear here.</div>`;
+  return `${systemHeader("Aqua File Cabinet")}
+    <div class="filing-summary">
+      <article><small>Pending clarification</small><strong>${pending}</strong></article>
+      <article><small>Auto-routed</small><strong>${routed}</strong></article>
+    </div>
+    <div class="filing-actions">
+      <button type="button" data-filing-action="voice">File by voice</button>
+      <button type="button" data-filing-action="photo">Add photo</button>
+      <button type="button" data-filing-action="video">Add video</button>
+    </div>
+    <div class="filing-list">${items}</div>`;
+}
+
+function updateFilingBadge() {
+  const badge = document.getElementById("filingPendingBadge");
+  const pending = filingInbox.filter((item) => item.needsClarification).length;
+  badge.textContent = String(Math.min(99, pending));
+  badge.hidden = pending === 0;
+}
+
 function openPanel(kind) {
   document.querySelectorAll(".bottom-rail button").forEach((button) => {
     button.classList.toggle("active", button.dataset.panel === kind);
@@ -477,6 +595,8 @@ function openPanel(kind) {
             </button>`,
         )
         .join("")}</div>`;
+  } else if (kind === "files") {
+    systemPanel.innerHTML = filingCabinetMarkup();
   } else if (kind === "data") {
     systemPanel.innerHTML =
       systemHeader("Data Hub") +
@@ -544,6 +664,24 @@ function openPanel(kind) {
             ? `Aqua Brain authenticated · ${apps.length} apps registered · voice bridge ready`
             : "Aqua Brain is not authenticated",
         );
+      }
+    });
+  });
+  systemPanel.querySelectorAll("[data-filing-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (window.AquaBridge?.startFilingCapture) {
+        window.AquaBridge.startFilingCapture(button.dataset.filingAction);
+      } else {
+        notify("Filing capture is available in the installed Android app.");
+      }
+    });
+  });
+  systemPanel.querySelectorAll("[data-clarify-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (window.AquaBridge?.startFilingClarification) {
+        window.AquaBridge.startFilingClarification(button.dataset.clarifyId);
+      } else {
+        notify("Filing clarification is available in the installed Android app.");
       }
     });
   });
@@ -670,6 +808,7 @@ window.receiveAuthState = (raw) => {
     authMessage.textContent = "";
     authPassword.value = "";
     setAquaState("idle");
+    window.refreshFilingInbox();
   }
 };
 
@@ -702,6 +841,34 @@ window.closeAquaDetails = () => {
   } else if (!workspace.hidden) {
     workspace.hidden = true;
   }
+};
+
+window.receiveFilingInbox = (raw) => {
+  try {
+    const payload = typeof raw === "string" ? JSON.parse(raw) : raw;
+    filingInbox = Array.isArray(payload?.items) ? payload.items : [];
+  } catch {
+    filingInbox = [];
+  }
+  updateFilingBadge();
+  const pending = filingInbox.filter((item) => item.needsClarification).length;
+  if (authenticated && sound && pending > 0 && !filingBriefAnnounced) {
+    filingBriefAnnounced = true;
+    window.AquaBridge?.speak(`Hey, you have ${pending} pending ${pending === 1 ? "item" : "items"} that ${pending === 1 ? "needs" : "need"} to be filed.`);
+  }
+  const filesActive = document.querySelector('[data-panel="files"]')?.classList.contains("active");
+  if (!systemPanel.hidden && filesActive) openPanel("files");
+};
+
+window.refreshFilingInbox = () => {
+  if (window.AquaBridge?.getFilingInbox) {
+    window.receiveFilingInbox(window.AquaBridge.getFilingInbox());
+  }
+};
+
+window.openFilingCabinet = () => {
+  window.refreshFilingInbox();
+  openPanel("files");
 };
 
 authForm.addEventListener("submit", (event) => {
@@ -863,3 +1030,4 @@ if (window.AquaBridge?.bootstrap) {
   authenticated = true;
   authPanel.hidden = true;
 }
+window.refreshFilingInbox();

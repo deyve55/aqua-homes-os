@@ -64,12 +64,20 @@ oversized responses are rejected on every supported version.
   "primary": {
     "title": "Customer Operations",
     "value": "<confirmed_summary>",
-    "detail": "<confirmed_attention_summary>"
+    "detail": "<confirmed_attention_summary>",
+    "items": [
+      { "label": "Pipeline", "value": "<confirmed_summary>" },
+      { "label": "Schedule", "value": "<confirmed_summary>" }
+    ]
   },
   "secondary": {
     "title": "Today",
     "value": "<confirmed_schedule_summary>",
-    "detail": "<confirmed_next_item>"
+    "detail": "<confirmed_next_item>",
+    "items": [
+      { "label": "Next", "value": "<confirmed_summary>" },
+      { "label": "Attention", "value": "<confirmed_summary>" }
+    ]
   }
 }
 ```
@@ -82,6 +90,11 @@ WebP or PNG image data from the verified responding app.
 All fields are display summaries, not commands. Values must come from confirmed
 or truthfully labeled local state. Do not publish placeholder customer names,
 amounts, counts, or completion claims as live data.
+
+`primary.items` and `secondary.items` are optional and may contain up to three
+short confirmed label/value rows. Sentinel keeps the summary title, value,
+detail, source, sync state, and capture time visible even when those optional
+rows are omitted.
 
 ## Refresh behavior
 

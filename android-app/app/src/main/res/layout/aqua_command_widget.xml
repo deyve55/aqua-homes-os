@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@drawable/aqua_widget_background">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="AQUA COMMAND CENTER"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/widget_pending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="7dp"
+            android:paddingVertical="3dp"
+            android:background="@drawable/aqua_widget_status"
+            android:text="READY"
+            android:textColor="#BFF7FF"
+            android:textSize="8sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal">
+        <TextView android:id="@+id/widget_ask" style="@style/AquaWidgetAction" android:text="◉\nAsk Aqua" />
+        <TextView android:id="@+id/widget_video" style="@style/AquaWidgetAction" android:text="▶\nVideo" />
+        <TextView android:id="@+id/widget_photo" style="@style/AquaWidgetAction" android:text="▧\nPhoto" />
+        <TextView android:id="@+id/widget_file" style="@style/AquaWidgetAction" android:text="▤\nFile" />
+    </LinearLayout>
+</LinearLayout>
