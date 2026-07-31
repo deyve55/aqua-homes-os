@@ -398,6 +398,7 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(widgetVerifier, /AQUA_CAPTURE_ROUTE mode=\$mode/);
   assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_SUBMITTED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_DELIVERED/);
+  assert.match(capture, /AQUA_WIDGET_COMPOSER_READY input=/);
   assert.match(widgetVerifier, /tap_resource "widget_command_input"/);
   assert.match(widgetVerifier, /tap_resource "widget_command_send"/);
 });

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -159,6 +160,39 @@ public class QuickCaptureActivity extends Activity {
             InputMethodManager keyboard = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             if (keyboard != null) keyboard.showSoftInput(commandInput, InputMethodManager.SHOW_IMPLICIT);
         }, 180);
+        send.postDelayed(() -> logCommandComposerBounds(send), 900);
+    }
+
+    private void logCommandComposerBounds(Button send) {
+        Rect inputBounds = new Rect();
+        Rect sendBounds = new Rect();
+        if (
+            commandInput == null
+                || !commandInput.getGlobalVisibleRect(inputBounds)
+                || !send.getGlobalVisibleRect(sendBounds)
+        ) {
+            Log.w("AquaCommandWidget", "AQUA_WIDGET_COMPOSER_BOUNDS_UNAVAILABLE");
+            return;
+        }
+        Log.i(
+            "AquaCommandWidget",
+            "AQUA_WIDGET_COMPOSER_READY input="
+                + inputBounds.left
+                + ","
+                + inputBounds.top
+                + ","
+                + inputBounds.right
+                + ","
+                + inputBounds.bottom
+                + " send="
+                + sendBounds.left
+                + ","
+                + sendBounds.top
+                + ","
+                + sendBounds.right
+                + ","
+                + sendBounds.bottom
+        );
     }
 
     private void captureCommandVoice() {
