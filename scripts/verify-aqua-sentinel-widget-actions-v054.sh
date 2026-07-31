@@ -4,6 +4,50 @@ set -euo pipefail
 package="com.aquahomes.sentinel"
 activity="$package/com.aquahomes.sentientos.QuickCaptureActivity"
 
+tap_resource() {
+  local resource_name="$1"
+  local device_dump="/sdcard/aqua-widget-ui.xml"
+  local local_dump="/tmp/aqua-widget-ui.xml"
+  local coordinates=""
+
+  for attempt in $(seq 1 8); do
+    adb shell uiautomator dump "$device_dump" >/dev/null 2>&1 || true
+    adb pull "$device_dump" "$local_dump" >/dev/null 2>&1 || true
+    if [[ -s "$local_dump" ]]; then
+      coordinates="$(python3 - "$local_dump" "$package:id/$resource_name" <<'PY'
+import re
+import sys
+import xml.etree.ElementTree as ET
+
+path, target = sys.argv[1:]
+try:
+    root = ET.parse(path).getroot()
+except Exception:
+    raise SystemExit(0)
+
+for node in root.iter("node"):
+    if node.attrib.get("resource-id") != target:
+        continue
+    match = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", node.attrib.get("bounds", ""))
+    if match:
+        left, top, right, bottom = map(int, match.groups())
+        print((left + right) // 2, (top + bottom) // 2)
+    break
+PY
+)"
+    fi
+    if [[ -n "$coordinates" ]]; then
+      read -r tap_x tap_y <<< "$coordinates"
+      adb shell input tap "$tap_x" "$tap_y"
+      return 0
+    fi
+    sleep 1
+  done
+
+  echo "Android resource was not visible: $resource_name" >&2
+  return 1
+}
+
 for mode in ask voice photo video; do
   action="com.aquasoftware.sentinel.action.${mode^^}"
   evidence="/tmp/aqua-sentinel-v0.5.4-widget-${mode}.logcat.txt"
@@ -38,8 +82,9 @@ for mode in ask voice photo video; do
   fi
 
   if [[ "$mode" == "ask" ]]; then
+    tap_resource "widget_command_input"
     adb shell input text "Widget_message_execution_test"
-    adb shell input keyevent 66
+    tap_resource "widget_command_send"
     submitted=false
     delivered=false
     for attempt in $(seq 1 15); do
