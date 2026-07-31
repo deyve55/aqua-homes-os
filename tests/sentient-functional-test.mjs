@@ -217,7 +217,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.5.0 packages truthful bright app screens and synchronized lower cards", async () => {
+test("v0.5.1 packages truthful bright app screens and synchronized lower cards", async () => {
   const [gradle, workflow, script, html, fidelity] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -225,9 +225,9 @@ test("v0.5.0 packages truthful bright app screens and synchronized lower cards",
     read("sentient-os-web/index.html"),
     read("sentient-os-web/fidelity.css"),
   ]);
-  assert.match(gradle, /versionCode = 2026073103/);
-  assert.match(gradle, /versionName = "0\.5\.0-filing-cabinet-test"/);
-  assert.match(workflow, /AquaSentinelOS-v0\.5\.0-FILING-CABINET-TEST\.apk/);
+  assert.match(gradle, /versionCode = 2026073104/);
+  assert.match(gradle, /versionName = "0\.5\.1-carousel-widget-test"/);
+  assert.match(workflow, /AquaSentinelOS-v0\.5\.1-CAROUSEL-WIDGET-TEST\.apk/);
   assert.match(script, /renderFallbackPreview/);
   assert.match(script, /Live · confirmed/);
   assert.match(html, /id="primaryStatus"/);
@@ -278,4 +278,73 @@ test("v0.5.0 compact rail and filing cabinet share one protected widget inbox", 
   assert.match(manifest, /\.QuickCaptureActivity/);
   assert.match(manifest, /\.EvidenceProvider/);
   assert.match(contract, /Capture acknowledgement must never be represented as remote confirmation/);
+});
+
+test("v0.5.1 uses lightweight app covers, split home screens, and a fluid per-card carousel", async () => {
+  const [html, script, fidelity, ...carouselAssets] = await Promise.all([
+    read("sentient-os-web/index.html"),
+    read("sentient-os-web/app.js"),
+    read("sentient-os-web/fidelity.css"),
+    ...["crm", "draw", "cam", "vault", "timesheet", "books", "receipts"].map((name) =>
+      readBytes(`sentient-os-web/assets/carousel-v2/${name}.webp`),
+    ),
+  ]);
+  for (const name of ["CRM", "Draw", "Cam", "Knowledge Vault", "Timesheet", "Books", "Receipts"]) {
+    assert.match(script, new RegExp(`cardName: "${name}"`));
+  }
+  assert.match(script, /function renderCarouselCover/);
+  assert.match(html, /id="selectedAppLabel" class="selected-app-label"/);
+  assert.match(script, /selectedAppLabel\.textContent = selected\.name/);
+  assert.match(script, /class="carousel-art"/);
+  assert.match(script, /assets\/carousel-v2\/\$\{escapeHtml\(app\.motion\)\}\.webp/);
+  assert.doesNotMatch(script, /class="carousel-state/);
+  assert.doesNotMatch(script, /class="carousel-brand"/);
+  for (const motionClass of ["fund-stream", "focus-ring", "vault-door", "signal-path", "balance-beam", "scan-line"]) {
+    assert.match(script, new RegExp(motionClass));
+  }
+  for (const asset of carouselAssets) {
+    assert.ok(asset.length > 10_000);
+    assert.equal(asset.subarray(0, 4).toString("ascii"), "RIFF");
+    assert.equal(asset.subarray(8, 12).toString("ascii"), "WEBP");
+  }
+  assert.match(script, /function dashboardScreenMarkup/);
+  assert.doesNotMatch(script, /cardsTrack\.style\.transform/);
+  assert.match(script, /function applyDeckPosition/);
+  assert.match(script, /\{ offset: 0, width: 28\.6, height: 76, top: 7\.5, depth: 92, angle: 0/);
+  assert.match(script, /\{ offset: 22\.7, width: 21, height: 68, top: 10, depth: -30, angle: 33/);
+  assert.match(script, /\{ offset: 39\.6, width: 19\.4, height: 62, top: 12, depth: -132, angle: 53/);
+  assert.match(script, /const CARD_STEP_PX = 52/);
+  assert.match(script, /Math\.abs\(velocityX\) >= 0\.07/);
+  assert.match(script, /snapDeck\(false\)/);
+  assert.match(html, /id="primaryScreen" class="dashboard-screen-crop screen-upper"/);
+  assert.match(html, /id="secondaryScreen" class="dashboard-screen-crop screen-lower"/);
+  assert.match(fidelity, /v0\.5\.1 fluid carousel, app covers, and split home-screen tiles/);
+  assert.match(fidelity, /grid-template-rows:auto auto minmax\(0,1fr\) auto/);
+  assert.match(fidelity, /height:clamp\(30px,4cqw,34px\)/);
+  assert.match(fidelity, /\.carousel-art\{[\s\S]*object-fit:cover/);
+  assert.match(fidelity, /animation-play-state:paused!important/);
+  assert.match(fidelity, /\.app-deck\.is-settled \.app-card\.active \.carousel-motion[\s\S]*animation-play-state:running!important/);
+  assert.match(fidelity, /\.app-deck\.is-settled \.selected-app-label/);
+  assert.match(fidelity, /@keyframes receipt-scan[^}]*[\s\S]*top:82%/);
+  assert.match(fidelity, /@keyframes vault-door-open/);
+  assert.match(fidelity, /@keyframes crm-token-flow/);
+  assert.match(fidelity, /\.screen-lower \.dashboard-screen-sheet\{top:-100%\}/);
+});
+
+test("v0.5.1 executes every widget action and grants evidence URIs to camera apps", async () => {
+  const [widget, capture, styles, workflow] = await Promise.all([
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
+    read("android-app/app/src/main/res/values/styles.xml"),
+    read(".github/workflows/aqua-sentient-os-release.yml"),
+  ]);
+  assert.match(widget, /PendingIntent\.FLAG_CANCEL_CURRENT \| PendingIntent\.FLAG_IMMUTABLE/);
+  assert.match(widget, /setPackage\(context\.getPackageName\(\)\)/);
+  assert.match(capture, /AQUA_WIDGET_ACTION_RECEIVED mode=/);
+  assert.match(capture, /showOpeningSurface\(\)/);
+  assert.match(capture, /ClipData\.newRawUri/);
+  assert.doesNotMatch(capture, /requestPermissions\(/);
+  assert.match(styles, /<item name="android:clickable">true<\/item>/);
+  assert.match(workflow, /for mode in ask voice photo video/);
+  assert.match(workflow, /AQUA_WIDGET_ACTION_RECEIVED mode=\$mode/);
 });

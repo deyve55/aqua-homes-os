@@ -1,13 +1,16 @@
 package com.aquahomes.sentientos;
 
-import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
+import android.util.Log;
+import android.view.Gravity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -20,10 +23,11 @@ public class QuickCaptureActivity extends Activity {
     private static final int VOICE_REQUEST = 201;
     private static final int PHOTO_REQUEST = 202;
     private static final int VIDEO_REQUEST = 203;
-    private static final int AUDIO_PERMISSION = 204;
+    private static final String STATE_CAPTURE_LAUNCHED = "capture_launched";
     private String mode;
     private File evidenceFile;
     private String itemId;
+    private boolean captureLaunched;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -33,6 +37,29 @@ public class QuickCaptureActivity extends Activity {
         if ((mode == null || mode.isEmpty()) && getIntent().getData() != null) {
             mode = getIntent().getData().getHost();
         }
+        captureLaunched = state != null && state.getBoolean(STATE_CAPTURE_LAUNCHED, false);
+        showOpeningSurface();
+        Log.i("AquaCommandWidget", "AQUA_WIDGET_ACTION_RECEIVED mode=" + mode);
+        if (captureLaunched) return;
+        captureLaunched = true;
+        getWindow().getDecorView().post(this::routeCapture);
+    }
+
+    private void showOpeningSurface() {
+        TextView status = new TextView(this);
+        status.setGravity(Gravity.CENTER);
+        status.setPadding(28, 28, 28, 28);
+        status.setTextColor(Color.WHITE);
+        status.setTextSize(17);
+        status.setBackgroundColor(Color.rgb(1, 10, 15));
+        if ("photo".equals(mode)) status.setText("Aqua is opening the camera…");
+        else if ("video".equals(mode)) status.setText("Aqua is opening video capture…");
+        else if ("ask".equals(mode)) status.setText("Aqua is opening Sentinel…");
+        else status.setText("Aqua is ready to file your instruction…");
+        setContentView(status);
+    }
+
+    private void routeCapture() {
         if ("ask".equals(mode)) {
             startActivity(
                 new Intent(this, MainActivity.class)
@@ -49,11 +76,13 @@ public class QuickCaptureActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        state.putBoolean(STATE_CAPTURE_LAUNCHED, captureLaunched);
+        super.onSaveInstanceState(state);
+    }
+
     private void captureVoice() {
-        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] { Manifest.permission.RECORD_AUDIO }, AUDIO_PERMISSION);
-            return;
-        }
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toLanguageTag())
@@ -78,6 +107,7 @@ public class QuickCaptureActivity extends Activity {
             Uri uri = EvidenceProvider.uriFor(this, evidenceFile);
             Intent intent = new Intent(video ? MediaStore.ACTION_VIDEO_CAPTURE : MediaStore.ACTION_IMAGE_CAPTURE)
                 .putExtra(MediaStore.EXTRA_OUTPUT, uri)
+                .setClipData(ClipData.newRawUri("Aqua filing evidence", uri))
                 .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivityForResult(intent, video ? VIDEO_REQUEST : PHOTO_REQUEST);
         } catch (Exception error) {
@@ -121,14 +151,4 @@ public class QuickCaptureActivity extends Activity {
         finish();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
-        super.onRequestPermissionsResult(requestCode, permissions, results);
-        if (requestCode == AUDIO_PERMISSION && results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {
-            captureVoice();
-        } else {
-            Toast.makeText(this, "Microphone permission is required for voice filing.", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-    }
 }

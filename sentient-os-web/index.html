@@ -43,6 +43,9 @@
           class="app-deck is-settled"
           aria-label="Aqua ecosystem applications"
         >
+          <div id="selectedAppLabel" class="selected-app-label" aria-live="polite">
+            Aqua CRM
+          </div>
           <div class="deck-label">
             <span>CONNECTED ECOSYSTEM</span>
             <strong>Swipe to rotate · Tap center to open</strong>
@@ -75,22 +78,19 @@
           <button id="primaryDashboard" class="dashboard-card" type="button">
             <header>
               <span>01</span>
-              <div><strong id="primaryTitle"></strong></div>
+              <div><small>HOME SCREEN</small><strong id="primaryTitle"></strong></div>
               <b id="primaryBadge">Awaiting live connection</b>
             </header>
-            <h3 id="primaryDetail"></h3>
-            <div class="dashboard-row">
-              <small>Current</small><strong id="primaryValue"></strong>
-            </div>
-            <div class="dashboard-row">
-              <small>Source</small><strong id="primarySource"></strong>
-            </div>
-            <div class="dashboard-row">
-              <small>Sync</small><strong id="primaryStatus">Awaiting live connection</strong>
+            <div id="primaryScreen" class="dashboard-screen-crop screen-upper" aria-hidden="true"></div>
+            <div class="dashboard-accessible-data">
+              <h3 id="primaryDetail"></h3>
+              <span id="primaryValue"></span>
+              <span id="primarySource"></span>
+              <span id="primaryStatus">Awaiting live connection</span>
             </div>
             <footer>
               <i>✓</i>
-              <span>Selected app intelligence<br /><small id="primaryUpdated">No confirmed refresh yet</small></span>
+              <span>Upper home-screen view<br /><small id="primaryUpdated">No confirmed refresh yet</small></span>
               <b>›</b>
             </footer>
           </button>
@@ -102,22 +102,19 @@
           >
             <header>
               <span>02</span>
-              <div><strong id="secondaryTitle"></strong></div>
+              <div><small>HOME SCREEN</small><strong id="secondaryTitle"></strong></div>
               <b id="secondaryBadge">Awaiting live connection</b>
             </header>
-            <h3 id="secondaryDetail"></h3>
-            <div class="dashboard-row">
-              <small>Current</small><strong id="secondaryValue"></strong>
-            </div>
-            <div class="dashboard-row">
-              <small>Source</small><strong id="secondarySource"></strong>
-            </div>
-            <div class="dashboard-row">
-              <small>Sync</small><strong id="secondaryStatus">Awaiting live connection</strong>
+            <div id="secondaryScreen" class="dashboard-screen-crop screen-lower" aria-hidden="true"></div>
+            <div class="dashboard-accessible-data">
+              <h3 id="secondaryDetail"></h3>
+              <span id="secondaryValue"></span>
+              <span id="secondarySource"></span>
+              <span id="secondaryStatus">Awaiting live connection</span>
             </div>
             <footer>
               <i>!</i>
-              <span>Selected app operations<br /><small id="secondaryUpdated">No confirmed refresh yet</small></span>
+              <span>Lower home-screen view<br /><small id="secondaryUpdated">No confirmed refresh yet</small></span>
               <b>›</b>
             </footer>
           </button>

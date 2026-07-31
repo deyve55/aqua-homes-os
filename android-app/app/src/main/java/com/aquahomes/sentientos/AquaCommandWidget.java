@@ -20,14 +20,19 @@ public class AquaCommandWidget extends AppWidgetProvider {
     private static PendingIntent action(Context context, String mode, int requestCode) {
         Intent intent = new Intent(context, QuickCaptureActivity.class)
             .setAction("com.aquasoftware.sentinel.action." + mode.toUpperCase())
+            .setPackage(context.getPackageName())
             .setData(Uri.parse("aquasentinel://" + mode))
             .putExtra(QuickCaptureActivity.EXTRA_MODE, mode)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            .addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+            );
         return PendingIntent.getActivity(
             context,
             requestCode,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
     }
 

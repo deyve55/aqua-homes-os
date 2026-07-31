@@ -1,6 +1,8 @@
 const apps = [
   {
     name: "Aqua CRM",
+    cardName: "CRM",
+    motion: "crm",
     short: "CUSTOMERS & JOBS",
     icon: "A",
     color: "#20dcff",
@@ -19,6 +21,8 @@ const apps = [
   },
   {
     name: "AquaDraw",
+    cardName: "Draw",
+    motion: "draw",
     short: "FINANCIAL DRAWS",
     icon: "◇",
     color: "#ffbd3c",
@@ -37,6 +41,8 @@ const apps = [
   },
   {
     name: "AquaCam",
+    cardName: "Cam",
+    motion: "cam",
     short: "FIELD VISION",
     icon: "◉",
     color: "#5fd9ff",
@@ -55,6 +61,8 @@ const apps = [
   },
   {
     name: "Aqua Knowledge Vault",
+    cardName: "Knowledge Vault",
+    motion: "vault",
     short: "CODE INTELLIGENCE",
     icon: "⌘",
     color: "#a88cff",
@@ -77,6 +85,8 @@ const apps = [
   },
   {
     name: "Aqua Timesheet",
+    cardName: "Timesheet",
+    motion: "timesheet",
     short: "WORKFORCE",
     icon: "◷",
     color: "#41e39a",
@@ -95,6 +105,8 @@ const apps = [
   },
   {
     name: "Aqua Books",
+    cardName: "Books",
+    motion: "books",
     short: "ACCOUNTING",
     icon: "$",
     color: "#ffca54",
@@ -113,6 +125,8 @@ const apps = [
   },
   {
     name: "Aqua Receipts",
+    cardName: "Receipts",
+    motion: "receipts",
     short: "RECEIPT INTELLIGENCE",
     icon: "▤",
     color: "#ff8f72",
@@ -146,7 +160,7 @@ let rotationTimer = null;
 let drag = null;
 let inertiaFrame = null;
 let suppressCardClickUntil = 0;
-const CARD_STEP_PX = 72;
+const CARD_STEP_PX = 52;
 let authenticated = false;
 let authenticatedEmail = "";
 let filingInbox = [];
@@ -160,6 +174,7 @@ const sentinel = document.getElementById("sentinel");
 const appDeck = document.getElementById("appDeck");
 const cardsTrack = document.getElementById("cardsTrack");
 const deckDots = document.getElementById("deckDots");
+const selectedAppLabel = document.getElementById("selectedAppLabel");
 const appDashboard = document.getElementById("appDashboard");
 const workspace = document.getElementById("workspace");
 const detailSheet = document.getElementById("detailSheet");
@@ -282,6 +297,36 @@ function renderFallbackPreview(app, view) {
   return layouts[app.name] || `${sharedHeader}<h3>${escapeHtml(view.preview.title)}</h3>`;
 }
 
+function renderCarouselCover(app) {
+  const motionMarkup = {
+    crm: '<i></i><i></i><i></i><i></i><i></i>',
+    draw: '<i class="fund-stream"></i><b class="approval-flare"></b>',
+    cam: '<i class="focus-ring"></i><b class="capture-flash"></b>',
+    vault: '<i class="vault-door"></i><b class="verified-document">✓</b>',
+    timesheet: '<i class="signal-path"></i><b class="punch-marker">✓</b>',
+    books: '<i class="balance-beam"></i><b class="cash-pulse">$</b>',
+    receipts: '<i class="scan-line"></i><b class="scan-confirm">✓</b>',
+  };
+  return `
+    <img class="carousel-art" src="./assets/carousel-v2/${escapeHtml(app.motion)}.webp" alt="">
+    <div class="carousel-motion motion-${escapeHtml(app.motion)}" aria-hidden="true">
+      ${motionMarkup[app.motion] || "<i></i>"}
+    </div>`;
+}
+
+function dashboardScreenMarkup(app, view, previewImageUrl, half) {
+  const content = previewImageUrl
+    ? `<img src="${previewImageUrl}" alt="">`
+    : renderFallbackPreview(app, view);
+  return `
+    <div class="dashboard-screen-sheet ${previewImageUrl ? "has-image" : "has-fallback"}">
+      <div class="app-landing-preview layout-${app.name.toLowerCase().replace(/[^a-z]+/g, "-")}${previewImageUrl ? " has-image" : ""}">
+        ${content}
+      </div>
+    </div>
+    <span class="screen-half-label">${half === "upper" ? "UPPER VIEW" : "LOWER VIEW"}</span>`;
+}
+
 function snapshotPresentation(app) {
   const raw = snapshotStates.get(app.name) || "awaiting-live-connection";
   const hasSnapshot = liveSnapshots.has(app.name);
@@ -336,28 +381,23 @@ function renderCards() {
   deckDots.innerHTML = "";
 
   apps.forEach((app, index) => {
-    const position = relative(index);
-    if (Math.abs(position) > 2) return;
-
     const view = selectedView(app);
-    const previewImageUrl = safePreviewImage(view.previewImage);
     const card = document.createElement("button");
     card.type = "button";
-    card.className = `app-card pos-${position}${position === 0 ? " active" : ""}`;
+    card.className = "app-card";
+    card.dataset.index = String(index);
     card.style.setProperty("--app-color", app.color);
     card.setAttribute(
       "aria-label",
-      position === 0 ? `Open ${app.name}` : `Move ${app.name} to center`,
+      index === active ? `Open ${app.name}` : `Move ${app.name} to center`,
     );
-    const presentation = snapshotPresentation(app);
     card.innerHTML = `
-      <div class="app-landing-preview layout-${app.name.toLowerCase().replace(/[^a-z]+/g, "-")}${previewImageUrl ? " has-image" : ""}" aria-hidden="true">
-        ${previewImageUrl ? `<img src="${previewImageUrl}" alt="">` : renderFallbackPreview(app, view)}
-        <footer><span>${escapeHtml(app.name)}</span><b class="${presentation.className}">${escapeHtml(presentation.label)}</b></footer>
+      <div class="carousel-cover cover-${escapeHtml(app.motion)}" aria-hidden="true">
+        ${renderCarouselCover(app)}
       </div>`;
     card.addEventListener("click", () => {
       if (performance.now() < suppressCardClickUntil) return;
-      if (position !== 0) {
+      if (relative(index) !== 0) {
         centerApp(index, false);
         return;
       }
@@ -374,14 +414,77 @@ function renderCards() {
     dot.addEventListener("click", () => centerApp(index, false));
     deckDots.appendChild(dot);
   });
+  applyDeckPosition(0, false);
+}
+
+const DECK_PATH = [
+  { offset: 0, width: 28.6, height: 76, top: 7.5, depth: 92, angle: 0, opacity: 1 },
+  { offset: 22.7, width: 21, height: 68, top: 10, depth: -30, angle: 33, opacity: 0.91 },
+  { offset: 39.6, width: 19.4, height: 62, top: 12, depth: -132, angle: 53, opacity: 0.68 },
+  { offset: 51, width: 17.5, height: 56, top: 14, depth: -220, angle: 65, opacity: 0 },
+];
+
+function interpolate(from, to, progress) {
+  return from + (to - from) * progress;
+}
+
+function deckGeometry(position) {
+  const direction = Math.sign(position);
+  const distance = Math.min(Math.abs(position), DECK_PATH.length - 1);
+  const lowerIndex = Math.min(Math.floor(distance), DECK_PATH.length - 2);
+  const upperIndex = lowerIndex + 1;
+  const progress = distance - lowerIndex;
+  const lower = DECK_PATH[lowerIndex];
+  const upper = DECK_PATH[upperIndex];
+  return {
+    center: 50 + direction * interpolate(lower.offset, upper.offset, progress),
+    width: interpolate(lower.width, upper.width, progress),
+    height: interpolate(lower.height, upper.height, progress),
+    top: interpolate(lower.top, upper.top, progress),
+    depth: interpolate(lower.depth, upper.depth, progress),
+    angle: -direction * interpolate(lower.angle, upper.angle, progress),
+    opacity: interpolate(lower.opacity, upper.opacity, progress),
+  };
+}
+
+function applyDeckPosition(offsetPx, animate) {
+  const progress = offsetPx / CARD_STEP_PX;
+  cardsTrack.querySelectorAll(".app-card").forEach((card) => {
+    const index = Number(card.dataset.index);
+    let position = relative(index) + progress;
+    if (position > apps.length / 2) position -= apps.length;
+    if (position < -apps.length / 2) position += apps.length;
+    const distance = Math.abs(position);
+    const geometry = deckGeometry(position);
+    const visible = distance < DECK_PATH.length - 1;
+    card.className = `app-card${Math.abs(position) < 0.5 ? " active" : ""}`;
+    card.style.transition = animate
+      ? "left .28s cubic-bezier(.18,.78,.22,1),top .28s cubic-bezier(.18,.78,.22,1),width .28s cubic-bezier(.18,.78,.22,1),height .28s cubic-bezier(.18,.78,.22,1),transform .28s cubic-bezier(.18,.78,.22,1),opacity .2s"
+      : "none";
+    card.style.left = `${geometry.center}%`;
+    card.style.top = `${geometry.top}%`;
+    card.style.width = `${geometry.width}%`;
+    card.style.height = `${geometry.height}%`;
+    card.style.zIndex = String(Math.max(1, 12 - Math.round(distance * 3)));
+    card.style.opacity = visible ? String(Math.max(0, geometry.opacity)) : "0";
+    card.style.pointerEvents = visible ? "auto" : "none";
+    card.style.transform = `translateX(-50%) translateZ(${geometry.depth}px) rotateY(${geometry.angle}deg)`;
+    card.setAttribute(
+      "aria-label",
+      Math.abs(position) < 0.5 ? `Open ${apps[index].name}` : `Move ${apps[index].name} to center`,
+    );
+  });
 }
 
 function renderDashboard() {
   const selected = selectedView(apps[active]);
   const presentation = snapshotPresentation(selected);
   const updated = formatSnapshotTime(selected.capturedAt);
+  const previewImageUrl = safePreviewImage(selected.previewImage);
   appDashboard.style.setProperty("--app-color", selected.color);
-  document.getElementById("primaryTitle").textContent = selected.primaryTitle;
+  selectedAppLabel.textContent = selected.name;
+  selectedAppLabel.style.setProperty("--app-color", selected.color);
+  document.getElementById("primaryTitle").textContent = `${selected.cardName} · Upper`;
   document.getElementById("primaryDetail").textContent = selected.primaryDetail;
   document.getElementById("primaryValue").textContent = selected.primaryValue;
   document.getElementById("primarySource").textContent = selected.name;
@@ -389,8 +492,13 @@ function renderDashboard() {
   document.getElementById("primaryBadge").textContent = presentation.label;
   document.getElementById("primaryBadge").className = presentation.className;
   document.getElementById("primaryUpdated").textContent = updated;
-  document.getElementById("secondaryTitle").textContent =
-    selected.secondaryTitle;
+  document.getElementById("primaryScreen").innerHTML = dashboardScreenMarkup(
+    selected,
+    selected,
+    previewImageUrl,
+    "upper",
+  );
+  document.getElementById("secondaryTitle").textContent = `${selected.cardName} · Lower`;
   document.getElementById("secondaryDetail").textContent =
     selected.secondaryDetail;
   document.getElementById("secondaryValue").textContent =
@@ -400,6 +508,12 @@ function renderDashboard() {
   document.getElementById("secondaryBadge").textContent = presentation.label;
   document.getElementById("secondaryBadge").className = presentation.className;
   document.getElementById("secondaryUpdated").textContent = updated;
+  document.getElementById("secondaryScreen").innerHTML = dashboardScreenMarkup(
+    selected,
+    selected,
+    previewImageUrl,
+    "lower",
+  );
 }
 
 function render() {
@@ -415,6 +529,12 @@ function finishRotation(openAfter) {
   if (openAfter) openWorkspace();
 }
 
+function snapDeck(openAfter = false) {
+  applyDeckPosition(0, true);
+  clearTimeout(rotationTimer);
+  rotationTimer = setTimeout(() => finishRotation(openAfter), 290);
+}
+
 function centerApp(index, openAfter) {
   clearTimeout(rotationTimer);
   rotating = true;
@@ -424,7 +544,7 @@ function centerApp(index, openAfter) {
   closeOverlays();
   render();
   requestSnapshot(apps[active]);
-  rotationTimer = setTimeout(() => finishRotation(openAfter), 520);
+  rotationTimer = setTimeout(() => finishRotation(openAfter), 320);
 }
 
 function rotate(direction) {
@@ -908,7 +1028,7 @@ function stopDeckInertia() {
 function stepDeck(direction) {
   active = (active + direction + apps.length) % apps.length;
   closeOverlays();
-  render();
+  renderDashboard();
 }
 
 function coastDeck(initialVelocity) {
@@ -916,7 +1036,7 @@ function coastDeck(initialVelocity) {
   rotating = true;
   appDeck.classList.remove("is-settled");
   appDeck.classList.add("is-rotating");
-  let velocity = Math.max(-2.4, Math.min(2.4, initialVelocity));
+  let velocity = Math.max(-3.4, Math.min(3.4, initialVelocity));
   let position = 0;
   let lastTime = performance.now();
   const coast = (now) => {
@@ -928,15 +1048,17 @@ function coastDeck(initialVelocity) {
       stepDeck(direction);
       position += direction * CARD_STEP_PX;
     }
-    cardsTrack.style.transform = `translateX(${position}px)`;
-    velocity *= Math.pow(0.92, elapsed / 16.67);
-    if (Math.abs(velocity) > 0.035) {
+    applyDeckPosition(position, false);
+    velocity *= Math.pow(0.945, elapsed / 16.67);
+    if (Math.abs(velocity) > 0.025) {
       inertiaFrame = requestAnimationFrame(coast);
       return;
     }
-    cardsTrack.style.transform = "";
     inertiaFrame = null;
-    finishRotation(false);
+    if (Math.abs(position) >= CARD_STEP_PX * 0.28) {
+      stepDeck(position < 0 ? 1 : -1);
+    }
+    snapDeck(false);
   };
   inertiaFrame = requestAnimationFrame(coast);
 }
@@ -956,7 +1078,6 @@ appDeck.addEventListener("pointerdown", (event) => {
     residualX: 0,
     horizontal: false,
   };
-  appDeck.setPointerCapture?.(event.pointerId);
 });
 
 appDeck.addEventListener("pointermove", (event) => {
@@ -964,24 +1085,25 @@ appDeck.addEventListener("pointermove", (event) => {
   const totalX = event.clientX - drag.startX;
   const totalY = event.clientY - drag.startY;
   const now = performance.now();
-  if (!drag.horizontal && Math.abs(totalX) > 8 && Math.abs(totalX) > Math.abs(totalY) * 1.08) {
+  if (!drag.horizontal && Math.abs(totalX) > 3 && Math.abs(totalX) > Math.abs(totalY) * 1.04) {
     drag.horizontal = true;
     rotating = true;
     appDeck.classList.remove("is-settled");
     appDeck.classList.add("is-rotating");
+    appDeck.setPointerCapture?.(event.pointerId);
   }
   if (!drag.horizontal) return;
   event.preventDefault();
   const frameX = event.clientX - drag.lastX;
   const frameTime = Math.max(1, now - drag.lastTime);
-  drag.velocityX = drag.velocityX * 0.65 + (frameX / frameTime) * 0.35;
+  drag.velocityX = drag.velocityX * 0.42 + (frameX / frameTime) * 0.58;
   drag.residualX += frameX;
   while (Math.abs(drag.residualX) >= CARD_STEP_PX) {
     const direction = drag.residualX < 0 ? 1 : -1;
-    stepDeck(direction);
-    drag.residualX += direction * CARD_STEP_PX;
-  }
-  cardsTrack.style.transform = `translateX(${drag.residualX}px)`;
+      stepDeck(direction);
+      drag.residualX += direction * CARD_STEP_PX;
+    }
+  applyDeckPosition(drag.residualX, false);
   drag.lastX = event.clientX;
   drag.lastTime = now;
 });
@@ -994,19 +1116,18 @@ function finishDeckDrag(event, cancelled = false) {
   try { appDeck.releasePointerCapture?.(event.pointerId); } catch {}
   drag = null;
   if (!wasHorizontal) {
-    cardsTrack.style.transform = "";
+    applyDeckPosition(0, false);
     return;
   }
   suppressCardClickUntil = performance.now() + 450;
-  if (Math.abs(velocityX) >= 0.16) {
+  if (Math.abs(velocityX) >= 0.07) {
     coastDeck(velocityX);
     return;
   }
-  if (Math.abs(residualX) >= CARD_STEP_PX * 0.42) {
+  if (Math.abs(residualX) >= CARD_STEP_PX * 0.28) {
     stepDeck(residualX < 0 ? 1 : -1);
   }
-  cardsTrack.style.transform = "";
-  finishRotation(false);
+  snapDeck(false);
 }
 
 appDeck.addEventListener("pointerup", (event) => finishDeckDrag(event));

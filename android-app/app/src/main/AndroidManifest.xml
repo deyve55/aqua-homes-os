@@ -5,6 +5,15 @@
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
 
     <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.VIDEO_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
+        </intent>
         <package android:name="com.aquasoftware.crm.fieldtest" />
         <package android:name="com.aquasoftware.crm.test" />
         <package android:name="com.aquasoftware.crm" />
@@ -45,6 +54,7 @@
             android:name=".QuickCaptureActivity"
             android:exported="true"
             android:excludeFromRecents="true"
+            android:launchMode="singleTop"
             android:theme="@style/AquaQuickCaptureTheme">
             <intent-filter>
                 <action android:name="com.aquasoftware.sentinel.action.ASK" />
