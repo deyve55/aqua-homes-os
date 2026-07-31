@@ -38,6 +38,7 @@ import java.util.UUID;
 public class QuickCaptureActivity extends Activity {
     public static final String EXTRA_MODE = "capture_mode";
     public static final String EXTRA_ITEM_ID = "filing_item_id";
+    public static final String EXTRA_COMMAND_TEXT = "widget_command_text";
     private static final int VOICE_REQUEST = 201;
     private static final int PHOTO_REQUEST = 202;
     private static final int VIDEO_REQUEST = 203;
@@ -135,6 +136,13 @@ public class QuickCaptureActivity extends Activity {
         Button speak = findViewById(R.id.widget_command_speak);
         Button send = findViewById(R.id.widget_command_send);
         Button open = findViewById(R.id.widget_command_open);
+        String initialCommand = getIntent() == null
+            ? ""
+            : getIntent().getStringExtra(EXTRA_COMMAND_TEXT);
+        if (initialCommand != null && !initialCommand.trim().isEmpty()) {
+            commandInput.setText(initialCommand);
+            commandInput.setSelection(commandInput.getText().length());
+        }
 
         Log.i("AquaCommandWidget", "AQUA_CAPTURE_ROUTE mode=ask handler=QuickCommandComposer");
         speak.setOnClickListener(view -> captureCommandVoice());
@@ -192,6 +200,8 @@ public class QuickCaptureActivity extends Activity {
                 + sendBounds.right
                 + ","
                 + sendBounds.bottom
+                + " characters="
+                + commandInput.getText().length()
         );
     }
 

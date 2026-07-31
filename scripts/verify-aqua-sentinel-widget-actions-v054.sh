@@ -51,13 +51,18 @@ if lines:
 for mode in ask voice photo video; do
   action="com.aquasoftware.sentinel.action.${mode^^}"
   evidence="/tmp/aqua-sentinel-v0.5.4-widget-${mode}.logcat.txt"
+  command_seed=()
+  if [[ "$mode" == "ask" ]]; then
+    command_seed=(--es widget_command_text "Widget_message_execution_test")
+  fi
 
   clear_logcat
   adb shell am start -W \
     -n "$activity" \
     -a "$action" \
     -d "aquasentinel://$mode" \
-    --es capture_mode "$mode" || true
+    --es capture_mode "$mode" \
+    "${command_seed[@]}" || true
 
   received=false
   routed=false
@@ -82,8 +87,20 @@ for mode in ask voice photo video; do
   fi
 
   if [[ "$mode" == "ask" ]]; then
-    tap_resource "widget_command_input" "input"
-    adb shell input text "Widget_message_execution_test"
+    for attempt in $(seq 1 12); do
+      adb logcat -d > "$evidence"
+      if grep -Fq "AQUA_WIDGET_COMPOSER_READY" "$evidence" \
+        && grep -Fq "characters=29" "$evidence"; then
+        break
+      fi
+      sleep 1
+    done
+    if ! grep -Fq "AQUA_WIDGET_COMPOSER_READY" "$evidence" \
+      || ! grep -Fq "characters=29" "$evidence"; then
+      echo "Widget command composer did not contain the seeded verification message" >&2
+      grep -E "AQUA_WIDGET_COMPOSER|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
+      exit 1
+    fi
     tap_resource "widget_command_send" "send"
     submitted=false
     delivered=false

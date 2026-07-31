@@ -367,6 +367,8 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(capture, /STATE_COMMAND_TEXT/);
   assert.match(capture, /AQUA_WIDGET_MESSAGE_SUBMITTED id=/);
   assert.match(capture, /putExtra\("widget_command", text\)/);
+  assert.match(capture, /EXTRA_COMMAND_TEXT = "widget_command_text"/);
+  assert.match(capture, /commandInput\.setText\(initialCommand\)/);
   assert.match(capture, /KeyEvent\.KEYCODE_ENTER/);
   assert.match(capture, /!event\.isShiftPressed\(\)/);
   assert.match(activity, /AQUA_WIDGET_MESSAGE_DELIVERED id=/);
@@ -399,6 +401,7 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_SUBMITTED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_DELIVERED/);
   assert.match(capture, /AQUA_WIDGET_COMPOSER_READY input=/);
-  assert.match(widgetVerifier, /tap_resource "widget_command_input"/);
+  assert.match(widgetVerifier, /--es widget_command_text "Widget_message_execution_test"/);
+  assert.match(widgetVerifier, /characters=29/);
   assert.match(widgetVerifier, /tap_resource "widget_command_send"/);
 });
