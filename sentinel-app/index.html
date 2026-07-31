@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#02070d" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="application-name" content="Aqua Sentinel OS" />
+    <title>Aqua Sentinel OS — Role Proof</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="sentinel-shell" data-aqua-state="idle">
+      <header class="system-bar">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true">A</span>
+          <span>
+            <strong>AQUA SENTINEL OS</strong>
+            <small>Davy’s Main Brain</small>
+          </span>
+        </div>
+        <div class="system-state">
+          <span class="connection-dot" aria-hidden="true"></span>
+          <span>
+            <strong>Local proof</strong>
+            <small>Backend locked</small>
+          </span>
+        </div>
+        <div class="privacy-state">
+          <span aria-hidden="true">◇</span>
+          <span>
+            <strong>Private</strong>
+            <small>On device</small>
+          </span>
+        </div>
+        <time class="system-time" data-clock>9:42</time>
+      </header>
+
+      <section class="aqua-domain" aria-labelledby="aqua-title">
+        <p class="screen-kicker">AQUA HOMES DESIGN GROUP</p>
+        <h1 id="aqua-title">Aqua</h1>
+
+        <div class="presence-stage">
+          <div class="voice-field" aria-hidden="true">
+            <span class="voice-plane voice-plane-left"></span>
+            <span class="voice-plane voice-plane-right"></span>
+            <span class="voice-plane voice-plane-up"></span>
+          </div>
+
+          <div class="orbit orbit-back" aria-hidden="true"></div>
+          <div class="orbit orbit-front" aria-hidden="true"></div>
+
+          <div class="app-orbit" data-app-orbit aria-label="Aqua application orbit">
+            <button class="orbit-app orbit-app-0" type="button" data-app-index="0">
+              <span class="app-icon">⌂</span>
+              <span>Jobs</span>
+            </button>
+            <button class="orbit-app orbit-app-1" type="button" data-app-index="1">
+              <span class="app-icon">▧</span>
+              <span>Field</span>
+            </button>
+            <button class="orbit-app orbit-app-2 active" type="button" data-app-index="2">
+              <span class="app-icon">$</span>
+              <span>Financials</span>
+            </button>
+            <button class="orbit-app orbit-app-3" type="button" data-app-index="3">
+              <span class="app-icon">◫</span>
+              <span>Draw</span>
+            </button>
+            <button class="orbit-app orbit-app-4" type="button" data-app-index="4">
+              <span class="app-icon">◇</span>
+              <span>Vault</span>
+            </button>
+          </div>
+
+          <button class="aqua-core" type="button" data-aqua-trigger aria-label="Talk to Aqua">
+            <svg class="architectural-a" viewBox="0 0 300 300" role="img" aria-label="Aqua architectural A">
+              <defs>
+                <linearGradient id="aquaMetal" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#f8fdff" />
+                  <stop offset=".18" stop-color="#647789" />
+                  <stop offset=".42" stop-color="#07121d" />
+                  <stop offset=".7" stop-color="#243746" />
+                  <stop offset="1" stop-color="#d7e9f4" />
+                </linearGradient>
+                <linearGradient id="aquaEdge" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0" stop-color="#14d9ff" />
+                  <stop offset=".5" stop-color="#e7fbff" />
+                  <stop offset="1" stop-color="#e9ad43" />
+                </linearGradient>
+                <filter id="aquaGlow" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="4" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+              <path
+                class="a-body"
+                d="M150 18 272 266 218 266 187 201 113 201 82 266 28 266 150 18Zm0 91-22 47h44l-22-47Z"
+                fill="url(#aquaMetal)"
+                stroke="url(#aquaEdge)"
+                stroke-width="2"
+              />
+              <path class="a-cut" d="M150 72 235 248 207 248 150 128 93 248 65 248 150 72Z" />
+              <path class="a-cross" d="M94 183 150 151 206 183 184 199 150 180 116 199Z" />
+              <path class="core-line" d="M93 183H207" filter="url(#aquaGlow)" />
+            </svg>
+            <span class="core-light" aria-hidden="true"></span>
+            <span class="tap-cue">
+              <strong data-state-label>Tap to talk</strong>
+              <small>Microphone activates only when requested</small>
+            </span>
+          </button>
+        </div>
+
+        <div class="live-response" aria-live="polite">
+          <span class="state-indicator" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i>
+          </span>
+          <p data-transcript>Good morning, Davy.</p>
+        </div>
+      </section>
+
+      <section class="business-deck" aria-labelledby="deck-title">
+        <div class="deck-heading">
+          <div>
+            <p class="section-label">SYNCHRONIZED BUSINESS DECK</p>
+            <h2 id="deck-title" data-deck-title>Financial command</h2>
+          </div>
+          <span class="truth-chip">Sample data · Development</span>
+        </div>
+
+        <div class="deck-viewport" data-deck-viewport>
+          <div class="deck-track" data-deck-track></div>
+        </div>
+
+        <div class="deck-controls">
+          <button type="button" data-deck-prev aria-label="Previous business brief">‹</button>
+          <div class="deck-dots" data-deck-dots aria-label="Business brief position"></div>
+          <button type="button" data-deck-next aria-label="Next business brief">›</button>
+        </div>
+      </section>
+
+      <section class="exception-grid" aria-label="Business attention cards">
+        <article class="exception-card">
+          <div>
+            <span class="exception-number">01</span>
+            <span class="status status-confirmed">Demo state</span>
+          </div>
+          <p>Development placeholder</p>
+          <h3>Sample approval card</h3>
+          <dl>
+            <div><dt>Project</dt><dd>Not connected</dd></div>
+            <div><dt>Impact</dt><dd>—</dd></div>
+          </dl>
+          <button type="button" data-placeholder-action>View development preview <span>›</span></button>
+        </article>
+        <article class="exception-card exception-attention">
+          <div>
+            <span class="exception-number">02</span>
+            <span class="status status-attention">Demo state</span>
+          </div>
+          <p>Development placeholder</p>
+          <h3>Sample attention card</h3>
+          <dl>
+            <div><dt>Due</dt><dd>Not connected</dd></div>
+            <div><dt>Next step</dt><dd>—</dd></div>
+          </dl>
+          <button type="button" data-placeholder-action>Review development preview <span>›</span></button>
+        </article>
+      </section>
+
+      <nav class="bottom-nav" aria-label="Aqua Sentinel primary navigation">
+        <button type="button" class="active"><span>⌂</span>Home</button>
+        <button type="button" data-placeholder-action><span>◌</span>Aqua</button>
+        <button type="button" data-placeholder-action><span>◇</span>Data hub</button>
+        <button type="button" data-placeholder-action><span>☷</span>Modules</button>
+        <button type="button" data-placeholder-action><span>⚙</span>Settings</button>
+      </nav>
+
+      <div class="development-toast" data-toast role="status" aria-live="polite" hidden>
+        Development preview — backend connection comes next.
+      </div>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

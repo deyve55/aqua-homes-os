@@ -1,0 +1,9 @@
+{
+  "name": "aqua-homes-os",
+  "private": true,
+  "version": "0.63.0",
+  "description": "Aqua Homes OS prototypes and Android role proof",
+  "scripts": {
+    "test:sentinel": "node --test tests/sentinel-smoke.mjs"
+  }
+}

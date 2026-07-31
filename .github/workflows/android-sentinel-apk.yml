@@ -1,0 +1,74 @@
+name: Aqua Sentinel Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - agent/aqua-sentinel-role-demo-v63
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "sentinel-app/**"
+      - "android/**"
+      - "tests/sentinel-smoke.mjs"
+      - "package.json"
+      - ".github/workflows/android-sentinel-apk.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run Sentinel safety and structure tests
+        run: npm run test:sentinel
+
+      - name: Check Sentinel JavaScript syntax
+        run: node --check sentinel-app/app.js
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Build installable role-proof APK
+        working-directory: android
+        run: gradle --no-daemon :app:assembleDebug
+
+      - name: Prepare named APK and checksum
+        run: |
+          mkdir -p dist
+          cp android/app/build/outputs/apk/debug/app-debug.apk \
+            dist/Aqua-Sentinel-OS-v0.63.0-role-proof.apk
+          sha256sum dist/Aqua-Sentinel-OS-v0.63.0-role-proof.apk \
+            > dist/Aqua-Sentinel-OS-v0.63.0-role-proof.apk.sha256
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aqua-Sentinel-OS-v0.63.0-role-proof
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
