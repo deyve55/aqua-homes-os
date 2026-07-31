@@ -23,8 +23,8 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026073104
-        versionName = "0.5.1-carousel-widget-test"
+        versionCode = 2026073105
+        versionName = "0.5.2-carousel-cards-capture-test"
     }
 
     buildTypes {

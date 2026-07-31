@@ -160,7 +160,6 @@ let rotationTimer = null;
 let drag = null;
 let inertiaFrame = null;
 let suppressCardClickUntil = 0;
-const CARD_STEP_PX = 52;
 let authenticated = false;
 let authenticatedEmail = "";
 let filingInbox = [];
@@ -334,7 +333,7 @@ function snapshotPresentation(app) {
   if (raw.includes("refresh")) return { label: hasSnapshot ? "Cached · refreshing" : "Refreshing", className: "refreshing" };
   if (hasSnapshot && /confirmed|live|connected/.test(raw)) return { label: "Live · confirmed", className: "confirmed" };
   if (hasSnapshot) return { label: "Verified snapshot", className: "confirmed" };
-  return { label: "Awaiting live connection", className: "awaiting" };
+  return { label: "Local preview", className: "preview" };
 }
 
 function formatSnapshotTime(value) {
@@ -448,7 +447,7 @@ function deckGeometry(position) {
 }
 
 function applyDeckPosition(offsetPx, animate) {
-  const progress = offsetPx / CARD_STEP_PX;
+  const progress = offsetPx / deckStepPx();
   cardsTrack.querySelectorAll(".app-card").forEach((card) => {
     const index = Number(card.dataset.index);
     let position = relative(index) + progress;
@@ -482,7 +481,7 @@ function renderDashboard() {
   const updated = formatSnapshotTime(selected.capturedAt);
   const previewImageUrl = safePreviewImage(selected.previewImage);
   appDashboard.style.setProperty("--app-color", selected.color);
-  selectedAppLabel.textContent = selected.name;
+  selectedAppLabel.textContent = selected.cardName;
   selectedAppLabel.style.setProperty("--app-color", selected.color);
   document.getElementById("primaryTitle").textContent = `${selected.cardName} · Upper`;
   document.getElementById("primaryDetail").textContent = selected.primaryDetail;
@@ -525,6 +524,10 @@ function finishRotation(openAfter) {
   rotating = false;
   appDeck.classList.remove("is-rotating");
   appDeck.classList.add("is-settled");
+  renderDashboard();
+  deckDots.querySelectorAll("button").forEach((dot, index) => {
+    dot.classList.toggle("active", index === active);
+  });
   requestSnapshot(apps[active]);
   if (openAfter) openWorkspace();
 }
@@ -790,7 +793,9 @@ function openPanel(kind) {
   systemPanel.querySelectorAll("[data-filing-action]").forEach((button) => {
     button.addEventListener("click", () => {
       if (window.AquaBridge?.startFilingCapture) {
-        window.AquaBridge.startFilingCapture(button.dataset.filingAction);
+        const mode = button.dataset.filingAction;
+        openPanel("home");
+        window.AquaBridge.startFilingCapture(mode);
       } else {
         notify("Filing capture is available in the installed Android app.");
       }
@@ -1028,7 +1033,10 @@ function stopDeckInertia() {
 function stepDeck(direction) {
   active = (active + direction + apps.length) % apps.length;
   closeOverlays();
-  renderDashboard();
+}
+
+function deckStepPx() {
+  return Math.max(44, Math.min(92, appDeck.clientWidth * 0.112));
 }
 
 function coastDeck(initialVelocity) {
@@ -1040,22 +1048,23 @@ function coastDeck(initialVelocity) {
   let position = 0;
   let lastTime = performance.now();
   const coast = (now) => {
+    const stepPx = deckStepPx();
     const elapsed = Math.min(34, now - lastTime);
     lastTime = now;
     position += velocity * elapsed;
-    while (Math.abs(position) >= CARD_STEP_PX) {
+    while (Math.abs(position) >= stepPx) {
       const direction = position < 0 ? 1 : -1;
       stepDeck(direction);
-      position += direction * CARD_STEP_PX;
+      position += direction * stepPx;
     }
     applyDeckPosition(position, false);
-    velocity *= Math.pow(0.945, elapsed / 16.67);
-    if (Math.abs(velocity) > 0.025) {
+    velocity *= Math.pow(0.972, elapsed / 16.67);
+    if (Math.abs(velocity) > 0.012) {
       inertiaFrame = requestAnimationFrame(coast);
       return;
     }
     inertiaFrame = null;
-    if (Math.abs(position) >= CARD_STEP_PX * 0.28) {
+    if (Math.abs(position) >= stepPx * 0.24) {
       stepDeck(position < 0 ? 1 : -1);
     }
     snapDeck(false);
@@ -1072,12 +1081,14 @@ appDeck.addEventListener("pointerdown", (event) => {
     pointerId: event.pointerId,
     startX: event.clientX,
     startY: event.clientY,
+    startedAt: performance.now(),
     lastX: event.clientX,
     lastTime: performance.now(),
     velocityX: 0,
     residualX: 0,
     horizontal: false,
   };
+  appDeck.setPointerCapture?.(event.pointerId);
 });
 
 appDeck.addEventListener("pointermove", (event) => {
@@ -1085,12 +1096,11 @@ appDeck.addEventListener("pointermove", (event) => {
   const totalX = event.clientX - drag.startX;
   const totalY = event.clientY - drag.startY;
   const now = performance.now();
-  if (!drag.horizontal && Math.abs(totalX) > 3 && Math.abs(totalX) > Math.abs(totalY) * 1.04) {
+  if (!drag.horizontal && Math.abs(totalX) > 1.5 && Math.abs(totalX) > Math.abs(totalY) * 0.72) {
     drag.horizontal = true;
     rotating = true;
     appDeck.classList.remove("is-settled");
     appDeck.classList.add("is-rotating");
-    appDeck.setPointerCapture?.(event.pointerId);
   }
   if (!drag.horizontal) return;
   event.preventDefault();
@@ -1098,11 +1108,12 @@ appDeck.addEventListener("pointermove", (event) => {
   const frameTime = Math.max(1, now - drag.lastTime);
   drag.velocityX = drag.velocityX * 0.42 + (frameX / frameTime) * 0.58;
   drag.residualX += frameX;
-  while (Math.abs(drag.residualX) >= CARD_STEP_PX) {
+  const stepPx = deckStepPx();
+  while (Math.abs(drag.residualX) >= stepPx) {
     const direction = drag.residualX < 0 ? 1 : -1;
-      stepDeck(direction);
-      drag.residualX += direction * CARD_STEP_PX;
-    }
+    stepDeck(direction);
+    drag.residualX += direction * stepPx;
+  }
   applyDeckPosition(drag.residualX, false);
   drag.lastX = event.clientX;
   drag.lastTime = now;
@@ -1111,8 +1122,13 @@ appDeck.addEventListener("pointermove", (event) => {
 function finishDeckDrag(event, cancelled = false) {
   if (!drag || event.pointerId !== drag.pointerId) return;
   const wasHorizontal = drag.horizontal;
-  const velocityX = cancelled ? 0 : drag.velocityX;
+  const elapsed = Math.max(1, performance.now() - drag.startedAt);
+  const averageVelocity = (event.clientX - drag.startX) / elapsed;
+  const velocityX = cancelled
+    ? 0
+    : drag.velocityX * 0.68 + averageVelocity * 0.32;
   const residualX = drag.residualX;
+  const stepPx = deckStepPx();
   try { appDeck.releasePointerCapture?.(event.pointerId); } catch {}
   drag = null;
   if (!wasHorizontal) {
@@ -1120,11 +1136,11 @@ function finishDeckDrag(event, cancelled = false) {
     return;
   }
   suppressCardClickUntil = performance.now() + 450;
-  if (Math.abs(velocityX) >= 0.07) {
+  if (Math.abs(velocityX) >= 0.035) {
     coastDeck(velocityX);
     return;
   }
-  if (Math.abs(residualX) >= CARD_STEP_PX * 0.28) {
+  if (Math.abs(residualX) >= stepPx * 0.24) {
     stepDeck(residualX < 0 ? 1 : -1);
   }
   snapDeck(false);

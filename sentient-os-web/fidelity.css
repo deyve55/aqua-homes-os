@@ -800,3 +800,59 @@ html,body,.sentinel,.os-surface,.aqua-hero{background:#000}
   .app-dashboard .dashboard-card{min-height:0}
   .dashboard-screen-crop{min-height:clamp(150px,28cqw,240px)}
 }
+
+/* Aqua Sentinel v0.5.2 owner field-test correction: free touch, visible app UI, balanced rail. */
+html,body{overscroll-behavior:none}
+.app-deck,.app-deck .cards-track{
+  touch-action:none!important;
+  -webkit-user-select:none;
+  user-select:none;
+}
+.selected-app-label{
+  top:0;
+  left:10%;
+  right:10%;
+  color:#f4fdff;
+  font-family:Inter,system-ui,sans-serif;
+  font-size:clamp(11px,2.9cqw,18px);
+  font-weight:800;
+  letter-spacing:.055em;
+  line-height:1.04;
+  text-shadow:0 0 5px #fff,0 0 17px color-mix(in srgb,var(--app-color) 72%,transparent);
+}
+.app-deck.is-settled .selected-app-label{
+  animation:selected-app-reveal 2.7s cubic-bezier(.22,.72,.2,1) both;
+}
+.app-deck.is-rotating .selected-app-label{
+  opacity:0;
+  transform:translateY(-3px);
+}
+.app-dashboard{
+  padding:.9% 2.8% 1.7%;
+}
+.app-dashboard .dashboard-card{
+  padding:2.7% 3.6% 1.8%;
+}
+.dashboard-card header{padding-bottom:1.8%}
+.dashboard-card header b.preview{
+  border-color:color-mix(in srgb,var(--app-color) 54%,#d9f8ff);
+  color:#effcff;
+  background:color-mix(in srgb,var(--app-color) 13%,#071117);
+}
+.dashboard-screen-crop{margin-top:1.7%}
+.dashboard-card footer{margin-top:1.2%;padding-top:1.1%}
+.bottom-rail{
+  height:clamp(50px,7cqw,58px);
+  min-height:50px;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+.bottom-rail button{gap:2px;padding:3px 0}
+.bottom-rail button span{font-size:clamp(17px,2.55cqw,21px)}
+.bottom-rail button small{font-size:clamp(7px,1.15cqw,9px);line-height:1.05}
+.file-cabinet-icon{
+  width:clamp(19px,2.8cqw,23px);
+  height:clamp(18px,2.7cqw,22px);
+}
+@media(max-width:600px){
+  .dashboard-screen-crop{min-height:clamp(126px,26cqw,220px)}
+}

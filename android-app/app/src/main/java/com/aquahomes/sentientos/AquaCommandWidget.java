@@ -32,7 +32,7 @@ public class AquaCommandWidget extends AppWidgetProvider {
             context,
             requestCode,
             intent,
-            PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
     }
 
