@@ -10,7 +10,12 @@
     "base_branch": "agent/aqua-sentinel-production-apk-v0.4.1-20260725",
     "integration_branch": "agent/aqua-sentinel-command-center-integration-20260730",
     "base_source_head_before_integration": "dab19a9d406686aea3e667441efd3e00eee3440e",
-    "draft_pull_request": null,
+    "draft_pull_request": {
+      "number": 194,
+      "url": "https://github.com/deyve55/aqua-homes-os/pull/194",
+      "state": "open",
+      "draft": true
+    },
     "merged_into_main": false
   },
   "golden_goose": {
