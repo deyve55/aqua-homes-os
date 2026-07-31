@@ -332,11 +332,12 @@ test("v0.5.1 uses lightweight app covers, split home screens, and a fluid per-ca
 });
 
 test("v0.5.1 executes every widget action and grants evidence URIs to camera apps", async () => {
-  const [widget, capture, styles, workflow] = await Promise.all([
+  const [widget, capture, styles, workflow, widgetVerifier] = await Promise.all([
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
     read("android-app/app/src/main/res/values/styles.xml"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
+    read("scripts/verify-aqua-sentinel-widget-actions-v051.sh"),
   ]);
   assert.match(widget, /PendingIntent\.FLAG_CANCEL_CURRENT \| PendingIntent\.FLAG_IMMUTABLE/);
   assert.match(widget, /setPackage\(context\.getPackageName\(\)\)/);
@@ -345,6 +346,7 @@ test("v0.5.1 executes every widget action and grants evidence URIs to camera app
   assert.match(capture, /ClipData\.newRawUri/);
   assert.doesNotMatch(capture, /requestPermissions\(/);
   assert.match(styles, /<item name="android:clickable">true<\/item>/);
-  assert.match(workflow, /for mode in ask voice photo video/);
-  assert.match(workflow, /AQUA_WIDGET_ACTION_RECEIVED mode=\$mode/);
+  assert.match(workflow, /bash scripts\/verify-aqua-sentinel-widget-actions-v051\.sh/);
+  assert.match(widgetVerifier, /for mode in ask voice photo video/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_ACTION_RECEIVED mode=\$mode/);
 });

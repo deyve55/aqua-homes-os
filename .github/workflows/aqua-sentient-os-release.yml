@@ -185,20 +185,7 @@ jobs:
             adb shell dumpsys package com.aquahomes.sentinel | grep -q "AquaCommandWidget"
             adb shell dumpsys package com.aquahomes.sentinel | grep -q "QuickCaptureActivity"
             adb shell dumpsys package com.aquahomes.sentinel | grep -q "EvidenceProvider"
-            for mode in ask voice photo video; do
-              adb logcat -c
-              adb shell am start -W \
-                -n com.aquahomes.sentinel/com.aquahomes.sentientos.QuickCaptureActivity \
-                -a "com.aquasoftware.sentinel.action.${mode^^}" \
-                -d "aquasentinel://$mode" \
-                --es capture_mode "$mode" || true
-              for attempt in $(seq 1 10); do
-                sleep 1
-                if adb logcat -d | grep -q "AQUA_WIDGET_ACTION_RECEIVED mode=$mode"; then break; fi
-              done
-              adb logcat -d | grep -q "AQUA_WIDGET_ACTION_RECEIVED mode=$mode"
-              adb shell am force-stop com.aquahomes.sentinel
-            done
+            bash scripts/verify-aqua-sentinel-widget-actions-v051.sh
             adb shell am start -W -n com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity
             adb exec-out screencap -p > /tmp/aqua-sentinel-v0.5.1-launch.png
             test -s /tmp/aqua-sentinel-v0.5.1-launch.png
