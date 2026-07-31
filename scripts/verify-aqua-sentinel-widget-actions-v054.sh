@@ -4,6 +4,18 @@ set -euo pipefail
 package="com.aquahomes.sentinel"
 activity="$package/com.aquahomes.sentientos.QuickCaptureActivity"
 
+clear_logcat() {
+  for attempt in $(seq 1 8); do
+    adb wait-for-device >/dev/null 2>&1 || true
+    if adb logcat -c >/dev/null 2>&1; then
+      return 0
+    fi
+    sleep 2
+  done
+  echo "Android log buffer could not be cleared after bounded retries" >&2
+  return 1
+}
+
 tap_resource() {
   local resource_name="$1"
   local bounds_name="$2"
@@ -40,7 +52,7 @@ for mode in ask voice photo video; do
   action="com.aquasoftware.sentinel.action.${mode^^}"
   evidence="/tmp/aqua-sentinel-v0.5.4-widget-${mode}.logcat.txt"
 
-  adb logcat -c
+  clear_logcat
   adb shell am start -W \
     -n "$activity" \
     -a "$action" \
