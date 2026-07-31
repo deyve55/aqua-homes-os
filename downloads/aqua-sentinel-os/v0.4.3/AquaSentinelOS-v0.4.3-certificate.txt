@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=Aqua Sentinel OS Production Candidate, OU=Aqua Homes OS, O=Aqua Homes Design Group, L=Hudson, ST=Massachusetts, C=US
+Signer #1 certificate SHA-256 digest: 9860a9e052267e10760d8281e40b979a853e2bdba0ecbd6d3edf57084c4a64bc
+Signer #1 certificate SHA-1 digest: ae4381431946db532ba54a6ec31f8238630db7cf
+Signer #1 certificate MD5 digest: 3a5882a809069bf3b68893c38e2d1563
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 3072
+Signer #1 public key SHA-256 digest: c58de6293fbe2127dd22bd0b0520aa0da4e3293bd892a701780945652f124856
+Signer #1 public key SHA-1 digest: 3810a947d873445b3f53d76149a89999adecb27d
+Signer #1 public key MD5 digest: fe9150c96bd2c1849c31c8ec662dfae5

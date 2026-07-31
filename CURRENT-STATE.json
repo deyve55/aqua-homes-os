@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0.0",
+  "updated_local_date": "2026-07-30",
+  "timezone": "America/New_York",
+  "owner": "Dave (Deyve)",
+  "repository": {
+    "full_name": "deyve55/aqua-homes-os",
+    "visibility_verified": "public",
+    "visibility_warning_acknowledged_before_upload": true,
+    "base_branch": "agent/aqua-sentinel-production-apk-v0.4.1-20260725",
+    "integration_branch": "agent/aqua-sentinel-command-center-integration-20260730",
+    "base_source_head_before_integration": "dab19a9d406686aea3e667441efd3e00eee3440e",
+    "draft_pull_request": null,
+    "merged_into_main": false
+  },
+  "golden_goose": {
+    "engineering_manual": {
+      "edition": "1.2.0-RECONSTRUCTED-03",
+      "sha256": "97e9dae4c90649af891bdfc9911e3bedfbc691ca1361f404b106ba0ed86ebc0a"
+    },
+    "update_master_handoff": {
+      "version": "1.1.0",
+      "sha256": "8f18d1cb7fef905fc0b41804029ca5cba80bcf3efa47ae1fd422f0a7a270c9cc"
+    },
+    "notebook": {
+      "version": "1.9.0",
+      "sha256": "76c39b20153606b9fd9edc87e2fa1783b33262261c2795e21c87e37e2bc2930c"
+    },
+    "assembly_amendment_status": "synced per supplied handoff; not canonical",
+    "canonical_promotion_performed_by_this_branch": false
+  },
+  "sentinel": {
+    "source_status": "present",
+    "authoritative_web_source": "sentient-os-web",
+    "authoritative_android_wrapper": "android-app",
+    "rejected_android_ui_source": "sentinel-app",
+    "source_application_id": "com.aquahomes.sentinel",
+    "source_namespace": "com.aquahomes.sentientos",
+    "source_launch_activity": "com.aquahomes.sentientos.MainActivity",
+    "source_explicit_component": "com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity",
+    "source_version_code": 2026072508,
+    "source_version_name": "0.4.7-test-candidate",
+    "deep_links": [],
+    "latest_correctly_recovered_apk": {
+      "version_code": 2026072504,
+      "version_name": "0.4.3-production-candidate",
+      "path": "downloads/aqua-sentinel-os/v0.4.3/AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.apk",
+      "sha256": "114c8689ffeeb7d3ca85c547277be44fae92aef7a6d7b33e6228347ac161dfb4",
+      "artifact_zip_path": "downloads/aqua-sentinel-os/v0.4.3/AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.zip",
+      "artifact_zip_sha256": "1c3d20c9d45594d6b98df78f4d493611841a878b11d2423bee28adebd41847d6",
+      "workflow_run": 30171083473,
+      "workflow_artifact_id": 8622998931,
+      "package": "com.aquahomes.sentinel",
+      "launch_activity": "com.aquahomes.sentientos.MainActivity",
+      "signature_v2_verified": true,
+      "signature_v3_verified": true,
+      "zip_integrity_verified": true,
+      "approved_web_assets_embedded": true,
+      "physical_samsung_acceptance": "pending"
+    },
+    "source_binary_parity": "not current; source is v0.4.7 test candidate while latest correctly recovered APK is v0.4.3"
+  },
+  "command_center": {
+    "approved_control_order": [
+      "Ask Aqua",
+      "Video",
+      "Photo",
+      "File"
+    ],
+    "large_a_target_component": "com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity",
+    "v0_2_3_status": "pending upload by other chat",
+    "reserved_path": "downloads/aqua-command-center-widget/v0.2.3",
+    "apk_present": false,
+    "source_zip_present": false,
+    "manifest_identity_verified": false,
+    "samsung_resize_verified": false,
+    "sentinel_launch_verified": false
+  },
+  "secrets": {
+    "private_signing_keys_committed": false,
+    "keystore_committed": false,
+    "credential_values_added_by_integration": false
+  },
+  "validation": {
+    "sentient_functional_tests": {
+      "passed": 10,
+      "failed": 0
+    },
+    "sentinel_smoke_tests": {
+      "passed": 11,
+      "failed": 0
+    },
+    "json_parse": "passed",
+    "git_diff_check": "passed",
+    "sentinel_apk_zip_integrity": "passed",
+    "local_android_build": "not performed",
+    "launcher_restore_note": "master launcher restored and checksum-verified; full script could not write its hard-coded /tmp intermediate in this sandbox"
+  },
+  "release_status": "partial integration handoff; awaiting Command Center v0.2.3 and physical Samsung verification"
+}
