@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Aqua Sentinel OS — secure owner command intelligence for the Aqua ecosystem."
+    />
+    <title>Aqua Sentinel OS</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./fidelity.css" />
+  </head>
+  <body>
+    <main id="sentinel" class="sentinel state-idle">
+      <div class="os-surface">
+        <section class="aqua-hero" aria-label="Aqua voice assistant">
+          <div class="hero-art" aria-hidden="true"></div>
+          <span class="listening-waves" aria-hidden="true">
+            <i class="wave-energy wave-left"></i>
+            <i class="wave-energy wave-right"></i>
+          </span>
+          <button
+            id="aquaButton"
+            class="aqua-button"
+            type="button"
+            aria-label="Talk to Aqua"
+          >
+            <span class="voice-core" aria-hidden="true"><i></i></span>
+          </button>
+          <div id="aquaStateLabel" class="aqua-state-label" aria-live="polite">
+            TAP THE A TO SPEAK
+          </div>
+        </section>
+
+        <section
+          id="appDeck"
+          class="app-deck is-settled"
+          aria-label="Aqua ecosystem applications"
+        >
+          <div class="deck-label">
+            <span>CONNECTED ECOSYSTEM</span>
+            <strong>Swipe to rotate · Tap center to open</strong>
+          </div>
+          <button
+            id="previousApp"
+            class="deck-arrow previous"
+            type="button"
+            aria-label="Previous app"
+          >
+            ‹
+          </button>
+          <div id="cardsTrack" class="cards-track"></div>
+          <button
+            id="nextApp"
+            class="deck-arrow next"
+            type="button"
+            aria-label="Next app"
+          >
+            ›
+          </button>
+          <div id="deckDots" class="deck-dots"></div>
+        </section>
+
+        <section
+          id="appDashboard"
+          class="app-dashboard"
+          aria-live="polite"
+        >
+          <button id="primaryDashboard" class="dashboard-card" type="button">
+            <header>
+              <span>01</span>
+              <div><strong id="primaryTitle"></strong></div>
+              <b>Confirmed</b>
+            </header>
+            <h3 id="primaryDetail"></h3>
+            <div class="dashboard-row">
+              <small>Current</small><strong id="primaryValue"></strong>
+            </div>
+            <div class="dashboard-row">
+              <small>Source</small><strong id="primarySource"></strong>
+            </div>
+            <div class="dashboard-row">
+              <small>Status</small><strong>Confirmed</strong>
+            </div>
+            <footer>
+              <i>✓</i>
+              <span>Reviewed by Aqua Sentinel<br /><small>Updated just now</small></span>
+              <b>›</b>
+            </footer>
+          </button>
+
+          <button
+            id="secondaryDashboard"
+            class="dashboard-card attention"
+            type="button"
+          >
+            <header>
+              <span>02</span>
+              <div><strong id="secondaryTitle"></strong></div>
+              <b>Needs Attention</b>
+            </header>
+            <h3 id="secondaryDetail"></h3>
+            <div class="dashboard-row">
+              <small>Current</small><strong id="secondaryValue"></strong>
+            </div>
+            <div class="dashboard-row">
+              <small>Source</small><strong id="secondarySource"></strong>
+            </div>
+            <div class="dashboard-row">
+              <small>Status</small><strong>Needs Attention</strong>
+            </div>
+            <footer>
+              <i>!</i>
+              <span>Action may be required<br /><small>Tap for full details</small></span>
+              <b>›</b>
+            </footer>
+          </button>
+        </section>
+
+        <nav class="bottom-rail" aria-label="Primary navigation">
+          <button class="active" type="button" data-panel="home">
+            <span>⌂</span><small>Home</small>
+          </button>
+          <button type="button" data-panel="messages">
+            <span>▣</span><small>Messages</small>
+          </button>
+          <button type="button" data-panel="data">
+            <span>◇</span><small>Data Hub</small>
+          </button>
+          <button type="button" data-panel="settings">
+            <span>☷</span><small>Settings</small>
+          </button>
+          <button type="button" data-panel="signout">
+            <span>↪</span><small>Sign Out</small>
+          </button>
+        </nav>
+      </div>
+
+      <section id="workspace" class="app-workspace" hidden></section>
+      <section id="detailSheet" class="detail-sheet" hidden></section>
+      <section id="systemPanel" class="system-panel" hidden></section>
+
+      <section id="authPanel" class="auth-panel" aria-modal="true" hidden>
+        <div class="auth-mark">A</div>
+        <small>AQUA SENTINEL OS</small>
+        <h1>Owner access</h1>
+        <p>
+          Sign in to connect Aqua’s secure intelligence and persistent business
+          memory. This is Aqua authentication—no ChatGPT redirect.
+        </p>
+        <form id="authForm">
+          <label>
+            Email
+            <input
+              id="authEmail"
+              type="email"
+              autocomplete="username"
+              spellcheck="false"
+              required
+            />
+          </label>
+          <label>
+            Password
+            <input
+              id="authPassword"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+          <button id="authSubmit" type="submit">Connect Aqua Brain</button>
+        </form>
+        <div id="authMessage" class="auth-message" aria-live="polite"></div>
+        <small class="auth-security">
+          Session tokens are encrypted with Android Keystore and stay on this
+          device.
+        </small>
+      </section>
+
+      <div id="sentinelToast" class="sentinel-toast" hidden></div>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+name: Aqua Sentinel Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - agent/aqua-sentinel-role-demo-v63
+      - agent/aqua-sentinel-fixed-frame-v631
+      - agent/aqua-sentinel-ui-personality-v640
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "sentinel-app/**"
+      - "android/**"
+      - "tests/sentinel-smoke.mjs"
+      - "package.json"
+      - ".github/workflows/android-sentinel-apk.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run Sentinel safety and structure tests
+        run: npm run test:sentinel
+
+      - name: Check Sentinel JavaScript syntax
+        run: node --check sentinel-app/app.js
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Build installable UI and personality proof APK
+        working-directory: android
+        run: gradle --no-daemon :app:assembleDebug
+
+      - name: Render committed Fold and DeX visual proofs
+        run: |
+          mkdir -p dist
+          CHROME_BIN="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$CHROME_BIN"
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1200 \
+            --force-device-scale-factor=1 \
+            --window-size=729,1536 \
+            --screenshot=dist/Aqua-Sentinel-OS-v0.64.0-Fold-portrait-idle.png \
+            "file://${GITHUB_WORKSPACE}/sentinel-app/index.html"
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1200 \
+            --force-device-scale-factor=1 \
+            --window-size=729,1536 \
+            --screenshot=dist/Aqua-Sentinel-OS-v0.64.0-Fold-portrait-speaking.png \
+            "file://${GITHUB_WORKSPACE}/sentinel-app/index.html?preview=speaking"
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1200 \
+            --force-device-scale-factor=1 \
+            --window-size=1536,1024 \
+            --screenshot=dist/Aqua-Sentinel-OS-v0.64.0-DeX-landscape.png \
+            "file://${GITHUB_WORKSPACE}/sentinel-app/index.html"
+
+      - name: Prepare named APK and checksum
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk \
+            dist/Aqua-Sentinel-OS-v0.64.0-ui-personality.apk
+          sha256sum dist/Aqua-Sentinel-OS-v0.64.0-ui-personality.apk \
+            > dist/Aqua-Sentinel-OS-v0.64.0-ui-personality.apk.sha256
+
+      - name: Upload APK and committed visual proofs
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aqua-Sentinel-OS-v0.64.0-ui-personality
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
