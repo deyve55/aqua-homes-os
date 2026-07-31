@@ -16,6 +16,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -141,6 +142,17 @@ public class QuickCaptureActivity extends Activity {
         commandInput.setOnEditorActionListener((view, actionId, event) -> {
             submitCommand(commandInput.getText().toString());
             return true;
+        });
+        commandInput.setOnKeyListener((view, keyCode, event) -> {
+            if (
+                keyCode == KeyEvent.KEYCODE_ENTER
+                    && event.getAction() == KeyEvent.ACTION_UP
+                    && !event.isShiftPressed()
+            ) {
+                submitCommand(commandInput.getText().toString());
+                return true;
+            }
+            return false;
         });
         commandInput.requestFocus();
         commandInput.postDelayed(() -> {

@@ -367,6 +367,8 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(capture, /STATE_COMMAND_TEXT/);
   assert.match(capture, /AQUA_WIDGET_MESSAGE_SUBMITTED id=/);
   assert.match(capture, /putExtra\("widget_command", text\)/);
+  assert.match(capture, /KeyEvent\.KEYCODE_ENTER/);
+  assert.match(capture, /!event\.isShiftPressed\(\)/);
   assert.match(activity, /AQUA_WIDGET_MESSAGE_DELIVERED id=/);
   assert.match(activity, /window\.receiveWidgetCommand/);
   assert.match(layout, /id="@\+id\/widget_command_input"/);
