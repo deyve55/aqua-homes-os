@@ -77,7 +77,6 @@ jobs:
 
       - name: Render closed-phone Home, Neural Link, and Command Center proofs
         run: |
-          set -x
           mkdir -p release
           CHROME_BIN="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
           test -n "$CHROME_BIN"

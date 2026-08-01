@@ -314,6 +314,7 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(script, /primaryRows/);
   assert.match(script, /secondaryRows/);
   assert.match(script, /dashboardPanelMarkup/);
+  assert.match(script, /const rows = Array\.isArray\(rawRows\) \? rawRows : \[\]/);
   assert.match(script, /Live · confirmed/);
   assert.match(script, /label: "Presentation", className: "preview"/);
   assert.match(html, /id="primaryStatus"/);

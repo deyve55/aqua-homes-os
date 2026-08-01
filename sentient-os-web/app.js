@@ -478,7 +478,8 @@ function dashboardPanelMarkup(app, view, previewImageUrl, kind) {
   const title = primary ? view.primaryTitle : view.secondaryTitle;
   const value = primary ? view.primaryValue : view.secondaryValue;
   const detail = primary ? view.primaryDetail : view.secondaryDetail;
-  const rows = primary ? view.primaryRows : view.secondaryRows;
+  const rawRows = primary ? view.primaryRows : view.secondaryRows;
+  const rows = Array.isArray(rawRows) ? rawRows : [];
   const rowMarkup = (rows.length ? rows : app.widgets.map((label) => [label, "Ready"]))
     .slice(0, 3)
     .map(([label, rowValue]) => `
