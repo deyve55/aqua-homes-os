@@ -298,6 +298,11 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /-gpu swiftshader -feature -Vulkan/);
   assert.match(workflow, /Camera keeps stopping\|Close app\|Viewing full screen\|GOT IT/);
   assert.match(workflow, /identify -format '%k'.*launch\.png/);
+  assert.ok(
+    workflow.indexOf("screencap -p > /tmp/aqua-sentinel-v0.6.0-launch.png")
+      < workflow.indexOf("bash scripts/verify-aqua-sentinel-widget-actions-v054.sh"),
+    "the clean-launch image must be captured before camera and widget interactions",
+  );
   assert.match(script, /ecosystemPresentationSnapshots\.set/);
   assert.match(script, /primaryRows/);
   assert.match(script, /secondaryRows/);
