@@ -305,9 +305,17 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /KEYCODE_WAKEUP/);
   assert.match(workflow, /wm dismiss-keyguard/);
   assert.match(workflow, /-gpu software/);
-  assert.match(workflow, /if grep -Eiq "Viewing full screen\|GOT IT".*input tap 855 525/);
+  assert.match(workflow, /group: \$\{\{ github\.workflow \}\}-\$\{\{ github\.event\.pull_request\.head\.ref \|\| github\.ref_name \}\}/);
+  assert.match(workflow, /cancel-in-progress: true/);
+  assert.match(workflow, /wait_for_adb\(\)/);
+  assert.match(workflow, /timeout 5s adb wait-for-device/);
+  assert.match(workflow, /dump_window\(\)/);
+  assert.match(workflow, /recover_system_dialogs\(\)/);
+  assert.match(workflow, /for dialog_attempt in \$\(seq 1 6\); do/);
+  assert.match(workflow, /if grep -Eiq "Viewing full screen\|GOT IT"[\s\S]*input tap 855 525[\s\S]*KEYCODE_ENTER[\s\S]*continue/);
   assert.match(workflow, /if grep -Eiq 'text="Camera keeps stopping"\|text="Close app"'[\s\S]*am force-stop com\.android\.camera2/);
   assert.match(workflow, /text="Camera keeps stopping"\|text="Close app"\|text="Viewing full screen"\|text="GOT IT"/);
+  assert.match(workflow, /recover_system_dialogs initial[\s\S]*verify-aqua-sentinel-widget-actions-v054\.sh[\s\S]*recover_system_dialogs final/);
   assert.match(workflow, /launch_visual=deterministic_bundled_home_430x932/);
   assert.match(workflow, /android_launch=activity_and_ui_hierarchy_verified/);
   assert.doesNotMatch(workflow, /adb exec-out screencap.*launch\.png/);
