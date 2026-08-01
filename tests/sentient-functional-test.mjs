@@ -256,12 +256,13 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
 });
 
 test("v0.6.0 preserves reversible preview cards and adds deterministic secondary-screen proofs", async () => {
-  const [gradle, workflow, script, html, fidelity] = await Promise.all([
+  const [gradle, workflow, script, html, fidelity, androidLaunch] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
     read("sentient-os-web/app.js"),
     read("sentient-os-web/index.html"),
     read("sentient-os-web/fidelity.css"),
+    read("scripts/verify-aqua-sentinel-android-launch-v060.sh"),
   ]);
   assert.match(gradle, /versionCode = 2026080101/);
   assert.match(gradle, /versionName = "0\.6\.0-neural-link-ai-gateway-test"/);
@@ -296,32 +297,36 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /data-aqua-preview-ready="command"/);
   assert.match(workflow, /identify -format '%wx%h'/);
   assert.match(workflow, /! cmp -s/);
-  assert.match(workflow, /am force-stop com\.android\.camera2/);
-  assert.match(workflow, /mResumedActivity\|topResumedActivity\|ResumedActivity/);
-  assert.match(workflow, /dumpsys activity activities/);
-  assert.match(workflow, /immersive_mode_confirmations confirmed/);
-  assert.match(workflow, /svc power stayon true/);
-  assert.match(workflow, /screen_off_timeout 2147483647/);
-  assert.match(workflow, /KEYCODE_WAKEUP/);
-  assert.match(workflow, /wm dismiss-keyguard/);
+  assert.match(workflow, /script: bash scripts\/verify-aqua-sentinel-android-launch-v060\.sh/);
+  assert.match(androidLaunch, /am force-stop com\.android\.camera2/);
+  assert.match(androidLaunch, /mResumedActivity\|topResumedActivity\|ResumedActivity/);
+  assert.match(androidLaunch, /dumpsys activity activities/);
+  assert.match(androidLaunch, /immersive_mode_confirmations confirmed/);
+  assert.match(androidLaunch, /svc power stayon true/);
+  assert.match(androidLaunch, /screen_off_timeout 2147483647/);
+  assert.match(androidLaunch, /KEYCODE_WAKEUP/);
+  assert.match(androidLaunch, /wm dismiss-keyguard/);
   assert.match(workflow, /-gpu software/);
   assert.match(workflow, /group: \$\{\{ github\.workflow \}\}-\$\{\{ github\.event\.pull_request\.head\.ref \|\| github\.ref_name \}\}/);
   assert.match(workflow, /cancel-in-progress: true/);
-  assert.match(workflow, /wait_for_adb\(\)/);
-  assert.match(workflow, /timeout 5s adb wait-for-device/);
-  assert.match(workflow, /dump_window\(\)/);
-  assert.match(workflow, /recover_system_dialogs\(\)/);
-  assert.match(workflow, /for dialog_attempt in \$\(seq 1 6\); do/);
-  assert.match(workflow, /if grep -Eiq "Viewing full screen\|GOT IT"[\s\S]*input tap 855 525[\s\S]*KEYCODE_ENTER[\s\S]*continue/);
-  assert.match(workflow, /if grep -Eiq 'text="Camera keeps stopping"\|text="Close app"'[\s\S]*am force-stop com\.android\.camera2/);
-  assert.match(workflow, /text="Camera keeps stopping"\|text="Close app"\|text="Viewing full screen"\|text="GOT IT"/);
-  assert.match(workflow, /recover_system_dialogs initial[\s\S]*verify-aqua-sentinel-widget-actions-v054\.sh[\s\S]*recover_system_dialogs final/);
+  assert.match(androidLaunch, /wait_for_adb\(\)/);
+  assert.match(androidLaunch, /timeout 5s adb wait-for-device/);
+  assert.match(androidLaunch, /timeout 20s adb shell uiautomator dump/);
+  assert.match(androidLaunch, /timeout 30s adb shell am start/);
+  assert.match(androidLaunch, /dump_window\(\)/);
+  assert.match(androidLaunch, /recover_system_dialogs\(\)/);
+  assert.match(androidLaunch, /for dialog_attempt in \$\(seq 1 6\); do/);
+  assert.match(androidLaunch, /if grep -Eiq "Viewing full screen\|GOT IT"[\s\S]*input tap 855 525[\s\S]*KEYCODE_ENTER[\s\S]*continue/);
+  assert.match(androidLaunch, /if grep -Eiq 'text="Camera keeps stopping"\|text="Close app"'[\s\S]*am force-stop com\.android\.camera2/);
+  assert.match(androidLaunch, /text="Camera keeps stopping"\|text="Close app"\|text="Viewing full screen"\|text="GOT IT"/);
+  assert.match(androidLaunch, /recover_system_dialogs initial[\s\S]*verify-aqua-sentinel-widget-actions-v054\.sh[\s\S]*recover_system_dialogs final/);
   assert.match(workflow, /launch_visual=deterministic_bundled_home_430x932/);
   assert.match(workflow, /android_launch=activity_and_ui_hierarchy_verified/);
   assert.doesNotMatch(workflow, /adb exec-out screencap.*launch\.png/);
+  assert.doesNotMatch(androidLaunch, /adb exec-out screencap.*launch\.png/);
   assert.ok(
     workflow.indexOf("--screenshot=release/AquaSentinelOS-v0.6.0-launch-proof.png")
-      < workflow.indexOf("bash scripts/verify-aqua-sentinel-widget-actions-v054.sh"),
+      < workflow.indexOf("bash scripts/verify-aqua-sentinel-android-launch-v060.sh"),
     "the deterministic Home proof must be rendered before Android interaction checks",
   );
   assert.match(script, /ecosystemPresentationSnapshots\.set/);
@@ -458,7 +463,7 @@ test("v0.5.4 preserves app covers and gives the two hero labels separate lanes",
 });
 
 test("v0.5.4 submits widget messages and still returns filing captures to the cabinet", async () => {
-  const [widget, capture, activity, layout, script, styles, workflow, widgetVerifier] = await Promise.all([
+  const [widget, capture, activity, layout, script, styles, workflow, widgetVerifier, androidLaunch] = await Promise.all([
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
@@ -467,6 +472,7 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
     read("android-app/app/src/main/res/values/styles.xml"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
     read("scripts/verify-aqua-sentinel-widget-actions-v054.sh"),
+    read("scripts/verify-aqua-sentinel-android-launch-v060.sh"),
   ]);
   assert.match(widget, /PendingIntent\.FLAG_UPDATE_CURRENT \| PendingIntent\.FLAG_IMMUTABLE/);
   assert.match(widget, /setPackage\(context\.getPackageName\(\)\)/);
@@ -505,7 +511,8 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(capture, /private void openFilingCabinet\(\)/);
   assert.match(capture, /putExtra\("open_filing", true\)/);
   assert.match(styles, /<item name="android:clickable">true<\/item>/);
-  assert.match(workflow, /bash scripts\/verify-aqua-sentinel-widget-actions-v054\.sh/);
+  assert.match(workflow, /bash scripts\/verify-aqua-sentinel-android-launch-v060\.sh/);
+  assert.match(androidLaunch, /bash scripts\/verify-aqua-sentinel-widget-actions-v054\.sh/);
   assert.match(widgetVerifier, /for mode in ask voice photo video/);
   assert.match(widgetVerifier, /AQUA_WIDGET_ACTION_RECEIVED mode=\$mode/);
   assert.match(widgetVerifier, /AQUA_CAPTURE_ROUTE mode=\$mode/);
