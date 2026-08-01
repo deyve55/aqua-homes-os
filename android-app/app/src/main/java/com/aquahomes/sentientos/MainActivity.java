@@ -39,6 +39,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
@@ -56,6 +58,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
+import javax.net.ssl.SSLHandshakeException;
 
 public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
     private static final int RECORD_AUDIO_REQUEST = 11;
@@ -852,6 +855,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                         "Enter the owner email and password."
                     );
                 }
+                if (AQUA_GATEWAY_URL.trim().isEmpty()) {
+                    throw new IllegalStateException(
+                        "Aqua Brain is not configured in this test build. Sentinel remains available in Standalone mode."
+                    );
+                }
                 JSONObject params = new JSONObject()
                     .put("email", email.trim().toLowerCase(Locale.US))
                     .put("password", password)
@@ -873,14 +881,29 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     callback.put("success", false);
                     callback.put(
                         "error",
-                        error instanceof IllegalArgumentException
-                            ? error.getMessage()
-                            : "Aqua could not establish a secure owner session."
+                        ownerSessionError(error)
                     );
                 } catch (JSONException ignored) {}
             }
             sendJsonCallback("receiveAuthResult", callback);
         });
+    }
+
+    private String ownerSessionError(Exception error) {
+        if (error instanceof IllegalArgumentException) return error.getMessage();
+        if (error instanceof UnknownHostException) {
+            return "Aqua Brain gateway is unavailable. Sentinel remains available in Standalone mode.";
+        }
+        if (error instanceof SSLHandshakeException) {
+            return "Sentinel could not verify the Aqua Brain secure connection. Sentinel remains available in Standalone mode.";
+        }
+        if (error instanceof SocketTimeoutException) {
+            return "Aqua Brain did not answer in time. Sentinel remains available in Standalone mode.";
+        }
+        if (error instanceof IllegalStateException && error.getMessage() != null) {
+            return error.getMessage();
+        }
+        return "Aqua Brain could not be reached. Sentinel remains available in Standalone mode.";
     }
 
     private void askAqua(String text, String selectedApp, String uiContext) {
@@ -1030,6 +1053,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @JavascriptInterface
         public boolean isEcosystemPresentationMode() {
             return BuildConfig.ECOSYSTEM_PRESENTATION_MODE;
+        }
+
+        @JavascriptInterface
+        public boolean isGatewayConfigured() {
+            return !AQUA_GATEWAY_URL.trim().isEmpty();
         }
 
         @JavascriptInterface

@@ -40,7 +40,7 @@ recover_system_dialogs() {
   local phase="$1"
   local window_path=""
   for dialog_attempt in $(seq 1 6); do
-    window_path="$(dump_window "aqua-sentinel-v0.6.0-${phase}-${dialog_attempt}")" || {
+    window_path="$(dump_window "aqua-sentinel-v0.6.1-${phase}-${dialog_attempt}")" || {
       sleep 2
       continue
     }
@@ -61,7 +61,7 @@ recover_system_dialogs() {
     fi
     return 0
   done
-  window_path="$(dump_window "aqua-sentinel-v0.6.0-${phase}-final")"
+  window_path="$(dump_window "aqua-sentinel-v0.6.1-${phase}-final")"
   ! grep -Eiq "$DIALOG_PATTERN" "$window_path"
 }
 
@@ -99,19 +99,19 @@ adb shell settings put system screen_off_timeout 2147483647
 adb shell settings put secure immersive_mode_confirmations confirmed
 adb logcat -c
 start_sentinel
-wait_for_ui_ready /tmp/aqua-sentinel-v0.6.0-logcat.txt
+wait_for_ui_ready /tmp/aqua-sentinel-v0.6.1-logcat.txt
 APP_PID="$(adb shell pidof "$APP_ID" || true)"
 test -n "$APP_PID" || {
-  grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.6.0-logcat.txt || true
+  grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.6.1-logcat.txt || true
   exit 1
 }
-adb shell dumpsys package "$APP_ID" > /tmp/aqua-sentinel-v0.6.0-package.txt
-grep -q "versionCode=2026080101" /tmp/aqua-sentinel-v0.6.0-package.txt
-grep -q "AquaCommandWidget" /tmp/aqua-sentinel-v0.6.0-package.txt
-grep -q "QuickCaptureActivity" /tmp/aqua-sentinel-v0.6.0-package.txt
-grep -q "EvidenceProvider" /tmp/aqua-sentinel-v0.6.0-package.txt
+adb shell dumpsys package "$APP_ID" > /tmp/aqua-sentinel-v0.6.1-package.txt
+grep -q "versionCode=2026080102" /tmp/aqua-sentinel-v0.6.1-package.txt
+grep -q "AquaCommandWidget" /tmp/aqua-sentinel-v0.6.1-package.txt
+grep -q "QuickCaptureActivity" /tmp/aqua-sentinel-v0.6.1-package.txt
+grep -q "EvidenceProvider" /tmp/aqua-sentinel-v0.6.1-package.txt
 recover_system_dialogs initial
-assert_sentinel_resumed /tmp/aqua-sentinel-v0.6.0-initial-activities.txt
+assert_sentinel_resumed /tmp/aqua-sentinel-v0.6.1-initial-activities.txt
 
 bash scripts/verify-aqua-sentinel-widget-actions-v054.sh
 
@@ -120,6 +120,6 @@ adb shell input keyevent KEYCODE_BACK || true
 adb logcat -c
 adb shell am force-stop "$APP_ID"
 start_sentinel
-wait_for_ui_ready /tmp/aqua-sentinel-v0.6.0-final-logcat.txt
+wait_for_ui_ready /tmp/aqua-sentinel-v0.6.1-final-logcat.txt
 recover_system_dialogs final
-assert_sentinel_resumed /tmp/aqua-sentinel-v0.6.0-activities.txt
+assert_sentinel_resumed /tmp/aqua-sentinel-v0.6.1-activities.txt

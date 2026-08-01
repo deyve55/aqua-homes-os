@@ -162,6 +162,7 @@ let inertiaFrame = null;
 let suppressCardClickUntil = 0;
 let authenticated = false;
 let authenticatedEmail = "";
+let gatewayConfigured = false;
 let filingInbox = [];
 let filingBriefAnnounced = false;
 let sound = true;
@@ -340,6 +341,9 @@ const authEmail = document.getElementById("authEmail");
 const authPassword = document.getElementById("authPassword");
 const authSubmit = document.getElementById("authSubmit");
 const authMessage = document.getElementById("authMessage");
+const authContinueStandalone = document.getElementById("authContinueStandalone");
+const ownerAccessButton = document.getElementById("ownerAccessButton");
+const ownerAccessLabel = document.getElementById("ownerAccessLabel");
 const toast = document.getElementById("sentinelToast");
 const aquaStateLabel = document.getElementById("aquaStateLabel");
 let speechBeatTimer = null;
@@ -354,6 +358,24 @@ function setAquaState(state) {
   clearTimeout(speechBeatTimer);
   sentinel.className = `sentinel state-${state}`;
   aquaStateLabel.textContent = stateLabels[state] || stateLabels.idle;
+}
+
+function updateOwnerAccessControl() {
+  ownerAccessButton.dataset.panel = authenticated ? "signout" : "connect";
+  ownerAccessLabel.textContent = authenticated ? "Sign Out" : "Connect";
+}
+
+function openOwnerAccess() {
+  authPanel.hidden = false;
+  authEmail.disabled = !gatewayConfigured;
+  authPassword.disabled = !gatewayConfigured;
+  authSubmit.disabled = !gatewayConfigured;
+  authSubmit.textContent = gatewayConfigured
+    ? "Connect Aqua Brain"
+    : "Gateway Not Configured";
+  authMessage.textContent = gatewayConfigured
+    ? "Connect Aqua Brain when the gateway is available, or continue in Standalone mode."
+    : "Aqua Brain is not configured in this test build. Sentinel remains available in Standalone mode.";
 }
 
 window.pulseAquaSpeech = () => {
@@ -1136,6 +1158,10 @@ function updateFilingBadge() {
 }
 
 function openPanel(kind) {
+  if (kind === "connect") {
+    openOwnerAccess();
+    return;
+  }
   const railKind = ["messages", "files", "diagnostics"].includes(kind)
     ? "command"
     : kind;
@@ -1374,8 +1400,10 @@ function activateDeterministicPreviewRoute() {
 
 function startVoice() {
   if (!authenticated) {
-    authPanel.hidden = false;
-    authMessage.textContent = "Owner sign-in is required before Aqua can listen.";
+    openOwnerAccess();
+    authMessage.textContent = gatewayConfigured
+      ? "Connect Aqua Brain before Aqua can listen. Sentinel remains available in Standalone mode."
+      : "Aqua Brain is not configured in this test build. Sentinel remains available in Standalone mode.";
     return;
   }
   if (!window.AquaBridge?.startListening) {
@@ -1486,7 +1514,8 @@ window.receiveAuthState = (raw) => {
   }
   authenticated = Boolean(state?.authenticated);
   authenticatedEmail = String(state?.email || "");
-  authPanel.hidden = authenticated;
+  authPanel.hidden = true;
+  updateOwnerAccessControl();
   if (authenticated) {
     authMessage.textContent = "";
     authPassword.value = "";
@@ -1504,7 +1533,10 @@ window.receiveAuthResult = (raw) => {
     result = { success: false, error: "Aqua sign-in returned an unreadable result." };
   }
   authSubmit.disabled = false;
-  authSubmit.textContent = "Connect Aqua Brain";
+  authSubmit.disabled = !gatewayConfigured;
+  authSubmit.textContent = gatewayConfigured
+    ? "Connect Aqua Brain"
+    : "Gateway Not Configured";
   if (!result?.success) {
     authMessage.textContent = String(
       result?.error || "Aqua could not verify that sign-in.",
@@ -1558,6 +1590,10 @@ window.openFilingCabinet = () => {
 
 authForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  if (!gatewayConfigured) {
+    openOwnerAccess();
+    return;
+  }
   authMessage.textContent = "";
   authSubmit.disabled = true;
   authSubmit.textContent = "Connecting…";
@@ -1569,6 +1605,12 @@ authForm.addEventListener("submit", (event) => {
     return;
   }
   window.AquaBridge.signIn(authEmail.value.trim(), authPassword.value);
+});
+
+authContinueStandalone.addEventListener("click", () => {
+  authPanel.hidden = true;
+  authPassword.value = "";
+  notify("Sentinel is open in Standalone mode. Aqua Brain is not connected.");
 });
 
 document.getElementById("aquaButton").addEventListener("click", startVoice);
@@ -1715,6 +1757,12 @@ appDeck.addEventListener("lostpointercapture", (event) => {
 
 enableCustomerPreviewIfAuthorized();
 enableEcosystemPresentationMode();
+try {
+  gatewayConfigured = Boolean(window.AquaBridge?.isGatewayConfigured?.());
+} catch (_) {
+  gatewayConfigured = false;
+}
+updateOwnerAccessControl();
 const deterministicPreviewActive = activateDeterministicPreviewRoute();
 if (!deterministicPreviewActive) {
   render();

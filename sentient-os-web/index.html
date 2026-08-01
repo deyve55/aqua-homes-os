@@ -134,8 +134,8 @@
           <button type="button" data-panel="settings">
             <span>☷</span><small>Settings</small>
           </button>
-          <button type="button" data-panel="signout">
-            <span>↪</span><small>Sign Out</small>
+          <button id="ownerAccessButton" type="button" data-panel="connect">
+            <span>↪</span><small id="ownerAccessLabel">Connect</small>
           </button>
         </nav>
       </div>
@@ -175,6 +175,9 @@
           <button id="authSubmit" type="submit">Connect Aqua Brain</button>
         </form>
         <div id="authMessage" class="auth-message" aria-live="polite"></div>
+        <button id="authContinueStandalone" class="auth-standalone" type="button">
+          Continue in Standalone
+        </button>
         <small class="auth-security">
           Session tokens are encrypted with Android Keystore and stay on this
           device.

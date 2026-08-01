@@ -127,6 +127,30 @@ test("native voice uses authenticated Aqua Brain and not local scripted answers"
   assert.match(activity, /TextToSpeech/);
 });
 
+test("an unavailable gateway cannot block truthful Standalone startup", async () => {
+  const [gradle, html, script, activity] = await Promise.all([
+    read("android-app/app/build.gradle.kts"),
+    read("sentient-os-web/index.html"),
+    read("sentient-os-web/app.js"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+  ]);
+  assert.match(gradle, /versionCode = 2026080102/);
+  assert.match(gradle, /versionName = "0\.6\.1-standalone-startup-test"/);
+  assert.match(gradle, /\.orElse\(providers\.environmentVariable\("AQUA_GATEWAY_URL"\)\)\s*\.orElse\(""\)/);
+  assert.doesNotMatch(gradle, /\.orElse\("https:\/\/api\.aquahomesos\.com\/gateway"\)/);
+  assert.match(html, /id="ownerAccessButton"[^>]*data-panel="connect"/);
+  assert.match(html, /id="authContinueStandalone"[\s\S]*Continue in Standalone/);
+  assert.match(script, /function openOwnerAccess\(\)/);
+  assert.match(script, /authPanel\.hidden = true;\s*updateOwnerAccessControl\(\);/);
+  assert.doesNotMatch(script, /authPanel\.hidden = authenticated/);
+  assert.match(script, /isGatewayConfigured/);
+  assert.match(script, /Gateway Not Configured/);
+  assert.match(script, /Sentinel is open in Standalone mode\. Aqua Brain is not connected\./);
+  assert.match(activity, /public boolean isGatewayConfigured\(\)/);
+  assert.match(activity, /Aqua Brain gateway is unavailable\. Sentinel remains available in Standalone mode\./);
+  assert.match(activity, /Sentinel could not verify the Aqua Brain secure connection/);
+});
+
 test("server secrets are absent from the APK source", async () => {
   const files = await Promise.all([
     read("sentient-os-web/index.html"),
@@ -255,7 +279,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.6.0 preserves reversible preview cards and adds deterministic secondary-screen proofs", async () => {
+test("v0.6.1 preserves reversible preview cards and adds deterministic secondary-screen proofs", async () => {
   const [gradle, workflow, script, html, fidelity, androidLaunch] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -264,11 +288,11 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
     read("sentient-os-web/fidelity.css"),
     read("scripts/verify-aqua-sentinel-android-launch-v060.sh"),
   ]);
-  assert.match(gradle, /versionCode = 2026080101/);
-  assert.match(gradle, /versionName = "0\.6\.0-neural-link-ai-gateway-test"/);
+  assert.match(gradle, /versionCode = 2026080102/);
+  assert.match(gradle, /versionName = "0\.6\.1-standalone-startup-test"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
-  assert.match(workflow, /AquaSentinelOS-v0\.6\.0-Neural-Link-AI-Gateway-Test\.apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.6\.1-Standalone-Startup-Test\.apk/);
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
   assert.match(workflow, /preview=neural/);
   assert.match(workflow, /preview=command/);
@@ -325,7 +349,7 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.doesNotMatch(workflow, /adb exec-out screencap.*launch\.png/);
   assert.doesNotMatch(androidLaunch, /adb exec-out screencap.*launch\.png/);
   assert.ok(
-    workflow.indexOf("--screenshot=release/AquaSentinelOS-v0.6.0-launch-proof.png")
+    workflow.indexOf("--screenshot=release/AquaSentinelOS-v0.6.1-launch-proof.png")
       < workflow.indexOf("bash scripts/verify-aqua-sentinel-android-launch-v060.sh"),
     "the deterministic Home proof must be rendered before Android interaction checks",
   );
