@@ -171,7 +171,64 @@ let widgetMessages = loadWidgetMessages();
 let widgetCommandInFlight = null;
 const liveSnapshots = new Map();
 const customerPreviewSnapshots = new Map();
+const ecosystemPresentationSnapshots = new Map();
 const snapshotStates = new Map();
+
+function enableEcosystemPresentationMode() {
+  let enabled = false;
+  try {
+    enabled = Boolean(window.AquaBridge?.isEcosystemPresentationMode?.());
+  } catch (_) {
+    enabled = false;
+  }
+  if (!enabled) return;
+
+  const previews = {
+    "Aqua CRM": {
+      preview: { eyebrow: "AQUA CRM · PRESENTATION", title: "Customer Command", metric: "Active jobs", value: "12", tiles: ["Pipeline", "Clients", "Schedule"] },
+      primary: { title: "Pipeline Today", value: "8 open leads", detail: "3 proposals due · 2 callbacks", rows: [["New leads", "4"], ["Proposals", "3"], ["Follow-ups", "2"]] },
+      secondary: { title: "Job Operations", value: "12 active jobs", detail: "4 site visits scheduled today", rows: [["Today", "4 visits"], ["Overdue", "1 task"], ["Messages", "6 unread"]] },
+    },
+    AquaDraw: {
+      preview: { eyebrow: "AQUADRAW · PRESENTATION", title: "Company Financial Health", metric: "Active budget", value: "$186K", tiles: ["Clients", "Jobs", "SOW"] },
+      primary: { title: "Company Financial Health", value: "$186K active", detail: "$74K available across current jobs", rows: [["Original", "$214K"], ["Actual", "$112K"], ["Remaining", "$74K"]] },
+      secondary: { title: "Draw Activity", value: "2 awaiting approval", detail: "$38,500 requested this cycle", rows: [["Approved", "$91K"], ["Requested", "$38.5K"], ["Overages", "$6.2K"]] },
+    },
+    AquaCam: {
+      preview: { eyebrow: "AQUACAM · PRESENTATION", title: "Field Command", metric: "Crews active", value: "3", tiles: ["Clock In", "Capture", "Evidence"] },
+      primary: { title: "Field Activity", value: "3 crews active", detail: "2 job sites reporting now", rows: [["Clocked in", "7 people"], ["Site scans", "5"], ["Flags", "2 review"]] },
+      secondary: { title: "Evidence Today", value: "18 captures", detail: "Morning, progress, and closing evidence", rows: [["Photos", "11"], ["Videos", "5"], ["Before / after", "2 sets"]] },
+    },
+    "Aqua Knowledge Vault": {
+      preview: { eyebrow: "KNOWLEDGE VAULT · PRESENTATION", title: "Enterprise Master Brain", metric: "Jurisdictions", value: "3", tiles: ["Sources", "Tax", "Code checks"] },
+      primary: { title: "Current Knowledge", value: "3 jurisdictions", detail: "Massachusetts · New Hampshire · Maine", rows: [["Code checks", "6 ready"], ["Sources", "24 indexed"], ["Updates", "2 review"]] },
+      secondary: { title: "Strategy & Risk", value: "4 active reviews", detail: "Tax strategy, workers’ comp, and liability", rows: [["Tax strategies", "2"], ["Workers’ comp", "1 audit"], ["Liability", "1 review"]] },
+    },
+    "Aqua Timesheet": {
+      preview: { eyebrow: "AQUA TIMESHEET · PRESENTATION", title: "Workforce Today", metric: "On clock", value: "7", tiles: ["Crew", "Travel", "Payroll"] },
+      primary: { title: "Today’s Labor", value: "7 on clock", detail: "42.5 labor hours recorded today", rows: [["Job site", "5"], ["Travel", "1"], ["Material stop", "1"]] },
+      secondary: { title: "Payroll Review", value: "1 exception", detail: "Monday–Sunday payroll window", rows: [["Regular", "198.0 h"], ["Overtime", "6.5 h"], ["Queued punches", "1"]] },
+    },
+    "Aqua Books": {
+      preview: { eyebrow: "AQUA BOOKS · PRESENTATION", title: "Financial Command", metric: "Cash position", value: "$84.2K", tiles: ["Review", "Bills", "Reports"] },
+      primary: { title: "Cash & Ledger", value: "$84.2K available", detail: "Three operating accounts reconciled", rows: [["Receivables", "$46.8K"], ["Payables", "$19.4K"], ["Unmatched", "4 items"]] },
+      secondary: { title: "Accounting Review", value: "6 items", detail: "Bills, coding, and close controls", rows: [["Bills due", "3"], ["Needs coding", "2"], ["Close alert", "1"]] },
+    },
+    "Aqua Receipts": {
+      preview: { eyebrow: "AQUA RECEIPTS · PRESENTATION", title: "Receipt Command", metric: "Inbox", value: "14", tiles: ["Camera", "Email", "Projects"] },
+      primary: { title: "Receipt Intake", value: "14 received", detail: "Photo, email, text, and WhatsApp", rows: [["Photographed", "6"], ["Email", "5"], ["Text / WhatsApp", "3"]] },
+      secondary: { title: "Routing & Reconciliation", value: "3 need attention", detail: "Project, cost code, and bank matching", rows: [["Auto-routed", "9"], ["Duplicates", "2"], ["Needs project", "3"]] },
+    },
+  };
+
+  Object.entries(previews).forEach(([name, snapshot]) => {
+    ecosystemPresentationSnapshots.set(name, {
+      ...snapshot,
+      previewOnly: true,
+      presentationMode: true,
+    });
+  });
+}
 
 function enableCustomerPreviewIfAuthorized() {
   let enabled = false;
@@ -320,7 +377,10 @@ function escapeHtml(value) {
 }
 
 function selectedView(app) {
-  const snapshot = liveSnapshots.get(app.name) || customerPreviewSnapshots.get(app.name);
+  const snapshot =
+    liveSnapshots.get(app.name) ||
+    ecosystemPresentationSnapshots.get(app.name) ||
+    customerPreviewSnapshots.get(app.name);
   if (!snapshot) return app;
   return {
     ...app,
@@ -331,9 +391,11 @@ function selectedView(app) {
     primaryTitle: snapshot.primary?.title || app.primaryTitle,
     primaryValue: snapshot.primary?.value || app.primaryValue,
     primaryDetail: snapshot.primary?.detail || app.primaryDetail,
+    primaryRows: Array.isArray(snapshot.primary?.rows) ? snapshot.primary.rows : [],
     secondaryTitle: snapshot.secondary?.title || app.secondaryTitle,
     secondaryValue: snapshot.secondary?.value || app.secondaryValue,
     secondaryDetail: snapshot.secondary?.detail || app.secondaryDetail,
+    secondaryRows: Array.isArray(snapshot.secondary?.rows) ? snapshot.secondary.rows : [],
   };
 }
 
@@ -403,17 +465,40 @@ function renderCarouselCover(app) {
     </div>`;
 }
 
-function dashboardScreenMarkup(app, view, previewImageUrl, half) {
-  const content = previewImageUrl
-    ? `<img src="${previewImageUrl}" alt="">`
-    : renderFallbackPreview(app, view);
+function dashboardPanelMarkup(app, view, previewImageUrl, kind) {
+  if (previewImageUrl && !view.previewOnly) {
+    return `
+      <div class="dashboard-screen-sheet has-image">
+        <div class="app-landing-preview has-image">
+          <img src="${previewImageUrl}" alt="">
+        </div>
+      </div>`;
+  }
+  const primary = kind === "primary";
+  const title = primary ? view.primaryTitle : view.secondaryTitle;
+  const value = primary ? view.primaryValue : view.secondaryValue;
+  const detail = primary ? view.primaryDetail : view.secondaryDetail;
+  const rows = primary ? view.primaryRows : view.secondaryRows;
+  const rowMarkup = (rows.length ? rows : app.widgets.map((label) => [label, "Ready"]))
+    .slice(0, 3)
+    .map(([label, rowValue]) => `
+      <span><small>${escapeHtml(label)}</small><b>${escapeHtml(rowValue)}</b></span>`)
+    .join("");
   return `
-    <div class="dashboard-screen-sheet ${previewImageUrl ? "has-image" : "has-fallback"}">
-      <div class="app-landing-preview layout-${app.name.toLowerCase().replace(/[^a-z]+/g, "-")}${previewImageUrl ? " has-image" : ""}">
-        ${content}
+    <div class="dashboard-panel-preview">
+      <div class="dashboard-panel-top">
+        <i>${escapeHtml(app.icon)}</i>
+        <span><small>${escapeHtml(app.name)}</small><strong>${escapeHtml(title)}</strong></span>
       </div>
-    </div>
-    <span class="screen-half-label">${half === "upper" ? "UPPER VIEW" : "LOWER VIEW"}</span>`;
+      <div class="dashboard-panel-metric">
+        <strong>${escapeHtml(value)}</strong>
+        <small>${escapeHtml(detail)}</small>
+      </div>
+      <div class="dashboard-panel-rows">
+        ${rowMarkup}
+      </div>
+      <footer><span>PRESENTATION DATA</span><b>Preview only</b></footer>
+    </div>`;
 }
 
 function snapshotPresentation(app) {
@@ -421,6 +506,9 @@ function snapshotPresentation(app) {
   const hasSnapshot = liveSnapshots.has(app.name);
   if (!hasSnapshot && customerPreviewSnapshots.has(app.name)) {
     return { label: "Customer preview", className: "preview" };
+  }
+  if (!hasSnapshot && ecosystemPresentationSnapshots.has(app.name)) {
+    return { label: "Presentation", className: "preview" };
   }
   if (raw === "needs-attention") return { label: "Needs attention", className: "needs-attention" };
   if (raw.includes("refresh")) return { label: hasSnapshot ? "Cached · refreshing" : "Refreshing", className: "refreshing" };
@@ -572,13 +660,13 @@ function renderDashboard() {
   const selected = selectedView(apps[active]);
   const presentation = snapshotPresentation(selected);
   const updated = selected.previewOnly
-    ? "Test-build preview · not live data"
+    ? "Presentation mode · synthetic preview"
     : formatSnapshotTime(selected.capturedAt);
   const previewImageUrl = safePreviewImage(selected.previewImage);
   appDashboard.style.setProperty("--app-color", selected.color);
   selectedAppLabel.textContent = selected.name;
   selectedAppLabel.style.setProperty("--app-color", selected.color);
-  document.getElementById("primaryTitle").textContent = `${selected.cardName} · Upper`;
+  document.getElementById("primaryTitle").textContent = selected.primaryTitle;
   document.getElementById("primaryDetail").textContent = selected.primaryDetail;
   document.getElementById("primaryValue").textContent = selected.primaryValue;
   document.getElementById("primarySource").textContent = selected.name;
@@ -586,13 +674,13 @@ function renderDashboard() {
   document.getElementById("primaryBadge").textContent = presentation.label;
   document.getElementById("primaryBadge").className = presentation.className;
   document.getElementById("primaryUpdated").textContent = updated;
-  document.getElementById("primaryScreen").innerHTML = dashboardScreenMarkup(
+  document.getElementById("primaryScreen").innerHTML = dashboardPanelMarkup(
     selected,
     selected,
     previewImageUrl,
-    "upper",
+    "primary",
   );
-  document.getElementById("secondaryTitle").textContent = `${selected.cardName} · Lower`;
+  document.getElementById("secondaryTitle").textContent = selected.secondaryTitle;
   document.getElementById("secondaryDetail").textContent =
     selected.secondaryDetail;
   document.getElementById("secondaryValue").textContent =
@@ -602,11 +690,11 @@ function renderDashboard() {
   document.getElementById("secondaryBadge").textContent = presentation.label;
   document.getElementById("secondaryBadge").className = presentation.className;
   document.getElementById("secondaryUpdated").textContent = updated;
-  document.getElementById("secondaryScreen").innerHTML = dashboardScreenMarkup(
+  document.getElementById("secondaryScreen").innerHTML = dashboardPanelMarkup(
     selected,
     selected,
     previewImageUrl,
-    "lower",
+    "secondary",
   );
 }
 
@@ -717,7 +805,7 @@ function openWorkspace() {
 }
 
 function openDetail(kind) {
-  const selected = apps[active];
+  const selected = selectedView(apps[active]);
   const primary = kind === "primary";
   detailSheet.style.setProperty("--app-color", selected.color);
   detailSheet.innerHTML = `
@@ -1276,6 +1364,7 @@ appDeck.addEventListener("lostpointercapture", (event) => {
 });
 
 enableCustomerPreviewIfAuthorized();
+enableEcosystemPresentationMode();
 render();
 requestAnimationFrame(revealSelectedAppLabel);
 requestSnapshot(apps[active]);

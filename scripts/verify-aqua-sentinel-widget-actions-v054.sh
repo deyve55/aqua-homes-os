@@ -50,10 +50,12 @@ if lines:
 
 for mode in ask voice photo video; do
   action="com.aquasoftware.sentinel.action.${mode^^}"
-  evidence="/tmp/aqua-sentinel-v0.5.4-widget-${mode}.logcat.txt"
+  evidence="/tmp/aqua-sentinel-v0.5.5-widget-${mode}.logcat.txt"
   command_seed=()
   if [[ "$mode" == "ask" ]]; then
     command_seed=(--es widget_command_text "Widget_message_execution_test")
+  elif [[ "$mode" == "voice" ]]; then
+    command_seed=(--es widget_filing_text "File this preview with Aqua CRM")
   fi
 
   clear_logcat
@@ -114,6 +116,23 @@ for mode in ask voice photo video; do
     if [[ "$submitted" != "true" || "$delivered" != "true" ]]; then
       echo "Widget message did not submit and reach Sentinel" >&2
       grep -E "AQUA_WIDGET|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
+      exit 1
+    fi
+  elif [[ "$mode" == "voice" ]]; then
+    saved=false
+    delivered=false
+    opened=false
+    for attempt in $(seq 1 20); do
+      sleep 1
+      adb logcat -d > "$evidence"
+      grep -Fq "AQUA_CAPTURE_SAVED type=voice" "$evidence" && saved=true
+      grep -Eq "AQUA_FILING_INBOX_DELIVERED items=[1-9]" "$evidence" && delivered=true
+      grep -Fq "AQUA_FILING_CABINET_OPENED" "$evidence" && opened=true
+      if [[ "$saved" == "true" && "$delivered" == "true" && "$opened" == "true" ]]; then break; fi
+    done
+    if [[ "$saved" != "true" || "$delivered" != "true" || "$opened" != "true" ]]; then
+      echo "Widget filing did not save, reach Sentinel, and open the File Cabinet" >&2
+      grep -E "AQUA_WIDGET|AQUA_CAPTURE|AQUA_FILING|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
       exit 1
     fi
   fi

@@ -39,6 +39,7 @@ public class QuickCaptureActivity extends Activity {
     public static final String EXTRA_MODE = "capture_mode";
     public static final String EXTRA_ITEM_ID = "filing_item_id";
     public static final String EXTRA_COMMAND_TEXT = "widget_command_text";
+    public static final String EXTRA_FILING_TEXT = "widget_filing_text";
     private static final int VOICE_REQUEST = 201;
     private static final int PHOTO_REQUEST = 202;
     private static final int VIDEO_REQUEST = 203;
@@ -50,6 +51,7 @@ public class QuickCaptureActivity extends Activity {
     private String mode;
     private File evidenceFile;
     private String itemId;
+    private String filingText;
     private boolean captureLaunched;
     private TextView status;
     private EditText commandInput;
@@ -93,10 +95,13 @@ public class QuickCaptureActivity extends Activity {
     private void readIntent(Intent intent) {
         mode = intent == null ? "" : intent.getStringExtra(EXTRA_MODE);
         itemId = intent == null ? "" : intent.getStringExtra(EXTRA_ITEM_ID);
+        filingText = intent == null ? "" : intent.getStringExtra(EXTRA_FILING_TEXT);
         if ((mode == null || mode.isEmpty()) && intent != null && intent.getData() != null) {
             mode = intent.getData().getHost();
         }
         if (mode == null || mode.isEmpty()) mode = "voice";
+        if ("file".equals(mode)) mode = "voice";
+        if (filingText == null) filingText = "";
     }
 
     private void logActionReceived() {
@@ -124,6 +129,17 @@ public class QuickCaptureActivity extends Activity {
             captureMedia(false);
         } else if ("video".equals(mode)) {
             captureMedia(true);
+        } else if (
+            BuildConfig.ECOSYSTEM_PRESENTATION_MODE
+                && !filingText.trim().isEmpty()
+        ) {
+            Log.i(
+                "AquaCommandWidget",
+                "AQUA_CAPTURE_ROUTE mode=voice handler=PresentationContract"
+            );
+            ArrayList<String> seeded = new ArrayList<>();
+            seeded.add(filingText.trim());
+            completeVoice(seeded);
         } else {
             captureVoice();
         }

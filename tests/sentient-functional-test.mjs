@@ -34,13 +34,15 @@ test("the centered carousel card snaps face-on before it can open", async () => 
   assert.match(script, /rotationTimer = setTimeout\(\(\) => finishRotation/);
 });
 
-test("APK renders all seven satellite landing pages and launches installed apps", async () => {
+test("APK renders all seven satellite previews and launches installed apps", async () => {
   const [script, fidelity, manifest] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("sentient-os-web/fidelity.css"),
     read("android-app/app/src/main/AndroidManifest.xml"),
   ]);
-  assert.match(script, /class="app-landing-preview layout-\$\{app\.name/);
+  assert.match(script, /function dashboardPanelMarkup/);
+  assert.match(script, /class="dashboard-panel-preview"/);
+  assert.match(script, /PRESENTATION DATA/);
   for (const layout of ["mini-kpis", "mini-finance", "mini-viewfinder", "mini-search", "mini-clock", "mini-ledger", "mini-inbox"]) {
     assert.match(script, new RegExp(layout));
   }
@@ -67,7 +69,7 @@ test("APK renders all seven satellite landing pages and launches installed apps"
   assert.match(fidelity, /\.aqua-state-label\{[\s\S]*min-width:max-content/);
 });
 
-test("carousel previews and lower intelligence cards use verified refreshable snapshots", async () => {
+test("carousel previews use reversible presentation data and verified refreshable snapshots", async () => {
   const [script, native, contract] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
@@ -79,15 +81,19 @@ test("carousel previews and lower intelligence cards use verified refreshable sn
   assert.match(script, /selectedView\(apps\[active\]\)/);
   assert.match(script, /safePreviewImage/);
   assert.match(script, /image\\\/webp\|image\\\/png/);
-  assert.match(script, /class=\"app-landing-preview layout-\$\{app\.name/);
+  assert.match(script, /const ecosystemPresentationSnapshots = new Map\(\)/);
+  assert.match(script, /isEcosystemPresentationMode/);
+  assert.match(script, /ecosystemPresentationSnapshots\.get\(app\.name\)/);
+  assert.match(script, /function dashboardPanelMarkup/);
+  assert.match(script, /Presentation mode · synthetic preview/);
   assert.match(script, /snapshotPresentation/);
   assert.match(script, /formatSnapshotTime/);
   assert.match(script, /primaryStatus/);
   assert.match(script, /secondaryStatus/);
   assert.match(script, /60_000/);
-  assert.doesNotMatch(script, /value: "24"/);
-  assert.doesNotMatch(script, /value: "47"/);
-  assert.doesNotMatch(script, /value: "\$184K"/);
+  for (const expected of ["8 open leads", "$186K active", "18 captures", "7 on clock", "$84.2K available", "14 received"]) {
+    assert.match(script, new RegExp(expected.replaceAll("$", "\\$")));
+  }
   assert.match(native, /REQUEST_HOME_SNAPSHOT/);
   assert.match(native, /HOME_SNAPSHOT_RESPONSE/);
   assert.match(native, /Build\.VERSION\.SDK_INT >= Build\.VERSION_CODES\.UPSIDE_DOWN_CAKE/);
@@ -217,7 +223,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.5.4 preserves the isolated customer preview and synchronized lower cards", async () => {
+test("v0.5.5 enables all-app presentation cards only in the explicit preview build", async () => {
   const [gradle, workflow, script, html, fidelity] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -225,18 +231,25 @@ test("v0.5.4 preserves the isolated customer preview and synchronized lower card
     read("sentient-os-web/index.html"),
     read("sentient-os-web/fidelity.css"),
   ]);
-  assert.match(gradle, /versionCode = 2026073107/);
-  assert.match(gradle, /versionName = "0\.5\.4-command-center-message-test"/);
+  assert.match(gradle, /versionCode = 2026073108/);
+  assert.match(gradle, /versionName = "0\.5\.5-ecosystem-preview-widget-bridge-test"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
-  assert.match(workflow, /AquaSentinelOS-v0\.5\.4-COMMAND-CENTER-MESSAGE-TEST\.apk/);
-  assert.match(workflow, /-Paqua\.customerPreview=true/);
-  assert.match(script, /renderFallbackPreview/);
+  assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
+  assert.match(workflow, /AquaSentinelOS-v0\.5\.5-ECOSYSTEM-PREVIEW-WIDGET-BRIDGE-TEST\.apk/);
+  assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
+  assert.match(script, /enableEcosystemPresentationMode/);
+  assert.match(script, /ecosystemPresentationSnapshots\.set/);
+  assert.match(script, /primaryRows/);
+  assert.match(script, /secondaryRows/);
+  assert.match(script, /dashboardPanelMarkup/);
   assert.match(script, /Live · confirmed/);
-  assert.match(script, /label: "Local preview", className: "preview"/);
+  assert.match(script, /label: "Presentation", className: "preview"/);
   assert.match(html, /id="primaryStatus"/);
   assert.match(html, /id="secondaryStatus"/);
-  assert.match(fidelity, /v0\.4\.9 app-screen clarity and synchronized command cards/);
-  assert.match(fidelity, /color:#fff/);
+  assert.match(html, /App intelligence preview/);
+  assert.match(html, /Operational preview/);
+  assert.match(fidelity, /v0\.5\.5 reversible ecosystem presentation cards/);
+  assert.match(fidelity, /\.dashboard-panel-preview\{/);
 });
 
 test("v0.5.0 compact rail and filing cabinet share one protected widget inbox", async () => {
@@ -311,7 +324,7 @@ test("v0.5.4 preserves app covers and gives the two hero labels separate lanes",
     assert.equal(asset.subarray(0, 4).toString("ascii"), "RIFF");
     assert.equal(asset.subarray(8, 12).toString("ascii"), "WEBP");
   }
-  assert.match(script, /function dashboardScreenMarkup/);
+  assert.match(script, /function dashboardPanelMarkup/);
   assert.doesNotMatch(script, /cardsTrack\.style\.transform/);
   assert.match(script, /function applyDeckPosition/);
   assert.match(script, /\{ offset: 0, width: 28\.6, height: 76, top: 7\.5, depth: 92, angle: 0/);
@@ -404,4 +417,41 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(widgetVerifier, /--es widget_command_text "Widget_message_execution_test"/);
   assert.match(widgetVerifier, /characters=29/);
   assert.match(widgetVerifier, /tap_resource "widget_command_send"/);
+});
+
+test("v0.5.5 integrated 4x3 widget refreshes and delivers filing items into Sentinel", async () => {
+  const [gradle, widget, widgetLayout, widgetInfo, capture, activity, store, verifier] = await Promise.all([
+    read("android-app/app/build.gradle.kts"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
+    read("android-app/app/src/main/res/layout/aqua_command_widget.xml"),
+    read("android-app/app/src/main/res/xml/aqua_command_widget_info.xml"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/FilingStore.java"),
+    read("scripts/verify-aqua-sentinel-widget-actions-v054.sh"),
+  ]);
+  assert.match(gradle, /ECOSYSTEM_PRESENTATION_MODE/);
+  assert.match(widgetLayout, /id="@\+id\/widget_logo"/);
+  assert.match(widgetLayout, /AQUA\\nSOFTWARE\\nINC\./);
+  assert.match(widgetLayout, /Your AI command center for every Aqua application/);
+  assert.match(widgetLayout, /ASK AQUA/);
+  assert.match(widgetInfo, /android:targetCellWidth="4"/);
+  assert.match(widgetInfo, /android:targetCellHeight="3"/);
+  assert.match(widgetInfo, /android:minHeight="156dp"/);
+  assert.match(widget, /setOnClickPendingIntent\(R\.id\.widget_logo, openSentinel\(context\)\)/);
+  assert.match(widget, /static void updateAll\(Context context\)/);
+  assert.match(activity, /AquaCommandWidget\.updateAll\(this\)/);
+  assert.match(capture, /EXTRA_FILING_TEXT = "widget_filing_text"/);
+  assert.match(capture, /handler=PresentationContract/);
+  assert.match(capture, /if \("file"\.equals\(mode\)\) mode = "voice"/);
+  assert.match(store, /ACTION_INBOX_CHANGED/);
+  assert.match(store, /setPackage\(context\.getPackageName\(\)\)/);
+  assert.match(activity, /private void deliverFilingInbox\(\)/);
+  assert.match(activity, /AQUA_FILING_INBOX_DELIVERED items=/);
+  assert.match(activity, /AQUA_FILING_CABINET_OPENED/);
+  assert.match(activity, /BuildConfig\.ECOSYSTEM_PRESENTATION_MODE/);
+  assert.match(verifier, /--es widget_filing_text "File this preview with Aqua CRM"/);
+  assert.match(verifier, /AQUA_CAPTURE_SAVED type=voice/);
+  assert.match(verifier, /AQUA_FILING_INBOX_DELIVERED items=\[1-9\]/);
+  assert.match(verifier, /AQUA_FILING_CABINET_OPENED/);
 });

@@ -1,6 +1,7 @@
 package com.aquahomes.sentientos;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -22,6 +23,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
 final class FilingStore {
+    static final String ACTION_INBOX_CHANGED =
+        "com.aquasoftware.sentinel.FILING_INBOX_CHANGED";
     private static final String STORE = "aqua_sentinel_filing_inbox_v1";
     private static final String STORE_KEY = "encrypted_items";
     private static final String KEY_ALIAS = "aqua_sentinel_filing_queue_key_v1";
@@ -64,6 +67,11 @@ final class FilingStore {
             }
             writeItems(context, next);
             AquaCommandWidget.updateAll(context);
+            context.sendBroadcast(
+                new Intent(ACTION_INBOX_CHANGED)
+                    .setPackage(context.getPackageName())
+                    .putExtra("filing_item_id", item.optString("id", ""))
+            );
             return item;
         } catch (Exception error) {
             return new JSONObject();
@@ -124,6 +132,11 @@ final class FilingStore {
                     .put("clarification", direction);
                 writeItems(context, items);
                 AquaCommandWidget.updateAll(context);
+                context.sendBroadcast(
+                    new Intent(ACTION_INBOX_CHANGED)
+                        .setPackage(context.getPackageName())
+                        .putExtra("filing_item_id", itemId)
+                );
                 return true;
             }
         } catch (Exception ignored) {}

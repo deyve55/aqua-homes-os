@@ -899,3 +899,72 @@ html,body{overscroll-behavior:none}
 .widget-message footer{color:#3ce39a;font-size:11px}
 .widget-message.owner footer{color:#58dfff}
 .widget-message-empty{margin-top:18px;padding:24px;border:1px dashed #27515f;border-radius:12px;color:#7d9ba5;text-align:center;line-height:1.5}
+
+/* Aqua Sentinel v0.5.5 reversible ecosystem presentation cards.
+   The build flag supplies synthetic content until verified satellite snapshots arrive. */
+.dashboard-screen-crop{
+  container-type:inline-size;
+}
+.dashboard-panel-preview{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  gap:4.5%;
+  padding:7% 7% 5%;
+  color:#fff;
+  background:
+    radial-gradient(circle at 14% 12%,color-mix(in srgb,var(--app-color) 26%,transparent),transparent 38%),
+    linear-gradient(150deg,#102832 0%,#06151c 52%,#02080b 100%);
+}
+.dashboard-panel-preview:before{
+  content:"";
+  position:absolute;
+  inset:3%;
+  border:1px solid color-mix(in srgb,var(--app-color) 35%,rgba(255,255,255,.22));
+  border-radius:6px;
+  pointer-events:none;
+}
+.dashboard-panel-top{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  gap:6%;
+  align-items:center;
+}
+.dashboard-panel-top>i{
+  display:grid;
+  place-items:center;
+  width:16cqw;
+  max-width:29px;
+  aspect-ratio:1;
+  border:1px solid var(--app-color);
+  border-radius:50%;
+  color:#fff;
+  background:color-mix(in srgb,var(--app-color) 20%,#06141a);
+  box-shadow:0 0 10px color-mix(in srgb,var(--app-color) 54%,transparent);
+  font-size:7cqw;
+  font-style:normal;
+}
+.dashboard-panel-top small,.dashboard-panel-top strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dashboard-panel-top small{color:var(--app-color);font-size:4.1cqw;font-weight:800;letter-spacing:.08em}
+.dashboard-panel-top strong{margin-top:2%;color:#fff;font-size:6cqw;line-height:1.08}
+.dashboard-panel-metric{
+  position:relative;
+  z-index:1;
+  padding:6%;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:6px;
+  background:rgba(255,255,255,.075);
+  box-shadow:inset 0 1px rgba(255,255,255,.12);
+}
+.dashboard-panel-metric strong,.dashboard-panel-metric small{display:block}
+.dashboard-panel-metric strong{color:#fff;font-size:8.2cqw;line-height:1.02;text-shadow:0 0 12px color-mix(in srgb,var(--app-color) 38%,transparent)}
+.dashboard-panel-metric small{margin-top:4%;color:#d8edf2;font-size:4cqw;line-height:1.25}
+.dashboard-panel-rows{position:relative;z-index:1;display:grid;gap:2.2%;min-height:0}
+.dashboard-panel-rows span{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5%;align-items:center;padding:3% 1%;border-bottom:1px solid rgba(255,255,255,.18)}
+.dashboard-panel-rows small{overflow:hidden;color:#b9d2d9;font-size:4cqw;text-overflow:ellipsis;white-space:nowrap}
+.dashboard-panel-rows b{color:#fff;font-size:4.2cqw;font-weight:800;white-space:nowrap}
+.dashboard-panel-preview>footer{position:relative;z-index:1;display:flex;justify-content:space-between;gap:4%;margin-top:auto;color:#8facb5;font-size:3.2cqw;letter-spacing:.04em}
+.dashboard-panel-preview>footer b{color:var(--app-color);font-weight:700}

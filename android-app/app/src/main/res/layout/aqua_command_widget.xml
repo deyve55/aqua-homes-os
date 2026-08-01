@@ -5,39 +5,93 @@
     android:orientation="vertical"
     android:padding="10dp"
     android:background="@drawable/aqua_widget_background">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="AQUA COMMAND CENTER"
-            android:textColor="#FFFFFF"
-            android:textSize="11sp"
-            android:textStyle="bold" />
-        <TextView
-            android:id="@+id/widget_pending"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="7dp"
-            android:paddingVertical="3dp"
-            android:background="@drawable/aqua_widget_status"
-            android:text="READY"
-            android:textColor="#BFF7FF"
-            android:textSize="8sp" />
-    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="6dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
-        <TextView android:id="@+id/widget_ask" style="@style/AquaWidgetAction" android:text="◉\nAsk Aqua" />
-        <TextView android:id="@+id/widget_video" style="@style/AquaWidgetAction" android:text="▶\nVideo" />
-        <TextView android:id="@+id/widget_photo" style="@style/AquaWidgetAction" android:text="▧\nPhoto" />
-        <TextView android:id="@+id/widget_file" style="@style/AquaWidgetAction" android:text="▤\nFile" />
+
+        <ImageView
+            android:id="@+id/widget_logo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.92"
+            android:contentDescription="Open Aqua Sentinel OS"
+            android:padding="3dp"
+            android:scaleType="centerInside"
+            android:src="@mipmap/aqua_sentinel_launcher" />
+
+        <LinearLayout
+            android:id="@+id/widget_brand"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.08"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingStart="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AQUA\nSOFTWARE\nINC."
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="#32DFFF" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your AI command center for every Aqua application."
+                android:textColor="#B8CCD3"
+                android:textSize="9sp" />
+
+            <TextView
+                android:id="@+id/widget_pending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/aqua_widget_status"
+                android:paddingHorizontal="7dp"
+                android:paddingVertical="3dp"
+                android:text="READY"
+                android:textColor="#BFF7FF"
+                android:textSize="8sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="7dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/widget_ask"
+            style="@style/AquaWidgetAction"
+            android:text="A\nASK AQUA" />
+
+        <TextView
+            android:id="@+id/widget_video"
+            style="@style/AquaWidgetAction"
+            android:text="▶\nVIDEO" />
+
+        <TextView
+            android:id="@+id/widget_photo"
+            style="@style/AquaWidgetAction"
+            android:text="▧\nPHOTO" />
+
+        <TextView
+            android:id="@+id/widget_file"
+            style="@style/AquaWidgetAction"
+            android:text="▤\nFILE" />
     </LinearLayout>
 </LinearLayout>

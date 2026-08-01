@@ -37,10 +37,27 @@ public class AquaCommandWidget extends AppWidgetProvider {
         );
     }
 
+    private static PendingIntent openSentinel(Context context) {
+        Intent intent = new Intent(context, MainActivity.class)
+            .addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP
+            );
+        return PendingIntent.getActivity(
+            context,
+            100,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+    }
+
     private static void update(Context context, AppWidgetManager manager, int id) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.aqua_command_widget);
         int pending = FilingStore.pendingCount(context);
         views.setTextViewText(R.id.widget_pending, pending == 0 ? "READY" : pending + " PENDING");
+        views.setOnClickPendingIntent(R.id.widget_logo, openSentinel(context));
+        views.setOnClickPendingIntent(R.id.widget_brand, openSentinel(context));
         views.setOnClickPendingIntent(R.id.widget_ask, action(context, "ask", 101));
         views.setOnClickPendingIntent(R.id.widget_video, action(context, "video", 102));
         views.setOnClickPendingIntent(R.id.widget_photo, action(context, "photo", 103));

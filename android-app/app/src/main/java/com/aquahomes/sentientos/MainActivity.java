@@ -90,6 +90,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private boolean listenAfterPermission;
     private final Map<String, SnapshotRequest> pendingSnapshots = new HashMap<>();
     private boolean snapshotReceiverRegistered;
+    private boolean filingReceiverRegistered;
     private boolean webAppReady;
 
     private static class SnapshotRequest {
@@ -138,6 +139,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
     };
 
+    private final BroadcastReceiver filingReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (!FilingStore.ACTION_INBOX_CHANGED.equals(intent.getAction())) return;
+            if (webAppReady) deliverFilingInbox();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,6 +170,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             registerReceiver(snapshotReceiver, snapshotFilter);
         }
         snapshotReceiverRegistered = true;
+
+        IntentFilter filingFilter = new IntentFilter(FilingStore.ACTION_INBOX_CHANGED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(filingReceiver, filingFilter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(filingReceiver, filingFilter);
+        }
+        filingReceiverRegistered = true;
 
         textToSpeech = new TextToSpeech(this, this);
     }
@@ -199,6 +216,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     if ("true".equals(value)) {
                         Log.i("AquaSentinel", "AQUA_SENTINEL_UI_READY");
                         webAppReady = true;
+                        deliverFilingInbox();
                         handleStartupIntent(getIntent());
                     } else {
                         Log.e("AquaSentinel", "AQUA_SENTINEL_UI_INCOMPLETE");
@@ -252,8 +270,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     protected void onResume() {
         super.onResume();
         hideSystemUi();
+        AquaCommandWidget.updateAll(this);
         evaluateJavascript("window.refreshSelectedAppSnapshot?.();");
-        evaluateJavascript("window.refreshFilingInbox?.();");
+        if (webAppReady) deliverFilingInbox();
     }
 
     @Override
@@ -284,7 +303,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
         if (intent.getBooleanExtra("open_filing", false)) {
             intent.removeExtra("open_filing");
+            deliverFilingInbox();
             evaluateJavascript("window.openFilingCabinet?.();");
+            Log.i("AquaCommandWidget", "AQUA_FILING_CABINET_OPENED");
         }
     }
 
@@ -510,6 +531,21 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         );
     }
 
+    private void deliverFilingInbox() {
+        String inboxJson = FilingStore.inboxJson(this);
+        int itemCount = 0;
+        try {
+            itemCount = new JSONObject(inboxJson).optJSONArray("items").length();
+        } catch (Exception ignored) {}
+        Log.i(
+            "AquaCommandWidget",
+            "AQUA_FILING_INBOX_DELIVERED items=" + itemCount
+        );
+        evaluateJavascript(
+            "window.receiveFilingInbox?.(" + JSONObject.quote(inboxJson) + ");"
+        );
+    }
+
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
@@ -579,6 +615,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         if (snapshotReceiverRegistered) {
             unregisterReceiver(snapshotReceiver);
             snapshotReceiverRegistered = false;
+        }
+        if (filingReceiverRegistered) {
+            unregisterReceiver(filingReceiver);
+            filingReceiverRegistered = false;
         }
         if (speechRecognizer != null) {
             speechRecognizer.destroy();
@@ -974,6 +1014,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @JavascriptInterface
         public boolean isCustomerPreviewBuild() {
             return BuildConfig.CUSTOMER_PREVIEW_SNAPSHOTS;
+        }
+
+        @JavascriptInterface
+        public boolean isEcosystemPresentationMode() {
+            return BuildConfig.ECOSYSTEM_PRESENTATION_MODE;
         }
 
         @JavascriptInterface

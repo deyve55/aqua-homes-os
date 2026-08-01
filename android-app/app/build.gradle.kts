@@ -23,12 +23,17 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026073107
-        versionName = "0.5.4-command-center-message-test"
+        versionCode = 2026073108
+        versionName = "0.5.5-ecosystem-preview-widget-bridge-test"
         buildConfigField(
             "boolean",
             "CUSTOMER_PREVIEW_SNAPSHOTS",
             providers.gradleProperty("aqua.customerPreview").orElse("false").get()
+        )
+        buildConfigField(
+            "boolean",
+            "ECOSYSTEM_PRESENTATION_MODE",
+            providers.gradleProperty("aqua.ecosystemPreview").orElse("false").get()
         )
     }
 

@@ -1,4 +1,4 @@
-name: Build Aqua Sentinel OS v0.5.4 Command Center Message Test
+name: Build Aqua Sentinel OS v0.5.5 Ecosystem Preview Widget Bridge Test
 
 on:
   push:
@@ -35,7 +35,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: aqua-sentinel-os-v0.5.4-command-center-message-test
+  group: aqua-sentinel-os-v0.5.5-ecosystem-preview-widget-bridge-test
   cancel-in-progress: false
 
 jobs:
@@ -128,24 +128,24 @@ jobs:
         run: |
           KEY_PASSWORD="$(openssl rand -hex 24)"
           keytool -genkeypair \
-            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.5.4.keystore" \
+            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.5.5.keystore" \
             -storepass "$KEY_PASSWORD" \
             -keypass "$KEY_PASSWORD" \
-            -alias "aqua-sentinel-v0.5.4" \
+            -alias "aqua-sentinel-v0.5.5" \
             -keyalg RSA \
             -keysize 3072 \
             -validity 3650 \
-            -dname "CN=Aqua Sentinel OS v0.5.4 Command Center Message Test, OU=Aqua Sentinel OS, O=Aqua Software Inc., L=Hudson, ST=Massachusetts, C=US"
+            -dname "CN=Aqua Sentinel OS v0.5.5 Ecosystem Preview Widget Bridge Test, OU=Aqua Sentinel OS, O=Aqua Software Inc., L=Hudson, ST=Massachusetts, C=US"
           {
-            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.5.4.keystore"
+            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.5.5.keystore"
             echo "AQUA_RELEASE_KEYSTORE_PASSWORD=$KEY_PASSWORD"
-            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.5.4"
+            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.5.5"
             echo "AQUA_RELEASE_KEY_PASSWORD=$KEY_PASSWORD"
           } >> "$GITHUB_ENV"
 
       - name: Build release APK
         working-directory: android-app
-        run: gradle --no-daemon --stacktrace :app:assembleRelease -Paqua.customerPreview=true
+        run: gradle --no-daemon --stacktrace :app:assembleRelease -Paqua.ecosystemPreview=true
 
       - name: Verify APK package, signing, and embedded interface
         run: |
@@ -155,8 +155,8 @@ jobs:
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/aqua-sentinel-certificate.txt
           "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/aqua-sentinel-badging.txt
           grep -q "package: name='com.aquahomes.sentinel'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionCode='2026073107'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionName='0.5.4-command-center-message-test'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionCode='2026073108'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionName='0.5.5-ecosystem-preview-widget-bridge-test'" /tmp/aqua-sentinel-badging.txt
           grep -q "sdkVersion:'26'" /tmp/aqua-sentinel-badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/aqua-sentinel-badging.txt
           unzip -l "$APK" | grep -q "assets/public/index.html"
@@ -180,39 +180,40 @@ jobs:
             adb logcat -c
             adb shell am start -W -n com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity
             for attempt in $(seq 1 20); do sleep 2; if adb logcat -d | grep -q "AQUA_SENTINEL_UI_READY"; then break; fi; done
-            adb logcat -d > /tmp/aqua-sentinel-v0.5.4-logcat.txt
-            grep -q "AQUA_SENTINEL_UI_READY" /tmp/aqua-sentinel-v0.5.4-logcat.txt
-            adb shell pidof com.aquahomes.sentinel | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.5.4-logcat.txt || true; exit 1)
-            adb shell dumpsys package com.aquahomes.sentinel | grep -q "versionCode=2026073107"
+            adb logcat -d > /tmp/aqua-sentinel-v0.5.5-logcat.txt
+            grep -q "AQUA_SENTINEL_UI_READY" /tmp/aqua-sentinel-v0.5.5-logcat.txt
+            adb shell pidof com.aquahomes.sentinel | grep -q . || (grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.5.5-logcat.txt || true; exit 1)
+            adb shell dumpsys package com.aquahomes.sentinel | grep -q "versionCode=2026073108"
             adb shell dumpsys package com.aquahomes.sentinel | grep -q "AquaCommandWidget"
             adb shell dumpsys package com.aquahomes.sentinel | grep -q "QuickCaptureActivity"
             adb shell dumpsys package com.aquahomes.sentinel | grep -q "EvidenceProvider"
             bash scripts/verify-aqua-sentinel-widget-actions-v054.sh
             adb shell am start -W -n com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity
-            adb exec-out screencap -p > /tmp/aqua-sentinel-v0.5.4-launch.png
-            test -s /tmp/aqua-sentinel-v0.5.4-launch.png
+            adb exec-out screencap -p > /tmp/aqua-sentinel-v0.5.5-launch.png
+            test -s /tmp/aqua-sentinel-v0.5.5-launch.png
 
       - name: Prepare release files and checksums
         run: |
           mkdir -p release
-          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.5.4-COMMAND-CENTER-MESSAGE-TEST.apk
-          cp /tmp/aqua-sentinel-v0.5.4-launch.png release/AquaSentinelOS-v0.5.4-launch-proof.png
-          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.5.4-certificate.txt
-          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.5.4-package.txt
+          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.5.5-ECOSYSTEM-PREVIEW-WIDGET-BRIDGE-TEST.apk
+          cp /tmp/aqua-sentinel-v0.5.5-launch.png release/AquaSentinelOS-v0.5.5-launch-proof.png
+          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.5.5-certificate.txt
+          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.5.5-package.txt
           {
             echo "commit=$GITHUB_SHA"
             echo "workflow_run=$GITHUB_RUN_ID"
             echo "package=com.aquahomes.sentinel"
-            echo "version=0.5.4-command-center-message-test"
-            echo "customer_preview_snapshots=true"
+            echo "version=0.5.5-ecosystem-preview-widget-bridge-test"
+            echo "ecosystem_presentation_mode=true"
+            echo "customer_preview_snapshots=false"
             echo "target_sdk=35"
             echo "min_sdk=26"
-          } > release/AquaSentinelOS-v0.5.4-provenance.txt
-          sha256sum release/AquaSentinelOS-v0.5.4-COMMAND-CENTER-MESSAGE-TEST.apk > release/AquaSentinelOS-v0.5.4-COMMAND-CENTER-MESSAGE-TEST.apk.sha256
+          } > release/AquaSentinelOS-v0.5.5-provenance.txt
+          sha256sum release/AquaSentinelOS-v0.5.5-ECOSYSTEM-PREVIEW-WIDGET-BRIDGE-TEST.apk > release/AquaSentinelOS-v0.5.5-ECOSYSTEM-PREVIEW-WIDGET-BRIDGE-TEST.apk.sha256
 
       - name: Upload verified installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.5.4-COMMAND-CENTER-MESSAGE-TEST
+          name: AquaSentinelOS-v0.5.5-ECOSYSTEM-PREVIEW-WIDGET-BRIDGE-TEST
           path: release/*
           if-no-files-found: error
