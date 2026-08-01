@@ -291,7 +291,12 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /mResumedActivity\|topResumedActivity\|ResumedActivity/);
   assert.match(workflow, /dumpsys activity activities/);
   assert.match(workflow, /immersive_mode_confirmations confirmed/);
+  assert.match(workflow, /svc power stayon true/);
+  assert.match(workflow, /screen_off_timeout 2147483647/);
+  assert.match(workflow, /KEYCODE_WAKEUP/);
+  assert.match(workflow, /wm dismiss-keyguard/);
   assert.match(workflow, /Camera keeps stopping\|Close app\|Viewing full screen\|GOT IT/);
+  assert.match(workflow, /identify -format '%k'.*launch\.png/);
   assert.match(script, /ecosystemPresentationSnapshots\.set/);
   assert.match(script, /primaryRows/);
   assert.match(script, /secondaryRows/);
