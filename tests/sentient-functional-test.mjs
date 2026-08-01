@@ -323,6 +323,11 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(html, /Operational preview/);
   assert.match(fidelity, /v0\.5\.5 reversible ecosystem presentation cards/);
   assert.match(fidelity, /\.dashboard-panel-preview\{/);
+  assert.match(
+    fidelity,
+    /\.app-dashboard \.dashboard-card\{[\s\S]*?display:flex;[\s\S]*?flex-direction:column;/,
+    "dashboard cards must stack their header, visible preview, and footer vertically",
+  );
 });
 
 test("v0.5.0 compact rail and filing cabinet share one protected widget inbox", async () => {
