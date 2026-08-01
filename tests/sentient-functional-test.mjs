@@ -273,7 +273,9 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /preview=command/);
   assert.match(script, /enableEcosystemPresentationMode/);
   assert.match(script, /function activateDeterministicPreviewRoute\(\)/);
-  assert.match(script, /\["neural", "command", "settings", "diagnostics"\]\.includes\(previewPanel\)/);
+  assert.match(script, /\["home", "neural", "command", "settings", "diagnostics"\]\.includes\(previewPanel\)/);
+  assert.match(script, /previewPanel === "home"/);
+  assert.match(script, /if \(previewPanel === "home"\) \{\s*render\(\);\s*\} else \{\s*openPanel\(previewPanel\);/);
   assert.match(script, /openPanel\(previewPanel\)/);
   assert.match(script, /document\.documentElement\.dataset\.aquaPreviewReady = previewPanel/);
   assert.match(script, /const deterministicPreviewActive = activateDeterministicPreviewRoute\(\)/);
@@ -283,6 +285,7 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
     "the proof route must activate before Home rendering can fail",
   );
   assert.doesNotMatch(script, /requestAnimationFrame\(\(\) => openPanel\(previewPanel\)\)/);
+  assert.match(workflow, /data-aqua-preview-ready="home"/);
   assert.match(workflow, /data-aqua-preview-ready="neural"/);
   assert.match(workflow, /data-aqua-preview-ready="command"/);
   assert.match(workflow, /identify -format '%wx%h'/);
@@ -299,11 +302,13 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /if grep -Eiq "Viewing full screen\|GOT IT".*input tap 855 525/);
   assert.match(workflow, /if grep -Eiq 'text="Camera keeps stopping"\|text="Close app"'[\s\S]*am force-stop com\.android\.camera2/);
   assert.match(workflow, /text="Camera keeps stopping"\|text="Close app"\|text="Viewing full screen"\|text="GOT IT"/);
-  assert.match(workflow, /identify -format '%k'.*launch\.png/);
+  assert.match(workflow, /launch_visual=deterministic_bundled_home_430x932/);
+  assert.match(workflow, /android_launch=activity_and_ui_hierarchy_verified/);
+  assert.doesNotMatch(workflow, /adb exec-out screencap.*launch\.png/);
   assert.ok(
-    workflow.indexOf("screencap -p > /tmp/aqua-sentinel-v0.6.0-launch.png")
+    workflow.indexOf("--screenshot=release/AquaSentinelOS-v0.6.0-launch-proof.png")
       < workflow.indexOf("bash scripts/verify-aqua-sentinel-widget-actions-v054.sh"),
-    "the clean-launch image must be captured before camera and widget interactions",
+    "the deterministic Home proof must be rendered before Android interaction checks",
   );
   assert.match(script, /ecosystemPresentationSnapshots\.set/);
   assert.match(script, /primaryRows/);

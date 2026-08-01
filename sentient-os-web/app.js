@@ -1347,12 +1347,16 @@ function applyAquaAction(action) {
 
 function activateDeterministicPreviewRoute() {
   const previewPanel = new URLSearchParams(window.location.search).get("preview");
-  if (!["neural", "command", "settings", "diagnostics"].includes(previewPanel)) {
+  if (!["home", "neural", "command", "settings", "diagnostics"].includes(previewPanel)) {
     return false;
   }
   authenticated = true;
   authPanel.hidden = true;
-  openPanel(previewPanel);
+  if (previewPanel === "home") {
+    render();
+  } else {
+    openPanel(previewPanel);
+  }
   document.documentElement.dataset.aquaPreviewReady = previewPanel;
   return true;
 }
