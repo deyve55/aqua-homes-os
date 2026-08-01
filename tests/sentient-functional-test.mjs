@@ -296,6 +296,7 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /KEYCODE_WAKEUP/);
   assert.match(workflow, /wm dismiss-keyguard/);
   assert.match(workflow, /-gpu swiftshader -feature -Vulkan/);
+  assert.match(workflow, /if grep -Eiq "Viewing full screen\\|GOT IT".*input tap 855 525/);
   assert.match(workflow, /Camera keeps stopping\|Close app\|Viewing full screen\|GOT IT/);
   assert.match(workflow, /identify -format '%k'.*launch\.png/);
   assert.ok(
