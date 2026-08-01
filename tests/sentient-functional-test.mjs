@@ -134,8 +134,8 @@ test("an unavailable gateway cannot block truthful Standalone startup", async ()
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
   ]);
-  assert.match(gradle, /versionCode = 2026080102/);
-  assert.match(gradle, /versionName = "0\.6\.1-standalone-startup-test"/);
+  assert.match(gradle, /versionCode = 2026080103/);
+  assert.match(gradle, /versionName = "0\.7\.0-living-neural-link-widget-rebuild-test"/);
   assert.match(gradle, /\.orElse\(providers\.environmentVariable\("AQUA_GATEWAY_URL"\)\)\s*\.orElse\(""\)/);
   assert.doesNotMatch(gradle, /\.orElse\("https:\/\/api\.aquahomesos\.com\/gateway"\)/);
   assert.match(html, /id="ownerAccessButton"[^>]*data-panel="connect"/);
@@ -165,7 +165,7 @@ test("server secrets are absent from the APK source", async () => {
   assert.doesNotMatch(source, /OPENAI_API_KEY/);
 });
 
-test("Neural Link and Command Center are working secondary surfaces", async () => {
+test("the living Neural Link focuses one thought without isolating Aqua's other systems", async () => {
   const [html, script, fidelity] = await Promise.all([
     read("sentient-os-web/index.html"),
     read("sentient-os-web/app.js"),
@@ -175,7 +175,16 @@ test("Neural Link and Command Center are working secondary surfaces", async () =
   assert.match(html, /data-panel="command"[\s\S]*Command/);
   assert.match(script, /AQUA SENTINEL NEURAL LINK/);
   assert.match(script, /class="neural-network"/);
-  assert.match(script, /Open \$\{escapeHtml\(app\.name\)\} immediately/);
+  assert.match(script, /const neuralRingSlots =/);
+  assert.match(script, /function identifyNeuralIntent\(rawText\)/);
+  assert.match(script, /function beginNeuralRequest\(command\)/);
+  assert.match(script, /function isExplicitDeepOpen\(rawText\)/);
+  assert.match(script, /directIntent && isExplicitDeepOpen\(command\)/);
+  assert.match(script, /pendingNeuralIntent && !isExplicitDeepOpen\(pendingNeuralIntent\.command\)/);
+  assert.match(script, /data-neural-path="\$\{index\}"/);
+  assert.match(script, /Go deeper into \$\{escapeHtml\(app\.name\)\}/);
+  assert.match(script, /Presentation · Not Live/);
+  assert.match(script, /Books, Timesheet, and Receipts remain active supporting thoughts/);
   assert.match(script, /class="command-vault"/);
   assert.match(script, /data-filing-action="voice"/);
   assert.match(script, /File Cabinet/);
@@ -184,9 +193,12 @@ test("Neural Link and Command Center are working secondary surfaces", async () =
   assert.match(script, /diagnosticsMarkup/);
   assert.match(script, /settingsMarkup/);
   assert.match(fidelity, /\.neural-stage/);
-  assert.match(fidelity, /height:clamp\(540px,65svh,720px\)/);
-  assert.match(fidelity, /\.neural-tools\{position:absolute/);
+  assert.match(fidelity, /height:clamp\(610px,73svh,780px\)/);
+  assert.match(fidelity, /\.neural-signal\.is-active/);
+  assert.match(fidelity, /\.neural-stage\[data-phase="working"\]/);
+  assert.match(fidelity, /\.neural-thought\{/);
   assert.match(fidelity, /\.portal-open\{position:absolute/);
+  assert.match(fidelity, /@keyframes neural-signal-return/);
   assert.match(fidelity, /@keyframes materialize-rise/);
   assert.match(fidelity, /\.detail-sheet\.aqua-materialization\.is-full/);
 });
@@ -279,7 +291,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.6.1 preserves reversible preview cards and adds deterministic secondary-screen proofs", async () => {
+test("v0.7.0 preserves Home and adds deterministic living Neural Link proofs", async () => {
   const [gradle, workflow, script, html, fidelity, androidLaunch] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -288,23 +300,24 @@ test("v0.6.1 preserves reversible preview cards and adds deterministic secondary
     read("sentient-os-web/fidelity.css"),
     read("scripts/verify-aqua-sentinel-android-launch-v060.sh"),
   ]);
-  assert.match(gradle, /versionCode = 2026080102/);
-  assert.match(gradle, /versionName = "0\.6\.1-standalone-startup-test"/);
+  assert.match(gradle, /versionCode = 2026080103/);
+  assert.match(gradle, /versionName = "0\.7\.0-living-neural-link-widget-rebuild-test"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
-  assert.match(workflow, /AquaSentinelOS-v0\.6\.1-Standalone-Startup-Test\.apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.0-Living-Neural-Link-Widget-Rebuild-Test\.apk/);
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
   assert.match(workflow, /preview=neural/);
   assert.match(workflow, /preview=command/);
   assert.match(script, /enableEcosystemPresentationMode/);
   assert.match(
     script,
-    /window\.location\.protocol === "file:" && previewPanel === "home"/,
+    /window\.location\.protocol === "file:" && \["home", "neural"\]\.includes\(previewPanel\)/,
   );
   assert.match(script, /function activateDeterministicPreviewRoute\(\)/);
   assert.match(script, /\["home", "neural", "command", "settings", "diagnostics"\]\.includes\(previewPanel\)/);
   assert.match(script, /previewPanel === "home"/);
-  assert.match(script, /if \(previewPanel === "home"\) \{\s*render\(\);\s*\} else \{\s*openPanel\(previewPanel\);/);
+  assert.match(script, /const demo = previewParameters\.get\("neuralDemo"\) \|\| "rest"/);
+  assert.match(script, /if \(\["focus", "company", "result"\]\.includes\(demo\)\)/);
   assert.match(script, /openPanel\(previewPanel\)/);
   assert.match(script, /document\.documentElement\.dataset\.aquaPreviewReady = previewPanel/);
   assert.match(script, /const deterministicPreviewActive = activateDeterministicPreviewRoute\(\)/);
@@ -318,6 +331,9 @@ test("v0.6.1 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /grep -q '8 open leads'/);
   assert.match(workflow, /grep -q 'PRESENTATION DATA'/);
   assert.match(workflow, /data-aqua-preview-ready="neural"/);
+  assert.match(workflow, /data-aqua-neural-phase="rest"/);
+  assert.match(workflow, /data-aqua-neural-phase="working"/);
+  assert.match(workflow, /data-aqua-neural-phase="result"/);
   assert.match(workflow, /data-aqua-preview-ready="command"/);
   assert.match(workflow, /identify -format '%wx%h'/);
   assert.match(workflow, /! cmp -s/);
@@ -349,7 +365,7 @@ test("v0.6.1 preserves reversible preview cards and adds deterministic secondary
   assert.doesNotMatch(workflow, /adb exec-out screencap.*launch\.png/);
   assert.doesNotMatch(androidLaunch, /adb exec-out screencap.*launch\.png/);
   assert.ok(
-    workflow.indexOf("--screenshot=release/AquaSentinelOS-v0.6.1-launch-proof.png")
+    workflow.indexOf("--screenshot=release/AquaSentinelOS-v0.7.0-launch-proof.png")
       < workflow.indexOf("bash scripts/verify-aqua-sentinel-android-launch-v060.sh"),
     "the deterministic Home proof must be rendered before Android interaction checks",
   );
@@ -486,7 +502,7 @@ test("v0.5.4 preserves app covers and gives the two hero labels separate lanes",
   assert.match(fidelity, /\.screen-lower \.dashboard-screen-sheet\{top:-100%\}/);
 });
 
-test("v0.5.4 submits widget messages and still returns filing captures to the cabinet", async () => {
+test("v0.7.0 dispatches the rendered widget controls and still returns filing captures", async () => {
   const [widget, capture, activity, layout, script, styles, workflow, widgetVerifier, androidLaunch] = await Promise.all([
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
@@ -500,6 +516,10 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   ]);
   assert.match(widget, /PendingIntent\.FLAG_UPDATE_CURRENT \| PendingIntent\.FLAG_IMMUTABLE/);
   assert.match(widget, /setPackage\(context\.getPackageName\(\)\)/);
+  assert.match(widget, /RemoteViews buildViews\(Context context\)/);
+  assert.match(widget, /buildViews\(activity\)\.apply\(activity, host\)/);
+  assert.match(widget, /target\.performClick\(\)/);
+  assert.match(widget, /AQUA_WIDGET_REMOTE_VIEWS_TAP mode=/);
   assert.match(capture, /AQUA_WIDGET_ACTION_RECEIVED mode=/);
   assert.match(capture, /AQUA_CAPTURE_ROUTE mode=/);
   assert.match(capture, /AQUA_CAPTURE_SAVED type=/);
@@ -513,6 +533,7 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(capture, /KeyEvent\.KEYCODE_ENTER/);
   assert.match(capture, /!event\.isShiftPressed\(\)/);
   assert.match(activity, /AQUA_WIDGET_MESSAGE_DELIVERED id=/);
+  assert.match(activity, /AQUA_WIDGET_HOME_OPENED/);
   assert.match(activity, /window\.receiveWidgetCommand/);
   assert.match(layout, /id="@\+id\/widget_command_input"/);
   assert.match(layout, /id="@\+id\/widget_command_speak"/);
@@ -537,22 +558,25 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(styles, /<item name="android:clickable">true<\/item>/);
   assert.match(workflow, /bash scripts\/verify-aqua-sentinel-android-launch-v060\.sh/);
   assert.match(androidLaunch, /bash scripts\/verify-aqua-sentinel-widget-actions-v054\.sh/);
-  assert.match(widgetVerifier, /for mode in ask voice photo video/);
+  assert.match(widgetVerifier, /for mode in home ask file photo video/);
+  assert.match(widgetVerifier, /--es widget_contract_probe "\$mode"/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_REMOTE_VIEWS_TAP mode=\$mode dispatched=true/);
   assert.match(widgetVerifier, /AQUA_WIDGET_ACTION_RECEIVED mode=\$mode/);
-  assert.match(widgetVerifier, /AQUA_CAPTURE_ROUTE mode=\$mode/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_HOME_OPENED/);
+  assert.match(widgetVerifier, /AQUA_CAPTURE_ROUTE mode=\$expected_route/);
   assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_SUBMITTED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_DELIVERED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_SEND_TOUCH action=up/);
   assert.match(capture, /AQUA_WIDGET_COMPOSER_READY input=/);
-  assert.match(widgetVerifier, /--es widget_command_text "Widget_message_execution_test"/);
   assert.match(widgetVerifier, /characters=29/);
   assert.match(widgetVerifier, /tap_resource "widget_command_send"/);
   assert.match(widgetVerifier, /for tap_attempt in \$\(seq 1 3\)/);
 });
 
-test("v0.5.5 integrated 4x3 widget refreshes and delivers filing items into Sentinel", async () => {
-  const [gradle, widget, widgetLayout, widgetInfo, capture, activity, store, verifier] = await Promise.all([
+test("v0.7.0 integrated 4x3 widget installs, repairs, refreshes, and delivers filing items", async () => {
+  const [gradle, manifest, widget, widgetLayout, widgetInfo, capture, activity, store, verifier, script] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
+    read("android-app/app/src/main/AndroidManifest.xml"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
     read("android-app/app/src/main/res/layout/aqua_command_widget.xml"),
     read("android-app/app/src/main/res/xml/aqua_command_widget_info.xml"),
@@ -560,6 +584,7 @@ test("v0.5.5 integrated 4x3 widget refreshes and delivers filing items into Sent
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/FilingStore.java"),
     read("scripts/verify-aqua-sentinel-widget-actions-v054.sh"),
+    read("sentient-os-web/app.js"),
   ]);
   assert.match(gradle, /ECOSYSTEM_PRESENTATION_MODE/);
   assert.match(widgetLayout, /id="@\+id\/widget_logo"/);
@@ -571,17 +596,27 @@ test("v0.5.5 integrated 4x3 widget refreshes and delivers filing items into Sent
   assert.match(widgetInfo, /android:minHeight="156dp"/);
   assert.match(widget, /setOnClickPendingIntent\(R\.id\.widget_logo, openSentinel\(context\)\)/);
   assert.match(widget, /static void updateAll\(Context context\)/);
+  assert.match(widget, /Intent\.ACTION_MY_PACKAGE_REPLACED/);
+  assert.match(widget, /onAppWidgetOptionsChanged/);
+  assert.match(widget, /onRestored/);
+  assert.match(manifest, /android\.intent\.action\.MY_PACKAGE_REPLACED/);
+  assert.match(manifest, /com\.aquasoftware\.sentinel\.action\.WIDGET_PINNED/);
   assert.match(activity, /AquaCommandWidget\.updateAll\(this\)/);
+  assert.match(activity, /requestPinAppWidget/);
+  assert.match(activity, /installOrRepairCommandWidget/);
+  assert.match(activity, /getCommandWidgetStatus/);
+  assert.match(script, /window\.receiveCommandWidgetStatus/);
+  assert.match(script, /data-command-widget/);
   assert.match(capture, /EXTRA_FILING_TEXT = "widget_filing_text"/);
   assert.match(capture, /handler=PresentationContract/);
-  assert.match(capture, /if \("file"\.equals\(mode\)\) mode = "voice"/);
+  assert.match(capture, /mode = "file"\.equals\(requestedMode\) \? "voice" : requestedMode/);
   assert.match(store, /ACTION_INBOX_CHANGED/);
   assert.match(store, /setPackage\(context\.getPackageName\(\)\)/);
   assert.match(activity, /private void deliverFilingInbox\(\)/);
   assert.match(activity, /AQUA_FILING_INBOX_DELIVERED items=/);
   assert.match(activity, /AQUA_FILING_CABINET_OPENED/);
   assert.match(activity, /BuildConfig\.ECOSYSTEM_PRESENTATION_MODE/);
-  assert.match(verifier, /--es widget_filing_text "File this preview with Aqua CRM"/);
+  assert.match(verifier, /AQUA_WIDGET_REMOTE_VIEWS_TAP mode=\$mode dispatched=true/);
   assert.match(verifier, /AQUA_CAPTURE_SAVED type=voice/);
   assert.match(verifier, /AQUA_FILING_INBOX_DELIVERED items=\[1-9\]/);
   assert.match(verifier, /AQUA_FILING_CABINET_OPENED/);

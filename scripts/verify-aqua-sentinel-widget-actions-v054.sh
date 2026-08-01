@@ -2,7 +2,7 @@
 set -euo pipefail
 
 package="com.aquahomes.sentinel"
-activity="$package/com.aquahomes.sentientos.QuickCaptureActivity"
+main_activity="$package/com.aquahomes.sentientos.MainActivity"
 
 clear_logcat() {
   for attempt in $(seq 1 8); do
@@ -48,42 +48,45 @@ if lines:
   return 1
 }
 
-for mode in ask voice photo video; do
-  action="com.aquasoftware.sentinel.action.${mode^^}"
-  evidence="/tmp/aqua-sentinel-v0.5.5-widget-${mode}.logcat.txt"
-  command_seed=()
-  if [[ "$mode" == "ask" ]]; then
-    command_seed=(--es widget_command_text "Widget_message_execution_test")
-  elif [[ "$mode" == "voice" ]]; then
-    command_seed=(--es widget_filing_text "File this preview with Aqua CRM")
-  fi
-
+for mode in home ask file photo video; do
+  evidence="/tmp/aqua-sentinel-v0.7.0-widget-${mode}.logcat.txt"
+  expected_route="$mode"
+  [[ "$mode" == "file" ]] && expected_route="voice"
   clear_logcat
+  adb shell am force-stop "$package"
   adb shell am start -W \
-    -n "$activity" \
-    -a "$action" \
-    -d "aquasentinel://$mode" \
-    --es capture_mode "$mode" \
-    "${command_seed[@]}" || true
+    -n "$main_activity" \
+    --es widget_contract_probe "$mode" || true
 
+  dispatched=false
   received=false
   routed=false
-  for attempt in $(seq 1 12); do
+  for attempt in $(seq 1 24); do
     sleep 1
     adb logcat -d > "$evidence"
-    if grep -Fq "AQUA_WIDGET_ACTION_RECEIVED mode=$mode" "$evidence"; then
-      received=true
+    if grep -Fq "AQUA_WIDGET_REMOTE_VIEWS_TAP mode=$mode dispatched=true" "$evidence"; then
+      dispatched=true
     fi
-    if grep -Fq "AQUA_CAPTURE_ROUTE mode=$mode" "$evidence"; then
-      routed=true
+    if [[ "$mode" == "home" ]]; then
+      if grep -Fq "AQUA_WIDGET_HOME_OPENED" "$evidence"; then
+        received=true
+        routed=true
+      fi
+    else
+      if grep -Fq "AQUA_WIDGET_ACTION_RECEIVED mode=$mode" "$evidence"; then
+        received=true
+      fi
+      if grep -Fq "AQUA_CAPTURE_ROUTE mode=$expected_route" "$evidence"; then
+        routed=true
+      fi
     fi
-    if [[ "$received" == "true" && "$routed" == "true" ]]; then
+    if [[ "$dispatched" == "true" && "$received" == "true" && "$routed" == "true" ]]; then
       break
     fi
   done
 
-  if [[ "$received" != "true" || "$routed" != "true" ]]; then
-    echo "Widget action did not reach and resolve its capture route: $mode" >&2
+  if [[ "$dispatched" != "true" || "$received" != "true" || "$routed" != "true" ]]; then
+    echo "Rendered widget tap did not dispatch and resolve its route: $mode" >&2
     grep -E "AQUA_WIDGET|AQUA_CAPTURE|QuickCaptureActivity|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
     exit 1
   fi
@@ -122,7 +125,7 @@ for mode in ask voice photo video; do
       grep -E "AQUA_WIDGET|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
       exit 1
     fi
-  elif [[ "$mode" == "voice" ]]; then
+  elif [[ "$mode" == "file" ]]; then
     saved=false
     delivered=false
     opened=false

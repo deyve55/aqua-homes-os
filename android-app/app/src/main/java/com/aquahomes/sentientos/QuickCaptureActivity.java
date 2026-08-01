@@ -50,9 +50,11 @@ public class QuickCaptureActivity extends Activity {
     private static final String STATE_EVIDENCE_PATH = "evidence_path";
     private static final String STATE_COMMAND_TEXT = "command_text";
     private String mode;
+    private String requestedMode;
     private File evidenceFile;
     private String itemId;
     private String filingText;
+    private String commandSeed;
     private boolean captureLaunched;
     private TextView status;
     private EditText commandInput;
@@ -94,19 +96,33 @@ public class QuickCaptureActivity extends Activity {
     }
 
     private void readIntent(Intent intent) {
-        mode = intent == null ? "" : intent.getStringExtra(EXTRA_MODE);
+        requestedMode = intent == null ? "" : intent.getStringExtra(EXTRA_MODE);
         itemId = intent == null ? "" : intent.getStringExtra(EXTRA_ITEM_ID);
         filingText = intent == null ? "" : intent.getStringExtra(EXTRA_FILING_TEXT);
-        if ((mode == null || mode.isEmpty()) && intent != null && intent.getData() != null) {
-            mode = intent.getData().getHost();
+        if ((requestedMode == null || requestedMode.isEmpty()) && intent != null && intent.getData() != null) {
+            requestedMode = intent.getData().getHost();
         }
-        if (mode == null || mode.isEmpty()) mode = "voice";
-        if ("file".equals(mode)) mode = "voice";
+        if (requestedMode == null || requestedMode.isEmpty()) requestedMode = "file";
+        mode = "file".equals(requestedMode) ? "voice" : requestedMode;
         if (filingText == null) filingText = "";
+        commandSeed = "";
+        if (BuildConfig.ECOSYSTEM_PRESENTATION_MODE) {
+            android.content.SharedPreferences probe = getSharedPreferences(
+                "aqua_widget_contract_probe",
+                MODE_PRIVATE
+            );
+            if (requestedMode.equals(probe.getString("mode", ""))) {
+                commandSeed = probe.getString("command", "");
+                if ("file".equals(requestedMode) && filingText.isEmpty()) {
+                    filingText = probe.getString("filing", "");
+                }
+                probe.edit().clear().apply();
+            }
+        }
     }
 
     private void logActionReceived() {
-        Log.i("AquaCommandWidget", "AQUA_WIDGET_ACTION_RECEIVED mode=" + mode);
+        Log.i("AquaCommandWidget", "AQUA_WIDGET_ACTION_RECEIVED mode=" + requestedMode);
     }
 
     private void showOpeningSurface() {
@@ -156,6 +172,9 @@ public class QuickCaptureActivity extends Activity {
         String initialCommand = getIntent() == null
             ? ""
             : getIntent().getStringExtra(EXTRA_COMMAND_TEXT);
+        if ((initialCommand == null || initialCommand.trim().isEmpty()) && !commandSeed.isEmpty()) {
+            initialCommand = commandSeed;
+        }
         if (initialCommand != null && !initialCommand.trim().isEmpty()) {
             commandInput.setText(initialCommand);
             commandInput.setSelection(commandInput.getText().length());

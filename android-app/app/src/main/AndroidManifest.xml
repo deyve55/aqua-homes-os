@@ -83,6 +83,9 @@
             android:label="Aqua Command Center">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="com.aquasoftware.sentinel.action.WIDGET_PINNED" />
+                <action android:name="com.aquasoftware.sentinel.action.WIDGET_REFRESH" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

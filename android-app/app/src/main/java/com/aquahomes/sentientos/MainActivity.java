@@ -2,7 +2,10 @@ package com.aquahomes.sentientos;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -270,7 +273,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         hideSystemUi();
         AquaCommandWidget.updateAll(this);
         evaluateJavascript("window.refreshSelectedAppSnapshot?.();");
-        if (webAppReady) deliverFilingInbox();
+        if (webAppReady) {
+            deliverFilingInbox();
+            deliverCommandWidgetStatus("Ready");
+        }
     }
 
     @Override
@@ -282,6 +288,19 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     private void handleStartupIntent(Intent intent) {
         if (intent == null) return;
+        if ("com.aquasoftware.sentinel.action.OPEN".equals(intent.getAction())) {
+            Log.i("AquaCommandWidget", "AQUA_WIDGET_HOME_OPENED");
+            intent.setAction(Intent.ACTION_MAIN);
+        }
+        String widgetProbeMode = intent.getStringExtra("widget_contract_probe");
+        if (
+            BuildConfig.ECOSYSTEM_PRESENTATION_MODE
+                && widgetProbeMode != null
+                && !widgetProbeMode.trim().isEmpty()
+        ) {
+            intent.removeExtra("widget_contract_probe");
+            AquaCommandWidget.dispatchContractProbe(this, widgetProbeMode.trim());
+        }
         String widgetCommand = intent.getStringExtra("widget_command");
         if (widgetCommand != null && !widgetCommand.trim().isEmpty()) {
             String messageId = intent.getStringExtra("widget_command_id");
@@ -542,6 +561,72 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         evaluateJavascript(
             "window.receiveFilingInbox?.(" + JSONObject.quote(inboxJson) + ");"
         );
+    }
+
+    private JSONObject commandWidgetStatus(String state) {
+        JSONObject payload = new JSONObject();
+        try {
+            AppWidgetManager manager = AppWidgetManager.getInstance(this);
+            payload.put("supported", manager.isRequestPinAppWidgetSupported());
+            payload.put("installedCount", AquaCommandWidget.installedCount(this));
+            payload.put("state", state);
+        } catch (Exception error) {
+            try {
+                payload.put("supported", false);
+                payload.put("installedCount", AquaCommandWidget.installedCount(this));
+                payload.put("state", "Needs Attention");
+            } catch (JSONException ignored) {}
+        }
+        return payload;
+    }
+
+    private void deliverCommandWidgetStatus(String state) {
+        sendJsonCallback("receiveCommandWidgetStatus", commandWidgetStatus(state));
+    }
+
+    private void installOrRepairCommandWidget() {
+        runOnUiThread(() -> {
+            int installed = AquaCommandWidget.installedCount(this);
+            if (installed > 0) {
+                AquaCommandWidget.updateAll(this);
+                Log.i(
+                    "AquaCommandWidget",
+                    "AQUA_WIDGET_REPAIR_COMPLETE installed=" + installed
+                );
+                deliverCommandWidgetStatus("Refreshed");
+                return;
+            }
+            try {
+                AppWidgetManager manager = AppWidgetManager.getInstance(this);
+                if (!manager.isRequestPinAppWidgetSupported()) {
+                    Log.w("AquaCommandWidget", "AQUA_WIDGET_PIN_UNSUPPORTED");
+                    deliverCommandWidgetStatus("Use Android widget picker");
+                    return;
+                }
+                Intent successIntent = new Intent(this, AquaCommandWidget.class)
+                    .setAction(AquaCommandWidget.ACTION_PINNED)
+                    .setPackage(getPackageName());
+                PendingIntent success = PendingIntent.getBroadcast(
+                    this,
+                    140,
+                    successIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+                boolean requested = manager.requestPinAppWidget(
+                    new ComponentName(this, AquaCommandWidget.class),
+                    null,
+                    success
+                );
+                Log.i(
+                    "AquaCommandWidget",
+                    "AQUA_WIDGET_PIN_REQUESTED accepted=" + requested
+                );
+                deliverCommandWidgetStatus(requested ? "Confirmation requested" : "Needs Attention");
+            } catch (Exception error) {
+                Log.e("AquaCommandWidget", "AQUA_WIDGET_PIN_FAILED", error);
+                deliverCommandWidgetStatus("Needs Attention");
+            }
+        });
     }
 
     @Override
@@ -1063,6 +1148,16 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @JavascriptInterface
         public String getFilingInbox() {
             return FilingStore.inboxJson(MainActivity.this);
+        }
+
+        @JavascriptInterface
+        public String getCommandWidgetStatus() {
+            return commandWidgetStatus("Ready").toString();
+        }
+
+        @JavascriptInterface
+        public void installOrRepairCommandWidget() {
+            MainActivity.this.installOrRepairCommandWidget();
         }
 
         @JavascriptInterface
