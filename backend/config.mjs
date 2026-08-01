@@ -36,6 +36,10 @@ export function loadConfig(overrides = {}) {
     host,
     port: overrides.port ?? integer('AQUA_GATEWAY_PORT', 8787),
     model: overrides.model ?? process.env.OPENAI_MODEL ?? 'gpt-5.6',
+    receiptVisionModel:
+      overrides.receiptVisionModel ??
+      process.env.OPENAI_RECEIPT_VISION_MODEL ??
+      'gpt-5.6',
     realtimeModel:
       overrides.realtimeModel ?? process.env.OPENAI_REALTIME_MODEL ?? 'gpt-realtime-2.1',
     openAiApiKey: overrides.openAiApiKey ?? process.env.OPENAI_API_KEY ?? '',
@@ -49,7 +53,10 @@ export function loadConfig(overrides = {}) {
     adapterCredentials: Object.freeze({
       ...adapterCredentials(overrides.adapterCredentials),
     }),
-    maxBodyBytes: overrides.maxBodyBytes ?? integer('AQUA_MAX_BODY_BYTES', 262_144),
+    maxBodyBytes: overrides.maxBodyBytes ?? integer('AQUA_MAX_BODY_BYTES', 7_500_000),
+    receiptMaxImageBytes:
+      overrides.receiptMaxImageBytes ??
+      integer('AQUA_RECEIPT_MAX_IMAGE_BYTES', 5_000_000),
   });
 }
 

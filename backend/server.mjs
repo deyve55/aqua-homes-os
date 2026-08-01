@@ -3,13 +3,21 @@ import { loadConfig, validateRuntimeConfig } from './config.mjs';
 import { CapabilityRegistry } from './capability-registry.mjs';
 import { ProjectionStore } from './projection-store.mjs';
 import { createAquaAgentRuntime } from './aqua-agent.mjs';
+import { createReceiptIntelligenceRuntime } from './receipt-intelligence.mjs';
 import { createGateway } from './gateway.mjs';
 
 export function createServer(config = loadConfig()) {
   const registry = new CapabilityRegistry();
   const store = new ProjectionStore();
   const agentRuntime = createAquaAgentRuntime({ config, registry, store });
-  const gateway = createGateway({ config, registry, store, agentRuntime });
+  const receiptRuntime = createReceiptIntelligenceRuntime({ config });
+  const gateway = createGateway({
+    config,
+    registry,
+    store,
+    agentRuntime,
+    receiptRuntime,
+  });
 
   return http.createServer((request, response) => {
     response.setHeader('Cache-Control', 'no-store');

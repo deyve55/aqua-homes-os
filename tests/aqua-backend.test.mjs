@@ -1,11 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { CapabilityRegistry } from '../backend/capability-registry.mjs';
 import { loadConfig } from '../backend/config.mjs';
 import { ProjectionStore } from '../backend/projection-store.mjs';
 import { issueSession, verifySession } from '../backend/auth.mjs';
 import { createGateway } from '../backend/gateway.mjs';
 import { AquaAgentOutputSchema, emptyMaterialization } from '../backend/contracts.mjs';
+import {
+  createReceiptIntelligenceRuntime,
+  RECEIPT_INTELLIGENCE_INSTRUCTIONS,
+} from '../backend/receipt-intelligence.mjs';
 
 const config = loadConfig({
   host: '127.0.0.1',
@@ -30,6 +35,96 @@ const identity = {
 
 function request(id, method, params = {}) {
   return { jsonrpc: '2.0', id, method, params };
+}
+
+function receiptAnalysisFixture() {
+  const evidence = [{
+    page: 1,
+    quote: 'TOTAL 428.16',
+    boundingBox: { x: 0.1, y: 0.8, width: 0.7, height: 0.05 },
+  }];
+  const textField = (value, confidence = 98) => ({ value, confidence, evidence });
+  const amountField = (valueMinor, confidence = 99) => ({
+    valueMinor,
+    confidence,
+    evidence,
+  });
+  return {
+    documentType: 'receipt',
+    imageQuality: {
+      usable: true,
+      confidence: 98,
+      issues: ['none'],
+      rotationDegrees: 0,
+    },
+    merchant: {
+      displayName: textField('The Home Depot'),
+      normalizedName: textField('Home Depot'),
+      address: textField('100 Main Street'),
+      phone: textField(null, 0),
+      storeNumber: textField('1234'),
+    },
+    purchase: {
+      dateIso: textField('2026-07-31'),
+      timeLocal: textField('14:32'),
+      currencyCode: textField('USD'),
+      transactionNumber: textField('TX-42'),
+      orderNumber: textField(null, 0),
+      paymentMethod: textField('Visa'),
+      paymentLast4: textField('4242'),
+    },
+    amounts: {
+      subtotal: amountField(40000),
+      tax: amountField(2816),
+      total: amountField(42816),
+    },
+    lineItems: [{
+      lineNumber: 1,
+      rawDescription: '2X4X8 SPF STUD',
+      normalizedDescription: '2 x 4 x 8 SPF framing stud',
+      sku: '100123',
+      quantityMilliUnits: 10000,
+      unitOfMeasure: 'EA',
+      unitPriceMinor: 4000,
+      lineTotalMinor: 40000,
+      taxable: true,
+      category: 'Lumber',
+      trade: 'Framing',
+      costCode: '06100',
+      budgetBucket: 'Materials',
+      confidence: 98,
+      classificationConfidence: 96,
+      needsReview: false,
+      evidence,
+    }],
+    adjustments: [],
+    job: {
+      state: 'unknown',
+      name: null,
+      confidence: 0,
+      rationale: 'No job is printed on the receipt.',
+      evidence: [],
+    },
+    uncertainties: [],
+    summary: 'Home Depot receipt for framing lumber totaling $428.16.',
+  };
+}
+
+function receiptImageParams() {
+  const bytes = Buffer.from('bounded-receipt-image-fixture-'.repeat(8));
+  const digest = createHash('sha256').update(bytes).digest('hex');
+  return {
+    evidenceId: 'receipt-evidence-42',
+    originalSha256: 'a'.repeat(64),
+    analysisImageSha256: digest,
+    mimeType: 'image/jpeg',
+    imageDataUrl: `data:image/jpeg;base64,${bytes.toString('base64')}`,
+    capturedAt: '2026-08-01T12:00:00.000Z',
+    source: 'CAMERA',
+    conversationContext: '',
+    knownJobs: [{ name: 'Henderson', address: '', aliases: [] }],
+    knownCostCodes: [{ code: '06100', name: 'Rough carpentry', trade: 'Framing' }],
+  };
 }
 
 test('session token is signed, expiring, and rejects tampering', () => {
@@ -235,4 +330,82 @@ test('confirmation never fabricates an unconnected satellite write', async () =>
   );
   assert.equal(response.result.status, 'Needs Attention');
   assert.match(response.result.report, /not connected yet/i);
+});
+
+test('receipt intelligence uses high-detail image input and reconciles cents deterministically', async () => {
+  let capturedInput;
+  const receiptRuntime = createReceiptIntelligenceRuntime({
+    config,
+    now: () => new Date('2026-08-01T12:30:00.000Z'),
+    runner: {
+      run: async (_agent, input) => {
+        capturedInput = input;
+        return { finalOutput: receiptAnalysisFixture() };
+      },
+    },
+  });
+  const result = await receiptRuntime.analyze({
+    identity,
+    params: receiptImageParams(),
+  });
+  assert.equal(capturedInput[0].content[1].type, 'input_image');
+  assert.equal(capturedInput[0].content[1].detail, 'high');
+  assert.equal(result.math.headerReconciled, true);
+  assert.equal(result.math.lineItemsReconciled, true);
+  assert.equal(result.status, 'Confirmed');
+  assert.equal(result.nextQuestion.prompt, 'Which job is this receipt for?');
+  assert.equal(result.analysis.lineItems[0].costCode, '06100');
+  assert.match(RECEIPT_INTELLIGENCE_INSTRUCTIONS, /untrusted evidence/i);
+
+  const replay = await receiptRuntime.analyze({
+    identity,
+    params: receiptImageParams(),
+  });
+  assert.equal(replay.cacheHit, true);
+  assert.equal(replay.analysisId, result.analysisId);
+});
+
+test('receipt analysis is session protected and binds evidence ID to immutable hash', async () => {
+  const receiptRuntime = createReceiptIntelligenceRuntime({
+    config,
+    runner: {
+      run: async () => ({ finalOutput: receiptAnalysisFixture() }),
+    },
+  });
+  const gateway = createGateway({
+    config,
+    registry: new CapabilityRegistry(),
+    store: new ProjectionStore(),
+    agentRuntime: { chat: async () => ({}) },
+    receiptRuntime,
+  });
+  const params = receiptImageParams();
+  const denied = await gateway.dispatch(request(90, 'aqua.receipt.analyze', params));
+  assert.equal(denied.error.code, -32001);
+
+  const headers = { authorization: `Bearer ${issueSession(config, identity)}` };
+  const accepted = await gateway.dispatch(
+    request(91, 'aqua.receipt.analyze', params),
+    headers,
+  );
+  assert.equal(accepted.result.evidenceId, params.evidenceId);
+
+  const conflict = await gateway.dispatch(
+    request(92, 'aqua.receipt.analyze', {
+      ...params,
+      originalSha256: 'b'.repeat(64),
+    }),
+    headers,
+  );
+  assert.equal(conflict.error.code, -32020);
+
+  const corrupt = await gateway.dispatch(
+    request(93, 'aqua.receipt.analyze', {
+      ...params,
+      evidenceId: 'receipt-evidence-99',
+      analysisImageSha256: 'c'.repeat(64),
+    }),
+    headers,
+  );
+  assert.equal(corrupt.error.code, -32021);
 });

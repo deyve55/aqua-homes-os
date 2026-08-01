@@ -4,6 +4,7 @@ import {
   AquaChatParamsSchema,
   ConfirmActionParamsSchema,
   JsonRpcRequestSchema,
+  ReceiptAnalyzeParamsSchema,
   SessionCreateParamsSchema,
 } from './contracts.mjs';
 import {
@@ -12,6 +13,10 @@ import {
   verifyAdapterCredential,
   verifySession,
 } from './auth.mjs';
+import {
+  ReceiptEvidenceConflictError,
+  ReceiptImageValidationError,
+} from './receipt-intelligence.mjs';
 
 export class RpcError extends Error {
   constructor(code, message, data = undefined) {
@@ -60,7 +65,17 @@ function requireAdapter(config, headers, params) {
   return adapterId;
 }
 
-export function createGateway({ config, registry, store, agentRuntime }) {
+export function createGateway({
+  config,
+  registry,
+  store,
+  agentRuntime,
+  receiptRuntime = {
+    analyze: async () => {
+      throw new Error('Receipt intelligence unavailable.');
+    },
+  },
+}) {
   return {
     async dispatch(rawRequest, headers = {}) {
       let request;
@@ -122,6 +137,11 @@ export function createGateway({ config, registry, store, agentRuntime }) {
             const params = AquaChatParamsSchema.parse(request.params);
             return ok(request.id, await agentRuntime.chat({ identity, params }));
           }
+          case 'aqua.receipt.analyze': {
+            const identity = requireIdentity(config, headers);
+            const params = ReceiptAnalyzeParamsSchema.parse(request.params);
+            return ok(request.id, await receiptRuntime.analyze({ identity, params }));
+          }
           case 'aqua.action.confirm': {
             const identity = requireIdentity(config, headers);
             const params = ConfirmActionParamsSchema.parse(request.params);
@@ -139,6 +159,12 @@ export function createGateway({ config, registry, store, agentRuntime }) {
       } catch (error) {
         if (error?.issues) {
           return fail(request.id, new RpcError(-32602, 'Invalid method parameters.', error.issues));
+        }
+        if (error instanceof ReceiptEvidenceConflictError) {
+          return fail(request.id, new RpcError(-32020, error.message));
+        }
+        if (error instanceof ReceiptImageValidationError) {
+          return fail(request.id, new RpcError(-32021, error.message));
         }
         return fail(request.id, error);
       }
