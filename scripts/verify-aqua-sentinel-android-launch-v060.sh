@@ -85,6 +85,64 @@ start_sentinel() {
   timeout 30s adb shell am start -W -n "$MAIN_COMPONENT"
 }
 
+print_cold_start_diagnostics() {
+  local phase="$1"
+  local attempt="$2"
+  local log_path="$3"
+  local activity_path="/tmp/aqua-sentinel-v0.7.0-${phase}-attempt-${attempt}-activities.txt"
+  local window_state_path="/tmp/aqua-sentinel-v0.7.0-${phase}-attempt-${attempt}-window-state.txt"
+  local hierarchy_path=""
+
+  printf '::group::Aqua Sentinel cold-start diagnostics (%s attempt %s)\n' "$phase" "$attempt"
+  wait_for_adb || true
+  timeout 15s adb logcat -d > "$log_path" 2>&1 || true
+  printf '%s\n' '--- process ---'
+  adb shell pidof "$APP_ID" || true
+  printf '%s\n' '--- launch markers and fatal signals ---'
+  grep -E "AQUA_SENTINEL|FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory|ActivityTaskManager" "$log_path" | tail -n 160 || true
+  printf '%s\n' '--- resumed activities ---'
+  timeout 15s adb shell dumpsys activity activities > "$activity_path" 2>&1 || true
+  grep -E "mResumedActivity|topResumedActivity|ResumedActivity|mLastPausedActivity" "$activity_path" | tail -n 80 || true
+  printf '%s\n' '--- focused windows ---'
+  timeout 15s adb shell dumpsys window windows > "$window_state_path" 2>&1 || true
+  grep -E "mCurrentFocus|mFocusedApp|Window #|${APP_ID}" "$window_state_path" | tail -n 120 || true
+  printf '%s\n' '--- visible UI hierarchy ---'
+  hierarchy_path="$(dump_window "aqua-sentinel-v0.7.0-${phase}-attempt-${attempt}-diagnostic")" || true
+  if [[ -n "$hierarchy_path" && -s "$hierarchy_path" ]]; then
+    grep -Eo 'package="[^"]+"|resource-id="[^"]+"|text="[^"]+"|content-desc="[^"]+"' "$hierarchy_path" | head -n 160 || true
+  else
+    printf '%s\n' 'UI hierarchy unavailable'
+  fi
+  printf '%s\n' '::endgroup::'
+}
+
+launch_sentinel_with_recovery() {
+  local phase="$1"
+  local log_path="$2"
+  local attempt=""
+
+  for attempt in 1 2; do
+    wait_for_adb
+    adb logcat -c || true
+    if ! start_sentinel; then
+      printf 'Sentinel start command did not complete during %s attempt %s; recovering before the UI-ready wait.\n' "$phase" "$attempt" >&2
+    fi
+    recover_system_dialogs "${phase}-attempt-${attempt}-pre-ready" || true
+    if wait_for_ui_ready "$log_path"; then
+      recover_system_dialogs "${phase}-attempt-${attempt}-post-ready"
+      return 0
+    fi
+    print_cold_start_diagnostics "$phase" "$attempt" "$log_path"
+    adb shell am force-stop com.android.camera2 || true
+    adb shell input keyevent KEYCODE_BACK || true
+    adb shell am force-stop "$APP_ID" || true
+    sleep 2
+  done
+
+  printf 'Aqua Sentinel did not emit AQUA_SENTINEL_UI_READY after two bounded %s attempts.\n' "$phase" >&2
+  return 1
+}
+
 assert_sentinel_resumed() {
   local activity_path="$1"
   adb shell dumpsys activity activities > "$activity_path"
@@ -97,9 +155,7 @@ adb install --no-incremental "$APK_PATH"
 adb shell svc power stayon true
 adb shell settings put system screen_off_timeout 2147483647
 adb shell settings put secure immersive_mode_confirmations confirmed
-adb logcat -c
-start_sentinel
-wait_for_ui_ready /tmp/aqua-sentinel-v0.7.0-logcat.txt
+launch_sentinel_with_recovery initial /tmp/aqua-sentinel-v0.7.0-logcat.txt
 APP_PID="$(adb shell pidof "$APP_ID" || true)"
 test -n "$APP_PID" || {
   grep -E "FATAL EXCEPTION|AndroidRuntime|chromium|WebViewFactory" /tmp/aqua-sentinel-v0.7.0-logcat.txt || true
@@ -117,9 +173,7 @@ bash scripts/verify-aqua-sentinel-widget-actions-v054.sh
 
 adb shell am force-stop com.android.camera2 || true
 adb shell input keyevent KEYCODE_BACK || true
-adb logcat -c
 adb shell am force-stop "$APP_ID"
-start_sentinel
-wait_for_ui_ready /tmp/aqua-sentinel-v0.7.0-final-logcat.txt
+launch_sentinel_with_recovery final /tmp/aqua-sentinel-v0.7.0-final-logcat.txt
 recover_system_dialogs final
 assert_sentinel_resumed /tmp/aqua-sentinel-v0.7.0-activities.txt
