@@ -329,6 +329,15 @@ jobs:
           unzip -l "$APK" | grep -q "assets/public/fidelity.css"
           unzip -t "$APK"
 
+      - name: Enable KVM for the Android launcher proof
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules >/dev/null
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          test -r /dev/kvm
+          test -w /dev/kvm
+
       - name: Prove clean install and launch on Android
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
@@ -337,6 +346,7 @@ jobs:
           arch: x86_64
           profile: pixel_2
           emulator-boot-timeout: 600
+          disable-linux-hw-accel: false
           disable-animations: true
           emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim -camera-back none
           script: bash scripts/verify-aqua-sentinel-android-launch-v060.sh

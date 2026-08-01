@@ -21,8 +21,10 @@ clear_logcat() {
 
 dump_ui() {
   local label="$1"
-  local device_path="/sdcard/${label}.xml"
-  local host_path="/tmp/${label}.xml"
+  local safe_label=""
+  safe_label="$(printf '%s' "$label" | tr -cs '[:alnum:]_.-' '-')"
+  local device_path="/sdcard/${safe_label}.xml"
+  local host_path="/tmp/${safe_label}.xml"
 
   for attempt in $(seq 1 8); do
     adb wait-for-device >/dev/null 2>&1 || true
