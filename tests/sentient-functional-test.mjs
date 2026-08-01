@@ -502,7 +502,7 @@ test("v0.5.4 preserves app covers and gives the two hero labels separate lanes",
   assert.match(fidelity, /\.screen-lower \.dashboard-screen-sheet\{top:-100%\}/);
 });
 
-test("v0.7.0 dispatches the rendered widget controls and still returns filing captures", async () => {
+test("v0.7.0 pins the real widget in Launcher3 and resolves its home-screen controls", async () => {
   const [widget, capture, activity, layout, script, styles, workflow, widgetVerifier, androidLaunch] = await Promise.all([
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
@@ -517,9 +517,6 @@ test("v0.7.0 dispatches the rendered widget controls and still returns filing ca
   assert.match(widget, /PendingIntent\.FLAG_UPDATE_CURRENT \| PendingIntent\.FLAG_IMMUTABLE/);
   assert.match(widget, /setPackage\(context\.getPackageName\(\)\)/);
   assert.match(widget, /RemoteViews buildViews\(Context context\)/);
-  assert.match(widget, /buildViews\(activity\)\.apply\(activity, host\)/);
-  assert.match(widget, /target\.performClick\(\)/);
-  assert.match(widget, /AQUA_WIDGET_REMOTE_VIEWS_TAP mode=/);
   assert.match(capture, /AQUA_WIDGET_ACTION_RECEIVED mode=/);
   assert.match(capture, /AQUA_CAPTURE_ROUTE mode=/);
   assert.match(capture, /AQUA_CAPTURE_SAVED type=/);
@@ -557,10 +554,23 @@ test("v0.7.0 dispatches the rendered widget controls and still returns filing ca
   assert.match(capture, /putExtra\("open_filing", true\)/);
   assert.match(styles, /<item name="android:clickable">true<\/item>/);
   assert.match(workflow, /bash scripts\/verify-aqua-sentinel-android-launch-v060\.sh/);
+  assert.match(workflow, /widget_dispatch=launcher_hosted_remote_views_taps_verified/);
   assert.match(androidLaunch, /bash scripts\/verify-aqua-sentinel-widget-actions-v054\.sh/);
+  assert.match(activity, /widget_launcher_pin_probe/);
+  assert.match(activity, /installOrRepairCommandWidget\(\)/);
+  assert.doesNotMatch(activity, /widget_contract_probe/);
   assert.match(widgetVerifier, /for mode in home ask file photo video/);
-  assert.match(widgetVerifier, /--es widget_contract_probe "\$mode"/);
-  assert.match(widgetVerifier, /AQUA_WIDGET_REMOTE_VIEWS_TAP mode=\$mode dispatched=true/);
+  assert.match(widgetVerifier, /--ez widget_launcher_pin_probe true/);
+  assert.match(widgetVerifier, /place_automatically_button\|add automatically\|add to home screen/);
+  assert.match(widgetVerifier, /dumpsys appwidget/);
+  assert.match(widgetVerifier, /launcher_package="com\.android\.launcher3"/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_HOST_READY/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_TAP mode=\$mode resource=\$resource_id/);
+  assert.match(widgetVerifier, /widget_logo/);
+  assert.match(widgetVerifier, /widget_ask/);
+  assert.match(widgetVerifier, /widget_file/);
+  assert.match(widgetVerifier, /widget_photo/);
+  assert.match(widgetVerifier, /widget_video/);
   assert.match(widgetVerifier, /AQUA_WIDGET_ACTION_RECEIVED mode=\$mode/);
   assert.match(widgetVerifier, /AQUA_WIDGET_HOME_OPENED/);
   assert.match(widgetVerifier, /AQUA_CAPTURE_ROUTE mode=\$expected_route/);
@@ -569,8 +579,11 @@ test("v0.7.0 dispatches the rendered widget controls and still returns filing ca
   assert.match(widgetVerifier, /AQUA_WIDGET_SEND_TOUCH action=up/);
   assert.match(capture, /AQUA_WIDGET_COMPOSER_READY input=/);
   assert.match(widgetVerifier, /characters=29/);
+  assert.match(widgetVerifier, /Widget%smessage%sexecution%stest/);
   assert.match(widgetVerifier, /tap_resource "widget_command_send"/);
   assert.match(widgetVerifier, /for tap_attempt in \$\(seq 1 3\)/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_PROCESS_RECREATION_VERIFIED/);
+  assert.doesNotMatch(widgetVerifier, /AQUA_WIDGET_REMOTE_VIEWS_TAP/);
 });
 
 test("v0.7.0 integrated 4x3 widget installs, repairs, refreshes, and delivers filing items", async () => {
@@ -616,7 +629,7 @@ test("v0.7.0 integrated 4x3 widget installs, repairs, refreshes, and delivers fi
   assert.match(activity, /AQUA_FILING_INBOX_DELIVERED items=/);
   assert.match(activity, /AQUA_FILING_CABINET_OPENED/);
   assert.match(activity, /BuildConfig\.ECOSYSTEM_PRESENTATION_MODE/);
-  assert.match(verifier, /AQUA_WIDGET_REMOTE_VIEWS_TAP mode=\$mode dispatched=true/);
+  assert.match(verifier, /AQUA_WIDGET_LAUNCHER_TAP mode=\$mode resource=\$resource_id/);
   assert.match(verifier, /AQUA_CAPTURE_SAVED type=voice/);
   assert.match(verifier, /AQUA_FILING_INBOX_DELIVERED items=\[1-9\]/);
   assert.match(verifier, /AQUA_FILING_CABINET_OPENED/);

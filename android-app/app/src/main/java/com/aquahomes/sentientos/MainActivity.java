@@ -292,14 +292,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             Log.i("AquaCommandWidget", "AQUA_WIDGET_HOME_OPENED");
             intent.setAction(Intent.ACTION_MAIN);
         }
-        String widgetProbeMode = intent.getStringExtra("widget_contract_probe");
         if (
             BuildConfig.ECOSYSTEM_PRESENTATION_MODE
-                && widgetProbeMode != null
-                && !widgetProbeMode.trim().isEmpty()
+                && intent.getBooleanExtra("widget_launcher_pin_probe", false)
         ) {
-            intent.removeExtra("widget_contract_probe");
-            AquaCommandWidget.dispatchContractProbe(this, widgetProbeMode.trim());
+            intent.removeExtra("widget_launcher_pin_probe");
+            installOrRepairCommandWidget();
         }
         String widgetCommand = intent.getStringExtra("widget_command");
         if (widgetCommand != null && !widgetCommand.trim().isEmpty()) {

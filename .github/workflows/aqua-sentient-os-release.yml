@@ -359,7 +359,7 @@ jobs:
             echo "customer_preview_snapshots=false"
             echo "launch_visual=deterministic_bundled_home_430x932"
             echo "neural_visual=rest_focus_result_430x932"
-            echo "widget_dispatch=remote_views_perform_click_verified"
+            echo "widget_dispatch=launcher_hosted_remote_views_taps_verified"
             echo "android_launch=activity_and_ui_hierarchy_verified"
             echo "target_sdk=35"
             echo "min_sdk=26"
