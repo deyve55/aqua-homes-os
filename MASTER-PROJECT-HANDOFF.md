@@ -1,245 +1,353 @@
-# Aqua Sentinel OS + Command Center Integration Handoff
+# Aqua Sentinel OS — Current Takeover Handoff
 
 Owner and final authority: Dave (Deyve)
 
+Company: Aqua Software Inc.
+
 Repository: `deyve55/aqua-homes-os`
 
-Integration branch: `agent/aqua-sentinel-command-center-integration-20260730`
+Active branch: `agent/aqua-sentinel-command-center-integration-20260730`
 
-Base branch: `agent/aqua-sentinel-production-apk-v0.4.1-20260725`
+Draft pull request: [#194](https://github.com/deyve55/aqua-homes-os/pull/194)
 
-Prepared: 2026-07-30 (`America/New_York`)
+Prepared: 2026-08-01 12:25 EDT (`America/New_York`)
 
-## Truth boundary
+Handoff base head observed before this handoff commit: `eca487bd66a4ea0bb603808988cd1011b9f75cf5`
 
-This branch is an integration and continuity branch. It does not merge into
-`main`, and it does not contain private signing keys.
+State: TAKEOVER READY; DO NOT RESTART OR REDESIGN
 
-GitHub reported `deyve55/aqua-homes-os` as **public** during preparation.
-Dave was informed and then explicitly authorized this upload.
+## 0. New-chat startup directive
 
-The complete Sentinel source, approved UI recovery package, Android wrappers,
-web/PWA source, carousel assets, tests, and workflows are inherited from the
-base branch.
+This is an active Aqua Sentinel OS implementation. The receiving chat must:
 
-The Aqua Command Center v0.2.3 APK and source ZIP are not part of this commit.
-Dave stated that another chat has them and will upload them separately. The
-reserved destination and verification requirements are documented under:
+1. Read this file and `CURRENT-STATE.json` completely.
+2. Read `docs/governance/GOLDEN-GOOSE-PIN.md` and use the attached or otherwise accessible Golden Goose files whose exact hashes are recorded below.
+3. Fetch PR #194 and verify its current head before changing anything. The branch was advancing during handoff preparation, so the head in this file is an observed base, not permission to overwrite later commits.
+4. Preserve the approved Home screen, protected Aqua A art, carousel, lower presentation panels, colors, assets, Android identity, backend boundary, and widget behavior.
+5. Use `sentient-os-web/` as the authoritative Sentinel web UI and `android-app/` as its Android wrapper.
+6. Do not package the legacy `sentinel-app/` tree as the current Aqua Sentinel OS.
+7. Keep PR #194 draft and unmerged unless Dave separately authorizes a merge. Repository metadata currently reports `public`; do not describe it as private without re-verification.
+8. Never upload API keys, `.env.local`, keystores, signing keys, temporary screenshots, `build/`, `dist/`, or old APK artifacts.
+9. Separate implemented, CI-verified, visually inspected, and physically verified claims.
+10. Continue from the exact failing proof gate in Section 8. Do not restart the project from the July v0.4.x state.
 
-`downloads/aqua-command-center-widget/v0.2.3/UPLOAD-REQUIRED.md`
+Dave is the sole final product, design, tradeoff, and production authority.
 
-Do not claim the Command Center integration is complete until those files are
-present and verified from the actual APK and source.
+## 1. Golden Goose governance pin
 
-## Aqua Sentinel source of truth
+The three supplied files were hash-verified again during this handoff:
 
-Use:
+| File | Version | SHA-256 |
+| --- | --- | --- |
+| `Golden-Goose-Engineering-Manual.md` | `1.2.0-RECONSTRUCTED-03` | `97e9dae4c90649af891bdfc9911e3bedfbc691ca1361f404b106ba0ed86ebc0a` |
+| `Golden-Goose-Update-Master-Handoff.md` | `1.1.0` | `8f18d1cb7fef905fc0b41804029ca5cba80bcf3efa47ae1fd422f0a7a270c9cc` |
+| `Golden-Goose-Notebook.md` | `1.9.0` | `76c39b20153606b9fd9edc87e2fa1783b33262261c2795e21c87e37e2bc2930c` |
 
-- `sentient-os-web/` for the approved Sentinel interface.
-- `android-app/` for the current Android wrapper.
-- `.github/workflows/aqua-sentient-os-release.yml` for the fidelity-preserving
-  release path.
-- `tests/sentient-functional-test.mjs` for the Sentinel production contract.
-- `00-START-HERE/AQUA-SENTINEL-A-TO-Z-MASTER-HANDOFF-2026-07-25.md` for the
-  detailed historical continuity record.
+The Assembly-Line Architecture Amendment is recorded as synchronized but not canonically promoted. This application handoff does not promote it and does not modify Golden Goose canonical files.
 
-Do not package `sentinel-app/` as the current approved Sentinel interface. It
-is retained only as legacy repository history.
+## 2. Current product identity and Android contract
 
-The release workflow's critical fidelity boundary is:
-
-```sh
-mkdir -p android-app/app/src/main/assets/public
-cp -R sentient-os-web/. android-app/app/src/main/assets/public/
-```
-
-## Current Sentinel source versus latest verified APK
-
-The branch source has advanced to the v0.4.7 test-candidate configuration:
-
-- source branch head before this integration commit:
-  `dab19a9d406686aea3e667441efd3e00eee3440e`
-- `applicationId`: `com.aquahomes.sentinel`
-- namespace: `com.aquahomes.sentientos`
-- source `versionCode`: `2026072508`
-- source `versionName`: `0.4.7-test-candidate`
-
-No correct `sentient-os-web` v0.4.7 release artifact was proven during this
-handoff. The newer `Aqua Sentinel Android APK` artifact at the branch head was
-inspected and rejected because it packages the obsolete `sentinel-app` tree.
-
-The latest recovered and correctly packaged Sentinel artifact is therefore the
-CI-verified v0.4.3 production candidate:
-
-- permanent GitHub release APK:
-  `https://github.com/deyve55/aqua-homes-os/releases/download/aqua-sentinel-os-v0.4.3-production-candidate/AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.apk`
-- APK SHA-256:
-  `114c8689ffeeb7d3ca85c547277be44fae92aef7a6d7b33e6228347ac161dfb4`
-- the permanent release URL was downloaded again during this handoff and
-  matched the APK SHA-256 above;
-- original complete workflow artifact ZIP SHA-256:
-  `1c3d20c9d45594d6b98df78f4d493611841a878b11d2423bee28adebd41847d6`
-- the package, checksum, certificate, provenance, and launch-proof records are
-  preserved under `downloads/aqua-sentinel-os/v0.4.3/`;
-- workflow artifact download:
-  use workflow run `30171083473`, artifact ID `8622998931`;
-- artifact source commit recorded by the package:
-  `fb97e77b04a7df7b8016c47dc62d6797e68d1279`
-
-The APK archive was rechecked and contains:
-
-- `assets/public/index.html`
-- `assets/public/app.js`
-- `assets/public/fidelity.css`
-- the approved `assets/public/assets/` tree
-- a valid ZIP structure
-
-Its preserved package report records:
-
-- package: `com.aquahomes.sentinel`
-- launch activity: `com.aquahomes.sentientos.MainActivity`
-- version code: `2026072504`
-- version name: `0.4.3-production-candidate`
-- minimum SDK: 26
-- target SDK: 35
-- Android permissions: Internet and microphone
-- APK Signature Scheme v2: verified
-- APK Signature Scheme v3: verified
-
-This is a production candidate, not a Google Play signing baseline. A prior
-candidate signed with a different temporary certificate may need to be
-uninstalled before installation.
-
-## Android launch contract
-
-### Aqua Sentinel OS
-
-| Field | Verified value |
+| Field | Current value |
 | --- | --- |
-| Application ID / installed package | `com.aquahomes.sentinel` |
+| Product | Aqua Sentinel OS |
+| Company | Aqua Software Inc. |
+| Android application ID | `com.aquahomes.sentinel` |
 | Java namespace | `com.aquahomes.sentientos` |
 | Launch activity | `com.aquahomes.sentientos.MainActivity` |
-| Explicit Android component | `com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity` |
-| Label | `Aqua Sentinel` |
-| Deep-link intent filters | None declared in the current authoritative manifest |
+| Explicit component | `com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity` |
+| Version code | `2026080101` |
+| Version name | `0.6.0-neural-link-ai-gateway-test` |
+| Minimum SDK | 26 |
+| Target SDK | 35 |
+| Authoritative web UI | `sentient-os-web/` |
+| Authoritative Android wrapper | `android-app/` |
+| Legacy/non-authoritative tree | `sentinel-app/` |
 
-The Command Center's large **A** must use the verified package/activity split
-above. Do not use `com.aquahomes.sentientos` as the installed package name.
-
-### Aqua Command Center
-
-The package, provider, activities, intent filters, widget metadata, resize
-limits, and certificate must be copied from the actual v0.2.3 manifest/APK by
-the chat that owns that build. Do not infer them from v0.2.1 or v0.2.2.
-
-## Approved Command Center control map
-
-- Large **A**: open Aqua Sentinel OS.
-- Ask Aqua: conversational microphone.
-- Video: narrated video capture.
-- Photo: still evidence capture.
-- File: silent voice filing.
-- Visible control order: **Ask Aqua · Video · Photo · File**.
-- Approved visual: translucent obsidian glass, blue edge trace, and the Aqua
-  Sentinel A/energy artwork blended into the tile without a black square.
-- Required widget behavior: true Samsung/One UI resizing with 4x3 default and
-  a smaller/larger supported range.
-
-Live AI answers, background Sentinel routing, and filing receipts must remain
-truthfully marked pending until their backend path is implemented and tested.
-
-## Carousel and approved visual assets
-
-The inherited branch contains the current landing-card and interface assets,
-including:
-
-- `sentient-os-web/assets/card-financial-command-front-v11.png`
-- `sentient-os-web/assets/card-operations-front-v11.png`
-- `sentient-os-web/assets/card-overview-front-v11.png`
-- `sentient-os-web/assets/card-risk-monitor-front-v11.png`
-- `sentient-os-web/assets/card-site-intelligence-front-v11.png`
-- `sentient-os-web/assets/ui-hero-front-v11.png`
-- `sentient-os-web/assets/ui-deck.png`
-- `android-app/icon-source/AquaSentinel-BrainCircuit-approved-v045.png`
-- `00-START-HERE/AQUA-SENTINEL-EXACT-UI-RECOVERY/`
-
-Preserve these assets and their aspect ratios. Do not redesign or replace them
-from memory.
-
-## Build and verification
-
-See `docs/integration/BUILD-AND-SIGNING.md`.
-
-Validation performed while preparing this branch:
-
-- `npm run test:sentient-functional`: 10/10 passed after the approved master
-  launcher was restored and checksum-verified.
-- `npm run test:sentinel`: 11/11 passed.
-- Sentinel v0.4.3 APK and artifact ZIP SHA-256 values matched their preserved
-  receipts.
-- Sentinel v0.4.3 APK ZIP integrity passed.
-- `assets/public/index.html`, `assets/public/app.js`, and
-  `assets/public/fidelity.css` were confirmed inside the APK.
-- `CURRENT-STATE.json` parsed successfully.
-- `git diff --check` passed.
-
-The complete launcher restoration script could not finish its generated
-foreground images in this local sandbox because it writes an intermediate file
-to `/tmp`, which is not writable here. Its master source restoration and
-checksum verification succeeded, and the repository's generated launcher
-outputs were not changed or committed. The GitHub workflow remains the
-authoritative full build environment.
-
-No new Android APK was built locally during this handoff. The preserved
-Sentinel v0.4.3 APK came from successful workflow run `30171083473` and its
-permanent GitHub release download was reverified byte-for-byte by SHA-256.
-
-Minimum Sentinel checks:
+The correct packaging boundary remains:
 
 ```sh
-npm run test:sentient-functional
-bash scripts/restore-aqua-sentinel-launcher-v045.sh
 mkdir -p android-app/app/src/main/assets/public
 cp -R sentient-os-web/. android-app/app/src/main/assets/public/
-cd android-app
-gradle --no-daemon --stacktrace :app:assembleRelease
 ```
 
-Release signing requires the environment-variable names declared in
-`android-app/app/build.gradle.kts`. Never commit their values, a keystore, or a
-private key.
+## 3. Approved Home screen — preserve it
 
-## Golden Goose pin
+The v0.6.0 work added secondary surfaces behind the existing Home. It did not authorize a Home redesign.
 
-The supplied working governance is pinned in
-`docs/governance/GOLDEN-GOOSE-PIN.md`. Application implementation remains
-separate from canonical Golden Goose promotion.
+Locked visual and interaction direction:
 
-## Required continuation sequence
+- black obsidian base;
+- protected metallic/cyan Aqua A hero and approved launcher artwork;
+- restrained gold, white type, blue glass, and no generic neon dashboard treatment;
+- curved seven-app carousel with touch/inertia behavior;
+- app name above the selected card;
+- two lower presentation/live-data panels tied to the selected app;
+- bottom order `Ask Aqua · Video · Photo · File`;
+- Samsung Fold closed posture is the primary physical target, with Fold open and DeX also required;
+- physical Dave approval remains the final visual truth.
 
-1. The other chat uploads the actual v0.2.3 APK, complete source ZIP, checksum,
-   verification receipt, and manifest identity report to the reserved folder.
-2. Verify the Command Center APK ZIP integrity, package/version, provider
-   registration, resize metadata, certificate, and Sentinel launch component.
-3. Update `CURRENT-STATE.json` with those exact values.
-4. Re-run a branch comparison against `main`.
-5. Install on Dave's Samsung Fold and test:
-   - widget add/remove;
-   - resize smaller and larger;
-   - large A opens Sentinel;
-   - Ask/Video/Photo/File routes;
-   - transparent artwork;
-   - update/install signing behavior.
-6. Record physical-device results. Do not call the integration complete before
-   that test.
+Checksum-locked visual anchors in the workflow:
 
-## Known remaining issues
+- Home hero: `d78335f4ccf77cebad9dba7d985bce979aff3e31272c4c6a85bc3f211f482df7`
+- launcher source: `bc1e014886d19f10ee1b8afdca2f5bc99d6d9c9ff103c2b359cc9457da80f6c5`
 
-- Command Center v0.2.3 files are pending from the other chat.
-- Current Sentinel source is ahead of the latest correctly recovered APK.
-- Sentinel v0.4.3 still requires final recorded Samsung Fold acceptance.
-- No Sentinel deep-link intent filter currently exists.
-- Command Center live AI and background filing are not proven end to end.
-- Final Google Play signing and update continuity are not established.
-- Repository visibility is public despite the earlier instruction calling it
-  private.
+Do not replace those assets from memory or generated approximations.
+
+## 4. What v0.6.0 now implements
+
+### Sentinel Home and secondary surfaces
+
+- Existing approved Home remains the startup surface.
+- Neural Link is a spatial, direct-open surface for the satellite applications.
+- Command Center contains File Cabinet, capture intake, queue, and practical control surfaces.
+- Deterministic CI-only preview routes exist for `home`, `neural`, `command`, `settings`, and `diagnostics`.
+- Normal startup is not supposed to use those preview routes.
+
+### Integrated Android Command Center
+
+The current Sentinel Android wrapper contains:
+
+- `AquaCommandWidget.java`;
+- `QuickCaptureActivity.java`;
+- `FilingStore.java`;
+- `EvidenceProvider.java`;
+- widget layouts, drawables, metadata, and action verification script;
+- Ask/Voice, Photo, Video, Files, widget delivery, and local-first filing seams.
+
+The separately packaged external Command Center v0.2.3 APK/source is still not present. Do not confuse that missing external package with the integrated Sentinel widget source now in `android-app/`.
+
+### AI gateway and Android boundary
+
+The Android app no longer contains or calls the old Supabase endpoint/key path. Android calls the stable server boundary through:
+
+- build field: `AQUA_GATEWAY_URL`;
+- default URL: `https://api.aquahomesos.com/gateway`;
+- encrypted short-lived device session storage;
+- JSON-RPC 2.0 requests;
+- server-side OpenAI use only.
+
+OpenAI keys, storage credentials, adapter credentials, tenant rules, entitlements, and authoritative writes must remain behind the gateway. Never place them in the APK or PWA.
+
+Backend source of truth:
+
+- `backend/server.mjs`
+- `backend/gateway.mjs`
+- `backend/auth.mjs`
+- `backend/contracts.mjs`
+- `backend/aqua-agent.mjs`
+- `backend/projection-store.mjs`
+- `backend/capability-registry.mjs`
+- `backend/receipt-intelligence.mjs`
+
+The current root package is private and uses `@openai/agents` `0.14.1` plus `zod` `4.4.3`.
+
+### Truth and confirmation behavior
+
+The executable backend tests establish:
+
+- signed, expiring Sentinel sessions;
+- tenant-isolated searchable projections;
+- strict materialization receipts;
+- capability protection;
+- no fake satellite write when an authoritative action adapter is absent;
+- explicit confirmation before protected actions;
+- live truth behavior that does not fabricate a receipt when no receipt adapter is connected.
+
+### Satellite projection sync
+
+`aqua.adapter.sync` is implemented as an authenticated, tenant-scoped, idempotent JSON-RPC method. It prevents:
+
+- one satellite impersonating another;
+- an adapter crossing an unapproved tenant boundary;
+- reuse of a sync ID with different content;
+- duplicate ingestion from an identical replay.
+
+Read:
+
+- `docs/ai-backend/satellite-projection-sync.md`
+- `backend/contracts.mjs`
+- `backend/capability-registry.mjs`
+
+The current projection store is in memory and loses projections on restart. It is an integration seam, not production durability.
+
+## 5. Sentinel SDK truth — critical for other app chats
+
+An installable Sentinel SDK has **not** been packaged or published yet.
+
+Current truth:
+
+- there is no `packages/aqua-sentinel-sdk/` directory;
+- the root `package.json` is private;
+- it has no package exports for satellites;
+- there is no truthful `npm install @aqua/sentinel-sdk` or Gradle dependency yet.
+
+Until an SDK exists, other app chats may read and implement the documented `aqua.adapter.sync` contract manually, but they must not invent a dependency.
+
+Planned permanent location and package name:
+
+```text
+packages/aqua-sentinel-sdk/
+@aqua/sentinel-sdk
+```
+
+Before satellite installation is claimed, the next implementation must create, version, test, and publish that private shared package, then pin the exact released version in each app. Never distribute adapter credentials inside it.
+
+## 6. Satellite authority and current connection status
+
+Registered capabilities:
+
+| ID | App | Current registry state |
+| --- | --- | --- |
+| `crm` | Aqua CRM | `adapter_required` |
+| `timesheet` | Aqua Timesheet | `adapter_required` |
+| `receipts` | Aqua Receipts | `adapter_required` |
+| `knowledge-vault` | Aqua Knowledge Vault | `adapter_required` |
+| `books` | Aqua Books | `adapter_required` |
+| `cam` | Aqua Cam | `adapter_required` |
+| `draw` | Aqua Draw | `adapter_required` |
+| `sentinel-files` | Sentinel File Cabinet | `local_ready` |
+
+Satellites remain authoritative for their own records. Projection sync is read-only. Writes require a prepared intent, explicit human confirmation, and a separately configured authoritative action adapter.
+
+## 7. Validation history that can be trusted
+
+### v0.6.0 implementation checkpoint
+
+- Initial approved 24-file backend/Neural Link payload was published as commit `f404225`.
+- 36/36 tests passed at that checkpoint.
+- Regression workflow #148 passed.
+- General Android workflow #75 passed.
+- Specialized v0.6.0 workflow #84 passed on retry; the original failure was an emulator input flake.
+- Artifact `8817120195` was produced by the general Android workflow for `f404225`.
+
+### Visual-evidence correction checkpoint
+
+- Focused preview/evidence work stayed confined to the approved evidence scope.
+- Commit `f6ae9395` produced green regression #152, general Android #79, and specialized run #92.
+- Run #92 proved distinct Neural Link and Command Center 430×932 images, APK build/signing, widget routes, Sentinel foreground activity, and no camera crash dialog.
+- Its launch image still contained a fullscreen onboarding overlay, so that image was not accepted as final Home visual evidence.
+
+### Current observed head before this handoff commit
+
+Head: `eca487bd66a4ea0bb603808988cd1011b9f75cf5` (`Render Home evidence without native preview rows`)
+
+Workflows on that head:
+
+| Workflow | GitHub run | Result |
+| --- | --- | --- |
+| Aqua Regression Gate | #165 / `30708160814` | Passed |
+| Aqua Sentinel Android APK | #92 / `30708160813` | Passed |
+| v0.6.0 Neural Link AI Gateway Test | #118 / `30708160827` | Pending when handoff was frozen |
+
+The immediately preceding specialized run #116 failed before Java/Android setup. The current head contains a focused Home-rendering correction; its specialized proof had not reached a terminal result when this handoff was frozen.
+
+Handoff checkout validation on the same base plus these two documentation updates:
+
+- backend tests: 9/9 passed;
+- Sentinel smoke tests: 11/11 passed;
+- Sentinel functional tests: 17/17 passed;
+- total: 37/37 passed;
+- `CURRENT-STATE.json` parsing passed;
+- `git diff --check` passed.
+
+## 8. Exact last work position — take over here
+
+File under active repair:
+
+`/.github/workflows/aqua-sentient-os-release.yml`
+
+Related contract files:
+
+- `sentient-os-web/app.js`
+- `tests/sentient-functional-test.mjs`
+
+Tracing commit `b0da68a` added `set -x` to the deterministic screenshot step. Run #116 proved:
+
+1. Home screenshot was written: 341,370 bytes.
+2. Neural Link screenshot was written: 277,872 bytes.
+3. Command Center screenshot was written: 207,809 bytes.
+4. All three non-empty-file checks passed.
+5. The very first Home DOM assertion failed:
+
+```sh
+grep -q 'data-aqua-preview-ready="home"' /tmp/aqua-sentinel-home-proof.html
+```
+
+That failure showed Home rendering stopped before the readiness marker was set. Current head `eca487b` applies the focused correction: `dashboardPanelMarkup()` now treats absent preview-row arrays as empty arrays and then uses the existing widget fallback. It also removes the temporary `set -x` tracing and adds a matching regression assertion. Regression #165 and general Android #92 are green; specialized #118 is the decisive pending proof.
+
+Required next action:
+
+1. Re-fetch PR #194 and ensure no newer commit supersedes `eca487b`.
+2. Monitor specialized run #118 (`30708160827`) through a terminal result.
+3. If it passes, download and visually inspect Home, Neural Link, and Command Center proof images; do not accept filenames alone.
+4. If it fails, inspect the exact failed command before changing source or retrying.
+5. Keep PR draft and do not merge.
+
+## 9. Current local/source checks
+
+Run from repository root:
+
+```sh
+npm ci
+npm test
+node --check sentient-os-web/app.js
+node --check backend/server.mjs
+node --check backend/gateway.mjs
+node --check backend/aqua-agent.mjs
+node --check backend/receipt-intelligence.mjs
+```
+
+The authoritative Android build remains the GitHub workflow because signing values must not be committed.
+
+## 10. Remaining gates after the CI evidence fix
+
+- Build and publish a real private `@aqua/sentinel-sdk` package.
+- Replace the in-memory projection store with governed durable persistence.
+- Configure real, server-side adapter credentials and tenant allowlists.
+- Connect each satellite and prove read projections without transferring record ownership.
+- Add authoritative action adapters only with confirmation, receipts, and audit behavior.
+- Complete real voice, wake/sleep, barge-in, construction-noise rejection, and primary-talker behavior.
+- Physically test the exact current APK on Dave's Samsung Fold 7 closed/open and in DeX.
+- Verify widget resize, Ask, Voice, Photo, Video, File Cabinet, app opening, carousel inertia, labels, lower panels, and return routing.
+- Establish final store/update signing continuity. CI test certificates are not a production signing baseline.
+- Update PR #194's title/body after the final v0.6.0 checkpoint; its current description still foregrounds v0.5.5.
+
+## 11. Security and truth boundaries
+
+- No API keys, `.env.local`, adapter secrets, keystores, or signing keys belong in Git.
+- The phone receives only a short-lived Sentinel session.
+- Client-provided tenant claims are not authoritative.
+- Satellite projections are not authoritative writes.
+- `Confirmed` must not be emitted without an authoritative receipt.
+- A green general APK workflow does not erase a failed specialized evidence gate.
+- A green emulator is not Samsung Fold visual acceptance.
+- A historical artifact is not necessarily built from the current branch head.
+
+## 12. Required takeover receipt
+
+After reading this file and re-fetching PR #194, the receiving chat should answer with a receipt equivalent to:
+
+```text
+AQUA SENTINEL V0.6.0 TAKEOVER RECEIPT
+
+OWNER: Dave (Deyve)
+COMPANY: Aqua Software Inc.
+REPOSITORY: deyve55/aqua-homes-os
+BRANCH: agent/aqua-sentinel-command-center-integration-20260730
+DRAFT PR: #194
+AUTHORITATIVE UI: sentient-os-web
+AUTHORITATIVE ANDROID: android-app
+LEGACY TREE: sentinel-app
+VERSION: 0.6.0-neural-link-ai-gateway-test
+LAST OBSERVED BASE HEAD: eca487bd66a4ea0bb603808988cd1011b9f75cf5
+CURRENT GATE: specialized run #118 pending after focused Home preview-row correction
+REGRESSION: green on observed head
+GENERAL ANDROID: green on observed head
+SDK: contract exists; installable @aqua/sentinel-sdk does not yet exist
+SATELLITES: adapter_required; Sentinel File Cabinet local_ready
+MAIN MERGE: not authorized
+REDESIGN: not authorized
+NEXT ACTION: re-fetch head, monitor run #118, inspect artifacts if green or the exact failed command if red
+```
+
+Then continue from the repository evidence. Do not reconstruct the project from chat memory.

@@ -1,26 +1,28 @@
 {
-  "schema_version": "1.0.0",
-  "updated_local_date": "2026-07-30",
+  "schema_version": "2.0.0",
+  "updated_at": "2026-08-01T12:25:17-04:00",
   "timezone": "America/New_York",
   "owner": "Dave (Deyve)",
+  "company": "Aqua Software Inc.",
+  "takeover_ready": true,
   "repository": {
     "full_name": "deyve55/aqua-homes-os",
     "visibility_verified": "public",
-    "visibility_warning_acknowledged_before_upload": true,
-    "base_branch": "agent/aqua-sentinel-production-apk-v0.4.1-20260725",
-    "integration_branch": "agent/aqua-sentinel-command-center-integration-20260730",
-    "base_source_head_before_integration": "dab19a9d406686aea3e667441efd3e00eee3440e",
+    "branch": "agent/aqua-sentinel-command-center-integration-20260730",
     "draft_pull_request": {
       "number": 194,
       "url": "https://github.com/deyve55/aqua-homes-os/pull/194",
       "state": "open",
       "draft": true
     },
-    "merged_into_main": false
+    "observed_head_before_handoff_commit": "eca487bd66a4ea0bb603808988cd1011b9f75cf5",
+    "observed_head_message": "Render Home evidence without native preview rows",
+    "main_changed_by_this_handoff": false,
+    "takeover_rule": "Fetch and verify the current PR head before editing; never overwrite later commits."
   },
   "golden_goose": {
     "engineering_manual": {
-      "edition": "1.2.0-RECONSTRUCTED-03",
+      "version": "1.2.0-RECONSTRUCTED-03",
       "sha256": "97e9dae4c90649af891bdfc9911e3bedfbc691ca1361f404b106ba0ed86ebc0a"
     },
     "update_master_handoff": {
@@ -31,77 +33,147 @@
       "version": "1.9.0",
       "sha256": "76c39b20153606b9fd9edc87e2fa1783b33262261c2795e21c87e37e2bc2930c"
     },
-    "assembly_amendment_status": "synced per supplied handoff; not canonical",
-    "canonical_promotion_performed_by_this_branch": false
+    "assembly_amendment": "synced per supplied handoff; not canonically promoted",
+    "canonical_files_changed": false
   },
   "sentinel": {
-    "source_status": "present",
+    "product_name": "Aqua Sentinel OS",
     "authoritative_web_source": "sentient-os-web",
     "authoritative_android_wrapper": "android-app",
-    "rejected_android_ui_source": "sentinel-app",
-    "source_application_id": "com.aquahomes.sentinel",
-    "source_namespace": "com.aquahomes.sentientos",
-    "source_launch_activity": "com.aquahomes.sentientos.MainActivity",
-    "source_explicit_component": "com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity",
-    "source_version_code": 2026072508,
-    "source_version_name": "0.4.7-test-candidate",
-    "deep_links": [],
-    "latest_correctly_recovered_apk": {
-      "version_code": 2026072504,
-      "version_name": "0.4.3-production-candidate",
-      "download_url": "https://github.com/deyve55/aqua-homes-os/releases/download/aqua-sentinel-os-v0.4.3-production-candidate/AquaSentinelOS-v0.4.3-PRODUCTION-CANDIDATE.apk",
-      "download_url_sha256_reverified": true,
-      "sha256": "114c8689ffeeb7d3ca85c547277be44fae92aef7a6d7b33e6228347ac161dfb4",
-      "artifact_zip_sha256": "1c3d20c9d45594d6b98df78f4d493611841a878b11d2423bee28adebd41847d6",
-      "workflow_run": 30171083473,
-      "workflow_artifact_id": 8622998931,
-      "branch_receipts_path": "downloads/aqua-sentinel-os/v0.4.3",
-      "package": "com.aquahomes.sentinel",
-      "launch_activity": "com.aquahomes.sentientos.MainActivity",
-      "signature_v2_verified": true,
-      "signature_v3_verified": true,
-      "zip_integrity_verified": true,
-      "approved_web_assets_embedded": true,
-      "physical_samsung_acceptance": "pending"
-    },
-    "source_binary_parity": "not current; source is v0.4.7 test candidate while latest correctly recovered APK is v0.4.3"
+    "legacy_non_authoritative_tree": "sentinel-app",
+    "application_id": "com.aquahomes.sentinel",
+    "namespace": "com.aquahomes.sentientos",
+    "launch_activity": "com.aquahomes.sentientos.MainActivity",
+    "explicit_component": "com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity",
+    "version_code": 2026080101,
+    "version_name": "0.6.0-neural-link-ai-gateway-test",
+    "min_sdk": 26,
+    "target_sdk": 35,
+    "home_redesign_authorized": false,
+    "physical_fold_acceptance": "pending for current v0.6.0 head",
+    "main_merge_authorized": false
   },
-  "command_center": {
-    "approved_control_order": [
-      "Ask Aqua",
-      "Video",
-      "Photo",
-      "File"
+  "implemented": {
+    "approved_home_preserved": true,
+    "neural_link_surface": true,
+    "command_center_surface": true,
+    "integrated_android_widget": true,
+    "local_file_cabinet": true,
+    "gateway_json_rpc": true,
+    "short_lived_sessions": true,
+    "android_gateway_bridge": true,
+    "old_supabase_client_path_removed": true,
+    "server_side_openai_boundary": true,
+    "satellite_projection_sync": true,
+    "tenant_scoped_adapter_auth": true,
+    "idempotent_sync_receipts": true,
+    "multimodal_receipt_intelligence_contract": true,
+    "truthful_missing_source_behavior": true
+  },
+  "backend": {
+    "gateway_url_default": "https://api.aquahomesos.com/gateway",
+    "openai_agents_version": "0.14.1",
+    "zod_version": "4.4.3",
+    "projection_store": "in_memory_integration_seam",
+    "durable_production_store": "not implemented",
+    "client_secrets_allowed": false
+  },
+  "sdk": {
+    "installable_package_exists": false,
+    "planned_repository_path": "packages/aqua-sentinel-sdk",
+    "planned_package_name": "@aqua/sentinel-sdk",
+    "manual_contract_path": "docs/ai-backend/satellite-projection-sync.md",
+    "schema_path": "backend/contracts.mjs",
+    "registry_path": "backend/capability-registry.mjs",
+    "instruction_to_satellites": "Do not invent npm or Gradle dependencies. Use the documented contract manually until a versioned private SDK is published."
+  },
+  "capabilities": {
+    "crm": "adapter_required",
+    "timesheet": "adapter_required",
+    "receipts": "adapter_required",
+    "knowledge-vault": "adapter_required",
+    "books": "adapter_required",
+    "cam": "adapter_required",
+    "draw": "adapter_required",
+    "sentinel-files": "local_ready"
+  },
+  "latest_observed_validation": {
+    "commit": "eca487bd66a4ea0bb603808988cd1011b9f75cf5",
+    "handoff_checkout_tests": {
+      "backend": "9/9 passed",
+      "sentinel_smoke": "11/11 passed",
+      "sentinel_functional": "17/17 passed",
+      "total": "37/37 passed",
+      "json_parse": "passed",
+      "git_diff_check": "passed"
+    },
+    "regression": {
+      "run_number": 165,
+      "run_id": 30708160814,
+      "conclusion": "success"
+    },
+    "general_android": {
+      "run_number": 92,
+      "run_id": 30708160813,
+      "conclusion": "success"
+    },
+    "specialized_v0_6_0": {
+      "run_number": 118,
+      "run_id": 30708160827,
+      "status_when_handoff_frozen": "pending",
+      "conclusion": null,
+      "preceding_failure": {
+        "commit": "b0da68ac10e7506ef2c0eb3b980f398b5b350371",
+        "run_number": 116,
+        "run_id": 30707951902,
+        "failed_step": "Render closed-phone Home, Neural Link, and Command Center proofs",
+        "failed_before_android_setup": true,
+        "home_png_bytes": 341370,
+        "neural_png_bytes": 277872,
+        "command_png_bytes": 207809,
+        "first_failed_command": "grep -q 'data-aqua-preview-ready=\"home\"' /tmp/aqua-sentinel-home-proof.html"
+      },
+      "focused_correction": "dashboardPanelMarkup now treats missing primaryRows or secondaryRows as empty arrays and uses the existing widget fallback"
+    }
+  },
+  "trusted_history": {
+    "initial_v0_6_0_commit": "f404225",
+    "initial_v0_6_0_tests": "36/36 passed",
+    "initial_general_android_artifact_id": 8817120195,
+    "visual_correction_commit": "f6ae9395",
+    "visual_correction_specialized_run": 92,
+    "visual_correction_result": "distinct Neural Link and Command Center proofs plus Android interaction passed; launch image still had fullscreen onboarding overlay"
+  },
+  "exact_takeover": {
+    "active_file": ".github/workflows/aqua-sentient-os-release.yml",
+    "related_files": [
+      "sentient-os-web/app.js",
+      "tests/sentient-functional-test.mjs"
     ],
-    "large_a_target_component": "com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity",
-    "v0_2_3_status": "pending upload by other chat",
-    "reserved_path": "downloads/aqua-command-center-widget/v0.2.3",
-    "apk_present": false,
-    "source_zip_present": false,
-    "manifest_identity_verified": false,
-    "samsung_resize_verified": false,
-    "sentinel_launch_verified": false
+    "current_root_cause_boundary": "Run #116 proved Home rendering stopped before its readiness marker because preview row arrays could be absent; current head eca487b applies the focused array guard.",
+    "next_action": "Re-fetch PR head and monitor specialized run #118. If green, download and visually inspect all three images. If red, inspect the exact failed command before any new change.",
+    "do_not_reopen_without_new_evidence": [
+      "Home redesign",
+      "Supabase removal",
+      "Android renderer",
+      "camera-dialog cleanup",
+      "AI gateway architecture"
+    ]
   },
+  "remaining_gates": [
+    "Specialized Home visual-proof gate green on current head",
+    "Installable private @aqua/sentinel-sdk created, versioned, tested, and published",
+    "Durable governed projection persistence",
+    "Real satellite adapters and tenant allowlists",
+    "Authoritative confirmed-action adapters",
+    "Samsung Fold 7 closed/open and DeX physical acceptance",
+    "Final production/store signing continuity"
+  ],
   "secrets": {
-    "private_signing_keys_committed": false,
+    "api_keys_committed": false,
+    "env_local_committed": false,
+    "adapter_credentials_committed": false,
     "keystore_committed": false,
-    "credential_values_added_by_integration": false
-  },
-  "validation": {
-    "sentient_functional_tests": {
-      "passed": 10,
-      "failed": 0
-    },
-    "sentinel_smoke_tests": {
-      "passed": 11,
-      "failed": 0
-    },
-    "json_parse": "passed",
-    "git_diff_check": "passed",
-    "sentinel_apk_zip_integrity": "passed",
-    "permanent_release_download_sha256": "passed",
-    "local_android_build": "not performed",
-    "launcher_restore_note": "master launcher restored and checksum-verified; full script could not write its hard-coded /tmp intermediate in this sandbox"
-  },
-  "release_status": "partial integration handoff; awaiting Command Center v0.2.3 and physical Samsung verification"
+    "private_signing_keys_committed": false
+  }
 }
