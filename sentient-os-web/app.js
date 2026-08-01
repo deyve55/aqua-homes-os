@@ -176,10 +176,20 @@ const snapshotStates = new Map();
 
 function enableEcosystemPresentationMode() {
   let enabled = false;
+  let deterministicHomeProof = false;
   try {
-    enabled = Boolean(window.AquaBridge?.isEcosystemPresentationMode?.());
+    const previewPanel = new URLSearchParams(window.location.search).get("preview");
+    deterministicHomeProof =
+      window.location.protocol === "file:" && previewPanel === "home";
   } catch (_) {
-    enabled = false;
+    deterministicHomeProof = false;
+  }
+  try {
+    enabled =
+      deterministicHomeProof ||
+      Boolean(window.AquaBridge?.isEcosystemPresentationMode?.());
+  } catch (_) {
+    enabled = deterministicHomeProof;
   }
   if (!enabled) return;
 

@@ -272,6 +272,10 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /preview=neural/);
   assert.match(workflow, /preview=command/);
   assert.match(script, /enableEcosystemPresentationMode/);
+  assert.match(
+    script,
+    /window\.location\.protocol === "file:" && previewPanel === "home"/,
+  );
   assert.match(script, /function activateDeterministicPreviewRoute\(\)/);
   assert.match(script, /\["home", "neural", "command", "settings", "diagnostics"\]\.includes\(previewPanel\)/);
   assert.match(script, /previewPanel === "home"/);
@@ -286,6 +290,8 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   );
   assert.doesNotMatch(script, /requestAnimationFrame\(\(\) => openPanel\(previewPanel\)\)/);
   assert.match(workflow, /data-aqua-preview-ready="home"/);
+  assert.match(workflow, /grep -q '8 open leads'/);
+  assert.match(workflow, /grep -q 'PRESENTATION DATA'/);
   assert.match(workflow, /data-aqua-preview-ready="neural"/);
   assert.match(workflow, /data-aqua-preview-ready="command"/);
   assert.match(workflow, /identify -format '%wx%h'/);
@@ -327,6 +333,11 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
     fidelity,
     /\.app-dashboard \.dashboard-card\{[\s\S]*?display:flex;[\s\S]*?flex-direction:column;/,
     "dashboard cards must stack their header, visible preview, and footer vertically",
+  );
+  assert.match(
+    fidelity,
+    /\.dashboard-panel-preview>footer b\{[^}]*font-size:inherit;[^}]*line-height:inherit/,
+    "the internal preview label must not inherit the outer card footer's oversized type",
   );
 });
 

@@ -151,6 +151,8 @@ jobs:
           grep -q 'class="hero-art"' /tmp/aqua-sentinel-home-proof.html
           grep -q 'id="appDeck"' /tmp/aqua-sentinel-home-proof.html
           grep -q 'id="primaryDashboard"' /tmp/aqua-sentinel-home-proof.html
+          grep -q '8 open leads' /tmp/aqua-sentinel-home-proof.html
+          grep -q 'PRESENTATION DATA' /tmp/aqua-sentinel-home-proof.html
           grep -q 'data-aqua-preview-ready="neural"' /tmp/aqua-sentinel-neural-proof.html
           grep -q 'data-panel="neural"' /tmp/aqua-sentinel-neural-proof.html
           grep -q 'AQUA SENTINEL NEURAL LINK' /tmp/aqua-sentinel-neural-proof.html

@@ -1057,4 +1057,4 @@ html,body{overscroll-behavior:none}
 .dashboard-panel-rows small{overflow:hidden;color:#b9d2d9;font-size:4cqw;text-overflow:ellipsis;white-space:nowrap}
 .dashboard-panel-rows b{color:#fff;font-size:4.2cqw;font-weight:800;white-space:nowrap}
 .dashboard-panel-preview>footer{position:relative;z-index:1;display:flex;justify-content:space-between;gap:4%;margin-top:auto;color:#8facb5;font-size:3.2cqw;letter-spacing:.04em}
-.dashboard-panel-preview>footer b{color:var(--app-color);font-weight:700}
+.dashboard-panel-preview>footer b{color:var(--app-color);font-size:inherit;font-weight:700;line-height:inherit}
