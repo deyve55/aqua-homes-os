@@ -288,7 +288,8 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /identify -format '%wx%h'/);
   assert.match(workflow, /! cmp -s/);
   assert.match(workflow, /am force-stop com\.android\.camera2/);
-  assert.match(workflow, /mCurrentFocus=.*com\\\.aquahomes\\\.sentinel/);
+  assert.match(workflow, /mResumedActivity\|topResumedActivity\|ResumedActivity/);
+  assert.match(workflow, /dumpsys activity activities/);
   assert.match(workflow, /Camera keeps stopping\|Close app/);
   assert.match(script, /ecosystemPresentationSnapshots\.set/);
   assert.match(script, /primaryRows/);
