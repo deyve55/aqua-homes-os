@@ -102,8 +102,39 @@ jobs:
             --window-size=430,932 \
             --screenshot=release/AquaSentinelOS-v0.6.0-Command-Center-closed-phone.png \
             "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=command"
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural" \
+            > /tmp/aqua-sentinel-neural-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=command" \
+            > /tmp/aqua-sentinel-command-proof.html
           test -s release/AquaSentinelOS-v0.6.0-Neural-Link-closed-phone.png
           test -s release/AquaSentinelOS-v0.6.0-Command-Center-closed-phone.png
+          grep -q 'data-aqua-preview-ready="neural"' /tmp/aqua-sentinel-neural-proof.html
+          grep -q 'data-panel="neural"' /tmp/aqua-sentinel-neural-proof.html
+          grep -q 'AQUA SENTINEL NEURAL LINK' /tmp/aqua-sentinel-neural-proof.html
+          grep -q 'data-aqua-preview-ready="command"' /tmp/aqua-sentinel-command-proof.html
+          grep -q 'data-panel="command"' /tmp/aqua-sentinel-command-proof.html
+          grep -q 'AQUA FILE CABINET' /tmp/aqua-sentinel-command-proof.html
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.6.0-Neural-Link-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.6.0-Command-Center-closed-phone.png)" = "430x932"
+          ! cmp -s \
+            release/AquaSentinelOS-v0.6.0-Neural-Link-closed-phone.png \
+            release/AquaSentinelOS-v0.6.0-Command-Center-closed-phone.png
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -230,7 +261,19 @@ jobs:
             adb shell dumpsys package com.aquahomes.sentinel | grep -q "QuickCaptureActivity"
             adb shell dumpsys package com.aquahomes.sentinel | grep -q "EvidenceProvider"
             bash scripts/verify-aqua-sentinel-widget-actions-v054.sh
+            adb shell am force-stop com.android.camera2 || true
+            adb shell input keyevent KEYCODE_BACK || true
+            adb logcat -c
+            adb shell am force-stop com.aquahomes.sentinel
             adb shell am start -W -n com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity
+            for attempt in $(seq 1 20); do sleep 2; if adb logcat -d | grep -q "AQUA_SENTINEL_UI_READY"; then break; fi; done
+            adb logcat -d > /tmp/aqua-sentinel-v0.6.0-final-logcat.txt
+            grep -q "AQUA_SENTINEL_UI_READY" /tmp/aqua-sentinel-v0.6.0-final-logcat.txt
+            adb shell dumpsys window windows > /tmp/aqua-sentinel-v0.6.0-window.txt
+            grep -Eq "mCurrentFocus=.*com\.aquahomes\.sentinel/com\.aquahomes\.sentientos\.MainActivity" /tmp/aqua-sentinel-v0.6.0-window.txt
+            adb shell uiautomator dump /sdcard/aqua-sentinel-v0.6.0-window.xml >/dev/null
+            adb pull /sdcard/aqua-sentinel-v0.6.0-window.xml /tmp/aqua-sentinel-v0.6.0-window.xml >/dev/null
+            ! grep -Eiq "Camera keeps stopping|Close app" /tmp/aqua-sentinel-v0.6.0-window.xml
             adb exec-out screencap -p > /tmp/aqua-sentinel-v0.6.0-launch.png
             test -s /tmp/aqua-sentinel-v0.6.0-launch.png
 

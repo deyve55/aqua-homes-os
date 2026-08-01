@@ -1345,6 +1345,18 @@ function applyAquaAction(action) {
   }
 }
 
+function activateDeterministicPreviewRoute() {
+  const previewPanel = new URLSearchParams(window.location.search).get("preview");
+  if (!["neural", "command", "settings", "diagnostics"].includes(previewPanel)) {
+    return false;
+  }
+  authenticated = true;
+  authPanel.hidden = true;
+  openPanel(previewPanel);
+  document.documentElement.dataset.aquaPreviewReady = previewPanel;
+  return true;
+}
+
 function startVoice() {
   if (!authenticated) {
     authPanel.hidden = false;
@@ -1689,6 +1701,7 @@ appDeck.addEventListener("lostpointercapture", (event) => {
 enableCustomerPreviewIfAuthorized();
 enableEcosystemPresentationMode();
 render();
+const deterministicPreviewActive = activateDeterministicPreviewRoute();
 requestAnimationFrame(revealSelectedAppLabel);
 requestSnapshot(apps[active]);
 setInterval(() => {
@@ -1698,14 +1711,12 @@ document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") requestSnapshot(apps[active]);
 });
 
-if (window.AquaBridge?.bootstrap) {
+if (deterministicPreviewActive) {
+  // CI-only visual proof route. Normal Android and browser startup remain unchanged.
+} else if (window.AquaBridge?.bootstrap) {
   window.AquaBridge.bootstrap();
 } else {
   authenticated = true;
   authPanel.hidden = true;
-  const previewPanel = new URLSearchParams(window.location.search).get("preview");
-  if (["neural", "command", "settings", "diagnostics"].includes(previewPanel)) {
-    requestAnimationFrame(() => openPanel(previewPanel));
-  }
 }
 window.refreshFilingInbox();
