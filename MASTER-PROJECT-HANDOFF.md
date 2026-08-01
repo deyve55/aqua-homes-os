@@ -351,3 +351,73 @@ NEXT ACTION: re-fetch head, monitor run #118, inspect artifacts if green or the 
 ```
 
 Then continue from the repository evidence. Do not reconstruct the project from chat memory.
+
+## 13. Completed v0.6.0 APK and SDK v1.10.0 checkpoint — 2026-08-01
+
+The takeover is complete at the source, package, emulator, deterministic visual
+proof, and shared-SDK consumer-install boundary.
+
+### Authoritative APK checkpoint
+
+- source branch: `agent/aqua-sentinel-command-center-integration-20260730`
+- validated source commit: `c1545cf3727adeb0815d11c571b72b3f235dc481`
+- draft PR: #194, still open and unmerged
+- regression run #169 / 30710420420: success
+- general Android run #96 / 30710420409: success
+- specialized v0.6.0 run #125 / 30710420380: success
+- specialized job 91397613876: success
+- repository tests: 37 passed, 0 failed
+- visual proofs: Home, Neural Link, and Command Center passed at 430x932
+- Home proof asserts ecosystem presentation data (`8 open leads`) and the
+  `PRESENTATION DATA` truth marker
+- clean emulator install/launch and Ask, Voice, Photo, and Video widget routes:
+  passed
+- artifact ID: 8821888791
+- artifact SHA-256:
+  `e382d19ef614b66a529b2d1c4249b9f33c5347cc8ac3ad06e842fb3d01f70b24`
+- APK SHA-256:
+  `b6cb5502fb4c7400c24ce5416eeeecc9fed83cd1b7b377682e48f5531605228d`
+- package: `com.aquahomes.sentinel`
+- version: `2026080101 / 0.6.0-neural-link-ai-gateway-test`
+- min/target SDK: 26 / 35
+- signing: temporary CI test certificate only; no production signing claim
+
+The Home defect found during takeover is closed: dashboard cards now stack
+vertically, both embedded app previews are visible, the internal Preview label
+does not inherit oversized outer-footer type, and the deterministic proof
+executes the same ecosystem presentation state enabled in the APK build.
+
+### Authoritative SDK checkpoint
+
+The installable shared package is
+`@deyve55/aqua-integration-sdk@1.10.0` in the private
+`deyve55/Aqua-sentient-os` repository, draft PR #8.
+
+- validated SDK source: `08e39b182c7459521f477955125882b692f5ca7b`
+- workflow run #18 / 30709137707: success
+- Node 20: 106 passed, 0 failed
+- Node 24: 106 passed, 0 failed
+- clean tarball installs: passed
+- clean authenticated restricted-registry install: passed
+- server-only export:
+  `@deyve55/aqua-integration-sdk/projection-sync`
+- method: `aqua.adapter.sync`
+- local SDK-to-v0.6-gateway contract: 6 passed, 0 failed
+- idempotent replay and tenant projection/search: verified
+
+Consumer apps have not automatically adopted the SDK. Each authorized backend
+must be granted restricted package read access, pin version 1.10.0 exactly,
+configure its own backend-held adapter ID/key and HTTPS gateway URL, and return
+repository-local conformance evidence before adoption is recorded.
+
+### Remaining truth boundary
+
+No physical Samsung Fold 7 closed/open/DeX acceptance, durable production
+projection store, live production gateway deployment, production adapter
+credential, satellite-app adoption, authoritative confirmed-action adapter, or
+production signing result is claimed.
+
+Exact next action: install the exact artifact on Dave's Fold 7 for physical
+acceptance, then onboard each approved satellite backend to SDK v1.10.0 with an
+exact version pin and conformance proof.
+

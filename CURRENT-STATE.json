@@ -1,6 +1,6 @@
 {
-  "schema_version": "2.0.0",
-  "updated_at": "2026-08-01T12:25:17-04:00",
+  "schema_version": "2.1.0",
+  "updated_at": "2026-08-01T13:50:46-04:00",
   "timezone": "America/New_York",
   "owner": "Dave (Deyve)",
   "company": "Aqua Software Inc.",
@@ -15,8 +15,8 @@
       "state": "open",
       "draft": true
     },
-    "observed_head_before_handoff_commit": "eca487bd66a4ea0bb603808988cd1011b9f75cf5",
-    "observed_head_message": "Render Home evidence without native preview rows",
+    "observed_head_before_handoff_commit": "c1545cf3727adeb0815d11c571b72b3f235dc481",
+    "observed_head_message": "Align Sentinel Home proof with presentation build",
     "main_changed_by_this_handoff": false,
     "takeover_rule": "Fetch and verify the current PR head before editing; never overwrite later commits."
   },
@@ -50,7 +50,7 @@
     "min_sdk": 26,
     "target_sdk": 35,
     "home_redesign_authorized": false,
-    "physical_fold_acceptance": "pending for current v0.6.0 head",
+    "physical_fold_acceptance": "pending for exact c1545cf v0.6.0 artifact",
     "main_merge_authorized": false
   },
   "implemented": {
@@ -68,7 +68,10 @@
     "tenant_scoped_adapter_auth": true,
     "idempotent_sync_receipts": true,
     "multimodal_receipt_intelligence_contract": true,
-    "truthful_missing_source_behavior": true
+    "truthful_missing_source_behavior": true,
+    "home_dashboard_vertical_layout": true,
+    "visible_ecosystem_presentation_panels": true,
+    "deterministic_home_presentation_proof": true
   },
   "backend": {
     "gateway_url_default": "https://api.aquahomesos.com/gateway",
@@ -79,13 +82,35 @@
     "client_secrets_allowed": false
   },
   "sdk": {
-    "installable_package_exists": false,
-    "planned_repository_path": "packages/aqua-sentinel-sdk",
-    "planned_package_name": "@aqua/sentinel-sdk",
-    "manual_contract_path": "docs/ai-backend/satellite-projection-sync.md",
-    "schema_path": "backend/contracts.mjs",
-    "registry_path": "backend/capability-registry.mjs",
-    "instruction_to_satellites": "Do not invent npm or Gradle dependencies. Use the documented contract manually until a versioned private SDK is published."
+    "installable_package_exists": true,
+    "repository": "deyve55/Aqua-sentient-os",
+    "branch": "agent/publish-sentinel-sdk-v1.9.0-20260801",
+    "draft_pull_request": {
+      "number": 8,
+      "url": "https://github.com/deyve55/Aqua-sentient-os/pull/8",
+      "state": "open",
+      "draft": true
+    },
+    "package_name": "@deyve55/aqua-integration-sdk",
+    "version": "1.10.0",
+    "registry": "restricted GitHub Packages",
+    "validated_source_commit": "08e39b182c7459521f477955125882b692f5ca7b",
+    "workflow_run": {
+      "number": 18,
+      "id": 30709137707,
+      "conclusion": "success"
+    },
+    "tests": {
+      "node_20": "106/106 passed",
+      "node_24": "106/106 passed",
+      "local_v0_6_gateway_contract": "6/6 passed"
+    },
+    "clean_tarball_install": true,
+    "clean_authenticated_registry_install": true,
+    "projection_sync_export": "@deyve55/aqua-integration-sdk/projection-sync",
+    "json_rpc_method": "aqua.adapter.sync",
+    "server_only": true,
+    "instruction_to_satellites": "Grant restricted package read access, pin @deyve55/aqua-integration-sdk@1.10.0 exactly, configure backend-held adapter credentials and the HTTPS Sentinel gateway, and pass repository-local conformance before claiming adoption."
   },
   "capabilities": {
     "crm": "adapter_required",
@@ -98,42 +123,57 @@
     "sentinel-files": "local_ready"
   },
   "latest_observed_validation": {
-    "commit": "eca487bd66a4ea0bb603808988cd1011b9f75cf5",
-    "handoff_checkout_tests": {
+    "source_commit": "c1545cf3727adeb0815d11c571b72b3f235dc481",
+    "source_message": "Align Sentinel Home proof with presentation build",
+    "local_tests": {
       "backend": "9/9 passed",
       "sentinel_smoke": "11/11 passed",
       "sentinel_functional": "17/17 passed",
       "total": "37/37 passed",
-      "json_parse": "passed",
       "git_diff_check": "passed"
     },
     "regression": {
-      "run_number": 165,
-      "run_id": 30708160814,
+      "run_number": 169,
+      "run_id": 30710420420,
       "conclusion": "success"
     },
     "general_android": {
-      "run_number": 92,
-      "run_id": 30708160813,
+      "run_number": 96,
+      "run_id": 30710420409,
       "conclusion": "success"
     },
     "specialized_v0_6_0": {
-      "run_number": 118,
-      "run_id": 30708160827,
-      "status_when_handoff_frozen": "pending",
-      "conclusion": null,
-      "preceding_failure": {
-        "commit": "b0da68ac10e7506ef2c0eb3b980f398b5b350371",
-        "run_number": 116,
-        "run_id": 30707951902,
-        "failed_step": "Render closed-phone Home, Neural Link, and Command Center proofs",
-        "failed_before_android_setup": true,
-        "home_png_bytes": 341370,
-        "neural_png_bytes": 277872,
-        "command_png_bytes": 207809,
-        "first_failed_command": "grep -q 'data-aqua-preview-ready=\"home\"' /tmp/aqua-sentinel-home-proof.html"
+      "run_number": 125,
+      "run_id": 30710420380,
+      "job_id": 91397613876,
+      "conclusion": "success",
+      "tests": "37/37 passed",
+      "deterministic_visual_proof": "Home, Neural Link, and Command Center passed at 430x932",
+      "presentation_dom_proof": [
+        "8 open leads",
+        "PRESENTATION DATA"
+      ],
+      "clean_install_and_launch": "passed",
+      "widget_routes": "Ask, Voice, Photo, and Video passed",
+      "artifact": {
+        "id": 8821888791,
+        "name": "AquaSentinelOS-v0.6.0-Neural-Link-AI-Gateway-Test",
+        "archive_sha256": "e382d19ef614b66a529b2d1c4249b9f33c5347cc8ac3ad06e842fb3d01f70b24",
+        "apk_sha256": "b6cb5502fb4c7400c24ce5416eeeecc9fed83cd1b7b377682e48f5531605228d",
+        "apk_bytes": 4312888,
+        "package": "com.aquahomes.sentinel",
+        "version_code": 2026080101,
+        "version_name": "0.6.0-neural-link-ai-gateway-test",
+        "min_sdk": 26,
+        "target_sdk": 35,
+        "signing": "temporary CI test certificate; not a production signing baseline"
       },
-      "focused_correction": "dashboardPanelMarkup now treats missing primaryRows or secondaryRows as empty arrays and uses the existing widget fallback"
+      "visual_acceptance": {
+        "home": "accepted in deterministic proof; both presentation panels visible with app metrics and rows",
+        "neural_link": "accepted in deterministic proof; distinct and unobstructed",
+        "command_center": "accepted in deterministic proof; distinct and unobstructed",
+        "physical_fold_7": "pending"
+      }
     }
   },
   "trusted_history": {
@@ -145,28 +185,24 @@
     "visual_correction_result": "distinct Neural Link and Command Center proofs plus Android interaction passed; launch image still had fullscreen onboarding overlay"
   },
   "exact_takeover": {
-    "active_file": ".github/workflows/aqua-sentient-os-release.yml",
-    "related_files": [
-      "sentient-os-web/app.js",
-      "tests/sentient-functional-test.mjs"
-    ],
-    "current_root_cause_boundary": "Run #116 proved Home rendering stopped before its readiness marker because preview row arrays could be absent; current head eca487b applies the focused array guard.",
-    "next_action": "Re-fetch PR head and monitor specialized run #118. If green, download and visually inspect all three images. If red, inspect the exact failed command before any new change.",
+    "active_source_commit": "c1545cf3727adeb0815d11c571b72b3f235dc481",
+    "active_workflow": ".github/workflows/aqua-sentient-os-release.yml",
+    "current_boundary": "v0.6.0 APK is CI-, emulator-, package-, signature-, widget-route-, and deterministic-visual-proof verified. SDK v1.10.0 is restricted-registry consumer-install verified. Physical Fold 7/DeX acceptance, durable production projection storage, real satellite adapter adoption, authoritative confirmed-action adapters, and production signing remain.",
+    "next_action": "Install the exact artifact on Dave's Samsung Fold 7 and run closed/open/DeX acceptance. In parallel, grant approved satellite backends GitHub Packages read access, pin SDK v1.10.0, and run each app's conformance suite before recording adoption.",
     "do_not_reopen_without_new_evidence": [
       "Home redesign",
-      "Supabase removal",
-      "Android renderer",
-      "camera-dialog cleanup",
-      "AI gateway architecture"
+      "Aqua Sentinel package identity",
+      "server-owned AI gateway boundary",
+      "SDK package name or projection-sync method",
+      "camera/fullscreen emulator infrastructure diagnosis"
     ]
   },
   "remaining_gates": [
-    "Specialized Home visual-proof gate green on current head",
-    "Installable private @aqua/sentinel-sdk created, versioned, tested, and published",
+    "Samsung Fold 7 closed/open and DeX physical acceptance on the exact c1545cf artifact",
+    "Consumer-repository package permissions and exact SDK v1.10.0 adoption proofs",
     "Durable governed projection persistence",
     "Real satellite adapters and tenant allowlists",
     "Authoritative confirmed-action adapters",
-    "Samsung Fold 7 closed/open and DeX physical acceptance",
     "Final production/store signing continuity"
   ],
   "secrets": {
