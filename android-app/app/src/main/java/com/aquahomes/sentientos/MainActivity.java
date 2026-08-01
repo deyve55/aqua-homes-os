@@ -42,6 +42,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,18 +63,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         "file:///android_asset/public/index.html";
     private static final String LOCAL_APP_PREFIX =
         "file:///android_asset/public/";
-    private static final String SUPABASE_URL =
-        "https://zufwllpknjtdpqgqhifp.supabase.co";
-    // Supabase publishable keys are intentionally safe for public mobile clients.
-    private static final String SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_2oYgacPWTg3_IHG5t15Avw_uBNS0IZ2";
-    private static final String AQUA_ENDPOINT =
-        SUPABASE_URL + "/functions/v1/aqua-sentinel-executive";
+    private static final String AQUA_GATEWAY_URL = BuildConfig.AQUA_GATEWAY_URL;
     private static final String KEYSTORE_PROVIDER = "AndroidKeyStore";
     private static final String KEY_ALIAS = "aqua_sentinel_owner_session_v1";
     private static final String SESSION_STORE = "aqua_sentinel_secure_session";
     private static final String ACCESS_TOKEN = "access_token";
-    private static final String REFRESH_TOKEN = "refresh_token";
+    private static final String SESSION_EXPIRES_AT = "session_expires_at";
     private static final String USER_EMAIL = "user_email";
     private static final String SNAPSHOT_STORE = "aqua_sentinel_home_snapshots_v1";
     private static final String SNAPSHOT_REQUEST_ACTION =
@@ -713,17 +708,20 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
     private void storeSession(JSONObject payload) throws Exception {
-        String accessToken = payload.optString("access_token", "");
-        String refreshToken = payload.optString("refresh_token", "");
-        JSONObject user = payload.optJSONObject("user");
+        String accessToken = payload.optString("accessToken", "");
+        JSONObject user = payload.optJSONObject("identity");
         String email = user == null
             ? readSecureValue(USER_EMAIL)
             : user.optString("email", readSecureValue(USER_EMAIL));
-        if (accessToken.isEmpty() || refreshToken.isEmpty()) {
+        long expiresIn = Math.max(60, payload.optLong("expiresIn", 900));
+        if (accessToken.isEmpty()) {
             throw new JSONException("The secure session response was incomplete.");
         }
         storeSecureValue(ACCESS_TOKEN, accessToken);
-        storeSecureValue(REFRESH_TOKEN, refreshToken);
+        storeSecureValue(
+            SESSION_EXPIRES_AT,
+            Long.toString(System.currentTimeMillis() + expiresIn * 1000L)
+        );
         storeSecureValue(USER_EMAIL, email);
     }
 
@@ -740,7 +738,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("apikey", SUPABASE_PUBLISHABLE_KEY);
         if (accessToken != null && !accessToken.isEmpty()) {
             connection.setRequestProperty(
                 "Authorization",
@@ -774,34 +771,53 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         return new HttpResult(status, response.toString());
     }
 
-    private JSONObject refreshSession() throws Exception {
-        String refreshToken = readSecureValue(REFRESH_TOKEN);
-        if (refreshToken.isEmpty()) return null;
-        JSONObject body = new JSONObject().put(
-            "refresh_token",
-            refreshToken
-        );
-        HttpResult result = postJson(
-            SUPABASE_URL + "/auth/v1/token?grant_type=refresh_token",
-            body,
-            ""
-        );
-        if (!result.isSuccess()) return null;
-        JSONObject payload = new JSONObject(result.body);
-        storeSession(payload);
+    private JSONObject rpcRequest(String method, JSONObject params) throws JSONException {
+        return new JSONObject()
+            .put("jsonrpc", "2.0")
+            .put("id", UUID.randomUUID().toString())
+            .put("method", method)
+            .put("params", params);
+    }
+
+    private JSONObject rpcResult(HttpResult result, String fallback) throws Exception {
+        JSONObject envelope = new JSONObject(result.body);
+        JSONObject error = envelope.optJSONObject("error");
+        if (!result.isSuccess() || error != null) {
+            if (error != null && error.optInt("code") == -32001) {
+                clearSession();
+                sendJsonCallback(
+                    "receiveAuthState",
+                    new JSONObject().put("authenticated", false)
+                );
+            }
+            String message = error == null
+                ? fallback
+                : error.optString("message", fallback);
+            throw new IllegalStateException(message.length() > 220 ? fallback : message);
+        }
+        JSONObject payload = envelope.optJSONObject("result");
+        if (payload == null) throw new JSONException("The gateway response was incomplete.");
         return payload;
+    }
+
+    private boolean sessionIsCurrent() {
+        String accessToken = readSecureValue(ACCESS_TOKEN);
+        String expiresAt = readSecureValue(SESSION_EXPIRES_AT);
+        if (accessToken.isEmpty() || expiresAt.isEmpty()) return false;
+        try {
+            return Long.parseLong(expiresAt) > System.currentTimeMillis() + 30_000L;
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
     }
 
     private String safeServerError(HttpResult result, String fallback) {
         try {
             JSONObject payload = new JSONObject(result.body);
-            String message = payload.optString(
-                "error_description",
-                payload.optString(
-                    "msg",
-                    payload.optString("error", fallback)
-                )
-            );
+            JSONObject error = payload.optJSONObject("error");
+            String message = error == null
+                ? payload.optString("error", fallback)
+                : error.optString("message", fallback);
             if (message.length() > 220) return fallback;
             return message;
         } catch (Exception ignored) {
@@ -813,15 +829,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         networkExecutor.execute(() -> {
             JSONObject state = new JSONObject();
             try {
-                String refreshToken = readSecureValue(REFRESH_TOKEN);
-                if (refreshToken.isEmpty()) {
-                    state.put("authenticated", false);
-                } else {
-                    JSONObject refreshed = refreshSession();
-                    state.put("authenticated", refreshed != null);
-                    state.put("email", readSecureValue(USER_EMAIL));
-                    if (refreshed == null) clearSession();
-                }
+                boolean authenticated = sessionIsCurrent();
+                state.put("authenticated", authenticated);
+                state.put("email", readSecureValue(USER_EMAIL));
+                if (!authenticated) clearSession();
             } catch (Exception ignored) {
                 clearSession();
                 try {
@@ -841,29 +852,22 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                         "Enter the owner email and password."
                     );
                 }
-                JSONObject body = new JSONObject()
+                JSONObject params = new JSONObject()
                     .put("email", email.trim().toLowerCase(Locale.US))
-                    .put("password", password);
+                    .put("password", password)
+                    .put("deviceId", installationId());
                 HttpResult result = postJson(
-                    SUPABASE_URL + "/auth/v1/token?grant_type=password",
-                    body,
+                    AQUA_GATEWAY_URL,
+                    rpcRequest("session.create", params),
                     ""
                 );
-                if (!result.isSuccess()) {
-                    callback.put("success", false);
-                    callback.put(
-                        "error",
-                        safeServerError(
-                            result,
-                            "Aqua could not verify that owner sign-in."
-                        )
-                    );
-                } else {
-                    JSONObject payload = new JSONObject(result.body);
-                    storeSession(payload);
-                    callback.put("success", true);
-                    callback.put("email", readSecureValue(USER_EMAIL));
-                }
+                JSONObject payload = rpcResult(
+                    result,
+                    "Aqua could not verify that owner sign-in."
+                );
+                storeSession(payload);
+                callback.put("success", true);
+                callback.put("email", readSecureValue(USER_EMAIL));
             } catch (Exception error) {
                 try {
                     callback.put("success", false);
@@ -894,28 +898,18 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 } catch (Exception ignored) {
                     parsedContext = new JSONObject();
                 }
-                JSONObject body = new JSONObject()
+                JSONObject params = new JSONObject()
                     .put("text", text)
                     .put("selectedApp", selectedApp)
                     .put("uiContext", parsedContext)
-                    .put("client", "android-apk")
-                    .put("deviceId", installationId());
+                    .put("conversationId", installationId() + "-primary")
+                    .put("safetyIdentifier", safetyIdentifier());
 
                 HttpResult result = postJson(
-                    AQUA_ENDPOINT,
-                    body,
+                    AQUA_GATEWAY_URL,
+                    rpcRequest("aqua.chat", params),
                     accessToken
                 );
-                if (result.status == 401) {
-                    JSONObject refreshed = refreshSession();
-                    if (refreshed != null) {
-                        result = postJson(
-                            AQUA_ENDPOINT,
-                            body,
-                            readSecureValue(ACCESS_TOKEN)
-                        );
-                    }
-                }
                 if (!result.isSuccess()) {
                     if (result.status == 401 || result.status == 403) {
                         clearSession();
@@ -932,7 +926,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                         )
                     );
                 }
-                JSONObject payload = new JSONObject(result.body);
+                JSONObject payload = rpcResult(
+                    result,
+                    "Aqua could not complete that secure request."
+                );
                 sendJsonCallback("receiveAquaResponse", payload);
             } catch (Exception error) {
                 sendError(
@@ -950,6 +947,20 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             Settings.Secure.ANDROID_ID
         );
         return value == null ? "android-unknown" : value;
+    }
+
+    private String safetyIdentifier() {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256").digest(
+                ("aqua-sentinel:" + installationId()).getBytes(StandardCharsets.UTF_8)
+            );
+            return "sentinel-" + Base64.encodeToString(
+                digest,
+                Base64.NO_WRAP | Base64.URL_SAFE
+            ).substring(0, 24);
+        } catch (Exception ignored) {
+            return "sentinel-android-fallback";
+        }
     }
 
     private static class HttpResult {

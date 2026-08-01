@@ -829,9 +829,115 @@ function openDetail(kind) {
   });
 }
 
+function launchAppByIndex(index) {
+  const app = apps[index];
+  if (!app) return;
+  if (window.AquaBridge?.launchApp) {
+    window.AquaBridge.launchApp(app.name, JSON.stringify(app.packages));
+  } else {
+    active = index;
+    notify(`${app.name} opens from the installed Android app.`);
+  }
+}
+
+function portalMaterialization(index) {
+  if (index >= apps.length) {
+    window.refreshFilingInbox();
+    openPanel("files");
+    return;
+  }
+  const app = apps[index];
+  showMaterialization({
+    present: true,
+    kind: "collection",
+    title: app.name,
+    subtitle: app.status,
+    sourceApp: app.name,
+    sourceRecordId: `portal-${app.motion}`,
+    sourceState: app.connected ? "Confirmed" : "Needs Attention",
+    confidence: 1,
+    previewUri: "",
+    fields: [
+      { label: "Authority", value: app.secondaryDetail },
+      { label: "Available here", value: app.widgets.join(" · ") },
+      { label: "Connection", value: app.connected ? "Confirmed" : "Adapter pending" },
+    ],
+    actions: [
+      { id: "open-source", label: `Open ${app.name}`, kind: "open_source", requiresConfirmation: false },
+      { id: "dismiss", label: "Return to Neural Link", kind: "dismiss", requiresConfirmation: false },
+    ],
+    appIndex: index,
+  });
+}
+
+function safeMaterializationUri(value) {
+  const uri = String(value || "");
+  if (/^data:image\/(png|webp|jpeg);base64,[A-Za-z0-9+/=\r\n]+$/.test(uri)) return uri;
+  try {
+    const parsed = new URL(uri);
+    return parsed.protocol === "https:" ? parsed.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function showMaterialization(materialization) {
+  if (!materialization?.present) return;
+  const fields = Array.isArray(materialization.fields) ? materialization.fields : [];
+  const actions = Array.isArray(materialization.actions) ? materialization.actions : [];
+  const previewUri = safeMaterializationUri(materialization.previewUri);
+  detailSheet.classList.add("aqua-materialization");
+  detailSheet.style.setProperty("--app-color", "#34dcff");
+  detailSheet.innerHTML = `
+    <button class="sheet-close" type="button" aria-label="Return to Aqua">×</button>
+    <div class="materialized-source"><i></i><span><small>${escapeHtml(materialization.sourceApp || "Aqua Sentinel")}</small><b>${escapeHtml(materialization.sourceState || "Needs Attention")}</b></span></div>
+    <small>AQUA BROUGHT THIS FORWARD</small>
+    <h2>${escapeHtml(materialization.title || "Requested item")}</h2>
+    <p>${escapeHtml(materialization.subtitle || "")}</p>
+    ${previewUri ? `<div class="materialized-preview"><img src="${escapeHtml(previewUri)}" alt="${escapeHtml(materialization.title || "Requested item")}" /></div>` : `<div class="materialized-object"><span>${escapeHtml(String(materialization.kind || "file").slice(0, 1).toUpperCase())}</span><i></i></div>`}
+    <div class="materialized-fields">${fields.map((field) => `<span><small>${escapeHtml(field.label)}</small><strong>${escapeHtml(field.value)}</strong></span>`).join("")}</div>
+    <div class="materialized-actions">
+      <button type="button" data-materialized-expand>Open full screen</button>
+      ${actions.map((action) => `<button type="button" data-materialized-action="${escapeHtml(action.kind)}">${escapeHtml(action.label)}</button>`).join("")}
+    </div>`;
+  detailSheet.hidden = false;
+  detailSheet.querySelector(".sheet-close").addEventListener("click", () => {
+    detailSheet.hidden = true;
+    detailSheet.classList.remove("is-full", "aqua-materialization");
+  });
+  detailSheet.querySelector("[data-materialized-expand]").addEventListener("click", () => {
+    detailSheet.classList.add("is-full");
+  });
+  detailSheet.addEventListener("click", (event) => {
+    if (
+      event.target.closest("button") ||
+      detailSheet.classList.contains("is-full")
+    ) return;
+    detailSheet.classList.add("is-full");
+  }, { once: true });
+  detailSheet.querySelectorAll("[data-materialized-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const kind = button.dataset.materializedAction;
+      if (kind === "dismiss") {
+        detailSheet.hidden = true;
+        detailSheet.classList.remove("is-full", "aqua-materialization");
+        return;
+      }
+      if (kind === "open_source") {
+        const index = Number.isInteger(materialization.appIndex)
+          ? materialization.appIndex
+          : apps.findIndex((app) => app.name === materialization.sourceApp);
+        if (index >= 0) launchAppByIndex(index);
+        else notify("The authoritative source app has not registered a verified deep link yet.");
+      }
+    });
+  });
+}
+
 function closeOverlays() {
   workspace.hidden = true;
   detailSheet.hidden = true;
+  detailSheet.classList.remove("is-full", "aqua-materialization");
   systemPanel.hidden = true;
 }
 
@@ -850,7 +956,7 @@ function filingTypeIcon(type) {
   return "▤";
 }
 
-function filingCabinetMarkup() {
+function filingCabinetMarkup(includeHeader = true) {
   const pending = filingInbox.filter((item) => item.needsClarification).length;
   const routed = filingInbox.filter((item) => item.destination).length;
   const items = filingInbox.length
@@ -866,7 +972,7 @@ function filingCabinetMarkup() {
           ${item.needsClarification ? `<button class="filing-clarify" type="button" data-clarify-id="${escapeHtml(item.id)}">Tell Aqua where this goes</button>` : ""}
         </article>`).join("")
     : `<div class="filing-empty">The filing tray is clear. Voice, photo, and video captures from the Command Center will appear here.</div>`;
-  return `${systemHeader("Aqua File Cabinet")}
+  return `${includeHeader ? systemHeader("Aqua File Cabinet") : ""}
     <div class="filing-summary">
       <article><small>Pending clarification</small><strong>${pending}</strong></article>
       <article><small>Auto-routed</small><strong>${routed}</strong></article>
@@ -879,6 +985,138 @@ function filingCabinetMarkup() {
     <div class="filing-list">${items}</div>`;
 }
 
+function neuralWorkspaceMarkup() {
+  const portalPositions = [
+    [50, 10], [78, 20], [88, 47], [76, 74],
+    [50, 83], [24, 74], [12, 47], [22, 20],
+  ];
+  const portalApps = [
+    ...apps,
+    {
+      name: "File Cabinet",
+      short: "SENTINEL EVIDENCE",
+      icon: "▤",
+      color: "#8cecff",
+      authority: "Local captures, filing queue, and authorized projections",
+    },
+  ];
+  const portals = portalApps.map((app, index) => {
+    const [x, y] = portalPositions[index];
+    return `<article class="neural-portal" style="--portal-x:${x}%;--portal-y:${y}%;--portal-color:${app.color}" data-portal-index="${index}">
+      <button class="portal-pull" type="button" data-neural-portal="${index}" aria-label="Pull ${escapeHtml(app.name)} forward">
+        <i>${escapeHtml(app.icon)}</i><span>${escapeHtml(app.name.replace("Aqua ", ""))}</span><small>Preview</small>
+      </button>
+      <button class="portal-open" type="button" data-neural-open="${index}" aria-label="Open ${escapeHtml(app.name)} immediately"><span>↗</span></button>
+    </article>`;
+  }).join("");
+  const paths = portalPositions.map(([x, y], index) =>
+    `<line x1="${x}" y1="${y}" x2="50" y2="47" data-neural-path="${index}"></line>`,
+  ).join("");
+
+  return `${systemHeader("Neural Workspace")}
+    <section class="neural-shell" aria-label="Aqua Sentinel Neural Link">
+      <div class="neural-identity">
+        <small>AQUA SENTINEL NEURAL LINK</small>
+        <h1>Neural Workspace</h1>
+        <p>Ask Aqua · Pull to preview · Arrow to open</p>
+      </div>
+      <div class="neural-stage">
+        <div class="neural-horizon" aria-hidden="true"></div>
+        <svg class="neural-network" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${paths}</svg>
+        <div class="neural-flow" aria-hidden="true"><i></i><i></i><i></i></div>
+        <button class="neural-core" type="button" data-neural-ask aria-label="Talk to Aqua">
+          <span class="neural-a">A</span>
+          <small>Talk to Aqua</small>
+        </button>
+        ${portals}
+        <div class="neural-tools" aria-label="Sentinel controls">
+          <button type="button" data-neural-destination="diagnostics" aria-label="Open Diagnostics"><i>◇</i><strong>Diagnostics</strong></button>
+          <button type="button" data-neural-destination="settings" aria-label="Open Settings"><i>☷</i><strong>Settings</strong></button>
+        </div>
+      </div>
+      <nav class="space-switcher" aria-label="Sentinel spaces">
+        <button type="button" data-space="home">Home</button>
+        <button class="active" type="button" data-space="neural">Neural Link</button>
+        <button type="button" data-space="command">Command</button>
+      </nav>
+    </section>`;
+}
+
+function commandCenterMarkup() {
+  const pending = filingInbox.filter((item) => item.needsClarification).length;
+  const queuedMessages = widgetMessages.filter((message) => /saved|attention/i.test(message.state)).length;
+  return `${systemHeader("Command Center")}
+    <section class="command-shell">
+      <div class="command-identity">
+        <small>AQUA SENTINEL OS</small>
+        <h1>Your company, held together by Aqua.</h1>
+        <p>Files, captures, commands, and broken connections stay visible until their authoritative destination confirms them.</p>
+      </div>
+      <button class="command-vault" type="button" data-command-view="files">
+        <span class="vault-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="vault-copy"><small>AQUA FILE CABINET</small><strong>${pending ? `${pending} ${pending === 1 ? "item needs" : "items need"} your direction` : "Everything filed is within reach"}</strong><em>Receipts · contracts · photographs · timecards · evidence</em></span>
+        <b>${pending ? "Needs Attention" : "Open Vault"}</b>
+      </button>
+      <div class="command-capture" aria-label="Quick filing actions">
+        <button type="button" data-filing-action="voice"><i>≈</i><span>File by voice</span></button>
+        <button type="button" data-filing-action="photo"><i>▧</i><span>Add photo</span></button>
+        <button type="button" data-filing-action="video"><i>▶</i><span>Add video</span></button>
+      </div>
+      <div class="command-status">
+        <article><i>◌</i><span><strong>Aqua conversation</strong><small>${queuedMessages ? `${queuedMessages} locally retained` : "No unsent owner commands"}</small></span><b>${authenticated ? "Connected" : "Local"}</b></article>
+        <article><i>◇</i><span><strong>Ecosystem links</strong><small>Satellite adapters report their own authority</small></span><b>Inspect</b></article>
+      </div>
+      <div class="command-actions">
+        <button type="button" data-command-view="messages"><span>Conversation receipts</span><small>Saved, delivered, and needs-attention commands</small></button>
+        <button type="button" data-command-view="diagnostics"><span>Diagnostics</span><small>Find the exact broken boundary</small></button>
+        <button type="button" data-command-view="settings"><span>Settings</span><small>Configure Sentinel without leaving Aqua</small></button>
+      </div>
+      <nav class="space-switcher" aria-label="Sentinel spaces">
+        <button type="button" data-space="home">Home</button>
+        <button type="button" data-space="neural">Neural Link</button>
+        <button class="active" type="button" data-space="command">Command</button>
+      </nav>
+    </section>`;
+}
+
+function diagnosticsMarkup() {
+  const nativeReady = Boolean(window.AquaBridge);
+  const issues = [];
+  if (!authenticated) issues.push("Owner session is not connected.");
+  if (!nativeReady) issues.push("Native Android bridges are unavailable in this browser preview.");
+  apps.filter((app) => !app.connected).forEach((app) => {
+    issues.push(`${app.name} has not published a confirmed Sentinel adapter.`);
+  });
+  return `${systemHeader("Diagnostics")}
+    <section class="diagnostic-shell">
+      <div class="diagnostic-orb ${issues.length ? "attention" : "confirmed"}"><i></i><strong>${issues.length ? "Aqua found connection boundaries" : "Sentinel is fully connected"}</strong><small>No silent failures</small></div>
+      <div class="diagnostic-list">
+        <article><span><strong>Owner session</strong><small>Encrypted device session and gateway identity</small></span><b>${authenticated ? "Confirmed" : "Needs Attention"}</b></article>
+        <article><span><strong>Aqua gateway</strong><small>Server-only AI and guarded capability routing</small></span><b>${authenticated ? "Session ready" : "Sign in required"}</b></article>
+        <article><span><strong>Voice and device bridge</strong><small>Speech, capture, File Cabinet, and app launch</small></span><b>${nativeReady ? "Available" : "Preview only"}</b></article>
+      </div>
+      <div class="diagnostic-reports">${issues.length
+        ? issues.map((issue) => `<p><i>!</i><span>${escapeHtml(issue)}</span></p>`).join("")
+        : `<p><i>✓</i><span>No actionable failures are visible.</span></p>`}</div>
+      <button class="diagnostic-return" type="button" data-space="command">Return to Command Center</button>
+    </section>`;
+}
+
+function settingsMarkup() {
+  return `${systemHeader("Settings")}
+    <section class="settings-hero"><small>AQUA SENTINEL OS</small><h1>Make Aqua feel like yours.</h1><p>These controls change Sentinel’s behavior and connected services. The approved Home artwork remains protected.</p></section>
+    <div class="settings-list enriched">
+      <button type="button" data-setting="sound"><i>◉</i><span><strong>Aqua voice feedback</strong><small>Speech, shimmer, and speaking presence</small></span><b>${sound ? "ON" : "OFF"}</b></button>
+      <button type="button" data-setting="notifications"><i>◇</i><span><strong>Owner notifications</strong><small>Approvals, receipts, filing, and failures</small></span><b>${notifications ? "ON" : "OFF"}</b></button>
+      <button type="button" data-setting="voice-test"><i>≈</i><span><strong>Voice and presence test</strong><small>Hear Aqua and verify the living center</small></span><b>TEST</b></button>
+      <button type="button" data-setting="permissions"><i>⌾</i><span><strong>Privacy and permissions</strong><small>Microphone, camera, files, and connected app access</small></span><b>REVIEW</b></button>
+      <button type="button" data-setting="integrations"><i>∞</i><span><strong>Ecosystem connections</strong><small>Authoritative apps, capabilities, and deep links</small></span><b>${apps.filter((app) => app.connected).length}/${apps.length}</b></button>
+      <button type="button" data-setting="storage"><i>▤</i><span><strong>Storage and synchronization</strong><small>Local evidence, queues, cloud confirmation, and retention</small></span><b>OPEN</b></button>
+      <button type="button" data-setting="diagnostics"><i>◇</i><span><strong>Diagnostics</strong><small>Actionable reports with correlation receipts</small></span><b>CHECK</b></button>
+      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.6</b></button>
+    </div>`;
+}
+
 function updateFilingBadge() {
   const badge = document.getElementById("filingPendingBadge");
   const pending = filingInbox.filter((item) => item.needsClarification).length;
@@ -887,18 +1125,27 @@ function updateFilingBadge() {
 }
 
 function openPanel(kind) {
+  const railKind = ["messages", "files", "diagnostics"].includes(kind)
+    ? "command"
+    : kind;
   document.querySelectorAll(".bottom-rail button").forEach((button) => {
-    button.classList.toggle("active", button.dataset.panel === kind);
+    button.classList.toggle("active", button.dataset.panel === railKind);
   });
   if (kind === "home") {
     closeOverlays();
     return;
   }
 
-  if (kind === "messages") {
+  if (kind === "neural") {
+    systemPanel.innerHTML = neuralWorkspaceMarkup();
+  } else if (kind === "command") {
+    systemPanel.innerHTML = commandCenterMarkup();
+  } else if (kind === "messages") {
     systemPanel.innerHTML = widgetMessagesMarkup();
   } else if (kind === "files") {
     systemPanel.innerHTML = filingCabinetMarkup();
+  } else if (kind === "diagnostics") {
+    systemPanel.innerHTML = diagnosticsMarkup();
   } else if (kind === "data") {
     systemPanel.innerHTML =
       systemHeader("Data Hub") +
@@ -913,14 +1160,7 @@ function openPanel(kind) {
         )
         .join("")}</div>`;
   } else if (kind === "settings") {
-    systemPanel.innerHTML =
-      systemHeader("Settings") +
-      `<div class="settings-list">
-        <button type="button" data-setting="sound"><span><strong>Aqua voice feedback</strong><small>Speaking center animation and sound</small></span><b>${sound ? "ON" : "OFF"}</b></button>
-        <button type="button" data-setting="notifications"><span><strong>Sentinel notifications</strong><small>Owner approvals and app attention</small></span><b>${notifications ? "ON" : "OFF"}</b></button>
-        <button type="button" data-setting="voice-test"><span><strong>Test Aqua speaking state</strong><small>Center voiceprint only</small></span><b>TEST</b></button>
-        <button type="button" data-setting="diagnostics"><span><strong>Connection diagnostics</strong><small>Owner auth, Aqua Brain, audio, and registry</small></span><b>CHECK</b></button>
-      </div>`;
+    systemPanel.innerHTML = settingsMarkup();
   } else {
     systemPanel.innerHTML =
       systemHeader("Sign Out") +
@@ -934,8 +1174,68 @@ function openPanel(kind) {
   }
 
   systemPanel.hidden = false;
+  systemPanel.dataset.panel = kind;
   systemPanel.querySelectorAll(".panel-close").forEach((button) => {
     button.addEventListener("click", () => openPanel("home"));
+  });
+  systemPanel.querySelectorAll("[data-space]").forEach((button) => {
+    button.addEventListener("click", () => openPanel(button.dataset.space));
+  });
+  systemPanel.querySelector("[data-neural-ask]")?.addEventListener("click", startVoice);
+  systemPanel.querySelectorAll("[data-neural-portal]").forEach((button) => {
+    button.addEventListener("pointerdown", (event) => {
+      const portal = button.closest(".neural-portal");
+      portal?.classList.add("is-pulling");
+      button.dataset.pullStartX = String(event.clientX);
+      button.dataset.pullStartY = String(event.clientY);
+      button.setPointerCapture?.(event.pointerId);
+    });
+    button.addEventListener("pointermove", (event) => {
+      if (!button.hasPointerCapture?.(event.pointerId)) return;
+      const startX = Number(button.dataset.pullStartX || event.clientX);
+      const startY = Number(button.dataset.pullStartY || event.clientY);
+      const distance = Math.hypot(event.clientX - startX, event.clientY - startY);
+      button.closest(".neural-portal")?.style.setProperty(
+        "--portal-pull",
+        String(Math.min(1, distance / 64)),
+      );
+    });
+    button.addEventListener("pointerup", (event) => {
+      const portal = button.closest(".neural-portal");
+      portal?.classList.remove("is-pulling");
+      portal?.classList.add("is-routing");
+      portal?.style.removeProperty("--portal-pull");
+      try { button.releasePointerCapture?.(event.pointerId); } catch {}
+      setTimeout(() => portal?.classList.remove("is-routing"), 760);
+    });
+    button.addEventListener("pointercancel", () => {
+      const portal = button.closest(".neural-portal");
+      portal?.classList.remove("is-pulling");
+      portal?.style.removeProperty("--portal-pull");
+    });
+    button.addEventListener("click", () => {
+      const index = Number(button.dataset.neuralPortal);
+      const stage = button.closest(".neural-stage");
+      stage?.querySelectorAll("[data-neural-path]").forEach((path) => {
+        path.classList.toggle("is-active", Number(path.dataset.neuralPath) === index);
+      });
+      stage?.classList.add("is-routing");
+      setTimeout(() => stage?.classList.remove("is-routing"), 920);
+      setTimeout(() => portalMaterialization(index), 180);
+    });
+  });
+  systemPanel.querySelectorAll("[data-neural-open]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const index = Number(button.dataset.neuralOpen);
+      if (index >= apps.length) openPanel("files");
+      else launchAppByIndex(index);
+    });
+  });
+  systemPanel.querySelectorAll("[data-neural-destination]").forEach((button) => {
+    button.addEventListener("click", () => openPanel(button.dataset.neuralDestination));
+  });
+  systemPanel.querySelectorAll("[data-command-view]").forEach((button) => {
+    button.addEventListener("click", () => openPanel(button.dataset.commandView));
   });
   systemPanel.querySelectorAll("[data-app]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -960,11 +1260,17 @@ function openPanel(kind) {
         } else {
           setTimeout(() => setAquaState("idle"), 1800);
         }
+      } else if (setting === "diagnostics") {
+        openPanel("diagnostics");
+      } else if (setting === "integrations") {
+        openPanel("data");
+      } else if (setting === "storage") {
+        openPanel("files");
+      } else if (setting === "permissions") {
+        notify("Android permission controls open from the installed app when a protected capability is requested.");
       } else {
         notify(
-          authenticated
-            ? `Aqua Brain authenticated · ${apps.length} apps registered · voice bridge ready`
-            : "Aqua Brain is not authenticated",
+          "Aqua Sentinel OS · server-owned AI · encrypted device sessions · authoritative satellite records",
         );
       }
     });
@@ -997,6 +1303,20 @@ function openPanel(kind) {
 
 function applyAquaAction(action) {
   if (!action || action.type === "none") return;
+  if (action.type === "open_neural_link") {
+    openPanel("neural");
+    return;
+  }
+  if (action.type === "open_command_center") {
+    openPanel("command");
+    return;
+  }
+  if (action.type === "open_source_app") {
+    const requested = String(action.app || "").toLowerCase();
+    const index = apps.findIndex((app) => app.name.toLowerCase().includes(requested));
+    if (index >= 0) launchAppByIndex(index);
+    return;
+  }
   if (action.type === "rotate_next") {
     rotate(1);
     return;
@@ -1052,6 +1372,7 @@ window.receiveAquaText = (text) => {
   setAquaState("thinking");
   const selected = apps[active];
   const context = {
+    surface: systemPanel.hidden ? "Home" : systemPanel.dataset.panel || "Home",
     selectedApp: selected.name,
     primary: {
       title: selected.primaryTitle,
@@ -1072,7 +1393,7 @@ window.receiveWidgetCommand = (text) => {
   const command = String(text || "").trim();
   if (!command) return;
   recordWidgetMessage("You", command, "Saved locally · awaiting Aqua");
-  openPanel("messages");
+  openPanel("command");
   notify(authenticated ? "Command Center message received. Sending to Aqua." : "Command Center message saved locally.");
   if (authenticated) {
     flushNextWidgetCommand();
@@ -1085,15 +1406,16 @@ window.receiveAquaResponse = (raw) => {
   try {
     const response = typeof raw === "string" ? JSON.parse(raw) : raw;
     applyAquaAction(response.action);
-    const reply = String(response.reply || "I completed the request.");
+    showMaterialization(response.materialization);
+    const reply = String(response.reply || "I’m ready.");
     if (widgetCommandInFlight) {
       const delivered = widgetMessages.find((message) => message.id === widgetCommandInFlight);
       if (delivered) delivered.state = "Delivered to Aqua";
       widgetCommandInFlight = null;
       saveWidgetMessages();
     }
-    recordWidgetMessage("Aqua", reply, "Confirmed");
-    if (document.querySelector('[data-panel="messages"]')?.classList.contains("active")) {
+    recordWidgetMessage("Aqua", reply, String(response.receipt?.status || "Needs Attention"));
+    if (systemPanel.dataset.panel === "messages") {
       openPanel("messages");
     }
     notify(reply);
@@ -1191,8 +1513,9 @@ window.receiveFilingInbox = (raw) => {
     filingBriefAnnounced = true;
     window.AquaBridge?.speak(`Hey, you have ${pending} pending ${pending === 1 ? "item" : "items"} that ${pending === 1 ? "needs" : "need"} to be filed.`);
   }
-  const filesActive = document.querySelector('[data-panel="files"]')?.classList.contains("active");
-  if (!systemPanel.hidden && filesActive) openPanel("files");
+  if (!systemPanel.hidden && ["files", "command"].includes(systemPanel.dataset.panel)) {
+    openPanel(systemPanel.dataset.panel);
+  }
 };
 
 window.refreshFilingInbox = () => {
@@ -1380,5 +1703,9 @@ if (window.AquaBridge?.bootstrap) {
 } else {
   authenticated = true;
   authPanel.hidden = true;
+  const previewPanel = new URLSearchParams(window.location.search).get("preview");
+  if (["neural", "command", "settings", "diagnostics"].includes(previewPanel)) {
+    requestAnimationFrame(() => openPanel(previewPanel));
+  }
 }
 window.refreshFilingInbox();

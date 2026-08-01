@@ -113,11 +113,16 @@ test("native voice uses authenticated Aqua Brain and not local scripted answers"
   assert.match(script, /AquaBridge\.askAqua/);
   assert.match(script, /receiveAquaResponse/);
   assert.match(script, /applyAquaAction/);
+  assert.match(script, /showMaterialization/);
   assert.doesNotMatch(script, /function commandResponse/);
-  assert.match(activity, /aqua-sentinel-executive/);
+  assert.match(activity, /BuildConfig\.AQUA_GATEWAY_URL/);
+  assert.match(activity, /"jsonrpc", "2\.0"/);
+  assert.match(activity, /"session\.create"/);
+  assert.match(activity, /"aqua\.chat"/);
   assert.match(activity, /AndroidKeyStore/);
-  assert.match(activity, /grant_type=password/);
-  assert.match(activity, /grant_type=refresh_token/);
+  assert.doesNotMatch(activity, /grant_type=password/);
+  assert.doesNotMatch(activity, /grant_type=refresh_token/);
+  assert.doesNotMatch(activity, /supabase/i);
   assert.match(activity, /SpeechRecognizer/);
   assert.match(activity, /TextToSpeech/);
 });
@@ -132,7 +137,34 @@ test("server secrets are absent from the APK source", async () => {
   assert.doesNotMatch(source, /\bsk-(?:proj-)?[A-Za-z0-9_]{20,}/);
   assert.doesNotMatch(source, /SUPABASE_SERVICE_ROLE_KEY/);
   assert.doesNotMatch(source, /api\.openai\.com/);
-  assert.match(source, /sb_publishable_/);
+  assert.doesNotMatch(source, /sb_publishable_/);
+  assert.doesNotMatch(source, /OPENAI_API_KEY/);
+});
+
+test("Neural Link and Command Center are working secondary surfaces", async () => {
+  const [html, script, fidelity] = await Promise.all([
+    read("sentient-os-web/index.html"),
+    read("sentient-os-web/app.js"),
+    read("sentient-os-web/fidelity.css"),
+  ]);
+  assert.match(html, /data-panel="neural"[\s\S]*Neural Link/);
+  assert.match(html, /data-panel="command"[\s\S]*Command/);
+  assert.match(script, /AQUA SENTINEL NEURAL LINK/);
+  assert.match(script, /class="neural-network"/);
+  assert.match(script, /Open \$\{escapeHtml\(app\.name\)\} immediately/);
+  assert.match(script, /class="command-vault"/);
+  assert.match(script, /data-filing-action="voice"/);
+  assert.match(script, /File Cabinet/);
+  assert.match(script, /portalMaterialization/);
+  assert.match(script, /data-materialized-expand/);
+  assert.match(script, /diagnosticsMarkup/);
+  assert.match(script, /settingsMarkup/);
+  assert.match(fidelity, /\.neural-stage/);
+  assert.match(fidelity, /height:clamp\(540px,65svh,720px\)/);
+  assert.match(fidelity, /\.neural-tools\{position:absolute/);
+  assert.match(fidelity, /\.portal-open\{position:absolute/);
+  assert.match(fidelity, /@keyframes materialize-rise/);
+  assert.match(fidelity, /\.detail-sheet\.aqua-materialization\.is-full/);
 });
 
 test("Android blocks cleartext traffic and backup extraction", async () => {
@@ -223,7 +255,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.5.5 enables all-app presentation cards only in the explicit preview build", async () => {
+test("v0.6.0 preserves reversible preview cards and adds deterministic secondary-screen proofs", async () => {
   const [gradle, workflow, script, html, fidelity] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -231,13 +263,16 @@ test("v0.5.5 enables all-app presentation cards only in the explicit preview bui
     read("sentient-os-web/index.html"),
     read("sentient-os-web/fidelity.css"),
   ]);
-  assert.match(gradle, /versionCode = 2026073108/);
-  assert.match(gradle, /versionName = "0\.5\.5-ecosystem-preview-widget-bridge-test"/);
+  assert.match(gradle, /versionCode = 2026080101/);
+  assert.match(gradle, /versionName = "0\.6\.0-neural-link-ai-gateway-test"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
-  assert.match(workflow, /AquaSentinelOS-v0\.5\.5-ECOSYSTEM-PREVIEW-WIDGET-BRIDGE-TEST\.apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.6\.0-Neural-Link-AI-Gateway-Test\.apk/);
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
+  assert.match(workflow, /preview=neural/);
+  assert.match(workflow, /preview=command/);
   assert.match(script, /enableEcosystemPresentationMode/);
+  assert.match(script, /\["neural", "command", "settings", "diagnostics"\]\.includes\(previewPanel\)/);
   assert.match(script, /ecosystemPresentationSnapshots\.set/);
   assert.match(script, /primaryRows/);
   assert.match(script, /secondaryRows/);

@@ -23,8 +23,16 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026073108
-        versionName = "0.5.5-ecosystem-preview-widget-bridge-test"
+        versionCode = 2026080101
+        versionName = "0.6.0-neural-link-ai-gateway-test"
+        buildConfigField(
+            "String",
+            "AQUA_GATEWAY_URL",
+            "\"" + providers.gradleProperty("aqua.gatewayUrl")
+                .orElse(providers.environmentVariable("AQUA_GATEWAY_URL"))
+                .orElse("https://api.aquahomesos.com/gateway")
+                .get() + "\""
+        )
         buildConfigField(
             "boolean",
             "CUSTOMER_PREVIEW_SNAPSHOTS",
