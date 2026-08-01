@@ -103,18 +103,22 @@ for mode in ask voice photo video; do
       grep -E "AQUA_WIDGET_COMPOSER|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
       exit 1
     fi
-    tap_resource "widget_command_send" "send"
+    touched=false
     submitted=false
     delivered=false
-    for attempt in $(seq 1 15); do
-      sleep 1
-      adb logcat -d > "$evidence"
-      grep -Fq "AQUA_WIDGET_MESSAGE_SUBMITTED" "$evidence" && submitted=true
-      grep -Fq "AQUA_WIDGET_MESSAGE_DELIVERED" "$evidence" && delivered=true
-      if [[ "$submitted" == "true" && "$delivered" == "true" ]]; then break; fi
+    for tap_attempt in $(seq 1 3); do
+      tap_resource "widget_command_send" "send"
+      for receipt_attempt in $(seq 1 8); do
+        sleep 1
+        adb logcat -d > "$evidence"
+        grep -Fq "AQUA_WIDGET_SEND_TOUCH action=up" "$evidence" && touched=true
+        grep -Fq "AQUA_WIDGET_MESSAGE_SUBMITTED" "$evidence" && submitted=true
+        grep -Fq "AQUA_WIDGET_MESSAGE_DELIVERED" "$evidence" && delivered=true
+        if [[ "$touched" == "true" && "$submitted" == "true" && "$delivered" == "true" ]]; then break 2; fi
+      done
     done
-    if [[ "$submitted" != "true" || "$delivered" != "true" ]]; then
-      echo "Widget message did not submit and reach Sentinel" >&2
+    if [[ "$touched" != "true" || "$submitted" != "true" || "$delivered" != "true" ]]; then
+      echo "Widget Send touch did not submit and reach Sentinel after bounded retries" >&2
       grep -E "AQUA_WIDGET|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
       exit 1
     fi

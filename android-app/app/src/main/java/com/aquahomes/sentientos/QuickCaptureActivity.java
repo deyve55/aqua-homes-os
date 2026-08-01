@@ -18,6 +18,7 @@ import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -162,6 +163,12 @@ public class QuickCaptureActivity extends Activity {
 
         Log.i("AquaCommandWidget", "AQUA_CAPTURE_ROUTE mode=ask handler=QuickCommandComposer");
         speak.setOnClickListener(view -> captureCommandVoice());
+        send.setOnTouchListener((view, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                Log.i("AquaCommandWidget", "AQUA_WIDGET_SEND_TOUCH action=up");
+            }
+            return false;
+        });
         send.setOnClickListener(view -> submitCommand(commandInput.getText().toString()));
         open.setOnClickListener(view -> openSentinelWithoutCommand());
         commandInput.setOnEditorActionListener((view, actionId, event) -> {

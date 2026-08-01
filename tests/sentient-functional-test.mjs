@@ -379,6 +379,7 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(capture, /showCommandSurface\(\)/);
   assert.match(capture, /STATE_COMMAND_TEXT/);
   assert.match(capture, /AQUA_WIDGET_MESSAGE_SUBMITTED id=/);
+  assert.match(capture, /AQUA_WIDGET_SEND_TOUCH action=up/);
   assert.match(capture, /putExtra\("widget_command", text\)/);
   assert.match(capture, /EXTRA_COMMAND_TEXT = "widget_command_text"/);
   assert.match(capture, /commandInput\.setText\(initialCommand\)/);
@@ -413,10 +414,12 @@ test("v0.5.4 submits widget messages and still returns filing captures to the ca
   assert.match(widgetVerifier, /AQUA_CAPTURE_ROUTE mode=\$mode/);
   assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_SUBMITTED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_DELIVERED/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_SEND_TOUCH action=up/);
   assert.match(capture, /AQUA_WIDGET_COMPOSER_READY input=/);
   assert.match(widgetVerifier, /--es widget_command_text "Widget_message_execution_test"/);
   assert.match(widgetVerifier, /characters=29/);
   assert.match(widgetVerifier, /tap_resource "widget_command_send"/);
+  assert.match(widgetVerifier, /for tap_attempt in \$\(seq 1 3\)/);
 });
 
 test("v0.5.5 integrated 4x3 widget refreshes and delivers filing items into Sentinel", async () => {
