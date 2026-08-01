@@ -290,7 +290,8 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(workflow, /am force-stop com\.android\.camera2/);
   assert.match(workflow, /mResumedActivity\|topResumedActivity\|ResumedActivity/);
   assert.match(workflow, /dumpsys activity activities/);
-  assert.match(workflow, /Camera keeps stopping\|Close app/);
+  assert.match(workflow, /immersive_mode_confirmations confirmed/);
+  assert.match(workflow, /Camera keeps stopping\|Close app\|Viewing full screen\|GOT IT/);
   assert.match(script, /ecosystemPresentationSnapshots\.set/);
   assert.match(script, /primaryRows/);
   assert.match(script, /secondaryRows/);
