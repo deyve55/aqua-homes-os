@@ -1700,10 +1700,12 @@ appDeck.addEventListener("lostpointercapture", (event) => {
 
 enableCustomerPreviewIfAuthorized();
 enableEcosystemPresentationMode();
-render();
 const deterministicPreviewActive = activateDeterministicPreviewRoute();
-requestAnimationFrame(revealSelectedAppLabel);
-requestSnapshot(apps[active]);
+if (!deterministicPreviewActive) {
+  render();
+  requestAnimationFrame(revealSelectedAppLabel);
+  requestSnapshot(apps[active]);
+}
 setInterval(() => {
   if (document.visibilityState === "visible") requestSnapshot(apps[active]);
 }, 60_000);

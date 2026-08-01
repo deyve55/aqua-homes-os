@@ -277,6 +277,11 @@ test("v0.6.0 preserves reversible preview cards and adds deterministic secondary
   assert.match(script, /openPanel\(previewPanel\)/);
   assert.match(script, /document\.documentElement\.dataset\.aquaPreviewReady = previewPanel/);
   assert.match(script, /const deterministicPreviewActive = activateDeterministicPreviewRoute\(\)/);
+  assert.match(script, /if \(!deterministicPreviewActive\) \{\s*render\(\);/);
+  assert.ok(
+    script.indexOf("activateDeterministicPreviewRoute();") < script.lastIndexOf("render();"),
+    "the proof route must activate before Home rendering can fail",
+  );
   assert.doesNotMatch(script, /requestAnimationFrame\(\(\) => openPanel\(previewPanel\)\)/);
   assert.match(workflow, /data-aqua-preview-ready="neural"/);
   assert.match(workflow, /data-aqua-preview-ready="command"/);
