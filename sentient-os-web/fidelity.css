@@ -756,6 +756,7 @@ html,body,.sentinel,.os-surface,.aqua-hero{background:#000}
 }
 .app-dashboard .dashboard-card{
   display:flex;
+  flex-direction:column;
   min-height:0;
   height:100%;
   padding:3.2% 4.2% 2.2%;
