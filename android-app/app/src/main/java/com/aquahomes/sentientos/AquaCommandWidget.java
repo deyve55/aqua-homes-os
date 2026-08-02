@@ -67,10 +67,11 @@ public class AquaCommandWidget extends AppWidgetProvider {
 
     private static RemoteViews buildViews(Context context) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.aqua_command_widget);
-        int pending = FilingStore.pendingCount(context);
-        views.setTextViewText(R.id.widget_pending, pending == 0 ? "READY" : pending + " PENDING");
+        views.setTextViewText(
+            R.id.widget_filed_today,
+            String.valueOf(FilingStore.filedTodayCount(context))
+        );
         views.setOnClickPendingIntent(R.id.widget_logo, openSentinel(context));
-        views.setOnClickPendingIntent(R.id.widget_brand, openSentinel(context));
         views.setOnClickPendingIntent(R.id.widget_ask, action(context, "ask", 101));
         views.setOnClickPendingIntent(R.id.widget_video, action(context, "video", 102));
         views.setOnClickPendingIntent(R.id.widget_photo, action(context, "photo", 103));

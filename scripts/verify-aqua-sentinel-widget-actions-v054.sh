@@ -78,6 +78,32 @@ if nodes:
 PY
 }
 
+ui_node_bounds() {
+  local hierarchy_path="$1"
+  local pattern="$2"
+
+  python3 - "$hierarchy_path" "$pattern" <<'PY'
+import re
+import sys
+import xml.etree.ElementTree as ET
+
+path, pattern = sys.argv[1:]
+matcher = re.compile(pattern, re.IGNORECASE)
+for node in ET.parse(path).iter("node"):
+    attributes = node.attrib
+    searchable = " ".join(
+        attributes.get(key, "")
+        for key in ("resource-id", "text", "content-desc", "class")
+    )
+    if not matcher.search(searchable):
+        continue
+    bounds = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", attributes.get("bounds", ""))
+    if bounds:
+        print(" ".join(bounds.groups()))
+        break
+PY
+}
+
 tap_ui_node() {
   local label="$1"
   local pattern="$2"
@@ -195,6 +221,7 @@ pin_widget_on_launcher() {
   local launcher_hierarchy=""
 
   clear_logcat
+  adb shell settings put global animator_duration_scale 1 || true
   adb shell am force-stop "$package"
   adb shell am start -W \
     -n "$main_activity" \
@@ -223,8 +250,11 @@ pin_widget_on_launcher() {
     if grep -Fq "$widget_provider" "$appwidget_state" \
       && grep -Fq "$launcher_package" "$appwidget_state" \
       && [[ -n "$launcher_hierarchy" ]] \
-      && grep -Fq "$package:id/widget_logo" "$launcher_hierarchy"; then
+      && grep -Fq "$package:id/widget_logo" "$launcher_hierarchy" \
+      && grep -Fq "$package:id/widget_neural_art" "$launcher_hierarchy" \
+      && grep -Fq "$package:id/widget_shimmer" "$launcher_hierarchy"; then
       echo "AQUA_WIDGET_LAUNCHER_HOST_READY provider=$widget_provider host=$launcher_package"
+      echo "AQUA_WIDGET_NEURALINK_SURFACE_READY art=widget_neural_art shimmer=widget_shimmer"
       return 0
     fi
     sleep 1
@@ -234,6 +264,89 @@ pin_widget_on_launcher() {
   grep -E "AquaCommandWidget|${launcher_package}" "$appwidget_state" >&2 || true
   [[ -n "$launcher_hierarchy" && -s "$launcher_hierarchy" ]] && sed -n '1,12p' "$launcher_hierarchy" >&2
   return 1
+}
+
+prove_neuralink_widget_shimmer() {
+  local hierarchy_path=""
+  local bounds=""
+  local left=""
+  local top=""
+  local right=""
+  local bottom=""
+  local width=""
+  local height=""
+  local changed_pixels=""
+  local first="/tmp/aqua-sentinel-v0.7.1-widget-shimmer-a.png"
+  local second="/tmp/aqua-sentinel-v0.7.1-widget-shimmer-b.png"
+  local first_crop="/tmp/aqua-sentinel-v0.7.1-widget-shimmer-a-crop.png"
+  local second_crop="/tmp/aqua-sentinel-v0.7.1-widget-shimmer-b-crop.png"
+
+  command -v convert >/dev/null
+  command -v compare >/dev/null
+  return_to_launcher
+  hierarchy_path="$(dump_ui "aqua-widget-neuralink-shimmer")"
+  bounds="$(ui_node_bounds "$hierarchy_path" "$package:id/widget_shimmer")"
+  if [[ -z "$bounds" ]]; then
+    echo "Launcher3 did not expose the native Aqua Neuralink shimmer" >&2
+    sed -n '1,16p' "$hierarchy_path" >&2 || true
+    return 1
+  fi
+
+  read -r left top right bottom <<< "$bounds"
+  width=$((right - left))
+  height=$((bottom - top))
+  if ((width <= 0 || height <= 0)); then
+    echo "The Aqua Neuralink shimmer reported invalid bounds: $bounds" >&2
+    return 1
+  fi
+
+  wait_for_adb
+  adb exec-out screencap -p > "$first"
+  sleep 1
+  wait_for_adb
+  adb exec-out screencap -p > "$second"
+  test -s "$first"
+  test -s "$second"
+  convert "$first" -crop "${width}x${height}+${left}+${top}" +repage "$first_crop"
+  convert "$second" -crop "${width}x${height}+${left}+${top}" +repage "$second_crop"
+  changed_pixels="$(compare -metric AE "$first_crop" "$second_crop" null: 2>&1 || true)"
+  if [[ ! "$changed_pixels" =~ ^[0-9]+$ ]] || ((changed_pixels <= 0)); then
+    echo "The launcher-hosted Aqua Neuralink shimmer did not move between frames" >&2
+    return 1
+  fi
+
+  cp "$second" /tmp/AquaSentinelOS-v0.7.1-Neuralink-Live-Widget-Launcher.png
+  echo "AQUA_WIDGET_NEURALINK_SHIMMER_VERIFIED changed_pixels=$changed_pixels"
+}
+
+prove_filed_today_count() {
+  local hierarchy_path=""
+  local filed_today=""
+
+  return_to_launcher
+  hierarchy_path="$(dump_ui "aqua-widget-filed-today")"
+  filed_today="$(python3 - "$hierarchy_path" "$package:id/widget_filed_today" <<'PY'
+import re
+import sys
+import xml.etree.ElementTree as ET
+
+path, resource_id = sys.argv[1:]
+for node in ET.parse(path).iter("node"):
+    if node.attrib.get("resource-id") != resource_id:
+        continue
+    value = node.attrib.get("text", "").strip()
+    match = re.fullmatch(r"(\d+) FILED TODAY", value)
+    if match and int(match.group(1)) > 0:
+        print(match.group(1))
+    break
+PY
+)"
+  if [[ -z "$filed_today" ]]; then
+    echo "The Aqua Neuralink widget did not expose a positive filed-today count" >&2
+    sed -n '1,16p' "$hierarchy_path" >&2 || true
+    return 1
+  fi
+  echo "AQUA_WIDGET_FILED_TODAY_VERIFIED count=$filed_today"
 }
 
 tap_launcher_control() {
@@ -281,6 +394,7 @@ if lines:
 }
 
 pin_widget_on_launcher
+prove_neuralink_widget_shimmer
 terminate_sentinel_background_process "before-five-action-sequence"
 
 for mode in home ask file photo video; do
@@ -375,8 +489,15 @@ adb shell am start -W \
   --es capture_mode file \
   --es widget_filing_text "File this preview with Aqua CRM" || true
 wait_for_log "AQUA_CAPTURE_SAVED type=voice" "$file_evidence" 30
-wait_for_log "AQUA_FILING_INBOX_DELIVERED items=[1-9]" "$file_evidence" 30
-wait_for_log "AQUA_FILING_CABINET_OPENED" "$file_evidence" 30
+wait_for_log "AQUA_CAPTURE_BACKGROUND_COMPLETE type=voice" "$file_evidence" 30
+adb logcat -d > "$file_evidence"
+if grep -Fq "AQUA_FILING_CABINET_OPENED" "$file_evidence"; then
+  echo "A widget quick-file action opened the File Cabinet instead of returning to Launcher3" >&2
+  exit 1
+fi
+return_to_launcher
+echo "AQUA_WIDGET_BACKGROUND_FILE_STAYED_ON_LAUNCHER"
+prove_filed_today_count
 
 terminate_sentinel_background_process "post-filing-process-recreation"
 tap_ui_node \

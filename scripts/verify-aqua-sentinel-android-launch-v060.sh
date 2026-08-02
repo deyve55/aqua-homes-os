@@ -54,6 +54,7 @@ recover_system_dialogs() {
     fi
     if grep -Eiq 'package="com.android.permissioncontroller"' "$window_path"; then
       wait_for_adb
+      adb shell am force-stop com.android.camera2 || true
       adb shell input keyevent KEYCODE_BACK || true
       timeout 30s adb shell am start -W -n "$MAIN_COMPONENT" >/dev/null || true
       sleep 2

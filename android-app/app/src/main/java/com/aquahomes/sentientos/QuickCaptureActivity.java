@@ -562,7 +562,7 @@ public class QuickCaptureActivity extends Activity {
         if (saved) {
             Log.i("AquaCommandWidget", "AQUA_CAPTURE_SAVED type=voice");
             Toast.makeText(this, "Saved. Aqua added the voice text to the filing cabinet.", Toast.LENGTH_SHORT).show();
-            openFilingCabinet();
+            finishAfterBackgroundSave("voice");
         } else {
             Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=voice reason=store");
             Toast.makeText(this, "Aqua could not save that voice text.", Toast.LENGTH_SHORT).show();
@@ -587,7 +587,7 @@ public class QuickCaptureActivity extends Activity {
         if (item.length() > 0) {
             Log.i("AquaCommandWidget", "AQUA_CAPTURE_SAVED type=" + type + " bytes=" + evidenceFile.length());
             Toast.makeText(this, "Saved. Aqua protected the " + type + " in the filing inbox.", Toast.LENGTH_SHORT).show();
-            openFilingCabinet();
+            finishAfterBackgroundSave(type);
         } else {
             Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=" + type + " reason=store");
             evidenceFile.delete();
@@ -596,16 +596,8 @@ public class QuickCaptureActivity extends Activity {
         if (item.length() == 0) finish();
     }
 
-    private void openFilingCabinet() {
-        startActivity(
-            new Intent(this, MainActivity.class)
-                .putExtra("open_filing", true)
-                .addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                )
-        );
+    private void finishAfterBackgroundSave(String type) {
+        Log.i("AquaCommandWidget", "AQUA_CAPTURE_BACKGROUND_COMPLETE type=" + type);
         finish();
     }
 

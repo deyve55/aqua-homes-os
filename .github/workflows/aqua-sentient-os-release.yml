@@ -283,6 +283,12 @@ jobs:
               width, height = struct.unpack(">II", neural[16:24])
               assert (width, height) == (852, 1846), (name, width, height)
 
+          widget_neural = Path("android-app/app/src/main/res/drawable-nodpi/aqua_widget_neuralink_v071.png")
+          assert widget_neural.is_file() and widget_neural.stat().st_size > 0
+          assert hashlib.sha256(widget_neural.read_bytes()).hexdigest() == "0ea55046128465e0b009bc1d65f86801bb4688bae1fa80ec77d2bcd28d84e99f"
+          width, height = struct.unpack(">II", widget_neural.read_bytes()[16:24])
+          assert (width, height) == (900, 900), (width, height)
+
           launcher = Path("android-app/icon-source/AquaSentinel-BrainCircuit-approved-v045.png")
           assert launcher.is_file() and launcher.stat().st_size > 0
           assert hashlib.sha256(launcher.read_bytes()).hexdigest() == "bc1e014886d19f10ee1b8afdca2f5bc99d6d9c9ff103c2b359cc9457da80f6c5"
@@ -366,6 +372,8 @@ jobs:
           mkdir -p release
           cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.7.1-Exact-Fidelity-Neuralink-Widget-Recovery-Test.apk
           test -s release/AquaSentinelOS-v0.7.1-launch-proof.png
+          test -s /tmp/AquaSentinelOS-v0.7.1-Neuralink-Live-Widget-Launcher.png
+          cp /tmp/AquaSentinelOS-v0.7.1-Neuralink-Live-Widget-Launcher.png release/AquaSentinelOS-v0.7.1-Neuralink-Live-Widget-Launcher.png
           cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.7.1-certificate.txt
           cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.7.1-package.txt
           {
@@ -380,6 +388,8 @@ jobs:
             echo "launch_visual=deterministic_bundled_home_430x932"
             echo "neural_visual=rest_focus_result_430x932"
             echo "widget_dispatch=launcher_hosted_remote_views_taps_verified"
+            echo "widget_motion=launcher_hosted_native_shimmer_verified"
+            echo "widget_filing=background_save_and_daily_count_verified"
             echo "android_launch=activity_and_ui_hierarchy_verified"
             echo "target_sdk=35"
             echo "min_sdk=26"

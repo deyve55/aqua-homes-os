@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -109,6 +110,30 @@ final class FilingStore {
                 if (item != null && item.optBoolean("needsClarification", true)) pending++;
             }
             return pending;
+        } catch (Exception ignored) {
+            return 0;
+        }
+    }
+
+    static synchronized int filedTodayCount(Context context) {
+        try {
+            Calendar start = Calendar.getInstance();
+            start.set(Calendar.HOUR_OF_DAY, 0);
+            start.set(Calendar.MINUTE, 0);
+            start.set(Calendar.SECOND, 0);
+            start.set(Calendar.MILLISECOND, 0);
+            long startOfToday = start.getTimeInMillis();
+            start.add(Calendar.DAY_OF_YEAR, 1);
+            long startOfTomorrow = start.getTimeInMillis();
+            JSONArray items = readItems(context);
+            int filedToday = 0;
+            for (int index = 0; index < items.length(); index++) {
+                JSONObject item = items.optJSONObject(index);
+                if (item == null) continue;
+                long createdAt = item.optLong("createdAt", 0L);
+                if (createdAt >= startOfToday && createdAt < startOfTomorrow) filedToday++;
+            }
+            return filedToday;
         } catch (Exception ignored) {
             return 0;
         }
