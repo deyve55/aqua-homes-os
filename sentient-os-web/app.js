@@ -201,6 +201,14 @@ const neuralMaterializedSlots = [
 const NEURAL_ROTATE_MILLIS = 1380;
 const NEURAL_FIRE_MILLIS = 920;
 const NEURAL_MORPH_MILLIS = 2600;
+const NEURAL_MOTION_SETTLE_GRACE_MILLIS = 160;
+const NEURAL_MATERIALIZATION_LAG_MILLIS = 80;
+const NEURAL_MIN_FIRE_DWELL_MILLIS = 80;
+const NEURAL_SEQUENCE_MORPH_AT = NEURAL_ROTATE_MILLIS
+  + NEURAL_FIRE_MILLIS
+  + NEURAL_MATERIALIZATION_LAG_MILLIS
+  + NEURAL_MIN_FIRE_DWELL_MILLIS;
+const NEURAL_SEQUENCE_RESULT_AT = NEURAL_SEQUENCE_MORPH_AT + NEURAL_MORPH_MILLIS;
 let neuralFocusIndex = -1;
 let neuralSupportIndexes = [];
 let neuralIdleOffset = 0;
@@ -386,6 +394,20 @@ function neuralPortalAnimationsBetween(stage, slotAtProgress, duration) {
   return animations;
 }
 
+function waitForNeuralMotion(animations, duration) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(fallbackTimer);
+      resolve();
+    };
+    const fallbackTimer = setTimeout(finish, duration + NEURAL_MOTION_SETTLE_GRACE_MILLIS);
+    Promise.allSettled(animations.map((animation) => animation.finished)).then(finish);
+  });
+}
+
 async function animateNeuralRingTo(targetOffset, duration, onComplete) {
   cancelNeuralMotion();
   const stage = systemPanel.querySelector(".neural-stage");
@@ -403,7 +425,7 @@ async function animateNeuralRingTo(targetOffset, duration, onComplete) {
     (index, progress) => neuralRingSlotAt(index + startOffset + delta * neuralEase(progress)),
     duration,
   );
-  await Promise.allSettled(animations.map((animation) => animation.finished));
+  await waitForNeuralMotion(animations, duration);
   if (token !== neuralMotionToken) return;
   animations.forEach((animation) => animation.cancel());
   neuralPortalAnimations = [];
@@ -434,7 +456,7 @@ async function animateNeuralMorph(duration) {
     };
     return neuralMorphSlot(ringSlot, materializedSlot, neuralEase(progress));
   }, duration);
-  await Promise.allSettled(animations.map((animation) => animation.finished));
+  await waitForNeuralMotion(animations, duration);
   if (token !== neuralMotionToken || neuralMaterialization === null) return;
   animations.forEach((animation) => animation.cancel());
   neuralPortalAnimations = [];
@@ -1496,7 +1518,7 @@ function showMaterialization(materialization, animateNeuralTransition = true) {
       clearTimeout(neuralFireTimer);
       const isSelecting = ["rotating", "firing"].includes(neuralPhase);
       const fireDwell = isSelecting
-        ? Math.max(80, neuralPhaseReadyAt - performance.now())
+        ? Math.max(NEURAL_MIN_FIRE_DWELL_MILLIS, neuralPhaseReadyAt - performance.now())
         : 220;
       neuralTransitionTimer = setTimeout(() => {
         if (neuralMaterialization !== materialization) return;
@@ -1845,7 +1867,10 @@ function openPanel(kind) {
           ? [0, 6, 5, 4]
           : [0, 5, 6, 4, 3].filter((supportIndex) => supportIndex !== index).slice(0, 4);
       focusNeuralSource(index, supporting);
-      setTimeout(() => portalMaterialization(index), NEURAL_ROTATE_MILLIS + NEURAL_FIRE_MILLIS + 80);
+      setTimeout(
+        () => portalMaterialization(index),
+        NEURAL_ROTATE_MILLIS + NEURAL_FIRE_MILLIS + NEURAL_MATERIALIZATION_LAG_MILLIS,
+      );
     });
   });
   const neuralStage = systemPanel.querySelector(".neural-stage");
@@ -2019,6 +2044,61 @@ function applyAquaAction(action) {
   }
 }
 
+function seekNeuralSequencePreview(elapsedMillis) {
+  cancelNeuralMotion();
+  clearTimeout(neuralFireTimer);
+  clearTimeout(neuralTransitionTimer);
+  const elapsed = Math.max(0, Number(elapsedMillis) || 0);
+  const sourceIndex = 6;
+  const source = neuralSourceAt(sourceIndex);
+  const targetOffset = (neuralRingSlots.length - (sourceIndex % neuralRingSlots.length))
+    % neuralRingSlots.length;
+  neuralFocusIndex = sourceIndex;
+  neuralSupportIndexes = [0, 5, 4, 3];
+  neuralMorphProgress = 0;
+  neuralMaterialization = null;
+
+  if (elapsed < NEURAL_ROTATE_MILLIS) {
+    neuralPhase = "rotating";
+    neuralThought = "Aqua is rotating Receipts into the top portal.";
+    neuralThoughtDetail = "CRM, Books, Timesheet, and Knowledge Vault remain active supporting thoughts.";
+    const orbitProgress = neuralEase(elapsed / NEURAL_ROTATE_MILLIS);
+    layoutNeuralStage(neuralIdleOffset + (targetOffset - neuralIdleOffset) * orbitProgress);
+    renderNeuralMaterialization();
+    return;
+  }
+
+  neuralIdleOffset = targetOffset;
+  if (elapsed < NEURAL_SEQUENCE_MORPH_AT) {
+    neuralPhase = "firing";
+    neuralThought = `${source.name} is locked in Aqua’s top portal.`;
+    neuralThoughtDetail = "Aqua is firing a large upward neuron burst through the selected path.";
+    layoutNeuralStage(targetOffset);
+    renderNeuralMaterialization();
+    return;
+  }
+
+  neuralMaterialization = neuralMaterializationFor({
+    primary: sourceIndex,
+    supporting: neuralSupportIndexes,
+    kind: "receipt",
+  });
+  neuralThought = `${source.name} returned a view to Aqua.`;
+  neuralThoughtDetail = "Connection truth stays visible while Aqua keeps the conversation open.";
+  if (elapsed < NEURAL_SEQUENCE_RESULT_AT) {
+    neuralPhase = "transitioning";
+    neuralMorphProgress = (elapsed - NEURAL_SEQUENCE_MORPH_AT) / NEURAL_MORPH_MILLIS;
+    layoutNeuralStage(targetOffset, neuralMorphProgress);
+    renderNeuralMaterialization();
+    return;
+  }
+
+  neuralPhase = "result";
+  neuralMorphProgress = 1;
+  layoutNeuralStage(targetOffset, 1);
+  renderNeuralMaterialization();
+}
+
 function activateDeterministicPreviewRoute() {
   const previewParameters = new URLSearchParams(window.location.search);
   const previewPanel = previewParameters.get("preview");
@@ -2072,8 +2152,16 @@ function activateDeterministicPreviewRoute() {
       }), false);
     }
     if (previewPanel === "neural" && previewParameters.get("neuralDemo") === "sequence") {
-      focusNeuralSource(6, [0, 5, 4, 3], "Find the Home Depot receipt.");
-      setTimeout(() => portalMaterialization(6), NEURAL_ROTATE_MILLIS + NEURAL_FIRE_MILLIS + 80);
+      const requestedPreviewTime = Number(previewParameters.get("neuralAt"));
+      if (Number.isFinite(requestedPreviewTime) && requestedPreviewTime >= 0) {
+        seekNeuralSequencePreview(requestedPreviewTime);
+      } else {
+        focusNeuralSource(6, [0, 5, 4, 3], "Find the Home Depot receipt.");
+        setTimeout(
+          () => portalMaterialization(6),
+          NEURAL_ROTATE_MILLIS + NEURAL_FIRE_MILLIS + NEURAL_MATERIALIZATION_LAG_MILLIS,
+        );
+      }
     }
   }
   document.documentElement.dataset.aquaPreviewReady = previewPanel;

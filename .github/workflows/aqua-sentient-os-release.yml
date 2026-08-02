@@ -142,7 +142,7 @@ jobs:
             --force-device-scale-factor=1 \
             --window-size=430,932 \
             --screenshot=release/AquaSentinelOS-v0.7.4-Neural-Link-Rotate-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence"
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=750"
           "$CHROME_BIN" \
             --headless=new \
             --no-sandbox \
@@ -153,7 +153,7 @@ jobs:
             --force-device-scale-factor=1 \
             --window-size=430,932 \
             --screenshot=release/AquaSentinelOS-v0.7.4-Neural-Link-Fire-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence"
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=1750"
           "$CHROME_BIN" \
             --headless=new \
             --no-sandbox \
@@ -164,7 +164,7 @@ jobs:
             --force-device-scale-factor=1 \
             --window-size=430,932 \
             --screenshot=release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence"
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=3500"
           "$CHROME_BIN" \
             --headless=new \
             --no-sandbox \
@@ -175,7 +175,7 @@ jobs:
             --force-device-scale-factor=1 \
             --window-size=430,932 \
             --screenshot=release/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence"
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=5600"
           for checkpoint in "00:2600" "01:3000" "02:3400" "03:3800" "04:4200" "05:4600" "06:5000"; do
             name="${checkpoint%%:*}"
             budget="${checkpoint##*:}"
@@ -189,7 +189,7 @@ jobs:
               --force-device-scale-factor=1 \
               --window-size=430,932 \
               --screenshot="release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-${name}.png" \
-              "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence"
+              "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=${budget}"
           done
           "$CHROME_BIN" \
             --headless=new \
@@ -230,7 +230,7 @@ jobs:
             --run-all-compositor-stages-before-draw \
             --virtual-time-budget=750 \
             --dump-dom \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence" \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=750" \
             > /tmp/aqua-sentinel-neural-rotate-proof.html
           "$CHROME_BIN" \
             --headless=new \
@@ -240,7 +240,7 @@ jobs:
             --run-all-compositor-stages-before-draw \
             --virtual-time-budget=1750 \
             --dump-dom \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence" \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=1750" \
             > /tmp/aqua-sentinel-neural-fire-proof.html
           "$CHROME_BIN" \
             --headless=new \
@@ -250,7 +250,7 @@ jobs:
             --run-all-compositor-stages-before-draw \
             --virtual-time-budget=3500 \
             --dump-dom \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence" \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=3500" \
             > /tmp/aqua-sentinel-neural-morph-proof.html
           "$CHROME_BIN" \
             --headless=new \
@@ -260,8 +260,38 @@ jobs:
             --run-all-compositor-stages-before-draw \
             --virtual-time-budget=5600 \
             --dump-dom \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence" \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=5600" \
             > /tmp/aqua-sentinel-neural-result-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1750 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence" \
+            > /tmp/aqua-sentinel-neural-live-fire-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=3500 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence" \
+            > /tmp/aqua-sentinel-neural-live-morph-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=5600 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence" \
+            > /tmp/aqua-sentinel-neural-live-result-proof.html
           "$CHROME_BIN" \
             --headless=new \
             --no-sandbox \
@@ -296,6 +326,11 @@ jobs:
           grep -q 'data-aqua-neural-phase="firing"' /tmp/aqua-sentinel-neural-fire-proof.html
           grep -q 'data-aqua-neural-phase="transitioning"' /tmp/aqua-sentinel-neural-morph-proof.html
           grep -q 'data-aqua-neural-phase="result"' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'data-morph-progress="0.400"' /tmp/aqua-sentinel-neural-morph-proof.html
+          grep -q 'data-morph-progress="1.000"' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'data-aqua-neural-phase="firing"' /tmp/aqua-sentinel-neural-live-fire-proof.html
+          grep -q 'data-aqua-neural-phase="transitioning"' /tmp/aqua-sentinel-neural-live-morph-proof.html
+          grep -q 'data-aqua-neural-phase="result"' /tmp/aqua-sentinel-neural-live-result-proof.html
           grep -q 'data-panel="neural"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'AQUA SENTINEL NEURAL LINK' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'AQUA NEURALINK' /tmp/aqua-sentinel-neural-rest-proof.html

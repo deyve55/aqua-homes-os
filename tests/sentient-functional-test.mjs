@@ -208,6 +208,10 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /return neuralMorphSlot\(ringSlot, materializedSlot, neuralEase\(progress\)\)/);
   assert.match(script, /portal\.animate\(keyframes/);
   assert.match(script, /Promise\.allSettled\(animations\.map/);
+  assert.match(script, /const NEURAL_MOTION_SETTLE_GRACE_MILLIS = 160/);
+  assert.match(script, /function waitForNeuralMotion\(animations, duration\)/);
+  assert.match(script, /setTimeout\(finish, duration \+ NEURAL_MOTION_SETTLE_GRACE_MILLIS\)/);
+  assert.equal((script.match(/await waitForNeuralMotion\(animations, duration\)/g) || []).length, 2);
   assert.doesNotMatch(script, /neuralMotionFrame|requestAnimationFrame\(tick\)/);
   assert.doesNotMatch(script, /setAttribute\("d"/);
   assert.match(script, /neuralPhase = "rotating"/);
@@ -365,6 +369,10 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
   assert.match(workflow, /preview=neural/);
   assert.match(workflow, /neuralDemo=sequence/);
+  assert.match(workflow, /neuralDemo=sequence&neuralAt=750/);
+  assert.match(workflow, /neuralDemo=sequence&neuralAt=1750/);
+  assert.match(workflow, /neuralDemo=sequence&neuralAt=3500/);
+  assert.match(workflow, /neuralDemo=sequence&neuralAt=5600/);
   assert.match(workflow, /for checkpoint in "00:2600" "01:3000" "02:3400" "03:3800" "04:4200" "05:4600" "06:5000"/);
   assert.match(workflow, /Neural-Link-Morph-closed-phone\.png/);
   assert.match(workflow, /data-aqua-neural-phase="transitioning"/);
@@ -380,6 +388,9 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(script, /const demo = previewParameters\.get\("neuralDemo"\) \|\| "rest"/);
   assert.match(script, /if \(\["focus", "rotate", "fire", "transition", "company", "receipt", "result"\]\.includes\(demo\)\)/);
   assert.match(script, /previewParameters\.get\("neuralDemo"\) === "sequence"/);
+  assert.match(script, /function seekNeuralSequencePreview\(elapsedMillis\)/);
+  assert.match(script, /previewParameters\.get\("neuralAt"\)/);
+  assert.match(script, /neuralMorphProgress = \(elapsed - NEURAL_SEQUENCE_MORPH_AT\) \/ NEURAL_MORPH_MILLIS/);
   assert.match(script, /openPanel\(previewPanel\)/);
   assert.match(script, /document\.documentElement\.dataset\.aquaPreviewReady = previewPanel/);
   assert.match(script, /const deterministicPreviewActive = activateDeterministicPreviewRoute\(\)/);
@@ -397,6 +408,8 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(workflow, /data-aqua-neural-phase="rotating"/);
   assert.match(workflow, /data-aqua-neural-phase="firing"/);
   assert.match(workflow, /data-aqua-neural-phase="result"/);
+  assert.match(workflow, /data-morph-progress="0\.400"/);
+  assert.match(workflow, /data-morph-progress="1\.000"/);
   assert.match(workflow, /data-aqua-preview-ready="command"/);
   assert.match(workflow, /identify -format '%wx%h'/);
   assert.match(workflow, /! cmp -s/);
