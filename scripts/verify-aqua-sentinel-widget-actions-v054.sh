@@ -464,6 +464,7 @@ prove_widget_resize() {
   local start_y=""
   local end_x=""
   local end_y=""
+  local edge_offset=""
   local resized="false"
   local evidence="/tmp/aqua-sentinel-v0.7.4-widget-resize-${label}.logcat.txt"
 
@@ -486,17 +487,16 @@ prove_widget_resize() {
     return_to_launcher
     adb shell input swipe "$center_x" "$center_y" "$center_x" "$center_y" 1300
     sleep 1
+    edge_offset=$((4 + resize_attempt * 4))
     if [[ "$axis" == "vertical" ]]; then
       start_x="$center_x"
-      start_y=$((bottom - 3))
+      start_y=$((bottom + edge_offset))
       end_x="$center_x"
-      end_y=$((bottom - height * (32 + resize_attempt * 7) / 100))
-      ((end_y < top + 170)) && end_y=$((top + 170))
+      end_y=$((bottom + height * (32 + resize_attempt * 7) / 100))
     else
-      start_x=$((right - 3))
+      start_x=$((right + edge_offset))
       start_y="$center_y"
-      end_x=$((right - width * (18 + resize_attempt * 6) / 100))
-      ((end_x < left + 170)) && end_x=$((left + 170))
+      end_x=$((right + width * (18 + resize_attempt * 6) / 100))
       end_y="$center_y"
     fi
     echo "Resizing Aqua widget $label from $start_x,$start_y to $end_x,$end_y"
@@ -637,8 +637,8 @@ tap_launcher_control() {
 
 pin_widget_on_launcher
 prove_neuralink_widget_activity
-prove_widget_resize "compact" "vertical"
-prove_widget_resize "small" "horizontal"
+prove_widget_resize "compact" "horizontal"
+prove_widget_resize "small" "vertical"
 terminate_sentinel_background_process "before-five-action-sequence"
 
 for mode in home action file photo video; do
