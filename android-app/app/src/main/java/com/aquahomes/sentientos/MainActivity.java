@@ -152,6 +152,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(false);
+        }
+
         webView = new WebView(this);
         webView.setBackgroundColor(Color.BLACK);
         webView.setSoundEffectsEnabled(false);
@@ -265,6 +271,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             );
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) hideSystemUi();
     }
 
     @Override

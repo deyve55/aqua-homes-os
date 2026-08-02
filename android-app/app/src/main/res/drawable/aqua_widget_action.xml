@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
-        <shape android:shape="rectangle"><solid android:color="#234C5B"/><corners android:radius="10dp"/><stroke android:width="1dp" android:color="#B6F5FF"/></shape>
+        <shape android:shape="rectangle"><gradient android:angle="315" android:startColor="#28647A" android:endColor="#0B2A35"/><corners android:radius="11dp"/><stroke android:width="1dp" android:color="#E1FCFF"/></shape>
     </item>
     <item>
-        <shape android:shape="rectangle"><solid android:color="#0A222C"/><corners android:radius="10dp"/><stroke android:width="1dp" android:color="#285E70"/></shape>
+        <shape android:shape="rectangle"><gradient android:angle="315" android:startColor="#103541" android:endColor="#041117"/><corners android:radius="11dp"/><stroke android:width="1dp" android:color="#34798D"/></shape>
     </item>
 </selector>

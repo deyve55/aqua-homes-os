@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:padding="9dp"
     android:background="@drawable/aqua_widget_background">
 
     <LinearLayout
@@ -17,9 +17,9 @@
             android:id="@+id/widget_logo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.92"
+            android:layout_weight="0.82"
             android:contentDescription="Open Aqua Sentinel OS"
-            android:padding="3dp"
+            android:padding="1dp"
             android:scaleType="centerInside"
             android:src="@mipmap/aqua_sentinel_launcher" />
 
@@ -27,7 +27,7 @@
             android:id="@+id/widget_brand"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.08"
+            android:layout_weight="1.18"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:paddingStart="8dp">
@@ -35,9 +35,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="AQUA\nSOFTWARE\nINC."
+                android:text="AQUA\nSENTINEL"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <ImageView
@@ -50,7 +50,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your AI command center for every Aqua application."
+                android:text="One mind across every Aqua application."
                 android:textColor="#B8CCD3"
                 android:textSize="9sp" />
 
@@ -77,12 +77,12 @@
         <TextView
             android:id="@+id/widget_ask"
             style="@style/AquaWidgetAction"
-            android:text="A\nASK AQUA" />
+            android:text="A\nASK" />
 
         <TextView
-            android:id="@+id/widget_video"
+            android:id="@+id/widget_file"
             style="@style/AquaWidgetAction"
-            android:text="▶\nVIDEO" />
+            android:text="▤\nFILE" />
 
         <TextView
             android:id="@+id/widget_photo"
@@ -90,8 +90,8 @@
             android:text="▧\nPHOTO" />
 
         <TextView
-            android:id="@+id/widget_file"
+            android:id="@+id/widget_video"
             style="@style/AquaWidgetAction"
-            android:text="▤\nFILE" />
+            android:text="▶\nVIDEO" />
     </LinearLayout>
 </LinearLayout>

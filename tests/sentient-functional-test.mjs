@@ -134,8 +134,8 @@ test("an unavailable gateway cannot block truthful Standalone startup", async ()
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
   ]);
-  assert.match(gradle, /versionCode = 2026080103/);
-  assert.match(gradle, /versionName = "0\.7\.0-living-neural-link-widget-rebuild-test"/);
+  assert.match(gradle, /versionCode = 2026080104/);
+  assert.match(gradle, /versionName = "0\.7\.1-exact-fidelity-neuralink-widget-recovery-test"/);
   assert.match(gradle, /\.orElse\(providers\.environmentVariable\("AQUA_GATEWAY_URL"\)\)\s*\.orElse\(""\)/);
   assert.doesNotMatch(gradle, /\.orElse\("https:\/\/api\.aquahomesos\.com\/gateway"\)/);
   assert.match(html, /id="ownerAccessButton"[^>]*data-panel="connect"/);
@@ -174,7 +174,11 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(html, /data-panel="neural"[\s\S]*Neural Link/);
   assert.match(html, /data-panel="command"[\s\S]*Command/);
   assert.match(script, /AQUA SENTINEL NEURAL LINK/);
+  assert.match(script, />Aqua Neuralink</);
+  assert.doesNotMatch(script, /systemHeader\("Neural Workspace"\)/);
   assert.match(script, /class="neural-network"/);
+  assert.match(script, /class="neural-microbursts"/);
+  assert.match(script, /class="neural-jolt"/);
   assert.match(script, /const neuralRingSlots =/);
   assert.match(script, /function identifyNeuralIntent\(rawText\)/);
   assert.match(script, /function beginNeuralRequest\(command\)/);
@@ -190,6 +194,7 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /File Cabinet/);
   assert.match(script, /portalMaterialization/);
   assert.match(script, /data-materialized-expand/);
+  assert.match(script, /data-neural-materialized="true"/);
   assert.match(script, /diagnosticsMarkup/);
   assert.match(script, /settingsMarkup/);
   assert.match(fidelity, /\.neural-stage/);
@@ -199,6 +204,11 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(fidelity, /\.neural-thought\{/);
   assert.match(fidelity, /\.portal-open\{position:absolute/);
   assert.match(fidelity, /@keyframes neural-signal-return/);
+  assert.match(fidelity, /neuralink-rest-v071\.png/);
+  assert.match(fidelity, /neuralink-materialized-v071\.png/);
+  assert.match(fidelity, /@keyframes neural-burst-travel/);
+  assert.match(fidelity, /@keyframes neural-jolt-out/);
+  assert.match(fidelity, /@keyframes neural-jolt-return/);
   assert.match(fidelity, /@keyframes materialize-rise/);
   assert.match(fidelity, /\.detail-sheet\.aqua-materialization\.is-full/);
 });
@@ -291,7 +301,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.7.0 preserves Home and adds deterministic living Neural Link proofs", async () => {
+test("v0.7.1 preserves Home and adds deterministic living Neural Link proofs", async () => {
   const [gradle, workflow, script, html, fidelity, androidLaunch] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -300,11 +310,11 @@ test("v0.7.0 preserves Home and adds deterministic living Neural Link proofs", a
     read("sentient-os-web/fidelity.css"),
     read("scripts/verify-aqua-sentinel-android-launch-v060.sh"),
   ]);
-  assert.match(gradle, /versionCode = 2026080103/);
-  assert.match(gradle, /versionName = "0\.7\.0-living-neural-link-widget-rebuild-test"/);
+  assert.match(gradle, /versionCode = 2026080104/);
+  assert.match(gradle, /versionName = "0\.7\.1-exact-fidelity-neuralink-widget-recovery-test"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.0-Living-Neural-Link-Widget-Rebuild-Test\.apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.1-Exact-Fidelity-Neuralink-Widget-Recovery-Test\.apk/);
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
   assert.match(workflow, /preview=neural/);
   assert.match(workflow, /preview=command/);
@@ -365,7 +375,7 @@ test("v0.7.0 preserves Home and adds deterministic living Neural Link proofs", a
   assert.doesNotMatch(workflow, /adb exec-out screencap.*launch\.png/);
   assert.doesNotMatch(androidLaunch, /adb exec-out screencap.*launch\.png/);
   assert.ok(
-    workflow.indexOf("--screenshot=release/AquaSentinelOS-v0.7.0-launch-proof.png")
+    workflow.indexOf("--screenshot=release/AquaSentinelOS-v0.7.1-launch-proof.png")
       < workflow.indexOf("bash scripts/verify-aqua-sentinel-android-launch-v060.sh"),
     "the deterministic Home proof must be rendered before Android interaction checks",
   );
@@ -502,7 +512,7 @@ test("v0.5.4 preserves app covers and gives the two hero labels separate lanes",
   assert.match(fidelity, /\.screen-lower \.dashboard-screen-sheet\{top:-100%\}/);
 });
 
-test("v0.7.0 pins the real widget in Launcher3 and resolves its home-screen controls", async () => {
+test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen controls", async () => {
   const [widget, capture, activity, layout, script, styles, workflow, widgetVerifier, androidLaunch] = await Promise.all([
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
@@ -589,7 +599,7 @@ test("v0.7.0 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.doesNotMatch(widgetVerifier, /AQUA_WIDGET_REMOTE_VIEWS_TAP/);
 });
 
-test("v0.7.0 integrated 4x3 widget installs, repairs, refreshes, and delivers filing items", async () => {
+test("v0.7.1 integrated 4x3 widget installs, repairs, refreshes, and delivers filing items", async () => {
   const [gradle, manifest, widget, widgetLayout, widgetInfo, capture, activity, store, verifier, script] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read("android-app/app/src/main/AndroidManifest.xml"),
@@ -604,9 +614,9 @@ test("v0.7.0 integrated 4x3 widget installs, repairs, refreshes, and delivers fi
   ]);
   assert.match(gradle, /ECOSYSTEM_PRESENTATION_MODE/);
   assert.match(widgetLayout, /id="@\+id\/widget_logo"/);
-  assert.match(widgetLayout, /AQUA\\nSOFTWARE\\nINC\./);
-  assert.match(widgetLayout, /Your AI command center for every Aqua application/);
-  assert.match(widgetLayout, /ASK AQUA/);
+  assert.match(widgetLayout, /AQUA\\nSENTINEL/);
+  assert.match(widgetLayout, /One mind across every Aqua application/);
+  assert.match(widgetLayout, /A\\nASK/);
   assert.match(widgetInfo, /android:targetCellWidth="4"/);
   assert.match(widgetInfo, /android:targetCellHeight="3"/);
   assert.match(widgetInfo, /android:minHeight="156dp"/);

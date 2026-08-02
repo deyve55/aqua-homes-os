@@ -190,8 +190,8 @@ for line in sys.stdin:
 }
 
 pin_widget_on_launcher() {
-  local pin_evidence="/tmp/aqua-sentinel-v0.7.0-widget-pin.logcat.txt"
-  local appwidget_state="/tmp/aqua-sentinel-v0.7.0-appwidget-host.txt"
+  local pin_evidence="/tmp/aqua-sentinel-v0.7.1-widget-pin.logcat.txt"
+  local appwidget_state="/tmp/aqua-sentinel-v0.7.1-appwidget-host.txt"
   local launcher_hierarchy=""
 
   clear_logcat
@@ -284,7 +284,7 @@ pin_widget_on_launcher
 terminate_sentinel_background_process "before-five-action-sequence"
 
 for mode in home ask file photo video; do
-  evidence="/tmp/aqua-sentinel-v0.7.0-widget-${mode}.logcat.txt"
+  evidence="/tmp/aqua-sentinel-v0.7.1-widget-${mode}.logcat.txt"
   expected_route="$mode"
   [[ "$mode" == "file" ]] && expected_route="voice"
   clear_logcat
@@ -368,7 +368,7 @@ done
 # The launcher tap above proves the FILE PendingIntent reaches the real voice-filing route.
 # Complete the deterministic downstream filing contract separately because the headless
 # emulator has no microphone input; do not mislabel synthetic speech as a launcher tap.
-file_evidence="/tmp/aqua-sentinel-v0.7.0-widget-file-completion.logcat.txt"
+file_evidence="/tmp/aqua-sentinel-v0.7.1-widget-file-completion.logcat.txt"
 clear_logcat
 adb shell am start -W \
   -n "$capture_activity" \
@@ -382,5 +382,5 @@ terminate_sentinel_background_process "post-filing-process-recreation"
 tap_ui_node \
   "launcher-hosted widget after process recreation" \
   "$package:id/widget_logo|Open Aqua Sentinel OS"
-wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.0-widget-recreated.logcat.txt 30
+wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.1-widget-recreated.logcat.txt 30
 echo "AQUA_WIDGET_LAUNCHER_PROCESS_RECREATION_VERIFIED"

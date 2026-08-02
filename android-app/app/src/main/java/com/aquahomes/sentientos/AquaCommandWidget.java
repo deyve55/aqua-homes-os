@@ -1,6 +1,5 @@
 package com.aquahomes.sentientos;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -9,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.RemoteViews;
 
 public class AquaCommandWidget extends AppWidgetProvider {
@@ -79,43 +76,6 @@ public class AquaCommandWidget extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.widget_photo, action(context, "photo", 103));
         views.setOnClickPendingIntent(R.id.widget_file, action(context, "file", 104));
         return views;
-    }
-
-    static boolean dispatchContractProbe(Activity activity, String mode) {
-        if (!BuildConfig.ECOSYSTEM_PRESENTATION_MODE) return false;
-        int targetId;
-        switch (mode) {
-            case "home": targetId = R.id.widget_logo; break;
-            case "ask": targetId = R.id.widget_ask; break;
-            case "video": targetId = R.id.widget_video; break;
-            case "photo": targetId = R.id.widget_photo; break;
-            case "file": targetId = R.id.widget_file; break;
-            default: return false;
-        }
-        try {
-            activity.getSharedPreferences("aqua_widget_contract_probe", Context.MODE_PRIVATE)
-                .edit()
-                .putString("mode", mode)
-                .putString("command", "Widget message execution test")
-                .putString("filing", "File this preview with Aqua CRM")
-                .apply();
-            FrameLayout host = new FrameLayout(activity);
-            View rendered = buildViews(activity).apply(activity, host);
-            View target = rendered.findViewById(targetId);
-            boolean dispatched = target != null && target.performClick();
-            Log.i(
-                "AquaCommandWidget",
-                "AQUA_WIDGET_REMOTE_VIEWS_TAP mode=" + mode + " dispatched=" + dispatched
-            );
-            return dispatched;
-        } catch (Exception error) {
-            Log.e(
-                "AquaCommandWidget",
-                "AQUA_WIDGET_REMOTE_VIEWS_TAP mode=" + mode + " dispatched=false",
-                error
-            );
-            return false;
-        }
     }
 
     private static void update(Context context, AppWidgetManager manager, int id) {
