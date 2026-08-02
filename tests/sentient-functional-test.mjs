@@ -423,6 +423,7 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(neuralLiveProof, /AQUA_NEURAL_LIVE_WALL_CLOCK_VERIFIED/);
   assert.match(neuralLiveProof, /data-neural-portal="6"/);
   assert.match(neuralLiveProof, /bound-aqua-receipts-portal-click/);
+  assert.match(neuralLiveProof, /materializationKind, "receipts"/);
   assert.doesNotMatch(neuralLiveProof, /virtual-time-budget|neuralAt=/);
   const liveCheckpointWriter = neuralLiveProof.match(/async function saveCheckpoint[\s\S]*?\n\}/)?.[0] || "";
   assert.match(liveCheckpointWriter, /live-\$\{phase\}\.json/);

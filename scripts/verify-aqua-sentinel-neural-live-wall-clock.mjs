@@ -262,7 +262,7 @@ async function run() {
     assert.match(firing.detail, /large upward neuron burst through the selected path/);
     assert.equal(transitioning.materialized, "pending");
     assert.equal(result.materialized, "true");
-    assert.equal(result.materializationKind, "receipt");
+    assert.equal(result.materializationKind, "receipts");
     assert.equal(result.receiptVisible, true);
 
     await writeFile(join(options.evidenceDirectory, "timeline.json"), `${JSON.stringify({
