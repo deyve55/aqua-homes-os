@@ -375,7 +375,7 @@ tap_launcher_control() {
       sleep 1
       continue
     }
-    bounds="$(ui_node_bounds "$hierarchy_path" "$package:id/$resource_id|$text_fallback")"
+    bounds="$(ui_node_bounds "$hierarchy_path" "^$package:id/$resource_id(?: |$)")"
     if [[ -z "$bounds" ]]; then
       sleep 1
       continue

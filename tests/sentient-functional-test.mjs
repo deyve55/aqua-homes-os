@@ -610,6 +610,8 @@ test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.match(widgetVerifier, /AQUA_WIDGET_BACKGROUND_FILE_STAYED_ON_LAUNCHER/);
   assert.match(widgetVerifier, /if grep -Fq "AQUA_FILING_CABINET_OPENED"/);
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_TAP mode=\$mode resource=\$resource_id/);
+  assert.match(widgetVerifier, /ui_node_bounds "\$hierarchy_path" "\^\$package:id\/\$resource_id/);
+  assert.doesNotMatch(widgetVerifier, /\$package:id\/\$resource_id\|\$text_fallback/);
   assert.match(widgetVerifier, /widget_logo/);
   assert.match(widgetVerifier, /widget_ask/);
   assert.match(widgetVerifier, /widget_file/);
