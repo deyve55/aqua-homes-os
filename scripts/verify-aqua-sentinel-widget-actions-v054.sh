@@ -169,7 +169,7 @@ return_to_launcher() {
 }
 
 assert_widget_send_returned_to_launcher() {
-  local focus_path="/tmp/aqua-sentinel-v0.7.3-widget-send-focus.txt"
+  local focus_path="/tmp/aqua-sentinel-v0.7.4-widget-send-focus.txt"
   for attempt in $(seq 1 20); do
     {
       adb shell dumpsys window 2>/dev/null || true
@@ -188,6 +188,40 @@ assert_widget_send_returned_to_launcher() {
   echo "Widget Send did not return to Launcher3 without opening Sentinel" >&2
   tail -n 80 "$focus_path" >&2 || true
   return 1
+}
+
+assert_transient_capture_returned_to_launcher() {
+  local mode="$1"
+  local focus_path="/tmp/aqua-sentinel-v0.7.4-widget-${mode}-return-focus.txt"
+  for attempt in $(seq 1 20); do
+    {
+      adb shell dumpsys window 2>/dev/null || true
+      adb shell dumpsys activity activities 2>/dev/null || true
+    } > "$focus_path"
+    if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity|ACTIVITY).*${launcher_package}" "$focus_path"; then
+      if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${package}" "$focus_path"; then
+        echo "Widget $mode left a Sentinel capture activity resumed over Launcher3" >&2
+        return 1
+      fi
+      echo "AQUA_WIDGET_CAPTURE_CANCEL_STAYED_ON_LAUNCHER mode=$mode"
+      return 0
+    fi
+    sleep 1
+  done
+  echo "Widget $mode did not return naturally to Launcher3 after cancellation" >&2
+  tail -n 80 "$focus_path" >&2 || true
+  return 1
+}
+
+assert_no_sentinel_crash() {
+  local evidence="$1"
+  local phase="$2"
+  adb logcat -d > "$evidence"
+  if grep -Eq "FATAL EXCEPTION|Process: ${package}.*has died|ANR in ${package}" "$evidence"; then
+    echo "Aqua Sentinel crashed or stopped responding during $phase" >&2
+    grep -E "FATAL EXCEPTION|Process: ${package}|ANR in ${package}|AndroidRuntime" "$evidence" >&2 || true
+    return 1
+  fi
 }
 
 terminate_sentinel_background_process() {
@@ -238,8 +272,8 @@ for line in sys.stdin:
 }
 
 pin_widget_on_launcher() {
-  local pin_evidence="/tmp/aqua-sentinel-v0.7.3-widget-pin.logcat.txt"
-  local appwidget_state="/tmp/aqua-sentinel-v0.7.3-appwidget-host.txt"
+  local pin_evidence="/tmp/aqua-sentinel-v0.7.4-widget-pin.logcat.txt"
+  local appwidget_state="/tmp/aqua-sentinel-v0.7.4-appwidget-host.txt"
   local launcher_hierarchy=""
 
   clear_logcat
@@ -284,9 +318,9 @@ pin_widget_on_launcher() {
       && [[ -n "$launcher_hierarchy" ]] \
       && grep -Fq "$package:id/widget_logo" "$launcher_hierarchy" \
       && grep -Fq "$package:id/widget_neural_art" "$launcher_hierarchy" \
-      && grep -Fq "$package:id/widget_shimmer" "$launcher_hierarchy"; then
+      && grep -Fq "$package:id/widget_neural_activity" "$launcher_hierarchy"; then
       echo "AQUA_WIDGET_LAUNCHER_HOST_READY provider=$widget_provider host=$launcher_package"
-      echo "AQUA_WIDGET_NEURALINK_SURFACE_READY art=widget_neural_art path=armed_on_tap shimmer=widget_shimmer"
+      echo "AQUA_WIDGET_NEURALINK_SURFACE_READY art=widget_neural_art path=armed_on_tap activity=widget_neural_activity"
       return 0
     fi
     sleep 1
@@ -298,7 +332,7 @@ pin_widget_on_launcher() {
   return 1
 }
 
-prove_neuralink_widget_shimmer() {
+prove_neuralink_widget_activity() {
   local hierarchy_path=""
   local bounds=""
   local left=""
@@ -308,18 +342,18 @@ prove_neuralink_widget_shimmer() {
   local width=""
   local height=""
   local changed_pixels=""
-  local first="/tmp/aqua-sentinel-v0.7.3-widget-shimmer-a.png"
-  local second="/tmp/aqua-sentinel-v0.7.3-widget-shimmer-b.png"
-  local first_crop="/tmp/aqua-sentinel-v0.7.3-widget-shimmer-a-crop.png"
-  local second_crop="/tmp/aqua-sentinel-v0.7.3-widget-shimmer-b-crop.png"
+  local first="/tmp/aqua-sentinel-v0.7.4-widget-neural-activity-a.png"
+  local second="/tmp/aqua-sentinel-v0.7.4-widget-neural-activity-b.png"
+  local first_crop="/tmp/aqua-sentinel-v0.7.4-widget-neural-activity-a-crop.png"
+  local second_crop="/tmp/aqua-sentinel-v0.7.4-widget-neural-activity-b-crop.png"
 
   command -v convert >/dev/null
   command -v compare >/dev/null
   return_to_launcher
-  hierarchy_path="$(dump_ui "aqua-widget-neuralink-shimmer")"
-  bounds="$(ui_node_bounds "$hierarchy_path" "$package:id/widget_shimmer")"
+  hierarchy_path="$(dump_ui "aqua-widget-neural-activity")"
+  bounds="$(ui_node_bounds "$hierarchy_path" "$package:id/widget_neural_activity")"
   if [[ -z "$bounds" ]]; then
-    echo "Launcher3 did not expose the native Aqua Neuralink shimmer" >&2
+    echo "Launcher3 did not expose the path-bound Aqua Neuralink activity layer" >&2
     sed -n '1,16p' "$hierarchy_path" >&2 || true
     return 1
   fi
@@ -328,7 +362,7 @@ prove_neuralink_widget_shimmer() {
   width=$((right - left))
   height=$((bottom - top))
   if ((width <= 0 || height <= 0)); then
-    echo "The Aqua Neuralink shimmer reported invalid bounds: $bounds" >&2
+    echo "The Aqua Neuralink activity layer reported invalid bounds: $bounds" >&2
     return 1
   fi
 
@@ -349,12 +383,148 @@ prove_neuralink_widget_shimmer() {
     fi
   done
   if [[ ! "$changed_pixels" =~ ^[0-9]+$ ]] || ((changed_pixels <= 0)); then
-    echo "The launcher-hosted Aqua Neuralink shimmer did not move between frames" >&2
+    echo "The launcher-hosted cyan/gold Neuralink activity did not move between frames" >&2
     return 1
   fi
 
-  cp "$second" /tmp/AquaSentinelOS-v0.7.3-Neuralink-Live-Widget-Launcher.png
-  echo "AQUA_WIDGET_NEURALINK_SHIMMER_VERIFIED changed_pixels=$changed_pixels"
+  cp "$second" /tmp/AquaSentinelOS-v0.7.4-Neuralink-Live-Widget-Launcher.png
+  echo "AQUA_WIDGET_NEURALINK_ACTIVITY_VERIFIED lanes=cyan_outbound_gold_return changed_pixels=$changed_pixels"
+}
+
+assert_widget_control_geometry() {
+  local hierarchy_path="$1"
+  local label="$2"
+
+  python3 - "$hierarchy_path" "$package" "$label" <<'PY'
+import re
+import sys
+import xml.etree.ElementTree as ET
+
+path, package, label = sys.argv[1:]
+nodes = {}
+for node in ET.parse(path).iter("node"):
+    resource_id = node.attrib.get("resource-id", "")
+    if resource_id:
+        nodes[resource_id] = node.attrib
+
+def bounds(resource_name):
+    resource_id = f"{package}:id/{resource_name}"
+    attributes = nodes.get(resource_id)
+    if not attributes:
+        raise SystemExit(f"{label}: missing {resource_id}")
+    match = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", attributes.get("bounds", ""))
+    if not match:
+        raise SystemExit(f"{label}: invalid bounds for {resource_id}")
+    value = tuple(map(int, match.groups()))
+    if value[2] <= value[0] or value[3] <= value[1]:
+        raise SystemExit(f"{label}: empty bounds for {resource_id}: {value}")
+    return value
+
+surface = bounds("widget_resize_surface")
+art = bounds("widget_neural_art")
+activity = bounds("widget_neural_activity")
+if art != activity:
+    raise SystemExit(f"{label}: neural activity is not registered to the approved art: art={art} activity={activity}")
+if not (surface[0] <= art[0] <= art[2] <= surface[2] and surface[1] <= art[1] <= art[3] <= surface[3]):
+    raise SystemExit(f"{label}: approved art left the widget surface: surface={surface} art={art}")
+
+for resource_name in ("widget_logo", "widget_action", "widget_video", "widget_photo", "widget_file"):
+    control = bounds(resource_name)
+    center_x = (control[0] + control[2]) / 2
+    center_y = (control[1] + control[3]) / 2
+    if not (art[0] <= center_x <= art[2] and art[1] <= center_y <= art[3]):
+        raise SystemExit(f"{label}: {resource_name} is not aligned to the approved art: art={art} control={control}")
+
+art_width = art[2] - art[0]
+art_height = art[3] - art[1]
+ratio = art_width / art_height
+if not (0.60 <= ratio <= 0.74 or 0.92 <= ratio <= 1.08):
+    raise SystemExit(f"{label}: approved art was stretched: ratio={ratio:.4f} art={art}")
+
+print(surface[2] - surface[0], surface[3] - surface[1], art_width, art_height)
+PY
+}
+
+prove_widget_resize() {
+  local label="$1"
+  local axis="$2"
+  local hierarchy_path=""
+  local surface_bounds=""
+  local before_geometry=""
+  local after_geometry=""
+  local left=""
+  local top=""
+  local right=""
+  local bottom=""
+  local width=""
+  local height=""
+  local center_x=""
+  local center_y=""
+  local start_x=""
+  local start_y=""
+  local end_x=""
+  local end_y=""
+  local resized="false"
+  local evidence="/tmp/aqua-sentinel-v0.7.4-widget-resize-${label}.logcat.txt"
+
+  return_to_launcher
+  hierarchy_path="$(dump_ui "aqua-widget-resize-${label}-before")"
+  before_geometry="$(assert_widget_control_geometry "$hierarchy_path" "${label}-before")"
+  surface_bounds="$(ui_node_bounds "$hierarchy_path" "^$package:id/widget_resize_surface(?: |$)")"
+  if [[ -z "$surface_bounds" ]]; then
+    echo "Launcher3 did not expose the full Aqua widget resize surface" >&2
+    return 1
+  fi
+  read -r left top right bottom <<< "$surface_bounds"
+  width=$((right - left))
+  height=$((bottom - top))
+  center_x=$(((left + right) / 2))
+  center_y=$(((top + bottom) / 2))
+  clear_logcat
+
+  for resize_attempt in $(seq 1 4); do
+    return_to_launcher
+    adb shell input swipe "$center_x" "$center_y" "$center_x" "$center_y" 1300
+    sleep 1
+    if [[ "$axis" == "vertical" ]]; then
+      start_x="$center_x"
+      start_y=$((bottom - 3))
+      end_x="$center_x"
+      end_y=$((bottom - height * (32 + resize_attempt * 7) / 100))
+      ((end_y < top + 170)) && end_y=$((top + 170))
+    else
+      start_x=$((right - 3))
+      start_y="$center_y"
+      end_x=$((right - width * (18 + resize_attempt * 6) / 100))
+      ((end_x < left + 170)) && end_x=$((left + 170))
+      end_y="$center_y"
+    fi
+    echo "Resizing Aqua widget $label from $start_x,$start_y to $end_x,$end_y"
+    adb shell input swipe "$start_x" "$start_y" "$end_x" "$end_y" 1100
+    sleep 2
+    adb shell input keyevent KEYCODE_BACK || true
+    if wait_for_log "AQUA_WIDGET_RESIZED id=.*size=.*layout=" "$evidence" 4; then
+      resized="true"
+      break
+    fi
+  done
+
+  if [[ "$resized" != "true" ]]; then
+    echo "Launcher3 did not produce a real widget resize callback for $label" >&2
+    grep -E "AQUA_WIDGET_RESIZED|Launcher3|AndroidRuntime|FATAL EXCEPTION" "$evidence" >&2 || true
+    return 1
+  fi
+
+  return_to_launcher
+  hierarchy_path="$(dump_ui "aqua-widget-resize-${label}-after")"
+  after_geometry="$(assert_widget_control_geometry "$hierarchy_path" "${label}-after")"
+  if [[ "$before_geometry" == "$after_geometry" ]]; then
+    echo "Launcher3 emitted a resize callback but Aqua's visible geometry did not change: $label" >&2
+    return 1
+  fi
+  adb exec-out screencap -p > "/tmp/AquaSentinelOS-v0.7.4-Neuralink-Widget-Resize-${label}.png"
+  test -s "/tmp/AquaSentinelOS-v0.7.4-Neuralink-Widget-Resize-${label}.png"
+  echo "AQUA_WIDGET_REAL_RESIZE_VERIFIED label=$label before=$before_geometry after=$after_geometry"
 }
 
 prove_filed_today_count() {
@@ -387,6 +557,26 @@ PY
   echo "AQUA_WIDGET_FILED_TODAY_VERIFIED count=$filed_today"
 }
 
+prove_filed_confirmation() {
+  local hierarchy_path=""
+  if ! wait_for_log "AQUA_WIDGET_FILED_CONFIRMATION_RENDERED" "/tmp/aqua-sentinel-v0.7.4-widget-filed.logcat.txt" 12; then
+    echo "Aqua Action never rendered its launcher-hosted FILED acknowledgement" >&2
+    return 1
+  fi
+  return_to_launcher
+  for attempt in $(seq 1 8); do
+    hierarchy_path="$(dump_ui "aqua-widget-filed-confirmation-${attempt}")"
+    if grep -Fq "$package:id/widget_status" "$hierarchy_path" \
+      && grep -Eq 'text="FILED"[^>]*resource-id="[^\"]*:id/widget_status"|resource-id="[^\"]*:id/widget_status"[^>]*text="FILED"' "$hierarchy_path"; then
+      echo "AQUA_WIDGET_FILED_CONFIRMATION_VERIFIED"
+      return 0
+    fi
+    sleep 0.10
+  done
+  echo "The Aqua widget did not expose the brief FILED state after a successful local receipt" >&2
+  return 1
+}
+
 tap_launcher_control() {
   local mode="$1"
   local resource_id="$2"
@@ -402,10 +592,10 @@ tap_launcher_control() {
   local width=""
   local height=""
   local changed_pixels=""
-  local idle="/tmp/aqua-sentinel-v0.7.3-widget-${mode}-idle.png"
-  local active="/tmp/aqua-sentinel-v0.7.3-widget-${mode}-jolt.png"
-  local idle_crop="/tmp/aqua-sentinel-v0.7.3-widget-${mode}-idle-crop.png"
-  local active_crop="/tmp/aqua-sentinel-v0.7.3-widget-${mode}-jolt-crop.png"
+  local idle="/tmp/aqua-sentinel-v0.7.4-widget-${mode}-idle.png"
+  local active="/tmp/aqua-sentinel-v0.7.4-widget-${mode}-jolt.png"
+  local idle_crop="/tmp/aqua-sentinel-v0.7.4-widget-${mode}-idle-crop.png"
+  local active_crop="/tmp/aqua-sentinel-v0.7.4-widget-${mode}-jolt-crop.png"
 
   return_to_launcher
   for attempt in $(seq 1 20); do
@@ -435,7 +625,7 @@ tap_launcher_control() {
       echo "The $mode Neuralink endpoint did not visibly react to its real launcher tap" >&2
       return 1
     fi
-    cp "$active" /tmp/AquaSentinelOS-v0.7.3-Neuralink-Widget-Tap-Jolt.png
+    cp "$active" /tmp/AquaSentinelOS-v0.7.4-Neuralink-Widget-Tap-Jolt.png
     echo "AQUA_WIDGET_LAUNCHER_TAP mode=$mode resource=$resource_id"
     echo "AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=$mode changed_pixels=$changed_pixels"
     return 0
@@ -446,11 +636,13 @@ tap_launcher_control() {
 }
 
 pin_widget_on_launcher
-prove_neuralink_widget_shimmer
+prove_neuralink_widget_activity
+prove_widget_resize "compact" "vertical"
+prove_widget_resize "small" "horizontal"
 terminate_sentinel_background_process "before-five-action-sequence"
 
 for mode in home action file photo video; do
-  evidence="/tmp/aqua-sentinel-v0.7.3-widget-${mode}.logcat.txt"
+  evidence="/tmp/aqua-sentinel-v0.7.4-widget-${mode}.logcat.txt"
   expected_route="$mode"
   [[ "$mode" == "file" ]] && expected_route="voice"
   clear_logcat
@@ -465,6 +657,7 @@ for mode in home action file photo video; do
   received=false
   routed=false
   jolted=false
+  returned=false
   arrived=false
   for attempt in $(seq 1 24); do
     sleep 1
@@ -475,6 +668,9 @@ for mode in home action file photo video; do
     fi
     if grep -Fq "AQUA_WIDGET_NEURAL_JOLT mode=$mode phase=arrived" "$evidence"; then
       arrived=true
+    fi
+    if grep -Fq "AQUA_WIDGET_NEURAL_JOLT_RENDERED mode=$mode phase=return" "$evidence"; then
+      returned=true
     fi
     if [[ "$mode" == "home" ]]; then
       if grep -Fq "AQUA_WIDGET_HOME_OPENED" "$evidence"; then
@@ -489,12 +685,12 @@ for mode in home action file photo video; do
         routed=true
       fi
     fi
-    if [[ "$jolted" == "true" && "$arrived" == "true" && "$received" == "true" && "$routed" == "true" ]]; then
+    if [[ "$jolted" == "true" && "$returned" == "true" && "$arrived" == "true" && "$received" == "true" && "$routed" == "true" ]]; then
       break
     fi
   done
 
-  if [[ "$jolted" != "true" || "$arrived" != "true" || "$received" != "true" || "$routed" != "true" ]]; then
+  if [[ "$jolted" != "true" || "$returned" != "true" || "$arrived" != "true" || "$received" != "true" || "$routed" != "true" ]]; then
     echo "Launcher-hosted widget tap did not light and resolve its route: $mode" >&2
     grep -E "AQUA_WIDGET|AQUA_CAPTURE|QuickCaptureActivity|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
     exit 1
@@ -515,8 +711,16 @@ for mode in home action file photo video; do
       grep -E "AQUA_WIDGET|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
       exit 1
     fi
+    prove_filed_confirmation
     assert_widget_send_returned_to_launcher
   fi
+
+  if [[ "$mode" == "file" || "$mode" == "photo" || "$mode" == "video" ]]; then
+    adb shell input keyevent KEYCODE_BACK
+    assert_transient_capture_returned_to_launcher "$mode"
+  fi
+
+  assert_no_sentinel_crash "$evidence" "widget-$mode"
 
   adb shell am force-stop com.android.camera2 || true
 done
@@ -524,7 +728,7 @@ done
 # The launcher tap above proves the FILE PendingIntent reaches the real voice-filing route.
 # Complete the deterministic downstream filing contract separately because the headless
 # emulator has no microphone input; do not mislabel synthetic speech as a launcher tap.
-file_evidence="/tmp/aqua-sentinel-v0.7.3-widget-file-completion.logcat.txt"
+file_evidence="/tmp/aqua-sentinel-v0.7.4-widget-file-completion.logcat.txt"
 clear_logcat
 adb shell am start -W \
   -n "$capture_activity" \
@@ -541,9 +745,25 @@ return_to_launcher
 echo "AQUA_WIDGET_BACKGROUND_FILE_STAYED_ON_LAUNCHER"
 prove_filed_today_count
 
+repeat_evidence="/tmp/aqua-sentinel-v0.7.4-widget-action-repeat.logcat.txt"
+for repeat_index in $(seq 1 5); do
+  clear_logcat
+  tap_ui_node \
+    "Aqua Action stability run ${repeat_index}" \
+    "^$package:id/widget_action(?: |$)"
+  if ! wait_for_log "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT" "$repeat_evidence" 30; then
+    echo "Aqua Action stability run $repeat_index did not complete" >&2
+    exit 1
+  fi
+  assert_widget_send_returned_to_launcher
+  assert_no_sentinel_crash "$repeat_evidence" "Aqua-Action-repeat-$repeat_index"
+  sleep 2
+done
+echo "AQUA_WIDGET_REPEAT_STABILITY_VERIFIED runs=5"
+
 terminate_sentinel_background_process "post-filing-process-recreation"
 tap_ui_node \
   "launcher-hosted widget after process recreation" \
   "$package:id/widget_logo|Open Aqua Sentinel OS"
-wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.3-widget-recreated.logcat.txt 30
+wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.4-widget-recreated.logcat.txt 30
 echo "AQUA_WIDGET_LAUNCHER_PROCESS_RECREATION_VERIFIED"

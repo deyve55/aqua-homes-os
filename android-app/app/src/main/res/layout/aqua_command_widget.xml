@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_resize_surface"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
@@ -10,40 +11,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="Owner-approved Aqua Neuralink four by six living surface"
-        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:src="@drawable/aqua_widget_4x6_approved_v073" />
+
+    <ProgressBar
+        android:id="@+id/widget_neural_activity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Cyan outbound and gold return neural activity"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/aqua_widget_neural_activity_4x6" />
 
     <ImageView
         android:id="@+id/widget_active_path"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="Selected Aqua Neuralink circuit"
-        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:src="@drawable/aqua_widget_jolt_home"
         android:visibility="invisible" />
-
-    <ProgressBar
-        android:id="@+id/widget_shimmer_track"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="265dp"
-        android:layout_height="3dp"
-        android:layout_gravity="center"
-        android:contentDescription="Animated Aqua Neuralink firing path"
-        android:indeterminate="true"
-        android:indeterminateTint="#78F3FF"
-        android:indeterminateTintMode="src_in"
-        android:rotation="90" />
-
-    <ProgressBar
-        android:id="@+id/widget_shimmer"
-        style="@android:style/Widget.ProgressBar.Small"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="center"
-        android:contentDescription="Animated Aqua Neuralink neuron pulse"
-        android:indeterminate="true"
-        android:indeterminateTint="#FFFFFF"
-        android:indeterminateTintMode="src_in" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -119,4 +107,19 @@
                 android:textStyle="bold" />
         </FrameLayout>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/widget_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/aqua_widget_status"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.18"
+        android:paddingHorizontal="13dp"
+        android:paddingVertical="5dp"
+        android:textColor="#C8FBFF"
+        android:textSize="8sp"
+        android:visibility="invisible" />
 </FrameLayout>

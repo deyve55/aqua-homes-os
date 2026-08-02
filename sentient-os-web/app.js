@@ -182,25 +182,25 @@ const customerPreviewSnapshots = new Map();
 const ecosystemPresentationSnapshots = new Map();
 const snapshotStates = new Map();
 const neuralRingSlots = [
-  { x: 50, y: 12.2, scale: 1.08 },
-  { x: 87.2, y: 24.3, scale: 0.98 },
-  { x: 87.2, y: 46.7, scale: 0.96 },
-  { x: 84.8, y: 61.4, scale: 0.94 },
-  { x: 50, y: 79, scale: 0.92 },
-  { x: 15.2, y: 61.4, scale: 0.94 },
-  { x: 12.8, y: 46.7, scale: 0.96 },
-  { x: 12.8, y: 24.3, scale: 0.98 },
+  { x: 50, y: 14.5, scale: 1.08, c1x: 50, c1y: 36, c2x: 50, c2y: 24 },
+  { x: 86, y: 27, scale: 0.98, c1x: 62, c1y: 42, c2x: 75, c2y: 31 },
+  { x: 87, y: 45.8, scale: 0.96, c1x: 64, c1y: 44, c2x: 77, c2y: 46 },
+  { x: 84.8, y: 62, scale: 0.94, c1x: 62, c1y: 51, c2x: 75, c2y: 59 },
+  { x: 50, y: 78.5, scale: 0.92, c1x: 50, c1y: 57, c2x: 51, c2y: 69 },
+  { x: 15.2, y: 62, scale: 0.94, c1x: 38, c1y: 51, c2x: 25, c2y: 59 },
+  { x: 13, y: 45.8, scale: 0.96, c1x: 36, c1y: 44, c2x: 23, c2y: 46 },
+  { x: 14, y: 27, scale: 0.98, c1x: 38, c1y: 42, c2x: 25, c2y: 31 },
 ];
 const neuralMaterializedSlots = [
-  { x: 11.3, y: 33, scale: 1.02 },
-  { x: 11.3, y: 45.8, scale: 0.98 },
-  { x: 11.3, y: 58.6, scale: 0.96 },
-  { x: 11.3, y: 71.4, scale: 0.94 },
-  { x: 11.3, y: 84.2, scale: 0.92 },
+  { x: 11.3, y: 47.2, scale: 1.02, c1x: 18.5, c1y: 29, c2x: 12.6, c2y: 38 },
+  { x: 11.3, y: 58.7, scale: 0.98, c1x: 17.2, c1y: 34, c2x: 11.6, c2y: 49 },
+  { x: 11.3, y: 70.2, scale: 0.96, c1x: 16.3, c1y: 39, c2x: 11.3, c2y: 60 },
+  { x: 11.3, y: 81.7, scale: 0.94, c1x: 15.6, c1y: 44, c2x: 11.3, c2y: 72 },
+  { x: 11.3, y: 92.2, scale: 0.88, c1x: 15, c1y: 49, c2x: 11.3, c2y: 83 },
 ];
-const NEURAL_ROTATE_MILLIS = 680;
-const NEURAL_FIRE_MILLIS = 620;
-const NEURAL_MORPH_MILLIS = 1680;
+const NEURAL_ROTATE_MILLIS = 1380;
+const NEURAL_FIRE_MILLIS = 920;
+const NEURAL_MORPH_MILLIS = 2600;
 let neuralFocusIndex = -1;
 let neuralSupportIndexes = [];
 let neuralIdleOffset = 0;
@@ -210,6 +210,10 @@ let neuralThoughtDetail = "Every system stays ready while her attention moves.";
 let neuralIdleTimer = null;
 let neuralTransitionTimer = null;
 let neuralFireTimer = null;
+let neuralMotionToken = 0;
+let neuralPortalAnimations = [];
+let neuralMorphProgress = 0;
+let neuralPhaseReadyAt = 0;
 let pendingNeuralIntent = null;
 let neuralMaterialization = null;
 let commandWidgetState = {
@@ -251,57 +255,252 @@ function neuralConnectionState(index) {
   return { label: "READY", detail: "LINK PENDING" };
 }
 
-function layoutNeuralStage() {
+function neuralModulo(value, size) {
+  return ((value % size) + size) % size;
+}
+
+function neuralEase(progress) {
+  const clamped = Math.max(0, Math.min(1, progress));
+  return clamped < .5
+    ? 8 * Math.pow(clamped, 4)
+    : 1 - Math.pow(-2 * clamped + 2, 4) / 2;
+}
+
+function neuralCatmullRom(before, from, to, after, progress) {
+  const squared = progress * progress;
+  const cubed = squared * progress;
+  return .5 * (
+    2 * from
+      + (-before + to) * progress
+      + (2 * before - 5 * from + 4 * to - after) * squared
+      + (-before + 3 * from - 3 * to + after) * cubed
+  );
+}
+
+function neuralRingSlotAt(position) {
+  const count = neuralRingSlots.length;
+  const wrapped = neuralModulo(position, count);
+  const fromIndex = Math.floor(wrapped);
+  const toIndex = (fromIndex + 1) % count;
+  const mix = wrapped - fromIndex;
+  const before = neuralRingSlots[neuralModulo(fromIndex - 1, count)];
+  const from = neuralRingSlots[fromIndex];
+  const to = neuralRingSlots[toIndex];
+  const after = neuralRingSlots[(toIndex + 1) % count];
+  const interpolate = (key) => from[key] + (to[key] - from[key]) * mix;
+  return {
+    x: neuralCatmullRom(before.x, from.x, to.x, after.x, mix),
+    y: neuralCatmullRom(before.y, from.y, to.y, after.y, mix),
+    scale: interpolate("scale"),
+    c1x: interpolate("c1x"),
+    c1y: interpolate("c1y"),
+    c2x: interpolate("c2x"),
+    c2y: interpolate("c2y"),
+    index: Math.round(wrapped) % count,
+  };
+}
+
+function neuralMixSlot(from, to, progress) {
+  const interpolate = (key) => from[key] + (to[key] - from[key]) * progress;
+  return {
+    x: interpolate("x"),
+    y: interpolate("y"),
+    scale: interpolate("scale"),
+    c1x: interpolate("c1x"),
+    c1y: interpolate("c1y"),
+    c2x: interpolate("c2x"),
+    c2y: interpolate("c2y"),
+  };
+}
+
+function neuralMorphSlot(from, to, progress) {
+  const horizontalDistance = Math.max(0, from.x - to.x);
+  const controlOneX = from.x - Math.max(4, horizontalDistance * .34);
+  const controlTwoX = to.x + Math.max(3, horizontalDistance * .2);
+  const inverse = 1 - progress;
+  const cubic = (start, controlOne, controlTwo, end) => (
+    inverse * inverse * inverse * start
+      + 3 * inverse * inverse * progress * controlOne
+      + 3 * inverse * progress * progress * controlTwo
+      + progress * progress * progress * end
+  );
+  return {
+    x: cubic(from.x, controlOneX, controlTwoX, to.x),
+    y: cubic(from.y, from.y, to.y, to.y),
+    scale: from.scale + (to.scale - from.scale) * progress,
+    c1x: from.c1x + (to.c1x - from.c1x) * progress,
+    c1y: from.c1y + (to.c1y - from.c1y) * progress,
+    c2x: from.c2x + (to.c2x - from.c2x) * progress,
+    c2y: from.c2y + (to.c2y - from.c2y) * progress,
+  };
+}
+
+function cancelNeuralMotion() {
+  neuralMotionToken += 1;
+  neuralPortalAnimations.forEach((animation) => animation.cancel());
+  neuralPortalAnimations = [];
+}
+
+function neuralStageMetrics(stage) {
+  const rect = stage.getBoundingClientRect();
+  return {
+    width: Math.max(1, rect.width || stage.clientWidth || 430),
+    height: Math.max(1, rect.height || stage.clientHeight || 932),
+  };
+}
+
+function neuralPortalTransform(slot, metrics) {
+  return `translate3d(${(slot.x * metrics.width / 100).toFixed(2)}px,${(slot.y * metrics.height / 100).toFixed(2)}px,0) translate3d(-50%,-50%,0) scale(${slot.scale.toFixed(4)})`;
+}
+
+function neuralMaterializedOrder() {
+  return [
+    neuralFocusIndex,
+    ...neuralSupportIndexes,
+    ...Array.from({ length: apps.length + 1 }, (_, itemIndex) => itemIndex),
+  ]
+    .filter((item, itemIndex, values) => item >= 0 && values.indexOf(item) === itemIndex)
+    .slice(0, neuralMaterializedSlots.length);
+}
+
+function neuralPortalAnimationsBetween(stage, slotAtProgress, duration) {
+  const metrics = neuralStageMetrics(stage);
+  const sampleCount = 30;
+  const animations = [];
+  stage.querySelectorAll("[data-portal-index]").forEach((portal) => {
+    const index = Number(portal.dataset.portalIndex);
+    const keyframes = Array.from({ length: sampleCount + 1 }, (_, sampleIndex) => {
+      const progress = sampleIndex / sampleCount;
+      return {
+        transform: neuralPortalTransform(slotAtProgress(index, progress), metrics),
+        offset: progress,
+      };
+    });
+    animations.push(portal.animate(keyframes, {
+      duration,
+      easing: "linear",
+      fill: "forwards",
+    }));
+  });
+  neuralPortalAnimations = animations;
+  return animations;
+}
+
+async function animateNeuralRingTo(targetOffset, duration, onComplete) {
+  cancelNeuralMotion();
+  const stage = systemPanel.querySelector(".neural-stage");
+  if (!stage) return;
+  const count = neuralRingSlots.length;
+  const recordedOffset = Number(stage?.dataset.ringOffset);
+  const startOffset = Number.isFinite(recordedOffset) ? recordedOffset : neuralIdleOffset;
+  const target = neuralModulo(targetOffset, count);
+  let delta = neuralModulo(target - startOffset + count / 2, count) - count / 2;
+  if (Math.abs(delta) === count / 2) delta = count / 2;
+  const token = neuralMotionToken;
+  stage.dataset.motion = "orbit";
+  const animations = neuralPortalAnimationsBetween(
+    stage,
+    (index, progress) => neuralRingSlotAt(index + startOffset + delta * neuralEase(progress)),
+    duration,
+  );
+  await Promise.allSettled(animations.map((animation) => animation.finished));
+  if (token !== neuralMotionToken) return;
+  animations.forEach((animation) => animation.cancel());
+  neuralPortalAnimations = [];
+  neuralIdleOffset = target;
+  delete stage.dataset.motion;
+  layoutNeuralStage();
+  onComplete?.();
+}
+
+async function animateNeuralMorph(duration) {
+  cancelNeuralMotion();
+  const stage = systemPanel.querySelector(".neural-stage");
+  if (!stage) return;
+  const token = neuralMotionToken;
+  neuralPhase = "transitioning";
+  neuralMorphProgress = 0;
+  stage.dataset.motion = "morph";
+  layoutNeuralStage(null, 0);
+  renderNeuralMaterialization();
+  const order = neuralMaterializedOrder();
+  const count = neuralRingSlots.length;
+  const offset = (count - (neuralFocusIndex % count)) % count;
+  const animations = neuralPortalAnimationsBetween(stage, (index, progress) => {
+    const ringSlot = neuralRingSlotAt(index + offset);
+    const materializedIndex = order.indexOf(index);
+    const materializedSlot = neuralMaterializedSlots[materializedIndex] || {
+      x: 11.3, y: 99, scale: 0.1, c1x: 15, c1y: 49, c2x: 11.3, c2y: 90,
+    };
+    return neuralMorphSlot(ringSlot, materializedSlot, neuralEase(progress));
+  }, duration);
+  await Promise.allSettled(animations.map((animation) => animation.finished));
+  if (token !== neuralMotionToken || neuralMaterialization === null) return;
+  animations.forEach((animation) => animation.cancel());
+  neuralPortalAnimations = [];
+  neuralMorphProgress = 1;
+  neuralPhase = "result";
+  delete stage.dataset.motion;
+  layoutNeuralStage(null, 1);
+  renderNeuralMaterialization();
+}
+
+function layoutNeuralStage(offsetOverride = null, morphOverride = null) {
   const stage = systemPanel.querySelector(".neural-stage");
   if (!stage) return;
   const count = neuralRingSlots.length;
   const isMaterialized = ["transitioning", "result"].includes(neuralPhase)
     && neuralFocusIndex >= 0;
-  const offset = neuralFocusIndex >= 0
-    ? (count - (neuralFocusIndex % count)) % count
-    : neuralIdleOffset;
+  const morphProgress = Number.isFinite(morphOverride)
+    ? Math.max(0, Math.min(1, morphOverride))
+    : neuralPhase === "result"
+      ? 1
+      : neuralPhase === "transitioning"
+        ? neuralMorphProgress
+        : 0;
+  const offset = Number.isFinite(offsetOverride)
+    ? offsetOverride
+    : neuralFocusIndex >= 0
+      ? (count - (neuralFocusIndex % count)) % count
+      : neuralIdleOffset;
   stage.dataset.phase = neuralPhase;
+  document.documentElement.dataset.aquaNeuralPhase = neuralPhase;
   stage.dataset.focus = neuralFocusIndex >= 0 ? String(neuralFocusIndex) : "none";
+  stage.dataset.ringOffset = String(offset);
+  stage.dataset.morphProgress = morphProgress.toFixed(3);
+  stage.style.setProperty("--neural-morph-progress", morphProgress.toFixed(3));
+  const metrics = neuralStageMetrics(stage);
+  const materializedOrder = neuralMaterializedOrder();
   stage.querySelectorAll("[data-portal-index]").forEach((portal) => {
     const index = Number(portal.dataset.portalIndex);
-    const slotIndex = (index + offset + count) % count;
+    const ringSlot = neuralRingSlotAt(index + offset);
+    const slotIndex = ringSlot.index;
     const isPrimary = index === neuralFocusIndex;
     const isSupporting = neuralSupportIndexes.includes(index);
-    const materializedOrder = [
-      neuralFocusIndex,
-      ...neuralSupportIndexes,
-      ...Array.from({ length: apps.length + 1 }, (_, itemIndex) => itemIndex),
-    ]
-      .filter((item, itemIndex, values) => item >= 0 && values.indexOf(item) === itemIndex)
-      .slice(0, neuralMaterializedSlots.length);
     const materializedIndex = materializedOrder.indexOf(index);
+    const materializedSlot = neuralMaterializedSlots[materializedIndex] || {
+      x: 11.3, y: 94, scale: 0.2, c1x: 15, c1y: 42, c2x: 11.3, c2y: 84,
+    };
     const slot = isMaterialized
-      ? (neuralMaterializedSlots[materializedIndex] || { x: 11.3, y: 94, scale: 0.68 })
-      : neuralRingSlots[slotIndex];
-    portal.style.setProperty("--neural-x", `${slot.x}%`);
-    portal.style.setProperty("--neural-y", `${slot.y}%`);
+      ? neuralMorphSlot(ringSlot, materializedSlot, morphProgress)
+      : ringSlot;
+    portal.style.transform = neuralPortalTransform(slot, metrics);
     portal.style.setProperty("--neural-scale", String(slot.scale));
     portal.style.setProperty("--neural-depth", String(12 - slotIndex));
     portal.classList.toggle("is-primary", isPrimary);
     portal.classList.toggle("is-supporting", isSupporting);
-    portal.classList.toggle("is-dormant", isMaterialized && materializedIndex < 0);
+    portal.classList.toggle("is-dormant", isMaterialized && materializedIndex < 0 && morphProgress > 0.98);
 
-    const route = stage.querySelector(`[data-neural-path="${index}"]`);
-    const baseRoute = stage.querySelector(`[data-neural-route="${index}"]`);
-    const coreX = isMaterialized ? 21.7 : 50;
-    const coreY = isMaterialized ? 21.4 : 50;
-    const controlX = coreX + (slot.x - coreX) * 0.42;
-    const controlY = coreY + (slot.y - coreY) * 0.44;
-    const routeDefinition = `M${coreX} ${coreY} Q${controlX.toFixed(1)} ${controlY.toFixed(1)} ${slot.x} ${slot.y}`;
-    route?.setAttribute("d", routeDefinition);
-    baseRoute?.setAttribute("d", routeDefinition);
-    route?.classList.toggle("is-active", isPrimary);
-    route?.classList.toggle("is-supporting", isSupporting);
-    stage.querySelectorAll(`[data-neural-burst="${index}"]`).forEach((burst) => {
-      burst.setAttribute("d", routeDefinition);
-      burst.classList.toggle("is-active", isPrimary);
-      burst.classList.toggle("is-supporting", isSupporting);
-    });
+  });
+  stage.querySelectorAll("[data-neural-path]").forEach((route) => {
+    const slotIndex = Number(route.dataset.neuralPath);
+    route.classList.toggle("is-active", neuralFocusIndex >= 0 && slotIndex === 0);
+    route.classList.toggle("is-supporting", slotIndex !== 0 && neuralSupportIndexes.length > 0);
+  });
+  stage.querySelectorAll("[data-neural-burst]").forEach((burst) => {
+    const slotIndex = Number(burst.dataset.neuralBurst);
+    burst.classList.toggle("is-active", neuralFocusIndex >= 0 && slotIndex === 0);
+    burst.classList.toggle("is-supporting", slotIndex !== 0 && neuralSupportIndexes.length > 0);
   });
   const thought = stage.querySelector("[data-neural-thought]");
   const detail = stage.querySelector("[data-neural-thought-detail]");
@@ -324,13 +523,13 @@ function startNeuralIdleRotation() {
       neuralFocusIndex >= 0 ||
       neuralPhase !== "rest"
     ) return;
-    neuralIdleOffset = (neuralIdleOffset + 1) % neuralRingSlots.length;
-    layoutNeuralStage();
+    animateNeuralRingTo(neuralIdleOffset + 1, 1420);
   }, 4600);
 }
 
 function setNeuralPhase(phase, thought, detail) {
   neuralPhase = phase;
+  neuralMorphProgress = phase === "result" ? 1 : 0;
   if (!["transitioning", "result"].includes(phase)) neuralMaterialization = null;
   if (thought) neuralThought = thought;
   if (detail) neuralThoughtDetail = detail;
@@ -353,17 +552,21 @@ function focusNeuralSource(index, supporting = [], command = "") {
     : "The rest of Aqua’s mind remains connected and ready.";
   clearTimeout(neuralFireTimer);
   neuralPhase = "rotating";
+  neuralMorphProgress = 0;
+  neuralPhaseReadyAt = performance.now() + NEURAL_ROTATE_MILLIS;
   neuralMaterialization = null;
-  layoutNeuralStage();
+  layoutNeuralStage(neuralIdleOffset);
   renderNeuralMaterialization();
-  neuralFireTimer = setTimeout(() => {
+  const targetOffset = (neuralRingSlots.length - (index % neuralRingSlots.length)) % neuralRingSlots.length;
+  animateNeuralRingTo(targetOffset, NEURAL_ROTATE_MILLIS, () => {
     if (neuralFocusIndex !== index || neuralPhase !== "rotating") return;
     neuralPhase = "firing";
+    neuralPhaseReadyAt = performance.now() + NEURAL_FIRE_MILLIS;
     neuralThought = `${source.name} is locked in Aqua’s top portal.`;
     neuralThoughtDetail = "Aqua is firing the request through the selected neural path.";
     layoutNeuralStage();
     renderNeuralMaterialization();
-  }, NEURAL_ROTATE_MILLIS);
+  });
 }
 
 function identifyNeuralIntent(rawText) {
@@ -1222,40 +1425,62 @@ function safeMaterializationUri(value) {
 
 function neuralMaterializationMarkup(materialization) {
   if (!materialization?.present) return "";
+  const fields = Array.isArray(materialization.fields) ? materialization.fields.slice(0, 5) : [];
   const isReceipt = ["receipt", "receipts"].includes(materialization.kind);
+  const previewUri = safeMaterializationUri(materialization.previewUri);
   const spokenReply = isReceipt
     ? "I found the receipt, Dave."
     : `${materialization.title || "The requested item"} is ready, Dave.`;
+  const receiptObject = `<button class="neural-returned-document neural-approved-receipt" type="button" data-materialized-action="open_source" aria-label="Open the Home Depot receipt">
+      <span class="neural-receipt-crop" aria-hidden="true"><img src="${previewUri || "./assets/home-depot-receipt-owner-approved-v074.png"}" alt="" /></span>
+      <span>Home Depot receipt&nbsp; · &nbsp;Marlborough Kitchen</span>
+    </button>`;
+  const recordObject = `<section class="neural-returned-record" aria-label="${escapeHtml(materialization.title || "Materialized record")}">
+      <header><small>${escapeHtml(materialization.sourceApp || "Aqua Sentinel")}</small><strong>${escapeHtml(materialization.title || "Requested item")}</strong><em>${escapeHtml(materialization.sourceState || "Ready")}</em></header>
+      <p>${escapeHtml(materialization.subtitle || "Aqua materialized the requested information.")}</p>
+      <div>${fields.map((field) => `<span><small>${escapeHtml(field.label)}</small><b>${escapeHtml(field.value)}</b></span>`).join("")}</div>
+    </section>`;
   return `<article class="neural-materialization-approved ${isReceipt ? "is-receipt" : ""}" data-neural-materialized="${neuralPhase === "transitioning" ? "pending" : "true"}" data-materialization-phase="${neuralPhase}" data-materialization-kind="${escapeHtml(materialization.kind || "record")}">
     <svg class="neural-materialization-circuit" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
       <path class="materialization-circuit-base" d="M22 21 C25 21 27 20 29 18 L33 11 Q35 8 40 8 H92 Q97 8 97 14 V90 Q97 95 92 95 H34 Q29 95 29 89 V28 C29 25 26 23 22 22" pathLength="100"></path>
       <path class="materialization-circuit-fire materialization-circuit-fire-a" d="M22 21 C25 21 27 20 29 18 L33 11 Q35 8 40 8 H92 Q97 8 97 14 V90 Q97 95 92 95 H34 Q29 95 29 89 V28 C29 25 26 23 22 22" pathLength="100"></path>
       <path class="materialization-circuit-fire materialization-circuit-fire-b" d="M22 21 C25 21 27 20 29 18 L33 11 Q35 8 40 8 H92 Q97 8 97 14 V90 Q97 95 92 95 H34 Q29 95 29 89 V28 C29 25 26 23 22 22" pathLength="100"></path>
     </svg>
-    <div class="neural-approved-voice" aria-live="polite">
-      <span class="visually-hidden">${escapeHtml(spokenReply)}</span>
+    <header class="neural-approved-voice" aria-live="polite">
+      <span class="neural-voice-mark" aria-hidden="true">A</span>
       <div aria-hidden="true">${Array.from({ length: 34 }, (_, index) => `<i style="--voice:${(index * 19) % 31}"></i>`).join("")}</div>
-    </div>
-    <button class="neural-open-materialized-file" type="button" data-materialized-action="open_source" aria-label="Open ${escapeHtml(materialization.title || "materialized file")}"></button>
+      <p>${escapeHtml(spokenReply)}</p>
+    </header>
+    <div class="neural-live-object">${isReceipt ? receiptObject : recordObject}</div>
+    <button class="neural-open-materialized-file" type="button" data-materialized-action="open_source" aria-label="Open ${escapeHtml(materialization.title || "materialized file")}">OPEN FILE <span aria-hidden="true">›</span></button>
   </article>`;
 }
 
 function bindNeuralMaterializationActions() {
   const slot = systemPanel.querySelector("[data-neural-materialization-slot]");
   if (!slot) return;
-  slot.querySelector("[data-materialized-action=\"open_source\"]")?.addEventListener("click", () => {
+  slot.querySelectorAll("[data-materialized-action=\"open_source\"]").forEach((button) => button.addEventListener("click", () => {
     const appIndex = Number(neuralMaterialization?.appIndex);
     if (appIndex >= apps.length) openPanel("files");
     else if (appIndex >= 0) launchAppByIndex(appIndex);
-  });
+  }));
 }
 
 function renderNeuralMaterialization() {
   const slot = systemPanel.querySelector("[data-neural-materialization-slot]");
   if (!slot) return;
-  slot.innerHTML = ["transitioning", "result"].includes(neuralPhase)
-    ? neuralMaterializationMarkup(neuralMaterialization)
-    : "";
+  if (!["transitioning", "result"].includes(neuralPhase) || !neuralMaterialization) {
+    slot.innerHTML = "";
+    return;
+  }
+  const existing = slot.querySelector("[data-neural-materialized]");
+  const kind = String(neuralMaterialization.kind || "record");
+  if (existing && existing.dataset.materializationKind === kind) {
+    existing.dataset.neuralMaterialized = neuralPhase === "result" ? "true" : "pending";
+    existing.dataset.materializationPhase = neuralPhase;
+    return;
+  }
+  slot.innerHTML = neuralMaterializationMarkup(neuralMaterialization);
   bindNeuralMaterializationActions();
 }
 
@@ -1268,27 +1493,18 @@ function showMaterialization(materialization, animateNeuralTransition = true) {
     detailSheet.classList.remove("is-full", "aqua-materialization");
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (animateNeuralTransition && !reducedMotion) {
-      const wasRotating = neuralPhase === "rotating";
       clearTimeout(neuralFireTimer);
-      if (wasRotating) {
-        neuralPhase = "firing";
-        layoutNeuralStage();
-        renderNeuralMaterialization();
-      }
-      const fireDwell = wasRotating ? NEURAL_FIRE_MILLIS : 220;
+      const isSelecting = ["rotating", "firing"].includes(neuralPhase);
+      const fireDwell = isSelecting
+        ? Math.max(80, neuralPhaseReadyAt - performance.now())
+        : 220;
       neuralTransitionTimer = setTimeout(() => {
         if (neuralMaterialization !== materialization) return;
-        neuralPhase = "transitioning";
-        layoutNeuralStage();
-        renderNeuralMaterialization();
-        neuralTransitionTimer = setTimeout(() => {
-          if (neuralMaterialization !== materialization) return;
-          neuralPhase = "result";
-          layoutNeuralStage();
-          renderNeuralMaterialization();
-        }, NEURAL_MORPH_MILLIS);
+        animateNeuralMorph(NEURAL_MORPH_MILLIS);
       }, fireDwell);
     } else {
+      cancelNeuralMotion();
+      neuralMorphProgress = 1;
       neuralPhase = "result";
       layoutNeuralStage();
       renderNeuralMaterialization();
@@ -1417,31 +1633,37 @@ function neuralWorkspaceMarkup() {
       </button>
     </article>`;
   }).join("");
-  const paths = portalApps.map((app, index) => `
+  const neuralPathForSlot = (slot) => `M50 45 C${slot.c1x} ${slot.c1y} ${slot.c2x} ${slot.c2y} ${slot.x} ${slot.y}`;
+  const paths = neuralRingSlots.map((slot, index) => `
     <g class="neural-route-group">
-      <path class="neural-route" d="M50 50 L50 50" pathLength="100" data-neural-route="${index}"></path>
-      <path class="neural-signal" d="M50 50 L50 50" pathLength="100" data-neural-path="${index}" style="--portal-color:${app.color}"></path>
+      <path class="neural-route" d="${neuralPathForSlot(slot)}" pathLength="100" data-neural-route="${index}"></path>
+      <path class="neural-signal" d="${neuralPathForSlot(slot)}" pathLength="100" data-neural-path="${index}"></path>
     </g>`).join("");
-  const bursts = portalApps.map((app, index) => `
-      <path class="neural-burst burst-a" d="M50 50 L50 50" pathLength="100" data-neural-burst="${index}" style="--portal-color:${app.color};--burst-delay:${(-index * .29).toFixed(2)}s"></path>
-      <path class="neural-burst burst-b" d="M50 50 L50 50" pathLength="100" data-neural-burst="${index}" style="--portal-color:${app.color};--burst-delay:${(-1.1 - index * .23).toFixed(2)}s"></path>`).join("");
+  const bursts = neuralRingSlots.map((slot, index) => [0, 1, 2, 3].map((laneIndex) => `
+      <path class="neural-burst burst-${laneIndex}" d="${neuralPathForSlot(slot)}" pathLength="100" data-neural-burst="${index}" data-neural-lane="${laneIndex}" style="--burst-delay:${(-index * .31 - laneIndex * .67).toFixed(2)}s;--burst-speed:${(2.15 + (index % 3) * .38 + laneIndex * .29).toFixed(2)}s"></path>`).join("")).join("");
   const confirmedSources = apps.filter((app) => app.connected || liveSnapshots.has(app.name)).length;
 
   return `<section class="neural-shell" aria-label="Aqua Neuralink" data-neural-contract="AQUA SENTINEL NEURAL LINK">
       <div class="neural-stage" data-phase="${escapeHtml(neuralPhase)}">
         <header class="neural-titlebar">
           <button type="button" class="panel-close" aria-label="Back to Aqua Sentinel Home">‹</button>
-          <h1>Aqua Neuralink</h1>
+          <h1>AQUA NEURALINK</h1>
         </header>
         <span class="neural-source-count" aria-label="${confirmedSources} confirmed Aqua systems">${confirmedSources} CONFIRMED</span>
         <div class="neural-vignette" aria-hidden="true"></div>
+        <div class="neural-substrate-map neural-substrate-rest" aria-hidden="true"><i class="neural-substrate-fire neural-substrate-cyan"></i><i class="neural-substrate-fire neural-substrate-gold"></i></div>
+        <div class="neural-substrate-map neural-substrate-result" aria-hidden="true"><i class="neural-substrate-fire neural-substrate-cyan"></i><i class="neural-substrate-fire neural-substrate-gold"></i></div>
         <div class="neural-jolt" aria-hidden="true"><b></b><i></i><i></i><span></span></div>
+        <svg class="neural-thought-residue" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="neural-residue-bed" d="M50 49 C49.7 57 55.2 60.4 52.5 66.2 C49.5 72.5 43.8 70.4 46.4 77 C48.7 82.8 54.5 81.2 51 89" pathLength="100"></path>
+          <path class="neural-residue-trace" d="M50 49 C49.7 57 55.2 60.4 52.5 66.2 C49.5 72.5 43.8 70.4 46.4 77 C48.7 82.8 54.5 81.2 51 89" pathLength="100"></path>
+        </svg>
         <div class="neural-rings" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <svg class="neural-network" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <radialGradient id="aqua-neural-core"><stop offset="0" stop-color="#ffffff"/><stop offset=".22" stop-color="#7df4ff"/><stop offset="1" stop-color="#00a9d8" stop-opacity="0"/></radialGradient>
           </defs>
-          <circle class="neural-core-glow" cx="50" cy="50" r="10" fill="url(#aqua-neural-core)"></circle>
+          <circle class="neural-core-glow" cx="50" cy="45" r="10" fill="url(#aqua-neural-core)"></circle>
           ${paths}
           <g class="neural-microbursts">${bursts}</g>
         </svg>
@@ -1623,7 +1845,7 @@ function openPanel(kind) {
           ? [0, 6, 5, 4]
           : [0, 5, 6, 4, 3].filter((supportIndex) => supportIndex !== index).slice(0, 4);
       focusNeuralSource(index, supporting);
-      setTimeout(() => portalMaterialization(index), NEURAL_ROTATE_MILLIS + 500);
+      setTimeout(() => portalMaterialization(index), NEURAL_ROTATE_MILLIS + NEURAL_FIRE_MILLIS + 80);
     });
   });
   const neuralStage = systemPanel.querySelector(".neural-stage");
@@ -1649,8 +1871,8 @@ function openPanel(kind) {
       clearTimeout(neuralFireTimer);
       neuralThought = "Aqua is listening across your company.";
       neuralThoughtDetail = "You are moving through her connected nervous system.";
-      neuralIdleOffset = (neuralIdleOffset + (dx < 0 ? 1 : -1) + neuralRingSlots.length) % neuralRingSlots.length;
-      layoutNeuralStage();
+      const nextOffset = neuralIdleOffset + (dx < 0 ? 1 : -1);
+      animateNeuralRingTo(nextOffset, 720);
       renderNeuralMaterialization();
     });
   }
@@ -1851,7 +2073,7 @@ function activateDeterministicPreviewRoute() {
     }
     if (previewPanel === "neural" && previewParameters.get("neuralDemo") === "sequence") {
       focusNeuralSource(6, [0, 5, 4, 3], "Find the Home Depot receipt.");
-      setTimeout(() => portalMaterialization(6), NEURAL_ROTATE_MILLIS + 500);
+      setTimeout(() => portalMaterialization(6), NEURAL_ROTATE_MILLIS + NEURAL_FIRE_MILLIS + 80);
     }
   }
   document.documentElement.dataset.aquaPreviewReady = previewPanel;
@@ -2304,6 +2526,16 @@ setInterval(() => {
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") requestSnapshot(apps[active]);
 });
+let neuralResizeFrame = null;
+window.addEventListener("resize", () => {
+  if (neuralResizeFrame !== null) cancelAnimationFrame(neuralResizeFrame);
+  neuralResizeFrame = requestAnimationFrame(() => {
+    neuralResizeFrame = null;
+    const stage = systemPanel.querySelector(".neural-stage");
+    if (!stage || stage.dataset.motion) return;
+    layoutNeuralStage();
+  });
+}, { passive: true });
 
 if (deterministicPreviewActive) {
   // CI-only visual proof route. Normal Android and browser startup remain unchanged.

@@ -9,8 +9,11 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -19,9 +22,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +65,9 @@ public class QuickCaptureActivity extends Activity {
     private EditText commandInput;
     private boolean recognizingCommand;
     private SpeechRecognizer speechRecognizer;
+    private final Handler captureHandler = new Handler(Looper.getMainLooper());
+    private boolean recognitionCompleted;
+    private static final long SPEECH_TIMEOUT_MILLIS = 18_000L;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -127,18 +135,36 @@ public class QuickCaptureActivity extends Activity {
     }
 
     private void showOpeningSurface() {
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        getWindow().setDimAmount(0f);
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        FrameLayout surface = new FrameLayout(this);
+        surface.setBackgroundColor(Color.TRANSPARENT);
         status = new TextView(this);
         status.setGravity(Gravity.CENTER);
-        status.setPadding(28, 28, 28, 28);
+        status.setPadding(30, 18, 30, 18);
         status.setTextColor(Color.WHITE);
-        status.setTextSize(17);
-        status.setBackgroundColor(Color.rgb(1, 10, 15));
+        status.setTextSize(14);
+        status.setElevation(12f);
+        GradientDrawable statusBackground = new GradientDrawable();
+        statusBackground.setColor(Color.argb(236, 1, 13, 18));
+        statusBackground.setStroke(2, Color.rgb(65, 224, 247));
+        statusBackground.setCornerRadius(48f);
+        status.setBackground(statusBackground);
         if ("photo".equals(mode)) status.setText("Aqua is opening the camera…");
         else if ("video".equals(mode)) status.setText("Aqua is opening video capture…");
         else if ("action".equals(mode)) status.setText("Aqua Action is listening…");
         else if ("ask".equals(mode)) status.setText("Aqua is ready for your message…");
         else status.setText("Aqua is ready to capture your voice filing…");
-        setContentView(status);
+        FrameLayout.LayoutParams statusLayout = new FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL
+        );
+        statusLayout.setMargins(24, 24, 24, 86);
+        surface.addView(status, statusLayout);
+        setContentView(surface);
     }
 
     private void routeCapture() {
@@ -292,12 +318,30 @@ public class QuickCaptureActivity extends Activity {
             "AquaCommandWidget",
             "AQUA_WIDGET_MESSAGE_SUBMITTED id=" + messageId + " characters=" + text.length()
         );
-        JSONObject receipt = FilingStore.enqueue(this, "action", text, "");
+        JSONObject receipt;
+        try {
+            receipt = FilingStore.enqueue(this, "action", text, "");
+        } catch (RuntimeException error) {
+            Log.e("AquaCommandWidget", "AQUA_WIDGET_ACTION_FILE_FAILED", error);
+            Toast.makeText(this, "Aqua could not file that action. Please try again.", Toast.LENGTH_SHORT).show();
+            finishAndRemoveTask();
+            return;
+        }
         if (receipt.length() == 0) {
             status.setText("Aqua could not file that action.");
             return;
         }
-        WidgetMessageService.enqueue(this, text, messageId);
+        AquaCommandWidget.showFiled(this);
+        boolean dispatchStarted = WidgetMessageService.enqueue(this, text, messageId);
+        if (!dispatchStarted) {
+            Log.w(
+                "AquaCommandWidget",
+                "AQUA_WIDGET_MESSAGE_FILED_LOCALLY id=" + messageId + " reason=service-start"
+            );
+            Toast.makeText(this, "Filed locally. Aqua will retry delivery.", Toast.LENGTH_SHORT).show();
+            finishAndRemoveTask();
+            return;
+        }
         Log.i(
             "AquaCommandWidget",
             "AQUA_WIDGET_MESSAGE_BACKGROUND_DISPATCHED id=" + messageId
@@ -334,6 +378,7 @@ public class QuickCaptureActivity extends Activity {
             return;
         }
         stopSpeechRecognition();
+        recognitionCompleted = false;
         recognizingCommand = commandMode;
         status.setText(commandMode ? "Listening… Tell Aqua your message." : "Listening…\nTell Aqua what to file.");
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
@@ -344,11 +389,12 @@ public class QuickCaptureActivity extends Activity {
                     "AQUA_CAPTURE_ROUTE mode=" + recognitionRoute() + " handler=SpeechRecognizer"
                 );
             }
-            @Override public void onBeginningOfSpeech() { status.setText("Listening…"); }
+            @Override public void onBeginningOfSpeech() { setStatusSafely("Listening…"); }
             @Override public void onRmsChanged(float rmsdB) {}
             @Override public void onBufferReceived(byte[] buffer) {}
-            @Override public void onEndOfSpeech() { status.setText("Aqua is saving your instruction…"); }
+            @Override public void onEndOfSpeech() { setStatusSafely("Aqua is saving your instruction…"); }
             @Override public void onError(int error) {
+                if (!completeRecognitionOnce()) return;
                 String failedMode = recognitionRoute();
                 Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=" + failedMode + " error=" + error);
                 if ("action".equals(requestedMode)) {
@@ -364,6 +410,7 @@ public class QuickCaptureActivity extends Activity {
                 }
             }
             @Override public void onResults(Bundle results) {
+                if (!completeRecognitionOnce()) return;
                 ArrayList<String> matches = results == null
                     ? null
                     : results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
@@ -374,8 +421,8 @@ public class QuickCaptureActivity extends Activity {
                 ArrayList<String> partial = partialResults == null
                     ? null
                     : partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                if (partial != null && !partial.isEmpty()) {
-                    status.setText("Heard: “" + partial.get(0) + "”");
+                if (!recognitionCompleted && partial != null && !partial.isEmpty()) {
+                    setStatusSafely("Heard: “" + partial.get(0) + "”");
                     if (recognizingCommand && commandInput != null) commandInput.setText(partial.get(0));
                 }
             }
@@ -387,6 +434,30 @@ public class QuickCaptureActivity extends Activity {
             .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
         speechRecognizer.startListening(intent);
+        captureHandler.postDelayed(() -> {
+            if (!completeRecognitionOnce()) return;
+            Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=" + recognitionRoute() + " reason=timeout");
+            stopSpeechRecognition();
+            if ("action".equals(requestedMode)) {
+                Toast.makeText(this, "Aqua Action timed out. Tap once to try again.", Toast.LENGTH_SHORT).show();
+                finishAndRemoveTask();
+            } else {
+                Toast.makeText(this, "Voice capture timed out. Please try again.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }, SPEECH_TIMEOUT_MILLIS);
+    }
+
+    private boolean completeRecognitionOnce() {
+        if (recognitionCompleted || isFinishing() || isDestroyed()) return false;
+        recognitionCompleted = true;
+        captureHandler.removeCallbacksAndMessages(null);
+        return true;
+    }
+
+    private void setStatusSafely(String text) {
+        if (status == null || isFinishing() || isDestroyed()) return;
+        status.setText(text);
     }
 
     private String recognitionRoute() {
@@ -636,6 +707,7 @@ public class QuickCaptureActivity extends Activity {
 
     private void finishAfterBackgroundSave(String type) {
         Log.i("AquaCommandWidget", "AQUA_CAPTURE_BACKGROUND_COMPLETE type=" + type);
+        AquaCommandWidget.showFiled(this);
         finish();
     }
 
@@ -655,7 +727,9 @@ public class QuickCaptureActivity extends Activity {
     }
 
     private void stopSpeechRecognition() {
+        captureHandler.removeCallbacksAndMessages(null);
         if (speechRecognizer == null) return;
+        recognitionCompleted = true;
         speechRecognizer.cancel();
         speechRecognizer.destroy();
         speechRecognizer = null;

@@ -41,13 +41,23 @@ public final class WidgetMessageService extends IntentService {
         super("AquaWidgetMessage");
     }
 
-    static void enqueue(Context context, String text, String messageId) {
-        context.startService(
-            new Intent(context, WidgetMessageService.class)
-                .setAction(ACTION_SEND)
-                .putExtra(EXTRA_TEXT, text)
-                .putExtra(EXTRA_MESSAGE_ID, messageId)
-        );
+    static boolean enqueue(Context context, String text, String messageId) {
+        try {
+            context.startService(
+                new Intent(context, WidgetMessageService.class)
+                    .setAction(ACTION_SEND)
+                    .putExtra(EXTRA_TEXT, text)
+                    .putExtra(EXTRA_MESSAGE_ID, messageId)
+            );
+            return true;
+        } catch (RuntimeException error) {
+            Log.e(
+                "AquaCommandWidget",
+                "AQUA_WIDGET_MESSAGE_BACKGROUND_START_FAILED id=" + messageId,
+                error
+            );
+            return false;
+        }
     }
 
     @Override

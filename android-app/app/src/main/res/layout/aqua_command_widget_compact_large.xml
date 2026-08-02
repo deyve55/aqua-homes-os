@@ -7,8 +7,8 @@
     android:padding="1dp">
 
     <FrameLayout
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_gravity="center">
 
         <ImageView
@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:contentDescription="Owner-approved compact Aqua Neuralink living surface"
+            android:contentDescription="Owner-approved large compact Aqua Neuralink living surface"
             android:scaleType="fitCenter"
             android:src="@drawable/aqua_widget_2x2_approved_v073" />
 
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:contentDescription="Selected compact Aqua Neuralink circuit"
+            android:contentDescription="Selected large compact Aqua Neuralink circuit"
             android:scaleType="fitCenter"
             android:src="@drawable/aqua_widget_jolt_compact_home"
             android:visibility="invisible" />
@@ -86,25 +86,25 @@
 
         <ImageView
             android:id="@+id/widget_logo"
-            android:layout_width="54dp"
-            android:layout_height="54dp"
+            android:layout_width="82dp"
+            android:layout_height="82dp"
             android:layout_gravity="center"
             android:contentDescription="Open full conversational Aqua"
             android:src="@android:color/transparent" />
 
         <TextView
             android:id="@+id/widget_filed_today"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/aqua_widget_count_badge"
             android:contentDescription="Items filed today"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="0"
             android:textColor="#001014"
-            android:textSize="6sp"
+            android:textSize="7sp"
             android:textStyle="bold" />
 
         <TextView
@@ -112,14 +112,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="21dp"
+            android:layout_marginBottom="27dp"
             android:background="@drawable/aqua_widget_status"
             android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.14"
-            android:paddingHorizontal="7dp"
-            android:paddingVertical="3dp"
+            android:letterSpacing="0.16"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
             android:textColor="#C8FBFF"
-            android:textSize="6sp"
+            android:textSize="7sp"
             android:visibility="invisible" />
     </FrameLayout>
 </FrameLayout>
