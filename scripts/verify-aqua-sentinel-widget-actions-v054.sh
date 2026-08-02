@@ -241,6 +241,7 @@ tap_launcher_control() {
   local resource_id="$2"
   local text_fallback="$3"
 
+  return_to_launcher
   tap_ui_node \
     "launcher-hosted widget $mode control" \
     "$package:id/$resource_id|$text_fallback"
@@ -280,13 +281,13 @@ if lines:
 }
 
 pin_widget_on_launcher
+terminate_sentinel_background_process "before-five-action-sequence"
 
 for mode in home ask file photo video; do
   evidence="/tmp/aqua-sentinel-v0.7.0-widget-${mode}.logcat.txt"
   expected_route="$mode"
   [[ "$mode" == "file" ]] && expected_route="voice"
   clear_logcat
-  terminate_sentinel_background_process "before-$mode-tap"
   case "$mode" in
     home) tap_launcher_control "$mode" "widget_logo" "Open Aqua Sentinel OS" ;;
     ask) tap_launcher_control "$mode" "widget_ask" "ASK AQUA" ;;
