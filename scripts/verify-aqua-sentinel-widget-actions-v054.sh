@@ -121,7 +121,8 @@ wait_for_log() {
 }
 
 return_to_launcher() {
-  adb shell input keyevent KEYCODE_HOME
+  local home_sent="false"
+
   for attempt in $(seq 1 20); do
     {
       adb shell dumpsys window 2>/dev/null || true
@@ -129,6 +130,10 @@ return_to_launcher() {
     } > /tmp/aqua-widget-launcher-window.txt
     if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity|ACTIVITY).*${launcher_package}" /tmp/aqua-widget-launcher-window.txt; then
       return 0
+    fi
+    if [[ "$home_sent" == "false" ]]; then
+      adb shell input keyevent KEYCODE_HOME
+      home_sent="true"
     fi
     sleep 1
   done
