@@ -353,13 +353,14 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
 });
 
 test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async () => {
-  const [gradle, workflow, script, html, fidelity, androidLaunch] = await Promise.all([
+  const [gradle, workflow, script, html, fidelity, androidLaunch, neuralLiveProof] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
     read("sentient-os-web/app.js"),
     read("sentient-os-web/index.html"),
     read("sentient-os-web/fidelity.css"),
     read("scripts/verify-aqua-sentinel-android-launch-v060.sh"),
+    read("scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"),
   ]);
   assert.match(gradle, /versionCode = 2026080203/);
   assert.match(gradle, /versionName = "0\.7\.4-living-neural-fidelity-widget"/);
@@ -410,6 +411,16 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(workflow, /data-aqua-neural-phase="result"/);
   assert.match(workflow, /data-morph-progress="0\.400"/);
   assert.match(workflow, /data-morph-progress="1\.000"/);
+  assert.match(workflow, /node scripts\/verify-aqua-sentinel-neural-live-wall-clock\.mjs/);
+  assert.match(workflow, /neural-live-wall-clock/);
+  assert.doesNotMatch(workflow, /aqua-sentinel-neural-live-(fire|morph|result)-proof\.html/);
+  assert.match(neuralLiveProof, /host-monotonic-wall-clock/);
+  assert.match(neuralLiveProof, /performance\.now\(\)/);
+  assert.match(neuralLiveProof, /PHASE_DEADLINES_MILLIS/);
+  assert.match(neuralLiveProof, /\["rotating", "firing", "transitioning", "result"\]/);
+  assert.match(neuralLiveProof, /--remote-debugging-port=0/);
+  assert.match(neuralLiveProof, /AQUA_NEURAL_LIVE_WALL_CLOCK_VERIFIED/);
+  assert.doesNotMatch(neuralLiveProof, /virtual-time-budget|neuralAt=/);
   assert.match(workflow, /data-aqua-preview-ready="command"/);
   assert.match(workflow, /identify -format '%wx%h'/);
   assert.match(workflow, /! cmp -s/);
