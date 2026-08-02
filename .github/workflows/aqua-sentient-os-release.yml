@@ -209,7 +209,7 @@ jobs:
           grep -q 'class="neural-microbursts"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-focus-proof.html
           grep -q 'Aqua is reaching into Aqua CRM' /tmp/aqua-sentinel-neural-focus-proof.html
-          grep -q 'Presentation · Not Live' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q '<em>DEMO</em>' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-neural-materialized="true"' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-aqua-preview-ready="command"' /tmp/aqua-sentinel-command-proof.html
           grep -q 'data-panel="command"' /tmp/aqua-sentinel-command-proof.html
