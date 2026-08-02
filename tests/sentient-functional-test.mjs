@@ -628,7 +628,7 @@ test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without
   assert.match(widget, /setImageViewResource\(R\.id\.widget_active_path, activePath\)/);
   assert.match(widget, /R\.drawable\.aqua_widget_jolt_action/);
   assert.match(widget, /R\.drawable\.aqua_widget_jolt_compact_action/);
-  assert.match(dispatch, /NEURAL_JOLT_TRANSITION_MILLIS = 520L/);
+  assert.match(dispatch, /NEURAL_JOLT_TRANSITION_MILLIS = 720L/);
   assert.match(dispatch, /AQUA_WIDGET_NEURAL_JOLT mode=/);
   assert.match(dispatch, /phase=outbound/);
   assert.match(dispatch, /phase=arrived/);
@@ -848,6 +848,8 @@ test("v0.7.4 responsive widget preserves approved art, aligned actions, and trut
   assert.match(widget, /"outbound"/);
   assert.match(widget, /"return"/);
   assert.match(widget, /"filed"/);
+  assert.match(widget, /OUTBOUND_MILLIS = 700L/);
+  assert.match(widget, /RETURN_MILLIS = 800L/);
   assert.match(widget, /FILED_MILLIS = 10000L/);
   assert.match(widget, /AQUA_WIDGET_FILED_CONFIRMATION_RENDERED/);
   assert.match(widget, /setViewVisibility\(R\.id\.widget_status/);

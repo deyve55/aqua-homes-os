@@ -600,6 +600,8 @@ tap_launcher_control() {
   local active="/tmp/aqua-sentinel-v0.7.4-widget-${mode}-jolt.png"
   local idle_crop="/tmp/aqua-sentinel-v0.7.4-widget-${mode}-idle-crop.png"
   local active_crop="/tmp/aqua-sentinel-v0.7.4-widget-${mode}-jolt-crop.png"
+  local render_evidence="/tmp/aqua-sentinel-v0.7.4-widget-${mode}-jolt-render.logcat.txt"
+  local render_observed="false"
 
   return_to_launcher
   for attempt in $(seq 1 20); do
@@ -620,7 +622,19 @@ tap_launcher_control() {
     adb exec-out screencap -p > "$idle"
     echo "Tapping launcher-hosted widget $mode control at $tap_x,$tap_y"
     adb shell input tap "$tap_x" "$tap_y"
-    sleep 0.20
+    for render_attempt in $(seq 1 20); do
+      adb logcat -d > "$render_evidence"
+      if grep -Fq "AQUA_WIDGET_NEURAL_JOLT_RENDERED mode=$mode phase=outbound" "$render_evidence"; then
+        render_observed="true"
+        break
+      fi
+      sleep 0.05
+    done
+    if [[ "$render_observed" != "true" ]]; then
+      echo "The $mode Neuralink endpoint did not render its outbound jolt after the real launcher tap" >&2
+      return 1
+    fi
+    sleep 0.12
     adb exec-out screencap -p > "$active"
     convert "$idle" -crop "${width}x${height}+${left}+${top}" +repage "$idle_crop"
     convert "$active" -crop "${width}x${height}+${left}+${top}" +repage "$active_crop"

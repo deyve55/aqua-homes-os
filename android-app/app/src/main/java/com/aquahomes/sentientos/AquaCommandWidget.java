@@ -33,8 +33,8 @@ public class AquaCommandWidget extends AppWidgetProvider {
     private static final String JOLT_PHASE = "phase";
     private static final String JOLT_UNTIL = "until";
     private static final String JOLT_SEQUENCE = "sequence";
-    private static final long OUTBOUND_MILLIS = 430L;
-    private static final long RETURN_MILLIS = 520L;
+    private static final long OUTBOUND_MILLIS = 700L;
+    private static final long RETURN_MILLIS = 800L;
     private static final long FILED_MILLIS = 10000L;
 
     static void updateAll(Context context) {

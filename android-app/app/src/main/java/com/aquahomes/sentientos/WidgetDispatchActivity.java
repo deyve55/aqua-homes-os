@@ -9,7 +9,7 @@ import android.os.Looper;
 import android.util.Log;
 
 public final class WidgetDispatchActivity extends Activity {
-    private static final long NEURAL_JOLT_TRANSITION_MILLIS = 520L;
+    private static final long NEURAL_JOLT_TRANSITION_MILLIS = 720L;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     @Override
