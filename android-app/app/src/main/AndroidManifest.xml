@@ -55,6 +55,7 @@
             android:exported="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
+            android:taskAffinity="${applicationId}.widget"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/AquaQuickCaptureTheme">
             <intent-filter>
@@ -78,6 +79,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:noHistory="true"
+            android:taskAffinity="${applicationId}.widget"
             android:theme="@style/AquaWidgetDispatchTheme" />
         <service
             android:name=".WidgetMessageService"
