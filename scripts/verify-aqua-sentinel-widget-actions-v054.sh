@@ -137,6 +137,26 @@ return_to_launcher() {
   return 1
 }
 
+terminate_sentinel_background_process() {
+  local phase="$1"
+  local process_ids=""
+
+  return_to_launcher
+  adb shell am kill "$package"
+  for attempt in $(seq 1 20); do
+    process_ids="$(adb shell pidof "$package" 2>/dev/null | tr -d '\r' || true)"
+    if [[ -z "$process_ids" ]]; then
+      echo "AQUA_WIDGET_BACKGROUND_PROCESS_TERMINATED phase=$phase"
+      return 0
+    fi
+    sleep 1
+  done
+
+  echo "Sentinel process remained alive after background termination: phase=$phase pids=$process_ids" >&2
+  adb shell ps -A | grep -F "$package" >&2 || true
+  return 1
+}
+
 pin_widget_on_launcher() {
   local pin_evidence="/tmp/aqua-sentinel-v0.7.0-widget-pin.logcat.txt"
   local appwidget_state="/tmp/aqua-sentinel-v0.7.0-appwidget-host.txt"
@@ -235,7 +255,7 @@ for mode in home ask file photo video; do
   expected_route="$mode"
   [[ "$mode" == "file" ]] && expected_route="voice"
   clear_logcat
-  adb shell am force-stop "$package"
+  terminate_sentinel_background_process "before-$mode-tap"
   case "$mode" in
     home) tap_launcher_control "$mode" "widget_logo" "Open Aqua Sentinel OS" ;;
     ask) tap_launcher_control "$mode" "widget_ask" "ASK AQUA" ;;
@@ -311,7 +331,6 @@ for mode in home ask file photo video; do
   fi
 
   adb shell am force-stop com.android.camera2 || true
-  adb shell am force-stop "$package"
 done
 
 # The launcher tap above proves the FILE PendingIntent reaches the real voice-filing route.
@@ -327,8 +346,7 @@ wait_for_log "AQUA_CAPTURE_SAVED type=voice" "$file_evidence" 30
 wait_for_log "AQUA_FILING_INBOX_DELIVERED items=[1-9]" "$file_evidence" 30
 wait_for_log "AQUA_FILING_CABINET_OPENED" "$file_evidence" 30
 
-adb shell am force-stop "$package"
-return_to_launcher
+terminate_sentinel_background_process "post-filing-process-recreation"
 tap_ui_node \
   "launcher-hosted widget after process recreation" \
   "$package:id/widget_logo|Open Aqua Sentinel OS"
