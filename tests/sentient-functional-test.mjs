@@ -585,6 +585,7 @@ test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURALINK_SURFACE_READY/);
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURALINK_SHIMMER_VERIFIED/);
   assert.match(widgetVerifier, /compare -metric AE/);
+  assert.doesNotMatch(widgetVerifier, /wait_for_adb/);
   assert.match(widgetVerifier, /AQUA_WIDGET_FILED_TODAY_VERIFIED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_BACKGROUND_FILE_STAYED_ON_LAUNCHER/);
   assert.match(widgetVerifier, /if grep -Fq "AQUA_FILING_CABINET_OPENED"/);

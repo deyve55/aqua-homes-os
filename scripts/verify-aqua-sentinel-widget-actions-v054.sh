@@ -300,10 +300,10 @@ prove_neuralink_widget_shimmer() {
     return 1
   fi
 
-  wait_for_adb
+  adb wait-for-device >/dev/null 2>&1
   adb exec-out screencap -p > "$first"
   sleep 1
-  wait_for_adb
+  adb wait-for-device >/dev/null 2>&1
   adb exec-out screencap -p > "$second"
   test -s "$first"
   test -s "$second"
