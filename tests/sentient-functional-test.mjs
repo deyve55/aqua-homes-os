@@ -368,7 +368,8 @@ test("v0.7.1 preserves Home and adds deterministic living Neural Link proofs", a
   assert.match(androidLaunch, /for dialog_attempt in \$\(seq 1 6\); do/);
   assert.match(androidLaunch, /if grep -Eiq "Viewing full screen\|GOT IT"[\s\S]*input tap 855 525[\s\S]*KEYCODE_ENTER[\s\S]*continue/);
   assert.match(androidLaunch, /if grep -Eiq 'text="Camera keeps stopping"\|text="Close app"'[\s\S]*am force-stop com\.android\.camera2/);
-  assert.match(androidLaunch, /text="Camera keeps stopping"\|text="Close app"\|text="Viewing full screen"\|text="GOT IT"/);
+  assert.match(androidLaunch, /package="com\.android\.permissioncontroller"[\s\S]*KEYCODE_BACK[\s\S]*MAIN_COMPONENT/);
+  assert.match(androidLaunch, /text="Camera keeps stopping"\|text="Close app"\|text="Viewing full screen"\|text="GOT IT"\|package="com\.android\.permissioncontroller"/);
   assert.match(androidLaunch, /recover_system_dialogs initial[\s\S]*verify-aqua-sentinel-widget-actions-v054\.sh[\s\S]*recover_system_dialogs final/);
   assert.match(workflow, /launch_visual=deterministic_bundled_home_430x932/);
   assert.match(workflow, /android_launch=activity_and_ui_hierarchy_verified/);

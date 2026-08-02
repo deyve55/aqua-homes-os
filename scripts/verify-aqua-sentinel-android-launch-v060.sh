@@ -4,7 +4,7 @@ set -euo pipefail
 APP_ID="com.aquahomes.sentinel"
 MAIN_COMPONENT="com.aquahomes.sentinel/com.aquahomes.sentientos.MainActivity"
 APK_PATH="android-app/app/build/outputs/apk/release/app-release.apk"
-DIALOG_PATTERN='text="Camera keeps stopping"|text="Close app"|text="Viewing full screen"|text="GOT IT"'
+DIALOG_PATTERN='text="Camera keeps stopping"|text="Close app"|text="Viewing full screen"|text="GOT IT"|package="com.android.permissioncontroller"'
 
 wait_for_adb() {
   for adb_attempt in $(seq 1 12); do
@@ -47,6 +47,13 @@ recover_system_dialogs() {
     if grep -Eiq 'text="Camera keeps stopping"|text="Close app"' "$window_path"; then
       wait_for_adb
       adb shell am force-stop com.android.camera2 || true
+      adb shell input keyevent KEYCODE_BACK || true
+      timeout 30s adb shell am start -W -n "$MAIN_COMPONENT" >/dev/null || true
+      sleep 2
+      continue
+    fi
+    if grep -Eiq 'package="com.android.permissioncontroller"' "$window_path"; then
+      wait_for_adb
       adb shell input keyevent KEYCODE_BACK || true
       timeout 30s adb shell am start -W -n "$MAIN_COMPONENT" >/dev/null || true
       sleep 2
