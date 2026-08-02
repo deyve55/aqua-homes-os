@@ -710,9 +710,9 @@ test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without
   assert.match(widgetVerifier, /assert_widget_control_geometry/);
   assert.match(widgetVerifier, /widget_resize_surface/);
   assert.match(widgetVerifier, /start_x=\$\(\(right \+ edge_offset\)\)/);
-  assert.match(widgetVerifier, /end_x=\$\(\(right \+ width \* \(18 \+ resize_attempt \* 6\) \/ 100\)\)/);
+  assert.match(widgetVerifier, /end_x=\$\(\(right \+ width \* \(60 \+ resize_attempt \* 10\) \/ 100\)\)/);
   assert.match(widgetVerifier, /start_y=\$\(\(bottom \+ edge_offset\)\)/);
-  assert.match(widgetVerifier, /end_y=\$\(\(bottom \+ height \* \(32 \+ resize_attempt \* 7\) \/ 100\)\)/);
+  assert.match(widgetVerifier, /end_y=\$\(\(bottom \+ height \* \(60 \+ resize_attempt \* 10\) \/ 100\)\)/);
   assert.match(widgetVerifier, /prove_widget_resize "compact" "horizontal"/);
   assert.match(widgetVerifier, /prove_widget_resize "small" "vertical"/);
   assert.match(widgetVerifier, /lanes=cyan_outbound_gold_return/);

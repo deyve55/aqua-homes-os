@@ -492,11 +492,11 @@ prove_widget_resize() {
       start_x="$center_x"
       start_y=$((bottom + edge_offset))
       end_x="$center_x"
-      end_y=$((bottom + height * (32 + resize_attempt * 7) / 100))
+      end_y=$((bottom + height * (60 + resize_attempt * 10) / 100))
     else
       start_x=$((right + edge_offset))
       start_y="$center_y"
-      end_x=$((right + width * (18 + resize_attempt * 6) / 100))
+      end_x=$((right + width * (60 + resize_attempt * 10) / 100))
       end_y="$center_y"
     fi
     echo "Resizing Aqua widget $label from $start_x,$start_y to $end_x,$end_y"
