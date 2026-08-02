@@ -75,7 +75,7 @@ recover_system_dialogs() {
   local focus_path="/tmp/aqua-sentinel-v0.7.1-${phase}-focus.txt"
   for dialog_attempt in $(seq 1 6); do
     wait_for_adb || true
-    if timeout 10s adb shell dumpsys window windows > "$focus_path" 2>&1 \
+    if timeout 10s adb shell dumpsys window > "$focus_path" 2>&1 \
       && grep -Eq "(mCurrentFocus|mFocusedApp).*${APP_ID}.*MainActivity" "$focus_path"; then
       return 0
     fi
