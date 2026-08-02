@@ -176,7 +176,7 @@ public class AquaCommandWidget extends AppWidgetProvider {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Map<SizeF, RemoteViews> responsive = new LinkedHashMap<>();
             responsive.put(new SizeF(110f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_2x2));
-            responsive.put(new SizeF(180f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_2x2));
+            responsive.put(new SizeF(180f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_compact_large));
             responsive.put(new SizeF(180f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_compact));
             responsive.put(new SizeF(250f, 140f), buildLayoutViews(context, R.layout.aqua_command_widget_compact));
             responsive.put(new SizeF(250f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_compact_large));

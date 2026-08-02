@@ -812,6 +812,7 @@ test("v0.7.4 responsive widget preserves approved art, aligned actions, and trut
   assert.doesNotMatch(compactLargeLayout, /widget_shimmer|centerCrop|fitXY/);
   assert.match(microLayout, /two by two living surface/);
   assert.match(microLayout, /@drawable\/aqua_widget_2x2_approved_v073/);
+  assert.match(microLayout, /android:layout_width="110dp"[\s\S]*android:layout_height="110dp"[\s\S]*android:layout_gravity="center"/);
   assert.match(microLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.match(microLayout, /id="@\+id\/widget_status"/);
   assert.match(microLayout, /id="@\+id\/widget_neural_activity"/);
@@ -837,6 +838,7 @@ test("v0.7.4 responsive widget preserves approved art, aligned actions, and trut
   assert.match(widget, /static int layoutForSize\(int minWidth, int minHeight\)/);
   assert.match(widget, /new RemoteViews\(responsive\)/);
   assert.match(widget, /new SizeF\(110f, 110f\)/);
+  assert.match(widget, /new SizeF\(180f, 180f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_compact_large\)/);
   assert.match(widget, /new SizeF\(320f, 180f\)/);
   assert.match(widget, /new SizeF\(250f, 390f\)/);
   assert.match(widget, /R\.drawable\.aqua_widget_jolt_compact_file/);

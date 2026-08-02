@@ -6,7 +6,12 @@
     android:background="#000000"
     android:padding="1dp">
 
-    <ImageView
+    <FrameLayout
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_gravity="center">
+
+      <ImageView
         android:id="@+id/widget_neural_art"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,7 +20,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/aqua_widget_2x2_approved_v073" />
 
-    <ProgressBar
+      <ProgressBar
         android:id="@+id/widget_neural_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,7 +28,7 @@
         android:indeterminate="true"
         android:indeterminateDrawable="@drawable/aqua_widget_neural_activity_2x2" />
 
-    <ImageView
+      <ImageView
         android:id="@+id/widget_active_path"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -33,7 +38,7 @@
         android:src="@drawable/aqua_widget_jolt_compact_home"
         android:visibility="invisible" />
 
-    <LinearLayout
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -79,7 +84,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ImageView
+      <ImageView
         android:id="@+id/widget_logo"
         android:layout_width="78dp"
         android:layout_height="78dp"
@@ -87,7 +92,7 @@
         android:contentDescription="Open full conversational Aqua"
         android:src="@android:color/transparent" />
 
-    <TextView
+      <TextView
         android:id="@+id/widget_filed_today"
         android:layout_width="18dp"
         android:layout_height="18dp"
@@ -102,7 +107,7 @@
         android:textSize="7sp"
         android:textStyle="bold" />
 
-    <TextView
+      <TextView
         android:id="@+id/widget_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -116,4 +121,5 @@
         android:textColor="#C8FBFF"
         android:textSize="7sp"
         android:visibility="invisible" />
+    </FrameLayout>
 </FrameLayout>
