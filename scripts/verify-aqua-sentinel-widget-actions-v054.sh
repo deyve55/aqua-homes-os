@@ -252,10 +252,9 @@ pin_widget_on_launcher() {
       && [[ -n "$launcher_hierarchy" ]] \
       && grep -Fq "$package:id/widget_logo" "$launcher_hierarchy" \
       && grep -Fq "$package:id/widget_neural_art" "$launcher_hierarchy" \
-      && grep -Fq "$package:id/widget_active_path" "$launcher_hierarchy" \
       && grep -Fq "$package:id/widget_shimmer" "$launcher_hierarchy"; then
       echo "AQUA_WIDGET_LAUNCHER_HOST_READY provider=$widget_provider host=$launcher_package"
-      echo "AQUA_WIDGET_NEURALINK_SURFACE_READY art=widget_neural_art path=widget_active_path shimmer=widget_shimmer"
+      echo "AQUA_WIDGET_NEURALINK_SURFACE_READY art=widget_neural_art path=armed_on_tap shimmer=widget_shimmer"
       return 0
     fi
     sleep 1

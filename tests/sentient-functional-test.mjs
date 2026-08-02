@@ -597,6 +597,8 @@ test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.match(widgetVerifier, /launcher_package="com\.android\.launcher3"/);
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_HOST_READY/);
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURALINK_SURFACE_READY/);
+  assert.match(widgetVerifier, /path=armed_on_tap/);
+  assert.doesNotMatch(widgetVerifier, /grep -Fq "\$package:id\/widget_active_path" "\$launcher_hierarchy"/);
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURALINK_SHIMMER_VERIFIED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=\$mode/);
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURAL_JOLT_RENDERED mode=\$mode phase=outbound/);
