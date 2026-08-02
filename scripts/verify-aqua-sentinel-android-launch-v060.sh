@@ -36,6 +36,39 @@ dump_window() {
   return 1
 }
 
+dismiss_permission_controller() {
+  local window_path="$1"
+  local tap_coordinates=""
+
+  tap_coordinates="$(python3 - "$window_path" <<'PY'
+import re
+import sys
+import xml.etree.ElementTree as ET
+
+path = sys.argv[1]
+for node in ET.parse(path).iter("node"):
+    resource_id = node.attrib.get("resource-id", "")
+    text = node.attrib.get("text", "").strip().upper()
+    if resource_id != "com.android.permissioncontroller:id/permission_deny_button" and text != "DENY":
+        continue
+    match = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", node.attrib.get("bounds", ""))
+    if match:
+        left, top, right, bottom = map(int, match.groups())
+        print(f"{(left + right) // 2} {(top + bottom) // 2}")
+    break
+PY
+)"
+
+  if [[ -n "$tap_coordinates" ]]; then
+    read -r tap_x tap_y <<< "$tap_coordinates"
+    adb shell input tap "$tap_x" "$tap_y" || true
+    sleep 1
+    return 0
+  fi
+
+  adb shell input keyevent KEYCODE_BACK || true
+}
+
 recover_system_dialogs() {
   local phase="$1"
   local window_path=""
@@ -54,6 +87,7 @@ recover_system_dialogs() {
     fi
     if grep -Eiq 'package="com.android.permissioncontroller"' "$window_path"; then
       wait_for_adb
+      dismiss_permission_controller "$window_path"
       adb shell am force-stop com.android.camera2 || true
       adb shell input keyevent KEYCODE_BACK || true
       timeout 30s adb shell am start -W -n "$MAIN_COMPONENT" >/dev/null || true
