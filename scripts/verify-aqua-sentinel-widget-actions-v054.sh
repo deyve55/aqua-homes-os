@@ -148,10 +148,21 @@ terminate_sentinel_background_process() {
 
   return_to_launcher
   adb shell am kill "$package"
-  for attempt in $(seq 1 20); do
+  for attempt in $(seq 1 8); do
     process_ids="$(adb shell pidof "$package" 2>/dev/null | tr -d '\r' || true)"
     if [[ -z "$process_ids" ]]; then
       echo "AQUA_WIDGET_BACKGROUND_PROCESS_TERMINATED phase=$phase"
+      return 0
+    fi
+    sleep 1
+  done
+
+  adb shell am make-uid-idle "$package"
+  adb shell am kill "$package"
+  for attempt in $(seq 1 20); do
+    process_ids="$(adb shell pidof "$package" 2>/dev/null | tr -d '\r' || true)"
+    if [[ -z "$process_ids" ]]; then
+      echo "AQUA_WIDGET_IDLE_PROCESS_TERMINATED phase=$phase"
       return 0
     fi
     sleep 1
