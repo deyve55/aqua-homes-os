@@ -559,7 +559,10 @@ PY
 
 prove_filed_confirmation() {
   local hierarchy_path=""
-  if ! wait_for_log "AQUA_WIDGET_FILED_CONFIRMATION_RENDERED" "/tmp/aqua-sentinel-v0.7.4-widget-filed.logcat.txt" 12; then
+  local action_evidence="/tmp/aqua-sentinel-v0.7.4-widget-action.logcat.txt"
+  local filed_evidence="/tmp/aqua-sentinel-v0.7.4-widget-filed.logcat.txt"
+  if ! grep -Fq "AQUA_WIDGET_FILED_CONFIRMATION_RENDERED" "$action_evidence" \
+    && ! wait_for_log "AQUA_WIDGET_FILED_CONFIRMATION_RENDERED" "$filed_evidence" 12; then
     echo "Aqua Action never rendered its launcher-hosted FILED acknowledgement" >&2
     return 1
   fi

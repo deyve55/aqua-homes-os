@@ -845,7 +845,7 @@ test("v0.7.4 responsive widget preserves approved art, aligned actions, and trut
   assert.match(widget, /"outbound"/);
   assert.match(widget, /"return"/);
   assert.match(widget, /"filed"/);
-  assert.match(widget, /FILED_MILLIS = 5000L/);
+  assert.match(widget, /FILED_MILLIS = 10000L/);
   assert.match(widget, /AQUA_WIDGET_FILED_CONFIRMATION_RENDERED/);
   assert.match(widget, /setViewVisibility\(R\.id\.widget_status/);
   assert.match(capture, /AquaCommandWidget\.showFiled\(this\)/);

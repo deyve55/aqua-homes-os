@@ -35,7 +35,7 @@ public class AquaCommandWidget extends AppWidgetProvider {
     private static final String JOLT_SEQUENCE = "sequence";
     private static final long OUTBOUND_MILLIS = 430L;
     private static final long RETURN_MILLIS = 520L;
-    private static final long FILED_MILLIS = 5000L;
+    private static final long FILED_MILLIS = 10000L;
 
     static void updateAll(Context context) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
