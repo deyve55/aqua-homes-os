@@ -545,7 +545,7 @@ function focusNeuralSource(index, supporting = [], command = "") {
     (supportIndex) => supportIndex !== index && neuralSourceAt(supportIndex),
   );
   neuralThought = command
-    ? `Aqua is reaching into ${source.name}.`
+    ? `Aqua is rotating ${source.name.replace("Aqua ", "")} into the top portal.`
     : `${source.name} is Aqua’s primary thought.`;
   neuralThoughtDetail = neuralSupportIndexes.length
     ? `Supporting signals: ${neuralSupportIndexes.map((supportIndex) => neuralSourceAt(supportIndex).name.replace("Aqua ", "")).join(" · ")}`
@@ -563,7 +563,7 @@ function focusNeuralSource(index, supporting = [], command = "") {
     neuralPhase = "firing";
     neuralPhaseReadyAt = performance.now() + NEURAL_FIRE_MILLIS;
     neuralThought = `${source.name} is locked in Aqua’s top portal.`;
-    neuralThoughtDetail = "Aqua is firing the request through the selected neural path.";
+    neuralThoughtDetail = "Aqua is firing a large upward neuron burst through the selected path.";
     layoutNeuralStage();
     renderNeuralMaterialization();
   });
