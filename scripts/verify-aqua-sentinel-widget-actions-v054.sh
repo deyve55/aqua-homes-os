@@ -145,8 +145,24 @@ return_to_launcher() {
 terminate_sentinel_background_process() {
   local phase="$1"
   local process_ids=""
+  local task_ids=""
 
   return_to_launcher
+  task_ids="$(adb shell dumpsys activity activities 2>/dev/null | python3 -c '
+import re
+import sys
+
+package = sys.argv[1]
+for line in sys.stdin:
+    if ("TaskRecord{" not in line and "Task{" not in line) or f"A={package}" not in line:
+        continue
+    match = re.search(r"#(\d+)", line)
+    if match:
+        print(match.group(1))
+' "$package")"
+  for task_id in $task_ids; do
+    adb shell am task remove "$task_id" >/dev/null 2>&1 || true
+  done
   adb shell am kill "$package"
   for attempt in $(seq 1 8); do
     process_ids="$(adb shell pidof "$package" 2>/dev/null | tr -d '\r' || true)"
