@@ -257,7 +257,7 @@ jobs:
           grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-fire-proof.html
           grep -q 'Aqua is rotating Receipts into the top portal' /tmp/aqua-sentinel-neural-rotate-proof.html
           grep -q 'Aqua is firing a large upward neuron burst through the selected path' /tmp/aqua-sentinel-neural-fire-proof.html
-          grep -q 'class="neural-materialization-approved"' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'class="neural-materialization-approved is-receipt"' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-neural-materialized="true"' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-aqua-preview-ready="command"' /tmp/aqua-sentinel-command-proof.html
           grep -q 'data-panel="command"' /tmp/aqua-sentinel-command-proof.html
