@@ -590,6 +590,8 @@ test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.doesNotMatch(activity, /widget_contract_probe/);
   assert.match(widgetVerifier, /for mode in home ask file photo video/);
   assert.match(widgetVerifier, /--ez widget_launcher_pin_probe true/);
+  assert.match(widgetVerifier, /window_animation_scale transition_animation_scale animator_duration_scale/);
+  assert.match(widgetVerifier, /am force-stop "\$launcher_package"/);
   assert.match(widgetVerifier, /place_automatically_button\|add automatically\|add to home screen/);
   assert.match(widgetVerifier, /dumpsys appwidget/);
   assert.match(widgetVerifier, /dumpsys window/);
@@ -654,6 +656,8 @@ test("v0.7.1 integrated 4x3 widget installs, repairs, refreshes, and delivers fi
   assert.match(widgetLayout, /AQUA\\nNEURALINK/);
   assert.match(widgetLayout, /@drawable\/aqua_widget_neuralink_v071/);
   assert.match(widgetLayout, /id="@\+id\/widget_shimmer"/);
+  assert.match(widgetLayout, /id="@\+id\/widget_shimmer_track"/);
+  assert.match(widgetLayout, /@android:style\/Widget\.ProgressBar\.Small/);
   assert.match(widgetLayout, /id="@\+id\/widget_neural_art"/);
   assert.match(widgetLayout, /id="@\+id\/widget_active_path"/);
   assert.match(widgetLayout, /Selected Aqua Neuralink circuit/);
@@ -669,6 +673,8 @@ test("v0.7.1 integrated 4x3 widget installs, repairs, refreshes, and delivers fi
   assert.match(compactLayout, /@drawable\/aqua_neuralink_widget_v071/);
   assert.match(compactLayout, /id="@\+id\/widget_active_path"/);
   assert.match(compactLayout, /id="@\+id\/widget_shimmer"/);
+  assert.match(compactLayout, /id="@\+id\/widget_shimmer_track"/);
+  assert.match(compactLayout, /@android:style\/Widget\.ProgressBar\.Small/);
   assert.match(compactLayout, /widget_ask[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.match(widgetInfo, /android:targetCellWidth="4"/);
   assert.match(widgetInfo, /android:targetCellHeight="3"/);

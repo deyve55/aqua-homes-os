@@ -76,17 +76,34 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <ProgressBar
-                        android:id="@+id/widget_shimmer"
-                        style="@android:style/Widget.ProgressBar.Horizontal"
+                    <FrameLayout
                         android:layout_width="0dp"
-                        android:layout_height="3dp"
+                        android:layout_height="38dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_weight="1"
-                        android:contentDescription="Animated Aqua Neuralink shimmer"
-                        android:indeterminate="true"
-                        android:indeterminateTint="#74EEFF"
-                        android:indeterminateTintMode="src_in" />
+                        android:layout_weight="1">
+
+                        <ProgressBar
+                            android:id="@+id/widget_shimmer_track"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="3dp"
+                            android:layout_gravity="center_vertical"
+                            android:contentDescription="Animated Aqua Neuralink beam"
+                            android:indeterminate="true"
+                            android:indeterminateTint="#74EEFF"
+                            android:indeterminateTintMode="src_in" />
+
+                        <ProgressBar
+                            android:id="@+id/widget_shimmer"
+                            style="@android:style/Widget.ProgressBar.Small"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="Animated Aqua Neuralink shimmer"
+                            android:indeterminate="true"
+                            android:indeterminateTint="#D7FAFF"
+                            android:indeterminateTintMode="src_in" />
+                    </FrameLayout>
 
                     <FrameLayout
                         android:layout_width="34dp"
