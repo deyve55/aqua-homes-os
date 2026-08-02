@@ -292,6 +292,7 @@ jobs:
       - name: Create release candidate certificate
         run: |
           KEY_PASSWORD="$(openssl rand -hex 24)"
+          echo "::add-mask::$KEY_PASSWORD"
           keytool -genkeypair \
             -keystore "$RUNNER_TEMP/aqua-sentinel-v0.7.0.keystore" \
             -storepass "$KEY_PASSWORD" \

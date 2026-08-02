@@ -123,8 +123,11 @@ wait_for_log() {
 return_to_launcher() {
   adb shell input keyevent KEYCODE_HOME
   for attempt in $(seq 1 20); do
-    adb shell dumpsys window windows > /tmp/aqua-widget-launcher-window.txt 2>&1 || true
-    if grep -Eq "mCurrentFocus.*${launcher_package}|mFocusedApp.*${launcher_package}" /tmp/aqua-widget-launcher-window.txt; then
+    {
+      adb shell dumpsys window 2>/dev/null || true
+      adb shell dumpsys activity activities 2>/dev/null || true
+    } > /tmp/aqua-widget-launcher-window.txt
+    if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity|ACTIVITY).*${launcher_package}" /tmp/aqua-widget-launcher-window.txt; then
       return 0
     fi
     sleep 1

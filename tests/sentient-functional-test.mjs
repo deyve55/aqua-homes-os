@@ -555,6 +555,7 @@ test("v0.7.0 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.match(styles, /<item name="android:clickable">true<\/item>/);
   assert.match(workflow, /bash scripts\/verify-aqua-sentinel-android-launch-v060\.sh/);
   assert.match(workflow, /widget_dispatch=launcher_hosted_remote_views_taps_verified/);
+  assert.match(workflow, /::add-mask::\$KEY_PASSWORD/);
   assert.match(androidLaunch, /bash scripts\/verify-aqua-sentinel-widget-actions-v054\.sh/);
   assert.match(activity, /widget_launcher_pin_probe/);
   assert.match(activity, /installOrRepairCommandWidget\(\)/);
@@ -563,6 +564,8 @@ test("v0.7.0 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.match(widgetVerifier, /--ez widget_launcher_pin_probe true/);
   assert.match(widgetVerifier, /place_automatically_button\|add automatically\|add to home screen/);
   assert.match(widgetVerifier, /dumpsys appwidget/);
+  assert.match(widgetVerifier, /dumpsys window/);
+  assert.match(widgetVerifier, /dumpsys activity activities/);
   assert.match(widgetVerifier, /launcher_package="com\.android\.launcher3"/);
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_HOST_READY/);
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_TAP mode=\$mode resource=\$resource_id/);
