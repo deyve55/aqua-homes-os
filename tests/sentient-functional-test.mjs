@@ -586,6 +586,7 @@ test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.match(androidLaunch, /bash scripts\/verify-aqua-sentinel-widget-actions-v054\.sh/);
   assert.match(androidLaunch, /package="com\.android\.permissioncontroller"[\s\S]*am force-stop com\.android\.camera2[\s\S]*KEYCODE_BACK/);
   assert.match(androidLaunch, /permission_deny_button[\s\S]*dismiss_permission_controller "\$window_path"/);
+  assert.match(androidLaunch, /dumpsys window windows[\s\S]*mCurrentFocus\|mFocusedApp[\s\S]*MainActivity[\s\S]*return 0/);
   assert.match(activity, /widget_launcher_pin_probe/);
   assert.match(activity, /installOrRepairCommandWidget\(\)/);
   assert.doesNotMatch(activity, /widget_contract_probe/);
