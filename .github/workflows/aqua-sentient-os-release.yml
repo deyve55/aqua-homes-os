@@ -11,6 +11,7 @@ on:
       - "encoded-assets/aqua-sentinel-launcher-v045/**"
       - "scripts/restore-aqua-sentinel-launcher-v045.sh"
       - "scripts/verify-aqua-sentinel-android-launch-v060.sh"
+      - "scripts/render-aqua-sentinel-visual-proof.mjs"
       - "scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"
       - "scripts/verify-aqua-sentinel-widget-actions-v054.sh"
       - "sentient-os-web/**"
@@ -33,6 +34,7 @@ on:
       - "encoded-assets/aqua-sentinel-launcher-v045/**"
       - "scripts/restore-aqua-sentinel-launcher-v045.sh"
       - "scripts/verify-aqua-sentinel-android-launch-v060.sh"
+      - "scripts/render-aqua-sentinel-visual-proof.mjs"
       - "scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"
       - "scripts/verify-aqua-sentinel-widget-actions-v054.sh"
       - "sentient-os-web/**"
@@ -112,98 +114,11 @@ jobs:
             printf 'chrome_binary=%s\n' "$CHROME_BIN"
             "$CHROME_BIN" --version
           } > release/visual-proof-diagnostics/environment.txt
-          "$CHROME_BIN" \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=750 \
-            --force-device-scale-factor=1 \
-            --window-size=430,932 \
-            --screenshot=release/AquaSentinelOS-v0.7.4-launch-proof.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=home"
-          "$CHROME_BIN" \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=1800 \
-            --force-device-scale-factor=1 \
-            --window-size=430,932 \
-            --screenshot=release/AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest"
-          "$CHROME_BIN" \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=750 \
-            --force-device-scale-factor=1 \
-            --window-size=430,932 \
-            --screenshot=release/AquaSentinelOS-v0.7.4-Neural-Link-Rotate-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=750"
-          "$CHROME_BIN" \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=1750 \
-            --force-device-scale-factor=1 \
-            --window-size=430,932 \
-            --screenshot=release/AquaSentinelOS-v0.7.4-Neural-Link-Fire-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=1750"
-          "$CHROME_BIN" \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=3500 \
-            --force-device-scale-factor=1 \
-            --window-size=430,932 \
-            --screenshot=release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=3500"
-          "$CHROME_BIN" \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=5600 \
-            --force-device-scale-factor=1 \
-            --window-size=430,932 \
-            --screenshot=release/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=5600"
-          for checkpoint in "00:2600" "01:3000" "02:3400" "03:3800" "04:4200" "05:4600" "06:5000"; do
-            name="${checkpoint%%:*}"
-            budget="${checkpoint##*:}"
-            "$CHROME_BIN" \
-              --headless=new \
-              --no-sandbox \
-              --disable-gpu \
-              --hide-scrollbars \
-              --run-all-compositor-stages-before-draw \
-              --virtual-time-budget="$budget" \
-              --force-device-scale-factor=1 \
-              --window-size=430,932 \
-              --screenshot="release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-${name}.png" \
-              "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=${budget}"
-          done
-          "$CHROME_BIN" \
-            --headless=new \
-            --no-sandbox \
-            --disable-gpu \
-            --hide-scrollbars \
-            --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=750 \
-            --force-device-scale-factor=1 \
-            --window-size=430,932 \
-            --screenshot=release/AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=command"
+          node scripts/render-aqua-sentinel-visual-proof.mjs \
+            --chrome "$CHROME_BIN" \
+            --page "${GITHUB_WORKSPACE}/sentient-os-web/index.html" \
+            --output-dir release \
+            --evidence-dir release/visual-proof-diagnostics/deterministic-captures
           "$CHROME_BIN" \
             --headless=new \
             --no-sandbox \

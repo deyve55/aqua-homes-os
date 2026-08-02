@@ -353,7 +353,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
 });
 
 test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async () => {
-  const [gradle, workflow, script, html, fidelity, androidLaunch, neuralLiveProof] = await Promise.all([
+  const [gradle, workflow, script, html, fidelity, androidLaunch, neuralLiveProof, visualRenderer] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
     read("sentient-os-web/app.js"),
@@ -361,6 +361,7 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
     read("sentient-os-web/fidelity.css"),
     read("scripts/verify-aqua-sentinel-android-launch-v060.sh"),
     read("scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"),
+    read("scripts/render-aqua-sentinel-visual-proof.mjs"),
   ]);
   assert.match(gradle, /versionCode = 2026080203/);
   assert.match(gradle, /versionName = "0\.7\.4-living-neural-fidelity-widget"/);
@@ -370,11 +371,11 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
   assert.match(workflow, /preview=neural/);
   assert.match(workflow, /neuralDemo=sequence/);
-  assert.match(workflow, /neuralDemo=sequence&neuralAt=750/);
-  assert.match(workflow, /neuralDemo=sequence&neuralAt=1750/);
-  assert.match(workflow, /neuralDemo=sequence&neuralAt=3500/);
-  assert.match(workflow, /neuralDemo=sequence&neuralAt=5600/);
-  assert.match(workflow, /for checkpoint in "00:2600" "01:3000" "02:3400" "03:3800" "04:4200" "05:4600" "06:5000"/);
+  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=750/);
+  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=1750/);
+  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=3500/);
+  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=5600/);
+  assert.match(visualRenderer, /\["00", 2600, "0\.054"\][\s\S]*\["06", 5000, "0\.977"\]/);
   assert.match(workflow, /Neural-Link-Morph-closed-phone\.png/);
   assert.match(workflow, /data-aqua-neural-phase="transitioning"/);
   assert.match(workflow, /preview=command/);
@@ -412,6 +413,12 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(workflow, /data-morph-progress="0\.400"/);
   assert.match(workflow, /data-morph-progress="1\.000"/);
   assert.match(workflow, /node scripts\/verify-aqua-sentinel-neural-live-wall-clock\.mjs/);
+  assert.match(workflow, /node scripts\/render-aqua-sentinel-visual-proof\.mjs/);
+  assert.match(visualRenderer, /document\.fonts\?\.ready/);
+  assert.match(visualRenderer, /document\.getAnimations\(\)/);
+  assert.match(visualRenderer, /Page\.captureScreenshot/);
+  assert.match(visualRenderer, /materializationOpacity >= 0\.98/);
+  assert.match(visualRenderer, /AQUA_DETERMINISTIC_VISUAL_PROOF_RENDERED/);
   assert.match(workflow, /neural-live-wall-clock/);
   assert.match(workflow, /--url ".*neuralDemo=rest"/);
   assert.doesNotMatch(workflow, /aqua-sentinel-neural-live-(fire|morph|result)-proof\.html/);
@@ -461,7 +468,7 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.doesNotMatch(workflow, /adb exec-out screencap.*launch\.png/);
   assert.doesNotMatch(androidLaunch, /adb exec-out screencap.*launch\.png/);
   assert.ok(
-    workflow.indexOf("--screenshot=release/AquaSentinelOS-v0.7.4-launch-proof.png")
+    workflow.indexOf("node scripts/render-aqua-sentinel-visual-proof.mjs")
       < workflow.indexOf("bash scripts/verify-aqua-sentinel-android-launch-v060.sh"),
     "the deterministic Home proof must be rendered before Android interaction checks",
   );
