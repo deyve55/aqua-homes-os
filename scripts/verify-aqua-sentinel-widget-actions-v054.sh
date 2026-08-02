@@ -221,7 +221,17 @@ pin_widget_on_launcher() {
   local launcher_hierarchy=""
 
   clear_logcat
-  adb shell settings put global animator_duration_scale 1 || true
+  for animation_scale in window_animation_scale transition_animation_scale animator_duration_scale; do
+    adb shell settings put global "$animation_scale" 1
+    current_scale="$(adb shell settings get global "$animation_scale" | tr -d '\r')"
+    if [[ "$current_scale" != "1" && "$current_scale" != "1.0" ]]; then
+      echo "Android did not enable $animation_scale before the launcher widget proof" >&2
+      return 1
+    fi
+  done
+  adb shell am force-stop "$launcher_package" || true
+  adb shell input keyevent KEYCODE_HOME
+  return_to_launcher
   adb shell am force-stop "$package"
   adb shell am start -W \
     -n "$main_activity" \
