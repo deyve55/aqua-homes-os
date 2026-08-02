@@ -79,6 +79,9 @@
             android:launchMode="singleTop"
             android:noHistory="true"
             android:theme="@style/AquaWidgetDispatchTheme" />
+        <service
+            android:name=".WidgetMessageService"
+            android:exported="false" />
         <provider
             android:name=".EvidenceProvider"
             android:authorities="${applicationId}.files"

@@ -5,6 +5,7 @@ const apps = [
     motion: "crm",
     short: "CUSTOMERS & JOBS",
     icon: "A",
+    neuralAsset: "./assets/carousel-v2/crm.webp",
     color: "#20dcff",
     preview: { eyebrow: "COMMAND CENTER", title: "Good morning", metric: "Active Jobs", value: "—", tiles: ["Pipeline", "Clients", "Schedule"] },
     packages: ["com.aquasoftware.crm.fieldtest", "com.aquasoftware.crm.test", "com.aquasoftware.crm"],
@@ -25,6 +26,7 @@ const apps = [
     motion: "draw",
     short: "FINANCIAL DRAWS",
     icon: "◇",
+    neuralAsset: "./assets/carousel-v2/draw.webp",
     color: "#ffbd3c",
     preview: { eyebrow: "AQUADRAW", title: "Company Financial Health", metric: "Available", value: "—", tiles: ["Clients", "Jobs", "SOW"] },
     packages: ["com.aquahomesdesigngroup.draw.v0189option1", "com.aquahomesdesigngroup.draw.v0187fresh", "com.aquahomesdesigngroup.draw.beta", "com.aquahomesdesigngroup.draw"],
@@ -45,6 +47,7 @@ const apps = [
     motion: "cam",
     short: "FIELD VISION",
     icon: "◉",
+    neuralAsset: "./assets/carousel-v2/cam.webp",
     color: "#5fd9ff",
     preview: { eyebrow: "AQUACAM", title: "Field Command", metric: "Today", value: "—", tiles: ["Clock In", "Capture", "Evidence"] },
     packages: ["com.aquahomesdesign.cam.obsidianpreview", "com.aquahomesdesign.cam"],
@@ -65,6 +68,7 @@ const apps = [
     motion: "vault",
     short: "CODE INTELLIGENCE",
     icon: "⌘",
+    neuralAsset: "./assets/carousel-v2/vault.webp",
     color: "#a88cff",
     preview: { eyebrow: "KNOWLEDGE VAULT", title: "Active Job Knowledge", metric: "Jurisdictions", value: "—", tiles: ["Quick Q&A", "Quick Scan", "Field Scan"] },
     packages: ["com.aquahomes.knowledgevault"],
@@ -89,6 +93,7 @@ const apps = [
     motion: "timesheet",
     short: "WORKFORCE",
     icon: "◷",
+    neuralAsset: "./assets/carousel-v2/timesheet.webp",
     color: "#41e39a",
     preview: { eyebrow: "AQUA TIMESHEET", title: "Workforce Today", metric: "On Clock", value: "—", tiles: ["Clock", "Travel", "Payroll"] },
     packages: ["com.aquahomes.timesheet.engineering", "com.aquahomes.timesheet"],
@@ -109,6 +114,7 @@ const apps = [
     motion: "books",
     short: "ACCOUNTING",
     icon: "$",
+    neuralAsset: "./assets/carousel-v2/books.webp",
     color: "#ffca54",
     preview: { eyebrow: "AQUA BOOKS", title: "Financial Command", metric: "Cash Position", value: "$—", tiles: ["Review", "Bills", "Reports"] },
     packages: ["com.aquasoftware.aquabooks"],
@@ -129,6 +135,7 @@ const apps = [
     motion: "receipts",
     short: "RECEIPT INTELLIGENCE",
     icon: "▤",
+    neuralAsset: "./assets/carousel-v2/receipts.webp",
     color: "#ff8f72",
     preview: { eyebrow: "AQUA RECEIPTS", title: "Receipt Command", metric: "Needs Attention", value: "—", tiles: ["Camera", "Inbox", "Projects"] },
     packages: ["com.aquasoftware.receipts.test", "com.aquasoftware.receipts"],
@@ -191,6 +198,7 @@ let neuralPhase = "rest";
 let neuralThought = "Aqua is listening across your company.";
 let neuralThoughtDetail = "Every system stays ready while her attention moves.";
 let neuralIdleTimer = null;
+let neuralTransitionTimer = null;
 let pendingNeuralIntent = null;
 let neuralMaterialization = null;
 let commandWidgetState = {
@@ -206,6 +214,7 @@ function neuralSourceAt(index) {
       name: "File Cabinet",
       short: "SENTINEL EVIDENCE",
       icon: "▤",
+      neuralAsset: "./assets/carousel-v2/receipts.webp",
       color: "#8cecff",
       authority: "Local captures, filing queue, and authorized projections",
       widgets: ["Contracts", "Evidence", "Protected filings"],
@@ -235,7 +244,8 @@ function layoutNeuralStage() {
   const stage = systemPanel.querySelector(".neural-stage");
   if (!stage) return;
   const count = neuralRingSlots.length;
-  const isMaterialized = neuralPhase === "result" && neuralFocusIndex >= 0;
+  const isMaterialized = ["transitioning", "result"].includes(neuralPhase)
+    && neuralFocusIndex >= 0;
   const offset = neuralFocusIndex >= 0
     ? (count - (neuralFocusIndex % count)) % count
     : neuralIdleOffset;
@@ -277,6 +287,11 @@ function layoutNeuralStage() {
     baseRoute?.setAttribute("d", routeDefinition);
     route?.classList.toggle("is-active", isPrimary);
     route?.classList.toggle("is-supporting", isSupporting);
+    stage.querySelectorAll(`[data-neural-burst="${index}"]`).forEach((burst) => {
+      burst.setAttribute("d", routeDefinition);
+      burst.classList.toggle("is-active", isPrimary);
+      burst.classList.toggle("is-supporting", isSupporting);
+    });
   });
   const thought = stage.querySelector("[data-neural-thought]");
   const detail = stage.querySelector("[data-neural-thought-detail]");
@@ -306,7 +321,7 @@ function startNeuralIdleRotation() {
 
 function setNeuralPhase(phase, thought, detail) {
   neuralPhase = phase;
-  if (phase !== "result") neuralMaterialization = null;
+  if (!["transitioning", "result"].includes(phase)) neuralMaterialization = null;
   if (thought) neuralThought = thought;
   if (detail) neuralThoughtDetail = detail;
   layoutNeuralStage();
@@ -447,14 +462,11 @@ function neuralMaterializationFor(intent) {
 function completeStandaloneNeuralRequest(intent) {
   const materialization = neuralMaterializationFor(intent);
   if (!materialization) return;
-  setNeuralPhase(
-    "result",
-    `${materialization.sourceApp} returned the requested view.`,
-    materialization.sourceState === "Confirmed"
-      ? "The source is confirmed and Aqua remains connected everywhere."
-      : "This is visibly labeled so presentation data is never mistaken for a live record.",
-  );
-  showMaterialization(materialization);
+  neuralThought = `${materialization.sourceApp} returned the requested view.`;
+  neuralThoughtDetail = materialization.sourceState === "Confirmed"
+    ? "The source is confirmed and Aqua remains connected everywhere."
+    : "This is visibly labeled so presentation data is never mistaken for a live record.";
+  showMaterialization(materialization, true);
   const reply = materialization.sourceState === "Confirmed"
     ? `I brought ${materialization.title} forward from ${materialization.sourceApp}.`
     : `I brought forward the ${materialization.sourceApp} presentation view. It is not live company data yet.`;
@@ -1171,14 +1183,11 @@ function portalMaterialization(index) {
     kind: index >= apps.length ? "file" : apps[index].motion,
   });
   if (!materialization) return;
-  setNeuralPhase(
-    "result",
-    `${materialization.sourceApp} returned a view to Aqua.`,
-    materialization.sourceState === "Confirmed"
-      ? "Confirmed source. The rest of Aqua’s mind remains active behind it."
-      : "Connection truth stays visible while Aqua keeps the conversation open.",
-  );
-  showMaterialization(materialization);
+  neuralThought = `${materialization.sourceApp} returned a view to Aqua.`;
+  neuralThoughtDetail = materialization.sourceState === "Confirmed"
+    ? "Confirmed source. The rest of Aqua’s mind remains active behind it."
+    : "Connection truth stays visible while Aqua keeps the conversation open.";
+  showMaterialization(materialization, true);
 }
 
 function safeMaterializationUri(value) {
@@ -1255,15 +1264,29 @@ function renderNeuralMaterialization() {
   bindNeuralMaterializationActions();
 }
 
-function showMaterialization(materialization) {
+function showMaterialization(materialization, animateNeuralTransition = true) {
   if (!materialization?.present) return;
   if (!systemPanel.hidden && systemPanel.dataset.panel === "neural") {
+    clearTimeout(neuralTransitionTimer);
     neuralMaterialization = materialization;
-    neuralPhase = "result";
     detailSheet.hidden = true;
     detailSheet.classList.remove("is-full", "aqua-materialization");
-    layoutNeuralStage();
-    renderNeuralMaterialization();
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (animateNeuralTransition && !reducedMotion) {
+      neuralPhase = "transitioning";
+      layoutNeuralStage();
+      renderNeuralMaterialization();
+      neuralTransitionTimer = setTimeout(() => {
+        if (neuralMaterialization !== materialization) return;
+        neuralPhase = "result";
+        layoutNeuralStage();
+        renderNeuralMaterialization();
+      }, 760);
+    } else {
+      neuralPhase = "result";
+      layoutNeuralStage();
+      renderNeuralMaterialization();
+    }
     return;
   }
   const fields = Array.isArray(materialization.fields) ? materialization.fields : [];
@@ -1320,6 +1343,7 @@ function showMaterialization(materialization) {
 
 function closeOverlays() {
   clearInterval(neuralIdleTimer);
+  clearTimeout(neuralTransitionTimer);
   workspace.hidden = true;
   detailSheet.hidden = true;
   detailSheet.classList.remove("is-full", "aqua-materialization");
@@ -1378,13 +1402,13 @@ function neuralWorkspaceMarkup() {
   const portals = portalApps.map((app, index) => {
     const connection = neuralConnectionState(index);
     const name = app.name.replace("Aqua Knowledge Vault", "Knowledge Vault").replace("Aqua ", "");
+    const environment = app.neuralAsset
+      ? `<img src="${escapeHtml(app.neuralAsset)}" alt="" aria-hidden="true" />`
+      : "";
     return `<article class="neural-portal" style="--portal-color:${app.color}" data-portal-index="${index}">
       <button class="portal-pull" type="button" data-neural-portal="${index}" aria-label="Pull ${escapeHtml(app.name)} forward">
-        <span class="portal-node"><i>${escapeHtml(app.icon)}</i><b></b></span>
-        <strong>${escapeHtml(name)}</strong>
-        <span class="portal-state"><b>${connection.label}</b><em>${connection.detail}</em></span>
+        <span class="portal-node">${environment}<span class="portal-environment-shade"></span><i>${escapeHtml(app.icon)}</i><strong>${escapeHtml(name)}</strong><em>${connection.label}</em><b></b><u></u></span>
       </button>
-      <button class="portal-open" type="button" data-neural-open="${index}" aria-label="Go deeper into ${escapeHtml(app.name)}"><span>↗</span></button>
     </article>`;
   }).join("");
   const paths = portalApps.map((app, index) => `
@@ -1392,13 +1416,9 @@ function neuralWorkspaceMarkup() {
       <path class="neural-route" d="M50 50 L50 50" pathLength="100" data-neural-route="${index}"></path>
       <path class="neural-signal" d="M50 50 L50 50" pathLength="100" data-neural-path="${index}" style="--portal-color:${app.color}"></path>
     </g>`).join("");
-  const particles = Array.from({ length: 28 }, (_, index) => {
-    const x = 8 + ((index * 37) % 84);
-    const y = 5 + ((index * 53) % 90);
-    const delay = -((index * 0.37) % 6).toFixed(2);
-    const size = 1 + (index % 3);
-    return `<i style="--particle-x:${x}%;--particle-y:${y}%;--particle-delay:${delay}s;--particle-size:${size}px"></i>`;
-  }).join("");
+  const bursts = portalApps.map((app, index) => `
+      <path class="neural-burst burst-a" d="M50 50 L50 50" pathLength="100" data-neural-burst="${index}" style="--portal-color:${app.color};--burst-delay:${(-index * .29).toFixed(2)}s"></path>
+      <path class="neural-burst burst-b" d="M50 50 L50 50" pathLength="100" data-neural-burst="${index}" style="--portal-color:${app.color};--burst-delay:${(-1.1 - index * .23).toFixed(2)}s"></path>`).join("");
   const confirmedSources = apps.filter((app) => app.connected || liveSnapshots.has(app.name)).length;
 
   return `<section class="neural-shell" aria-label="Aqua Neuralink" data-neural-contract="AQUA SENTINEL NEURAL LINK">
@@ -1409,8 +1429,6 @@ function neuralWorkspaceMarkup() {
         </header>
         <span class="neural-source-count" aria-label="${confirmedSources} confirmed Aqua systems">${confirmedSources} CONFIRMED</span>
         <div class="neural-vignette" aria-hidden="true"></div>
-        <div class="neural-particles" aria-hidden="true">${particles}</div>
-        <div class="neural-microbursts" aria-hidden="true">${Array.from({ length: 42 }, (_, index) => `<i style="--burst-angle:${(index * 137.5).toFixed(1)}deg;--burst-distance:${18 + (index % 7) * 5};--burst-delay:${-((index * .19) % 3.1).toFixed(2)}s;--burst-size:${1 + (index % 3) * .55}px"></i>`).join("")}</div>
         <div class="neural-jolt" aria-hidden="true"><b></b><i></i><i></i><span></span></div>
         <div class="neural-rings" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <svg class="neural-network" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
@@ -1419,6 +1437,7 @@ function neuralWorkspaceMarkup() {
           </defs>
           <circle class="neural-core-glow" cx="50" cy="50" r="10" fill="url(#aqua-neural-core)"></circle>
           ${paths}
+          <g class="neural-microbursts">${bursts}</g>
         </svg>
         <div class="neural-core-field" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <button class="neural-core" type="button" data-neural-ask aria-label="Talk to Aqua">
@@ -1618,6 +1637,7 @@ function openPanel(kind) {
       neuralSupportIndexes = [];
       neuralPhase = "rest";
       neuralMaterialization = null;
+      clearTimeout(neuralTransitionTimer);
       neuralThought = "Aqua is listening across your company.";
       neuralThoughtDetail = "You are moving through her connected nervous system.";
       neuralIdleOffset = (neuralIdleOffset + (dx < 0 ? 1 : -1) + neuralRingSlots.length) % neuralRingSlots.length;
@@ -1781,10 +1801,14 @@ function activateDeterministicPreviewRoute() {
   } else {
     if (previewPanel === "neural") {
       const demo = previewParameters.get("neuralDemo") || "rest";
-      if (["focus", "company", "result"].includes(demo)) {
+      if (["focus", "transition", "company", "result"].includes(demo)) {
         neuralFocusIndex = 0;
         neuralSupportIndexes = [5, 4, 6];
-        neuralPhase = demo === "result" ? "result" : "working";
+        neuralPhase = demo === "result"
+          ? "result"
+          : demo === "transition"
+            ? "transitioning"
+            : "working";
         neuralThought = demo === "result"
           ? "Aqua CRM returned today’s company view."
           : "Aqua is reaching into Aqua CRM.";
@@ -1801,7 +1825,7 @@ function activateDeterministicPreviewRoute() {
         primary: 0,
         supporting: [5, 4, 6],
         kind: "company",
-      }));
+      }), false);
     }
   }
   document.documentElement.dataset.aquaPreviewReady = previewPanel;
@@ -1902,16 +1926,13 @@ window.receiveAquaResponse = (raw) => {
       if (sourceIndex >= 0 && (systemPanel.hidden || systemPanel.dataset.panel !== "neural")) {
         neuralFocusIndex = sourceIndex;
         neuralSupportIndexes = pendingNeuralIntent?.supporting || [];
-        neuralPhase = "result";
+        neuralPhase = "working";
         openPanel("neural");
       }
-      setNeuralPhase(
-        "result",
-        `${response.materialization.sourceApp || "Aqua"} returned the requested information.`,
-        "Aqua remains visible and ready while the evidence is held in front.",
-      );
+      neuralThought = `${response.materialization.sourceApp || "Aqua"} returned the requested information.`;
+      neuralThoughtDetail = "Aqua remains visible and ready while the evidence is held in front.";
     }
-    showMaterialization(response.materialization);
+    showMaterialization(response.materialization, true);
     const reply = String(response.reply || "I’m ready.");
     if (widgetCommandInFlight) {
       const delivered = widgetMessages.find((message) => message.id === widgetCommandInFlight);

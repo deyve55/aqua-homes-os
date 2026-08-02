@@ -44,7 +44,7 @@ public final class WidgetDispatchActivity extends Activity {
             () -> {
                 Log.i(
                     "AquaCommandWidget",
-                    "AQUA_WIDGET_NEURAL_JOLT mode=" + mode + " phase=return"
+                    "AQUA_WIDGET_NEURAL_JOLT mode=" + mode + " phase=arrived"
                 );
                 openDestination(mode);
             },

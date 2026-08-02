@@ -134,7 +134,7 @@ public class QuickCaptureActivity extends Activity {
         status.setBackgroundColor(Color.rgb(1, 10, 15));
         if ("photo".equals(mode)) status.setText("Aqua is opening the camera…");
         else if ("video".equals(mode)) status.setText("Aqua is opening video capture…");
-        else if ("ask".equals(mode)) status.setText("Aqua is opening Sentinel…");
+        else if ("ask".equals(mode)) status.setText("Aqua is ready for your message…");
         else status.setText("Aqua is ready to capture your voice filing…");
         setContentView(status);
     }
@@ -168,7 +168,6 @@ public class QuickCaptureActivity extends Activity {
         commandInput = findViewById(R.id.widget_command_input);
         Button speak = findViewById(R.id.widget_command_speak);
         Button send = findViewById(R.id.widget_command_send);
-        Button open = findViewById(R.id.widget_command_open);
         String initialCommand = getIntent() == null
             ? ""
             : getIntent().getStringExtra(EXTRA_COMMAND_TEXT);
@@ -189,7 +188,6 @@ public class QuickCaptureActivity extends Activity {
             return false;
         });
         send.setOnClickListener(view -> submitCommand(commandInput.getText().toString()));
-        open.setOnClickListener(view -> openSentinelWithoutCommand());
         commandInput.setOnEditorActionListener((view, actionId, event) -> {
             submitCommand(commandInput.getText().toString());
             return true;
@@ -270,30 +268,13 @@ public class QuickCaptureActivity extends Activity {
             "AquaCommandWidget",
             "AQUA_WIDGET_MESSAGE_SUBMITTED id=" + messageId + " characters=" + text.length()
         );
-        startActivity(
-            new Intent(this, MainActivity.class)
-                .putExtra("widget_command", text)
-                .putExtra("widget_command_id", messageId)
-                .addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                )
+        WidgetMessageService.enqueue(this, text, messageId);
+        Log.i(
+            "AquaCommandWidget",
+            "AQUA_WIDGET_MESSAGE_BACKGROUND_DISPATCHED id=" + messageId
         );
-        Toast.makeText(this, "Message sent to Aqua.", Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    private void openSentinelWithoutCommand() {
-        startActivity(
-            new Intent(this, MainActivity.class)
-                .addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                )
-        );
-        finish();
+        Toast.makeText(this, "Sending to Aqua…", Toast.LENGTH_SHORT).show();
+        finishAndRemoveTask();
     }
 
     @Override

@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Speak or type. Aqua will show the message in Sentinel."
+        android:text="Speak or type. Send delivers in the background and returns you to the launcher."
         android:textColor="#8FB6C1"
         android:textSize="14sp" />
 
@@ -50,44 +50,25 @@
         android:textSize="17sp"
         android:background="@drawable/aqua_command_input" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/widget_command_speak"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="6dp"
-            android:text="Speak"
-            android:textAllCaps="false"
-            android:textColor="#C9F8FF"
-            android:textStyle="bold"
-            android:background="@drawable/aqua_widget_action" />
-
-        <Button
-            android:id="@+id/widget_command_send"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_weight="1"
-            android:layout_marginStart="6dp"
-            android:text="Send to Aqua"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:background="@drawable/aqua_command_send" />
-    </LinearLayout>
-
     <Button
-        android:id="@+id/widget_command_open"
+        android:id="@+id/widget_command_speak"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="10dp"
-        android:text="Open Sentinel without sending"
+        android:layout_marginTop="16dp"
+        android:text="Speak"
         android:textAllCaps="false"
-        android:textColor="#86A8B2"
-        android:background="@android:color/transparent" />
+        android:textColor="#C9F8FF"
+        android:textStyle="bold"
+        android:background="@drawable/aqua_widget_action" />
+
+    <Button
+        android:id="@+id/widget_command_send"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="10dp"
+        android:text="Send to Aqua"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:background="@drawable/aqua_command_send" />
 </LinearLayout>

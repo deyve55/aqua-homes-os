@@ -168,6 +168,28 @@ return_to_launcher() {
   return 1
 }
 
+assert_widget_send_returned_to_launcher() {
+  local focus_path="/tmp/aqua-sentinel-v0.7.2-widget-send-focus.txt"
+  for attempt in $(seq 1 20); do
+    {
+      adb shell dumpsys window 2>/dev/null || true
+      adb shell dumpsys activity activities 2>/dev/null || true
+    } > "$focus_path"
+    if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity|ACTIVITY).*${launcher_package}" "$focus_path"; then
+      if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${package}.*MainActivity" "$focus_path"; then
+        echo "Widget Send opened Aqua Sentinel instead of returning to Launcher3" >&2
+        return 1
+      fi
+      echo "AQUA_WIDGET_BACKGROUND_SEND_STAYED_ON_LAUNCHER"
+      return 0
+    fi
+    sleep 1
+  done
+  echo "Widget Send did not return to Launcher3 without opening Sentinel" >&2
+  tail -n 80 "$focus_path" >&2 || true
+  return 1
+}
+
 terminate_sentinel_background_process() {
   local phase="$1"
   local process_ids=""
@@ -216,8 +238,8 @@ for line in sys.stdin:
 }
 
 pin_widget_on_launcher() {
-  local pin_evidence="/tmp/aqua-sentinel-v0.7.1-widget-pin.logcat.txt"
-  local appwidget_state="/tmp/aqua-sentinel-v0.7.1-appwidget-host.txt"
+  local pin_evidence="/tmp/aqua-sentinel-v0.7.2-widget-pin.logcat.txt"
+  local appwidget_state="/tmp/aqua-sentinel-v0.7.2-appwidget-host.txt"
   local launcher_hierarchy=""
 
   clear_logcat
@@ -286,10 +308,10 @@ prove_neuralink_widget_shimmer() {
   local width=""
   local height=""
   local changed_pixels=""
-  local first="/tmp/aqua-sentinel-v0.7.1-widget-shimmer-a.png"
-  local second="/tmp/aqua-sentinel-v0.7.1-widget-shimmer-b.png"
-  local first_crop="/tmp/aqua-sentinel-v0.7.1-widget-shimmer-a-crop.png"
-  local second_crop="/tmp/aqua-sentinel-v0.7.1-widget-shimmer-b-crop.png"
+  local first="/tmp/aqua-sentinel-v0.7.2-widget-shimmer-a.png"
+  local second="/tmp/aqua-sentinel-v0.7.2-widget-shimmer-b.png"
+  local first_crop="/tmp/aqua-sentinel-v0.7.2-widget-shimmer-a-crop.png"
+  local second_crop="/tmp/aqua-sentinel-v0.7.2-widget-shimmer-b-crop.png"
 
   command -v convert >/dev/null
   command -v compare >/dev/null
@@ -331,7 +353,7 @@ prove_neuralink_widget_shimmer() {
     return 1
   fi
 
-  cp "$second" /tmp/AquaSentinelOS-v0.7.1-Neuralink-Live-Widget-Launcher.png
+  cp "$second" /tmp/AquaSentinelOS-v0.7.2-Neuralink-Live-Widget-Launcher.png
   echo "AQUA_WIDGET_NEURALINK_SHIMMER_VERIFIED changed_pixels=$changed_pixels"
 }
 
@@ -380,10 +402,10 @@ tap_launcher_control() {
   local width=""
   local height=""
   local changed_pixels=""
-  local idle="/tmp/aqua-sentinel-v0.7.1-widget-${mode}-idle.png"
-  local active="/tmp/aqua-sentinel-v0.7.1-widget-${mode}-jolt.png"
-  local idle_crop="/tmp/aqua-sentinel-v0.7.1-widget-${mode}-idle-crop.png"
-  local active_crop="/tmp/aqua-sentinel-v0.7.1-widget-${mode}-jolt-crop.png"
+  local idle="/tmp/aqua-sentinel-v0.7.2-widget-${mode}-idle.png"
+  local active="/tmp/aqua-sentinel-v0.7.2-widget-${mode}-jolt.png"
+  local idle_crop="/tmp/aqua-sentinel-v0.7.2-widget-${mode}-idle-crop.png"
+  local active_crop="/tmp/aqua-sentinel-v0.7.2-widget-${mode}-jolt-crop.png"
 
   return_to_launcher
   for attempt in $(seq 1 20); do
@@ -413,7 +435,7 @@ tap_launcher_control() {
       echo "The $mode Neuralink endpoint did not visibly react to its real launcher tap" >&2
       return 1
     fi
-    cp "$active" /tmp/AquaSentinelOS-v0.7.1-Neuralink-Widget-Tap-Jolt.png
+    cp "$active" /tmp/AquaSentinelOS-v0.7.2-Neuralink-Widget-Tap-Jolt.png
     echo "AQUA_WIDGET_LAUNCHER_TAP mode=$mode resource=$resource_id"
     echo "AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=$mode changed_pixels=$changed_pixels"
     return 0
@@ -460,7 +482,7 @@ prove_neuralink_widget_shimmer
 terminate_sentinel_background_process "before-five-action-sequence"
 
 for mode in home ask file photo video; do
-  evidence="/tmp/aqua-sentinel-v0.7.1-widget-${mode}.logcat.txt"
+  evidence="/tmp/aqua-sentinel-v0.7.2-widget-${mode}.logcat.txt"
   expected_route="$mode"
   [[ "$mode" == "file" ]] && expected_route="voice"
   clear_logcat
@@ -475,7 +497,7 @@ for mode in home ask file photo video; do
   received=false
   routed=false
   jolted=false
-  returned=false
+  arrived=false
   for attempt in $(seq 1 24); do
     sleep 1
     adb logcat -d > "$evidence"
@@ -483,8 +505,8 @@ for mode in home ask file photo video; do
       && grep -Fq "AQUA_WIDGET_NEURAL_JOLT mode=$mode phase=outbound" "$evidence"; then
       jolted=true
     fi
-    if grep -Fq "AQUA_WIDGET_NEURAL_JOLT mode=$mode phase=return" "$evidence"; then
-      returned=true
+    if grep -Fq "AQUA_WIDGET_NEURAL_JOLT mode=$mode phase=arrived" "$evidence"; then
+      arrived=true
     fi
     if [[ "$mode" == "home" ]]; then
       if grep -Fq "AQUA_WIDGET_HOME_OPENED" "$evidence"; then
@@ -499,12 +521,12 @@ for mode in home ask file photo video; do
         routed=true
       fi
     fi
-    if [[ "$jolted" == "true" && "$returned" == "true" && "$received" == "true" && "$routed" == "true" ]]; then
+    if [[ "$jolted" == "true" && "$arrived" == "true" && "$received" == "true" && "$routed" == "true" ]]; then
       break
     fi
   done
 
-  if [[ "$jolted" != "true" || "$returned" != "true" || "$received" != "true" || "$routed" != "true" ]]; then
+  if [[ "$jolted" != "true" || "$arrived" != "true" || "$received" != "true" || "$routed" != "true" ]]; then
     echo "Launcher-hosted widget tap did not light and resolve its route: $mode" >&2
     grep -E "AQUA_WIDGET|AQUA_CAPTURE|QuickCaptureActivity|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
     exit 1
@@ -533,7 +555,7 @@ for mode in home ask file photo video; do
     adb shell input text 'test'
     touched=false
     submitted=false
-    delivered=false
+    background_sent=false
     for tap_attempt in $(seq 1 3); do
       tap_resource "widget_command_send" "send"
       for receipt_attempt in $(seq 1 8); do
@@ -543,15 +565,16 @@ for mode in home ask file photo video; do
         grep -Fq "AQUA_WIDGET_MESSAGE_SUBMITTED" "$evidence" \
           && grep -Fq "characters=29" "$evidence" \
           && submitted=true
-        grep -Fq "AQUA_WIDGET_MESSAGE_DELIVERED" "$evidence" && delivered=true
-        if [[ "$touched" == "true" && "$submitted" == "true" && "$delivered" == "true" ]]; then break 2; fi
+        grep -Fq "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT" "$evidence" && background_sent=true
+        if [[ "$touched" == "true" && "$submitted" == "true" && "$background_sent" == "true" ]]; then break 2; fi
       done
     done
-    if [[ "$touched" != "true" || "$submitted" != "true" || "$delivered" != "true" ]]; then
-      echo "Widget Send touch did not submit and reach Sentinel after bounded retries" >&2
+    if [[ "$touched" != "true" || "$submitted" != "true" || "$background_sent" != "true" ]]; then
+      echo "Widget Send touch did not complete its background dispatch after bounded retries" >&2
       grep -E "AQUA_WIDGET|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
       exit 1
     fi
+    assert_widget_send_returned_to_launcher
   fi
 
   adb shell am force-stop com.android.camera2 || true
@@ -560,7 +583,7 @@ done
 # The launcher tap above proves the FILE PendingIntent reaches the real voice-filing route.
 # Complete the deterministic downstream filing contract separately because the headless
 # emulator has no microphone input; do not mislabel synthetic speech as a launcher tap.
-file_evidence="/tmp/aqua-sentinel-v0.7.1-widget-file-completion.logcat.txt"
+file_evidence="/tmp/aqua-sentinel-v0.7.2-widget-file-completion.logcat.txt"
 clear_logcat
 adb shell am start -W \
   -n "$capture_activity" \
@@ -581,5 +604,5 @@ terminate_sentinel_background_process "post-filing-process-recreation"
 tap_ui_node \
   "launcher-hosted widget after process recreation" \
   "$package:id/widget_logo|Open Aqua Sentinel OS"
-wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.1-widget-recreated.logcat.txt 30
+wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.2-widget-recreated.logcat.txt 30
 echo "AQUA_WIDGET_LAUNCHER_PROCESS_RECREATION_VERIFIED"

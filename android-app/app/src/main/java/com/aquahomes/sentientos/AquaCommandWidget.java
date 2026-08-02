@@ -65,7 +65,11 @@ public class AquaCommandWidget extends AppWidgetProvider {
 
     private static int layoutFor(AppWidgetManager manager, int id) {
         Bundle options = manager.getAppWidgetOptions(id);
+        int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250);
         int minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 156);
+        if (minWidth > 0 && minWidth <= 180 && minHeight > 0 && minHeight <= 180) {
+            return R.layout.aqua_command_widget_2x2;
+        }
         return minHeight > 0 && minHeight < 138
             ? R.layout.aqua_command_widget_compact
             : R.layout.aqua_command_widget;
