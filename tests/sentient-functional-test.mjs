@@ -713,6 +713,9 @@ test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without
   assert.match(widgetVerifier, /AQUA_WIDGET_REAL_RESIZE_VERIFIED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_REPEAT_STABILITY_VERIFIED runs=5/);
   assert.match(widgetVerifier, /assert_no_sentinel_crash/);
+  assert.match(widgetVerifier, /local package_pattern=/);
+  assert.match(widgetVerifier, /Process: \$\{package_pattern\}/);
+  assert.doesNotMatch(widgetVerifier, /if grep -Eq "FATAL EXCEPTION\|/);
   assert.match(widgetVerifier, /AQUA_WIDGET_CAPTURE_CANCEL_STAYED_ON_LAUNCHER/);
   assert.match(widgetVerifier, /assert_widget_control_geometry/);
   assert.match(widgetVerifier, /widget_resize_surface/);

@@ -216,10 +216,11 @@ assert_transient_capture_returned_to_launcher() {
 assert_no_sentinel_crash() {
   local evidence="$1"
   local phase="$2"
+  local package_pattern="${package//./\\.}"
   adb logcat -d > "$evidence"
-  if grep -Eq "FATAL EXCEPTION|Process: ${package}.*has died|ANR in ${package}" "$evidence"; then
+  if grep -Eq "Process: ${package_pattern}([,:]|$)|ANR in ${package_pattern}([[:space:]:]|$)|>>> ${package_pattern}(:[^< ]*)? <<<|Cmdline: ${package_pattern}([[:space:]:]|$)" "$evidence"; then
     echo "Aqua Sentinel crashed or stopped responding during $phase" >&2
-    grep -E "FATAL EXCEPTION|Process: ${package}|ANR in ${package}|AndroidRuntime" "$evidence" >&2 || true
+    grep -E "FATAL EXCEPTION|Process: ${package_pattern}|ANR in ${package_pattern}|>>> ${package_pattern}|Cmdline: ${package_pattern}|AndroidRuntime" "$evidence" >&2 || true
     return 1
   fi
 }
