@@ -182,15 +182,25 @@ const customerPreviewSnapshots = new Map();
 const ecosystemPresentationSnapshots = new Map();
 const snapshotStates = new Map();
 const neuralRingSlots = [
-  { x: 50, y: 9, scale: 1.14 },
-  { x: 78, y: 21, scale: 0.96 },
-  { x: 89, y: 50, scale: 0.9 },
-  { x: 78, y: 79, scale: 0.88 },
-  { x: 50, y: 91, scale: 0.84 },
-  { x: 22, y: 79, scale: 0.88 },
-  { x: 11, y: 50, scale: 0.9 },
-  { x: 22, y: 21, scale: 0.96 },
+  { x: 50, y: 12.2, scale: 1.08 },
+  { x: 87.2, y: 24.3, scale: 0.98 },
+  { x: 87.2, y: 46.7, scale: 0.96 },
+  { x: 84.8, y: 61.4, scale: 0.94 },
+  { x: 50, y: 79, scale: 0.92 },
+  { x: 15.2, y: 61.4, scale: 0.94 },
+  { x: 12.8, y: 46.7, scale: 0.96 },
+  { x: 12.8, y: 24.3, scale: 0.98 },
 ];
+const neuralMaterializedSlots = [
+  { x: 11.3, y: 33, scale: 1.02 },
+  { x: 11.3, y: 45.8, scale: 0.98 },
+  { x: 11.3, y: 58.6, scale: 0.96 },
+  { x: 11.3, y: 71.4, scale: 0.94 },
+  { x: 11.3, y: 84.2, scale: 0.92 },
+];
+const NEURAL_ROTATE_MILLIS = 680;
+const NEURAL_FIRE_MILLIS = 620;
+const NEURAL_MORPH_MILLIS = 1680;
 let neuralFocusIndex = -1;
 let neuralSupportIndexes = [];
 let neuralIdleOffset = 0;
@@ -199,6 +209,7 @@ let neuralThought = "Aqua is listening across your company.";
 let neuralThoughtDetail = "Every system stays ready while her attention moves.";
 let neuralIdleTimer = null;
 let neuralTransitionTimer = null;
+let neuralFireTimer = null;
 let pendingNeuralIntent = null;
 let neuralMaterialization = null;
 let commandWidgetState = {
@@ -256,17 +267,16 @@ function layoutNeuralStage() {
     const slotIndex = (index + offset + count) % count;
     const isPrimary = index === neuralFocusIndex;
     const isSupporting = neuralSupportIndexes.includes(index);
-    const materializedOrder = [neuralFocusIndex, ...neuralSupportIndexes]
-      .filter((item, itemIndex, values) => item >= 0 && values.indexOf(item) === itemIndex);
+    const materializedOrder = [
+      neuralFocusIndex,
+      ...neuralSupportIndexes,
+      ...Array.from({ length: apps.length + 1 }, (_, itemIndex) => itemIndex),
+    ]
+      .filter((item, itemIndex, values) => item >= 0 && values.indexOf(item) === itemIndex)
+      .slice(0, neuralMaterializedSlots.length);
     const materializedIndex = materializedOrder.indexOf(index);
-    const materializedSlots = [
-      { x: 52, y: 11, scale: 1.08 },
-      { x: 12.5, y: 46, scale: 0.88 },
-      { x: 12.5, y: 61, scale: 0.84 },
-      { x: 12.5, y: 76, scale: 0.8 },
-    ];
     const slot = isMaterialized
-      ? (materializedSlots[materializedIndex] || { x: 11, y: 90, scale: 0.68 })
+      ? (neuralMaterializedSlots[materializedIndex] || { x: 11.3, y: 94, scale: 0.68 })
       : neuralRingSlots[slotIndex];
     portal.style.setProperty("--neural-x", `${slot.x}%`);
     portal.style.setProperty("--neural-y", `${slot.y}%`);
@@ -278,8 +288,8 @@ function layoutNeuralStage() {
 
     const route = stage.querySelector(`[data-neural-path="${index}"]`);
     const baseRoute = stage.querySelector(`[data-neural-route="${index}"]`);
-    const coreX = isMaterialized ? 22 : 50;
-    const coreY = isMaterialized ? 28 : 50;
+    const coreX = isMaterialized ? 21.7 : 50;
+    const coreY = isMaterialized ? 21.4 : 50;
     const controlX = coreX + (slot.x - coreX) * 0.42;
     const controlY = coreY + (slot.y - coreY) * 0.44;
     const routeDefinition = `M${coreX} ${coreY} Q${controlX.toFixed(1)} ${controlY.toFixed(1)} ${slot.x} ${slot.y}`;
@@ -341,17 +351,26 @@ function focusNeuralSource(index, supporting = [], command = "") {
   neuralThoughtDetail = neuralSupportIndexes.length
     ? `Supporting signals: ${neuralSupportIndexes.map((supportIndex) => neuralSourceAt(supportIndex).name.replace("Aqua ", "")).join(" · ")}`
     : "The rest of Aqua’s mind remains connected and ready.";
-  neuralPhase = "working";
+  clearTimeout(neuralFireTimer);
+  neuralPhase = "rotating";
   neuralMaterialization = null;
   layoutNeuralStage();
   renderNeuralMaterialization();
+  neuralFireTimer = setTimeout(() => {
+    if (neuralFocusIndex !== index || neuralPhase !== "rotating") return;
+    neuralPhase = "firing";
+    neuralThought = `${source.name} is locked in Aqua’s top portal.`;
+    neuralThoughtDetail = "Aqua is firing the request through the selected neural path.";
+    layoutNeuralStage();
+    renderNeuralMaterialization();
+  }, NEURAL_ROTATE_MILLIS);
 }
 
 function identifyNeuralIntent(rawText) {
   const text = String(rawText || "").toLowerCase();
   if (!text.trim()) return null;
   if (/receipt|vendor|purchase|store charge|proof of purchase/.test(text)) {
-    return { primary: 6, supporting: [5, 0], kind: "receipt" };
+    return { primary: 6, supporting: [0, 5, 4, 3], kind: "receipt" };
   }
   if (/timesheet|time card|timecard|clocked|crew hours|labor hours|payroll/.test(text)) {
     return { primary: 4, supporting: [0, 5], kind: "workforce" };
@@ -388,7 +407,7 @@ function beginNeuralRequest(command) {
   pendingNeuralIntent = { ...intent, command };
   neuralFocusIndex = intent.primary;
   neuralSupportIndexes = intent.supporting;
-  neuralPhase = "working";
+  neuralPhase = "rotating";
   const source = neuralSourceAt(intent.primary);
   neuralThought = `Aqua is reaching into ${source.name}.`;
   neuralThoughtDetail = "Primary thought brightened. Supporting systems are still firing.";
@@ -1203,45 +1222,21 @@ function safeMaterializationUri(value) {
 
 function neuralMaterializationMarkup(materialization) {
   if (!materialization?.present) return "";
-  const fields = Array.isArray(materialization.fields) ? materialization.fields : [];
-  const isCompany = materialization.kind === "company" || materialization.title === "Company Today";
   const isReceipt = ["receipt", "receipts"].includes(materialization.kind);
-  const companyMetrics = [
-    ["REVENUE", "$1.42M", "+7.3%"],
-    ["CASH", "$582K", "+2.1%"],
-    ["OPEN LEADS", "84", "+5"],
-    ["ACTIVE JOBS", "23", "+2"],
-  ];
-  const visibleFields = isCompany
-    ? companyMetrics
-    : fields.slice(0, 4).map((field, index) => [field.label, field.value, index === 0 ? "PRIMARY" : "CONNECTED"]);
-  const receipt = `
-    <section class="neural-evidence" data-neural-evidence="receipt">
-      <div class="neural-receipt-paper" aria-hidden="true">
-        <b>NORTH HARBOR</b><small>INDUSTRIES</small><strong>RECEIPT</strong>
-        <i></i><i></i><i></i><em>$27,500.00</em>
-      </div>
-      <div><small>LATEST EVIDENCE</small><strong>Receipt from<br>North Harbor Industries</strong><p>$27,500.00 · Presentation record</p><b>Verified ✓</b></div>
-    </section>`;
-  return `<article class="neural-materialization ${isReceipt ? "is-receipt" : ""}" data-neural-materialized="true" data-materialization-kind="${escapeHtml(materialization.kind || "record")}">
-    <div class="neural-conversation-card">
-      <span class="neural-conversation-mark">A</span>
-      <p>${isReceipt ? "I brought the receipt forward. Want the full transaction trail?" : "Here’s today’s company picture. Want me to go deeper?"}</p>
-      <div class="neural-mini-wave" aria-hidden="true">${Array.from({ length: 22 }, (_, index) => `<i style="--wave:${(index * 13) % 24}"></i>`).join("")}</div>
-      <small>● AQUA VOICE ACTIVE</small>
+  const spokenReply = isReceipt
+    ? "I found the receipt, Dave."
+    : `${materialization.title || "The requested item"} is ready, Dave.`;
+  return `<article class="neural-materialization-approved ${isReceipt ? "is-receipt" : ""}" data-neural-materialized="${neuralPhase === "transitioning" ? "pending" : "true"}" data-materialization-phase="${neuralPhase}" data-materialization-kind="${escapeHtml(materialization.kind || "record")}">
+    <svg class="neural-materialization-circuit" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path class="materialization-circuit-base" d="M22 21 C25 21 27 20 29 18 L33 11 Q35 8 40 8 H92 Q97 8 97 14 V90 Q97 95 92 95 H34 Q29 95 29 89 V28 C29 25 26 23 22 22" pathLength="100"></path>
+      <path class="materialization-circuit-fire materialization-circuit-fire-a" d="M22 21 C25 21 27 20 29 18 L33 11 Q35 8 40 8 H92 Q97 8 97 14 V90 Q97 95 92 95 H34 Q29 95 29 89 V28 C29 25 26 23 22 22" pathLength="100"></path>
+      <path class="materialization-circuit-fire materialization-circuit-fire-b" d="M22 21 C25 21 27 20 29 18 L33 11 Q35 8 40 8 H92 Q97 8 97 14 V90 Q97 95 92 95 H34 Q29 95 29 89 V28 C29 25 26 23 22 22" pathLength="100"></path>
+    </svg>
+    <div class="neural-approved-voice" aria-live="polite">
+      <span class="visually-hidden">${escapeHtml(spokenReply)}</span>
+      <div aria-hidden="true">${Array.from({ length: 34 }, (_, index) => `<i style="--voice:${(index * 19) % 31}"></i>`).join("")}</div>
     </div>
-    <section class="neural-intelligence-card">
-      <header>
-        <span><i>⌘</i><b>${escapeHtml(materialization.title || "Requested intelligence")}</b><small>${escapeHtml(materialization.subtitle || "Aqua materialized the requested context.")}</small></span>
-        <em>${materialization.sourceState === "Confirmed" ? "LIVE" : "DEMO"}</em>
-      </header>
-      <div class="neural-metric-list">
-        ${visibleFields.map(([label, value, delta], index) => `<div class="neural-metric"><i>${["⌁", "$", "◉", "▣"][index] || "◇"}</i><span><small>${escapeHtml(label)}</small><strong>${escapeHtml(value)}</strong><em>${escapeHtml(delta)}</em></span><svg viewBox="0 0 100 32" aria-hidden="true"><path d="M1 ${25 - index * 2} L12 19 L23 22 L35 12 L46 16 L57 10 L70 15 L81 8 L91 11 L99 3"/></svg></div>`).join("")}
-      </div>
-      ${(isCompany || isReceipt) ? receipt : ""}
-      <div class="neural-source-trail"><small>SOURCE TRAIL</small><strong>CRM</strong><i>＋</i><strong>BOOKS</strong><i>＋</i><strong>RECEIPTS</strong><span></span></div>
-      <button type="button" data-materialized-action="open_source">Go deeper into ${escapeHtml(materialization.sourceApp || "Aqua")}  →</button>
-    </section>
+    <button class="neural-open-materialized-file" type="button" data-materialized-action="open_source" aria-label="Open ${escapeHtml(materialization.title || "materialized file")}"></button>
   </article>`;
 }
 
@@ -1258,7 +1253,7 @@ function bindNeuralMaterializationActions() {
 function renderNeuralMaterialization() {
   const slot = systemPanel.querySelector("[data-neural-materialization-slot]");
   if (!slot) return;
-  slot.innerHTML = neuralPhase === "result"
+  slot.innerHTML = ["transitioning", "result"].includes(neuralPhase)
     ? neuralMaterializationMarkup(neuralMaterialization)
     : "";
   bindNeuralMaterializationActions();
@@ -1273,15 +1268,26 @@ function showMaterialization(materialization, animateNeuralTransition = true) {
     detailSheet.classList.remove("is-full", "aqua-materialization");
     const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (animateNeuralTransition && !reducedMotion) {
-      neuralPhase = "transitioning";
-      layoutNeuralStage();
-      renderNeuralMaterialization();
-      neuralTransitionTimer = setTimeout(() => {
-        if (neuralMaterialization !== materialization) return;
-        neuralPhase = "result";
+      const wasRotating = neuralPhase === "rotating";
+      clearTimeout(neuralFireTimer);
+      if (wasRotating) {
+        neuralPhase = "firing";
         layoutNeuralStage();
         renderNeuralMaterialization();
-      }, 760);
+      }
+      const fireDwell = wasRotating ? NEURAL_FIRE_MILLIS : 220;
+      neuralTransitionTimer = setTimeout(() => {
+        if (neuralMaterialization !== materialization) return;
+        neuralPhase = "transitioning";
+        layoutNeuralStage();
+        renderNeuralMaterialization();
+        neuralTransitionTimer = setTimeout(() => {
+          if (neuralMaterialization !== materialization) return;
+          neuralPhase = "result";
+          layoutNeuralStage();
+          renderNeuralMaterialization();
+        }, NEURAL_MORPH_MILLIS);
+      }, fireDwell);
     } else {
       neuralPhase = "result";
       layoutNeuralStage();
@@ -1611,11 +1617,13 @@ function openPanel(kind) {
   systemPanel.querySelectorAll("[data-neural-portal]").forEach((button) => {
     button.addEventListener("click", () => {
       const index = Number(button.dataset.neuralPortal);
-      const supporting = index === apps.length
-        ? [0, 6]
-        : [0, 5, 6].filter((supportIndex) => supportIndex !== index).slice(0, 2);
+      const supporting = index === 6
+        ? [0, 5, 4, 3]
+        : index === apps.length
+          ? [0, 6, 5, 4]
+          : [0, 5, 6, 4, 3].filter((supportIndex) => supportIndex !== index).slice(0, 4);
       focusNeuralSource(index, supporting);
-      setTimeout(() => portalMaterialization(index), 1180);
+      setTimeout(() => portalMaterialization(index), NEURAL_ROTATE_MILLIS + 500);
     });
   });
   const neuralStage = systemPanel.querySelector(".neural-stage");
@@ -1638,6 +1646,7 @@ function openPanel(kind) {
       neuralPhase = "rest";
       neuralMaterialization = null;
       clearTimeout(neuralTransitionTimer);
+      clearTimeout(neuralFireTimer);
       neuralThought = "Aqua is listening across your company.";
       neuralThoughtDetail = "You are moving through her connected nervous system.";
       neuralIdleOffset = (neuralIdleOffset + (dx < 0 ? 1 : -1) + neuralRingSlots.length) % neuralRingSlots.length;
@@ -1801,18 +1810,31 @@ function activateDeterministicPreviewRoute() {
   } else {
     if (previewPanel === "neural") {
       const demo = previewParameters.get("neuralDemo") || "rest";
-      if (["focus", "transition", "company", "result"].includes(demo)) {
-        neuralFocusIndex = 0;
-        neuralSupportIndexes = [5, 4, 6];
+      if (["focus", "rotate", "fire", "transition", "company", "receipt", "result"].includes(demo)) {
+        neuralFocusIndex = 6;
+        neuralSupportIndexes = [0, 5, 4, 3];
         neuralPhase = demo === "result"
           ? "result"
           : demo === "transition"
             ? "transitioning"
-            : "working";
+            : demo === "fire"
+              ? "firing"
+              : "rotating";
         neuralThought = demo === "result"
-          ? "Aqua CRM returned today’s company view."
-          : "Aqua is reaching into Aqua CRM.";
-        neuralThoughtDetail = "Books, Timesheet, and Receipts remain active supporting thoughts.";
+          ? "Aqua Receipts returned the requested file."
+          : demo === "fire"
+            ? "Receipts is locked in Aqua’s top portal."
+            : "Aqua is rotating Receipts into the top portal.";
+        neuralThoughtDetail = demo === "fire"
+          ? "Aqua is firing a large upward neuron burst through the selected path."
+          : "CRM, Books, Timesheet, and Knowledge Vault remain active supporting thoughts.";
+        if (["transition", "result"].includes(demo)) {
+          neuralMaterialization = neuralMaterializationFor({
+            primary: 6,
+            supporting: [0, 5, 4, 3],
+            kind: "receipt",
+          });
+        }
       } else {
         neuralFocusIndex = -1;
         neuralSupportIndexes = [];
@@ -1822,10 +1844,14 @@ function activateDeterministicPreviewRoute() {
     openPanel(previewPanel);
     if (previewPanel === "neural" && previewParameters.get("neuralDemo") === "result") {
       showMaterialization(neuralMaterializationFor({
-        primary: 0,
-        supporting: [5, 4, 6],
-        kind: "company",
+        primary: 6,
+        supporting: [0, 5, 4, 3],
+        kind: "receipt",
       }), false);
+    }
+    if (previewPanel === "neural" && previewParameters.get("neuralDemo") === "sequence") {
+      focusNeuralSource(6, [0, 5, 4, 3], "Find the Home Depot receipt.");
+      setTimeout(() => portalMaterialization(6), NEURAL_ROTATE_MILLIS + 500);
     }
   }
   document.documentElement.dataset.aquaPreviewReady = previewPanel;

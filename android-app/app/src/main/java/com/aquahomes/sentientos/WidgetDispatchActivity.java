@@ -54,7 +54,7 @@ public final class WidgetDispatchActivity extends Activity {
 
     private static boolean isSupported(String mode) {
         return "home".equals(mode)
-            || "ask".equals(mode)
+            || "action".equals(mode)
             || "video".equals(mode)
             || "photo".equals(mode)
             || "file".equals(mode);
@@ -81,6 +81,12 @@ public final class WidgetDispatchActivity extends Activity {
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
                 );
+            if ("action".equals(mode) && BuildConfig.ECOSYSTEM_PRESENTATION_MODE) {
+                destination.putExtra(
+                    QuickCaptureActivity.EXTRA_COMMAND_TEXT,
+                    "Remind me to call John today at 5 PM"
+                );
+            }
         }
         startActivity(destination);
         overridePendingTransition(0, 0);

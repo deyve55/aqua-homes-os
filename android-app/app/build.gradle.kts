@@ -23,8 +23,8 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026080201
-        versionName = "0.7.2-neural-path-polish-widget-2x2-test"
+        versionCode = 2026080202
+        versionName = "0.7.3-exact-fidelity-materialization-widget-test"
         buildConfigField(
             "String",
             "AQUA_GATEWAY_URL",

@@ -169,7 +169,7 @@ return_to_launcher() {
 }
 
 assert_widget_send_returned_to_launcher() {
-  local focus_path="/tmp/aqua-sentinel-v0.7.2-widget-send-focus.txt"
+  local focus_path="/tmp/aqua-sentinel-v0.7.3-widget-send-focus.txt"
   for attempt in $(seq 1 20); do
     {
       adb shell dumpsys window 2>/dev/null || true
@@ -238,8 +238,8 @@ for line in sys.stdin:
 }
 
 pin_widget_on_launcher() {
-  local pin_evidence="/tmp/aqua-sentinel-v0.7.2-widget-pin.logcat.txt"
-  local appwidget_state="/tmp/aqua-sentinel-v0.7.2-appwidget-host.txt"
+  local pin_evidence="/tmp/aqua-sentinel-v0.7.3-widget-pin.logcat.txt"
+  local appwidget_state="/tmp/aqua-sentinel-v0.7.3-appwidget-host.txt"
   local launcher_hierarchy=""
 
   clear_logcat
@@ -308,10 +308,10 @@ prove_neuralink_widget_shimmer() {
   local width=""
   local height=""
   local changed_pixels=""
-  local first="/tmp/aqua-sentinel-v0.7.2-widget-shimmer-a.png"
-  local second="/tmp/aqua-sentinel-v0.7.2-widget-shimmer-b.png"
-  local first_crop="/tmp/aqua-sentinel-v0.7.2-widget-shimmer-a-crop.png"
-  local second_crop="/tmp/aqua-sentinel-v0.7.2-widget-shimmer-b-crop.png"
+  local first="/tmp/aqua-sentinel-v0.7.3-widget-shimmer-a.png"
+  local second="/tmp/aqua-sentinel-v0.7.3-widget-shimmer-b.png"
+  local first_crop="/tmp/aqua-sentinel-v0.7.3-widget-shimmer-a-crop.png"
+  local second_crop="/tmp/aqua-sentinel-v0.7.3-widget-shimmer-b-crop.png"
 
   command -v convert >/dev/null
   command -v compare >/dev/null
@@ -353,7 +353,7 @@ prove_neuralink_widget_shimmer() {
     return 1
   fi
 
-  cp "$second" /tmp/AquaSentinelOS-v0.7.2-Neuralink-Live-Widget-Launcher.png
+  cp "$second" /tmp/AquaSentinelOS-v0.7.3-Neuralink-Live-Widget-Launcher.png
   echo "AQUA_WIDGET_NEURALINK_SHIMMER_VERIFIED changed_pixels=$changed_pixels"
 }
 
@@ -402,10 +402,10 @@ tap_launcher_control() {
   local width=""
   local height=""
   local changed_pixels=""
-  local idle="/tmp/aqua-sentinel-v0.7.2-widget-${mode}-idle.png"
-  local active="/tmp/aqua-sentinel-v0.7.2-widget-${mode}-jolt.png"
-  local idle_crop="/tmp/aqua-sentinel-v0.7.2-widget-${mode}-idle-crop.png"
-  local active_crop="/tmp/aqua-sentinel-v0.7.2-widget-${mode}-jolt-crop.png"
+  local idle="/tmp/aqua-sentinel-v0.7.3-widget-${mode}-idle.png"
+  local active="/tmp/aqua-sentinel-v0.7.3-widget-${mode}-jolt.png"
+  local idle_crop="/tmp/aqua-sentinel-v0.7.3-widget-${mode}-idle-crop.png"
+  local active_crop="/tmp/aqua-sentinel-v0.7.3-widget-${mode}-jolt-crop.png"
 
   return_to_launcher
   for attempt in $(seq 1 20); do
@@ -435,7 +435,7 @@ tap_launcher_control() {
       echo "The $mode Neuralink endpoint did not visibly react to its real launcher tap" >&2
       return 1
     fi
-    cp "$active" /tmp/AquaSentinelOS-v0.7.2-Neuralink-Widget-Tap-Jolt.png
+    cp "$active" /tmp/AquaSentinelOS-v0.7.3-Neuralink-Widget-Tap-Jolt.png
     echo "AQUA_WIDGET_LAUNCHER_TAP mode=$mode resource=$resource_id"
     echo "AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=$mode changed_pixels=$changed_pixels"
     return 0
@@ -445,50 +445,18 @@ tap_launcher_control() {
   return 1
 }
 
-tap_resource() {
-  local resource_name="$1"
-  local bounds_name="$2"
-  local coordinates=""
-
-  for attempt in $(seq 1 16); do
-    coordinates="$(adb logcat -d | python3 -c '
-import re
-import sys
-
-name = sys.argv[1]
-lines = [line for line in sys.stdin if "AQUA_WIDGET_COMPOSER_READY" in line]
-if lines:
-    match = re.search(rf"{name}=(\d+),(\d+),(\d+),(\d+)", lines[-1])
-    if match:
-        left, top, right, bottom = map(int, match.groups())
-        print((left + right) // 2, (top + bottom) // 2)
-' "$bounds_name")"
-    if [[ -n "$coordinates" ]]; then
-      read -r tap_x tap_y <<< "$coordinates"
-      echo "Tapping rendered $resource_name control at $tap_x,$tap_y"
-      adb shell input tap "$tap_x" "$tap_y"
-      return 0
-    fi
-    sleep 1
-  done
-
-  echo "Android did not report rendered bounds for: $resource_name" >&2
-  adb logcat -d | grep -E "AQUA_WIDGET_COMPOSER|AQUA_CAPTURE|AndroidRuntime|FATAL EXCEPTION" || true
-  return 1
-}
-
 pin_widget_on_launcher
 prove_neuralink_widget_shimmer
 terminate_sentinel_background_process "before-five-action-sequence"
 
-for mode in home ask file photo video; do
-  evidence="/tmp/aqua-sentinel-v0.7.2-widget-${mode}.logcat.txt"
+for mode in home action file photo video; do
+  evidence="/tmp/aqua-sentinel-v0.7.3-widget-${mode}.logcat.txt"
   expected_route="$mode"
   [[ "$mode" == "file" ]] && expected_route="voice"
   clear_logcat
   case "$mode" in
     home) tap_launcher_control "$mode" "widget_logo" "Open Aqua Sentinel OS" ;;
-    ask) tap_launcher_control "$mode" "widget_ask" "ASK AQUA" ;;
+    action) tap_launcher_control "$mode" "widget_action" "AQUA ACTION" ;;
     file) tap_launcher_control "$mode" "widget_file" "FILE" ;;
     photo) tap_launcher_control "$mode" "widget_photo" "PHOTO" ;;
     video) tap_launcher_control "$mode" "widget_video" "VIDEO" ;;
@@ -532,45 +500,18 @@ for mode in home ask file photo video; do
     exit 1
   fi
 
-  if [[ "$mode" == "ask" ]]; then
-    for attempt in $(seq 1 12); do
-      adb logcat -d > "$evidence"
-      if grep -Fq "AQUA_WIDGET_COMPOSER_READY" "$evidence"; then
-        break
-      fi
-      sleep 1
-    done
-    if ! grep -Fq "AQUA_WIDGET_COMPOSER_READY" "$evidence"; then
-      echo "Widget command composer did not become ready" >&2
-      grep -E "AQUA_WIDGET_COMPOSER|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
-      exit 1
-    fi
-    tap_resource "widget_command_input" "input"
-    adb shell input text 'Widget'
-    adb shell input keyevent KEYCODE_SPACE
-    adb shell input text 'message'
-    adb shell input keyevent KEYCODE_SPACE
-    adb shell input text 'execution'
-    adb shell input keyevent KEYCODE_SPACE
-    adb shell input text 'test'
-    touched=false
+  if [[ "$mode" == "action" ]]; then
     submitted=false
     background_sent=false
-    for tap_attempt in $(seq 1 3); do
-      tap_resource "widget_command_send" "send"
-      for receipt_attempt in $(seq 1 8); do
-        sleep 1
-        adb logcat -d > "$evidence"
-        grep -Fq "AQUA_WIDGET_SEND_TOUCH action=up" "$evidence" && touched=true
-        grep -Fq "AQUA_WIDGET_MESSAGE_SUBMITTED" "$evidence" \
-          && grep -Fq "characters=29" "$evidence" \
-          && submitted=true
-        grep -Fq "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT" "$evidence" && background_sent=true
-        if [[ "$touched" == "true" && "$submitted" == "true" && "$background_sent" == "true" ]]; then break 2; fi
-      done
+    for receipt_attempt in $(seq 1 12); do
+      sleep 1
+      adb logcat -d > "$evidence"
+      grep -Fq "AQUA_WIDGET_MESSAGE_SUBMITTED" "$evidence" && submitted=true
+      grep -Fq "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT" "$evidence" && background_sent=true
+      if [[ "$submitted" == "true" && "$background_sent" == "true" ]]; then break; fi
     done
-    if [[ "$touched" != "true" || "$submitted" != "true" || "$background_sent" != "true" ]]; then
-      echo "Widget Send touch did not complete its background dispatch after bounded retries" >&2
+    if [[ "$submitted" != "true" || "$background_sent" != "true" ]]; then
+      echo "Aqua Action did not complete its silent background dispatch" >&2
       grep -E "AQUA_WIDGET|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
       exit 1
     fi
@@ -583,7 +524,7 @@ done
 # The launcher tap above proves the FILE PendingIntent reaches the real voice-filing route.
 # Complete the deterministic downstream filing contract separately because the headless
 # emulator has no microphone input; do not mislabel synthetic speech as a launcher tap.
-file_evidence="/tmp/aqua-sentinel-v0.7.2-widget-file-completion.logcat.txt"
+file_evidence="/tmp/aqua-sentinel-v0.7.3-widget-file-completion.logcat.txt"
 clear_logcat
 adb shell am start -W \
   -n "$capture_activity" \
@@ -604,5 +545,5 @@ terminate_sentinel_background_process "post-filing-process-recreation"
 tap_ui_node \
   "launcher-hosted widget after process recreation" \
   "$package:id/widget_logo|Open Aqua Sentinel OS"
-wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.2-widget-recreated.logcat.txt 30
+wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.3-widget-recreated.logcat.txt 30
 echo "AQUA_WIDGET_LAUNCHER_PROCESS_RECREATION_VERIFIED"

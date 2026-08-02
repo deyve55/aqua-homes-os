@@ -171,6 +171,19 @@ final class FilingStore {
     private static JSONObject classify(String input) throws Exception {
         String note = safe(input, "").toLowerCase(Locale.US);
         JSONObject routing = new JSONObject();
+        if (
+            note.contains("remind me")
+                || note.contains("appointment")
+                || note.contains("schedule")
+                || note.contains("meeting")
+                || note.contains("calendar")
+        ) {
+            return routing
+                .put("destination", "Aqua Actions · Calendar & Reminders")
+                .put("confidence", 0.94)
+                .put("needsClarification", false)
+                .put("state", "Queued");
+        }
         if (note.contains("painting company") || note.contains("painting business")) {
             return routing
                 .put("destination", "Aqua Books · Painting Company")
@@ -193,6 +206,7 @@ final class FilingStore {
     }
 
     private static String titleFor(String type) {
+        if ("action".equals(type)) return "Aqua Action";
         if ("photo".equals(type)) return "Photo reference";
         if ("video".equals(type)) return "Video reference";
         return "Quick filing instruction";

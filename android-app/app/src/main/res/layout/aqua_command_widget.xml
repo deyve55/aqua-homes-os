@@ -2,16 +2,16 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/aqua_widget_background"
+    android:background="#000000"
     android:padding="1dp">
 
     <ImageView
         android:id="@+id/widget_neural_art"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="Aqua Neuralink living neural field"
-        android:scaleType="centerCrop"
-        android:src="@drawable/aqua_widget_neuralink_v071" />
+        android:contentDescription="Owner-approved Aqua Neuralink four by six living surface"
+        android:scaleType="fitXY"
+        android:src="@drawable/aqua_widget_4x6_approved_v073" />
 
     <ImageView
         android:id="@+id/widget_active_path"
@@ -22,112 +22,93 @@
         android:src="@drawable/aqua_widget_jolt_home"
         android:visibility="invisible" />
 
-    <FrameLayout
-        android:layout_width="180dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center_vertical|end"
-        android:layout_marginEnd="8dp">
+    <ProgressBar
+        android:id="@+id/widget_shimmer_track"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="265dp"
+        android:layout_height="3dp"
+        android:layout_gravity="center"
+        android:contentDescription="Animated Aqua Neuralink firing path"
+        android:indeterminate="true"
+        android:indeterminateTint="#78F3FF"
+        android:indeterminateTintMode="src_in"
+        android:rotation="90" />
 
-        <ProgressBar
-            android:id="@+id/widget_shimmer_track"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_gravity="center_vertical"
-            android:contentDescription="Animated Aqua Neuralink firing path"
-            android:indeterminate="true"
-            android:indeterminateTint="#75F1FF"
-            android:indeterminateTintMode="src_in" />
-
-        <ProgressBar
-            android:id="@+id/widget_shimmer"
-            style="@android:style/Widget.ProgressBar.Small"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center"
-            android:contentDescription="Animated Aqua Neuralink neuron pulse"
-            android:indeterminate="true"
-            android:indeterminateTint="#F8FEFF"
-            android:indeterminateTintMode="src_in" />
-    </FrameLayout>
-
-    <ImageView
-        android:id="@+id/widget_logo"
-        android:layout_width="180dp"
-        android:layout_height="140dp"
-        android:layout_gravity="top|start"
-        android:contentDescription="Open Aqua Sentinel OS"
-        android:scaleType="centerInside"
-        android:src="@android:color/transparent" />
+    <ProgressBar
+        android:id="@+id/widget_shimmer"
+        style="@android:style/Widget.ProgressBar.Small"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:contentDescription="Animated Aqua Neuralink neuron pulse"
+        android:indeterminate="true"
+        android:indeterminateTint="#FFFFFF"
+        android:indeterminateTintMode="src_in" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="74dp"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="7dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="3.35">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.03"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/widget_action"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:contentDescription="Aqua Action rapid fire"
+                android:src="@android:color/transparent" />
+            <ImageView
+                android:id="@+id/widget_video"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:contentDescription="File a video with Aqua"
+                android:src="@android:color/transparent" />
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/widget_ask"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_marginHorizontal="3dp"
-            android:layout_weight="1"
-            android:background="@drawable/aqua_widget_action"
-            android:contentDescription="Ask Aqua"
-            android:padding="11dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/aqua_widget_icon_ask" />
-
-        <ImageView
-            android:id="@+id/widget_video"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_marginHorizontal="3dp"
-            android:layout_weight="1"
-            android:background="@drawable/aqua_widget_action"
-            android:contentDescription="File a video with Aqua"
-            android:padding="11dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/aqua_widget_icon_video" />
-
-        <ImageView
-            android:id="@+id/widget_photo"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_marginHorizontal="3dp"
-            android:layout_weight="1"
-            android:background="@drawable/aqua_widget_action"
-            android:contentDescription="File a photo with Aqua"
-            android:padding="11dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/aqua_widget_icon_photo" />
+            android:id="@+id/widget_logo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.28"
+            android:contentDescription="Open full conversational Aqua"
+            android:src="@android:color/transparent" />
 
         <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="54dp"
-            android:layout_marginHorizontal="3dp"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/widget_file"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.04">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:layout_gravity="center"
-                android:background="@drawable/aqua_widget_action"
-                android:contentDescription="File with Aqua"
-                android:padding="11dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/aqua_widget_icon_file" />
-
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/widget_photo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="File a photo with Aqua"
+                    android:src="@android:color/transparent" />
+                <ImageView
+                    android:id="@+id/widget_file"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:contentDescription="File with Aqua"
+                    android:src="@android:color/transparent" />
+            </LinearLayout>
             <TextView
                 android:id="@+id/widget_filed_today"
-                android:layout_width="17dp"
-                android:layout_height="17dp"
-                android:layout_gravity="top|end"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="7dp"
                 android:background="@drawable/aqua_widget_count_badge"
                 android:contentDescription="Items filed today"
                 android:fontFamily="sans-serif-medium"

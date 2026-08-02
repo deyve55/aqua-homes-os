@@ -66,11 +66,11 @@ public class AquaCommandWidget extends AppWidgetProvider {
     private static int layoutFor(AppWidgetManager manager, int id) {
         Bundle options = manager.getAppWidgetOptions(id);
         int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250);
-        int minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 156);
+        int minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 390);
         if (minWidth > 0 && minWidth <= 180 && minHeight > 0 && minHeight <= 180) {
             return R.layout.aqua_command_widget_2x2;
         }
-        return minHeight > 0 && minHeight < 138
+        return minWidth > 0 && minHeight > 0 && minHeight < minWidth
             ? R.layout.aqua_command_widget_compact
             : R.layout.aqua_command_widget;
     }
@@ -89,7 +89,7 @@ public class AquaCommandWidget extends AppWidgetProvider {
         if (compact) {
             switch (mode) {
                 case "home": return R.drawable.aqua_widget_jolt_compact_home;
-                case "ask": return R.drawable.aqua_widget_jolt_compact_ask;
+                case "action": return R.drawable.aqua_widget_jolt_compact_action;
                 case "video": return R.drawable.aqua_widget_jolt_compact_video;
                 case "photo": return R.drawable.aqua_widget_jolt_compact_photo;
                 case "file": return R.drawable.aqua_widget_jolt_compact_file;
@@ -98,7 +98,7 @@ public class AquaCommandWidget extends AppWidgetProvider {
         }
         switch (mode) {
             case "home": return R.drawable.aqua_widget_jolt_home;
-            case "ask": return R.drawable.aqua_widget_jolt_ask;
+            case "action": return R.drawable.aqua_widget_jolt_action;
             case "video": return R.drawable.aqua_widget_jolt_video;
             case "photo": return R.drawable.aqua_widget_jolt_photo;
             case "file": return R.drawable.aqua_widget_jolt_file;
@@ -106,17 +106,9 @@ public class AquaCommandWidget extends AppWidgetProvider {
         }
     }
 
-    private static void setNodeState(RemoteViews views, int viewId, boolean active) {
-        views.setInt(
-            viewId,
-            "setBackgroundResource",
-            active ? R.drawable.aqua_widget_node_active : R.drawable.aqua_widget_action
-        );
-    }
-
     private static RemoteViews buildViews(Context context, AppWidgetManager manager, int id) {
         int layout = layoutFor(manager, id);
-        boolean compact = layout == R.layout.aqua_command_widget_compact;
+        boolean compact = layout != R.layout.aqua_command_widget;
         RemoteViews views = new RemoteViews(context.getPackageName(), layout);
         views.setTextViewText(
             R.id.widget_filed_today,
@@ -129,12 +121,8 @@ public class AquaCommandWidget extends AppWidgetProvider {
             activePath == 0 ? View.INVISIBLE : View.VISIBLE
         );
         if (activePath != 0) views.setImageViewResource(R.id.widget_active_path, activePath);
-        setNodeState(views, R.id.widget_ask, "ask".equals(activeMode));
-        setNodeState(views, R.id.widget_video, "video".equals(activeMode));
-        setNodeState(views, R.id.widget_photo, "photo".equals(activeMode));
-        setNodeState(views, R.id.widget_file, "file".equals(activeMode));
         views.setOnClickPendingIntent(R.id.widget_logo, openSentinel(context));
-        views.setOnClickPendingIntent(R.id.widget_ask, action(context, "ask", 101));
+        views.setOnClickPendingIntent(R.id.widget_action, action(context, "action", 101));
         views.setOnClickPendingIntent(R.id.widget_video, action(context, "video", 102));
         views.setOnClickPendingIntent(R.id.widget_photo, action(context, "photo", 103));
         views.setOnClickPendingIntent(R.id.widget_file, action(context, "file", 104));
