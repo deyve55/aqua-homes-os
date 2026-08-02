@@ -209,7 +209,6 @@ tap_launcher_control() {
   local resource_id="$2"
   local text_fallback="$3"
 
-  return_to_launcher
   tap_ui_node \
     "launcher-hosted widget $mode control" \
     "$package:id/$resource_id|$text_fallback"
