@@ -289,6 +289,10 @@ jobs:
           width, height = struct.unpack(">II", widget_neural.read_bytes()[16:24])
           assert (width, height) == (900, 900), (width, height)
 
+          widget_neural_compact = Path("android-app/app/src/main/res/drawable-nodpi/aqua_neuralink_widget_v071.webp")
+          assert widget_neural_compact.is_file() and widget_neural_compact.stat().st_size > 0
+          assert hashlib.sha256(widget_neural_compact.read_bytes()).hexdigest() == "d908951e61b7715d5324321e03071c4d85b1b110e84ed87e4cb97f87a39565e8"
+
           launcher = Path("android-app/icon-source/AquaSentinel-BrainCircuit-approved-v045.png")
           assert launcher.is_file() and launcher.stat().st_size > 0
           assert hashlib.sha256(launcher.read_bytes()).hexdigest() == "bc1e014886d19f10ee1b8afdca2f5bc99d6d9c9ff103c2b359cc9457da80f6c5"
@@ -373,7 +377,9 @@ jobs:
           cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.7.1-Exact-Fidelity-Neuralink-Widget-Recovery-Test.apk
           test -s release/AquaSentinelOS-v0.7.1-launch-proof.png
           test -s /tmp/AquaSentinelOS-v0.7.1-Neuralink-Live-Widget-Launcher.png
+          test -s /tmp/AquaSentinelOS-v0.7.1-Neuralink-Widget-Tap-Jolt.png
           cp /tmp/AquaSentinelOS-v0.7.1-Neuralink-Live-Widget-Launcher.png release/AquaSentinelOS-v0.7.1-Neuralink-Live-Widget-Launcher.png
+          cp /tmp/AquaSentinelOS-v0.7.1-Neuralink-Widget-Tap-Jolt.png release/AquaSentinelOS-v0.7.1-Neuralink-Widget-Tap-Jolt.png
           cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.7.1-certificate.txt
           cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.7.1-package.txt
           {
@@ -389,6 +395,7 @@ jobs:
             echo "neural_visual=rest_focus_result_430x932"
             echo "widget_dispatch=launcher_hosted_remote_views_taps_verified"
             echo "widget_motion=launcher_hosted_native_shimmer_verified"
+            echo "widget_tap_energy=selected_neural_path_and_endpoint_pixel_change_verified"
             echo "widget_filing=background_save_and_daily_count_verified"
             echo "android_launch=activity_and_ui_hierarchy_verified"
             echo "target_sdk=35"

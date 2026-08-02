@@ -72,6 +72,13 @@
                 <data android:scheme="aquasentinel" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".WidgetDispatchActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:noHistory="true"
+            android:theme="@style/AquaWidgetDispatchTheme" />
         <provider
             android:name=".EvidenceProvider"
             android:authorities="${applicationId}.files"

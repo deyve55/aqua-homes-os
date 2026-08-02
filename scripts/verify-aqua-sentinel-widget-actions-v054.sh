@@ -252,9 +252,10 @@ pin_widget_on_launcher() {
       && [[ -n "$launcher_hierarchy" ]] \
       && grep -Fq "$package:id/widget_logo" "$launcher_hierarchy" \
       && grep -Fq "$package:id/widget_neural_art" "$launcher_hierarchy" \
+      && grep -Fq "$package:id/widget_active_path" "$launcher_hierarchy" \
       && grep -Fq "$package:id/widget_shimmer" "$launcher_hierarchy"; then
       echo "AQUA_WIDGET_LAUNCHER_HOST_READY provider=$widget_provider host=$launcher_package"
-      echo "AQUA_WIDGET_NEURALINK_SURFACE_READY art=widget_neural_art shimmer=widget_shimmer"
+      echo "AQUA_WIDGET_NEURALINK_SURFACE_READY art=widget_neural_art path=widget_active_path shimmer=widget_shimmer"
       return 0
     fi
     sleep 1
@@ -335,7 +336,7 @@ for node in ET.parse(path).iter("node"):
     if node.attrib.get("resource-id") != resource_id:
         continue
     value = node.attrib.get("text", "").strip()
-    match = re.fullmatch(r"(\d+) FILED TODAY", value)
+    match = re.fullmatch(r"(\d+)", value)
     if match and int(match.group(1)) > 0:
         print(match.group(1))
     break
@@ -353,12 +354,58 @@ tap_launcher_control() {
   local mode="$1"
   local resource_id="$2"
   local text_fallback="$3"
+  local hierarchy_path=""
+  local bounds=""
+  local left=""
+  local top=""
+  local right=""
+  local bottom=""
+  local tap_x=""
+  local tap_y=""
+  local width=""
+  local height=""
+  local changed_pixels=""
+  local idle="/tmp/aqua-sentinel-v0.7.1-widget-${mode}-idle.png"
+  local active="/tmp/aqua-sentinel-v0.7.1-widget-${mode}-jolt.png"
+  local idle_crop="/tmp/aqua-sentinel-v0.7.1-widget-${mode}-idle-crop.png"
+  local active_crop="/tmp/aqua-sentinel-v0.7.1-widget-${mode}-jolt-crop.png"
 
   return_to_launcher
-  tap_ui_node \
-    "launcher-hosted widget $mode control" \
-    "$package:id/$resource_id|$text_fallback"
-  echo "AQUA_WIDGET_LAUNCHER_TAP mode=$mode resource=$resource_id"
+  for attempt in $(seq 1 20); do
+    hierarchy_path="$(dump_ui "aqua-widget-${mode}-jolt-${attempt}")" || {
+      sleep 1
+      continue
+    }
+    bounds="$(ui_node_bounds "$hierarchy_path" "$package:id/$resource_id|$text_fallback")"
+    if [[ -z "$bounds" ]]; then
+      sleep 1
+      continue
+    fi
+    read -r left top right bottom <<< "$bounds"
+    width=$((right - left))
+    height=$((bottom - top))
+    tap_x=$(((left + right) / 2))
+    tap_y=$(((top + bottom) / 2))
+    adb exec-out screencap -p > "$idle"
+    echo "Tapping launcher-hosted widget $mode control at $tap_x,$tap_y"
+    adb shell input tap "$tap_x" "$tap_y"
+    sleep 0.20
+    adb exec-out screencap -p > "$active"
+    convert "$idle" -crop "${width}x${height}+${left}+${top}" +repage "$idle_crop"
+    convert "$active" -crop "${width}x${height}+${left}+${top}" +repage "$active_crop"
+    changed_pixels="$(compare -metric AE "$idle_crop" "$active_crop" null: 2>&1 || true)"
+    if [[ ! "$changed_pixels" =~ ^[0-9]+$ ]] || ((changed_pixels <= 0)); then
+      echo "The $mode Neuralink endpoint did not visibly react to its real launcher tap" >&2
+      return 1
+    fi
+    cp "$active" /tmp/AquaSentinelOS-v0.7.1-Neuralink-Widget-Tap-Jolt.png
+    echo "AQUA_WIDGET_LAUNCHER_TAP mode=$mode resource=$resource_id"
+    echo "AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=$mode changed_pixels=$changed_pixels"
+    return 0
+  done
+
+  echo "Android did not expose the Neuralink endpoint for: $mode" >&2
+  return 1
 }
 
 tap_resource() {
@@ -412,9 +459,18 @@ for mode in home ask file photo video; do
 
   received=false
   routed=false
+  jolted=false
+  returned=false
   for attempt in $(seq 1 24); do
     sleep 1
     adb logcat -d > "$evidence"
+    if grep -Fq "AQUA_WIDGET_NEURAL_JOLT_RENDERED mode=$mode phase=outbound" "$evidence" \
+      && grep -Fq "AQUA_WIDGET_NEURAL_JOLT mode=$mode phase=outbound" "$evidence"; then
+      jolted=true
+    fi
+    if grep -Fq "AQUA_WIDGET_NEURAL_JOLT mode=$mode phase=return" "$evidence"; then
+      returned=true
+    fi
     if [[ "$mode" == "home" ]]; then
       if grep -Fq "AQUA_WIDGET_HOME_OPENED" "$evidence"; then
         received=true
@@ -428,13 +484,13 @@ for mode in home ask file photo video; do
         routed=true
       fi
     fi
-    if [[ "$received" == "true" && "$routed" == "true" ]]; then
+    if [[ "$jolted" == "true" && "$returned" == "true" && "$received" == "true" && "$routed" == "true" ]]; then
       break
     fi
   done
 
-  if [[ "$received" != "true" || "$routed" != "true" ]]; then
-    echo "Launcher-hosted widget tap did not resolve its route: $mode" >&2
+  if [[ "$jolted" != "true" || "$returned" != "true" || "$received" != "true" || "$routed" != "true" ]]; then
+    echo "Launcher-hosted widget tap did not light and resolve its route: $mode" >&2
     grep -E "AQUA_WIDGET|AQUA_CAPTURE|QuickCaptureActivity|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
     exit 1
   fi
@@ -452,7 +508,14 @@ for mode in home ask file photo video; do
       grep -E "AQUA_WIDGET_COMPOSER|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
       exit 1
     fi
-    adb shell input text 'Widget%smessage%sexecution%stest'
+    tap_resource "widget_command_input" "input"
+    adb shell input text 'Widget'
+    adb shell input keyevent KEYCODE_SPACE
+    adb shell input text 'message'
+    adb shell input keyevent KEYCODE_SPACE
+    adb shell input text 'execution'
+    adb shell input keyevent KEYCODE_SPACE
+    adb shell input text 'test'
     touched=false
     submitted=false
     delivered=false

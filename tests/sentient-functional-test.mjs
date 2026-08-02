@@ -514,10 +514,12 @@ test("v0.5.4 preserves app covers and gives the two hero labels separate lanes",
 });
 
 test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen controls", async () => {
-  const [widget, capture, activity, layout, script, styles, workflow, widgetVerifier, androidLaunch] = await Promise.all([
+  const [widget, dispatch, capture, activity, manifest, layout, script, styles, workflow, widgetVerifier, androidLaunch] = await Promise.all([
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/WidgetDispatchActivity.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+    read("android-app/app/src/main/AndroidManifest.xml"),
     read("android-app/app/src/main/res/layout/aqua_quick_command.xml"),
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/res/values/styles.xml"),
@@ -527,7 +529,19 @@ test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen cont
   ]);
   assert.match(widget, /PendingIntent\.FLAG_UPDATE_CURRENT \| PendingIntent\.FLAG_IMMUTABLE/);
   assert.match(widget, /setPackage\(context\.getPackageName\(\)\)/);
-  assert.match(widget, /RemoteViews buildViews\(Context context\)/);
+  assert.match(widget, /RemoteViews buildViews\(Context context, AppWidgetManager manager, int id\)/);
+  assert.match(widget, /new Intent\(context, WidgetDispatchActivity\.class\)/);
+  assert.match(widget, /AQUA_WIDGET_NEURAL_JOLT_RENDERED mode=/);
+  assert.match(widget, /setImageViewResource\(R\.id\.widget_active_path, activePath\)/);
+  assert.match(widget, /R\.drawable\.aqua_widget_node_active/);
+  assert.match(dispatch, /NEURAL_JOLT_TRANSITION_MILLIS = 520L/);
+  assert.match(dispatch, /AQUA_WIDGET_NEURAL_JOLT mode=/);
+  assert.match(dispatch, /phase=outbound/);
+  assert.match(dispatch, /phase=return/);
+  assert.match(dispatch, /new Intent\(this, MainActivity\.class\)/);
+  assert.match(dispatch, /new Intent\(this, QuickCaptureActivity\.class\)/);
+  assert.match(manifest, /\.WidgetDispatchActivity/);
+  assert.match(manifest, /android:theme="@style\/AquaWidgetDispatchTheme"/);
   assert.match(capture, /AQUA_WIDGET_ACTION_RECEIVED mode=/);
   assert.match(capture, /AQUA_CAPTURE_ROUTE mode=/);
   assert.match(capture, /AQUA_CAPTURE_SAVED type=/);
@@ -584,6 +598,10 @@ test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_HOST_READY/);
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURALINK_SURFACE_READY/);
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURALINK_SHIMMER_VERIFIED/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=\$mode/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_NEURAL_JOLT_RENDERED mode=\$mode phase=outbound/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_NEURAL_JOLT mode=\$mode phase=return/);
+  assert.match(widgetVerifier, /compare -metric AE "\$idle_crop" "\$active_crop"/);
   assert.match(widgetVerifier, /compare -metric AE/);
   assert.doesNotMatch(widgetVerifier, /wait_for_adb/);
   assert.match(widgetVerifier, /AQUA_WIDGET_FILED_TODAY_VERIFIED/);
@@ -603,7 +621,8 @@ test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen cont
   assert.match(widgetVerifier, /AQUA_WIDGET_SEND_TOUCH action=up/);
   assert.match(capture, /AQUA_WIDGET_COMPOSER_READY input=/);
   assert.match(widgetVerifier, /characters=29/);
-  assert.match(widgetVerifier, /Widget%smessage%sexecution%stest/);
+  assert.match(widgetVerifier, /tap_resource "widget_command_input" "input"/);
+  assert.match(widgetVerifier, /input text 'Widget'[\s\S]*KEYCODE_SPACE[\s\S]*input text 'message'[\s\S]*KEYCODE_SPACE[\s\S]*input text 'execution'[\s\S]*KEYCODE_SPACE[\s\S]*input text 'test'/);
   assert.match(widgetVerifier, /tap_resource "widget_command_send"/);
   assert.match(widgetVerifier, /for tap_attempt in \$\(seq 1 3\)/);
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_PROCESS_RECREATION_VERIFIED/);
@@ -611,11 +630,12 @@ test("v0.7.1 pins the real widget in Launcher3 and resolves its home-screen cont
 });
 
 test("v0.7.1 integrated 4x3 widget installs, repairs, refreshes, and delivers filing items", async () => {
-  const [gradle, manifest, widget, widgetLayout, widgetInfo, capture, activity, store, verifier, script] = await Promise.all([
+  const [gradle, manifest, widget, widgetLayout, compactLayout, widgetInfo, capture, activity, store, verifier, script] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read("android-app/app/src/main/AndroidManifest.xml"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
     read("android-app/app/src/main/res/layout/aqua_command_widget.xml"),
+    read("android-app/app/src/main/res/layout/aqua_command_widget_compact.xml"),
     read("android-app/app/src/main/res/xml/aqua_command_widget_info.xml"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
@@ -629,8 +649,9 @@ test("v0.7.1 integrated 4x3 widget installs, repairs, refreshes, and delivers fi
   assert.match(widgetLayout, /@drawable\/aqua_widget_neuralink_v071/);
   assert.match(widgetLayout, /id="@\+id\/widget_shimmer"/);
   assert.match(widgetLayout, /id="@\+id\/widget_neural_art"/);
+  assert.match(widgetLayout, /id="@\+id\/widget_active_path"/);
+  assert.match(widgetLayout, /Selected Aqua Neuralink circuit/);
   assert.match(widgetLayout, /android:indeterminate="true"/);
-  assert.match(widgetLayout, /id="@\+id\/widget_cabinet"/);
   assert.match(widgetLayout, /id="@\+id\/widget_filed_today"/);
   assert.match(widgetLayout, /android:text="0"/);
   assert.match(widgetLayout, /Items filed today/);
@@ -639,18 +660,24 @@ test("v0.7.1 integrated 4x3 widget installs, repairs, refreshes, and delivers fi
   assert.match(widgetLayout, /android:text="ASK AQUA"/);
   assert.match(widgetLayout, /widget_ask[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.doesNotMatch(widgetLayout, /<View(?:\s|>)/);
+  assert.match(compactLayout, /@drawable\/aqua_neuralink_widget_v071/);
+  assert.match(compactLayout, /id="@\+id\/widget_active_path"/);
+  assert.match(compactLayout, /id="@\+id\/widget_shimmer"/);
+  assert.match(compactLayout, /widget_ask[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.match(widgetInfo, /android:targetCellWidth="4"/);
   assert.match(widgetInfo, /android:targetCellHeight="3"/);
   assert.match(widgetInfo, /android:minHeight="156dp"/);
   assert.match(widgetInfo, /android:minResizeWidth="250dp"/);
-  assert.match(widgetInfo, /android:minResizeHeight="156dp"/);
+  assert.match(widgetInfo, /android:minResizeHeight="96dp"/);
   assert.match(widgetInfo, /android:maxResizeWidth="520dp"/);
   assert.match(widgetInfo, /android:maxResizeHeight="520dp"/);
   assert.match(widgetInfo, /android:resizeMode="horizontal\|vertical"/);
   assert.match(widget, /setOnClickPendingIntent\(R\.id\.widget_logo, openSentinel\(context\)\)/);
   assert.doesNotMatch(widget, /setOnClickPendingIntent\(R\.id\.widget_brand/);
   assert.match(widget, /String\.valueOf\(FilingStore\.filedTodayCount\(context\)\)/);
-  assert.doesNotMatch(widget, /setOnClickPendingIntent\(R\.id\.widget_cabinet/);
+  assert.doesNotMatch(widget, /widget_cabinet/);
+  assert.match(widget, /R\.layout\.aqua_command_widget_compact/);
+  assert.match(widget, /R\.drawable\.aqua_widget_jolt_compact_file/);
   assert.match(store, /static synchronized int filedTodayCount\(Context context\)/);
   assert.match(store, /createdAt >= startOfToday && createdAt < startOfTomorrow/);
   assert.match(widget, /setOnClickPendingIntent\(R\.id\.widget_ask, action\(context, "ask", 101\)\)/);

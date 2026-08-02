@@ -13,6 +13,15 @@
         android:scaleType="centerCrop"
         android:src="@drawable/aqua_widget_neuralink_v071" />
 
+    <ImageView
+        android:id="@+id/widget_active_path"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="Selected Aqua Neuralink circuit"
+        android:scaleType="fitXY"
+        android:src="@drawable/aqua_widget_jolt_home"
+        android:visibility="invisible" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -32,7 +41,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.04"
-                android:contentDescription="Open Aqua Sentinel OS"
+                android:contentDescription="Open Aqua Sentinel Neuralink"
                 android:scaleType="centerInside"
                 android:src="@android:color/transparent" />
 
@@ -118,24 +127,28 @@
             <TextView
                 android:id="@+id/widget_ask"
                 style="@style/AquaWidgetAction"
+                android:contentDescription="Ask Aqua"
                 android:drawableTop="@drawable/aqua_widget_icon_ask"
                 android:text="ASK AQUA" />
 
             <TextView
                 android:id="@+id/widget_video"
                 style="@style/AquaWidgetAction"
+                android:contentDescription="File a video with Aqua"
                 android:drawableTop="@drawable/aqua_widget_icon_video"
                 android:text="VIDEO" />
 
             <TextView
                 android:id="@+id/widget_photo"
                 style="@style/AquaWidgetAction"
+                android:contentDescription="File a photo with Aqua"
                 android:drawableTop="@drawable/aqua_widget_icon_photo"
                 android:text="PHOTO" />
 
             <TextView
                 android:id="@+id/widget_file"
                 style="@style/AquaWidgetAction"
+                android:contentDescription="File with Aqua"
                 android:drawableTop="@drawable/aqua_widget_icon_file"
                 android:text="FILE" />
         </LinearLayout>
