@@ -413,6 +413,7 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(workflow, /data-morph-progress="1\.000"/);
   assert.match(workflow, /node scripts\/verify-aqua-sentinel-neural-live-wall-clock\.mjs/);
   assert.match(workflow, /neural-live-wall-clock/);
+  assert.match(workflow, /--url ".*neuralDemo=rest"/);
   assert.doesNotMatch(workflow, /aqua-sentinel-neural-live-(fire|morph|result)-proof\.html/);
   assert.match(neuralLiveProof, /host-monotonic-wall-clock/);
   assert.match(neuralLiveProof, /performance\.now\(\)/);
@@ -420,6 +421,8 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(neuralLiveProof, /\["rotating", "firing", "transitioning", "result"\]/);
   assert.match(neuralLiveProof, /--remote-debugging-port=0/);
   assert.match(neuralLiveProof, /AQUA_NEURAL_LIVE_WALL_CLOCK_VERIFIED/);
+  assert.match(neuralLiveProof, /data-neural-portal="6"/);
+  assert.match(neuralLiveProof, /bound-aqua-receipts-portal-click/);
   assert.doesNotMatch(neuralLiveProof, /virtual-time-budget|neuralAt=/);
   const liveCheckpointWriter = neuralLiveProof.match(/async function saveCheckpoint[\s\S]*?\n\}/)?.[0] || "";
   assert.match(liveCheckpointWriter, /live-\$\{phase\}\.json/);

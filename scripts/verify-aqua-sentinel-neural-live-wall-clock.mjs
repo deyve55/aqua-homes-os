@@ -118,6 +118,7 @@ const browserStateExpression = `(() => {
     materializationPhase: materialized?.dataset?.materializationPhase || '',
     materializationKind: materialized?.dataset?.materializationKind || '',
     receiptVisible: Boolean(document.querySelector('.neural-materialization-approved.is-receipt')),
+    focusName: document.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
   };
 })()`;
 
@@ -191,12 +192,35 @@ async function run() {
       }, sessionId),
     ]);
 
-    const navigationStartedAt = performance.now();
     await connection.send("Page.navigate", { url: options.url }, sessionId);
+    const readyDeadline = performance.now() + 3_000;
+    let restingState;
+    while (performance.now() <= readyDeadline) {
+      try {
+        restingState = await evaluate(connection, sessionId, browserStateExpression);
+      } catch {
+        await delay(25);
+        continue;
+      }
+      if (restingState.ready === "neural"
+        && restingState.phase === "rest"
+        && restingState.stagePhase === "rest") break;
+      await delay(25);
+    }
+    assert.equal(restingState?.ready, "neural", "Neural preview did not become ready");
+    assert.equal(restingState?.phase, "rest", "Live proof must begin from the real resting state");
+    const portalTriggered = await evaluate(connection, sessionId, `(() => {
+      const portal = document.querySelector('[data-neural-portal="6"]');
+      if (!portal) return false;
+      portal.click();
+      return true;
+    })()`);
+    assert.equal(portalTriggered, true, "Aqua Receipts portal could not be triggered");
+    const sequenceStartedAt = performance.now();
     let lastPhase = "";
 
     for (const expectedPhase of ["rotating", "firing", "transitioning", "result"]) {
-      const deadline = navigationStartedAt + PHASE_DEADLINES_MILLIS[expectedPhase];
+      const deadline = sequenceStartedAt + PHASE_DEADLINES_MILLIS[expectedPhase];
       let state;
       let lastEvaluationError = "";
       while (performance.now() <= deadline) {
@@ -208,7 +232,7 @@ async function run() {
           await delay(25);
           continue;
         }
-        const elapsedMillis = Math.round(performance.now() - navigationStartedAt);
+        const elapsedMillis = Math.round(performance.now() - sequenceStartedAt);
         if (state.phase !== lastPhase) {
           timeline.push({ elapsedMillis, ...state });
           lastPhase = state.phase;
@@ -234,7 +258,7 @@ async function run() {
     assert(rotating.elapsedMillis < firing.elapsedMillis, "Firing must follow rotating in real time");
     assert(firing.elapsedMillis < transitioning.elapsedMillis, "Transitioning must follow firing in real time");
     assert(transitioning.elapsedMillis < result.elapsedMillis, "Result must follow transitioning in real time");
-    assert.match(rotating.thought, /rotating Receipts into the top portal/);
+    assert.equal(rotating.focusName, "Aqua Receipts");
     assert.match(firing.detail, /large upward neuron burst through the selected path/);
     assert.equal(transitioning.materialized, "pending");
     assert.equal(result.materialized, "true");
@@ -245,7 +269,8 @@ async function run() {
       clock: "host-monotonic-wall-clock",
       url: options.url,
       deadlinesMillis: PHASE_DEADLINES_MILLIS,
-      totalElapsedMillis: Math.round(performance.now() - navigationStartedAt),
+      trigger: "bound-aqua-receipts-portal-click",
+      totalElapsedMillis: Math.round(performance.now() - sequenceStartedAt),
       timeline,
     }, null, 2)}\n`);
     const finalDom = await evaluate(connection, sessionId, "document.documentElement.outerHTML");

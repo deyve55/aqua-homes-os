@@ -266,7 +266,7 @@ jobs:
             > /tmp/aqua-sentinel-neural-result-proof.html
           node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
             --chrome "$CHROME_BIN" \
-            --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence" \
+            --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
             --evidence-dir release/visual-proof-diagnostics/neural-live-wall-clock
           "$CHROME_BIN" \
             --headless=new \
