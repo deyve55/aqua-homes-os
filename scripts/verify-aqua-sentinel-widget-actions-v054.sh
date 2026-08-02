@@ -302,14 +302,20 @@ prove_neuralink_widget_shimmer() {
 
   adb wait-for-device >/dev/null 2>&1
   adb exec-out screencap -p > "$first"
-  sleep 1
-  adb wait-for-device >/dev/null 2>&1
-  adb exec-out screencap -p > "$second"
   test -s "$first"
-  test -s "$second"
   convert "$first" -crop "${width}x${height}+${left}+${top}" +repage "$first_crop"
-  convert "$second" -crop "${width}x${height}+${left}+${top}" +repage "$second_crop"
-  changed_pixels="$(compare -metric AE "$first_crop" "$second_crop" null: 2>&1 || true)"
+  changed_pixels="0"
+  for frame_attempt in $(seq 1 6); do
+    sleep 0.27
+    adb wait-for-device >/dev/null 2>&1
+    adb exec-out screencap -p > "$second"
+    test -s "$second"
+    convert "$second" -crop "${width}x${height}+${left}+${top}" +repage "$second_crop"
+    changed_pixels="$(compare -metric AE "$first_crop" "$second_crop" null: 2>&1 || true)"
+    if [[ "$changed_pixels" =~ ^[0-9]+$ ]] && ((changed_pixels > 0)); then
+      break
+    fi
+  done
   if [[ ! "$changed_pixels" =~ ^[0-9]+$ ]] || ((changed_pixels <= 0)); then
     echo "The launcher-hosted Aqua Neuralink shimmer did not move between frames" >&2
     return 1
