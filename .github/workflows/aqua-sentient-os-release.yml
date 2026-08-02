@@ -79,9 +79,37 @@ jobs:
 
       - name: Render closed-phone Home, living Neural Link, and Command Center proofs
         run: |
-          mkdir -p release
+          set -Eeuo pipefail
+          mkdir -p release/visual-proof-diagnostics
+          visual_proof_failure() {
+            local exit_code="$1"
+            local source_line="$2"
+            local failed_command="$3"
+            trap - ERR
+            {
+              printf 'commit=%s\n' "$GITHUB_SHA"
+              printf 'workflow_run=%s\n' "$GITHUB_RUN_ID"
+              printf 'workflow_attempt=%s\n' "$GITHUB_RUN_ATTEMPT"
+              printf 'exit_code=%s\n' "$exit_code"
+              printf 'shell_line=%s\n' "$source_line"
+              printf 'failed_command=%s\n' "$failed_command"
+            } > release/visual-proof-diagnostics/assertion-failure.txt
+            printf '::error title=Aqua v0.7.4 visual proof assertion failed::Shell line %s exited %s: %s\n' \
+              "$source_line" "$exit_code" "$failed_command" >&2
+            printf 'AQUA_VISUAL_PROOF_ASSERTION_FAILED line=%s exit=%s command=%q\n' \
+              "$source_line" "$exit_code" "$failed_command" >&2
+            exit "$exit_code"
+          }
+          trap 'visual_proof_failure "$?" "$LINENO" "$BASH_COMMAND"' ERR
           CHROME_BIN="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
           test -n "$CHROME_BIN"
+          {
+            printf 'commit=%s\n' "$GITHUB_SHA"
+            printf 'workflow_run=%s\n' "$GITHUB_RUN_ID"
+            printf 'workflow_attempt=%s\n' "$GITHUB_RUN_ATTEMPT"
+            printf 'chrome_binary=%s\n' "$CHROME_BIN"
+            "$CHROME_BIN" --version
+          } > release/visual-proof-diagnostics/environment.txt
           "$CHROME_BIN" \
             --headless=new \
             --no-sandbox \
@@ -347,6 +375,27 @@ jobs:
             fi
             previous="$frame"
           done
+
+      - name: Collect failed v0.7.4 visual-proof DOM evidence
+        if: ${{ failure() }}
+        run: |
+          mkdir -p release/visual-proof-diagnostics
+          shopt -s nullglob
+          dom_proofs=(/tmp/aqua-sentinel-*-proof.html)
+          if ((${#dom_proofs[@]} > 0)); then
+            cp "${dom_proofs[@]}" release/visual-proof-diagnostics/
+          fi
+
+      - name: Retain failed v0.7.4 visual-proof evidence
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: AquaSentinelOS-v0.7.4-visual-proof-failure-${{ github.run_attempt }}
+          path: |
+            release/*.png
+            release/visual-proof-diagnostics/**
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Set up Java
         uses: actions/setup-java@v4
