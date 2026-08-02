@@ -133,17 +133,11 @@ async function evaluate(connection, sessionId, expression) {
   return result.result?.value;
 }
 
-async function saveCheckpoint(connection, sessionId, evidenceDirectory, phase, state) {
-  const dom = await evaluate(connection, sessionId, "document.documentElement.outerHTML");
-  const screenshot = await connection.send("Page.captureScreenshot", {
-    format: "png",
-    captureBeyondViewport: false,
-  }, sessionId);
-  await Promise.all([
-    writeFile(join(evidenceDirectory, `live-${phase}.html`), dom),
-    writeFile(join(evidenceDirectory, `live-${phase}.png`), Buffer.from(screenshot.data, "base64")),
-    writeFile(join(evidenceDirectory, `live-${phase}.json`), `${JSON.stringify(state, null, 2)}\n`),
-  ]);
+async function saveCheckpoint(evidenceDirectory, phase, state) {
+  await writeFile(
+    join(evidenceDirectory, `live-${phase}.json`),
+    `${JSON.stringify(state, null, 2)}\n`,
+  );
 }
 
 async function run() {
@@ -222,7 +216,7 @@ async function run() {
         if (state.ready === "neural" && state.phase === expectedPhase && state.stagePhase === expectedPhase) {
           const checkpoint = { elapsedMillis, ...state };
           timeline.push({ checkpoint: true, ...checkpoint });
-          await saveCheckpoint(connection, sessionId, options.evidenceDirectory, expectedPhase, checkpoint);
+          await saveCheckpoint(options.evidenceDirectory, expectedPhase, checkpoint);
           break;
         }
         await delay(25);
@@ -254,6 +248,8 @@ async function run() {
       totalElapsedMillis: Math.round(performance.now() - navigationStartedAt),
       timeline,
     }, null, 2)}\n`);
+    const finalDom = await evaluate(connection, sessionId, "document.documentElement.outerHTML");
+    await writeFile(join(options.evidenceDirectory, "live-result.html"), finalDom);
     process.stdout.write(`AQUA_NEURAL_LIVE_WALL_CLOCK_VERIFIED phases=rotating,firing,transitioning,result total_ms=${result.elapsedMillis}\n`);
   } catch (error) {
     await writeFile(join(options.evidenceDirectory, "failure.json"), `${JSON.stringify({
