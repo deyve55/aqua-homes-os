@@ -674,6 +674,7 @@ prove_widget_resize() {
   local end_x=""
   local end_y=""
   local selected_hierarchy=""
+  local post_drag_hierarchy=""
   local selected_screenshot="/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-${label}.png"
   local handle_geometry=""
   local handle_side=""
@@ -682,6 +683,21 @@ prove_widget_resize() {
   local handle_top=""
   local handle_right=""
   local handle_bottom=""
+  local pre_resize_frame_bounds=""
+  local post_resize_frame_bounds=""
+  local pre_frame_left=""
+  local pre_frame_top=""
+  local pre_frame_right=""
+  local pre_frame_bottom=""
+  local post_frame_left=""
+  local post_frame_top=""
+  local post_frame_right=""
+  local post_frame_bottom=""
+  local pre_frame_span=""
+  local post_frame_span=""
+  local frame_delta=""
+  local geometry_changed="false"
+  local callback_observed="false"
   local handle_receipt="/tmp/aqua-sentinel-v0.7.6-widget-resize-handle-${label}.txt"
   local resize_attempt=""
   local resized="false"
@@ -749,6 +765,16 @@ prove_widget_resize() {
       continue
     fi
 
+    pre_resize_frame_bounds="$(
+      ui_node_bounds "$selected_hierarchy" "^$launcher_package:id/widget_resize_frame(?: |$)"
+    )"
+    if [[ -z "$pre_resize_frame_bounds" ]]; then
+      echo "attempt=$resize_attempt outcome=missing_pre_drag_resize_frame" >> "$handle_receipt"
+      adb shell input keyevent KEYCODE_BACK || true
+      sleep 1
+      continue
+    fi
+
     read -r start_x start_y end_x end_y handle_side handle_source \
       handle_left handle_top handle_right handle_bottom <<< "$handle_geometry"
     {
@@ -766,20 +792,64 @@ prove_widget_resize() {
     echo "Resizing Aqua widget $label attempt $resize_attempt from detected $handle_side handle $start_x,$start_y to $end_x,$end_y"
     clear_logcat
     adb shell input swipe "$start_x" "$start_y" "$end_x" "$end_y" 1100
-    if wait_for_log "AQUA_WIDGET_RESIZED id=.*size=.*layout=" "$evidence" 8; then
+    sleep 2
+
+    # Android 12+ responsive RemoteViews let the launcher select a cached layout without
+    # waking the provider for every displayed size. Prove the physical resize first, then
+    # dismiss the frame to commit it and retain the provider callback when Pixel emits one.
+    geometry_changed="false"
+    callback_observed="false"
+    post_drag_hierarchy="$(dump_ui "aqua-widget-resize-${label}-attempt-${resize_attempt}-after-drag")" || true
+    post_resize_frame_bounds=""
+    if [[ -n "$post_drag_hierarchy" ]]; then
+      post_resize_frame_bounds="$(
+        ui_node_bounds "$post_drag_hierarchy" "^$launcher_package:id/widget_resize_frame(?: |$)"
+      )"
+    fi
+    if [[ -n "$post_resize_frame_bounds" ]]; then
+      read -r pre_frame_left pre_frame_top pre_frame_right pre_frame_bottom <<< "$pre_resize_frame_bounds"
+      read -r post_frame_left post_frame_top post_frame_right post_frame_bottom <<< "$post_resize_frame_bounds"
+      if [[ "$axis" == "horizontal" ]]; then
+        pre_frame_span=$((pre_frame_right - pre_frame_left))
+        post_frame_span=$((post_frame_right - post_frame_left))
+      else
+        pre_frame_span=$((pre_frame_bottom - pre_frame_top))
+        post_frame_span=$((post_frame_bottom - post_frame_top))
+      fi
+      frame_delta=$((post_frame_span - pre_frame_span))
+      (( frame_delta < 0 )) && frame_delta=$((-frame_delta))
+      if (( frame_delta >= 48 )); then
+        geometry_changed="true"
+        echo "AQUA_WIDGET_RESIZE_GEOMETRY_CHANGED label=$label axis=$axis attempt=$resize_attempt before=$pre_resize_frame_bounds after=$post_resize_frame_bounds delta=$frame_delta"
+      fi
+    fi
+
+    if [[ "$geometry_changed" == "true" ]]; then
+      adb shell input keyevent KEYCODE_BACK || true
+      if wait_for_log "AQUA_WIDGET_RESIZED id=.*size=.*layout=" "$evidence" 8; then
+        callback_observed="true"
+      fi
+      resized="true"
+      echo "outcome=responsive_geometry_committed callback=$callback_observed before_frame=$pre_resize_frame_bounds after_frame=$post_resize_frame_bounds" >> "$handle_receipt"
+      echo "AQUA_WIDGET_RESIZE_COMMITTED label=$label axis=$axis callback=$callback_observed"
+      break
+    fi
+
+    if wait_for_log "AQUA_WIDGET_RESIZED id=.*size=.*layout=" "$evidence" 6; then
+      callback_observed="true"
       resized="true"
       echo "outcome=resize_callback" >> "$handle_receipt"
       adb shell input keyevent KEYCODE_BACK || true
       break
     fi
     echo "outcome=no_callback" >> "$handle_receipt"
-    echo "AQUA_WIDGET_RESIZE_RETRY label=$label axis=$axis attempt=$resize_attempt reason=no_callback"
+    echo "AQUA_WIDGET_RESIZE_RETRY label=$label axis=$axis attempt=$resize_attempt reason=no_geometry_or_callback"
     adb shell input keyevent KEYCODE_BACK || true
     sleep 1
   done
 
   if [[ "$resized" != "true" ]]; then
-    echo "The detected launcher resize handle did not produce a real widget resize callback for $label after 3 attempts" >&2
+    echo "The detected launcher resize handle changed neither responsive geometry nor callback state for $label after 3 attempts" >&2
     [[ -n "$selected_hierarchy" && -s "$selected_hierarchy" ]] \
       && grep -Ei "resize|AppWidget" "$selected_hierarchy" >&2 || true
     grep -E "AQUA_WIDGET_RESIZED|Launcher3|AndroidRuntime|FATAL EXCEPTION" "$evidence" >&2 || true
@@ -788,13 +858,18 @@ prove_widget_resize() {
 
   return_to_launcher
   hierarchy_path="$(dump_ui "aqua-widget-resize-${label}-after")"
+  if grep -Fq "$launcher_package:id/widget_resize_frame" "$hierarchy_path"; then
+    echo "Launcher3 left its resize frame open after committing Aqua's $label geometry" >&2
+    return 1
+  fi
   after_geometry="$(assert_widget_control_geometry "$hierarchy_path" "${label}-after")"
   if [[ "$before_geometry" == "$after_geometry" ]]; then
-    echo "Launcher3 emitted a resize callback but Aqua's visible geometry did not change: $label" >&2
+    echo "Launcher3 accepted a resize proof but Aqua's committed visible geometry did not change: $label" >&2
     return 1
   fi
   adb exec-out screencap -p > "/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-${label}.png"
   test -s "/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-${label}.png"
+  echo "AQUA_WIDGET_RESPONSIVE_RESIZE_VERIFIED label=$label axis=$axis callback=$callback_observed"
   echo "AQUA_WIDGET_REAL_RESIZE_VERIFIED label=$label before=$before_geometry after=$after_geometry"
 }
 

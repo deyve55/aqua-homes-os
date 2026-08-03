@@ -880,9 +880,23 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(widgetVerifier, /aqua-widget-resize-\$\{label\}-attempt-\$\{resize_attempt\}-before/);
   assert.match(widgetVerifier, /attempt=\$resize_attempt outcome=missing_resize_handle/);
   assert.match(widgetVerifier, /attempt=\$resize_attempt side=\$handle_side/);
+  assert.match(widgetVerifier, /pre_resize_frame_bounds=/);
+  assert.match(widgetVerifier, /post_resize_frame_bounds=/);
+  assert.match(widgetVerifier, /frame_delta >= 48/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_RESIZE_GEOMETRY_CHANGED/);
+  assert.match(widgetVerifier, /outcome=responsive_geometry_committed callback=\$callback_observed/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_RESIZE_COMMITTED/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_RESPONSIVE_RESIZE_VERIFIED/);
+  assert.match(widgetVerifier, /responsive RemoteViews let the launcher select a cached layout without/);
+  assert.match(
+    widgetVerifier,
+    /if \[\[ "\$geometry_changed" == "true" \]\]; then[\s\S]*?input keyevent KEYCODE_BACK[\s\S]*?wait_for_log "AQUA_WIDGET_RESIZED[\s\S]*?resized="true"[\s\S]*?AQUA_WIDGET_RESIZE_COMMITTED[\s\S]*?break/,
+  );
   assert.match(widgetVerifier, /outcome=no_callback/);
-  assert.match(widgetVerifier, /AQUA_WIDGET_RESIZE_RETRY label=\$label axis=\$axis attempt=\$resize_attempt reason=no_callback/);
-  assert.match(widgetVerifier, /did not produce a real widget resize callback for \$label after 3 attempts/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_RESIZE_RETRY label=\$label axis=\$axis attempt=\$resize_attempt reason=no_geometry_or_callback/);
+  assert.match(widgetVerifier, /changed neither responsive geometry nor callback state for \$label after 3 attempts/);
+  assert.match(widgetVerifier, /left its resize frame open after committing Aqua's \$label geometry/);
+  assert.match(widgetVerifier, /accepted a resize proof but Aqua's committed visible geometry did not change/);
   assert.match(widgetVerifier, /source=\$handle_source/);
   assert.match(widgetVerifier, /drag=\$start_x,\$start_y->\$end_x,\$end_y/);
   assert.doesNotMatch(widgetVerifier, /for resize_attempt in \$\(seq 1 7\)/);
