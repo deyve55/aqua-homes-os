@@ -926,6 +926,8 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(widgetLayout, /id="@\+id\/widget_neural_activity"/);
   assert.match(widgetLayout, /@drawable\/aqua_widget_neural_activity_4x6/);
   assert.match(widgetLayout, /@layout\/aqua_widget_selected_neural_activity_4x6/);
+  assert.match(threeByTwoLayout, /id="@\+id\/widget_resize_surface"[\s\S]*?android:padding="0dp"/);
+  assert.doesNotMatch(threeByTwoLayout, /id="@\+id\/widget_resize_surface"[\s\S]*?android:padding="1dp"/);
   assert.doesNotMatch(widgetLayout, /widget_shimmer/);
   assert.match(widgetLayout, /id="@\+id\/widget_neural_art"/);
   assert.doesNotMatch(widgetLayout, /widget_active_path|aqua_widget_jolt/);
