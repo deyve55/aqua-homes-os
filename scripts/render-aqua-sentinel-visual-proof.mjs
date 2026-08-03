@@ -212,7 +212,7 @@ function captureDefinitions() {
       name: "home",
       query: "preview=home",
       ready: "home",
-      output: "AquaSentinelOS-v0.7.5-launch-proof.png",
+      output: "AquaSentinelOS-v0.7.6-launch-proof.png",
     },
     {
       name: "neural-rest",
@@ -220,7 +220,7 @@ function captureDefinitions() {
       ready: "neural",
       phase: "rest",
       visiblePortals: 5,
-      output: "AquaSentinelOS-v0.7.5-Neural-Link-Rest-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png",
     },
     {
       name: "neural-rotate",
@@ -228,7 +228,7 @@ function captureDefinitions() {
       ready: "neural",
       phase: "rotating",
       visiblePortals: 5,
-      output: "AquaSentinelOS-v0.7.5-Neural-Link-Rotate-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Neural-Link-Rotate-closed-phone.png",
     },
     {
       name: "neural-fire",
@@ -236,7 +236,7 @@ function captureDefinitions() {
       ready: "neural",
       phase: "firing",
       visiblePortals: 5,
-      output: "AquaSentinelOS-v0.7.5-Neural-Link-Fire-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png",
     },
     {
       name: "neural-morph",
@@ -246,7 +246,7 @@ function captureDefinitions() {
       morphProgress: "0.400",
       materialized: "pending",
       visiblePortals: 5,
-      output: "AquaSentinelOS-v0.7.5-Neural-Link-Morph-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png",
     },
     {
       name: "neural-result",
@@ -257,7 +257,7 @@ function captureDefinitions() {
       materialized: "true",
       visiblePortals: 5,
       fullMaterialization: true,
-      output: "AquaSentinelOS-v0.7.5-Neural-Link-Result-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png",
     },
     ...MORPH_CHECKPOINTS.map(([name, neuralAt, morphProgress]) => ({
       name: `neural-morph-${name}`,
@@ -267,49 +267,49 @@ function captureDefinitions() {
       morphProgress,
       materialized: "pending",
       visiblePortals: 5,
-      output: `AquaSentinelOS-v0.7.5-Neural-Link-Morph-${name}.png`,
+      output: `AquaSentinelOS-v0.7.6-Neural-Link-Morph-${name}.png`,
     })),
     {
       name: "command",
       query: "preview=command",
       ready: "command",
-      output: "AquaSentinelOS-v0.7.5-Command-Center-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Command-Center-closed-phone.png",
     },
     {
       name: "settings",
       query: "preview=settings",
       ready: "settings",
-      output: "AquaSentinelOS-v0.7.5-Settings-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Settings-closed-phone.png",
     },
     {
       name: "diagnostics",
       query: "preview=diagnostics",
       ready: "diagnostics",
-      output: "AquaSentinelOS-v0.7.5-Diagnostics-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Diagnostics-closed-phone.png",
     },
     {
       name: "connections",
       query: "preview=data",
       ready: "data",
-      output: "AquaSentinelOS-v0.7.5-Connections-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Connections-closed-phone.png",
     },
     {
       name: "file-cabinet",
       query: "preview=files",
       ready: "files",
-      output: "AquaSentinelOS-v0.7.5-File-Cabinet-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-File-Cabinet-closed-phone.png",
     },
     {
       name: "messages",
       query: "preview=messages",
       ready: "messages",
-      output: "AquaSentinelOS-v0.7.5-Conversation-Receipts-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Conversation-Receipts-closed-phone.png",
     },
     {
       name: "about",
       query: "preview=about",
       ready: "about",
-      output: "AquaSentinelOS-v0.7.5-About-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-About-closed-phone.png",
     },
   ];
 }

@@ -134,8 +134,8 @@ test("an unavailable gateway cannot block truthful Standalone startup", async ()
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
   ]);
-  assert.match(gradle, /versionCode = 2026080204/);
-  assert.match(gradle, /versionName = "0\.7\.5-secondary-surfaces-test"/);
+  assert.match(gradle, /versionCode = 2026080301/);
+  assert.match(gradle, /versionName = "0\.7\.6-neuralink-mic-widget-repair-test"/);
   assert.match(gradle, /\.orElse\(providers\.environmentVariable\("AQUA_GATEWAY_URL"\)\)\s*\.orElse\(""\)/);
   assert.doesNotMatch(gradle, /\.orElse\("https:\/\/api\.aquahomesos\.com\/gateway"\)/);
   assert.match(html, /id="ownerAccessButton"[^>]*data-panel="connect"/);
@@ -400,7 +400,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.7.5 preserves Home and proves the full Neuralink morph sequence", async () => {
+test("v0.7.6 preserves Home and proves the full Neuralink morph sequence", async () => {
   const [gradle, workflow, script, html, fidelity, androidLaunch, neuralLiveProof, visualRenderer] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -411,18 +411,18 @@ test("v0.7.5 preserves Home and proves the full Neuralink morph sequence", async
     read("scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"),
     read("scripts/render-aqua-sentinel-visual-proof.mjs"),
   ]);
-  assert.match(gradle, /versionCode = 2026080204/);
-  assert.match(gradle, /versionName = "0\.7\.5-secondary-surfaces-test"/);
+  assert.match(gradle, /versionCode = 2026080301/);
+  assert.match(gradle, /versionName = "0\.7\.6-neuralink-mic-widget-repair-test"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
   assert.doesNotMatch(gradle, /storeFile = file\(System\.getenv\("AQUA_RELEASE_KEYSTORE_PATH"\)\)/);
   assert.match(gradle, /\?\.let \{ storeFile = file\(it\) \}/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.5-Exact-Fidelity-Materialization-Widget-Test\.apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.6-Five-Portal-Neuralink-Action-Mic-3x2-Widget-Test\.apk/);
   assert.match(workflow, /owner_visual_approval/);
   assert.match(workflow, /github\.event_name == 'workflow_dispatch' && inputs\.owner_visual_approval/);
   assert.match(workflow, /preflight-no-apk:/);
   assert.match(workflow, /compileDebugJavaWithJavac :app:mergeDebugResources/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.5-preflight-no-apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.6-preflight-no-apk/);
   assert.match(visualRenderer, /AQUA_RESULT_DOCUMENT_PIXEL_GATE/);
   assert.match(visualRenderer, /resultDocumentPixelMean >= \.28/);
   assert.match(visualRenderer, /inflateSync/);
@@ -489,7 +489,9 @@ test("v0.7.5 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(visualRenderer, /state\.stageUsesApprovedRaster/);
   assert.match(visualRenderer, /preview=settings/);
   assert.match(visualRenderer, /Settings-closed-phone\.png/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.5-Settings-closed-phone\.png/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.6-Settings-closed-phone\.png/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.6-Neuralink-Widget-3x2\.png/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.6-Widget-Action-Microphone-Armed\.png/);
   assert.match(visualRenderer, /AQUA_DETERMINISTIC_VISUAL_PROOF_RENDERED/);
   assert.match(workflow, /neural-live-wall-clock/);
   assert.match(workflow, /--url ".*neuralDemo=rest"/);
@@ -1083,7 +1085,7 @@ test("responsive widget fills every supported host while preserving approved art
   assert.doesNotMatch(verifier, /wait_for_log "AQUA_FILING_INBOX_DELIVERED/);
 });
 
-test("v0.7.5 secondary operating surfaces execute real Android boundaries", async () => {
+test("v0.7.6 secondary operating surfaces execute real Android boundaries", async () => {
   const [script, fidelity, activity, renderer, workflow, gradle, html] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("sentient-os-web/fidelity.css"),
@@ -1094,8 +1096,8 @@ test("v0.7.5 secondary operating surfaces execute real Android boundaries", asyn
     read("sentient-os-web/index.html"),
   ]);
 
-  assert.match(gradle, /versionCode = 2026080204/);
-  assert.match(gradle, /versionName = "0\.7\.5-secondary-surfaces-test"/);
+  assert.match(gradle, /versionCode = 2026080301/);
+  assert.match(gradle, /versionName = "0\.7\.6-neuralink-mic-widget-repair-test"/);
   assert.match(script, /preferenceStorageKey = "aqua-sentinel-owner-preferences-v1"/);
   assert.match(script, /function saveOwnerPreferences\(\)/);
   assert.match(script, /In-app owner alerts/);

@@ -25,8 +25,8 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026080204
-        versionName = "0.7.5-secondary-surfaces-test"
+        versionCode = 2026080301
+        versionName = "0.7.6-neuralink-mic-widget-repair-test"
         buildConfigField(
             "String",
             "AQUA_GATEWAY_URL",
