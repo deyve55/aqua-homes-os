@@ -165,7 +165,7 @@ test("server secrets are absent from the APK source", async () => {
   assert.doesNotMatch(source, /OPENAI_API_KEY/);
 });
 
-test("the living Neural Link focuses one thought without isolating Aqua's other systems", async () => {
+test("the premium Neural Link keeps five fixed portals alive while Aqua brings one result forward", async () => {
   const [html, script, fidelity] = await Promise.all([
     read("sentient-os-web/index.html"),
     read("sentient-os-web/app.js"),
@@ -187,13 +187,16 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /neural-substrate-map neural-substrate-result/);
   assert.match(script, /neural-substrate-fire neural-substrate-cyan/);
   assert.match(script, /const neuralRingSlots =/);
-  assert.match(script, /Five application portals are visible at once/);
+  assert.match(script, /Five physical application portals stay fixed/);
   assert.match(script, /data-neural-visible-portals="5"/);
-  assert.match(script, /let neuralIdleOffset = 0/);
+  assert.match(script, /let neuralVisibleIndexes = \[0, 1, 2, 3, 4\]/);
+  assert.match(script, /function neuralFixedSlotForSource\(sourceIndex\)/);
+  assert.match(script, /function promoteNeuralSource\(sourceIndex\)/);
+  assert.match(script, /neuralVisibleIndexes\[destinationSlot\] = previousTop/);
+  assert.match(script, /neuralVisibleIndexes\[0\] = sourceIndex/);
   assert.match(script, /\{ x: 50, y: 15\.5, scale: 1\.16/);
   assert.match(script, /\{ x: 82\.5, y: 34, scale: \.97/);
   assert.match(script, /\{ x: 23, y: 65, scale: \.91/);
-  assert.match(script, /const neuralOrbitKeyframes =/);
   assert.match(script, /function identifyNeuralIntent\(rawText\)/);
   assert.match(script, /function beginNeuralRequest\(command\)/);
   assert.match(script, /function isExplicitDeepOpen\(rawText\)/);
@@ -204,37 +207,31 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /class="neural-traveler neural-traveler-gold"/);
   assert.match(script, /label: `Go deeper into \$\{app\.name\}`/);
   assert.match(script, /Presentation · Not Live/);
-  assert.match(script, /const NEURAL_ROTATE_MILLIS = 1380/);
-  assert.match(script, /const NEURAL_FIRE_MILLIS = 920/);
-  assert.match(script, /const NEURAL_MORPH_MILLIS = 2600/);
-  assert.match(script, /function neuralCatmullRom\(before, from, to, after, progress\)/);
-  assert.match(script, /x: neuralCatmullRom\(before\.x, from\.x, to\.x, after\.x, mix\)/);
-  assert.match(script, /y: neuralCatmullRom\(before\.y, from\.y, to\.y, after\.y, mix\)/);
-  assert.match(script, /portal\.animate\(keyframes/);
-  assert.match(script, /function coastNeuralRing\(stage, initialOffset, initialVelocity\)/);
-  assert.match(script, /neuralStage\.addEventListener\("pointermove"/);
-  assert.match(script, /requestAnimationFrame\(coast\)/);
-  assert.match(script, /The ring now rests until Dave touches it or asks Aqua/);
+  assert.match(script, /const NEURAL_SELECT_MILLIS = 220/);
+  assert.match(script, /const NEURAL_FIRE_MILLIS = 320/);
+  assert.match(script, /const NEURAL_MORPH_MILLIS = 420/);
+  assert.match(script, /const NEURAL_ACK_BUDGET_MILLIS = 100/);
+  assert.match(script, /const NEURAL_ADDED_UI_DELAY_MILLIS = 0/);
+  assert.doesNotMatch(script, /neuralStage\.addEventListener\("pointermove"/);
+  assert.doesNotMatch(script, /neuralStage\.setPointerCapture/);
+  assert.doesNotMatch(script, /neuralIdleTimer|startNeuralIdleRotation|ringOffset/);
   assert.match(script, /function neuralRouteTransform\(slot\)/);
   assert.match(script, /data-neural-source-group="\$\{index\}"/);
   assert.match(script, /group\.setAttribute\("transform", neuralRouteTransform\(slot\)\)/);
-  assert.match(script, /group\.animate\(keyframes/);
-  assert.match(script, /group\.style\.visibility = "visible"/);
+  assert.match(script, /group\.style\.visibility = Number\(slot\.opacity \?\? 1\) > \.15 \? "visible" : "hidden"/);
   assert.match(script, /portal\.style\.opacity = String\(slot\.opacity \?\? 1\)/);
   assert.match(script, /materializationAnimation\.id = "aqua-neural-materialization-box"/);
   assert.match(script, /left: `\$\{sourceBox\.left\}px`/);
   assert.doesNotMatch(script, /content\.animate\(\[/);
   assert.match(script, /sourceIndex === neuralFocusIndex/);
   assert.match(script, /neuralSupportIndexes\.includes\(sourceIndex\)/);
-  assert.match(script, /Promise\.allSettled\(animations\.map/);
-  assert.match(script, /const NEURAL_MOTION_SETTLE_GRACE_MILLIS = 160/);
-  assert.match(script, /function waitForNeuralMotion\(animations, duration\)/);
-  assert.match(script, /setTimeout\(finish, duration \+ NEURAL_MOTION_SETTLE_GRACE_MILLIS\)/);
-  assert.equal((script.match(/await waitForNeuralMotion\(animations, duration\)/g) || []).length, 1);
-  assert.doesNotMatch(script, /neuralMotionFrame|requestAnimationFrame\(tick\)/);
+  assert.doesNotMatch(script, /neuralPortalAnimationsBetween|animateNeuralRingTo|coastNeuralRing/);
   assert.doesNotMatch(script, /setAttribute\("d"/);
-  assert.match(script, /neuralPhase = "rotating"/);
+  assert.match(script, /neuralPhase = "selecting"/);
   assert.match(script, /neuralPhase = "firing"/);
+  assert.match(script, /promoteNeuralSource\(index\)/);
+  assert.match(script, /neuralAcknowledgedAt = performance\.now\(\)/);
+  assert.match(script, /focusNeuralSource\(index, supporting\);\s*portalMaterialization\(index\);/);
   assert.match(script, /class="command-vault"/);
   assert.match(script, /data-filing-action="voice"/);
   assert.match(script, /File Cabinet/);
@@ -260,7 +257,7 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(fidelity, /\.neural-stage/);
   assert.match(fidelity, /height:clamp\(610px,73svh,780px\)/);
   assert.match(fidelity, /\.neural-signal\.is-active/);
-  assert.match(fidelity, /\.neural-stage\[data-phase="rotating"\]/);
+  assert.match(fidelity, /\.neural-stage\[data-phase="selecting"\]/);
   assert.match(fidelity, /\.neural-stage\[data-phase="firing"\]/);
   assert.match(fidelity, /color:rgba\(156,226,238,\.68\)/);
   assert.match(fidelity, /letter-spacing:\.34em/);
@@ -268,27 +265,18 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(fidelity, /\.portal-node>img\{position:absolute/);
   assert.match(fidelity, /\.portal-pull\{aspect-ratio:1;padding:6%;overflow:hidden;border-radius:50%/);
   assert.match(fidelity, /@keyframes neural-signal-return/);
-  assert.match(fidelity, /neuralink-rest-v071\.png/);
-  assert.match(fidelity, /neuralink-materialized-v071\.png/);
-  assert.match(fidelity, /neuralink-rest-cyan-path-mask-v074\.png/);
-  assert.match(fidelity, /neuralink-rest-gold-path-mask-v074\.png/);
-  assert.match(fidelity, /neuralink-materialized-cyan-path-mask-v074\.png/);
-  assert.match(fidelity, /neuralink-materialized-gold-path-mask-v074\.png/);
-  assert.match(fidelity, /v0\.7\.6 owner-reference recovery/);
-  assert.match(fidelity, /one stable, non-animated underlay/);
-  assert.match(fidelity, /background:#000 url\("\.\/assets\/neuralink-rest-v071\.png"\) 50% 50%\/100% 100% no-repeat/);
-  assert.match(fidelity, /\.neural-stage:before,\.neural-stage:after\{content:none!important;display:none!important\}/);
-  assert.match(fidelity, /\.neural-stage\[data-phase="firing"\] \.neural-jolt\{opacity:1;transition:none\}/);
-  assert.match(fidelity, /object-fit:cover/);
-  assert.match(fidelity, /\.neural-stage\[data-phase="transitioning"\] \.neural-portal,[\s\S]*width:clamp\(76px,19\.5vw,108px\)!important/);
-  assert.match(fidelity, /\.neural-morph-shell/);
-  assert.match(fidelity, /\.neural-route-group\.is-active \.neural-traveler/);
-  assert.match(fidelity, /\.neural-materialization-circuit\{opacity:\.76;mix-blend-mode:normal\}/);
-  const ownerReferenceRecovery = fidelity.slice(fidelity.lastIndexOf("v0.7.6 owner-reference recovery"));
-  assert.match(ownerReferenceRecovery, /neuralink-rest-v071\.png/);
-  assert.doesNotMatch(ownerReferenceRecovery, /neuralink-materialized-v071\.png/);
-  assert.doesNotMatch(ownerReferenceRecovery, /left:11\.3%/);
-  assert.doesNotMatch(ownerReferenceRecovery, /\.neural-portal\{[^}]*opacity:1!important/);
+  const appFirstNeuralink = fidelity.slice(fidelity.lastIndexOf("App-first Neuralink correction"));
+  assert.match(appFirstNeuralink, /five clear app portals, one static Aqua mark, restrained neural traffic/);
+  assert.doesNotMatch(appFirstNeuralink, /neuralink-(?:rest|materialized)-v071\.png/);
+  assert.match(appFirstNeuralink, /linear-gradient\(180deg,#01080c 0,#000508 52%,#000 100%\)!important/);
+  assert.match(appFirstNeuralink, /\.aqua-mark-orb\{opacity:\.72;animation:none!important\}/);
+  assert.match(appFirstNeuralink, /\.neural-portal \.portal-pull\{[\s\S]*background:rgba\(0,4,7,\.96\)[\s\S]*overflow:hidden/);
+  assert.match(appFirstNeuralink, /\.neural-portal \.portal-node>img\{[^}]*width:92%;height:76%;object-fit:cover/);
+  assert.match(appFirstNeuralink, /data-phase="selecting"[\s\S]*neural-top-portal-materialize/);
+  assert.match(appFirstNeuralink, /linear-gradient\(180deg,transparent 0,#fff 9%,#65efff 32%,#f2ba63 55%/);
+  assert.match(appFirstNeuralink, /data-phase="firing"[\s\S]*neural-jolt-column/);
+  assert.match(appFirstNeuralink, /data-phase="result"[\s\S]*\.neural-portal,[\s\S]*opacity:0!important/);
+  assert.match(appFirstNeuralink, /\.neural-morph-shell\{[\s\S]*linear-gradient\(180deg,#031017,#00070a 46%,#000305\)/);
   assert.match(fidelity, /@keyframes neural-substrate-cyan-out/);
   assert.match(fidelity, /@keyframes neural-substrate-gold-return/);
   assert.match(fidelity, /@keyframes neural-path-fire/);
@@ -401,7 +389,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.7.6 preserves Home and proves the full Neuralink morph sequence", async () => {
+test("v0.7.6 preserves Home while the app-first Neuralink sequence stays fixed, alive, and under one second", async () => {
   const [gradle, workflow, script, html, fidelity, androidLaunch, neuralLiveProof, visualRenderer] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -433,11 +421,11 @@ test("v0.7.6 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
   assert.match(workflow, /preview=neural/);
   assert.match(workflow, /neuralDemo=sequence/);
-  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=750/);
-  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=1750/);
-  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=3500/);
-  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=5600/);
-  assert.match(visualRenderer, /\["00", 2600, "0\.054"\][\s\S]*\["06", 5000, "0\.977"\]/);
+  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=100/);
+  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=300/);
+  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=720/);
+  assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=980/);
+  assert.match(visualRenderer, /\["00", 560, "0\.048"\][\s\S]*\["06", 920, "0\.905"\]/);
   assert.match(visualRenderer, /animation\.id === 'aqua-neural-materialization-box'/);
   assert.match(visualRenderer, /returnedDocumentWidth >= state\.materializationWidth \* \.7/);
   assert.match(visualRenderer, /openFileTextFits/);
@@ -453,7 +441,7 @@ test("v0.7.6 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(script, /\["home", "neural", "command", "settings", "diagnostics", "data", "files", "messages", "about"\]\.includes\(previewPanel\)/);
   assert.match(script, /previewPanel === "home"/);
   assert.match(script, /const demo = previewParameters\.get\("neuralDemo"\) \|\| "rest"/);
-  assert.match(script, /if \(\["focus", "rotate", "fire", "transition", "company", "receipt", "result"\]\.includes\(demo\)\)/);
+  assert.match(script, /if \(\["focus", "select", "rotate", "fire", "transition", "company", "receipt", "result"\]\.includes\(demo\)\)/);
   assert.match(script, /previewParameters\.get\("neuralDemo"\) === "sequence"/);
   assert.match(script, /function seekNeuralSequencePreview\(elapsedMillis\)/);
   assert.match(script, /previewParameters\.get\("neuralAt"\)/);
@@ -472,10 +460,10 @@ test("v0.7.6 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(workflow, /grep -q 'PRESENTATION DATA'/);
   assert.match(workflow, /data-aqua-preview-ready="neural"/);
   assert.match(workflow, /data-aqua-neural-phase="rest"/);
-  assert.match(workflow, /data-aqua-neural-phase="rotating"/);
+  assert.match(workflow, /data-aqua-neural-phase="selecting"/);
   assert.match(workflow, /data-aqua-neural-phase="firing"/);
   assert.match(workflow, /data-aqua-neural-phase="result"/);
-  assert.match(workflow, /data-morph-progress="0\.400"/);
+  assert.match(workflow, /data-morph-progress="0\.429"/);
   assert.match(workflow, /data-morph-progress="1\.000"/);
   assert.match(workflow, /node scripts\/verify-aqua-sentinel-neural-live-wall-clock\.mjs/);
   assert.match(workflow, /node scripts\/render-aqua-sentinel-visual-proof\.mjs/);
@@ -485,9 +473,13 @@ test("v0.7.6 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(visualRenderer, /materializationOpacity >= \.98/);
   assert.match(visualRenderer, /visiblePortals: 5/);
   assert.match(visualRenderer, /portalImagesLoaded/);
+  assert.match(visualRenderer, /portalArtworkContained/);
+  assert.match(visualRenderer, /state\.fixedPortals === "true"/);
+  assert.match(visualRenderer, /state\.focusName === "Aqua Receipts"/);
+  assert.match(visualRenderer, /state\.joltOpacity >= \.6/);
   assert.match(visualRenderer, /substrateDisplay === "none"/);
   assert.match(visualRenderer, /!state\.beforeUsesRaster && !state\.afterUsesRaster/);
-  assert.match(visualRenderer, /state\.stageUsesApprovedRaster/);
+  assert.match(visualRenderer, /state\.stageUsesRaster/);
   assert.match(visualRenderer, /preview=settings/);
   assert.match(visualRenderer, /Settings-closed-phone\.png/);
   assert.match(workflow, /AquaSentinelOS-v0\.7\.6-Settings-closed-phone\.png/);
@@ -499,27 +491,27 @@ test("v0.7.6 preserves Home and proves the full Neuralink morph sequence", async
   assert.doesNotMatch(workflow, /aqua-sentinel-neural-live-(fire|morph|result)-proof\.html/);
   assert.match(neuralLiveProof, /host-monotonic-wall-clock/);
   assert.match(neuralLiveProof, /performance\.now\(\)/);
-  assert.match(neuralLiveProof, /PHASE_DEADLINES_MILLIS/);
-  assert.match(neuralLiveProof, /\["rotating", "firing", "transitioning", "result"\]/);
+  assert.match(neuralLiveProof, /const ACK_BUDGET_MILLIS = 100/);
+  assert.match(neuralLiveProof, /const RESULT_DEADLINE_MILLIS = 1_400/);
+  assert.match(neuralLiveProof, /selecting,firing,transitioning,result/);
   assert.match(neuralLiveProof, /--remote-debugging-port=0/);
-  assert.match(neuralLiveProof, /AQUA_NEURAL_LIVE_WALL_CLOCK_VERIFIED/);
+  assert.match(neuralLiveProof, /AQUA_NEURAL_APP_FIRST_VERIFIED/);
   assert.match(neuralLiveProof, /data-neural-portal="6"/);
   assert.match(neuralLiveProof, /bound-aqua-receipts-portal-click/);
   assert.match(neuralLiveProof, /materializationKind, "receipts"/);
   assert.match(neuralLiveProof, /visiblePortals, 5/);
-  assert.match(neuralLiveProof, /visibleTravelers >= 10/);
-  assert.match(neuralLiveProof, /neuron particles must visibly travel/);
+  assert.match(neuralLiveProof, /Cyan and gold synapses must remain visibly alive/);
   assert.match(neuralLiveProof, /portalsLoaded, true/);
   assert.match(neuralLiveProof, /substrateDisplay, "none"/);
-  assert.match(neuralLiveProof, /usesApprovedStableUnderlay, true/);
-  assert.match(neuralLiveProof, /usesPseudoRasterUnderlay, false/);
-  assert.match(neuralLiveProof, /usesRasterCompositor, false/);
-  assert.match(neuralLiveProof, /maxRetries: 12/);
-  assert.match(neuralLiveProof, /AQUA_NEURAL_CLEANUP_WARNING/);
+  assert.match(neuralLiveProof, /usesRasterUnderlay, false/);
+  assert.match(neuralLiveProof, /portalArtworkContained, true/);
+  assert.match(neuralLiveProof, /addedUiDelayMillis, 0/);
+  assert.match(neuralLiveProof, /presentationBudgetMillis, 960/);
+  assert.match(neuralLiveProof, /handlerMillis <= ACK_BUDGET_MILLIS/);
   assert.match(script, /\{ opacity: 0, offset: \.04 \}/);
   assert.match(script, /const contentAnimation = surface\.animate\([\s\S]*?easing: "linear"/);
   assert.doesNotMatch(script, /\{ opacity: 0, offset: \.58 \}/);
-  assert.match(neuralLiveProof, /firing\.joltOpacity >= 0\.99/);
+  assert.match(neuralLiveProof, /firing\.joltOpacity >= \.6/);
   assert.match(neuralLiveProof, /neural-jolt-column/);
   assert.doesNotMatch(neuralLiveProof, /virtual-time-budget|neuralAt=/);
   const liveCheckpointWriter = neuralLiveProof.match(/async function saveCheckpoint[\s\S]*?\n\}/)?.[0] || "";
@@ -1199,7 +1191,7 @@ test("v0.7.6 secondary operating surfaces execute real Android boundaries", asyn
   assert.match(workflow, /github\.event_name == 'pull_request'/);
   assert.match(workflow, /needs\.preflight-no-apk\.outputs\.build_test_apk == 'true'/);
   assert.match(workflow, /value < 0\.32/);
-  assert.match(workflow, /value <= prior \+ 0\.015/);
+  assert.match(workflow, /AQUA_APP_FIRST_VISUAL_VERIFIED fixed_portals=5/);
   assert.match(fidelity, /v0\.7\.5 operating-surface completion/);
   assert.match(fidelity, /\.connections-shell,\.about-shell/);
   assert.match(fidelity, /\.diagnostic-actions/);

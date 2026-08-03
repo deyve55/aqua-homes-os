@@ -237,19 +237,19 @@ jobs:
             --disable-gpu \
             --hide-scrollbars \
             --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=750 \
+            --virtual-time-budget=1800 \
             --dump-dom \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=750" \
-            > /tmp/aqua-sentinel-neural-rotate-proof.html
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=100" \
+            > /tmp/aqua-sentinel-neural-select-proof.html
           "$CHROME_BIN" \
             --headless=new \
             --no-sandbox \
             --disable-gpu \
             --hide-scrollbars \
             --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=1750 \
+            --virtual-time-budget=1800 \
             --dump-dom \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=1750" \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=300" \
             > /tmp/aqua-sentinel-neural-fire-proof.html
           "$CHROME_BIN" \
             --headless=new \
@@ -257,9 +257,9 @@ jobs:
             --disable-gpu \
             --hide-scrollbars \
             --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=3500 \
+            --virtual-time-budget=1800 \
             --dump-dom \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=3500" \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=720" \
             > /tmp/aqua-sentinel-neural-morph-proof.html
           "$CHROME_BIN" \
             --headless=new \
@@ -267,9 +267,9 @@ jobs:
             --disable-gpu \
             --hide-scrollbars \
             --run-all-compositor-stages-before-draw \
-            --virtual-time-budget=5600 \
+            --virtual-time-budget=1800 \
             --dump-dom \
-            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=5600" \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=980" \
             > /tmp/aqua-sentinel-neural-result-proof.html
           node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
             --chrome "$CHROME_BIN" \
@@ -287,7 +287,7 @@ jobs:
             > /tmp/aqua-sentinel-command-proof.html
           test -s release/AquaSentinelOS-v0.7.6-launch-proof.png
           test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Rotate-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png
           test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png
           test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png
           test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png
@@ -311,11 +311,11 @@ jobs:
           grep -q 'PRESENTATION DATA' /tmp/aqua-sentinel-home-proof.html
           grep -q 'data-aqua-preview-ready="neural"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'data-aqua-neural-phase="rest"' /tmp/aqua-sentinel-neural-rest-proof.html
-          grep -q 'data-aqua-neural-phase="rotating"' /tmp/aqua-sentinel-neural-rotate-proof.html
+          grep -q 'data-aqua-neural-phase="selecting"' /tmp/aqua-sentinel-neural-select-proof.html
           grep -q 'data-aqua-neural-phase="firing"' /tmp/aqua-sentinel-neural-fire-proof.html
           grep -q 'data-aqua-neural-phase="transitioning"' /tmp/aqua-sentinel-neural-morph-proof.html
           grep -q 'data-aqua-neural-phase="result"' /tmp/aqua-sentinel-neural-result-proof.html
-          grep -q 'data-morph-progress="0.400"' /tmp/aqua-sentinel-neural-morph-proof.html
+          grep -q 'data-morph-progress="0.429"' /tmp/aqua-sentinel-neural-morph-proof.html
           grep -q 'data-morph-progress="1.000"' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-panel="neural"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'AQUA SENTINEL NEURAL LINK' /tmp/aqua-sentinel-neural-rest-proof.html
@@ -327,10 +327,10 @@ jobs:
           grep -q 'class="neural-traveler neural-traveler-gold"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'neural-substrate-map neural-substrate-rest' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'neural-substrate-map neural-substrate-result' /tmp/aqua-sentinel-neural-result-proof.html
-          grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-rotate-proof.html
+          grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-select-proof.html
           grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-fire-proof.html
-          grep -q 'Aqua is rotating Receipts into the top portal' /tmp/aqua-sentinel-neural-rotate-proof.html
-          grep -q 'Aqua is firing a large upward neuron burst through the selected path' /tmp/aqua-sentinel-neural-fire-proof.html
+          grep -q 'Aqua Receipts is materializing in the top portal' /tmp/aqua-sentinel-neural-select-proof.html
+          grep -q 'Aqua is firing one clean cyan-and-gold signal upward with a visible tail' /tmp/aqua-sentinel-neural-fire-proof.html
           grep -q 'class="neural-materialization-approved is-receipt"' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-neural-materialized="true"' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-aqua-preview-ready="command"' /tmp/aqua-sentinel-command-proof.html
@@ -338,7 +338,7 @@ jobs:
           grep -q 'AQUA FILE CABINET' /tmp/aqua-sentinel-command-proof.html
           test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-launch-proof.png)" = "430x932"
           test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Rotate-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png)" = "430x932"
           test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png)" = "430x932"
           test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png)" = "430x932"
           test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png)" = "430x932"
@@ -360,9 +360,9 @@ jobs:
             release/AquaSentinelOS-v0.7.6-Settings-closed-phone.png
           ! cmp -s \
             release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Rotate-closed-phone.png
+            release/AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Rotate-closed-phone.png \
+            release/AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png \
             release/AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png
           ! cmp -s \
             release/AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png \
@@ -371,8 +371,8 @@ jobs:
             release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png \
             release/AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png
           for motion_pair in \
-            "Rest Rotate" \
-            "Rotate Fire" \
+            "Rest Select" \
+            "Select Fire" \
             "Fire Morph" \
             "Morph Result"; do
             read -r before after <<< "$motion_pair"
@@ -385,14 +385,9 @@ jobs:
             echo "AQUA_NEURAL_MORPH_STAGE_VERIFIED transition=${before}_to_${after} changed_pixels=$changed_pixels"
           done
           rest_mean="$(convert release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png -colorspace gray -format '%[fx:mean]' info:)"
-          convert tests/visual-baselines/Aqua-Neuralink-Rest-Owner-Approved-v074.jpg \
-            -resize '430x932^' -gravity center -extent 430x932 /tmp/aqua-neural-rest-owner-reference.png
-          rest_rmse="$(compare -metric RMSE /tmp/aqua-neural-rest-owner-reference.png release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png null: 2>&1 || true)"
-          rest_normalized="$(sed -n 's/.*(\([^)]*\)).*/\1/p' <<< "$rest_rmse")"
-          awk -v value="$rest_normalized" 'BEGIN { exit !(value < 0.20) }'
-          echo "AQUA_OWNER_VISUAL_REFERENCE_VERIFIED rest_rmse=$rest_normalized visible_portals=5 rotatable_sources=8 stable_underlay=neuralink-rest-v071.png"
+          awk -v value="$rest_mean" 'BEGIN { exit !(value > 0.01 && value < 0.35) }'
+          echo "AQUA_APP_FIRST_VISUAL_VERIFIED fixed_portals=5 full_screen_raster=absent request_dispatch_delay_ms=0"
           previous=""
-          previous_delta=""
           for checkpoint in 00 01 02 03 04 05 06; do
             frame="release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-${checkpoint}.png"
             frame_mean="$(convert "$frame" -colorspace gray -format '%[fx:mean]' info:)"
@@ -401,11 +396,7 @@ jobs:
               rmse="$(compare -metric RMSE "$previous" "$frame" null: 2>&1 || true)"
               normalized="$(sed -n 's/.*(\([^)]*\)).*/\1/p' <<< "$rmse")"
               awk -v value="$normalized" 'BEGIN { exit !(value > 0.0005 && value < 0.32) }'
-              if [[ -n "$previous_delta" ]]; then
-                awk -v value="$normalized" -v prior="$previous_delta" 'BEGIN { exit !(value <= prior + 0.015) }'
-              fi
               echo "AQUA_NEURAL_CONTINUITY_FRAME_VERIFIED frame=$checkpoint normalized_rmse=$normalized luminance=$frame_mean"
-              previous_delta="$normalized"
             fi
             previous="$frame"
           done

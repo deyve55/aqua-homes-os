@@ -2167,3 +2167,169 @@ html,body{overscroll-behavior:none}
   .connection-row{grid-template-columns:auto minmax(0,1fr)}.connection-row>b{grid-column:2;justify-self:start}.connection-row>div{grid-column:1/-1}
   .about-mark{width:104px}.about-shell{padding-top:16px}
 }
+
+/* App-first Neuralink correction.
+   The application screen is a live operating surface, not a cinematic plate:
+   five clear app portals, one static Aqua mark, restrained neural traffic, and
+   an opaque result surface. Motion may acknowledge work, but never gates it. */
+.system-panel[data-panel="neural"]{background:#000}
+.system-panel[data-panel="neural"] .neural-stage{
+  background:
+    radial-gradient(circle at 50% 43%,rgba(40,217,244,.12),transparent 18%),
+    radial-gradient(ellipse at 50% 48%,rgba(9,74,92,.18),transparent 52%),
+    linear-gradient(180deg,#01080c 0,#000508 52%,#000 100%)!important;
+  contain:layout paint;
+  isolation:isolate;
+}
+.system-panel[data-panel="neural"] .neural-stage:before{
+  content:""!important;
+  display:block!important;
+  position:absolute;
+  z-index:1;
+  inset:7% 6% 12%;
+  border:1px solid rgba(91,226,246,.055);
+  border-radius:46%;
+  background:
+    radial-gradient(circle at 50% 44%,transparent 0 19%,rgba(81,225,246,.055) 19.2% 19.45%,transparent 19.7%),
+    linear-gradient(90deg,transparent 49.9%,rgba(77,222,243,.045) 50%,transparent 50.1%);
+  pointer-events:none;
+}
+.system-panel[data-panel="neural"] .neural-stage:after{content:none!important;display:none!important}
+.system-panel[data-panel="neural"] .neural-vignette{
+  opacity:.72;
+  background:linear-gradient(180deg,rgba(0,0,0,.42),transparent 12% 84%,rgba(0,0,0,.62));
+}
+.system-panel[data-panel="neural"] .neural-titlebar{background:linear-gradient(180deg,rgba(0,0,0,.88),transparent)}
+.system-panel[data-panel="neural"] .neural-titlebar h1{font-size:clamp(24px,6vw,36px);text-shadow:none}
+
+.system-panel[data-panel="neural"] .neural-network{
+  z-index:7;
+  opacity:.48!important;
+  filter:none!important;
+}
+.system-panel[data-panel="neural"] .neural-route{stroke:rgba(105,224,241,.18);stroke-width:.34;stroke-dasharray:.55 3.4}
+.system-panel[data-panel="neural"] .neural-signal{
+  stroke:#80eaf8;
+  stroke-width:.58;
+  stroke-dasharray:.8 13.2;
+  opacity:.5;
+  filter:drop-shadow(0 0 3px rgba(47,219,244,.5));
+  animation-duration:3.8s;
+}
+.system-panel[data-panel="neural"] .neural-route-group:nth-child(2n) .neural-signal{stroke:#dbac61;opacity:.36;animation-duration:5.1s}
+.system-panel[data-panel="neural"] .neural-burst{opacity:.16;stroke-width:.3;filter:none}
+.system-panel[data-panel="neural"] .neural-traveler{opacity:.52;r:.55px;filter:drop-shadow(0 0 3px rgba(45,219,244,.55))}
+.system-panel[data-panel="neural"] .neural-traveler-gold{opacity:.38;filter:drop-shadow(0 0 3px rgba(228,169,75,.5))}
+.system-panel[data-panel="neural"] .neural-route-group.is-active .neural-signal{opacity:.92;stroke-width:1.05;animation-duration:.7s}
+.system-panel[data-panel="neural"] .neural-route-group.is-active .neural-traveler{opacity:1;r:.82px}
+
+.system-panel[data-panel="neural"] .neural-core,
+.system-panel[data-panel="neural"] .neural-core-field{
+  left:50%!important;
+  top:45%!important;
+  width:clamp(116px,28%,176px)!important;
+  transition:none!important;
+}
+.system-panel[data-panel="neural"] .neural-core{z-index:38;background:transparent!important;filter:none!important}
+.system-panel[data-panel="neural"] .neural-core:before,
+.system-panel[data-panel="neural"] .neural-core:after,
+.system-panel[data-panel="neural"] .neural-core>b{display:none!important}
+.system-panel[data-panel="neural"] .neural-core .aqua-mark{
+  display:block;
+  width:94%;
+  height:94%;
+  opacity:1!important;
+  filter:drop-shadow(0 0 4px rgba(233,252,255,.45)) drop-shadow(0 0 12px rgba(38,211,238,.16));
+}
+.system-panel[data-panel="neural"] .aqua-mark-orb{opacity:.72;animation:none!important}
+.system-panel[data-panel="neural"] .neural-core-field{display:none!important}
+.system-panel[data-panel="neural"] .neural-core-hit{inset:13%;opacity:.13;background:radial-gradient(circle,rgba(166,244,255,.14),transparent 67%)}
+
+.system-panel[data-panel="neural"] .neural-portal{width:clamp(78px,20vw,108px)!important;filter:none;transition:opacity .18s,filter .18s}
+.system-panel[data-panel="neural"] .neural-portal .portal-pull{
+  width:100%;
+  aspect-ratio:1;
+  padding:5%;
+  border:1px solid rgba(104,229,247,.3);
+  border-radius:50%;
+  background:rgba(0,4,7,.96);
+  box-shadow:inset 0 0 18px rgba(36,192,218,.055),0 10px 22px rgba(0,0,0,.76);
+  overflow:hidden;
+}
+.system-panel[data-panel="neural"] .neural-portal .portal-node{width:100%;height:100%;border-color:color-mix(in srgb,var(--portal-color) 54%,#dffbff);box-shadow:inset 0 0 14px #000,0 0 10px color-mix(in srgb,var(--portal-color) 22%,transparent)}
+.system-panel[data-panel="neural"] .neural-portal .portal-node>img{left:4%;top:4%;width:92%;height:76%;object-fit:cover;object-position:50% 18%;opacity:1;filter:saturate(1.06) contrast(1.08) brightness(1.02)}
+.system-panel[data-panel="neural"] .neural-portal .portal-environment-shade{background:linear-gradient(180deg,transparent 0 55%,rgba(0,0,0,.2) 66%,#000 91%)}
+.system-panel[data-panel="neural"] .neural-portal .portal-node>i{display:none}
+.system-panel[data-panel="neural"] .neural-portal .portal-node>strong{bottom:12%;font-size:clamp(7px,1.8vw,10px);font-weight:600;background:rgba(0,3,5,.92)}
+.system-panel[data-panel="neural"] .neural-portal .portal-node>em{bottom:4%;color:#7fa5ae;font-size:clamp(4px,1vw,6px)}
+.system-panel[data-panel="neural"] .neural-portal.is-primary .portal-pull{border-color:#e4b15c;transform:scale(1.06);box-shadow:inset 0 0 18px rgba(226,170,77,.07),0 0 0 1px rgba(255,226,166,.22),0 0 20px rgba(224,168,73,.2)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="selecting"] .neural-portal .portal-node{animation:neural-fixed-portal-materialize .22s cubic-bezier(.2,.82,.2,1) both}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="selecting"] .neural-portal.is-primary .portal-node{animation-name:neural-top-portal-materialize}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-portal.is-primary .portal-pull{transform:scale(1.08);filter:brightness(1.08);animation:none}
+
+.system-panel[data-panel="neural"] .neural-jolt{top:9%;height:36%;width:16px;opacity:0;filter:drop-shadow(0 0 8px rgba(57,226,249,.72))}
+.system-panel[data-panel="neural"] .neural-jolt>b{inset:0 5px;background:linear-gradient(180deg,transparent 0,#fff 9%,#65efff 32%,#f2ba63 55%,#fff 74%,#2bdcf6 92%,transparent 100%)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-jolt{opacity:.72}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-jolt>b{animation:neural-jolt-column .7s ease-out both;box-shadow:0 10px 10px rgba(45,221,246,.45),0 26px 18px rgba(45,221,246,.22)}
+.system-panel[data-panel="neural"] .neural-thought-residue{opacity:.08}
+.system-panel[data-panel="neural"] .neural-thought{
+  z-index:48;
+  bottom:4.2%;
+  width:min(82%,440px);
+  padding:12px 16px 14px;
+  border:1px solid rgba(78,199,220,.22);
+  border-radius:16px;
+  background:rgba(2,13,18,.94);
+  box-shadow:0 16px 32px rgba(0,0,0,.65);
+}
+.system-panel[data-panel="neural"] .neural-waveform,
+.system-panel[data-panel="neural"] .neural-request-trail{display:none}
+.system-panel[data-panel="neural"] .neural-thought small{color:#69dcec;letter-spacing:.15em}
+.system-panel[data-panel="neural"] .neural-thought strong{margin-top:7px;font-size:clamp(13px,3.2vw,18px)}
+.system-panel[data-panel="neural"] .neural-thought p{margin-top:5px;color:#829fa8;font-size:clamp(9px,2vw,11px)}
+
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-network,
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-core,
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-portal,
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-jolt,
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-thought,
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-thought-residue{opacity:0!important;pointer-events:none}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-network,
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-core,
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-portal{opacity:.2!important;transition:opacity .18s}
+.system-panel[data-panel="neural"] .neural-morph-shell{
+  display:block!important;
+  inset:8.6% 3.5% 3%;
+  border:1px solid rgba(83,217,239,.34);
+  border-radius:24px;
+  background:radial-gradient(circle at 50% 5%,rgba(34,186,214,.12),transparent 27%),linear-gradient(180deg,#031017,#00070a 46%,#000305);
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 22px 54px rgba(0,0,0,.8),0 0 22px rgba(42,219,244,.12);
+}
+.system-panel[data-panel="neural"] .neural-materialization-approved{
+  inset:8.6% 3.5% 3%;
+  border:1px solid rgba(83,217,239,.34);
+  border-radius:24px;
+  opacity:1;
+  background:radial-gradient(circle at 50% 5%,rgba(34,186,214,.1),transparent 27%),linear-gradient(180deg,#031017,#00070a 46%,#000305);
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 22px 54px rgba(0,0,0,.8);
+}
+.system-panel[data-panel="neural"] .neural-materialization-circuit{display:none}
+.system-panel[data-panel="neural"] .neural-approved-voice{left:5%;top:2%;width:90%;height:10%;padding:4px 3px;border-bottom:1px solid rgba(86,207,227,.16)}
+.system-panel[data-panel="neural"] .neural-approved-voice>div{opacity:.58}
+.system-panel[data-panel="neural"] .neural-approved-voice p{color:#c9f8ff;font-size:clamp(11px,2.8vw,15px);text-align:right}
+.system-panel[data-panel="neural"] .neural-live-object{left:6%;right:6%;top:14%;bottom:11.5%}
+.system-panel[data-panel="neural"] .neural-receipt-crop{border-radius:14px;background:#e0e0db;box-shadow:0 14px 28px rgba(0,0,0,.55)}
+.system-panel[data-panel="neural"] .neural-open-materialized-file{left:8%;right:8%;bottom:2.6%;height:6.8%;border-color:rgba(91,220,241,.58);background:#04151c;color:#baf7ff;text-shadow:none;box-shadow:inset 0 1px rgba(255,255,255,.06)}
+
+@keyframes neural-fixed-portal-materialize{from{opacity:.28;filter:blur(3px) brightness(.7)}to{opacity:1;filter:none}}
+@keyframes neural-top-portal-materialize{from{opacity:0;filter:blur(6px) brightness(1.5);transform:scale(.86)}65%{opacity:1;filter:blur(0) brightness(1.2);transform:scale(1.04)}to{opacity:1;filter:none;transform:scale(1)}}
+
+@media(max-width:600px){
+  .system-panel[data-panel="neural"] .neural-portal{width:20vw!important}
+  .system-panel[data-panel="neural"] .neural-morph-shell,
+  .system-panel[data-panel="neural"] .neural-materialization-approved{inset:8.4% 2.5% 2.5%}
+}
+@media(prefers-reduced-motion:reduce){
+  .system-panel[data-panel="neural"] .neural-signal,
+  .system-panel[data-panel="neural"] .neural-traveler{animation:none!important}
+}

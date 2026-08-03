@@ -6,12 +6,9 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
 
-const PHASE_DEADLINES_MILLIS = Object.freeze({
-  rotating: 2_000,
-  firing: 4_000,
-  transitioning: 6_000,
-  result: 9_000,
-});
+const ACK_BUDGET_MILLIS = 100;
+const FIRING_DEADLINE_MILLIS = 700;
+const RESULT_DEADLINE_MILLIS = 1_400;
 
 function parseArguments(argv) {
   const options = {};
@@ -114,12 +111,21 @@ const browserStateExpression = `(() => {
   const beforeStyle = stage ? getComputedStyle(stage, '::before') : null;
   const afterStyle = stage ? getComputedStyle(stage, '::after') : null;
   const stageStyle = stage ? getComputedStyle(stage) : null;
+  const aquaMark = document.querySelector('.neural-core .aqua-mark');
+  const selectedPortal = document.querySelector('.neural-portal.is-primary');
+  const selectedBounds = selectedPortal?.getBoundingClientRect();
   return {
     ready: root?.dataset?.aquaPreviewReady || '',
     phase: root?.dataset?.aquaNeuralPhase || '',
     stagePhase: stage?.dataset?.phase || '',
     motion: stage?.dataset?.motion || '',
     morphProgress: stage?.dataset?.morphProgress || '',
+    fixedPortals: stage?.dataset?.fixedPortals || '',
+    acknowledged: stage?.dataset?.acknowledged || '',
+    ackLatencyMillis: Number(stage?.dataset?.ackLatencyMillis || NaN),
+    ackBudgetMillis: Number(stage?.dataset?.ackBudgetMillis || NaN),
+    addedUiDelayMillis: Number(stage?.dataset?.addedUiDelayMillis || NaN),
+    presentationBudgetMillis: Number(stage?.dataset?.presentationBudgetMillis || NaN),
     thought: document.querySelector('[data-neural-thought]')?.textContent?.trim() || '',
     detail: document.querySelector('[data-neural-thought-detail]')?.textContent?.trim() || '',
     materialized: materialized?.dataset?.neuralMaterialized || '',
@@ -127,6 +133,7 @@ const browserStateExpression = `(() => {
     materializationKind: materialized?.dataset?.materializationKind || '',
     receiptVisible: Boolean(document.querySelector('.neural-materialization-approved.is-receipt')),
     focusName: document.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
+    selectedPortalTop: selectedBounds?.top || 0,
     visiblePortals: visiblePortals.length,
     visibleTravelers: Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => {
       const style = getComputedStyle(traveler);
@@ -139,10 +146,23 @@ const browserStateExpression = `(() => {
     }),
     joltOpacity: jolt ? Number(getComputedStyle(jolt).opacity) : 0,
     joltAnimation: joltBeam ? getComputedStyle(joltBeam).animationName : '',
+    aquaMarkOpacity: aquaMark ? Number(getComputedStyle(aquaMark).opacity) : 0,
+    aquaMarkAnimation: aquaMark ? getComputedStyle(aquaMark).animationName : '',
     substrateDisplay: substrate ? getComputedStyle(substrate).display : '',
-    usesApprovedStableUnderlay: Boolean(stageStyle?.backgroundImage?.includes('neuralink-rest-v071.png')),
+    usesRasterUnderlay: Boolean(stageStyle?.backgroundImage?.includes('url(')),
     usesPseudoRasterUnderlay: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
     usesRasterCompositor: Boolean(afterStyle?.backgroundImage?.includes('url(')),
+    portalArtworkContained: visiblePortals.every((portal) => {
+      const node = portal.querySelector('.portal-node');
+      const image = portal.querySelector('.portal-node > img');
+      if (!node || !image) return false;
+      const nodeBounds = node.getBoundingClientRect();
+      const imageBounds = image.getBoundingClientRect();
+      return imageBounds.left >= nodeBounds.left - 1
+        && imageBounds.top >= nodeBounds.top - 1
+        && imageBounds.right <= nodeBounds.right + 1
+        && imageBounds.bottom <= nodeBounds.bottom + 1;
+    }),
   };
 })()`;
 
@@ -233,89 +253,103 @@ async function run() {
     }
     assert.equal(restingState?.ready, "neural", "Neural preview did not become ready");
     assert.equal(restingState?.phase, "rest", "Live proof must begin from the real resting state");
-    const portalTriggered = await evaluate(connection, sessionId, `(() => {
-      const portal = document.querySelector('[data-neural-portal="6"]');
-      if (!portal) return false;
-      portal.click();
-      return true;
-    })()`);
-    assert.equal(portalTriggered, true, "Aqua Receipts portal could not be triggered");
-    const sequenceStartedAt = performance.now();
-    let lastPhase = "";
-
-    for (const expectedPhase of ["rotating", "firing", "transitioning", "result"]) {
-      const deadline = sequenceStartedAt + PHASE_DEADLINES_MILLIS[expectedPhase];
-      let state;
-      let lastEvaluationError = "";
-      while (performance.now() <= deadline) {
-        try {
-          state = await evaluate(connection, sessionId, browserStateExpression);
-          lastEvaluationError = "";
-        } catch (error) {
-          lastEvaluationError = error instanceof Error ? error.message : String(error);
-          await delay(25);
-          continue;
-        }
-        const elapsedMillis = Math.round(performance.now() - sequenceStartedAt);
-        if (state.phase !== lastPhase) {
-          timeline.push({ elapsedMillis, ...state });
-          lastPhase = state.phase;
-        }
-        if (state.ready === "neural" && state.phase === expectedPhase && state.stagePhase === expectedPhase) {
-          const checkpoint = { elapsedMillis, ...state };
-          timeline.push({ checkpoint: true, ...checkpoint });
-          await saveCheckpoint(options.evidenceDirectory, expectedPhase, checkpoint);
-          break;
-        }
-        await delay(25);
-      }
-      assert(state, `Could not read Neuralink state before ${expectedPhase}: ${lastEvaluationError}`);
-      assert.equal(state?.ready, "neural", `Neural preview was not ready before ${expectedPhase}`);
-      assert.equal(state?.phase, expectedPhase, `Live Neuralink did not reach ${expectedPhase} by its wall-clock deadline`);
-      assert.equal(state?.stagePhase, expectedPhase, `Stage and root phase diverged at ${expectedPhase}`);
-      assert.equal(state?.visiblePortals, 5, `Neuralink must keep exactly five application portals visible at ${expectedPhase}`);
-      assert.equal(state?.portalsLoaded, true, `Every portal must contain loaded application artwork at ${expectedPhase}`);
-      assert.ok(state?.visibleTravelers >= 10, `Every visible route must carry cyan and gold travelers at ${expectedPhase}`);
-      assert.equal(state?.substrateDisplay, "none", `Rejected mask substrates must stay disabled at ${expectedPhase}`);
-      assert.equal(state?.usesApprovedStableUnderlay, true, `The approved stable Neuralink architecture is missing at ${expectedPhase}`);
-      assert.equal(state?.usesPseudoRasterUnderlay, false, `A second raster underlay returned at ${expectedPhase}`);
-      assert.equal(state?.usesRasterCompositor, false, `Rejected full-screen raster compositing returned at ${expectedPhase}`);
-    }
-
-    const rotating = timeline.find((entry) => entry.checkpoint && entry.phase === "rotating");
-    const firing = timeline.find((entry) => entry.checkpoint && entry.phase === "firing");
-    const transitioning = timeline.find((entry) => entry.checkpoint && entry.phase === "transitioning");
-    const result = timeline.find((entry) => entry.checkpoint && entry.phase === "result");
-    assert(rotating.elapsedMillis < firing.elapsedMillis, "Firing must follow rotating in real time");
-    assert(firing.elapsedMillis < transitioning.elapsedMillis, "Transitioning must follow firing in real time");
-    assert(transitioning.elapsedMillis < result.elapsedMillis, "Result must follow transitioning in real time");
-    assert.equal(rotating.focusName, "Aqua Receipts");
-    assert.match(firing.detail, /large upward neuron burst through the selected path/);
-    assert.ok(firing.joltOpacity >= 0.99, "The firing phase must visibly reveal the upward jolt");
-    assert.match(firing.joltAnimation, /neural-jolt-column/);
+    assert.equal(restingState?.visiblePortals, 5, "The app-first screen must expose five fixed portals");
+    assert.equal(restingState?.fixedPortals, "true", "The app portals must not use carousel motion");
+    assert.equal(restingState?.portalsLoaded, true, "Every visible portal must contain loaded application artwork");
+    assert.equal(restingState?.portalArtworkContained, true, "Application artwork escaped a black portal");
+    assert.equal(restingState?.usesRasterUnderlay, false, "The chaotic full-screen Neuralink raster returned");
+    assert.equal(restingState?.usesPseudoRasterUnderlay, false, "A pseudo-element raster compositor returned");
+    assert.equal(restingState?.usesRasterCompositor, false, "A second full-screen raster compositor returned");
+    assert.equal(restingState?.substrateDisplay, "none", "The legacy mechanical substrate must stay hidden");
+    assert.ok(restingState?.aquaMarkOpacity >= .99, "The static Aqua A is not visible");
+    assert.ok(!restingState?.aquaMarkAnimation || restingState.aquaMarkAnimation === "none", "The Aqua A must stay static");
     const travelerBefore = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => getComputedStyle(traveler.closest('.neural-route-group')).visibility !== 'hidden').map((traveler) => { const bounds = traveler.getBoundingClientRect(); return [bounds.left, bounds.top]; })`);
     await delay(160);
     const travelerAfter = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => getComputedStyle(traveler.closest('.neural-route-group')).visibility !== 'hidden').map((traveler) => { const bounds = traveler.getBoundingClientRect(); return [bounds.left, bounds.top]; })`);
     assert.ok(
       travelerBefore.some((position, index) => Math.hypot(position[0] - travelerAfter[index][0], position[1] - travelerAfter[index][1]) > .5),
-      "Cyan and gold neuron particles must visibly travel along the live routes",
+      "Cyan and gold synapses must remain visibly alive while the portals stay fixed",
     );
+
+    const sequenceStartedAt = performance.now();
+    const portalTriggered = await evaluate(connection, sessionId, `(() => {
+      const portal = document.querySelector('[data-neural-portal="6"]');
+      if (!portal) return { triggered: false };
+      const startedAt = performance.now();
+      portal.click();
+      const stage = document.querySelector('.neural-stage');
+      return {
+        triggered: true,
+        handlerMillis: performance.now() - startedAt,
+        phase: stage?.dataset?.phase || '',
+        acknowledged: stage?.dataset?.acknowledged || '',
+        ackLatencyMillis: Number(stage?.dataset?.ackLatencyMillis || NaN),
+        addedUiDelayMillis: Number(stage?.dataset?.addedUiDelayMillis || NaN),
+        presentationBudgetMillis: Number(stage?.dataset?.presentationBudgetMillis || NaN),
+      };
+    })()`);
+    assert.equal(portalTriggered?.triggered, true, "Aqua Receipts portal could not be triggered");
+    assert.equal(portalTriggered?.phase, "selecting", "The selected app was not acknowledged immediately");
+    assert.equal(portalTriggered?.acknowledged, "true", "The app request was not acknowledged in the same handler");
+    assert.equal(portalTriggered?.addedUiDelayMillis, 0, "The request path still contains an artificial dispatch delay");
+    assert.equal(portalTriggered?.presentationBudgetMillis, 960, "The visible select, fire, and morph sequence exceeded one second by design");
+    assert.ok(portalTriggered?.ackLatencyMillis <= ACK_BUDGET_MILLIS, `Acknowledgment exceeded ${ACK_BUDGET_MILLIS}ms`);
+    assert.ok(portalTriggered?.handlerMillis <= ACK_BUDGET_MILLIS, `Portal handler exceeded ${ACK_BUDGET_MILLIS}ms`);
+    let lastPhase = "";
+    const phaseCheckpoints = new Map();
+    while (performance.now() - sequenceStartedAt <= RESULT_DEADLINE_MILLIS) {
+      const state = await evaluate(connection, sessionId, browserStateExpression);
+      const elapsedMillis = Math.round(performance.now() - sequenceStartedAt);
+      if (state.phase !== lastPhase) {
+        const checkpoint = { checkpoint: true, elapsedMillis, ...state };
+        timeline.push(checkpoint);
+        phaseCheckpoints.set(state.phase, checkpoint);
+        await saveCheckpoint(options.evidenceDirectory, state.phase || "unknown", checkpoint);
+        lastPhase = state.phase;
+      }
+      if (state.phase === "result" && state.materialized === "true") break;
+      await delay(20);
+    }
+
+    const selecting = phaseCheckpoints.get("selecting");
+    const firing = phaseCheckpoints.get("firing");
+    const transitioning = phaseCheckpoints.get("transitioning");
+    const result = phaseCheckpoints.get("result");
+    assert(selecting, "The selected app did not materialize into the fixed top portal");
+    assert(firing, "The clean firing phase was not visible");
+    assert(transitioning, "The portal-to-result morph was not visible");
+    assert(result, `The result did not appear within ${RESULT_DEADLINE_MILLIS}ms`);
+    assert.ok(firing.elapsedMillis <= FIRING_DEADLINE_MILLIS, "The upward firing pulse started too late");
+    assert.ok(result.elapsedMillis <= RESULT_DEADLINE_MILLIS, "The complete visual response exceeded its bound");
+    assert.ok(selecting.elapsedMillis < firing.elapsedMillis, "Firing must follow the fixed-portal materialization");
+    assert.ok(firing.elapsedMillis < transitioning.elapsedMillis, "The result morph must follow the upward firing pulse");
+    assert.ok(transitioning.elapsedMillis < result.elapsedMillis, "The morph must finish before the result state");
+    assert.equal(selecting.focusName, "Aqua Receipts");
+    assert.ok(selecting.selectedPortalTop < 250, "Aqua Receipts did not materialize into the top portal");
+    assert.equal(selecting.visiblePortals, 5, "The portal swap changed the number of visible portals");
+    assert.equal(selecting.portalArtworkContained, true, "An app escaped its black portal during selection");
+    assert.match(firing.detail, /cyan-and-gold signal upward with a visible tail/);
+    assert.ok(firing.joltOpacity >= .6, "The firing phase must visibly reveal the upward jolt and tail");
+    assert.match(firing.joltAnimation, /neural-jolt-column/);
     assert.equal(transitioning.materialized, "pending");
     assert.equal(result.materialized, "true");
     assert.equal(result.materializationKind, "receipts");
     assert.equal(result.receiptVisible, true);
+    assert.equal(result.visiblePortals, 0, "The clean result surface must not sit over portal clutter");
 
     await writeFile(join(options.evidenceDirectory, "timeline.json"), `${JSON.stringify({
       clock: "host-monotonic-wall-clock",
       url: options.url,
-      deadlinesMillis: PHASE_DEADLINES_MILLIS,
+      ackBudgetMillis: ACK_BUDGET_MILLIS,
+      firingDeadlineMillis: FIRING_DEADLINE_MILLIS,
+      resultDeadlineMillis: RESULT_DEADLINE_MILLIS,
       trigger: "bound-aqua-receipts-portal-click",
-      totalElapsedMillis: Math.round(performance.now() - sequenceStartedAt),
+      totalElapsedMillis: result.elapsedMillis,
       timeline,
     }, null, 2)}\n`);
     const finalDom = await evaluate(connection, sessionId, "document.documentElement.outerHTML");
     await writeFile(join(options.evidenceDirectory, "live-result.html"), finalDom);
-    process.stdout.write(`AQUA_NEURAL_LIVE_WALL_CLOCK_VERIFIED phases=rotating,firing,transitioning,result total_ms=${result.elapsedMillis}\n`);
+    process.stdout.write(`AQUA_NEURAL_APP_FIRST_VERIFIED dispatch_delay_ms=0 phases=selecting,firing,transitioning,result total_ms=${result.elapsedMillis}\n`);
   } catch (error) {
     await writeFile(join(options.evidenceDirectory, "failure.json"), `${JSON.stringify({
       clock: "host-monotonic-wall-clock",

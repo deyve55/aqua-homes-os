@@ -8,13 +8,13 @@ import { pathToFileURL } from "node:url";
 import { inflateSync } from "node:zlib";
 
 const MORPH_CHECKPOINTS = Object.freeze([
-  ["00", 2600, "0.054"],
-  ["01", 3000, "0.208"],
-  ["02", 3400, "0.362"],
-  ["03", 3800, "0.515"],
-  ["04", 4200, "0.669"],
-  ["05", 4600, "0.823"],
-  ["06", 5000, "0.977"],
+  ["00", 560, "0.048"],
+  ["01", 620, "0.190"],
+  ["02", 680, "0.333"],
+  ["03", 740, "0.476"],
+  ["04", 800, "0.619"],
+  ["05", 860, "0.762"],
+  ["06", 920, "0.905"],
 ]);
 
 function parseArguments(argv) {
@@ -223,16 +223,16 @@ function captureDefinitions() {
       output: "AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png",
     },
     {
-      name: "neural-rotate",
-      query: "preview=neural&neuralDemo=sequence&neuralAt=750",
+      name: "neural-select",
+      query: "preview=neural&neuralDemo=sequence&neuralAt=100",
       ready: "neural",
-      phase: "rotating",
+      phase: "selecting",
       visiblePortals: 5,
-      output: "AquaSentinelOS-v0.7.6-Neural-Link-Rotate-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png",
     },
     {
       name: "neural-fire",
-      query: "preview=neural&neuralDemo=sequence&neuralAt=1750",
+      query: "preview=neural&neuralDemo=sequence&neuralAt=300",
       ready: "neural",
       phase: "firing",
       visiblePortals: 5,
@@ -240,22 +240,21 @@ function captureDefinitions() {
     },
     {
       name: "neural-morph",
-      query: "preview=neural&neuralDemo=sequence&neuralAt=3500",
+      query: "preview=neural&neuralDemo=sequence&neuralAt=720",
       ready: "neural",
       phase: "transitioning",
-      morphProgress: "0.400",
+      morphProgress: "0.429",
       materialized: "pending",
       visiblePortals: 5,
       output: "AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png",
     },
     {
       name: "neural-result",
-      query: "preview=neural&neuralDemo=sequence&neuralAt=5600",
+      query: "preview=neural&neuralDemo=sequence&neuralAt=980",
       ready: "neural",
       phase: "result",
       morphProgress: "1.000",
       materialized: "true",
-      visiblePortals: 5,
       fullMaterialization: true,
       output: "AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png",
     },
@@ -338,6 +337,10 @@ const stateExpression = `(() => {
   const afterStyle = stage ? getComputedStyle(stage, '::after') : null;
   const stageStyle = stage ? getComputedStyle(stage) : null;
   const substrate = stage?.querySelector('.neural-substrate-map');
+  const aquaMark = stage?.querySelector('.neural-core .aqua-mark');
+  const jolt = stage?.querySelector('.neural-jolt');
+  const selectedPortal = stage?.querySelector('.neural-portal.is-primary');
+  const selectedBounds = selectedPortal?.getBoundingClientRect();
   return {
     documentReady: document.readyState,
     ready: root?.dataset?.aquaPreviewReady || '',
@@ -354,14 +357,30 @@ const stateExpression = `(() => {
     openFileWidth: openFileBounds?.width || 0,
     openFileTextFits: openFile ? openFile.scrollWidth <= openFile.clientWidth + 1 : false,
     visiblePortals: visiblePortals.length,
+    fixedPortals: stage?.dataset?.fixedPortals || '',
+    focusName: stage?.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
+    selectedPortalTop: selectedBounds?.top || 0,
+    joltOpacity: jolt ? Number(getComputedStyle(jolt).opacity) : 0,
+    aquaMarkAnimation: aquaMark ? getComputedStyle(aquaMark).animationName : '',
     portalImagesLoaded: visiblePortals.every((portal) => {
       const image = portal.querySelector('.portal-node > img');
       return image && image.complete && image.naturalWidth > 0 && image.naturalHeight > 0;
     }),
+    portalArtworkContained: visiblePortals.every((portal) => {
+      const node = portal.querySelector('.portal-node');
+      const image = portal.querySelector('.portal-node > img');
+      if (!node || !image) return false;
+      const nodeBounds = node.getBoundingClientRect();
+      const imageBounds = image.getBoundingClientRect();
+      return imageBounds.left >= nodeBounds.left - 1
+        && imageBounds.top >= nodeBounds.top - 1
+        && imageBounds.right <= nodeBounds.right + 1
+        && imageBounds.bottom <= nodeBounds.bottom + 1;
+    }),
     substrateDisplay: substrate ? getComputedStyle(substrate).display : '',
     beforeUsesRaster: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
     afterUsesRaster: Boolean(afterStyle?.backgroundImage?.includes('url(')),
-    stageUsesApprovedRaster: Boolean(stageStyle?.backgroundImage?.includes('neuralink-rest-v071.png')),
+    stageUsesRaster: Boolean(stageStyle?.backgroundImage?.includes('url(')),
     imageFailures: Array.from(document.images)
       .filter((image) => !image.complete || image.naturalWidth <= 0)
       .map((image) => image.currentSrc || image.src),
@@ -409,10 +428,15 @@ async function waitForExpectedState(connection, sessionId, definition) {
       && (!definition.materialized || state.materialized === definition.materialized)
       && (!definition.visiblePortals || state.visiblePortals === definition.visiblePortals)
       && (!definition.visiblePortals || state.portalImagesLoaded)
+      && (!definition.visiblePortals || state.portalArtworkContained)
+      && (!definition.visiblePortals || state.fixedPortals === "true")
+      && (!definition.visiblePortals || !state.aquaMarkAnimation || state.aquaMarkAnimation === "none")
       && (!definition.visiblePortals || state.substrateDisplay === "none")
       && (!definition.visiblePortals || (!state.beforeUsesRaster && !state.afterUsesRaster))
-      && (!definition.visiblePortals || state.stageUsesApprovedRaster)
+      && (!definition.visiblePortals || !state.stageUsesRaster)
       && state.imageFailures.length === 0
+      && (definition.phase !== "selecting" || (state.focusName === "Aqua Receipts" && state.selectedPortalTop < 250))
+      && (definition.phase !== "firing" || state.joltOpacity >= .6)
       && (!definition.materialized
         || (definition.materialized === "pending"
           ? state.morphShellOpacity > .1 && state.morphShellWidth > 0
