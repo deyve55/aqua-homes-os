@@ -361,11 +361,10 @@ const stateExpression = `(() => {
   const activeSynapses = Array.from(stage?.querySelectorAll('[data-neural-source-group].is-active .neural-burst.is-active') || []);
   const elongatedActiveSynapseCount = activeSynapses.filter((synapse) => {
     const style = getComputedStyle(synapse);
-    const dashSegments = String(style.strokeDasharray || '').match(/[\d.]+/g)?.map(Number) || [];
     return Number(style.opacity) >= .9
-      && Number.parseFloat(style.strokeWidth) >= 1.5
-      && dashSegments[0] >= 12
-      && dashSegments[1] >= 80;
+      && style.strokeDasharray !== 'none'
+      && Number(synapse.getAttribute('pathLength')) === 100
+      && synapse.getTotalLength() >= 12;
   }).length;
   return {
     documentReady: document.readyState,
