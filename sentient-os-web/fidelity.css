@@ -1787,7 +1787,7 @@ html,body{overscroll-behavior:none}
   filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 11px #2ce6ff);
   animation:neural-path-fire .24s linear infinite;
 }
-.neural-stage[data-phase="firing"] .neural-jolt{opacity:1}
+.neural-stage[data-phase="firing"] .neural-jolt{opacity:1;transition:none}
 .neural-stage[data-phase="firing"] .neural-jolt>b{animation:neural-jolt-column .76s ease-out both}
 .neural-stage[data-phase="firing"] .neural-jolt i:first-of-type{animation:neural-jolt-up .42s .02s cubic-bezier(.12,.82,.16,1) both}
 .neural-stage[data-phase="firing"] .neural-jolt i:nth-of-type(2){animation:neural-jolt-up .4s .2s cubic-bezier(.12,.82,.16,1) both}

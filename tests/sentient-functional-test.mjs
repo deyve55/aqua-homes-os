@@ -271,7 +271,7 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(fidelity, /v0\.7\.4 real-device rejection recovery/);
   assert.match(fidelity, /\.neural-substrate-map,\.neural-substrate-fire\{display:none!important\}/);
   assert.match(fidelity, /No full-screen raster/);
-  assert.match(fidelity, /\.neural-stage\[data-phase="firing"\] \.neural-jolt\{opacity:1\}/);
+  assert.match(fidelity, /\.neural-stage\[data-phase="firing"\] \.neural-jolt\{opacity:1;transition:none\}/);
   assert.match(fidelity, /object-fit:contain/);
   assert.match(fidelity, /\.neural-network\{z-index:6;opacity:\.96!important;filter:none!important;mix-blend-mode:normal/);
   assert.match(fidelity, /\.neural-materialization-circuit\{opacity:\.76;mix-blend-mode:normal\}/);
