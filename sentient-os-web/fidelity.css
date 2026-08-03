@@ -2718,11 +2718,6 @@ html,body{overscroll-behavior:none}
   opacity:1;
   filter:brightness(1.12) saturate(1.12);
 }
-.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-portal{
-  opacity:.24!important;
-  pointer-events:auto;
-}
-.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-portal.is-primary{opacity:.48!important}
 .system-panel[data-panel="neural"] .neural-burst{
   opacity:.82;
   stroke-width:.78;
