@@ -333,9 +333,25 @@ async function run() {
         new Promise((resolveExit) => browser.once("exit", resolveExit)),
         delay(2_000),
       ]);
-      if (browser.exitCode === null) browser.kill("SIGKILL");
+      if (browser.exitCode === null) {
+        browser.kill("SIGKILL");
+        await Promise.race([
+          new Promise((resolveExit) => browser.once("exit", resolveExit)),
+          delay(2_000),
+        ]);
+      }
     }
-    await rm(chromeProfile, { recursive: true, force: true });
+    await delay(250);
+    try {
+      await rm(chromeProfile, {
+        recursive: true,
+        force: true,
+        maxRetries: 12,
+        retryDelay: 120,
+      });
+    } catch (error) {
+      process.stderr.write(`AQUA_NEURAL_CLEANUP_WARNING ${error instanceof Error ? error.message : String(error)}\n`);
+    }
   }
 }
 
