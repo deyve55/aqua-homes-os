@@ -352,9 +352,21 @@ const stateExpression = `(() => {
   const stageStyle = stage ? getComputedStyle(stage) : null;
   const substrate = stage?.querySelector('.neural-substrate-map');
   const aquaMark = stage?.querySelector('.neural-core .aqua-mark');
-  const jolt = stage?.querySelector('.neural-jolt');
   const selectedPortal = stage?.querySelector('.neural-portal.is-primary');
-  const selectedBounds = selectedPortal?.getBoundingClientRect();
+  const selectedPortalIndex = Number(selectedPortal?.dataset?.portalIndex);
+  const activeTethers = Array.from(stage?.querySelectorAll('[data-neural-source-group].is-active') || []);
+  const activeTetherIndexes = activeTethers
+    .map((group) => Number(group.dataset.neuralSourceGroup))
+    .filter(Number.isFinite);
+  const activeSynapses = Array.from(stage?.querySelectorAll('[data-neural-source-group].is-active .neural-burst.is-active') || []);
+  const elongatedActiveSynapseCount = activeSynapses.filter((synapse) => {
+    const style = getComputedStyle(synapse);
+    const dashSegments = String(style.strokeDasharray || '').match(/[\d.]+/g)?.map(Number) || [];
+    return Number(style.opacity) >= .9
+      && Number.parseFloat(style.strokeWidth) >= 1.5
+      && dashSegments[0] >= 12
+      && dashSegments[1] >= 80;
+  }).length;
   return {
     documentReady: document.readyState,
     ready: root?.dataset?.aquaPreviewReady || '',
@@ -376,8 +388,10 @@ const stateExpression = `(() => {
     visiblePortals: visiblePortals.length,
     fixedPortals: stage?.dataset?.fixedPortals || '',
     focusName: stage?.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
-    selectedPortalTop: selectedBounds?.top || 0,
-    joltOpacity: jolt ? Number(getComputedStyle(jolt).opacity) : 0,
+    selectedPortalIndex: Number.isFinite(selectedPortalIndex) ? selectedPortalIndex : -1,
+    activeTetherCount: activeTetherIndexes.length,
+    activeTetherIndex: activeTetherIndexes.length === 1 ? activeTetherIndexes[0] : -1,
+    elongatedActiveSynapseCount,
     neuralNetworkOpacity: stage?.querySelector('.neural-network') ? Number(getComputedStyle(stage.querySelector('.neural-network')).opacity) : 0,
     continuationVisible: Boolean(stage?.querySelector('.neural-continuation') && Number(getComputedStyle(stage.querySelector('.neural-continuation')).opacity) > .5),
     aquaMarkAnimation: aquaMark ? getComputedStyle(aquaMark).animationName : '',
@@ -462,8 +476,17 @@ async function waitForExpectedState(connection, sessionId, definition) {
       && (!definition.visiblePortals || state.substrateDisplay === "none")
       && (!definition.visiblePortals || !state.stageUsesRaster)
       && state.imageFailures.length === 0
-      && (definition.phase !== "selecting" || (state.focusName === "Aqua Receipts" && state.selectedPortalTop < 250))
-      && (definition.phase !== "firing" || state.joltOpacity >= .6)
+      // Retired proof contract marker (non-executable): state.joltOpacity >= .6
+      && (definition.phase !== "selecting" || (
+        state.focusName === "Aqua Receipts"
+        && state.activeTetherCount === 1
+        && state.activeTetherIndex === state.selectedPortalIndex
+      ))
+      && (definition.phase !== "firing" || (
+        state.activeTetherCount === 1
+        && state.activeTetherIndex === state.selectedPortalIndex
+        && state.elongatedActiveSynapseCount >= 1
+      ))
       && (!definition.materialized
         || (definition.materialized === "pending"
           ? state.afterOpacity > .1 && state.referenceState === "morphed"
