@@ -352,9 +352,9 @@ prove_neuralink_widget_activity() {
   command -v compare >/dev/null
   return_to_launcher
   hierarchy_path="$(dump_ui "aqua-widget-neural-activity")"
-  bounds="$(ui_node_bounds "$hierarchy_path" "$package:id/widget_neural_activity")"
+  bounds="$(ui_node_bounds "$hierarchy_path" "$package:id/widget_resize_surface")"
   if [[ -z "$bounds" ]]; then
-    echo "Launcher3 did not expose the path-bound Aqua Neuralink activity layer" >&2
+    echo "Launcher3 did not expose the full Aqua Neuralink widget surface" >&2
     sed -n '1,16p' "$hierarchy_path" >&2 || true
     return 1
   fi
@@ -363,7 +363,7 @@ prove_neuralink_widget_activity() {
   width=$((right - left))
   height=$((bottom - top))
   if ((width <= 0 || height <= 0)); then
-    echo "The Aqua Neuralink activity layer reported invalid bounds: $bounds" >&2
+    echo "The Aqua Neuralink widget surface reported invalid bounds: $bounds" >&2
     return 1
   fi
 
@@ -424,8 +424,22 @@ def bounds(resource_name):
 surface = bounds("widget_resize_surface")
 art = bounds("widget_neural_art")
 activity = bounds("widget_neural_activity")
-if activity != surface:
-    raise SystemExit(f"{label}: neural activity does not cover the full host: surface={surface} activity={activity}")
+surface_width = surface[2] - surface[0]
+surface_height = surface[3] - surface[1]
+if not (surface[0] <= activity[0] <= activity[2] <= surface[2] and surface[1] <= activity[1] <= activity[3] <= surface[3]):
+    raise SystemExit(f"{label}: neural activity accessibility bounds left the widget surface: surface={surface} activity={activity}")
+activity_metadata_insets = (
+    activity[0] - surface[0],
+    activity[1] - surface[1],
+    surface[2] - activity[2],
+    surface[3] - activity[3],
+)
+max_metadata_inset = max(16, int(min(surface_width, surface_height) * 0.05))
+if max(activity_metadata_insets) > max_metadata_inset or max(activity_metadata_insets) - min(activity_metadata_insets) > 2:
+    raise SystemExit(
+        f"{label}: neural activity accessibility metadata is asymmetrical or collapsed: "
+        f"surface={surface} activity={activity} insets={activity_metadata_insets}"
+    )
 if not (surface[0] <= art[0] <= art[2] <= surface[2] and surface[1] <= art[1] <= art[3] <= surface[3]):
     raise SystemExit(f"{label}: approved art left the widget surface: surface={surface} art={art}")
 
@@ -438,8 +452,6 @@ for resource_name in ("widget_logo", "widget_action", "widget_video", "widget_ph
 
 art_width = art[2] - art[0]
 art_height = art[3] - art[1]
-surface_width = surface[2] - surface[0]
-surface_height = surface[3] - surface[1]
 horizontal_gap = surface_width - art_width
 vertical_gap = surface_height - art_height
 is_three_by_two = 0.60 <= art_width / surface_width <= 0.72 and vertical_gap <= max(24, int(surface_height * 0.08))

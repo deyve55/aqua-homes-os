@@ -930,7 +930,7 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(threeByTwoLayout, /android:background="@drawable\/aqua_widget_background_3x2"/);
   assert.match(threeByTwoLayout, /id="@\+id\/widget_resize_surface"[\s\S]*?android:padding="0dp"/);
   assert.doesNotMatch(threeByTwoLayout, /id="@\+id\/widget_resize_surface"[\s\S]*?android:padding="1dp"/);
-  assert.match(threeByTwoLayout, /id="@\+id\/widget_neural_activity"[\s\S]*?android:layout_margin="-1dp"/);
+  assert.doesNotMatch(threeByTwoLayout, /id="@\+id\/widget_neural_activity"[\s\S]*?android:layout_margin="-1dp"/);
   assert.match(threeByTwoBackground, /<gradient[\s\S]*?android:startColor="#0B2731"[\s\S]*?android:endColor="#000203"/);
   assert.match(threeByTwoBackground, /<stroke android:width="1dp" android:color="#61E9FF"/);
   assert.match(threeByTwoBackground, /<corners android:radius="20dp"/);
@@ -1089,6 +1089,10 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(activity, /AQUA_FILING_CABINET_OPENED/);
   assert.match(activity, /BuildConfig\.ECOSYSTEM_PRESENTATION_MODE/);
   assert.match(verifier, /AQUA_WIDGET_LAUNCHER_TAP mode=\$mode resource=\$resource_id/);
+  assert.match(verifier, /bounds="\$\(ui_node_bounds "\$hierarchy_path" "\$package:id\/widget_resize_surface"\)"/);
+  assert.match(verifier, /activity_metadata_insets =/);
+  assert.match(verifier, /neural activity accessibility metadata is asymmetrical or collapsed/);
+  assert.doesNotMatch(verifier, /neural activity does not cover the full host/);
   assert.match(verifier, /approved art left a visible host surround/);
   assert.match(verifier, /horizontal_gap > max\(24, int\(surface_width \* 0\.08\)\)/);
   assert.match(verifier, /AQUA_CAPTURE_SAVED type=voice/);

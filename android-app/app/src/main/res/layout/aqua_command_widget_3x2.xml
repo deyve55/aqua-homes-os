@@ -52,7 +52,6 @@
         android:id="@+id/widget_neural_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="-1dp"
         android:contentDescription="Cyan outbound and gold return three by two neural activity"
         android:indeterminate="true"
         android:indeterminateDrawable="@drawable/aqua_widget_neural_activity_wide" />
