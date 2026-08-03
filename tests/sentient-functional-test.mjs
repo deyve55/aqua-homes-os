@@ -856,6 +856,11 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(widgetVerifier, /Process: \$\{package_pattern\}/);
   assert.doesNotMatch(widgetVerifier, /if grep -Eq "FATAL EXCEPTION\|/);
   assert.match(widgetVerifier, /AQUA_WIDGET_CAPTURE_CANCEL_STAYED_ON_LAUNCHER/);
+  assert.match(widgetVerifier, /local stable_launcher_samples=0/);
+  assert.match(widgetVerifier, /stable_launcher_samples=\$\(\(stable_launcher_samples \+ 1\)\)/);
+  assert.match(widgetVerifier, /if \[\[ "\$stable_launcher_samples" -ge 2 \]\]/);
+  assert.match(widgetVerifier, /left QuickCaptureActivity resumed after the bounded launcher transition/);
+  assert.doesNotMatch(widgetVerifier, /left a Sentinel capture activity resumed over Launcher3/);
   assert.match(widgetVerifier, /assert_widget_control_geometry/);
   assert.match(widgetVerifier, /widget_resize_surface/);
   assert.match(widgetVerifier, /adb shell wm size/);

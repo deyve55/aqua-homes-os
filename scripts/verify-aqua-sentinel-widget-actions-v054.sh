@@ -337,22 +337,35 @@ assert_widget_send_returned_to_launcher() {
 assert_transient_capture_returned_to_launcher() {
   local mode="$1"
   local focus_path="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-return-focus.txt"
+  local package_pattern="${package//./\\.}"
+  local stable_launcher_samples=0
   for attempt in $(seq 1 20); do
     {
       adb shell dumpsys window 2>/dev/null || true
       adb shell dumpsys activity activities 2>/dev/null || true
     } > "$focus_path"
-    if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity|ACTIVITY).*${launcher_package}" "$focus_path"; then
-      if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${package}" "$focus_path"; then
-        echo "Widget $mode left a Sentinel capture activity resumed over Launcher3" >&2
-        return 1
+    if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${launcher_package}" "$focus_path" \
+      && ! grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${package_pattern}/" "$focus_path"; then
+      stable_launcher_samples=$((stable_launcher_samples + 1))
+      if [[ "$stable_launcher_samples" -ge 2 ]]; then
+        echo "AQUA_WIDGET_CAPTURE_CANCEL_STAYED_ON_LAUNCHER mode=$mode stable_samples=$stable_launcher_samples"
+        return 0
       fi
-      echo "AQUA_WIDGET_CAPTURE_CANCEL_STAYED_ON_LAUNCHER mode=$mode"
-      return 0
+    else
+      # Android can briefly report Launcher focused while QuickCaptureActivity is
+      # still resumed during Back dispatch. Require two clean snapshots instead
+      # of treating that transitional overlap as a terminal product failure.
+      stable_launcher_samples=0
     fi
     sleep 1
   done
-  echo "Widget $mode did not return naturally to Launcher3 after cancellation" >&2
+  if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${package_pattern}/.*QuickCaptureActivity" "$focus_path"; then
+    echo "Widget $mode left QuickCaptureActivity resumed after the bounded launcher transition" >&2
+  elif grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${package_pattern}/" "$focus_path"; then
+    echo "Widget $mode left a Sentinel activity resumed after the bounded launcher transition" >&2
+  else
+    echo "Widget $mode did not reach two stable Launcher snapshots after cancellation" >&2
+  fi
   tail -n 80 "$focus_path" >&2 || true
   return 1
 }
