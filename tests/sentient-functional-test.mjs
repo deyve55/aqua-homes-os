@@ -833,7 +833,10 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(widgetVerifier, /dumpsys appwidget/);
   assert.match(widgetVerifier, /dumpsys window/);
   assert.match(widgetVerifier, /dumpsys activity activities/);
-  assert.match(widgetVerifier, /launcher_package="com\.android\.launcher3"/);
+  assert.match(widgetVerifier, /resolve_home_launcher_package\(\)/);
+  assert.match(widgetVerifier, /cmd package resolve-activity --brief/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_HOME_LAUNCHER_RESOLVED package=\$launcher_package/);
+  assert.doesNotMatch(widgetVerifier, /launcher_package="com\.android\.launcher3"/);
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_HOST_READY/);
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURALINK_SURFACE_READY/);
   assert.match(widgetVerifier, /path=armed_on_tap/);

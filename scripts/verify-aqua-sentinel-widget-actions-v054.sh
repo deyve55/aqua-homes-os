@@ -4,8 +4,24 @@ set -euo pipefail
 package="com.aquahomes.sentinel"
 main_activity="$package/com.aquahomes.sentientos.MainActivity"
 capture_activity="$package/com.aquahomes.sentientos.QuickCaptureActivity"
-launcher_package="com.android.launcher3"
+launcher_package=""
 widget_provider="$package/com.aquahomes.sentientos.AquaCommandWidget"
+
+resolve_home_launcher_package() {
+  local component=""
+  component="$(
+    adb shell cmd package resolve-activity --brief \
+      -a android.intent.action.MAIN \
+      -c android.intent.category.HOME 2>/dev/null \
+      | tr -d '\r' \
+      | tail -n 1
+  )"
+  if [[ "$component" != */* ]]; then
+    echo "Android did not resolve an active HOME launcher component: $component" >&2
+    return 1
+  fi
+  printf '%s\n' "${component%%/*}"
+}
 
 clear_logcat() {
   for attempt in $(seq 1 8); do
@@ -163,7 +179,7 @@ return_to_launcher() {
     fi
     sleep 1
   done
-  echo "Launcher3 did not become the focused home activity" >&2
+  echo "The resolved Android home launcher did not become focused: $launcher_package" >&2
   tail -n 80 /tmp/aqua-widget-launcher-window.txt >&2 || true
   return 1
 }
@@ -700,6 +716,9 @@ tap_launcher_control() {
   echo "Android did not expose the Neuralink endpoint for: $mode" >&2
   return 1
 }
+
+launcher_package="$(resolve_home_launcher_package)"
+echo "AQUA_WIDGET_HOME_LAUNCHER_RESOLVED package=$launcher_package"
 
 pin_widget_on_launcher
 prove_neuralink_widget_activity
