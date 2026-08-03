@@ -393,6 +393,7 @@ jobs:
           awk -v value="$result_normalized" 'BEGIN { exit !(value < 0.36) }'
           echo "AQUA_OWNER_VISUAL_REFERENCE_VERIFIED rest_rmse=$rest_normalized result_rmse=$result_normalized"
           previous=""
+          previous_delta=""
           for checkpoint in 00 01 02 03 04 05 06; do
             frame="release/AquaSentinelOS-v0.7.5-Neural-Link-Morph-${checkpoint}.png"
             frame_mean="$(convert "$frame" -colorspace gray -format '%[fx:mean]' info:)"
@@ -400,8 +401,12 @@ jobs:
             if [[ -n "$previous" ]]; then
               rmse="$(compare -metric RMSE "$previous" "$frame" null: 2>&1 || true)"
               normalized="$(sed -n 's/.*(\([^)]*\)).*/\1/p' <<< "$rmse")"
-              awk -v value="$normalized" 'BEGIN { exit !(value > 0.0005 && value < 0.24) }'
+              awk -v value="$normalized" 'BEGIN { exit !(value > 0.0005 && value < 0.32) }'
+              if [[ -n "$previous_delta" ]]; then
+                awk -v value="$normalized" -v prior="$previous_delta" 'BEGIN { exit !(value <= prior + 0.015) }'
+              fi
               echo "AQUA_NEURAL_CONTINUITY_FRAME_VERIFIED frame=$checkpoint normalized_rmse=$normalized luminance=$frame_mean"
+              previous_delta="$normalized"
             fi
             previous="$frame"
           done

@@ -1112,6 +1112,8 @@ test("v0.7.5 secondary operating surfaces execute real Android boundaries", asyn
   assert.match(workflow, /git log -1 --pretty=%B/);
   assert.match(workflow, /github\.event_name == 'pull_request'/);
   assert.match(workflow, /needs\.preflight-no-apk\.outputs\.build_test_apk == 'true'/);
+  assert.match(workflow, /value < 0\.32/);
+  assert.match(workflow, /value <= prior \+ 0\.015/);
   assert.match(fidelity, /v0\.7\.5 operating-surface completion/);
   assert.match(fidelity, /\.connections-shell,\.about-shell/);
   assert.match(fidelity, /\.diagnostic-actions/);
