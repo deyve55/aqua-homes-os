@@ -887,7 +887,7 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
 });
 
 test("responsive widget fills every supported host while preserving approved art and action zones", async () => {
-  const [gradle, manifest, widget, widgetLayout, compactLayout, compactLargeLayout, microLayout, threeByTwoLayout, threeByTwoBackground, wideLayout, widgetInfo, capture, activity, store, verifier, script, styles, neural4x6, neural2x2, neuralWide, activity4x6, activityWide, widget4x6, widget2x2] = await Promise.all([
+  const [gradle, manifest, widget, widgetLayout, compactLayout, compactLargeLayout, microLayout, threeByTwoLayout, threeByTwoBackground, threeByTwoBorder, wideLayout, widgetInfo, capture, activity, store, verifier, script, styles, neural4x6, neural2x2, neuralWide, activity4x6, activityWide, widget4x6, widget2x2] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read("android-app/app/src/main/AndroidManifest.xml"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
@@ -897,6 +897,7 @@ test("responsive widget fills every supported host while preserving approved art
     read("android-app/app/src/main/res/layout/aqua_command_widget_2x2.xml"),
     read("android-app/app/src/main/res/layout/aqua_command_widget_3x2.xml"),
     read("android-app/app/src/main/res/drawable/aqua_widget_background_3x2.xml"),
+    read("android-app/app/src/main/res/drawable/aqua_widget_border_3x2.xml"),
     read("android-app/app/src/main/res/layout/aqua_command_widget_wide.xml"),
     read("android-app/app/src/main/res/xml/aqua_command_widget_info.xml"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
@@ -931,9 +932,12 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(threeByTwoLayout, /id="@\+id\/widget_resize_surface"[\s\S]*?android:padding="0dp"/);
   assert.doesNotMatch(threeByTwoLayout, /id="@\+id\/widget_resize_surface"[\s\S]*?android:padding="1dp"/);
   assert.match(threeByTwoBackground, /<gradient[\s\S]*?android:startColor="#0B2731"[\s\S]*?android:endColor="#000203"/);
-  assert.match(threeByTwoBackground, /<stroke android:width="1dp" android:color="#61E9FF"/);
   assert.match(threeByTwoBackground, /<corners android:radius="20dp"/);
-  assert.doesNotMatch(threeByTwoBackground, /<padding\b/);
+  assert.doesNotMatch(threeByTwoBackground, /<(?:padding|stroke)\b/);
+  assert.match(threeByTwoLayout, /android:src="@drawable\/aqua_widget_border_3x2"/);
+  assert.match(threeByTwoBorder, /<solid android:color="#00000000"/);
+  assert.match(threeByTwoBorder, /<stroke android:width="1dp" android:color="#61E9FF"/);
+  assert.match(threeByTwoBorder, /<corners android:radius="20dp"/);
   assert.doesNotMatch(widgetLayout, /widget_shimmer/);
   assert.match(widgetLayout, /id="@\+id\/widget_neural_art"/);
   assert.doesNotMatch(widgetLayout, /widget_active_path|aqua_widget_jolt/);
