@@ -520,12 +520,14 @@ test("v0.7.7 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(neuralLiveProof, /performance\.now\(\)/);
   assert.match(neuralLiveProof, /const ACK_BUDGET_MILLIS = 100/);
   assert.match(neuralLiveProof, /const RESULT_DEADLINE_MILLIS = 1_400/);
+  assert.match(neuralLiveProof, /const RESULT_COLLECTION_GRACE_MILLIS = 250/);
   assert.match(neuralLiveProof, /const browserTimelineStateFunctionExpression/);
   assert.match(neuralLiveProof, /new MutationObserver\(\(\) => this\.capture\(\)\)/);
   assert.match(neuralLiveProof, /window\.__aquaNeuralWallClockRecorder = recorder/);
   assert.match(neuralLiveProof, /window\.__aquaNeuralWallClockRecorder\.start\(\);\s*const startedAt = performance\.now\(\);\s*portal\.click\(\)/);
   assert.match(neuralLiveProof, /waitForRendererTimelineExpression/);
-  assert.match(neuralLiveProof, /snapshot\.elapsedMillis >= \$\{RESULT_DEADLINE_MILLIS\}/);
+  assert.match(neuralLiveProof, /RESULT_DEADLINE_MILLIS \+ RESULT_COLLECTION_GRACE_MILLIS/);
+  assert.doesNotMatch(neuralLiveProof, /requestAnimationFrame\(inspect\)/);
   assert.doesNotMatch(neuralLiveProof, /while \(performance\.now\(\) - sequenceStartedAt <= RESULT_DEADLINE_MILLIS\)/);
   assert.doesNotMatch(neuralLiveProof, /await delay\(20\)/);
   assert.match(neuralLiveProof, /selecting,firing,transitioning,result/);
@@ -536,7 +538,7 @@ test("v0.7.7 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(neuralLiveProof, /materializationKind, "receipts"/);
   assert.match(neuralLiveProof, /visiblePortals, 7/);
   assert.match(neuralLiveProof, /restingState\.visiblePortals === 7[\s\S]*restingState\.portalsLoaded === true[\s\S]*restingState\.portalArtworkContained === true/);
-  assert.match(neuralLiveProof, /entry\.phase === 'result'[\s\S]*entry\.materialized === 'true'/);
+  assert.match(neuralLiveProof, /checkpoint\.phase === "result" && checkpoint\.materialized === "true"/);
   assert.match(neuralLiveProof, /const resultVisualState = await evaluate\(connection, sessionId, browserStateExpression\)/);
   assert.match(neuralLiveProof, /Cyan and gold synapses must remain visibly alive/);
   assert.match(neuralLiveProof, /portalsLoaded, true/);

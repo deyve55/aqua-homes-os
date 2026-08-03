@@ -9,6 +9,7 @@ import { performance } from "node:perf_hooks";
 const ACK_BUDGET_MILLIS = 100;
 const FIRING_DEADLINE_MILLIS = 700;
 const RESULT_DEADLINE_MILLIS = 1_400;
+const RESULT_COLLECTION_GRACE_MILLIS = 250;
 
 function parseArguments(argv) {
   const options = {};
@@ -259,18 +260,11 @@ const installRendererTimelineExpression = `(() => {
 
 const waitForRendererTimelineExpression = `new Promise((resolveTimeline) => {
   const recorder = window.__aquaNeuralWallClockRecorder;
-  const inspect = () => {
+  setTimeout(() => {
     const snapshot = recorder.snapshot();
-    const result = snapshot.checkpoints.find((entry) => entry.phase === 'result'
-      && entry.materialized === 'true');
-    if (result || snapshot.elapsedMillis >= ${RESULT_DEADLINE_MILLIS}) {
-      recorder.observer?.disconnect();
-      resolveTimeline(snapshot);
-      return;
-    }
-    requestAnimationFrame(inspect);
-  };
-  inspect();
+    recorder.observer?.disconnect();
+    resolveTimeline(snapshot);
+  }, ${RESULT_DEADLINE_MILLIS + RESULT_COLLECTION_GRACE_MILLIS});
 })`;
 
 async function evaluate(connection, sessionId, expression) {
