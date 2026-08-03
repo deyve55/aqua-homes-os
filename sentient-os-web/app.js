@@ -1693,30 +1693,56 @@ function animateMaterializationFromPortal() {
       surface.dataset.morphReady = "true";
       return;
     }
-    const offsetX = sourceBounds.left - targetBounds.left;
-    const offsetY = sourceBounds.top - targetBounds.top;
-    const scaleX = sourceBounds.width / targetBounds.width;
-    const scaleY = sourceBounds.height / targetBounds.height;
+    const containingBounds = surface.offsetParent?.getBoundingClientRect()
+      || stage.getBoundingClientRect();
+    const sourceBox = {
+      left: sourceBounds.left - containingBounds.left,
+      top: sourceBounds.top - containingBounds.top,
+      width: sourceBounds.width,
+      height: sourceBounds.height,
+    };
+    const targetBox = {
+      left: targetBounds.left - containingBounds.left,
+      top: targetBounds.top - containingBounds.top,
+      width: targetBounds.width,
+      height: targetBounds.height,
+    };
+    const mix = (from, to, progress) => from + (to - from) * progress;
     const targetRadius = getComputedStyle(surface).borderRadius || "24px";
     const animations = typeof surface.getAnimations === "function"
       ? surface.getAnimations()
       : [];
     animations.forEach((animation) => animation.cancel());
-    neuralMaterializationAnimation = surface.animate([
+    const materializationAnimation = surface.animate([
       {
-        transform: `translate3d(${offsetX}px,${offsetY}px,0) scale(${scaleX},${scaleY})`,
+        left: `${sourceBox.left}px`,
+        top: `${sourceBox.top}px`,
+        width: `${sourceBox.width}px`,
+        height: `${sourceBox.height}px`,
+        right: "auto",
+        bottom: "auto",
         borderRadius: "50%",
-        opacity: .92,
+        opacity: 1,
         offset: 0,
       },
       {
-        transform: `translate3d(${offsetX * .46}px,${offsetY * .42}px,0) scale(${scaleX + (1 - scaleX) * .48},${scaleY + (1 - scaleY) * .42})`,
+        left: `${mix(sourceBox.left, targetBox.left, .46)}px`,
+        top: `${mix(sourceBox.top, targetBox.top, .46)}px`,
+        width: `${mix(sourceBox.width, targetBox.width, .46)}px`,
+        height: `${mix(sourceBox.height, targetBox.height, .46)}px`,
+        right: "auto",
+        bottom: "auto",
         borderRadius: "28%",
         opacity: 1,
         offset: .46,
       },
       {
-        transform: "translate3d(0,0,0) scale(1,1)",
+        left: `${targetBox.left}px`,
+        top: `${targetBox.top}px`,
+        width: `${targetBox.width}px`,
+        height: `${targetBox.height}px`,
+        right: "auto",
+        bottom: "auto",
         borderRadius: targetRadius,
         opacity: 1,
         offset: 1,
@@ -1726,16 +1752,22 @@ function animateMaterializationFromPortal() {
       easing: "cubic-bezier(.16,.76,.18,1)",
       fill: "both",
     });
-    surface.querySelectorAll(".neural-approved-voice,.neural-live-object,.neural-open-materialized-file")
-      .forEach((content) => content.animate([
-        { opacity: 0, transform: "translate3d(3%,0,0)" },
-        { opacity: 0, transform: "translate3d(3%,0,0)", offset: .42 },
-        { opacity: 1, transform: "translate3d(0,0,0)" },
-      ], {
-        duration: NEURAL_MORPH_MILLIS,
-        easing: "cubic-bezier(.16,.76,.18,1)",
-        fill: "both",
-      }));
+    materializationAnimation.id = "aqua-neural-materialization-box";
+    neuralMaterializationAnimation = materializationAnimation;
+    const parameters = new URLSearchParams(window.location.search);
+    const deterministicSequence = parameters.get("preview") === "neural"
+      && parameters.get("neuralDemo") === "sequence"
+      && parameters.has("neuralAt");
+    if (deterministicSequence) {
+      materializationAnimation.pause();
+      materializationAnimation.currentTime = neuralMorphProgress * NEURAL_MORPH_MILLIS;
+    } else {
+      materializationAnimation.finished.then(() => {
+        if (neuralMaterializationAnimation !== materializationAnimation) return;
+        materializationAnimation.cancel();
+        neuralMaterializationAnimation = null;
+      }).catch(() => {});
+    }
     surface.dataset.morphReady = "true";
   });
 }

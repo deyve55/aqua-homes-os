@@ -1831,6 +1831,7 @@ html,body{overscroll-behavior:none}
 .neural-materialization-slot{z-index:52;contain:layout paint}
 .neural-materialization-approved{
   inset:5.8% 2.5% 2.4% 27.5%;
+  box-sizing:border-box;
   overflow:hidden;
   border:1px solid rgba(86,226,248,.22);
   border-radius:clamp(18px,4vw,30px);

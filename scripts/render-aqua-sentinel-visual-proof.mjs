@@ -169,6 +169,7 @@ function captureDefinitions() {
       morphProgress: "1.000",
       materialized: "true",
       visiblePortals: 5,
+      fullMaterialization: true,
       output: "AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png",
     },
     ...MORPH_CHECKPOINTS.map(([name, neuralAt, morphProgress]) => ({
@@ -203,6 +204,10 @@ const stateExpression = `(() => {
   const materialization = materialized;
   const materializationStyle = materialization ? getComputedStyle(materialization) : null;
   const materializationBounds = materialization?.getBoundingClientRect();
+  const returnedDocument = materialization?.querySelector('.neural-returned-document');
+  const returnedDocumentBounds = returnedDocument?.getBoundingClientRect();
+  const openFile = materialization?.querySelector('.neural-open-materialized-file');
+  const openFileBounds = openFile?.getBoundingClientRect();
   const visiblePortals = Array.from(document.querySelectorAll('[data-portal-index]'))
     .filter((portal) => {
       const style = getComputedStyle(portal);
@@ -221,6 +226,10 @@ const stateExpression = `(() => {
     materialized: materialized?.dataset?.neuralMaterialized || '',
     materializationOpacity: materializationStyle ? Number(materializationStyle.opacity) : 0,
     materializationWidth: materializationBounds?.width || 0,
+    materializationTransform: materializationStyle?.transform || '',
+    returnedDocumentWidth: returnedDocumentBounds?.width || 0,
+    openFileWidth: openFileBounds?.width || 0,
+    openFileTextFits: openFile ? openFile.scrollWidth <= openFile.clientWidth + 1 : false,
     visiblePortals: visiblePortals.length,
     portalImagesContained: visiblePortals.every((portal) => {
       const image = portal.querySelector('.portal-node > img');
@@ -252,6 +261,7 @@ async function settlePage(connection, sessionId) {
     }));
     for (const animation of document.getAnimations()) {
       try {
+        if (animation.id === 'aqua-neural-materialization-box') continue;
         const timing = animation.effect?.getComputedTiming?.();
         if (Number.isFinite(timing?.endTime) && animation.playState !== 'finished') animation.finish();
       } catch (_) {}
@@ -279,7 +289,13 @@ async function waitForExpectedState(connection, sessionId, definition) {
       && state.imageFailures.length === 0
       && (!definition.materialized
         || (state.materializationOpacity >= 0.98 && state.materializationWidth > 0));
-    if (expected) return state;
+    const fullMaterializationReady = !definition.fullMaterialization || (
+      state.materializationTransform === 'none'
+        && state.returnedDocumentWidth >= state.materializationWidth * .7
+        && state.openFileWidth >= state.materializationWidth * .7
+        && state.openFileTextFits
+    );
+    if (expected && fullMaterializationReady) return state;
     await delay(40);
   }
   throw new Error(`${definition.name} did not settle into its required visual state: ${JSON.stringify(state)}`);

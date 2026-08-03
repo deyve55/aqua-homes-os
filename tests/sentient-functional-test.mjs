@@ -220,6 +220,9 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /group\.setAttribute\("transform", neuralRouteTransform\(slot\)\)/);
   assert.match(script, /group\.animate\(keyframes/);
   assert.match(script, /if \(materializedIndex < 0\) return \{ \.\.\.ringSlot, opacity: 0 \}/);
+  assert.match(script, /materializationAnimation\.id = "aqua-neural-materialization-box"/);
+  assert.match(script, /left: `\$\{sourceBox\.left\}px`/);
+  assert.doesNotMatch(script, /content\.animate\(\[/);
   assert.match(script, /sourceIndex === neuralFocusIndex/);
   assert.match(script, /neuralSupportIndexes\.includes\(sourceIndex\)/);
   assert.match(script, /Promise\.allSettled\(animations\.map/);
@@ -424,6 +427,9 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=3500/);
   assert.match(visualRenderer, /neuralDemo=sequence&neuralAt=5600/);
   assert.match(visualRenderer, /\["00", 2600, "0\.054"\][\s\S]*\["06", 5000, "0\.977"\]/);
+  assert.match(visualRenderer, /animation\.id === 'aqua-neural-materialization-box'/);
+  assert.match(visualRenderer, /returnedDocumentWidth >= state\.materializationWidth \* \.7/);
+  assert.match(visualRenderer, /openFileTextFits/);
   assert.match(workflow, /Neural-Link-Morph-closed-phone\.png/);
   assert.match(workflow, /data-aqua-neural-phase="transitioning"/);
   assert.match(workflow, /preview=command/);
