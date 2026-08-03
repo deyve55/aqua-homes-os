@@ -66,9 +66,21 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || github.ref_name == 'agent/aqua-sentinel-command-center-integration-20260730' || github.head_ref == 'agent/aqua-sentinel-command-center-integration-20260730'
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    outputs:
+      build_test_apk: ${{ steps.build_intent.outputs.requested }}
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+
+      - name: Read one-time test build intent
+        id: build_intent
+        shell: bash
+        run: |
+          if git log -1 --pretty=%B | grep -Fq '[build-test-apk]'; then
+            echo 'requested=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'requested=false' >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -132,7 +144,7 @@ jobs:
 
   build-apk:
     needs: preflight-no-apk
-    if: (github.event_name == 'workflow_dispatch' && inputs.owner_visual_approval) || (github.event_name == 'push' && github.ref_name == 'agent/aqua-sentinel-command-center-integration-20260730' && contains(github.event.head_commit.message, '[build-test-apk]'))
+    if: (github.event_name == 'workflow_dispatch' && inputs.owner_visual_approval) || (github.event_name == 'pull_request' && github.head_ref == 'agent/aqua-sentinel-command-center-integration-20260730' && needs.preflight-no-apk.outputs.build_test_apk == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
