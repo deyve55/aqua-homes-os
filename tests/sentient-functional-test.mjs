@@ -276,6 +276,7 @@ test("the premium Neural Link keeps five fixed portals alive while Aqua brings o
   assert.match(appFirstNeuralink, /linear-gradient\(180deg,transparent 0,#fff 9%,#65efff 32%,#f2ba63 55%/);
   assert.match(appFirstNeuralink, /data-phase="firing"[\s\S]*neural-jolt-column/);
   assert.match(appFirstNeuralink, /data-phase="result"[\s\S]*\.neural-portal,[\s\S]*opacity:0!important/);
+  assert.match(appFirstNeuralink, /data-phase="transitioning"[\s\S]*\.neural-portal\.is-dormant\{opacity:0!important;pointer-events:none\}/);
   assert.match(appFirstNeuralink, /\.neural-morph-shell\{[\s\S]*linear-gradient\(180deg,#031017,#00070a 46%,#000305\)/);
   assert.match(fidelity, /@keyframes neural-substrate-cyan-out/);
   assert.match(fidelity, /@keyframes neural-substrate-gold-return/);
@@ -412,6 +413,7 @@ test("v0.7.6 preserves Home while the app-first Neuralink sequence stays fixed, 
   assert.match(workflow, /preflight-no-apk:/);
   assert.match(workflow, /compileDebugJavaWithJavac :app:mergeDebugResources/);
   assert.match(workflow, /AquaSentinelOS-v0\.7\.6-preflight-no-apk/);
+  assert.match(workflow, /Retain preflight visual evidence[\s\S]*if: \$\{\{ always\(\) \}\}/);
   assert.match(visualRenderer, /AQUA_RESULT_DOCUMENT_PIXEL_GATE/);
   assert.match(visualRenderer, /resultDocumentPixelMean >= \.28/);
   assert.match(visualRenderer, /inflateSync/);

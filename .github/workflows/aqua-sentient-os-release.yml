@@ -137,6 +137,7 @@ jobs:
         run: gradle --no-daemon :app:compileDebugJavaWithJavac :app:mergeDebugResources
 
       - name: Retain preflight visual evidence
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: AquaSentinelOS-v0.7.6-preflight-no-apk-${{ github.run_attempt }}

@@ -2297,6 +2297,7 @@ html,body{overscroll-behavior:none}
 .system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-network,
 .system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-core,
 .system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-portal{opacity:.2!important;transition:opacity .18s}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-portal.is-dormant{opacity:0!important;pointer-events:none}
 .system-panel[data-panel="neural"] .neural-morph-shell{
   display:block!important;
   inset:8.6% 3.5% 3%;
