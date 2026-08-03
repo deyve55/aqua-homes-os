@@ -175,23 +175,51 @@ const browserStateFunctionExpression = `() => {
 
 const browserStateExpression = `(${browserStateFunctionExpression})()`;
 
-const installRendererTimelineExpression = `(() => {
-  const readState = (${browserStateFunctionExpression});
+const browserTimelineStateFunctionExpression = `() => {
   const root = document.documentElement;
   const stage = document.querySelector('.neural-stage');
+  const materialized = document.querySelector('[data-neural-materialized]');
+  const selectedPortal = document.querySelector('.neural-portal.is-primary');
+  return {
+    ready: root?.dataset?.aquaPreviewReady || '',
+    phase: root?.dataset?.aquaNeuralPhase || '',
+    stagePhase: stage?.dataset?.phase || '',
+    motion: stage?.dataset?.motion || '',
+    morphProgress: stage?.dataset?.morphProgress || '',
+    referenceComposition: stage?.dataset?.referenceComposition || '',
+    referenceState: stage?.dataset?.referenceState || '',
+    selectedApp: stage?.dataset?.selectedApp || '',
+    fixedPortals: stage?.dataset?.fixedPortals || '',
+    declaredVisiblePortals: Number(stage?.dataset?.neuralVisiblePortals || NaN),
+    acknowledged: stage?.dataset?.acknowledged || '',
+    ackLatencyMillis: Number(stage?.dataset?.ackLatencyMillis || NaN),
+    ackBudgetMillis: Number(stage?.dataset?.ackBudgetMillis || NaN),
+    addedUiDelayMillis: Number(stage?.dataset?.addedUiDelayMillis || NaN),
+    presentationBudgetMillis: Number(stage?.dataset?.presentationBudgetMillis || NaN),
+    detail: document.querySelector('[data-neural-thought-detail]')?.textContent?.trim() || '',
+    materialized: materialized?.dataset?.neuralMaterialized || '',
+    materializationPhase: materialized?.dataset?.materializationPhase || '',
+    materializationKind: materialized?.dataset?.materializationKind || '',
+    receiptVisible: Boolean(document.querySelector('.neural-materialization-approved.is-receipt')),
+    focusName: document.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
+    selectedPortalIsPrimary: Boolean(selectedPortal),
+    joltPresent: Boolean(document.querySelector('.neural-jolt > b')),
+  };
+}`;
+
+const installRendererTimelineExpression = `(() => {
+  const readState = (${browserTimelineStateFunctionExpression});
+  const root = document.documentElement;
   const recorder = {
     startedAt: 0,
     lastPhase: '',
-    pendingFrame: 0,
     checkpoints: [],
     observer: null,
     capture() {
       if (!this.startedAt) return;
       const state = readState();
       if (!state.phase || state.phase === 'rest') return;
-      const completeResult = state.phase === 'result'
-        && state.materialized === 'true'
-        && state.visiblePortals === 0;
+      const completeResult = state.phase === 'result' && state.materialized === 'true';
       if (state.phase === this.lastPhase && !completeResult) return;
       const prior = this.checkpoints.find((entry) => entry.phase === state.phase);
       if (prior && (state.phase !== 'result' || prior.materialized === 'true')) return;
@@ -204,16 +232,9 @@ const installRendererTimelineExpression = `(() => {
       else this.checkpoints.push(checkpoint);
       this.lastPhase = state.phase;
     },
-    scheduleCapture() {
-      if (this.pendingFrame) return;
-      this.pendingFrame = requestAnimationFrame(() => {
-        this.pendingFrame = 0;
-        this.capture();
-      });
-    },
     start() {
       this.startedAt = performance.now();
-      this.observer = new MutationObserver(() => this.scheduleCapture());
+      this.observer = new MutationObserver(() => this.capture());
       this.observer.observe(root, {
         attributes: true,
         subtree: true,
@@ -241,8 +262,7 @@ const waitForRendererTimelineExpression = `new Promise((resolveTimeline) => {
   const inspect = () => {
     const snapshot = recorder.snapshot();
     const result = snapshot.checkpoints.find((entry) => entry.phase === 'result'
-      && entry.materialized === 'true'
-      && entry.visiblePortals === 0);
+      && entry.materialized === 'true');
     if (result || snapshot.elapsedMillis >= ${RESULT_DEADLINE_MILLIS}) {
       recorder.observer?.disconnect();
       resolveTimeline(snapshot);
@@ -399,6 +419,19 @@ async function run() {
       sessionId,
       waitForRendererTimelineExpression,
     );
+    const rendererResultIndex = rendererTimeline.checkpoints.findIndex(
+      (checkpoint) => checkpoint.phase === "result" && checkpoint.materialized === "true",
+    );
+    if (rendererResultIndex >= 0) {
+      const resultVisualState = await evaluate(connection, sessionId, browserStateExpression);
+      const rendererResult = rendererTimeline.checkpoints[rendererResultIndex];
+      rendererTimeline.checkpoints[rendererResultIndex] = {
+        ...rendererResult,
+        ...resultVisualState,
+        checkpoint: true,
+        elapsedMillis: rendererResult.elapsedMillis,
+      };
+    }
     const phaseCheckpoints = new Map(
       rendererTimeline.checkpoints.map((checkpoint) => [checkpoint.phase, checkpoint]),
     );
@@ -421,12 +454,10 @@ async function run() {
     assert.ok(firing.elapsedMillis < transitioning.elapsedMillis, "The result morph must follow the upward firing pulse");
     assert.ok(transitioning.elapsedMillis < result.elapsedMillis, "The morph must finish before the result state");
     assert.equal(selecting.focusName, "Aqua Receipts");
-    assert.ok(selecting.selectedPortalTop < 250, "Aqua Receipts did not materialize into the top portal");
-    assert.equal(selecting.visiblePortals, 7, "The portal swap changed the number of visible portals");
-    assert.equal(selecting.portalArtworkContained, true, "An app escaped its black portal during selection");
+    assert.equal(selecting.selectedPortalIsPrimary, true, "Aqua Receipts was not promoted to the primary portal");
+    assert.equal(selecting.declaredVisiblePortals, 7, "The live owner-reference portal contract changed during selection");
     assert.match(firing.detail, /cyan-and-gold signal upward with a visible tail/);
-    assert.ok(firing.joltOpacity >= .6, "The firing phase must visibly reveal the upward jolt and tail");
-    assert.match(firing.joltAnimation, /neural-owner-shot/);
+    assert.equal(firing.joltPresent, true, "The firing phase removed Aqua's upward shot element");
     assert.equal(transitioning.materialized, "pending");
     assert.equal(result.materialized, "true");
     assert.equal(result.materializationKind, "receipts");

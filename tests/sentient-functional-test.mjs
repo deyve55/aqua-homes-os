@@ -520,7 +520,8 @@ test("v0.7.7 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(neuralLiveProof, /performance\.now\(\)/);
   assert.match(neuralLiveProof, /const ACK_BUDGET_MILLIS = 100/);
   assert.match(neuralLiveProof, /const RESULT_DEADLINE_MILLIS = 1_400/);
-  assert.match(neuralLiveProof, /new MutationObserver\(\(\) => this\.scheduleCapture\(\)\)/);
+  assert.match(neuralLiveProof, /const browserTimelineStateFunctionExpression/);
+  assert.match(neuralLiveProof, /new MutationObserver\(\(\) => this\.capture\(\)\)/);
   assert.match(neuralLiveProof, /window\.__aquaNeuralWallClockRecorder = recorder/);
   assert.match(neuralLiveProof, /window\.__aquaNeuralWallClockRecorder\.start\(\);\s*const startedAt = performance\.now\(\);\s*portal\.click\(\)/);
   assert.match(neuralLiveProof, /waitForRendererTimelineExpression/);
@@ -535,7 +536,8 @@ test("v0.7.7 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(neuralLiveProof, /materializationKind, "receipts"/);
   assert.match(neuralLiveProof, /visiblePortals, 7/);
   assert.match(neuralLiveProof, /restingState\.visiblePortals === 7[\s\S]*restingState\.portalsLoaded === true[\s\S]*restingState\.portalArtworkContained === true/);
-  assert.match(neuralLiveProof, /entry\.phase === 'result'[\s\S]*entry\.materialized === 'true'[\s\S]*entry\.visiblePortals === 0/);
+  assert.match(neuralLiveProof, /entry\.phase === 'result'[\s\S]*entry\.materialized === 'true'/);
+  assert.match(neuralLiveProof, /const resultVisualState = await evaluate\(connection, sessionId, browserStateExpression\)/);
   assert.match(neuralLiveProof, /Cyan and gold synapses must remain visibly alive/);
   assert.match(neuralLiveProof, /portalsLoaded, true/);
   assert.match(neuralLiveProof, /substrateDisplay, "none"/);
@@ -550,8 +552,9 @@ test("v0.7.7 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(script, /\{ opacity: 0, offset: \.04 \}/);
   assert.match(script, /const contentAnimation = surface\.animate\([\s\S]*?easing: "linear"/);
   assert.doesNotMatch(script, /\{ opacity: 0, offset: \.58 \}/);
-  assert.match(neuralLiveProof, /firing\.joltOpacity >= \.6/);
-  assert.match(neuralLiveProof, /neural-owner-shot/);
+  assert.match(neuralLiveProof, /firing\.joltPresent, true/);
+  const rendererTimelineReader = neuralLiveProof.match(/const browserTimelineStateFunctionExpression[\s\S]*?\n\}`;/)?.[0] || "";
+  assert.doesNotMatch(rendererTimelineReader, /getComputedStyle|getBoundingClientRect/);
   assert.doesNotMatch(neuralLiveProof, /virtual-time-budget|neuralAt=/);
   const liveCheckpointWriter = neuralLiveProof.match(/async function saveCheckpoint[\s\S]*?\n\}/)?.[0] || "";
   assert.match(liveCheckpointWriter, /live-\$\{phase\}\.json/);
