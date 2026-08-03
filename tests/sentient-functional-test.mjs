@@ -1139,6 +1139,25 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(widget, /return "three-by-two"/);
   assert.match(widget, /ratio >= 1\.10f && ratio <= 2\.20f/);
   assert.match(widget, /ratio > 2\.20f/);
+  const layoutSelector = widget.match(
+    /static int layoutForSize\(int minWidth, int minHeight\) \{[\s\S]*?\n    \}/,
+  )?.[0] || "";
+  const threeByTwoRule = layoutSelector.indexOf(
+    "if (ratio >= 1.10f && ratio <= 2.20f)",
+  );
+  const compactSquareRule = layoutSelector.indexOf(
+    "if (minWidth <= 180 && minHeight <= 180)",
+  );
+  const compactRatioRule = layoutSelector.indexOf(
+    "if (ratio >= 0.82f && minHeight <= 260)",
+  );
+  assert.ok(
+    threeByTwoRule >= 0
+      && threeByTwoRule < compactSquareRule
+      && threeByTwoRule < compactRatioRule,
+    "wide 3x2 hosts must resolve before compact fallbacks",
+  );
+  assert.ok(214 / 133 >= 1.10 && 214 / 133 <= 2.20);
   assert.match(widget, /new SizeF\(250f, 390f\)/);
   assert.match(widget, /SELECTED_NEURAL_ACTIVITY_IDS/);
   assert.match(widget, /activityId == selectedActivity \? View\.VISIBLE : View\.INVISIBLE/);
