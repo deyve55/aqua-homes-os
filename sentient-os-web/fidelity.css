@@ -1979,7 +1979,6 @@ html,body{overscroll-behavior:none}
 .neural-portal{
   z-index:30;
   width:clamp(76px,19.5vw,108px)!important;
-  opacity:1!important;
   filter:none;
   will-change:transform;
 }

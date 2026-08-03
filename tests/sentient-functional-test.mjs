@@ -288,6 +288,7 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(ownerReferenceRecovery, /neuralink-rest-v071\.png/);
   assert.doesNotMatch(ownerReferenceRecovery, /neuralink-materialized-v071\.png/);
   assert.doesNotMatch(ownerReferenceRecovery, /left:11\.3%/);
+  assert.doesNotMatch(ownerReferenceRecovery, /\.neural-portal\{[^}]*opacity:1!important/);
   assert.match(fidelity, /@keyframes neural-substrate-cyan-out/);
   assert.match(fidelity, /@keyframes neural-substrate-gold-return/);
   assert.match(fidelity, /@keyframes neural-path-fire/);
