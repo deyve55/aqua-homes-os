@@ -417,6 +417,8 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(workflow, /preflight-no-apk:/);
   assert.match(workflow, /compileDebugJavaWithJavac :app:mergeDebugResources/);
   assert.match(workflow, /AquaSentinelOS-v0\.7\.4-preflight-no-apk/);
+  assert.match(workflow, /AQUA_RESULT_DOCUMENT_PIXEL_GATE/);
+  assert.match(workflow, /mean < \.28/);
   const noApkPreflight = workflow.match(/preflight-no-apk:[\s\S]*?\n  build-apk:/)?.[0] || "";
   assert.doesNotMatch(noApkPreflight, /assemble|\.apk/);
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
