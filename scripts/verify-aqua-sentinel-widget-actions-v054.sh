@@ -525,11 +525,15 @@ prove_widget_resize() {
   local height=""
   local center_x=""
   local center_y=""
+  local screen_size=""
+  local screen_width=""
+  local screen_height=""
   local start_x=""
   local start_y=""
   local end_x=""
   local end_y=""
   local edge_offset=""
+  local resize_distance=""
   local resized="false"
   local evidence="/tmp/aqua-sentinel-v0.7.6-widget-resize-${label}.logcat.txt"
 
@@ -546,22 +550,47 @@ prove_widget_resize() {
   height=$((bottom - top))
   center_x=$(((left + right) / 2))
   center_y=$(((top + bottom) / 2))
+  screen_size="$(
+    adb shell wm size \
+      | tr -d '\r' \
+      | awk -F': ' '/Override size:/ { size=$2 } /Physical size:/ && size == "" { size=$2 } END { print size }'
+  )"
+  if [[ ! "$screen_size" =~ ^([0-9]+)x([0-9]+)$ ]]; then
+    echo "Android did not report a bounded launcher display size: $screen_size" >&2
+    return 1
+  fi
+  screen_width="${BASH_REMATCH[1]}"
+  screen_height="${BASH_REMATCH[2]}"
   clear_logcat
 
-  for resize_attempt in $(seq 1 4); do
+  for resize_attempt in $(seq 1 7); do
+    adb shell input keyevent KEYCODE_HOME
     return_to_launcher
     adb shell input swipe "$center_x" "$center_y" "$center_x" "$center_y" 1300
     sleep 1
-    edge_offset=$((4 + resize_attempt * 4))
+    # Launcher3's AppWidgetResizeFrame accepts touches across a region around the
+    # visible edge, not at one launcher-independent coordinate. Sweep that region
+    # while keeping every attempted drag inside the active display.
+    edge_offset=$((-72 + (resize_attempt - 1) * 24))
     if [[ "$axis" == "vertical" ]]; then
       start_x="$center_x"
       start_y=$((bottom + edge_offset))
+      ((start_y < 24)) && start_y=24
+      ((start_y > screen_height - 24)) && start_y=$((screen_height - 24))
+      resize_distance=$((height * 35 / 100))
+      ((resize_distance < 160)) && resize_distance=160
       end_x="$center_x"
-      end_y=$((bottom + height * (60 + resize_attempt * 10) / 100))
+      end_y=$((start_y + resize_distance))
+      ((end_y > screen_height - 24)) && end_y=$((screen_height - 24))
     else
       start_x=$((right + edge_offset))
+      ((start_x < 24)) && start_x=24
+      ((start_x > screen_width - 24)) && start_x=$((screen_width - 24))
       start_y="$center_y"
-      end_x=$((right + width * (60 + resize_attempt * 10) / 100))
+      resize_distance=$((width * 35 / 100))
+      ((resize_distance < 160)) && resize_distance=160
+      end_x=$((start_x + resize_distance))
+      ((end_x > screen_width - 24)) && end_x=$((screen_width - 24))
       end_y="$center_y"
     fi
     echo "Resizing Aqua widget $label from $start_x,$start_y to $end_x,$end_y"
