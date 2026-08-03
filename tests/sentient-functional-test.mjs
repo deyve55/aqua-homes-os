@@ -406,6 +406,8 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(gradle, /versionName = "0\.7\.4-living-neural-fidelity-widget"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
+  assert.doesNotMatch(gradle, /storeFile = file\(System\.getenv\("AQUA_RELEASE_KEYSTORE_PATH"\)\)/);
+  assert.match(gradle, /\?\.let \{ storeFile = file\(it\) \}/);
   assert.match(workflow, /AquaSentinelOS-v0\.7\.4-Exact-Fidelity-Materialization-Widget-Test\.apk/);
   assert.match(workflow, /owner_visual_approval/);
   assert.match(workflow, /github\.event_name == 'workflow_dispatch' && inputs\.owner_visual_approval/);

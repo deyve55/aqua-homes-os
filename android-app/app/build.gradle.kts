@@ -8,7 +8,9 @@ android {
 
     signingConfigs {
         create("aquaRelease") {
-            storeFile = file(System.getenv("AQUA_RELEASE_KEYSTORE_PATH"))
+            System.getenv("AQUA_RELEASE_KEYSTORE_PATH")
+                ?.takeIf { it.isNotBlank() }
+                ?.let { storeFile = file(it) }
             storePassword = System.getenv("AQUA_RELEASE_KEYSTORE_PASSWORD")
             keyAlias = System.getenv("AQUA_RELEASE_KEY_ALIAS")
             keyPassword = System.getenv("AQUA_RELEASE_KEY_PASSWORD")
