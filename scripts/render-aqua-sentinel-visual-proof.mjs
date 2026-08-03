@@ -5,6 +5,7 @@ import { spawn } from "node:child_process";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { inflateSync } from "node:zlib";
 
 const MORPH_CHECKPOINTS = Object.freeze([
   ["00", 2600, "0.054"],
@@ -38,6 +39,92 @@ function parseArguments(argv) {
 
 function delay(milliseconds) {
   return new Promise((resolveDelay) => setTimeout(resolveDelay, milliseconds));
+}
+
+function paethPredictor(left, up, upperLeft) {
+  const prediction = left + up - upperLeft;
+  const leftDistance = Math.abs(prediction - left);
+  const upDistance = Math.abs(prediction - up);
+  const upperLeftDistance = Math.abs(prediction - upperLeft);
+  if (leftDistance <= upDistance && leftDistance <= upperLeftDistance) return left;
+  if (upDistance <= upperLeftDistance) return up;
+  return upperLeft;
+}
+
+function pngRegionMean(png, region) {
+  assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", "Screenshot is not a PNG");
+  let offset = 8;
+  let width = 0;
+  let height = 0;
+  let bitDepth = 0;
+  let colorType = -1;
+  let interlace = -1;
+  const imageChunks = [];
+  while (offset + 12 <= png.length) {
+    const length = png.readUInt32BE(offset);
+    const type = png.toString("ascii", offset + 4, offset + 8);
+    const dataStart = offset + 8;
+    const dataEnd = dataStart + length;
+    assert(dataEnd + 4 <= png.length, `Truncated PNG chunk ${type}`);
+    if (type === "IHDR") {
+      width = png.readUInt32BE(dataStart);
+      height = png.readUInt32BE(dataStart + 4);
+      bitDepth = png[dataStart + 8];
+      colorType = png[dataStart + 9];
+      interlace = png[dataStart + 12];
+    } else if (type === "IDAT") {
+      imageChunks.push(png.subarray(dataStart, dataEnd));
+    } else if (type === "IEND") {
+      break;
+    }
+    offset = dataEnd + 4;
+  }
+  assert.equal(bitDepth, 8, "Pixel gate requires an 8-bit screenshot");
+  assert.equal(interlace, 0, "Pixel gate requires a non-interlaced screenshot");
+  const channels = ({ 0: 1, 2: 3, 4: 2, 6: 4 })[colorType];
+  assert(channels, `Unsupported PNG color type ${colorType}`);
+  const rowBytes = width * channels;
+  const inflated = inflateSync(Buffer.concat(imageChunks));
+  assert(inflated.length >= (rowBytes + 1) * height, "PNG pixel stream is incomplete");
+  const pixels = Buffer.alloc(rowBytes * height);
+  let inputOffset = 0;
+  for (let y = 0; y < height; y += 1) {
+    const filter = inflated[inputOffset];
+    inputOffset += 1;
+    for (let byteIndex = 0; byteIndex < rowBytes; byteIndex += 1) {
+      const raw = inflated[inputOffset];
+      inputOffset += 1;
+      const outputIndex = y * rowBytes + byteIndex;
+      const left = byteIndex >= channels ? pixels[outputIndex - channels] : 0;
+      const up = y > 0 ? pixels[outputIndex - rowBytes] : 0;
+      const upperLeft = y > 0 && byteIndex >= channels
+        ? pixels[outputIndex - rowBytes - channels]
+        : 0;
+      let predictor = 0;
+      if (filter === 1) predictor = left;
+      else if (filter === 2) predictor = up;
+      else if (filter === 3) predictor = Math.floor((left + up) / 2);
+      else if (filter === 4) predictor = paethPredictor(left, up, upperLeft);
+      else assert.equal(filter, 0, `Unsupported PNG filter ${filter}`);
+      pixels[outputIndex] = (raw + predictor) & 0xff;
+    }
+  }
+  const left = Math.max(0, Math.floor(region.x));
+  const top = Math.max(0, Math.floor(region.y));
+  const right = Math.min(width, left + Math.floor(region.width));
+  const bottom = Math.min(height, top + Math.floor(region.height));
+  assert(right > left && bottom > top, "Pixel gate region is outside the screenshot");
+  let total = 0;
+  let samples = 0;
+  for (let y = top; y < bottom; y += 1) {
+    for (let x = left; x < right; x += 1) {
+      const pixelOffset = (y * width + x) * channels;
+      if (colorType === 0 || colorType === 4) total += pixels[pixelOffset] * 3;
+      else total += pixels[pixelOffset] + pixels[pixelOffset + 1] + pixels[pixelOffset + 2];
+      samples += 3;
+    }
+  }
+  return total / (samples * 255);
 }
 
 class CdpConnection {
@@ -365,7 +452,22 @@ async function run() {
       }, sessionId);
       assert(screenshot.data, `${definition.name} did not return screenshot bytes`);
       const outputPath = join(options.outputDirectory, definition.output);
-      await writeFile(outputPath, Buffer.from(screenshot.data, "base64"));
+      const screenshotBuffer = Buffer.from(screenshot.data, "base64");
+      if (definition.fullMaterialization) {
+        const resultDocumentPixelMean = pngRegionMean(screenshotBuffer, {
+          x: 145,
+          y: 210,
+          width: 230,
+          height: 500,
+        });
+        assert.ok(
+          resultDocumentPixelMean >= .28,
+          `Final Neuralink document pixel mean ${resultDocumentPixelMean.toFixed(6)} indicates a black or missing result`,
+        );
+        state.resultDocumentPixelMean = resultDocumentPixelMean;
+        process.stdout.write(`AQUA_RESULT_DOCUMENT_PIXEL_GATE mean=${resultDocumentPixelMean.toFixed(6)}\n`);
+      }
+      await writeFile(outputPath, screenshotBuffer);
       evidence.push({ ...definition, state, outputPath });
       process.stdout.write(`AQUA_DETERMINISTIC_VISUAL_CAPTURED name=${definition.name} phase=${state.phase || definition.ready} morph=${state.morphProgress || "n/a"}\n`);
     }
