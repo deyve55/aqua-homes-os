@@ -515,6 +515,9 @@ test("v0.7.6 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(neuralLiveProof, /usesRasterCompositor, false/);
   assert.match(neuralLiveProof, /maxRetries: 12/);
   assert.match(neuralLiveProof, /AQUA_NEURAL_CLEANUP_WARNING/);
+  assert.match(script, /\{ opacity: 0, offset: \.04 \}/);
+  assert.match(script, /const contentAnimation = surface\.animate\([\s\S]*?easing: "linear"/);
+  assert.doesNotMatch(script, /\{ opacity: 0, offset: \.58 \}/);
   assert.match(neuralLiveProof, /firing\.joltOpacity >= 0\.99/);
   assert.match(neuralLiveProof, /neural-jolt-column/);
   assert.doesNotMatch(neuralLiveProof, /virtual-time-budget|neuralAt=/);

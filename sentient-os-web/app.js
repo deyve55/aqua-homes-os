@@ -1719,12 +1719,11 @@ function animateMaterializationFromPortal() {
     neuralMaterializationAnimation = materializationAnimation;
     const contentAnimation = surface.animate([
       { opacity: 0, offset: 0 },
-      { opacity: 0, offset: .58 },
-      { opacity: .12, offset: .67 },
+      { opacity: 0, offset: .04 },
       { opacity: 1, offset: 1 },
     ], {
       duration: NEURAL_MORPH_MILLIS,
-      easing: "cubic-bezier(.18,.72,.2,1)",
+      easing: "linear",
       fill: "both",
     });
     contentAnimation.id = "aqua-neural-materialization-content";
