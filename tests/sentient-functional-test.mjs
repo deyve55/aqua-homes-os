@@ -282,6 +282,7 @@ test("the premium Neural Link keeps five fixed portals alive while Aqua brings o
   assert.match(appFirstNeuralink, /\.neural-traveler-gold\{opacity:\.56/);
   assert.match(appFirstNeuralink, /data-phase="firing"[\s\S]*neural-jolt-column/);
   assert.match(appFirstNeuralink, /data-phase="result"[\s\S]*\.neural-portal,[\s\S]*opacity:0!important/);
+  assert.match(appFirstNeuralink, /data-phase="result"[^}]*\.neural-portal\{transition:none!important\}/);
   assert.match(appFirstNeuralink, /data-phase="transitioning"[\s\S]*\.neural-portal\.is-dormant\{opacity:0!important;pointer-events:none\}/);
   assert.match(appFirstNeuralink, /\.neural-morph-shell\{[\s\S]*linear-gradient\(180deg,#031017,#00070a 46%,#000305\)/);
   assert.match(fidelity, /@keyframes neural-substrate-cyan-out/);
@@ -509,6 +510,7 @@ test("v0.7.6 preserves Home while the app-first Neuralink sequence stays fixed, 
   assert.match(neuralLiveProof, /materializationKind, "receipts"/);
   assert.match(neuralLiveProof, /visiblePortals, 5/);
   assert.match(neuralLiveProof, /restingState\.visiblePortals === 5[\s\S]*restingState\.portalsLoaded === true[\s\S]*restingState\.portalArtworkContained === true/);
+  assert.match(neuralLiveProof, /state\.phase === "result" && state\.materialized === "true" && state\.visiblePortals === 0/);
   assert.match(neuralLiveProof, /Cyan and gold synapses must remain visibly alive/);
   assert.match(neuralLiveProof, /portalsLoaded, true/);
   assert.match(neuralLiveProof, /substrateDisplay, "none"/);

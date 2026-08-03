@@ -2294,6 +2294,7 @@ html,body{overscroll-behavior:none}
 .system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-jolt,
 .system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-thought,
 .system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-thought-residue{opacity:0!important;pointer-events:none}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-portal{transition:none!important}
 .system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-network,
 .system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-core,
 .system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-portal{opacity:.2!important;transition:opacity .18s}

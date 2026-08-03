@@ -307,11 +307,21 @@ async function run() {
       if (state.phase !== lastPhase) {
         const checkpoint = { checkpoint: true, elapsedMillis, ...state };
         timeline.push(checkpoint);
-        phaseCheckpoints.set(state.phase, checkpoint);
-        await saveCheckpoint(options.evidenceDirectory, state.phase || "unknown", checkpoint);
+        if (state.phase !== "result" || (state.materialized === "true" && state.visiblePortals === 0)) {
+          phaseCheckpoints.set(state.phase, checkpoint);
+          await saveCheckpoint(options.evidenceDirectory, state.phase || "unknown", checkpoint);
+        }
         lastPhase = state.phase;
       }
-      if (state.phase === "result" && state.materialized === "true") break;
+      if (state.phase === "result" && state.materialized === "true" && state.visiblePortals === 0) {
+        if (!phaseCheckpoints.has("result")) {
+          const checkpoint = { checkpoint: true, elapsedMillis, ...state };
+          timeline.push(checkpoint);
+          phaseCheckpoints.set("result", checkpoint);
+          await saveCheckpoint(options.evidenceDirectory, "result", checkpoint);
+        }
+        break;
+      }
       await delay(20);
     }
 
