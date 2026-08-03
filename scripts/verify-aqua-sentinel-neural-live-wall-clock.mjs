@@ -99,7 +99,7 @@ async function waitForDevTools(browser, stderrLog) {
   });
 }
 
-const browserStateExpression = `(() => {
+const browserStateFunctionExpression = `() => {
   const root = document.documentElement;
   const stage = document.querySelector('.neural-stage');
   const materialized = document.querySelector('[data-neural-materialized]');
@@ -171,7 +171,87 @@ const browserStateExpression = `(() => {
         && imageBounds.bottom <= nodeBounds.bottom + 1;
     }),
   };
+}`;
+
+const browserStateExpression = `(${browserStateFunctionExpression})()`;
+
+const installRendererTimelineExpression = `(() => {
+  const readState = (${browserStateFunctionExpression});
+  const root = document.documentElement;
+  const stage = document.querySelector('.neural-stage');
+  const recorder = {
+    startedAt: 0,
+    lastPhase: '',
+    pendingFrame: 0,
+    checkpoints: [],
+    observer: null,
+    capture() {
+      if (!this.startedAt) return;
+      const state = readState();
+      if (!state.phase || state.phase === 'rest') return;
+      const completeResult = state.phase === 'result'
+        && state.materialized === 'true'
+        && state.visiblePortals === 0;
+      if (state.phase === this.lastPhase && !completeResult) return;
+      const prior = this.checkpoints.find((entry) => entry.phase === state.phase);
+      if (prior && (state.phase !== 'result' || prior.materialized === 'true')) return;
+      const checkpoint = {
+        checkpoint: true,
+        elapsedMillis: Math.round(performance.now() - this.startedAt),
+        ...state,
+      };
+      if (prior) this.checkpoints.splice(this.checkpoints.indexOf(prior), 1, checkpoint);
+      else this.checkpoints.push(checkpoint);
+      this.lastPhase = state.phase;
+    },
+    scheduleCapture() {
+      if (this.pendingFrame) return;
+      this.pendingFrame = requestAnimationFrame(() => {
+        this.pendingFrame = 0;
+        this.capture();
+      });
+    },
+    start() {
+      this.startedAt = performance.now();
+      this.observer = new MutationObserver(() => this.scheduleCapture());
+      this.observer.observe(root, {
+        attributes: true,
+        subtree: true,
+        attributeFilter: [
+          'data-aqua-neural-phase',
+          'data-phase',
+          'data-neural-materialized',
+          'data-materialization-phase',
+        ],
+      });
+    },
+    snapshot() {
+      return {
+        elapsedMillis: Math.round(performance.now() - this.startedAt),
+        checkpoints: this.checkpoints,
+      };
+    },
+  };
+  window.__aquaNeuralWallClockRecorder = recorder;
+  return true;
 })()`;
+
+const waitForRendererTimelineExpression = `new Promise((resolveTimeline) => {
+  const recorder = window.__aquaNeuralWallClockRecorder;
+  const inspect = () => {
+    const snapshot = recorder.snapshot();
+    const result = snapshot.checkpoints.find((entry) => entry.phase === 'result'
+      && entry.materialized === 'true'
+      && entry.visiblePortals === 0);
+    if (result || snapshot.elapsedMillis >= ${RESULT_DEADLINE_MILLIS}) {
+      recorder.observer?.disconnect();
+      resolveTimeline(snapshot);
+      return;
+    }
+    requestAnimationFrame(inspect);
+  };
+  inspect();
+})`;
 
 async function evaluate(connection, sessionId, expression) {
   const result = await connection.send("Runtime.evaluate", {
@@ -284,10 +364,16 @@ async function run() {
       "Cyan and gold synapses must remain visibly alive while the portals stay fixed",
     );
 
-    const sequenceStartedAt = performance.now();
+    const recorderInstalled = await evaluate(
+      connection,
+      sessionId,
+      installRendererTimelineExpression,
+    );
+    assert.equal(recorderInstalled, true, "The renderer wall-clock recorder could not be installed");
     const portalTriggered = await evaluate(connection, sessionId, `(() => {
       const portal = document.querySelector('[data-neural-portal="6"]');
       if (!portal) return { triggered: false };
+      window.__aquaNeuralWallClockRecorder.start();
       const startedAt = performance.now();
       portal.click();
       const stage = document.querySelector('.neural-stage');
@@ -308,30 +394,17 @@ async function run() {
     assert.equal(portalTriggered?.presentationBudgetMillis, 960, "The visible select, fire, and morph sequence exceeded one second by design");
     assert.ok(portalTriggered?.ackLatencyMillis <= ACK_BUDGET_MILLIS, `Acknowledgment exceeded ${ACK_BUDGET_MILLIS}ms`);
     assert.ok(portalTriggered?.handlerMillis <= ACK_BUDGET_MILLIS, `Portal handler exceeded ${ACK_BUDGET_MILLIS}ms`);
-    let lastPhase = "";
-    const phaseCheckpoints = new Map();
-    while (performance.now() - sequenceStartedAt <= RESULT_DEADLINE_MILLIS) {
-      const state = await evaluate(connection, sessionId, browserStateExpression);
-      const elapsedMillis = Math.round(performance.now() - sequenceStartedAt);
-      if (state.phase !== lastPhase) {
-        const checkpoint = { checkpoint: true, elapsedMillis, ...state };
-        timeline.push(checkpoint);
-        if (state.phase !== "result" || (state.materialized === "true" && state.visiblePortals === 0)) {
-          phaseCheckpoints.set(state.phase, checkpoint);
-          await saveCheckpoint(options.evidenceDirectory, state.phase || "unknown", checkpoint);
-        }
-        lastPhase = state.phase;
-      }
-      if (state.phase === "result" && state.materialized === "true" && state.visiblePortals === 0) {
-        if (!phaseCheckpoints.has("result")) {
-          const checkpoint = { checkpoint: true, elapsedMillis, ...state };
-          timeline.push(checkpoint);
-          phaseCheckpoints.set("result", checkpoint);
-          await saveCheckpoint(options.evidenceDirectory, "result", checkpoint);
-        }
-        break;
-      }
-      await delay(20);
+    const rendererTimeline = await evaluate(
+      connection,
+      sessionId,
+      waitForRendererTimelineExpression,
+    );
+    const phaseCheckpoints = new Map(
+      rendererTimeline.checkpoints.map((checkpoint) => [checkpoint.phase, checkpoint]),
+    );
+    timeline.push(...rendererTimeline.checkpoints);
+    for (const checkpoint of rendererTimeline.checkpoints) {
+      await saveCheckpoint(options.evidenceDirectory, checkpoint.phase, checkpoint);
     }
 
     const selecting = phaseCheckpoints.get("selecting");
@@ -364,7 +437,7 @@ async function run() {
     assert.equal(result.continuationVisible, true, "Keep talking to Aqua disappeared after morph");
 
     await writeFile(join(options.evidenceDirectory, "timeline.json"), `${JSON.stringify({
-      clock: "host-monotonic-wall-clock",
+      clock: "renderer-monotonic-wall-clock",
       url: options.url,
       ackBudgetMillis: ACK_BUDGET_MILLIS,
       firingDeadlineMillis: FIRING_DEADLINE_MILLIS,
@@ -378,7 +451,7 @@ async function run() {
     process.stdout.write(`AQUA_NEURAL_OWNER_REFERENCE_VERIFIED portals=7 neural_motion=continuous dispatch_delay_ms=0 phases=selecting,firing,transitioning,result total_ms=${result.elapsedMillis}\n`);
   } catch (error) {
     await writeFile(join(options.evidenceDirectory, "failure.json"), `${JSON.stringify({
-      clock: "host-monotonic-wall-clock",
+      clock: "renderer-monotonic-wall-clock",
       error: error instanceof Error ? error.stack : String(error),
       elapsedMillis: Math.round(performance.now() - wallClockStartedAt),
       timeline,
