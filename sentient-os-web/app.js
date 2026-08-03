@@ -2191,10 +2191,10 @@ function openPanel(kind) {
     receiveAuthState(JSON.stringify({ authenticated: false }));
   });
   if (kind === "neural") {
-    requestAnimationFrame(() => {
-      layoutNeuralStage();
-      renderNeuralMaterialization();
-    });
+    // Establish the five fixed portals before Neural Link can paint or report ready.
+    // Deferring this work by one frame briefly exposed every dormant source.
+    layoutNeuralStage();
+    renderNeuralMaterialization();
   }
 }
 

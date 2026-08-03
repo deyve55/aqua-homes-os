@@ -220,6 +220,8 @@ test("the premium Neural Link keeps five fixed portals alive while Aqua brings o
   assert.match(script, /group\.setAttribute\("transform", neuralRouteTransform\(slot\)\)/);
   assert.match(script, /group\.style\.visibility = Number\(slot\.opacity \?\? 1\) > \.15 \? "visible" : "hidden"/);
   assert.match(script, /portal\.style\.opacity = String\(slot\.opacity \?\? 1\)/);
+  assert.match(script, /if \(kind === "neural"\) \{\s*\/\/[^\n]*\n\s*\/\/[^\n]*\n\s*layoutNeuralStage\(\);\s*renderNeuralMaterialization\(\);\s*\}/);
+  assert.doesNotMatch(script, /if \(kind === "neural"\) \{\s*requestAnimationFrame/);
   assert.match(script, /materializationAnimation\.id = "aqua-neural-materialization-box"/);
   assert.match(script, /left: `\$\{sourceBox\.left\}px`/);
   assert.doesNotMatch(script, /content\.animate\(\[/);
@@ -274,6 +276,10 @@ test("the premium Neural Link keeps five fixed portals alive while Aqua brings o
   assert.match(appFirstNeuralink, /\.neural-portal \.portal-node>img\{[^}]*width:92%;height:76%;object-fit:cover/);
   assert.match(appFirstNeuralink, /data-phase="selecting"[\s\S]*neural-top-portal-materialize/);
   assert.match(appFirstNeuralink, /linear-gradient\(180deg,transparent 0,#fff 9%,#65efff 32%,#f2ba63 55%/);
+  assert.match(appFirstNeuralink, /\.neural-network\{[\s\S]*opacity:\.6!important/);
+  assert.match(appFirstNeuralink, /\.neural-signal\{[\s\S]*opacity:\.68/);
+  assert.match(appFirstNeuralink, /\.neural-traveler\{opacity:\.7/);
+  assert.match(appFirstNeuralink, /\.neural-traveler-gold\{opacity:\.56/);
   assert.match(appFirstNeuralink, /data-phase="firing"[\s\S]*neural-jolt-column/);
   assert.match(appFirstNeuralink, /data-phase="result"[\s\S]*\.neural-portal,[\s\S]*opacity:0!important/);
   assert.match(appFirstNeuralink, /data-phase="transitioning"[\s\S]*\.neural-portal\.is-dormant\{opacity:0!important;pointer-events:none\}/);
@@ -502,6 +508,7 @@ test("v0.7.6 preserves Home while the app-first Neuralink sequence stays fixed, 
   assert.match(neuralLiveProof, /bound-aqua-receipts-portal-click/);
   assert.match(neuralLiveProof, /materializationKind, "receipts"/);
   assert.match(neuralLiveProof, /visiblePortals, 5/);
+  assert.match(neuralLiveProof, /restingState\.visiblePortals === 5[\s\S]*restingState\.portalsLoaded === true[\s\S]*restingState\.portalArtworkContained === true/);
   assert.match(neuralLiveProof, /Cyan and gold synapses must remain visibly alive/);
   assert.match(neuralLiveProof, /portalsLoaded, true/);
   assert.match(neuralLiveProof, /substrateDisplay, "none"/);

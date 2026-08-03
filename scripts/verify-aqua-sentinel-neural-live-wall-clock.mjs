@@ -248,7 +248,11 @@ async function run() {
       }
       if (restingState.ready === "neural"
         && restingState.phase === "rest"
-        && restingState.stagePhase === "rest") break;
+        && restingState.stagePhase === "rest"
+        && restingState.fixedPortals === "true"
+        && restingState.visiblePortals === 5
+        && restingState.portalsLoaded === true
+        && restingState.portalArtworkContained === true) break;
       await delay(25);
     }
     assert.equal(restingState?.ready, "neural", "Neural preview did not become ready");
