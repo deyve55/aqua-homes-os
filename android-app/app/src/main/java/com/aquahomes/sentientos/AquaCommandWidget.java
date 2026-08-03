@@ -85,10 +85,10 @@ public class AquaCommandWidget extends AppWidgetProvider {
     static int layoutForSize(int minWidth, int minHeight) {
         if (minWidth <= 0 || minHeight <= 0) return R.layout.aqua_command_widget;
         float ratio = (float) minWidth / (float) minHeight;
-        if (ratio >= 1.28f && ratio <= 1.82f) return R.layout.aqua_command_widget_3x2;
-        if (ratio >= 1.18f) return R.layout.aqua_command_widget_wide;
         if (minWidth <= 180 && minHeight <= 180) return R.layout.aqua_command_widget_2x2;
         if (ratio >= 0.82f && minHeight <= 260) return R.layout.aqua_command_widget_2x2;
+        if (ratio >= 1.10f && ratio <= 2.20f) return R.layout.aqua_command_widget_3x2;
+        if (ratio > 2.20f) return R.layout.aqua_command_widget_wide;
         return R.layout.aqua_command_widget;
     }
 

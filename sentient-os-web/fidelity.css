@@ -2664,3 +2664,85 @@ html,body{overscroll-behavior:none}
   .system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-portal.is-primary .portal-pull,
   .system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-jolt>b{animation-duration:.01ms!important}
 }
+
+/* v0.8 live Aqua Neural Link. The supplied Aqua Receipts recording sets the
+   minimum energy level; this surface uses a clean project-owned substrate and
+   real DOM portals, so screenshot status bars and navigation bars cannot leak
+   into the application. */
+.system-panel[data-panel="neural"] .neural-stage{
+  border-radius:0;
+  background:#000!important;
+}
+.system-panel[data-panel="neural"] .neural-stage:before,
+.system-panel[data-panel="neural"] .neural-stage:after{
+  inset:0;
+  border-radius:0;
+  background-image:url("./assets/neural-link-live-substrate-v080.png")!important;
+  background-position:50% 45%;
+  background-size:cover;
+  filter:contrast(1.12) saturate(1.18) brightness(1.08);
+}
+.system-panel[data-panel="neural"] .neural-stage:after{
+  opacity:0;
+  filter:contrast(1.16) saturate(1.24) brightness(.96);
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"]:before{opacity:.42!important}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"]:after{opacity:.74!important}
+.system-panel[data-panel="neural"] .neural-titlebar{
+  top:max(8px,env(safe-area-inset-top));
+  height:44px;
+  background:linear-gradient(180deg,rgba(0,0,0,.62),transparent);
+}
+.system-panel[data-panel="neural"] .neural-titlebar h1{
+  display:block;
+  margin:0 auto;
+  color:#dffcff;
+  font-size:clamp(12px,3vw,17px);
+  font-weight:600;
+  letter-spacing:.22em;
+  text-shadow:0 0 10px rgba(62,225,249,.7);
+}
+.system-panel[data-panel="neural"] .neural-core .aqua-mark{
+  opacity:1!important;
+  filter:drop-shadow(0 0 7px #fff) drop-shadow(0 0 21px rgba(44,224,250,.66));
+}
+.system-panel[data-panel="neural"] .aqua-mark-orb,
+.system-panel[data-panel="neural"] .aqua-mark-orb-core{display:none!important}
+.system-panel[data-panel="neural"] .neural-portal .portal-node{
+  opacity:.9;
+  transform:scale(1);
+  border:1px solid color-mix(in srgb,var(--portal-color) 72%,#edffff);
+  box-shadow:inset 0 0 16px #000,0 0 7px rgba(255,255,255,.52),0 0 20px color-mix(in srgb,var(--portal-color) 52%,transparent);
+}
+.system-panel[data-panel="neural"] .neural-portal.is-supporting .portal-node{
+  opacity:1;
+  filter:brightness(1.12) saturate(1.12);
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-portal{
+  opacity:.24!important;
+  pointer-events:auto;
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-portal.is-primary{opacity:.48!important}
+.system-panel[data-panel="neural"] .neural-burst{
+  opacity:.82;
+  stroke-width:.78;
+  stroke-linecap:round;
+  stroke-dasharray:3.8 96.2;
+  filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 7px var(--portal-color));
+  animation-duration:var(--burst-speed,2.35s);
+}
+.system-panel[data-panel="neural"] .neural-burst.burst-1,
+.system-panel[data-panel="neural"] .neural-burst.burst-3,
+.system-panel[data-panel="neural"] .neural-burst.burst-5{
+  stroke:#f1bd69;
+  stroke-width:.58;
+  stroke-dasharray:2.4 97.6;
+  animation-direction:reverse;
+}
+.system-panel[data-panel="neural"] .neural-route-group.is-active .neural-burst{
+  stroke:#fff;
+  stroke-width:1.8;
+  stroke-dasharray:8 92;
+  opacity:1;
+  animation-duration:.26s;
+}

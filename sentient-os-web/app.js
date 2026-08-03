@@ -200,6 +200,7 @@ const NEURAL_MORPH_MILLIS = 420;
 const NEURAL_ACK_BUDGET_MILLIS = 100;
 const NEURAL_ADDED_UI_DELAY_MILLIS = 0;
 const NEURAL_AMBIENT_FIRE_MILLIS = NEURAL_SELECT_MILLIS + NEURAL_FIRE_MILLIS;
+const NEURAL_DESTINATION_OPEN_MILLIS = NEURAL_AMBIENT_FIRE_MILLIS + 180;
 const NEURAL_MATERIALIZATION_LAG_MILLIS = 0;
 const NEURAL_MIN_FIRE_DWELL_MILLIS = 0;
 const NEURAL_SEQUENCE_MORPH_AT = NEURAL_SELECT_MILLIS
@@ -215,6 +216,7 @@ let neuralThought = "Aqua is listening across your company.";
 let neuralThoughtDetail = "Every system stays ready while her attention moves.";
 let neuralTransitionTimer = null;
 let neuralFireTimer = null;
+let neuralDestinationTimer = null;
 let neuralMotionToken = 0;
 let neuralMorphProgress = 0;
 let neuralPhaseReadyAt = 0;
@@ -233,8 +235,8 @@ let commandWidgetState = {
 let deviceDiagnostics = {
   generatedAt: 0,
   platform: "Browser preview",
-  versionName: "0.7.7-owner-reference-neural-link-widget-test",
-  versionCode: 2026080302,
+  versionName: "0.8.0-live-aqua-neural-command-test",
+  versionCode: 2026080303,
   gatewayConfigured: false,
   authenticated: false,
   microphoneGranted: false,
@@ -426,7 +428,7 @@ function layoutNeuralStage(morphOverride = null) {
   stage.dataset.ackBudgetMillis = String(NEURAL_ACK_BUDGET_MILLIS);
   stage.dataset.presentationBudgetMillis = String(NEURAL_SEQUENCE_RESULT_AT);
   stage.dataset.fixedPortals = "true";
-  stage.dataset.referenceComposition = "owner-rest-and-morph-v077";
+  stage.dataset.referenceComposition = "live-neural-substrate-v080";
   stage.dataset.referenceState = ["transitioning", "result"].includes(neuralPhase) ? "morphed" : "rest";
   stage.dataset.materializationKind = String(neuralMaterialization?.kind || "");
   stage.dataset.selectedApp = neuralSourceAt(neuralFocusIndex)?.name || "All systems";
@@ -561,7 +563,7 @@ function identifyNeuralIntent(rawText) {
   if (/camera|aquacam|job site|site evidence|field evidence|walkthrough|before and after/.test(text)) {
     return { primary: 2, supporting: [4, 0], kind: "field" };
   }
-  if (/file cabinet|document|contract file|find a file|filing/.test(text)) {
+  if (/file cabinet|document|contract file|find a file|bring up (?:a |the )?file|pull up (?:a |the )?file|filing|\bfile\b/.test(text)) {
     return { primary: apps.length, supporting: [0, 6], kind: "file" };
   }
   if (/customer|client|lead|pipeline|sales|job|company|business|how.*doing|today.*company/.test(text)) {
@@ -572,7 +574,7 @@ function identifyNeuralIntent(rawText) {
 
 function isExplicitDeepOpen(rawText) {
   const text = String(rawText || "").toLowerCase();
-  return /\b(?:go deeper(?:(?: into| to))?|go into|launch|open)\s+(?:the\s+)?(?:actual\s+)?(?:aqua\s+)?(?:crm|draw|cam|knowledge(?: vault)?|timesheet|books|receipts|file cabinet|app)\b/.test(text);
+  return /\b(?:let'?s\s+go(?:\s+to)?|take me to|switch to|go to|go deeper(?:(?: into| to))?|go into|launch|open)\s+(?:the\s+)?(?:actual\s+)?(?:aqua\s+)?(?:crm|draw|cam|knowledge(?: vault)?|timesheet|books|receipts|file cabinet|app)\b/.test(text);
 }
 
 function beginNeuralRequest(command) {
@@ -1401,6 +1403,40 @@ function launchAppByIndex(index) {
   }
 }
 
+function returnNeuralToRest() {
+  cancelNeuralMotion();
+  clearTimeout(neuralFireTimer);
+  clearTimeout(neuralTransitionTimer);
+  clearTimeout(neuralDestinationTimer);
+  neuralFocusIndex = -1;
+  neuralSupportIndexes = [];
+  neuralVisibleIndexes = [0, 5, 6, 1, 4, 3, 2];
+  neuralPhase = "rest";
+  neuralMorphProgress = 0;
+  neuralPhaseReadyAt = 0;
+  neuralRequestStartedAt = 0;
+  neuralAcknowledgedAt = 0;
+  pendingNeuralIntent = null;
+  neuralMaterialization = null;
+  neuralThought = "Aqua is listening across your company.";
+  neuralThoughtDetail = "Every system stays ready while her attention moves.";
+  layoutNeuralStage();
+  renderNeuralMaterialization();
+}
+
+function scheduleNeuralDestination(intent) {
+  if (!intent || !Number.isInteger(intent.primary)) return;
+  clearTimeout(neuralDestinationTimer);
+  pendingNeuralIntent = { ...intent, command: intent.command || "" };
+  neuralDestinationTimer = setTimeout(() => {
+    const destination = pendingNeuralIntent;
+    if (!destination || destination.primary !== intent.primary) return;
+    if (destination.primary === apps.length) openPanel("files");
+    else launchAppByIndex(destination.primary);
+    setAquaState("idle");
+  }, NEURAL_DESTINATION_OPEN_MILLIS);
+}
+
 function portalMaterialization(index) {
   const materialization = neuralMaterializationFor({
     primary: index,
@@ -1688,6 +1724,7 @@ function showMaterialization(materialization, animateNeuralTransition = true) {
 
 function closeOverlays() {
   clearTimeout(neuralTransitionTimer);
+  clearTimeout(neuralDestinationTimer);
   workspace.hidden = true;
   detailSheet.hidden = true;
   detailSheet.classList.remove("is-full", "aqua-materialization");
@@ -1761,24 +1798,22 @@ function neuralWorkspaceMarkup() {
   const baseNeuralPath = neuralPathForSlot(neuralRingSlots[0]);
   const routes = portalApps.map((app, index) => {
     const slot = neuralFixedSlotForSource(index);
-    const bursts = [0, 1, 2, 3].map((laneIndex) => `
+    const bursts = [0, 1, 2, 3, 4, 5].map((laneIndex) => `
       <path class="neural-burst burst-${laneIndex}" d="${baseNeuralPath}" pathLength="100" data-neural-burst="${index}" data-neural-lane="${laneIndex}" style="--burst-delay:${(-index * .31 - laneIndex * .67).toFixed(2)}s;--burst-speed:${(2.15 + (index % 3) * .38 + laneIndex * .29).toFixed(2)}s"></path>`).join("");
     return `
     <g class="neural-route-group" data-neural-source-group="${index}" transform="${neuralRouteTransform(slot)}">
       <path class="neural-route" d="${baseNeuralPath}" pathLength="100" data-neural-route="${index}"></path>
       <path class="neural-signal" d="${baseNeuralPath}" pathLength="100" data-neural-path="${index}"></path>
-      <circle class="neural-traveler neural-traveler-cyan" r=".72" data-neural-particle="${index}"><animateMotion dur="${(2.1 + index * .11).toFixed(2)}s" begin="${(-index * .29).toFixed(2)}s" repeatCount="indefinite" path="${baseNeuralPath}"></animateMotion></circle>
-      <circle class="neural-traveler neural-traveler-gold" r=".52" data-neural-particle="${index}"><animateMotion dur="${(2.8 + index * .13).toFixed(2)}s" begin="${(-index * .37 - 1.1).toFixed(2)}s" repeatCount="indefinite" path="${baseNeuralPath}" keyPoints="1;0" keyTimes="0;1" calcMode="linear"></animateMotion></circle>
       <g class="neural-microbursts">${bursts}</g>
     </g>`;
   }).join("");
   const confirmedSources = apps.filter((app) => app.connected || liveSnapshots.has(app.name)).length;
 
   return `<section class="neural-shell" aria-label="Aqua Neuralink" data-neural-contract="AQUA SENTINEL NEURAL LINK">
-      <div class="neural-stage" data-phase="${escapeHtml(neuralPhase)}" data-neural-visible-portals="7" data-neural-added-ui-delay-ms="0" data-neural-acknowledged="false" data-reference-composition="owner-rest-and-morph-v077">
+      <div class="neural-stage" data-phase="${escapeHtml(neuralPhase)}" data-neural-visible-portals="7" data-neural-added-ui-delay-ms="0" data-neural-acknowledged="false" data-reference-composition="live-neural-substrate-v080">
         <header class="neural-titlebar">
           <button type="button" class="panel-close" aria-label="Back to Aqua Sentinel Home">‹</button>
-          <h1>Aqua Neuralink</h1>
+          <h1>AQUA SENTINEL</h1>
         </header>
         <span class="neural-source-count" aria-label="${confirmedSources} confirmed Aqua systems">${confirmedSources} CONFIRMED</span>
         <div class="neural-vignette" aria-hidden="true"></div>
@@ -1950,7 +1985,7 @@ function aboutMarkup() {
       <small>AQUA SOFTWARE COMPANY</small>
       <h1>Aqua Sentinel OS</h1>
       <p>Aqua is the owner command layer across the Aqua application ecosystem. Each satellite keeps its own authoritative records; Sentinel coordinates, explains, routes, and preserves receipts.</p>
-      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.7.7-owner-reference-neural-link-widget-test")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
+      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.8.0-live-aqua-neural-command-test")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
       <div class="about-boundaries">
         <article><i>✓</i><span><strong>Protected Home</strong><small>The approved first screen is unchanged by this repair.</small></span></article>
         <article><i>✓</i><span><strong>Server-owned intelligence</strong><small>API credentials and guarded actions do not live inside the APK.</small></span></article>
@@ -1975,7 +2010,7 @@ function settingsMarkup() {
       <button type="button" data-setting="integrations"><i>∞</i><span><strong>Ecosystem connections</strong><small>Installed applications, snapshots, and authoritative links</small></span><b>${state.installedAppCount || 0}/${state.registeredAppCount || apps.length}</b></button>
       <button type="button" data-setting="storage"><i>▤</i><span><strong>File Cabinet and synchronization</strong><small>Protected evidence, queues, cloud confirmation, and retention</small></span><b>${state.filingPendingCount || 0} PENDING</b></button>
       <button type="button" data-setting="diagnostics"><i>◇</i><span><strong>Diagnostics</strong><small>Run device checks and copy a repair receipt</small></span><b>CHECK</b></button>
-      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.7.7</b></button>
+      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.8.0</b></button>
     </div>`;
 }
 
@@ -2035,7 +2070,13 @@ function openPanel(kind) {
   systemPanel.hidden = false;
   systemPanel.dataset.panel = kind;
   systemPanel.querySelectorAll(".panel-close").forEach((button) => {
-    button.addEventListener("click", () => openPanel("home"));
+    button.addEventListener("click", () => {
+      if (kind === "neural" && neuralPhase !== "rest") {
+        returnNeuralToRest();
+        return;
+      }
+      openPanel("home");
+    });
   });
   systemPanel.querySelectorAll("[data-space]").forEach((button) => {
     button.addEventListener("click", () => openPanel(button.dataset.space));
@@ -2239,12 +2280,17 @@ function applyAquaAction(action) {
     return;
   }
   if (action.type === "open_source_app") {
-    if (pendingNeuralIntent && !isExplicitDeepOpen(pendingNeuralIntent.command)) {
-      return;
-    }
     const requested = String(action.app || "").toLowerCase();
     const index = apps.findIndex((app) => app.name.toLowerCase().includes(requested));
-    if (index >= 0) launchAppByIndex(index);
+    if (index >= 0) {
+      const intent = pendingNeuralIntent || {
+        primary: index,
+        supporting: [],
+        command: `Open ${apps[index].name}`,
+      };
+      if (systemPanel.hidden || systemPanel.dataset.panel !== "neural") beginNeuralRequest(intent.command);
+      scheduleNeuralDestination(intent);
+    }
     return;
   }
   if (action.type === "rotate_next") {
@@ -2403,6 +2449,15 @@ function activateDeterministicPreviewRoute() {
 }
 
 function startVoice() {
+  if (systemPanel.hidden || systemPanel.dataset.panel !== "neural") {
+    returnNeuralToRest();
+    openPanel("neural");
+  } else if (neuralPhase !== "rest") {
+    returnNeuralToRest();
+  }
+  neuralThought = "Aqua is listening.";
+  neuralThoughtDetail = "Tell her what to find, show, search, or open.";
+  layoutNeuralStage();
   if (!window.AquaBridge?.startListening) {
     notify("Native voice is available in the installed Android APK.");
     return;
@@ -2415,7 +2470,12 @@ function startVoice() {
 }
 
 window.receiveAquaPartial = (text) => {
-  if (text) aquaStateLabel.textContent = "AQUA IS LISTENING";
+  if (text) {
+    aquaStateLabel.textContent = "AQUA IS LISTENING";
+    neuralThought = String(text);
+    neuralThoughtDetail = "Aqua is identifying the correct source before she fires.";
+    layoutNeuralStage();
+  }
 };
 
 window.receiveAquaText = (text) => {
@@ -2425,15 +2485,15 @@ window.receiveAquaText = (text) => {
     return;
   }
   setAquaState("thinking");
+  if (systemPanel.hidden || systemPanel.dataset.panel !== "neural") openPanel("neural");
   const directIntent = identifyNeuralIntent(command) || (
     isExplicitDeepOpen(command) && neuralFocusIndex >= 0
       ? { primary: neuralFocusIndex }
       : null
   );
   if (directIntent && isExplicitDeepOpen(command)) {
-    if (directIntent.primary === apps.length) openPanel("files");
-    else launchAppByIndex(directIntent.primary);
-    setAquaState("idle");
+    const intent = beginNeuralRequest(command) || { ...directIntent, supporting: [], command };
+    scheduleNeuralDestination(intent);
     return;
   }
   const neuralIntent = beginNeuralRequest(command);
@@ -2473,11 +2533,15 @@ window.receiveWidgetCommand = (text) => {
   const command = String(text || "").trim();
   if (!command) return;
   recordWidgetMessage("You", command, "Saved locally · awaiting Aqua");
-  openPanel("command");
-  notify(authenticated ? "Command Center message received. Sending to Aqua." : "Command Center message saved locally.");
-  if (authenticated) {
-    flushNextWidgetCommand();
-  } else if (identifyNeuralIntent(command)) {
+  openPanel("neural");
+  notify(authenticated ? "Aqua received the widget command." : "Aqua received the local widget command.");
+  if (identifyNeuralIntent(command) || authenticated) {
+    const pending = widgetMessages.find((message) => message.role === "You" && message.text === command);
+    if (pending && authenticated) {
+      pending.state = "Sending to Aqua";
+      widgetCommandInFlight = pending.id;
+      saveWidgetMessages();
+    }
     window.receiveAquaText(command);
   } else {
     authMessage.textContent = "Your widget message is saved locally. Sign in to send it through Aqua Brain.";

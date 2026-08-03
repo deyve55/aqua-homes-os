@@ -212,7 +212,7 @@ function captureDefinitions() {
       name: "home",
       query: "preview=home",
       ready: "home",
-      output: "AquaSentinelOS-v0.7.7-launch-proof.png",
+      output: "AquaSentinelOS-v0.8.0-launch-proof.png",
     },
     {
       name: "neural-rest",
@@ -221,7 +221,7 @@ function captureDefinitions() {
       phase: "rest",
       visiblePortals: 7,
       referenceState: "rest",
-      output: "AquaSentinelOS-v0.7.7-Neural-Link-Rest-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Neural-Link-Rest-closed-phone.png",
     },
     {
       name: "neural-select",
@@ -230,7 +230,7 @@ function captureDefinitions() {
       phase: "selecting",
       visiblePortals: 7,
       referenceState: "rest",
-      output: "AquaSentinelOS-v0.7.7-Neural-Link-Select-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Neural-Link-Select-closed-phone.png",
     },
     {
       name: "neural-fire",
@@ -239,7 +239,7 @@ function captureDefinitions() {
       phase: "firing",
       visiblePortals: 7,
       referenceState: "rest",
-      output: "AquaSentinelOS-v0.7.7-Neural-Link-Fire-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Neural-Link-Fire-closed-phone.png",
     },
     {
       name: "neural-morph",
@@ -249,7 +249,7 @@ function captureDefinitions() {
       morphProgress: "0.429",
       materialized: "pending",
       referenceState: "morphed",
-      output: "AquaSentinelOS-v0.7.7-Neural-Link-Morph-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Neural-Link-Morph-closed-phone.png",
     },
     {
       name: "neural-result",
@@ -260,7 +260,7 @@ function captureDefinitions() {
       materialized: "true",
       fullMaterialization: true,
       referenceState: "morphed",
-      output: "AquaSentinelOS-v0.7.7-Neural-Link-Result-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Neural-Link-Result-closed-phone.png",
     },
     {
       name: "neural-company-morph",
@@ -270,7 +270,7 @@ function captureDefinitions() {
       morphProgress: "1.000",
       referenceState: "morphed",
       selectedApp: "Aqua CRM",
-      output: "AquaSentinelOS-v0.7.7-Neural-Link-Company-Morph-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Neural-Link-Company-Morph-closed-phone.png",
     },
     ...MORPH_CHECKPOINTS.map(([name, neuralAt, morphProgress]) => ({
       name: `neural-morph-${name}`,
@@ -280,49 +280,49 @@ function captureDefinitions() {
       morphProgress,
       materialized: "pending",
       referenceState: "morphed",
-      output: `AquaSentinelOS-v0.7.7-Neural-Link-Morph-${name}.png`,
+      output: `AquaSentinelOS-v0.8.0-Neural-Link-Morph-${name}.png`,
     })),
     {
       name: "command",
       query: "preview=command",
       ready: "command",
-      output: "AquaSentinelOS-v0.7.7-Command-Center-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Command-Center-closed-phone.png",
     },
     {
       name: "settings",
       query: "preview=settings",
       ready: "settings",
-      output: "AquaSentinelOS-v0.7.7-Settings-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Settings-closed-phone.png",
     },
     {
       name: "diagnostics",
       query: "preview=diagnostics",
       ready: "diagnostics",
-      output: "AquaSentinelOS-v0.7.7-Diagnostics-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Diagnostics-closed-phone.png",
     },
     {
       name: "connections",
       query: "preview=data",
       ready: "data",
-      output: "AquaSentinelOS-v0.7.7-Connections-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Connections-closed-phone.png",
     },
     {
       name: "file-cabinet",
       query: "preview=files",
       ready: "files",
-      output: "AquaSentinelOS-v0.7.7-File-Cabinet-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-File-Cabinet-closed-phone.png",
     },
     {
       name: "messages",
       query: "preview=messages",
       ready: "messages",
-      output: "AquaSentinelOS-v0.7.7-Conversation-Receipts-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-Conversation-Receipts-closed-phone.png",
     },
     {
       name: "about",
       query: "preview=about",
       ready: "about",
-      output: "AquaSentinelOS-v0.7.7-About-closed-phone.png",
+      output: "AquaSentinelOS-v0.8.0-About-closed-phone.png",
     },
   ];
 }
@@ -399,8 +399,8 @@ const stateExpression = `(() => {
     substrateDisplay: substrate ? getComputedStyle(substrate).display : '',
     beforeUsesRaster: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
     afterUsesRaster: Boolean(afterStyle?.backgroundImage?.includes('url(')),
-    beforeUsesOwnerReference: Boolean(beforeStyle?.backgroundImage?.includes('neural-link-reference-rest-owner-v077.png')),
-    afterUsesOwnerReference: Boolean(afterStyle?.backgroundImage?.includes('neural-link-reference-morph-owner-v077.png')),
+    beforeUsesLiveSubstrate: Boolean(beforeStyle?.backgroundImage?.includes('neural-link-live-substrate-v080.png')),
+    afterUsesLiveSubstrate: Boolean(afterStyle?.backgroundImage?.includes('neural-link-live-substrate-v080.png')),
     beforeOpacity: beforeStyle ? Number(beforeStyle.opacity) : 0,
     afterOpacity: afterStyle ? Number(afterStyle.opacity) : 0,
     stageUsesRaster: Boolean(stageStyle?.backgroundImage?.includes('url(')),
@@ -451,8 +451,8 @@ async function waitForExpectedState(connection, sessionId, definition) {
       && (!definition.referenceState || state.referenceState === definition.referenceState)
       && (!definition.selectedApp || state.selectedApp === definition.selectedApp)
       && (!definition.materialized || state.materialized === definition.materialized)
-      && (definition.ready !== "neural" || state.referenceComposition === "owner-rest-and-morph-v077")
-      && (definition.ready !== "neural" || (state.beforeUsesOwnerReference && state.afterUsesOwnerReference))
+      && (definition.ready !== "neural" || state.referenceComposition === "live-neural-substrate-v080")
+      && (definition.ready !== "neural" || (state.beforeUsesLiveSubstrate && state.afterUsesLiveSubstrate))
       && (definition.ready !== "neural" || state.neuralNetworkOpacity >= .75)
       && (definition.ready !== "neural" || state.continuationVisible)
       && (!definition.visiblePortals || state.visiblePortals === definition.visiblePortals)

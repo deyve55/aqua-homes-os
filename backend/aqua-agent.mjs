@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { Agent, run, tool } from '@openai/agents';
+import { Agent, run, tool, webSearchTool } from '@openai/agents';
 import { z } from 'zod';
 import { AquaAgentOutputSchema, emptyMaterialization } from './contracts.mjs';
 
@@ -19,6 +19,7 @@ TRUTH AND AUTHORITY
 
 ACTIONS AND SAFETY
 - Search and read-only preview may happen without confirmation.
+- Use live web search when the user explicitly asks to search the web, requests current information, or the answer depends on facts that may have changed. State that web results are external and name the sources briefly.
 - Any creation, edit, filing, approval, send, call, share, financial, destructive, or externally visible action must first be prepared as an intent.
 - A prepared intent is not completed work. It remains Queued and requires explicit confirmation.
 - Never invent a deep link, record identifier, source, confidence, or receipt.
@@ -165,7 +166,12 @@ export function createAquaAgentRuntime({ config, registry, store, runner = run }
       parallelToolCalls: false,
       store: false,
     },
-    tools: [searchObjects, listCapabilities, prepareAction],
+    tools: [
+      searchObjects,
+      listCapabilities,
+      webSearchTool({ searchContextSize: 'medium', externalWebAccess: true }),
+      prepareAction,
+    ],
     outputType: AquaAgentOutputSchema,
   });
 

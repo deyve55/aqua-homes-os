@@ -134,8 +134,8 @@ test("an unavailable gateway cannot block truthful Standalone startup", async ()
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
   ]);
-  assert.match(gradle, /versionCode = 2026080302/);
-  assert.match(gradle, /versionName = "0\.7\.7-owner-reference-neural-link-widget-test"/);
+  assert.match(gradle, /versionCode = 2026080303/);
+  assert.match(gradle, /versionName = "0\.8\.0-live-aqua-neural-command-test"/);
   assert.match(gradle, /\.orElse\(providers\.environmentVariable\("AQUA_GATEWAY_URL"\)\)\s*\.orElse\(""\)/);
   assert.doesNotMatch(gradle, /\.orElse\("https:\/\/api\.aquahomesos\.com\/gateway"\)/);
   assert.match(html, /id="ownerAccessButton"[^>]*data-panel="connect"/);
@@ -165,6 +165,14 @@ test("server secrets are absent from the APK source", async () => {
   assert.doesNotMatch(source, /OPENAI_API_KEY/);
 });
 
+test("Aqua Brain can use live web search without moving the API key into the APK", async () => {
+  const agent = await read("backend/aqua-agent.mjs");
+  assert.match(agent, /Agent, run, tool, webSearchTool/);
+  assert.match(agent, /webSearchTool\(\{ searchContextSize: 'medium', externalWebAccess: true \}\)/);
+  assert.match(agent, /Use live web search when the user explicitly asks/);
+  assert.doesNotMatch(agent, /OPENAI_API_KEY\s*=/);
+});
+
 test("the premium Neural Link keeps seven owner-reference portals alive while Aqua morphs into the operating surface", async () => {
   const [html, script, fidelity] = await Promise.all([
     read("sentient-os-web/index.html"),
@@ -174,7 +182,7 @@ test("the premium Neural Link keeps seven owner-reference portals alive while Aq
   assert.match(html, /data-panel="neural"[\s\S]*Neural Link/);
   assert.match(html, /data-panel="command"[\s\S]*Command/);
   assert.match(script, /AQUA SENTINEL NEURAL LINK/);
-  assert.match(script, />Aqua Neuralink</);
+  assert.match(script, />AQUA SENTINEL</);
   assert.doesNotMatch(script, /systemHeader\("Neural Workspace"\)/);
   assert.match(script, /class="neural-network"/);
   assert.match(script, /class="neural-microbursts"/);
@@ -201,10 +209,20 @@ test("the premium Neural Link keeps seven owner-reference portals alive while Aq
   assert.match(script, /function beginNeuralRequest\(command\)/);
   assert.match(script, /function isExplicitDeepOpen\(rawText\)/);
   assert.match(script, /directIntent && isExplicitDeepOpen\(command\)/);
-  assert.match(script, /pendingNeuralIntent && !isExplicitDeepOpen\(pendingNeuralIntent\.command\)/);
+  assert.match(script, /function scheduleNeuralDestination\(intent\)/);
+  assert.match(script, /NEURAL_DESTINATION_OPEN_MILLIS = NEURAL_AMBIENT_FIRE_MILLIS \+ 180/);
+  assert.equal(script.includes("let'?s\\s+go"), true);
+  assert.match(script, /const intent = beginNeuralRequest\(command\)[\s\S]*scheduleNeuralDestination\(intent\)/);
+  assert.doesNotMatch(
+    script.match(/if \(directIntent && isExplicitDeepOpen\(command\)\) \{([\s\S]*?)\n  \}/)?.[1] || "",
+    /launchAppByIndex|openPanel\("files"\)/,
+  );
+  assert.match(script, /function startVoice\(\) \{[\s\S]*openPanel\("neural"\)/);
+  assert.match(script, /window\.receiveWidgetCommand = \(text\) => \{[\s\S]*openPanel\("neural"\)/);
+  assert.match(script, /function returnNeuralToRest\(\)/);
   assert.match(script, /data-neural-path="\$\{index\}"/);
-  assert.match(script, /class="neural-traveler neural-traveler-cyan"/);
-  assert.match(script, /class="neural-traveler neural-traveler-gold"/);
+  assert.doesNotMatch(script, /class="neural-traveler/);
+  assert.match(script, /const bursts = \[0, 1, 2, 3, 4, 5\]/);
   assert.match(script, /label: `Go deeper into \$\{app\.name\}`/);
   assert.match(script, /Presentation · Not Live/);
   assert.match(script, /const NEURAL_SELECT_MILLIS = 220/);
@@ -253,7 +271,7 @@ test("the premium Neural Link keeps seven owner-reference portals alive while Aq
   assert.match(script, /class="neural-morph-shell"/);
   assert.match(script, /class="neural-selected-chip"/);
   assert.match(script, /class="neural-continuation"/);
-  assert.match(script, /data-reference-composition="owner-rest-and-morph-v077"/);
+  assert.match(script, /data-reference-composition="live-neural-substrate-v080"/);
   assert.match(script, /borderRadius: targetRadius/);
   assert.doesNotMatch(
     script.match(/function animateMaterializationFromPortal\(\) \{([\s\S]*?)\n\}/)?.[1] || "",
@@ -281,8 +299,8 @@ test("the premium Neural Link keeps seven owner-reference portals alive while Aq
   assert.match(appFirstNeuralink, /linear-gradient\(180deg,transparent 0,#fff 9%,#65efff 32%,#f2ba63 55%/);
   assert.match(appFirstNeuralink, /\.neural-network\{[\s\S]*opacity:\.6!important/);
   assert.match(appFirstNeuralink, /\.neural-signal\{[\s\S]*opacity:\.68/);
-  assert.match(appFirstNeuralink, /\.neural-traveler\{opacity:\.7/);
-  assert.match(appFirstNeuralink, /\.neural-traveler-gold\{opacity:\.56/);
+  assert.match(fidelity, /neural-link-live-substrate-v080\.png/);
+  assert.match(fidelity, /\.aqua-mark-orb,[\s\S]*\.aqua-mark-orb-core\{display:none!important\}/);
   assert.match(appFirstNeuralink, /data-phase="firing"[\s\S]*neural-jolt-column/);
   assert.match(appFirstNeuralink, /data-phase="result"[\s\S]*\.neural-portal,[\s\S]*opacity:0!important/);
   assert.match(appFirstNeuralink, /data-phase="result"[^}]*\.neural-portal\{transition:none!important\}/);
@@ -409,7 +427,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.7.7 preserves Home while the owner-reference Neural Link stays alive through its sub-second morph", async () => {
+test("v0.8.0 preserves Home while the owner-reference Neural Link stays alive through its sub-second morph", async () => {
   const [gradle, workflow, script, html, fidelity, androidLaunch, neuralLiveProof, visualRenderer] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -420,21 +438,21 @@ test("v0.7.7 preserves Home while the owner-reference Neural Link stays alive th
     read("scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"),
     read("scripts/render-aqua-sentinel-visual-proof.mjs"),
   ]);
-  assert.match(gradle, /versionCode = 2026080302/);
-  assert.match(script, /versionName: "0\.7\.7-owner-reference-neural-link-widget-test"/);
-  assert.match(script, /versionCode: 2026080302/);
-  assert.match(script, /<b>0\.7\.7<\/b>/);
-  assert.match(gradle, /versionName = "0\.7\.7-owner-reference-neural-link-widget-test"/);
+  assert.match(gradle, /versionCode = 2026080303/);
+  assert.match(script, /versionName: "0\.8\.0-live-aqua-neural-command-test"/);
+  assert.match(script, /versionCode: 2026080303/);
+  assert.match(script, /<b>0\.8\.0<\/b>/);
+  assert.match(gradle, /versionName = "0\.8\.0-live-aqua-neural-command-test"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
   assert.doesNotMatch(gradle, /storeFile = file\(System\.getenv\("AQUA_RELEASE_KEYSTORE_PATH"\)\)/);
   assert.match(gradle, /\?\.let \{ storeFile = file\(it\) \}/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.7-Owner-Reference-Neural-Link-Quick-Access-Widget-Test\.apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.8\.0-Live-Aqua-Neural-Command-Widget-Test\.apk/);
   assert.match(workflow, /owner_visual_approval/);
   assert.match(workflow, /github\.event_name == 'workflow_dispatch' && inputs\.owner_visual_approval/);
   assert.match(workflow, /preflight-no-apk:/);
   assert.match(workflow, /compileDebugJavaWithJavac :app:mergeDebugResources/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.7-preflight-no-apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.8\.0-preflight-no-apk/);
   assert.match(workflow, /Retain preflight visual evidence[\s\S]*if: \$\{\{ always\(\) \}\}/);
   assert.match(visualRenderer, /AQUA_RESULT_DOCUMENT_PIXEL_GATE/);
   assert.match(visualRenderer, /resultDocumentPixelMean >= \.28/);
@@ -502,16 +520,16 @@ test("v0.7.7 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(visualRenderer, /state\.focusName === "Aqua Receipts"/);
   assert.match(visualRenderer, /state\.joltOpacity >= \.6/);
   assert.match(visualRenderer, /substrateDisplay === "none"/);
-  assert.match(visualRenderer, /state\.beforeUsesOwnerReference && state\.afterUsesOwnerReference/);
+  assert.match(visualRenderer, /state\.beforeUsesLiveSubstrate && state\.afterUsesLiveSubstrate/);
   assert.match(visualRenderer, /!state\.stageUsesRaster/);
-  assert.match(visualRenderer, /state\.referenceComposition === "owner-rest-and-morph-v077"/);
+  assert.match(visualRenderer, /state\.referenceComposition === "live-neural-substrate-v080"/);
   assert.match(visualRenderer, /state\.neuralNetworkOpacity >= \.75/);
   assert.match(visualRenderer, /state\.continuationVisible/);
   assert.match(visualRenderer, /preview=settings/);
   assert.match(visualRenderer, /Settings-closed-phone\.png/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.7-Settings-closed-phone\.png/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.7-Neuralink-Widget-3x2\.png/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.7-Widget-Action-Microphone-Armed\.png/);
+  assert.match(workflow, /AquaSentinelOS-v0\.8\.0-Settings-closed-phone\.png/);
+  assert.match(workflow, /AquaSentinelOS-v0\.8\.0-Neuralink-Widget-3x2\.png/);
+  assert.match(workflow, /AquaSentinelOS-v0\.8\.0-Widget-Action-Microphone-Armed\.png/);
   assert.match(visualRenderer, /AQUA_DETERMINISTIC_VISUAL_PROOF_RENDERED/);
   assert.match(workflow, /neural-live-wall-clock/);
   assert.match(workflow, /--url ".*neuralDemo=rest"/);
@@ -542,12 +560,12 @@ test("v0.7.7 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(neuralLiveProof, /restingState\.visiblePortals === 7[\s\S]*restingState\.portalsLoaded === true[\s\S]*restingState\.portalArtworkContained === true/);
   assert.match(neuralLiveProof, /checkpoint\.phase === "result" && checkpoint\.materialized === "true"/);
   assert.match(neuralLiveProof, /const resultVisualState = await evaluate\(connection, sessionId, browserStateExpression\)/);
-  assert.match(neuralLiveProof, /Cyan and gold synapses must remain visibly alive/);
+  assert.match(neuralLiveProof, /Elongated cyan and gold synapse pulses must remain visibly alive/);
   assert.match(neuralLiveProof, /portalsLoaded, true/);
   assert.match(neuralLiveProof, /substrateDisplay, "none"/);
-  assert.match(neuralLiveProof, /usesOwnerRestReference, true/);
-  assert.match(neuralLiveProof, /usesOwnerMorphReference, true/);
-  assert.match(neuralLiveProof, /referenceComposition, "owner-rest-and-morph-v077"/);
+  assert.match(neuralLiveProof, /usesLiveNeuralSubstrate, true/);
+  assert.match(neuralLiveProof, /usesLiveNeuralResultSubstrate, true/);
+  assert.match(neuralLiveProof, /referenceComposition, "live-neural-substrate-v080"/);
   assert.match(neuralLiveProof, /continuationVisible, true/);
   assert.match(neuralLiveProof, /portalArtworkContained, true/);
   assert.match(neuralLiveProof, /addedUiDelayMillis, 0/);
@@ -965,7 +983,7 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.doesNotMatch(widgetVerifier, /sleep 0\.12\s*\n\s*adb exec-out screencap -p > "\$active"/);
   assert.match(widgetVerifier, /compare -metric AE/);
   assert.match(workflow, /command -v ffmpeg >\/dev\/null \|\| missing_packages\+=\(ffmpeg\)/);
-  assert.match(workflow, /aqua-sentinel-v0\.7\.7-widget-\*-jolt\.mp4/);
+  assert.match(workflow, /aqua-sentinel-v0\.8\.0-widget-\*-jolt\.mp4/);
   assert.doesNotMatch(widgetVerifier, /wait_for_adb/);
   assert.match(widgetVerifier, /AQUA_WIDGET_FILED_TODAY_VERIFIED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_BACKGROUND_FILE_STAYED_ON_LAUNCHER/);
@@ -1077,9 +1095,8 @@ test("responsive widget fills every supported host while preserving approved art
   assert.doesNotMatch(microLayout, /android:text="(?:ASK|VIDEO|PHOTO|FILE|AQUA)"/);
   assert.match(threeByTwoLayout, /three by two proportional surface/);
   assert.match(threeByTwoLayout, /@drawable\/aqua_widget_2x2_approved_v073/);
-  assert.match(threeByTwoLayout, /android:weightSum="6"/);
-  assert.equal((threeByTwoLayout.match(/android:layout_weight="1"/g) || []).length >= 2, true);
-  assert.match(threeByTwoLayout, /android:layout_weight="4"/);
+  assert.doesNotMatch(threeByTwoLayout, /android:weightSum="6"|android:layout_weight="4"/);
+  assert.match(threeByTwoLayout, /id="@\+id\/widget_neural_art"[\s\S]*android:layout_width="match_parent"[\s\S]*android:layout_height="match_parent"/);
   assert.match(threeByTwoLayout, /android:scaleType="centerInside"/);
   assert.match(threeByTwoLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.match(threeByTwoLayout, /@drawable\/aqua_widget_neural_activity_wide/);
@@ -1120,6 +1137,8 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(widget, /new SizeF\(320f, 180f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_3x2\)/);
   assert.match(widget, /layoutName\(int layout\)/);
   assert.match(widget, /return "three-by-two"/);
+  assert.match(widget, /ratio >= 1\.10f && ratio <= 2\.20f/);
+  assert.match(widget, /ratio > 2\.20f/);
   assert.match(widget, /new SizeF\(250f, 390f\)/);
   assert.match(widget, /SELECTED_NEURAL_ACTIVITY_IDS/);
   assert.match(widget, /activityId == selectedActivity \? View\.VISIBLE : View\.INVISIBLE/);
@@ -1204,7 +1223,7 @@ test("responsive widget fills every supported host while preserving approved art
   assert.doesNotMatch(verifier, /wait_for_log "AQUA_FILING_INBOX_DELIVERED/);
 });
 
-test("v0.7.7 secondary operating surfaces execute real Android boundaries", async () => {
+test("v0.8.0 secondary operating surfaces execute real Android boundaries", async () => {
   const [script, fidelity, activity, renderer, workflow, gradle, html] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("sentient-os-web/fidelity.css"),
@@ -1215,8 +1234,8 @@ test("v0.7.7 secondary operating surfaces execute real Android boundaries", asyn
     read("sentient-os-web/index.html"),
   ]);
 
-  assert.match(gradle, /versionCode = 2026080302/);
-  assert.match(gradle, /versionName = "0\.7\.7-owner-reference-neural-link-widget-test"/);
+  assert.match(gradle, /versionCode = 2026080303/);
+  assert.match(gradle, /versionName = "0\.8\.0-live-aqua-neural-command-test"/);
   assert.match(script, /preferenceStorageKey = "aqua-sentinel-owner-preferences-v1"/);
   assert.match(script, /function saveOwnerPreferences\(\)/);
   assert.match(script, /In-app owner alerts/);

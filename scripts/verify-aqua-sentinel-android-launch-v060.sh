@@ -210,7 +210,7 @@ test -n "$APP_PID" || {
   exit 1
 }
 adb shell dumpsys package "$APP_ID" > /tmp/aqua-sentinel-v0.7.2-package.txt
-grep -q "versionCode=2026080302" /tmp/aqua-sentinel-v0.7.2-package.txt
+grep -q "versionCode=2026080303" /tmp/aqua-sentinel-v0.7.2-package.txt
 grep -q "AquaCommandWidget" /tmp/aqua-sentinel-v0.7.2-package.txt
 grep -q "QuickCaptureActivity" /tmp/aqua-sentinel-v0.7.2-package.txt
 grep -q "EvidenceProvider" /tmp/aqua-sentinel-v0.7.2-package.txt

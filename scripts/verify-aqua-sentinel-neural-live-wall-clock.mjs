@@ -140,9 +140,9 @@ const browserStateFunctionExpression = `() => {
     focusName: document.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
     selectedPortalTop: selectedBounds?.top || 0,
     visiblePortals: visiblePortals.length,
-    visibleTravelers: Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => {
-      const style = getComputedStyle(traveler);
-      const group = traveler.closest('.neural-route-group');
+    visiblePulses: Array.from(document.querySelectorAll('.neural-burst')).filter((pulse) => {
+      const style = getComputedStyle(pulse);
+      const group = pulse.closest('.neural-route-group');
       return Number(style.opacity) > .15 && group && getComputedStyle(group).visibility !== 'hidden';
     }).length,
     portalsLoaded: visiblePortals.every((portal) => {
@@ -159,8 +159,8 @@ const browserStateFunctionExpression = `() => {
     usesRasterUnderlay: Boolean(stageStyle?.backgroundImage?.includes('url(')),
     usesPseudoRasterUnderlay: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
     usesRasterCompositor: Boolean(afterStyle?.backgroundImage?.includes('url(')),
-    usesOwnerRestReference: Boolean(beforeStyle?.backgroundImage?.includes('neural-link-reference-rest-owner-v077.png')),
-    usesOwnerMorphReference: Boolean(afterStyle?.backgroundImage?.includes('neural-link-reference-morph-owner-v077.png')),
+    usesLiveNeuralSubstrate: Boolean(beforeStyle?.backgroundImage?.includes('neural-link-live-substrate-v080.png')),
+    usesLiveNeuralResultSubstrate: Boolean(afterStyle?.backgroundImage?.includes('neural-link-live-substrate-v080.png')),
     portalArtworkContained: visiblePortals.every((portal) => {
       const node = portal.querySelector('.portal-node');
       const image = portal.querySelector('.portal-node > img');
@@ -364,19 +364,19 @@ async function run() {
     assert.equal(restingState?.portalsLoaded, true, "Every visible portal must contain loaded application artwork");
     assert.equal(restingState?.portalArtworkContained, true, "Application artwork escaped a black portal");
     assert.equal(restingState?.usesRasterUnderlay, false, "The live stage itself must remain a composited operating surface");
-    assert.equal(restingState?.usesOwnerRestReference, true, "Dave's exact rest composition is not installed");
-    assert.equal(restingState?.usesOwnerMorphReference, true, "Dave's exact morph composition is not installed");
-    assert.equal(restingState?.referenceComposition, "owner-rest-and-morph-v077");
+    assert.equal(restingState?.usesLiveNeuralSubstrate, true, "The clean live neural substrate is not installed");
+    assert.equal(restingState?.usesLiveNeuralResultSubstrate, true, "The clean result substrate is not installed");
+    assert.equal(restingState?.referenceComposition, "live-neural-substrate-v080");
     assert.equal(restingState?.referenceState, "rest");
     assert.equal(restingState?.substrateDisplay, "none", "The legacy mechanical substrate must stay hidden");
     assert.ok(restingState?.neuralNetworkOpacity >= .75, "The always-on cyan/gold mind is too faint");
     assert.equal(restingState?.continuationVisible, true, "The live Ask Aqua continuation control is missing");
-    const travelerBefore = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => getComputedStyle(traveler.closest('.neural-route-group')).visibility !== 'hidden').map((traveler) => { const bounds = traveler.getBoundingClientRect(); return [bounds.left, bounds.top]; })`);
+    const pulseBefore = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-burst')).filter((pulse) => getComputedStyle(pulse.closest('.neural-route-group')).visibility !== 'hidden').map((pulse) => getComputedStyle(pulse).strokeDashoffset)`);
     await delay(160);
-    const travelerAfter = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => getComputedStyle(traveler.closest('.neural-route-group')).visibility !== 'hidden').map((traveler) => { const bounds = traveler.getBoundingClientRect(); return [bounds.left, bounds.top]; })`);
+    const pulseAfter = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-burst')).filter((pulse) => getComputedStyle(pulse.closest('.neural-route-group')).visibility !== 'hidden').map((pulse) => getComputedStyle(pulse).strokeDashoffset)`);
     assert.ok(
-      travelerBefore.some((position, index) => Math.hypot(position[0] - travelerAfter[index][0], position[1] - travelerAfter[index][1]) > .5),
-      "Cyan and gold synapses must remain visibly alive while the portals stay fixed",
+      pulseBefore.some((offset, index) => offset !== pulseAfter[index]),
+      "Elongated cyan and gold synapse pulses must remain visibly alive while the portals stay fixed",
     );
 
     const recorderInstalled = await evaluate(
