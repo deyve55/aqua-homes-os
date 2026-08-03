@@ -612,6 +612,19 @@ jobs:
           emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim -camera-back none
           script: bash scripts/verify-aqua-sentinel-android-launch-v060.sh
 
+      - name: Retain failed Android launcher evidence
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: AquaSentinelOS-v0.7.6-android-launcher-failure-${{ github.run_attempt }}
+          path: |
+            /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-*.png
+            /tmp/aqua-widget-resize-*-selected.xml
+            /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-*.txt
+            /tmp/aqua-sentinel-v0.7.6-widget-resize-*.logcat.txt
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Prepare release files and checksums
         run: |
           mkdir -p release
@@ -623,12 +636,24 @@ jobs:
           test -s /tmp/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png
           test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-compact.png
           test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-small.png
+          test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.png
+          test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.png
+          test -s /tmp/aqua-widget-resize-compact-selected.xml
+          test -s /tmp/aqua-widget-resize-small-selected.xml
+          test -s /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-compact.txt
+          test -s /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-small.txt
           cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Live-Widget-Launcher.png release/AquaSentinelOS-v0.7.6-Neuralink-Live-Widget-Launcher.png
           cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Tap-Jolt.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Tap-Jolt.png
           cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-3x2.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-3x2.png
           cp /tmp/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png release/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png
           cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-compact.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-compact.png
           cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-small.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-small.png
+          cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.png
+          cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.png
+          cp /tmp/aqua-widget-resize-compact-selected.xml release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.xml
+          cp /tmp/aqua-widget-resize-small-selected.xml release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.xml
+          cp /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-compact.txt release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.txt
+          cp /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-small.txt release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.txt
           cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.7.6-certificate.txt
           cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.7.6-package.txt
           {

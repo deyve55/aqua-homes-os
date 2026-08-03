@@ -120,6 +120,134 @@ for node in ET.parse(path).iter("node"):
 PY
 }
 
+detect_widget_resize_handle() {
+  local hierarchy_path="$1"
+  local axis="$2"
+  local surface_bounds="$3"
+  local screen_width="$4"
+  local screen_height="$5"
+
+  python3 - "$hierarchy_path" "$launcher_package" "$axis" "$surface_bounds" "$screen_width" "$screen_height" <<'PY'
+import re
+import sys
+import xml.etree.ElementTree as ET
+
+path, launcher_package, axis, surface_raw, screen_width, screen_height = sys.argv[1:]
+screen_width = int(screen_width)
+screen_height = int(screen_height)
+surface = tuple(map(int, surface_raw.split()))
+surface_left, surface_top, surface_right, surface_bottom = surface
+surface_width = surface_right - surface_left
+surface_height = surface_bottom - surface_top
+
+BOUNDS = re.compile(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]")
+
+def bounds_of(node):
+    match = BOUNDS.fullmatch(node.attrib.get("bounds", ""))
+    if not match:
+        return None
+    bounds = tuple(map(int, match.groups()))
+    if bounds[2] <= bounds[0] or bounds[3] <= bounds[1]:
+        return None
+    return bounds
+
+def visible(node):
+    return node.attrib.get("visible-to-user", "true") != "false"
+
+nodes = []
+for node in ET.parse(path).iter("node"):
+    bounds = bounds_of(node)
+    if bounds is None or not visible(node):
+        continue
+    package = node.attrib.get("package", "")
+    resource_id = node.attrib.get("resource-id", "")
+    class_name = node.attrib.get("class", "")
+    description = node.attrib.get("content-desc", "")
+    if package and package != launcher_package:
+        continue
+    nodes.append((node, bounds, resource_id, class_name, description))
+
+if axis == "horizontal":
+    handle_suffixes = ("widget_resize_right_handle", "widget_resize_left_handle")
+else:
+    handle_suffixes = ("widget_resize_bottom_handle", "widget_resize_top_handle")
+
+def endpoint(side, start_x, start_y):
+    distance = max(192, int((surface_width if axis == "horizontal" else surface_height) * 0.45))
+    if side == "right":
+        return min(screen_width - 24, start_x + distance), start_y
+    if side == "left":
+        return max(24, start_x - distance), start_y
+    if side == "bottom":
+        return start_x, min(screen_height - 24, start_y + distance)
+    return start_x, max(24, start_y - distance)
+
+def side_room(side, start_x, start_y):
+    if side == "right":
+        return screen_width - 24 - start_x
+    if side == "left":
+        return start_x - 24
+    if side == "bottom":
+        return screen_height - 24 - start_y
+    return start_y - 24
+
+candidates = []
+for _, bounds, resource_id, class_name, description in nodes:
+    searchable = " ".join((resource_id, class_name, description)).lower()
+    for suffix in handle_suffixes:
+        if suffix not in searchable:
+            continue
+        side = suffix.removeprefix("widget_resize_").removesuffix("_handle")
+        left, top, right, bottom = bounds
+        start_x = (left + right) // 2
+        start_y = (top + bottom) // 2
+        # Launcher3 centers each visible handle on the resize-frame edge, while
+        # Rect.contains excludes the outer edge. Move two pixels into the measured
+        # frame so ACTION_DOWN lands inside its real touch region.
+        if side == "right":
+            start_x -= 2
+        elif side == "left":
+            start_x += 2
+        elif side == "bottom":
+            start_y -= 2
+        else:
+            start_y += 2
+        room = side_room(side, start_x, start_y)
+        candidates.append((3, room, side, start_x, start_y, bounds, f"handle:{suffix}"))
+
+if not candidates:
+    for _, bounds, resource_id, class_name, description in nodes:
+        searchable = " ".join((resource_id, class_name, description)).lower()
+        if "widget_resize_frame" not in searchable and "appwidgetresizeframe" not in searchable:
+            continue
+        left, top, right, bottom = bounds
+        overlap_width = max(0, min(right, surface_right) - max(left, surface_left))
+        overlap_height = max(0, min(bottom, surface_bottom) - max(top, surface_top))
+        if overlap_width < surface_width * 0.65 or overlap_height < surface_height * 0.65:
+            continue
+        if axis == "horizontal":
+            frame_sides = (("right", right - 2, (top + bottom) // 2), ("left", left + 2, (top + bottom) // 2))
+        else:
+            frame_sides = (("bottom", (left + right) // 2, bottom - 2), ("top", (left + right) // 2, top + 2))
+        for side, start_x, start_y in frame_sides:
+            room = side_room(side, start_x, start_y)
+            candidates.append((2, room, side, start_x, start_y, bounds, "frame:widget_resize_frame"))
+
+usable = [candidate for candidate in candidates if candidate[1] >= 96]
+if not usable:
+    raise SystemExit(1)
+
+_, _, side, start_x, start_y, measured, source = max(usable, key=lambda candidate: (candidate[0], candidate[1]))
+end_x, end_y = endpoint(side, start_x, start_y)
+if not (24 <= start_x <= screen_width - 24 and 24 <= start_y <= screen_height - 24):
+    raise SystemExit(1)
+if abs(end_x - start_x) + abs(end_y - start_y) < 96:
+    raise SystemExit(1)
+
+print(start_x, start_y, end_x, end_y, side, source, *measured)
+PY
+}
+
 tap_ui_node() {
   local label="$1"
   local pattern="$2"
@@ -532,8 +660,16 @@ prove_widget_resize() {
   local start_y=""
   local end_x=""
   local end_y=""
-  local edge_offset=""
-  local resize_distance=""
+  local selected_hierarchy=""
+  local selected_screenshot="/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-${label}.png"
+  local handle_geometry=""
+  local handle_side=""
+  local handle_source=""
+  local handle_left=""
+  local handle_top=""
+  local handle_right=""
+  local handle_bottom=""
+  local handle_receipt="/tmp/aqua-sentinel-v0.7.6-widget-resize-handle-${label}.txt"
   local resized="false"
   local evidence="/tmp/aqua-sentinel-v0.7.6-widget-resize-${label}.logcat.txt"
 
@@ -563,48 +699,56 @@ prove_widget_resize() {
   screen_height="${BASH_REMATCH[2]}"
   clear_logcat
 
-  for resize_attempt in $(seq 1 7); do
-    adb shell input keyevent KEYCODE_HOME
+  for selection_attempt in $(seq 1 4); do
     return_to_launcher
     adb shell input swipe "$center_x" "$center_y" "$center_x" "$center_y" 1300
     sleep 1
-    # Launcher3's AppWidgetResizeFrame accepts touches across a region around the
-    # visible edge, not at one launcher-independent coordinate. Sweep that region
-    # while keeping every attempted drag inside the active display.
-    edge_offset=$((-72 + (resize_attempt - 1) * 24))
-    if [[ "$axis" == "vertical" ]]; then
-      start_x="$center_x"
-      start_y=$((bottom + edge_offset))
-      ((start_y < 24)) && start_y=24
-      ((start_y > screen_height - 24)) && start_y=$((screen_height - 24))
-      resize_distance=$((height * 35 / 100))
-      ((resize_distance < 160)) && resize_distance=160
-      end_x="$center_x"
-      end_y=$((start_y + resize_distance))
-      ((end_y > screen_height - 24)) && end_y=$((screen_height - 24))
-    else
-      start_x=$((right + edge_offset))
-      ((start_x < 24)) && start_x=24
-      ((start_x > screen_width - 24)) && start_x=$((screen_width - 24))
-      start_y="$center_y"
-      resize_distance=$((width * 35 / 100))
-      ((resize_distance < 160)) && resize_distance=160
-      end_x=$((start_x + resize_distance))
-      ((end_x > screen_width - 24)) && end_x=$((screen_width - 24))
-      end_y="$center_y"
+    selected_hierarchy="$(dump_ui "aqua-widget-resize-${label}-selected")" || true
+    adb exec-out screencap -p > "$selected_screenshot"
+    test -s "$selected_screenshot"
+    if [[ -n "$selected_hierarchy" ]]; then
+      handle_geometry="$(
+        detect_widget_resize_handle \
+          "$selected_hierarchy" "$axis" "$surface_bounds" "$screen_width" "$screen_height" \
+          || true
+      )"
     fi
-    echo "Resizing Aqua widget $label from $start_x,$start_y to $end_x,$end_y"
-    adb shell input swipe "$start_x" "$start_y" "$end_x" "$end_y" 1100
-    sleep 2
-    adb shell input keyevent KEYCODE_BACK || true
-    if wait_for_log "AQUA_WIDGET_RESIZED id=.*size=.*layout=" "$evidence" 4; then
-      resized="true"
+    if [[ -n "$handle_geometry" ]]; then
       break
     fi
+    adb shell input keyevent KEYCODE_BACK || true
+    sleep 1
   done
 
+  if [[ -z "$handle_geometry" || -z "$selected_hierarchy" ]]; then
+    echo "The active launcher did not expose a measurable resize handle for $label" >&2
+    [[ -n "$selected_hierarchy" && -s "$selected_hierarchy" ]] \
+      && grep -Ei "resize|AppWidget" "$selected_hierarchy" >&2 || true
+    return 1
+  fi
+
+  read -r start_x start_y end_x end_y handle_side handle_source \
+    handle_left handle_top handle_right handle_bottom <<< "$handle_geometry"
+  {
+    echo "launcher=$launcher_package"
+    echo "axis=$axis"
+    echo "side=$handle_side"
+    echo "source=$handle_source"
+    echo "measured_bounds=$handle_left,$handle_top,$handle_right,$handle_bottom"
+    echo "drag=$start_x,$start_y->$end_x,$end_y"
+    echo "hierarchy=$selected_hierarchy"
+    echo "screenshot=$selected_screenshot"
+  } > "$handle_receipt"
+  echo "AQUA_WIDGET_RESIZE_HANDLE_DETECTED label=$label axis=$axis side=$handle_side source=$handle_source bounds=$handle_left,$handle_top,$handle_right,$handle_bottom"
+  echo "Resizing Aqua widget $label from detected $handle_side handle $start_x,$start_y to $end_x,$end_y"
+  adb shell input swipe "$start_x" "$start_y" "$end_x" "$end_y" 1100
+  if wait_for_log "AQUA_WIDGET_RESIZED id=.*size=.*layout=" "$evidence" 8; then
+    resized="true"
+  fi
+  adb shell input keyevent KEYCODE_BACK || true
+
   if [[ "$resized" != "true" ]]; then
-    echo "Launcher3 did not produce a real widget resize callback for $label" >&2
+    echo "The detected launcher resize handle did not produce a real widget resize callback for $label" >&2
     grep -E "AQUA_WIDGET_RESIZED|Launcher3|AndroidRuntime|FATAL EXCEPTION" "$evidence" >&2 || true
     return 1
   fi
