@@ -558,26 +558,26 @@ PY
   echo "AQUA_WIDGET_FILED_TODAY_VERIFIED count=$filed_today"
 }
 
-prove_filed_confirmation() {
+prove_handoff_confirmation() {
   local hierarchy_path=""
   local action_evidence="/tmp/aqua-sentinel-v0.7.4-widget-action.logcat.txt"
-  local filed_evidence="/tmp/aqua-sentinel-v0.7.4-widget-filed.logcat.txt"
-  if ! grep -Fq "AQUA_WIDGET_FILED_CONFIRMATION_RENDERED" "$action_evidence" \
-    && ! wait_for_log "AQUA_WIDGET_FILED_CONFIRMATION_RENDERED" "$filed_evidence" 12; then
-    echo "Aqua Action never rendered its launcher-hosted FILED acknowledgement" >&2
+  local handoff_evidence="/tmp/aqua-sentinel-v0.7.4-widget-handoff.logcat.txt"
+  if ! grep -Fq "AQUA_WIDGET_HANDOFF_RECEIVED mode=action" "$action_evidence" \
+    && ! wait_for_log "AQUA_WIDGET_HANDOFF_RECEIVED mode=action" "$handoff_evidence" 12; then
+    echo "Aqua Action never rendered its launcher-hosted RECEIVED acknowledgement" >&2
     return 1
   fi
   return_to_launcher
   for attempt in $(seq 1 8); do
-    hierarchy_path="$(dump_ui "aqua-widget-filed-confirmation-${attempt}")"
+    hierarchy_path="$(dump_ui "aqua-widget-handoff-confirmation-${attempt}")"
     if grep -Fq "$package:id/widget_status" "$hierarchy_path" \
-      && grep -Eq 'text="FILED"[^>]*resource-id="[^\"]*:id/widget_status"|resource-id="[^\"]*:id/widget_status"[^>]*text="FILED"' "$hierarchy_path"; then
-      echo "AQUA_WIDGET_FILED_CONFIRMATION_VERIFIED"
+      && grep -Eq 'text="(RECEIVED|AQUA HAS IT)"[^>]*resource-id="[^\"]*:id/widget_status"|resource-id="[^\"]*:id/widget_status"[^>]*text="(RECEIVED|AQUA HAS IT)"' "$hierarchy_path"; then
+      echo "AQUA_WIDGET_HANDOFF_CONFIRMATION_VERIFIED"
       return 0
     fi
     sleep 0.10
   done
-  echo "The Aqua widget did not expose the brief FILED state after a successful local receipt" >&2
+  echo "The Aqua widget did not expose a truthful RECEIVED state after durable handoff" >&2
   return 1
 }
 
@@ -720,7 +720,7 @@ for mode in home action file photo video; do
     for receipt_attempt in $(seq 1 12); do
       sleep 1
       adb logcat -d > "$evidence"
-      grep -Fq "AQUA_WIDGET_MESSAGE_SUBMITTED" "$evidence" && submitted=true
+      grep -Fq "AQUA_WIDGET_HANDOFF_RECEIVED" "$evidence" && submitted=true
       grep -Fq "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT" "$evidence" && background_sent=true
       if [[ "$submitted" == "true" && "$background_sent" == "true" ]]; then break; fi
     done
@@ -729,7 +729,7 @@ for mode in home action file photo video; do
       grep -E "AQUA_WIDGET|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
       exit 1
     fi
-    prove_filed_confirmation
+    prove_handoff_confirmation
     assert_widget_send_returned_to_launcher
   fi
 

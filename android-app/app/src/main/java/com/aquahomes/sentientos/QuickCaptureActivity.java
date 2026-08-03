@@ -51,9 +51,11 @@ public class QuickCaptureActivity extends Activity {
     private static final int VIDEO_REQUEST = 203;
     private static final int VOICE_PERMISSION_REQUEST = 204;
     private static final int ASK_VOICE_REQUEST = 205;
+    private static final int CALENDAR_PERMISSION_REQUEST = 206;
     private static final String STATE_CAPTURE_LAUNCHED = "capture_launched";
     private static final String STATE_EVIDENCE_PATH = "evidence_path";
     private static final String STATE_COMMAND_TEXT = "command_text";
+    private static final String STATE_PENDING_CALENDAR_COMMAND = "pending_calendar_command";
     private String mode;
     private String requestedMode;
     private File evidenceFile;
@@ -65,6 +67,7 @@ public class QuickCaptureActivity extends Activity {
     private EditText commandInput;
     private boolean recognizingCommand;
     private SpeechRecognizer speechRecognizer;
+    private String pendingCalendarCommand = "";
     private final Handler captureHandler = new Handler(Looper.getMainLooper());
     private boolean recognitionCompleted;
     private static final long SPEECH_TIMEOUT_MILLIS = 18_000L;
@@ -76,6 +79,9 @@ public class QuickCaptureActivity extends Activity {
         captureLaunched = state != null && state.getBoolean(STATE_CAPTURE_LAUNCHED, false);
         String restoredPath = state == null ? "" : state.getString(STATE_EVIDENCE_PATH, "");
         if (!restoredPath.isEmpty()) evidenceFile = new File(restoredPath);
+        pendingCalendarCommand = state == null
+            ? ""
+            : state.getString(STATE_PENDING_CALENDAR_COMMAND, "");
         showOpeningSurface();
         logActionReceived();
         if (captureLaunched) {
@@ -313,40 +319,136 @@ public class QuickCaptureActivity extends Activity {
             status.setText("Type a message or tap Speak first.");
             return;
         }
-        String messageId = UUID.randomUUID().toString();
-        Log.i(
-            "AquaCommandWidget",
-            "AQUA_WIDGET_MESSAGE_SUBMITTED id=" + messageId + " characters=" + text.length()
-        );
+        if (CalendarQuickAction.parse(text) != null) {
+            submitCalendarCommand(text);
+            return;
+        }
+        submitAssistantHandoff("action", text, "", true);
+    }
+
+    private boolean submitAssistantHandoff(
+        String captureType,
+        String text,
+        String evidencePath,
+        boolean removeTask
+    ) {
         JSONObject receipt;
         try {
-            receipt = FilingStore.enqueue(this, "action", text, "");
+            receipt = FilingStore.enqueue(this, captureType, text, evidencePath);
         } catch (RuntimeException error) {
-            Log.e("AquaCommandWidget", "AQUA_WIDGET_ACTION_FILE_FAILED", error);
-            Toast.makeText(this, "Aqua could not file that action. Please try again.", Toast.LENGTH_SHORT).show();
-            finishAndRemoveTask();
-            return;
+            Log.e("AquaCommandWidget", "AQUA_WIDGET_HANDOFF_SAVE_FAILED", error);
+            Toast.makeText(this, "Aqua could not preserve that handoff. Please try again.", Toast.LENGTH_SHORT).show();
+            if (removeTask) finishAndRemoveTask();
+            else finish();
+            return false;
         }
         if (receipt.length() == 0) {
-            status.setText("Aqua could not file that action.");
-            return;
+            status.setText("Aqua could not preserve that handoff.");
+            return false;
         }
-        AquaCommandWidget.showFiled(this);
-        boolean dispatchStarted = WidgetMessageService.enqueue(this, text, messageId);
+        return dispatchAssistantHandoff(receipt, captureType, text, evidencePath, removeTask);
+    }
+
+    private boolean dispatchAssistantHandoff(
+        JSONObject receipt,
+        String captureType,
+        String text,
+        String evidencePath,
+        boolean removeTask
+    ) {
+        String messageId = UUID.randomUUID().toString();
+        String itemId = receipt.optString("id", "");
+        String destination = receipt.optString("destination", "Aqua Executive Desk · Intake");
+        Log.i(
+            "AquaCommandWidget",
+            "AQUA_WIDGET_HANDOFF_RECEIVED id=" + itemId
+                + " message=" + messageId
+                + " type=" + captureType
+                + " characters=" + text.length()
+        );
+        AquaCommandWidget.showReceived(this, widgetMode(captureType));
+        boolean dispatchStarted = WidgetMessageService.enqueue(
+            this,
+            text,
+            messageId,
+            itemId,
+            captureType,
+            destination,
+            evidencePath != null && !evidencePath.isEmpty()
+        );
         if (!dispatchStarted) {
             Log.w(
                 "AquaCommandWidget",
-                "AQUA_WIDGET_MESSAGE_FILED_LOCALLY id=" + messageId + " reason=service-start"
+                "AQUA_WIDGET_HANDOFF_SAVED_LOCALLY id=" + itemId + " reason=service-start"
             );
-            Toast.makeText(this, "Filed locally. Aqua will retry delivery.", Toast.LENGTH_SHORT).show();
+            FilingStore.markHandoffResult(
+                this,
+                itemId,
+                false,
+                "",
+                "Aqua's background handoff could not start."
+            );
+            AquaCommandWidget.showSavedLocally(this, widgetMode(captureType));
+            Toast.makeText(this, "Received securely on this phone.", Toast.LENGTH_SHORT).show();
+        } else {
+            Log.i(
+                "AquaCommandWidget",
+                "AQUA_WIDGET_HANDOFF_BACKGROUND_DISPATCHED id=" + itemId
+            );
+            Toast.makeText(this, "Received. Aqua is handling it.", Toast.LENGTH_SHORT).show();
+        }
+        if (removeTask) finishAndRemoveTask();
+        else finish();
+        return true;
+    }
+
+    private static String widgetMode(String captureType) {
+        if ("photo".equals(captureType)) return "photo";
+        if ("video".equals(captureType)) return "video";
+        if ("voice".equals(captureType)) return "file";
+        return "action";
+    }
+
+    private void submitCalendarCommand(String text) {
+        CalendarQuickAction.Parsed action = CalendarQuickAction.parse(text);
+        if (action == null) {
+            status.setText("Aqua needs a clear date and time, such as ‘5 o’clock tomorrow.’");
+            Toast.makeText(this, "Add a date and time so Aqua can schedule it.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        boolean canRead = checkSelfPermission(Manifest.permission.READ_CALENDAR)
+            == PackageManager.PERMISSION_GRANTED;
+        boolean canWrite = checkSelfPermission(Manifest.permission.WRITE_CALENDAR)
+            == PackageManager.PERMISSION_GRANTED;
+        if (!canRead || !canWrite) {
+            pendingCalendarCommand = text;
+            status.setText("Allow calendar access once. Aqua will create and file this meeting.");
+            requestPermissions(
+                new String[] {
+                    Manifest.permission.READ_CALENDAR,
+                    Manifest.permission.WRITE_CALENDAR,
+                },
+                CALENDAR_PERMISSION_REQUEST
+            );
+            return;
+        }
+        CalendarQuickAction.Result result = CalendarQuickAction.execute(this, action);
+        JSONObject receipt = FilingStore.enqueueCalendarReceipt(this, action, result);
+        if (receipt.length() == 0) {
+            status.setText("Aqua could not file the calendar receipt.");
+            return;
+        }
+        if (!result.success) {
+            Log.w("AquaCommandWidget", "AQUA_CALENDAR_ACTION_NEEDS_ATTENTION reason=" + result.error);
+            Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show();
             finishAndRemoveTask();
             return;
         }
         Log.i(
             "AquaCommandWidget",
-            "AQUA_WIDGET_MESSAGE_BACKGROUND_DISPATCHED id=" + messageId
+            "AQUA_CALENDAR_ACTION_CONFIRMED event=" + result.eventId + " duplicate=" + result.duplicate
         );
-        Toast.makeText(this, "Filed. Aqua is handling it.", Toast.LENGTH_SHORT).show();
+        AquaCommandWidget.showFiled(this);
         finishAndRemoveTask();
     }
 
@@ -355,6 +457,7 @@ public class QuickCaptureActivity extends Activity {
         state.putBoolean(STATE_CAPTURE_LAUNCHED, captureLaunched);
         if (evidenceFile != null) state.putString(STATE_EVIDENCE_PATH, evidenceFile.getAbsolutePath());
         if (commandInput != null) state.putString(STATE_COMMAND_TEXT, commandInput.getText().toString());
+        state.putString(STATE_PENDING_CALENDAR_COMMAND, pendingCalendarCommand);
         super.onSaveInstanceState(state);
     }
 
@@ -432,7 +535,10 @@ public class QuickCaptureActivity extends Activity {
             .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toLanguageTag())
             .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-            .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+            .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 450L)
+            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 650L)
+            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 900L);
         speechRecognizer.startListening(intent);
         captureHandler.postDelayed(() -> {
             if (!completeRecognitionOnce()) return;
@@ -561,6 +667,24 @@ public class QuickCaptureActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
         super.onRequestPermissionsResult(requestCode, permissions, results);
+        if (requestCode == CALENDAR_PERMISSION_REQUEST) {
+            boolean granted = results.length >= 2;
+            for (int result : results) granted = granted && result == PackageManager.PERMISSION_GRANTED;
+            String command = pendingCalendarCommand;
+            pendingCalendarCommand = "";
+            if (granted && !command.isEmpty()) {
+                submitCalendarCommand(command);
+            } else {
+                CalendarQuickAction.Parsed action = CalendarQuickAction.parse(command);
+                CalendarQuickAction.Result failure = CalendarQuickAction.Result.failed(
+                    "Calendar permission was not granted."
+                );
+                if (action != null) FilingStore.enqueueCalendarReceipt(this, action, failure);
+                Toast.makeText(this, "Calendar access is required to schedule and confirm that meeting.", Toast.LENGTH_SHORT).show();
+                finishAndRemoveTask();
+            }
+            return;
+        }
         if (requestCode != VOICE_PERMISSION_REQUEST) return;
         if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) {
             if ("ask".equals(mode) || "action".equals(mode)) startSpeechRecognition(true);
@@ -661,22 +785,27 @@ public class QuickCaptureActivity extends Activity {
             finish();
             return;
         }
-        boolean saved;
         if ("clarify".equals(mode)) {
-            saved = FilingStore.clarify(this, itemId, text);
-        } else {
-            JSONObject item = FilingStore.enqueue(this, "voice", text, "");
-            saved = item.length() > 0;
-        }
-        if (saved) {
-            Log.i("AquaCommandWidget", "AQUA_CAPTURE_SAVED type=voice");
-            Toast.makeText(this, "Saved. Aqua added the voice text to the filing cabinet.", Toast.LENGTH_SHORT).show();
-            finishAfterBackgroundSave("voice");
-        } else {
+            boolean clarified = FilingStore.clarify(this, itemId, text);
+            if (clarified) {
+                Log.i("AquaCommandWidget", "AQUA_CAPTURE_SAVED type=clarification");
+                Toast.makeText(this, "Received. Aqua has your filing direction.", Toast.LENGTH_SHORT).show();
+                finishAndRemoveTask();
+                return;
+            }
             Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=voice reason=store");
-            Toast.makeText(this, "Aqua could not save that voice text.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Aqua could not save that direction.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
-        if (!saved) finish();
+        if (CalendarQuickAction.parse(text) != null) {
+            submitCalendarCommand(text);
+            return;
+        }
+        if (submitAssistantHandoff("voice", text, "", true)) {
+            Log.i("AquaCommandWidget", "AQUA_CAPTURE_SAVED type=voice");
+            Log.i("AquaCommandWidget", "AQUA_CAPTURE_BACKGROUND_COMPLETE type=voice");
+        }
     }
 
     private void saveMediaCapture(String type) {
@@ -695,20 +824,23 @@ public class QuickCaptureActivity extends Activity {
         revokeEvidenceAccess();
         if (item.length() > 0) {
             Log.i("AquaCommandWidget", "AQUA_CAPTURE_SAVED type=" + type + " bytes=" + evidenceFile.length());
-            Toast.makeText(this, "Saved. Aqua protected the " + type + " in the filing inbox.", Toast.LENGTH_SHORT).show();
-            finishAfterBackgroundSave(type);
+            String handoff = "A " + type + " was dropped on Aqua's executive desk from the Command Center. "
+                + "The protected evidence is retained on this phone under filing item "
+                + item.optString("id", "unknown") + ".";
+            dispatchAssistantHandoff(
+                item,
+                type,
+                handoff,
+                evidenceFile.getAbsolutePath(),
+                true
+            );
+            Log.i("AquaCommandWidget", "AQUA_CAPTURE_BACKGROUND_COMPLETE type=" + type);
         } else {
             Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=" + type + " reason=store");
             evidenceFile.delete();
             Toast.makeText(this, "Aqua could not save that " + type + ".", Toast.LENGTH_SHORT).show();
         }
         if (item.length() == 0) finish();
-    }
-
-    private void finishAfterBackgroundSave(String type) {
-        Log.i("AquaCommandWidget", "AQUA_CAPTURE_BACKGROUND_COMPLETE type=" + type);
-        AquaCommandWidget.showFiled(this);
-        finish();
     }
 
     private void revokeEvidenceAccess() {

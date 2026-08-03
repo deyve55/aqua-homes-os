@@ -13,6 +13,15 @@ evidence is accepted immediately and placed in one Sentinel filing inbox. The
 widget closes when capture finishes. Sentinel later presents only items that
 genuinely require the owner's filing judgment.
 
+This is Aqua's universal executive-assistant desk, not a calendar-only tool.
+Any quick instruction can be handed off and the owner can walk away. Complete,
+locally authorized calendar commands may be executed and read back immediately;
+all other instructions are preserved first, then delivered to the authenticated
+Aqua Brain with their capture type, intended destination, and durable filing ID.
+Photo and video bytes remain protected on the phone until a separately approved
+evidence-upload boundary exists; the gateway is told that local evidence exists
+and must not claim that the binary was uploaded.
+
 ## Truthful states
 
 - `Saved Locally`: protected on the device; no remote receipt exists yet.
@@ -22,6 +31,11 @@ genuinely require the owner's filing judgment.
 - `Confirmed`: the owning app/backend returned a filing receipt.
 - `Needs Attention`: the destination is unclear and Aqua must ask the owner.
 - `Failed with Report`: filing failed with a retained diagnostic record.
+
+The launcher acknowledgement is `RECEIVED`. `AQUA HAS IT` may appear only after
+the authenticated Brain gateway returns a correlation receipt. `CONFIRMED` is
+reserved for an authoritative destination write, such as a calendar event that
+was inserted and read back from Android's calendar provider.
 
 Capture acknowledgement must never be represented as remote confirmation.
 
@@ -53,6 +67,11 @@ for the same quick voice-filing path.
 - `confidence`
 - `needsClarification`
 - `state`
+- `handoffState`
+- `brainReply`
+- `gatewayCorrelationId`
+- `requiresConfirmation`
+- `intentId` and encrypted `confirmationToken` when a guarded action is prepared
 - `createdAt`
 - `createdLabel`
 

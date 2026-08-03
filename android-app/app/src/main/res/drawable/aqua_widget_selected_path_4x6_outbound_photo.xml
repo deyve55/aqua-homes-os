@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="660dp" android:height="930dp" android:viewportWidth="660" android:viewportHeight="930">
+    <path android:name="pulse_glow" android:fillColor="#00000000" android:pathData="M330,430 C292,522 226,598 150,674" android:strokeColor="#6667EFFF" android:strokeLineCap="round" android:strokeWidth="12" android:trimPathEnd="0.12" />
+    <path android:name="pulse_core" android:fillColor="#00000000" android:pathData="M330,430 C292,522 226,598 150,674" android:strokeColor="#FFF4FEFF" android:strokeLineCap="round" android:strokeWidth="3.8" android:trimPathEnd="0.12" />
+</vector>

@@ -179,7 +179,7 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /class="neural-network"/);
   assert.match(script, /class="neural-microbursts"/);
   assert.match(script, /class="neural-burst burst-\$\{laneIndex\}"/);
-  assert.match(script, /class="portal-node">\$\{environment\}/);
+  assert.match(script, /class="portal-node\$\{app\.neuralAsset \? " has-environment" : ""\}">\$\{environment\}/);
   assert.match(script, /neuralAsset: "\.\/assets\/carousel-v2\/crm\.webp"/);
   assert.doesNotMatch(script, /class="neural-particles"/);
   assert.match(script, /class="neural-jolt"/);
@@ -196,7 +196,10 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /label: `Go deeper into \$\{app\.name\}`/);
   assert.match(script, /Presentation · Not Live/);
   assert.match(script, /const neuralMaterializedSlots =/);
-  assert.match(script, /\{ x: 86, y: 27, scale: 0\.98/);
+  assert.match(script, /Five portals are visible at once/);
+  assert.match(script, /const neuralOrbitKeyframes =/);
+  assert.match(script, /\{ x: 50, y: 15\.5, scale: 1\.16/);
+  assert.match(script, /position: -3, x: 42, y: 82, scale: \.68, opacity: 0/);
   assert.match(script, /\{ x: 11\.3, y: 92\.2, scale: 0\.88/);
   assert.match(script, /const NEURAL_ROTATE_MILLIS = 1380/);
   assert.match(script, /const NEURAL_FIRE_MILLIS = 920/);
@@ -207,6 +210,16 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /function neuralMorphSlot\(from, to, progress\)/);
   assert.match(script, /return neuralMorphSlot\(ringSlot, materializedSlot, neuralEase\(progress\)\)/);
   assert.match(script, /portal\.animate\(keyframes/);
+  assert.match(script, /function coastNeuralRing\(stage, initialOffset, initialVelocity\)/);
+  assert.match(script, /neuralStage\.addEventListener\("pointermove"/);
+  assert.match(script, /requestAnimationFrame\(coast\)/);
+  assert.match(script, /The ring now rests until Dave touches it or asks Aqua/);
+  assert.match(script, /function neuralDisplaySlot\(sourceIndex, offset, isMaterialized, morphProgress, materializedOrder\)/);
+  assert.match(script, /function neuralRouteTransform\(slot\)/);
+  assert.match(script, /data-neural-source-group="\$\{index\}"/);
+  assert.match(script, /group\.setAttribute\("transform", neuralRouteTransform\(slot\)\)/);
+  assert.match(script, /sourceIndex === neuralFocusIndex/);
+  assert.match(script, /neuralSupportIndexes\.includes\(sourceIndex\)/);
   assert.match(script, /Promise\.allSettled\(animations\.map/);
   assert.match(script, /const NEURAL_MOTION_SETTLE_GRACE_MILLIS = 160/);
   assert.match(script, /function waitForNeuralMotion\(animations, duration\)/);
@@ -224,6 +237,18 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /data-neural-materialized="\$\{neuralPhase === "transitioning" \? "pending" : "true"\}"/);
   assert.match(script, /diagnosticsMarkup/);
   assert.match(script, /settingsMarkup/);
+  for (const setting of ["sound", "notifications", "voice-test", "permissions", "integrations", "storage", "diagnostics", "about"]) {
+    assert.match(script, new RegExp(`data-setting="${setting}"`));
+  }
+  assert.match(script, /function animateMaterializationFromPortal\(\)/);
+  assert.match(script, /source\.getBoundingClientRect\(\)/);
+  assert.match(script, /targetBounds = surface\.getBoundingClientRect\(\)/);
+  assert.match(script, /surface\.animate\(\[/);
+  assert.match(script, /borderRadius: targetRadius/);
+  assert.doesNotMatch(
+    script.match(/function animateMaterializationFromPortal\(\) \{([\s\S]*?)\n\}/)?.[1] || "",
+    /clipPath|clip-path/,
+  );
   assert.match(fidelity, /\.neural-stage/);
   assert.match(fidelity, /height:clamp\(610px,73svh,780px\)/);
   assert.match(fidelity, /\.neural-signal\.is-active/);
@@ -241,6 +266,18 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(fidelity, /neuralink-rest-gold-path-mask-v074\.png/);
   assert.match(fidelity, /neuralink-materialized-cyan-path-mask-v074\.png/);
   assert.match(fidelity, /neuralink-materialized-gold-path-mask-v074\.png/);
+  assert.match(fidelity, /v0\.7\.4 real-device rejection recovery/);
+  assert.match(fidelity, /\.neural-substrate-map,\.neural-substrate-fire\{display:none!important\}/);
+  assert.match(fidelity, /No full-screen raster/);
+  assert.match(fidelity, /\.neural-stage\[data-phase="firing"\] \.neural-jolt\{opacity:1\}/);
+  assert.match(fidelity, /object-fit:contain/);
+  assert.match(fidelity, /\.neural-network\{z-index:6;opacity:\.96!important;filter:none!important;mix-blend-mode:normal/);
+  assert.match(fidelity, /\.neural-materialization-circuit\{opacity:\.76;mix-blend-mode:normal\}/);
+  assert.match(fidelity, /opacity:\.92;filter:saturate\(1\.04\) contrast\(1\.08\) brightness\(\.98\)/);
+  assert.match(fidelity, /\.neural-portal \.portal-node\.has-environment>i\{position:absolute;top:7%;right:7%;width:19%/);
+  const realDeviceRecovery = fidelity.slice(fidelity.lastIndexOf("v0.7.4 real-device rejection recovery"));
+  assert.doesNotMatch(realDeviceRecovery, /background-image:url/);
+  assert.doesNotMatch(realDeviceRecovery, /opacity:\.18/);
   assert.match(fidelity, /@keyframes neural-substrate-cyan-out/);
   assert.match(fidelity, /@keyframes neural-substrate-gold-return/);
   assert.match(fidelity, /@keyframes neural-path-fire/);
@@ -368,6 +405,13 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
   assert.match(workflow, /AquaSentinelOS-v0\.7\.4-Exact-Fidelity-Materialization-Widget-Test\.apk/);
+  assert.match(workflow, /owner_visual_approval/);
+  assert.match(workflow, /github\.event_name == 'workflow_dispatch' && inputs\.owner_visual_approval/);
+  assert.match(workflow, /preflight-no-apk:/);
+  assert.match(workflow, /compileDebugJavaWithJavac :app:mergeDebugResources/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.4-preflight-no-apk/);
+  const noApkPreflight = workflow.match(/preflight-no-apk:[\s\S]*?\n  build-apk:/)?.[0] || "";
+  assert.doesNotMatch(noApkPreflight, /assemble|\.apk/);
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
   assert.match(workflow, /preview=neural/);
   assert.match(workflow, /neuralDemo=sequence/);
@@ -418,6 +462,13 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(visualRenderer, /document\.getAnimations\(\)/);
   assert.match(visualRenderer, /Page\.captureScreenshot/);
   assert.match(visualRenderer, /materializationOpacity >= 0\.98/);
+  assert.match(visualRenderer, /visiblePortals: 5/);
+  assert.match(visualRenderer, /portalImagesContained/);
+  assert.match(visualRenderer, /substrateDisplay === "none"/);
+  assert.match(visualRenderer, /!state\.beforeUsesRaster && !state\.afterUsesRaster/);
+  assert.match(visualRenderer, /preview=settings/);
+  assert.match(visualRenderer, /Settings-closed-phone\.png/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.4-Settings-closed-phone\.png/);
   assert.match(visualRenderer, /AQUA_DETERMINISTIC_VISUAL_PROOF_RENDERED/);
   assert.match(workflow, /neural-live-wall-clock/);
   assert.match(workflow, /--url ".*neuralDemo=rest"/);
@@ -431,6 +482,13 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(neuralLiveProof, /data-neural-portal="6"/);
   assert.match(neuralLiveProof, /bound-aqua-receipts-portal-click/);
   assert.match(neuralLiveProof, /materializationKind, "receipts"/);
+  assert.match(neuralLiveProof, /visiblePortals, 5/);
+  assert.match(neuralLiveProof, /portalsContained, true/);
+  assert.match(neuralLiveProof, /substrateDisplay, "none"/);
+  assert.match(neuralLiveProof, /usesRasterUnderlay, false/);
+  assert.match(neuralLiveProof, /usesRasterCompositor, false/);
+  assert.match(neuralLiveProof, /firing\.joltOpacity >= 0\.99/);
+  assert.match(neuralLiveProof, /neural-jolt-column/);
   assert.doesNotMatch(neuralLiveProof, /virtual-time-budget|neuralAt=/);
   const liveCheckpointWriter = neuralLiveProof.match(/async function saveCheckpoint[\s\S]*?\n\}/)?.[0] || "";
   assert.match(liveCheckpointWriter, /live-\$\{phase\}\.json/);
@@ -525,7 +583,11 @@ test("v0.5.0 compact rail and filing cabinet share one protected widget inbox", 
   assert.match(activity, /startFilingClarification/);
   assert.match(store, /AES\/GCM\/NoPadding/);
   assert.match(store, /AndroidKeyStore/);
-  assert.match(store, /Aqua Books · Painting Company/);
+  assert.match(store, /Aqua Books · Executive Intake/);
+  assert.match(store, /Aqua Executive Desk · Intake/);
+  assert.match(store, /handoffState/);
+  assert.match(store, /markBrainReceipt/);
+  assert.match(store, /needsApproval/);
   assert.match(store, /"Queued"/);
   assert.match(store, /static synchronized boolean clarify/);
   assert.match(widget, /widget_action/);
@@ -605,11 +667,13 @@ test("v0.5.4 preserves app covers and gives the two hero labels separate lanes",
   assert.match(fidelity, /\.screen-lower \.dashboard-screen-sheet\{top:-100%\}/);
 });
 
-test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without opening Sentinel", async () => {
-  const [widget, dispatch, capture, messageService, activity, manifest, layout, script, styles, workflow, widgetVerifier, androidLaunch] = await Promise.all([
+test("Aqua's widget is a universal executive handoff and confirms direct calendar writes", async () => {
+  const [widget, dispatch, capture, calendar, store, messageService, activity, manifest, layout, script, styles, workflow, widgetVerifier, androidLaunch] = await Promise.all([
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/WidgetDispatchActivity.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/CalendarQuickAction.java"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/FilingStore.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/WidgetMessageService.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
     read("android-app/app/src/main/AndroidManifest.xml"),
@@ -625,9 +689,10 @@ test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without
   assert.match(widget, /RemoteViews buildViews\(Context context, AppWidgetManager manager, int id\)/);
   assert.match(widget, /new Intent\(context, WidgetDispatchActivity\.class\)/);
   assert.match(widget, /AQUA_WIDGET_NEURAL_JOLT_RENDERED mode=/);
-  assert.match(widget, /setImageViewResource\(R\.id\.widget_active_path, activePath\)/);
-  assert.match(widget, /R\.drawable\.aqua_widget_jolt_action/);
-  assert.match(widget, /R\.drawable\.aqua_widget_jolt_compact_action/);
+  assert.match(widget, /selectedNeuralActivityId\(/);
+  assert.match(widget, /R\.id\.widget_selected_outbound_action/);
+  assert.match(widget, /R\.id\.widget_selected_return_action/);
+  assert.doesNotMatch(widget, /setImageViewResource\(R\.id\.widget_active_path/);
   assert.match(dispatch, /NEURAL_JOLT_TRANSITION_MILLIS = 720L/);
   assert.match(dispatch, /AQUA_WIDGET_NEURAL_JOLT mode=/);
   assert.match(dispatch, /phase=outbound/);
@@ -643,21 +708,49 @@ test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without
   assert.match(capture, /AQUA_CAPTURE_SAVED type=/);
   assert.match(capture, /captureRapidAction\(\)/);
   assert.match(capture, /AQUA_CAPTURE_ROUTE mode=action handler=PresentationContract/);
-  assert.match(capture, /AQUA_WIDGET_MESSAGE_SUBMITTED id=/);
-  assert.match(capture, /FilingStore\.enqueue\(this, "action", text, ""\)/);
-  assert.match(capture, /WidgetMessageService\.enqueue\(this, text, messageId\)/);
-  assert.match(capture, /AQUA_WIDGET_MESSAGE_BACKGROUND_DISPATCHED/);
+  assert.match(capture, /AQUA_WIDGET_HANDOFF_RECEIVED id=/);
+  assert.match(capture, /submitAssistantHandoff\("action", text, "", true\)/);
+  assert.match(capture, /WidgetMessageService\.enqueue\(/);
+  assert.match(capture, /AQUA_WIDGET_HANDOFF_BACKGROUND_DISPATCHED/);
+  assert.match(capture, /CalendarQuickAction\.parse\(text\) != null/);
+  assert.match(capture, /submitCalendarCommand\(text\)/);
+  assert.match(capture, /Manifest\.permission\.READ_CALENDAR/);
+  assert.match(capture, /Manifest\.permission\.WRITE_CALENDAR/);
+  assert.match(capture, /AQUA_CALENDAR_ACTION_CONFIRMED/);
+  const calendarBody = capture.match(/private void submitCalendarCommand\(String text\) \{([\s\S]*?)\n    \}/)?.[1] || "";
+  assert.match(calendarBody, /CalendarQuickAction\.execute\(this, action\)/);
+  assert.match(calendarBody, /FilingStore\.enqueueCalendarReceipt\(this, action, result\)/);
+  assert.doesNotMatch(calendarBody, /WidgetMessageService|MainActivity\.class/);
+  assert.match(calendar, /if \(hour >= 1 && hour <= 7\) hour \+= 12/);
+  assert.match(calendar, /CalendarContract\.Events\.CONTENT_URI/);
+  assert.match(calendar, /CalendarContract\.Reminders\.CONTENT_URI/);
+  assert.match(calendar, /duplicateEventId\(context, action\)/);
+  assert.match(calendar, /eventMatches\(context, eventId, action\)/);
+  assert.match(calendar, /The calendar did not return the appointment Aqua created/);
+  assert.match(calendar, /DEFAULT_DURATION_MILLIS = 60L \* 60L \* 1000L/);
+  assert.match(capture, /EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 450L/);
+  assert.match(capture, /EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 650L/);
+  assert.match(capture, /EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 900L/);
+  assert.match(store, /enqueueCalendarReceipt/);
+  assert.match(store, /"state", confirmed \? "Confirmed" : "Needs Attention"/);
+  assert.match(store, /"destination", confirmed \? "Device Calendar"/);
+  assert.match(manifest, /android\.permission\.READ_CALENDAR/);
+  assert.match(manifest, /android\.permission\.WRITE_CALENDAR/);
   assert.doesNotMatch(capture, /putExtra\("widget_command", text\)/);
   const submitCommandBody = capture.match(/private void submitCommand\(String rawText\) \{([\s\S]*?)\n    \}/)?.[1] || "";
   assert.doesNotMatch(submitCommandBody, /MainActivity\.class/);
-  assert.match(submitCommandBody, /finishAndRemoveTask\(\)/);
+  assert.match(submitCommandBody, /submitAssistantHandoff\("action", text, "", true\)/);
   assert.match(messageService, /extends IntentService/);
   assert.match(messageService, /\.put\("method", "aqua\.chat"\)/);
   assert.match(messageService, /"surface", "launcher-widget"/);
+  assert.match(messageService, /"handoff", "executive-assistant-desk"/);
+  assert.match(messageService, /localEvidenceRetained/);
+  assert.match(messageService, /FilingStore\.markHandoffResult/);
+  assert.match(messageService, /FilingStore\.markBrainReceipt/);
   assert.match(messageService, /AQUA_WIDGET_MESSAGE_BACKGROUND_SENT/);
   assert.doesNotMatch(messageService, /MainActivity\.class/);
   assert.match(capture, /EXTRA_COMMAND_TEXT = "widget_command_text"/);
-  assert.match(dispatch, /Remind me to call John today at 5 PM/);
+  assert.match(dispatch, /Aqua, prepare my executive morning brief/);
   assert.match(activity, /AQUA_WIDGET_MESSAGE_DELIVERED id=/);
   assert.match(activity, /AQUA_WIDGET_HOME_OPENED/);
   assert.match(activity, /window\.receiveWidgetCommand/);
@@ -682,8 +775,8 @@ test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without
   assert.match(capture, /source=returned-uri/);
   assert.match(capture, /source=returned-thumbnail/);
   assert.match(capture, /AQUA_CAPTURE_BACKGROUND_COMPLETE type=/);
-  assert.match(capture, /finishAfterBackgroundSave\("voice"\)/);
-  assert.match(capture, /finishAfterBackgroundSave\(type\)/);
+  assert.match(capture, /submitAssistantHandoff\("voice", text, "", true\)/);
+  assert.match(capture, /dispatchAssistantHandoff\([\s\S]*item,[\s\S]*type,[\s\S]*handoff/);
   assert.doesNotMatch(capture, /openFilingCabinet|putExtra\("open_filing", true\)/);
   assert.match(styles, /<item name="android:clickable">true<\/item>/);
   assert.match(workflow, /bash scripts\/verify-aqua-sentinel-android-launch-v060\.sh/);
@@ -736,7 +829,7 @@ test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without
   assert.match(widgetVerifier, /compare -metric AE/);
   assert.doesNotMatch(widgetVerifier, /wait_for_adb/);
   assert.match(widgetVerifier, /AQUA_WIDGET_FILED_TODAY_VERIFIED/);
-  assert.match(widgetVerifier, /AQUA_WIDGET_FILED_CONFIRMATION_VERIFIED/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_HANDOFF_CONFIRMATION_VERIFIED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_BACKGROUND_FILE_STAYED_ON_LAUNCHER/);
   assert.match(widgetVerifier, /if grep -Fq "AQUA_FILING_CABINET_OPENED"/);
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_TAP mode=\$mode resource=\$resource_id/);
@@ -750,7 +843,7 @@ test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without
   assert.match(widgetVerifier, /AQUA_WIDGET_ACTION_RECEIVED mode=\$mode/);
   assert.match(widgetVerifier, /AQUA_WIDGET_HOME_OPENED/);
   assert.match(widgetVerifier, /AQUA_CAPTURE_ROUTE mode=\$expected_route/);
-  assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_SUBMITTED/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_HANDOFF_RECEIVED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_BACKGROUND_SENT/);
   assert.match(widgetVerifier, /AQUA_WIDGET_BACKGROUND_SEND_STAYED_ON_LAUNCHER/);
   assert.match(widgetVerifier, /Aqua Action did not complete its silent background dispatch/);
@@ -759,8 +852,8 @@ test("v0.7.4 pins the exact-fidelity widget and proves rapid Aqua Action without
   assert.doesNotMatch(widgetVerifier, /AQUA_WIDGET_REMOTE_VIEWS_TAP/);
 });
 
-test("v0.7.4 responsive widget preserves approved art, aligned actions, and truthful filing", async () => {
-  const [gradle, manifest, widget, widgetLayout, compactLayout, compactLargeLayout, microLayout, widgetInfo, capture, activity, store, verifier, script, styles, neural4x6, neural2x2, activity4x6, widget4x6, widget2x2] = await Promise.all([
+test("responsive widget fills every supported host while preserving approved art and action zones", async () => {
+  const [gradle, manifest, widget, widgetLayout, compactLayout, compactLargeLayout, microLayout, wideLayout, widgetInfo, capture, activity, store, verifier, script, styles, neural4x6, neural2x2, neuralWide, activity4x6, activityWide, widget4x6, widget2x2] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read("android-app/app/src/main/AndroidManifest.xml"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
@@ -768,6 +861,7 @@ test("v0.7.4 responsive widget preserves approved art, aligned actions, and trut
     read("android-app/app/src/main/res/layout/aqua_command_widget_compact.xml"),
     read("android-app/app/src/main/res/layout/aqua_command_widget_compact_large.xml"),
     read("android-app/app/src/main/res/layout/aqua_command_widget_2x2.xml"),
+    read("android-app/app/src/main/res/layout/aqua_command_widget_wide.xml"),
     read("android-app/app/src/main/res/xml/aqua_command_widget_info.xml"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
@@ -777,9 +871,18 @@ test("v0.7.4 responsive widget preserves approved art, aligned actions, and trut
     read("android-app/app/src/main/res/values/styles.xml"),
     read("android-app/app/src/main/res/drawable/aqua_widget_neural_paths_4x6.xml"),
     read("android-app/app/src/main/res/drawable/aqua_widget_neural_paths_2x2.xml"),
+    read("android-app/app/src/main/res/drawable/aqua_widget_neural_paths_wide.xml"),
     read("android-app/app/src/main/res/drawable/aqua_widget_neural_activity_4x6.xml"),
+    read("android-app/app/src/main/res/drawable/aqua_widget_neural_activity_wide.xml"),
     readBytes("android-app/app/src/main/res/drawable-nodpi/aqua_widget_4x6_approved_v073.png"),
     readBytes("android-app/app/src/main/res/drawable-nodpi/aqua_widget_2x2_approved_v073.png"),
+  ]);
+  const [selectedActivity4x6, selectedOutboundPath, selectedReturnPath, selectedOutboundAnimator, selectedReturnAnimator] = await Promise.all([
+    read("android-app/app/src/main/res/layout/aqua_widget_selected_neural_activity_4x6.xml"),
+    read("android-app/app/src/main/res/drawable/aqua_widget_selected_path_4x6_outbound_action.xml"),
+    read("android-app/app/src/main/res/drawable/aqua_widget_selected_path_4x6_return_action.xml"),
+    read("android-app/app/src/main/res/animator/aqua_widget_neural_outbound_active.xml"),
+    read("android-app/app/src/main/res/animator/aqua_widget_neural_return_active.xml"),
   ]);
   assert.match(gradle, /ECOSYSTEM_PRESENTATION_MODE/);
   assert.match(widgetLayout, /id="@\+id\/widget_logo"/);
@@ -787,12 +890,12 @@ test("v0.7.4 responsive widget preserves approved art, aligned actions, and trut
   assert.match(widgetLayout, /@drawable\/aqua_widget_4x6_approved_v073/);
   assert.match(widgetLayout, /id="@\+id\/widget_neural_activity"/);
   assert.match(widgetLayout, /@drawable\/aqua_widget_neural_activity_4x6/);
+  assert.match(widgetLayout, /@layout\/aqua_widget_selected_neural_activity_4x6/);
   assert.doesNotMatch(widgetLayout, /widget_shimmer/);
   assert.match(widgetLayout, /id="@\+id\/widget_neural_art"/);
-  assert.match(widgetLayout, /id="@\+id\/widget_active_path"/);
-  assert.match(widgetLayout, /Selected Aqua Neuralink circuit/);
-  assert.match(widgetLayout, /android:scaleType="fitCenter"/);
-  assert.doesNotMatch(widgetLayout, /android:scaleType="fitXY"|centerCrop/);
+  assert.doesNotMatch(widgetLayout, /widget_active_path|aqua_widget_jolt/);
+  assert.match(widgetLayout, /android:scaleType="centerCrop"/);
+  assert.doesNotMatch(widgetLayout, /android:scaleType="fitXY"/);
   assert.match(widgetLayout, /id="@\+id\/widget_filed_today"/);
   assert.match(widgetLayout, /android:text="0"/);
   assert.match(widgetLayout, /Items filed today/);
@@ -802,25 +905,34 @@ test("v0.7.4 responsive widget preserves approved art, aligned actions, and trut
   assert.match(widgetLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.doesNotMatch(widgetLayout, /<View(?:\s|>)/);
   assert.match(compactLayout, /@drawable\/aqua_widget_2x2_approved_v073/);
-  assert.match(compactLayout, /id="@\+id\/widget_active_path"/);
+  assert.doesNotMatch(compactLayout, /widget_active_path|aqua_widget_jolt/);
   assert.match(compactLayout, /id="@\+id\/widget_neural_activity"/);
   assert.match(compactLayout, /@drawable\/aqua_widget_neural_activity_2x2/);
-  assert.doesNotMatch(compactLayout, /widget_shimmer|centerCrop|fitXY/);
-  assert.match(compactLayout, /android:layout_width="110dp"[\s\S]*android:layout_height="110dp"/);
+  assert.doesNotMatch(compactLayout, /widget_shimmer|fitXY/);
+  assert.match(compactLayout, /android:layout_width="match_parent"[\s\S]*android:layout_height="match_parent"/);
+  assert.doesNotMatch(compactLayout, /android:layout_width="110dp"[\s\S]*android:layout_height="110dp"/);
   assert.match(compactLayout, /id="@\+id\/widget_status"/);
   assert.match(compactLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
-  assert.match(compactLargeLayout, /android:layout_width="180dp"[\s\S]*android:layout_height="180dp"/);
+  assert.match(compactLargeLayout, /android:layout_width="match_parent"[\s\S]*android:layout_height="match_parent"/);
+  assert.doesNotMatch(compactLargeLayout, /android:layout_width="180dp"[\s\S]*android:layout_height="180dp"/);
   assert.match(compactLargeLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.match(compactLargeLayout, /id="@\+id\/widget_neural_activity"/);
-  assert.doesNotMatch(compactLargeLayout, /widget_shimmer|centerCrop|fitXY/);
+  assert.doesNotMatch(compactLargeLayout, /widget_shimmer|fitXY/);
   assert.match(microLayout, /two by two living surface/);
   assert.match(microLayout, /@drawable\/aqua_widget_2x2_approved_v073/);
-  assert.match(microLayout, /android:layout_width="110dp"[\s\S]*android:layout_height="110dp"[\s\S]*android:layout_gravity="center"/);
+  assert.match(microLayout, /android:layout_width="match_parent"[\s\S]*android:layout_height="match_parent"[\s\S]*android:layout_gravity="center"/);
+  assert.doesNotMatch(microLayout, /android:layout_width="110dp"[\s\S]*android:layout_height="110dp"/);
   assert.match(microLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.match(microLayout, /id="@\+id\/widget_status"/);
   assert.match(microLayout, /id="@\+id\/widget_neural_activity"/);
-  assert.doesNotMatch(microLayout, /widget_shimmer|fitXY|centerCrop/);
+  assert.doesNotMatch(microLayout, /widget_shimmer|fitXY/);
   assert.doesNotMatch(microLayout, /android:text="(?:ASK|VIDEO|PHOTO|FILE|AQUA)"/);
+  assert.match(wideLayout, /Aqua Neuralink wide responsive surface/);
+  assert.match(wideLayout, /@drawable\/aqua_widget_neural_paths_wide/);
+  assert.match(wideLayout, /@drawable\/aqua_widget_neural_activity_wide/);
+  assert.match(wideLayout, /@drawable\/aqua_widget_icon_action/);
+  assert.match(wideLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_logo[\s\S]*widget_photo[\s\S]*widget_file/);
+  assert.match(wideLayout, /android:layout_width="match_parent"[\s\S]*android:layout_height="match_parent"/);
   assert.match(widgetInfo, /android:targetCellWidth="4"/);
   assert.match(widgetInfo, /android:targetCellHeight="6"/);
   assert.match(widgetInfo, /android:minWidth="110dp"/);
@@ -837,30 +949,51 @@ test("v0.7.4 responsive widget preserves approved art, aligned actions, and trut
   assert.match(widget, /R\.layout\.aqua_command_widget_compact/);
   assert.match(widget, /R\.layout\.aqua_command_widget_compact_large/);
   assert.match(widget, /R\.layout\.aqua_command_widget_2x2/);
+  assert.match(widget, /R\.layout\.aqua_command_widget_wide/);
   assert.match(widget, /OPTION_APPWIDGET_MIN_WIDTH/);
   assert.match(widget, /static int layoutForSize\(int minWidth, int minHeight\)/);
   assert.match(widget, /new RemoteViews\(responsive\)/);
   assert.match(widget, /new SizeF\(110f, 110f\)/);
   assert.match(widget, /new SizeF\(180f, 180f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_compact_large\)/);
   assert.match(widget, /new SizeF\(320f, 180f\)/);
+  assert.match(widget, /new SizeF\(320f, 180f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_wide\)/);
   assert.match(widget, /new SizeF\(250f, 390f\)/);
-  assert.match(widget, /R\.drawable\.aqua_widget_jolt_compact_file/);
+  assert.match(widget, /SELECTED_NEURAL_ACTIVITY_IDS/);
+  assert.match(widget, /activityId == selectedActivity \? View\.VISIBLE : View\.INVISIBLE/);
+  assert.match(selectedActivity4x6, /widget_selected_outbound_action/);
+  assert.match(selectedActivity4x6, /widget_selected_return_action/);
+  assert.match(selectedOutboundPath, /android:name="pulse_glow"/);
+  assert.match(selectedOutboundPath, /android:name="pulse_core"/);
+  assert.match(selectedOutboundPath, /M330,430 C292,342 230,224 150,138/);
+  assert.match(selectedReturnPath, /M150,138 C230,224 292,342 330,430/);
+  assert.match(selectedOutboundAnimator, /trimPathStart/);
+  assert.match(selectedOutboundAnimator, /android:duration="660"/);
+  assert.match(selectedReturnAnimator, /trimPathEnd/);
+  assert.match(selectedReturnAnimator, /android:duration="760"/);
   assert.match(widget, /"outbound"/);
   assert.match(widget, /"return"/);
-  assert.match(widget, /"filed"/);
+  assert.match(widget, /"received"/);
+  assert.match(widget, /"queued"/);
+  assert.match(widget, /"confirmed"/);
   assert.match(widget, /OUTBOUND_MILLIS = 700L/);
   assert.match(widget, /RETURN_MILLIS = 800L/);
   assert.match(widget, /FILED_MILLIS = 10000L/);
   assert.match(widget, /AQUA_WIDGET_FILED_CONFIRMATION_RENDERED/);
-  assert.match(widget, /setViewVisibility\(R\.id\.widget_status/);
+  assert.match(widget, /setViewVisibility\(\s*R\.id\.widget_status/);
+  assert.match(widget, /return "RECEIVED"/);
+  assert.match(widget, /return "AQUA HAS IT"/);
+  assert.match(capture, /AquaCommandWidget\.showReceived\(this, widgetMode\(captureType\)\)/);
   assert.match(capture, /AquaCommandWidget\.showFiled\(this\)/);
   assert.match(styles, /AquaQuickCaptureTheme[\s\S]*android:backgroundDimEnabled">false/);
   assert.match(neural4x6, /M330,430 C292,342 230,224 150,138/);
   assert.match(neural4x6, /M150,138 C230,224 292,342 330,430/);
   assert.match(neural2x2, /M235,235 C204,194 165,151 124,112/);
   assert.match(neural2x2, /M124,112 C165,151 204,194 235,235/);
+  assert.match(neuralWide, /M250,90 C195,64 112,68 50,90/);
+  assert.match(neuralWide, /M450,90 C388,68 305,64 250,90/);
   assert.match(activity4x6, /outbound_action/);
   assert.match(activity4x6, /return_file/);
+  assert.match(activityWide, /@drawable\/aqua_widget_neural_paths_wide/);
   assert.match(store, /static synchronized int filedTodayCount\(Context context\)/);
   assert.match(store, /createdAt >= startOfToday && createdAt < startOfTomorrow/);
   assert.match(widget, /setOnClickPendingIntent\(R\.id\.widget_action, action\(context, "action", 101\)\)/);

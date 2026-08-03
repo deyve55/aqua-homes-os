@@ -132,6 +132,7 @@ function captureDefinitions() {
       query: "preview=neural&neuralDemo=rest",
       ready: "neural",
       phase: "rest",
+      visiblePortals: 5,
       output: "AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png",
     },
     {
@@ -139,6 +140,7 @@ function captureDefinitions() {
       query: "preview=neural&neuralDemo=sequence&neuralAt=750",
       ready: "neural",
       phase: "rotating",
+      visiblePortals: 5,
       output: "AquaSentinelOS-v0.7.4-Neural-Link-Rotate-closed-phone.png",
     },
     {
@@ -146,6 +148,7 @@ function captureDefinitions() {
       query: "preview=neural&neuralDemo=sequence&neuralAt=1750",
       ready: "neural",
       phase: "firing",
+      visiblePortals: 5,
       output: "AquaSentinelOS-v0.7.4-Neural-Link-Fire-closed-phone.png",
     },
     {
@@ -155,6 +158,7 @@ function captureDefinitions() {
       phase: "transitioning",
       morphProgress: "0.400",
       materialized: "pending",
+      visiblePortals: 5,
       output: "AquaSentinelOS-v0.7.4-Neural-Link-Morph-closed-phone.png",
     },
     {
@@ -164,6 +168,7 @@ function captureDefinitions() {
       phase: "result",
       morphProgress: "1.000",
       materialized: "true",
+      visiblePortals: 5,
       output: "AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png",
     },
     ...MORPH_CHECKPOINTS.map(([name, neuralAt, morphProgress]) => ({
@@ -173,6 +178,7 @@ function captureDefinitions() {
       phase: "transitioning",
       morphProgress,
       materialized: "pending",
+      visiblePortals: 5,
       output: `AquaSentinelOS-v0.7.4-Neural-Link-Morph-${name}.png`,
     })),
     {
@@ -180,6 +186,12 @@ function captureDefinitions() {
       query: "preview=command",
       ready: "command",
       output: "AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png",
+    },
+    {
+      name: "settings",
+      query: "preview=settings",
+      ready: "settings",
+      output: "AquaSentinelOS-v0.7.4-Settings-closed-phone.png",
     },
   ];
 }
@@ -191,6 +203,15 @@ const stateExpression = `(() => {
   const materialization = materialized;
   const materializationStyle = materialization ? getComputedStyle(materialization) : null;
   const materializationBounds = materialization?.getBoundingClientRect();
+  const visiblePortals = Array.from(document.querySelectorAll('[data-portal-index]'))
+    .filter((portal) => {
+      const style = getComputedStyle(portal);
+      const bounds = portal.getBoundingClientRect();
+      return Number(style.opacity) > .15 && style.visibility !== 'hidden' && bounds.width > 0 && bounds.height > 0;
+    });
+  const beforeStyle = stage ? getComputedStyle(stage, '::before') : null;
+  const afterStyle = stage ? getComputedStyle(stage, '::after') : null;
+  const substrate = stage?.querySelector('.neural-substrate-map');
   return {
     documentReady: document.readyState,
     ready: root?.dataset?.aquaPreviewReady || '',
@@ -200,6 +221,14 @@ const stateExpression = `(() => {
     materialized: materialized?.dataset?.neuralMaterialized || '',
     materializationOpacity: materializationStyle ? Number(materializationStyle.opacity) : 0,
     materializationWidth: materializationBounds?.width || 0,
+    visiblePortals: visiblePortals.length,
+    portalImagesContained: visiblePortals.every((portal) => {
+      const image = portal.querySelector('.portal-node > img');
+      return image && getComputedStyle(image).objectFit === 'contain';
+    }),
+    substrateDisplay: substrate ? getComputedStyle(substrate).display : '',
+    beforeUsesRaster: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
+    afterUsesRaster: Boolean(afterStyle?.backgroundImage?.includes('url(')),
     imageFailures: Array.from(document.images)
       .filter((image) => !image.complete || image.naturalWidth <= 0)
       .map((image) => image.currentSrc || image.src),
@@ -243,6 +272,10 @@ async function waitForExpectedState(connection, sessionId, definition) {
       && (!definition.phase || (state.phase === definition.phase && state.stagePhase === definition.phase))
       && (!definition.morphProgress || state.morphProgress === definition.morphProgress)
       && (!definition.materialized || state.materialized === definition.materialized)
+      && (!definition.visiblePortals || state.visiblePortals === definition.visiblePortals)
+      && (!definition.visiblePortals || state.portalImagesContained)
+      && (!definition.visiblePortals || state.substrateDisplay === "none")
+      && (!definition.visiblePortals || (!state.beforeUsesRaster && !state.afterUsesRaster))
       && state.imageFailures.length === 0
       && (!definition.materialized
         || (state.materializationOpacity >= 0.98 && state.materializationWidth > 0));

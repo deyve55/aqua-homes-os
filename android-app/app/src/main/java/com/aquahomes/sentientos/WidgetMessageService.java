@@ -32,6 +32,10 @@ public final class WidgetMessageService extends IntentService {
         "com.aquasoftware.sentinel.action.WIDGET_BACKGROUND_SEND";
     private static final String EXTRA_TEXT = "text";
     private static final String EXTRA_MESSAGE_ID = "message_id";
+    private static final String EXTRA_FILING_ITEM_ID = "filing_item_id";
+    private static final String EXTRA_CAPTURE_TYPE = "capture_type";
+    private static final String EXTRA_DESTINATION = "destination";
+    private static final String EXTRA_LOCAL_EVIDENCE = "local_evidence";
     private static final String SESSION_STORE = "aqua_sentinel_secure_session";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String KEYSTORE_PROVIDER = "AndroidKeyStore";
@@ -41,13 +45,25 @@ public final class WidgetMessageService extends IntentService {
         super("AquaWidgetMessage");
     }
 
-    static boolean enqueue(Context context, String text, String messageId) {
+    static boolean enqueue(
+        Context context,
+        String text,
+        String messageId,
+        String filingItemId,
+        String captureType,
+        String destination,
+        boolean hasLocalEvidence
+    ) {
         try {
             context.startService(
                 new Intent(context, WidgetMessageService.class)
                     .setAction(ACTION_SEND)
                     .putExtra(EXTRA_TEXT, text)
                     .putExtra(EXTRA_MESSAGE_ID, messageId)
+                    .putExtra(EXTRA_FILING_ITEM_ID, filingItemId)
+                    .putExtra(EXTRA_CAPTURE_TYPE, captureType)
+                    .putExtra(EXTRA_DESTINATION, destination)
+                    .putExtra(EXTRA_LOCAL_EVIDENCE, hasLocalEvidence)
             );
             return true;
         } catch (RuntimeException error) {
@@ -65,16 +81,38 @@ public final class WidgetMessageService extends IntentService {
         if (intent == null || !ACTION_SEND.equals(intent.getAction())) return;
         String text = intent.getStringExtra(EXTRA_TEXT);
         String messageId = intent.getStringExtra(EXTRA_MESSAGE_ID);
+        String filingItemId = safe(intent.getStringExtra(EXTRA_FILING_ITEM_ID));
+        String captureType = safe(intent.getStringExtra(EXTRA_CAPTURE_TYPE));
+        String destination = safe(intent.getStringExtra(EXTRA_DESTINATION));
+        boolean hasLocalEvidence = intent.getBooleanExtra(EXTRA_LOCAL_EVIDENCE, false);
         if (text == null || text.trim().isEmpty()) return;
         if (messageId == null || messageId.isEmpty()) messageId = UUID.randomUUID().toString();
+        FilingStore.markHandoffInFlight(this, filingItemId, messageId);
 
         try {
             if (BuildConfig.ECOSYSTEM_PRESENTATION_MODE) {
+                JSONObject presentationResult = new JSONObject()
+                    .put("reply", "Aqua received the executive handoff.")
+                    .put(
+                        "receipt",
+                        new JSONObject()
+                            .put("status", "Queued")
+                            .put("correlationId", "presentation-" + messageId)
+                            .put("requiresConfirmation", false)
+                            .put("intentId", "")
+                            .put("confirmationToken", "")
+                    );
+                FilingStore.markBrainReceipt(
+                    this,
+                    filingItemId,
+                    presentationResult
+                );
+                AquaCommandWidget.showAquaHasIt(this, widgetMode(captureType));
                 Log.i(
                     "AquaCommandWidget",
                     "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT id=" + messageId + " mode=presentation"
                 );
-                showResult("Sent to Aqua.");
+                showResult("Aqua has it.");
                 return;
             }
             String endpoint = BuildConfig.AQUA_GATEWAY_URL.trim();
@@ -88,7 +126,16 @@ public final class WidgetMessageService extends IntentService {
             JSONObject params = new JSONObject()
                 .put("text", text.trim())
                 .put("selectedApp", "Aqua Sentinel OS")
-                .put("uiContext", new JSONObject().put("surface", "launcher-widget"))
+                .put(
+                    "uiContext",
+                    new JSONObject()
+                        .put("surface", "launcher-widget")
+                        .put("handoff", "executive-assistant-desk")
+                        .put("captureType", captureType)
+                        .put("filingItemId", filingItemId)
+                        .put("destination", destination)
+                        .put("localEvidenceRetained", hasLocalEvidence)
+                )
                 .put("conversationId", installationId() + "-primary")
                 .put("safetyIdentifier", safetyIdentifier());
             JSONObject request = new JSONObject()
@@ -97,24 +144,56 @@ public final class WidgetMessageService extends IntentService {
                 .put("method", "aqua.chat")
                 .put("params", params);
             JSONObject envelope = postJson(endpoint, request, accessToken);
-            if (envelope.optJSONObject("error") != null || envelope.optJSONObject("result") == null) {
+            JSONObject result = envelope.optJSONObject("result");
+            if (envelope.optJSONObject("error") != null || result == null) {
                 throw new IllegalStateException("Aqua could not complete that request.");
             }
+            JSONObject receipt = result.optJSONObject("receipt");
+            String correlationId = receipt == null
+                ? messageId
+                : receipt.optString("correlationId", messageId);
+            FilingStore.markBrainReceipt(
+                this,
+                filingItemId,
+                result
+            );
+            AquaCommandWidget.showAquaHasIt(this, widgetMode(captureType));
             Log.i(
                 "AquaCommandWidget",
-                "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT id=" + messageId + " mode=secure-gateway"
+                "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT id=" + messageId
+                    + " correlation=" + correlationId
+                    + " mode=secure-gateway"
             );
-            showResult("Sent to Aqua.");
+            showResult("Aqua has it.");
         } catch (Exception error) {
             String message = error.getMessage();
             if (message == null || message.isEmpty()) message = "Aqua could not send that message.";
+            FilingStore.markHandoffResult(
+                this,
+                filingItemId,
+                false,
+                "",
+                message
+            );
+            AquaCommandWidget.showSavedLocally(this, widgetMode(captureType));
             Log.e(
                 "AquaCommandWidget",
                 "AQUA_WIDGET_MESSAGE_BACKGROUND_FAILED id=" + messageId,
                 error
             );
-            showResult(message);
+            showResult("Saved securely on this phone. Aqua delivery needs attention.");
         }
+    }
+
+    private static String widgetMode(String captureType) {
+        if ("photo".equals(captureType)) return "photo";
+        if ("video".equals(captureType)) return "video";
+        if ("voice".equals(captureType)) return "file";
+        return "action";
+    }
+
+    private static String safe(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private String readSecureValue(String name) {

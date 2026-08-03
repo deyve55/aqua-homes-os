@@ -41,10 +41,10 @@ final class FilingStore {
     ) {
         try {
             JSONArray items = readItems(context);
-            JSONObject routing = classify(note);
+            JSONObject routing = classify(note, type);
             JSONObject item = new JSONObject()
                 .put("id", UUID.randomUUID().toString())
-                .put("contractVersion", "1.0")
+                .put("contractVersion", "1.2")
                 .put("type", safe(type, "voice"))
                 .put("title", titleFor(type))
                 .put("note", safe(note, "Evidence captured and protected."))
@@ -53,6 +53,9 @@ final class FilingStore {
                 .put("confidence", routing.optDouble("confidence", 0.0))
                 .put("needsClarification", routing.optBoolean("needsClarification", true))
                 .put("state", routing.optString("state", "Needs Attention"))
+                .put("handoffState", "Captured")
+                .put("gatewayCorrelationId", "")
+                .put("dispatchError", "")
                 .put("createdAt", System.currentTimeMillis())
                 .put(
                     "createdLabel",
@@ -77,6 +80,213 @@ final class FilingStore {
         } catch (Exception error) {
             return new JSONObject();
         }
+    }
+
+    static synchronized JSONObject enqueueCalendarReceipt(
+        Context context,
+        CalendarQuickAction.Parsed action,
+        CalendarQuickAction.Result result
+    ) {
+        if (action == null || result == null) return new JSONObject();
+        try {
+            JSONArray items = readItems(context);
+            String fingerprint = (action.title + "|" + action.startMillis).toLowerCase(Locale.US);
+            for (int index = 0; index < items.length(); index++) {
+                JSONObject existing = items.optJSONObject(index);
+                if (existing == null) continue;
+                boolean sameAction =
+                    (!result.eventId.isEmpty() && result.eventId.equals(existing.optString("authoritativeId", "")))
+                        || fingerprint.equals(existing.optString("actionFingerprint", ""));
+                if (!sameAction) continue;
+                if (!result.success || "Confirmed".equals(existing.optString("state", ""))) return existing;
+                existing
+                    .put("note", action.title + " · " + action.spokenTime() + " · created by Aqua")
+                    .put("destination", "Device Calendar")
+                    .put("confidence", 1.0)
+                    .put("needsClarification", false)
+                    .put("state", "Confirmed")
+                    .put("authoritativeId", result.eventId);
+                writeItems(context, items);
+                AquaCommandWidget.updateAll(context);
+                context.sendBroadcast(
+                    new Intent(ACTION_INBOX_CHANGED)
+                        .setPackage(context.getPackageName())
+                        .putExtra("filing_item_id", existing.optString("id", ""))
+                );
+                return existing;
+            }
+            boolean confirmed = result.success;
+            String note = confirmed
+                ? action.title + " · " + action.spokenTime()
+                    + (result.duplicate ? " · already on calendar" : " · created by Aqua")
+                : action.original + " · " + safe(result.error, "Calendar confirmation failed.");
+            JSONObject item = new JSONObject()
+                .put("id", UUID.randomUUID().toString())
+                .put("contractVersion", "1.1")
+                .put("type", "action")
+                .put("title", "Aqua Action · Calendar")
+                .put("note", note)
+                .put("evidencePath", "")
+                .put("destination", confirmed ? "Device Calendar" : "Calendar · Needs Attention")
+                .put("confidence", confirmed ? 1.0 : 0.0)
+                .put("needsClarification", !confirmed)
+                .put("state", confirmed ? "Confirmed" : "Needs Attention")
+                .put("authoritativeId", result.eventId)
+                .put("actionFingerprint", fingerprint)
+                .put("scheduledStart", action.startMillis)
+                .put("createdAt", System.currentTimeMillis())
+                .put(
+                    "createdLabel",
+                    DateFormat.getDateTimeInstance(
+                        DateFormat.MEDIUM,
+                        DateFormat.SHORT,
+                        Locale.getDefault()
+                    ).format(new Date())
+                );
+            JSONArray next = new JSONArray().put(item);
+            for (int index = 0; index < items.length() && next.length() < MAX_ITEMS; index++) {
+                next.put(items.get(index));
+            }
+            writeItems(context, next);
+            AquaCommandWidget.updateAll(context);
+            context.sendBroadcast(
+                new Intent(ACTION_INBOX_CHANGED)
+                    .setPackage(context.getPackageName())
+                    .putExtra("filing_item_id", item.optString("id", ""))
+            );
+            return item;
+        } catch (Exception error) {
+            return new JSONObject();
+        }
+    }
+
+    static synchronized boolean markHandoffInFlight(
+        Context context,
+        String itemId,
+        String messageId
+    ) {
+        return updateHandoff(
+            context,
+            itemId,
+            "Sending to Aqua",
+            messageId,
+            "",
+            "",
+            false
+        );
+    }
+
+    static synchronized boolean markHandoffResult(
+        Context context,
+        String itemId,
+        boolean receivedByAqua,
+        String correlationId,
+        String error
+    ) {
+        return updateHandoff(
+            context,
+            itemId,
+            receivedByAqua ? "Received by Aqua" : "Saved on device",
+            "",
+            correlationId,
+            error,
+            receivedByAqua
+        );
+    }
+
+    static synchronized boolean markBrainReceipt(
+        Context context,
+        String itemId,
+        JSONObject brainResult
+    ) {
+        if (itemId == null || itemId.isEmpty() || brainResult == null) return false;
+        try {
+            JSONArray items = readItems(context);
+            JSONObject receipt = brainResult.optJSONObject("receipt");
+            boolean requiresConfirmation = receipt != null
+                && receipt.optBoolean("requiresConfirmation", false);
+            for (int index = 0; index < items.length(); index++) {
+                JSONObject item = items.optJSONObject(index);
+                if (item == null || !itemId.equals(item.optString("id", ""))) continue;
+                item.put(
+                        "handoffState",
+                        requiresConfirmation ? "Awaiting owner confirmation" : "Received by Aqua"
+                    )
+                    .put("brainReply", safe(brainResult.optString("reply", ""), ""))
+                    .put("dispatchError", "")
+                    .put("requiresConfirmation", requiresConfirmation)
+                    .put("intentId", receipt == null ? "" : receipt.optString("intentId", ""))
+                    .put(
+                        "confirmationToken",
+                        receipt == null ? "" : receipt.optString("confirmationToken", "")
+                    )
+                    .put(
+                        "gatewayCorrelationId",
+                        receipt == null ? "" : receipt.optString("correlationId", "")
+                    );
+                if (requiresConfirmation) {
+                    item.put("needsApproval", true).put("state", "Needs Attention");
+                } else if (
+                    !"Confirmed".equals(item.optString("state", ""))
+                        && !item.optBoolean("needsClarification", true)
+                ) {
+                    item.put("state", "Queued");
+                }
+                writeItems(context, items);
+                AquaCommandWidget.updateAll(context);
+                context.sendBroadcast(
+                    new Intent(ACTION_INBOX_CHANGED)
+                        .setPackage(context.getPackageName())
+                        .putExtra("filing_item_id", itemId)
+                );
+                return true;
+            }
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    private static boolean updateHandoff(
+        Context context,
+        String itemId,
+        String handoffState,
+        String messageId,
+        String correlationId,
+        String error,
+        boolean receivedByAqua
+    ) {
+        if (itemId == null || itemId.isEmpty()) return false;
+        try {
+            JSONArray items = readItems(context);
+            for (int index = 0; index < items.length(); index++) {
+                JSONObject item = items.optJSONObject(index);
+                if (item == null || !itemId.equals(item.optString("id", ""))) continue;
+                item.put("handoffState", safe(handoffState, "Captured"));
+                if (!safe(messageId, "").isEmpty()) item.put("messageId", messageId);
+                if (!safe(correlationId, "").isEmpty()) {
+                    item.put("gatewayCorrelationId", correlationId);
+                }
+                item.put("dispatchError", safe(error, ""));
+                if (receivedByAqua) {
+                    if (
+                        !"Confirmed".equals(item.optString("state", ""))
+                            && !item.optBoolean("needsClarification", true)
+                    ) {
+                        item.put("state", "Queued");
+                    }
+                } else if (!"Sending to Aqua".equals(handoffState)) {
+                    item.put("state", "Saved Locally");
+                }
+                writeItems(context, items);
+                AquaCommandWidget.updateAll(context);
+                context.sendBroadcast(
+                    new Intent(ACTION_INBOX_CHANGED)
+                        .setPackage(context.getPackageName())
+                        .putExtra("filing_item_id", itemId)
+                );
+                return true;
+            }
+        } catch (Exception ignored) {}
+        return false;
     }
 
     static synchronized String inboxJson(Context context) {
@@ -147,7 +357,7 @@ final class FilingStore {
                 JSONObject item = items.optJSONObject(index);
                 if (item == null || !itemId.equals(item.optString("id", ""))) continue;
                 String direction = ownerDirection.trim();
-                JSONObject routing = classify(direction);
+                JSONObject routing = classify(direction, item.optString("type", "voice"));
                 String destination = routing.optString("destination", "");
                 if (destination.isEmpty()) destination = "Owner direction · " + direction;
                 item.put("destination", destination)
@@ -168,8 +378,9 @@ final class FilingStore {
         return false;
     }
 
-    private static JSONObject classify(String input) throws Exception {
+    private static JSONObject classify(String input, String type) throws Exception {
         String note = safe(input, "").toLowerCase(Locale.US);
+        String captureType = safe(type, "voice").toLowerCase(Locale.US);
         JSONObject routing = new JSONObject();
         if (
             note.contains("remind me")
@@ -184,29 +395,82 @@ final class FilingStore {
                 .put("needsClarification", false)
                 .put("state", "Queued");
         }
-        if (note.contains("painting company") || note.contains("painting business")) {
+        if (
+            note.contains("painting company")
+                || note.contains("painting business")
+                || note.contains("receipt")
+                || note.contains("expense")
+                || note.contains("invoice")
+                || note.contains("bill")
+                || note.contains("bookkeeping")
+        ) {
             return routing
-                .put("destination", "Aqua Books · Painting Company")
-                .put("confidence", 0.97)
+                .put("destination", "Aqua Books · Executive Intake")
+                .put("confidence", 0.93)
                 .put("needsClarification", false)
                 .put("state", "Queued");
         }
-        if (note.contains("aqua crm") || note.contains("customer") || note.contains("client")) {
+        if (
+            note.contains("aqua crm")
+                || note.contains("customer")
+                || note.contains("client")
+                || note.contains("lead")
+                || note.contains("contact")
+                || note.contains("follow up")
+                || note.contains("follow-up")
+        ) {
             return routing
-                .put("destination", "Aqua CRM · Filing Inbox")
+                .put("destination", "Aqua CRM · Executive Intake")
                 .put("confidence", 0.88)
                 .put("needsClarification", false)
                 .put("state", "Queued");
         }
+        if (
+            note.contains("document")
+                || note.contains("contract")
+                || note.contains("permit")
+                || note.contains("code question")
+                || note.contains("specification")
+                || note.contains("research")
+                || note.contains("look up")
+        ) {
+            return routing
+                .put("destination", "Aqua Knowledge Vault · Executive Intake")
+                .put("confidence", 0.87)
+                .put("needsClarification", false)
+                .put("state", "Queued");
+        }
+        if (
+            note.contains("jobsite")
+                || note.contains("job site")
+                || note.contains("property")
+                || note.contains("tenant")
+                || note.contains("resident")
+                || note.contains("maintenance")
+                || note.contains("work order")
+        ) {
+            return routing
+                .put("destination", "Aqua Operations · Executive Intake")
+                .put("confidence", 0.84)
+                .put("needsClarification", false)
+                .put("state", "Queued");
+        }
+        if ("photo".equals(captureType) || "video".equals(captureType)) {
+            return routing
+                .put("destination", "Aqua Executive Desk · Protected Evidence")
+                .put("confidence", 0.0)
+                .put("needsClarification", true)
+                .put("state", "Needs Attention");
+        }
         return routing
-            .put("destination", "")
-            .put("confidence", 0.0)
-            .put("needsClarification", true)
-            .put("state", "Needs Attention");
+            .put("destination", "Aqua Executive Desk · Intake")
+            .put("confidence", 1.0)
+            .put("needsClarification", false)
+            .put("state", "Queued");
     }
 
     private static String titleFor(String type) {
-        if ("action".equals(type)) return "Aqua Action";
+        if ("action".equals(type)) return "Aqua Executive Handoff";
         if ("photo".equals(type)) return "Photo reference";
         if ("video".equals(type)) return "Video reference";
         return "Quick filing instruction";

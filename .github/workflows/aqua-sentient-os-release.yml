@@ -46,6 +46,12 @@ on:
       - "tests/sentient-functional-test.mjs"
       - ".github/workflows/aqua-sentient-os-release.yml"
   workflow_dispatch:
+    inputs:
+      owner_visual_approval:
+        description: "Dave approved the current real-device Neuralink, materialization, settings, and widget proof"
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -55,8 +61,73 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  preflight-no-apk:
+    name: Verify repair without building an APK
+    if: github.event_name == 'workflow_dispatch' || github.ref_name == 'agent/aqua-sentinel-command-center-integration-20260730' || github.head_ref == 'agent/aqua-sentinel-command-center-integration-20260730'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run production contracts
+        run: |
+          npm ci
+          npm test
+
+      - name: Render and inspect Neuralink, materialization, settings, and Home without an APK
+        run: |
+          set -Eeuo pipefail
+          mkdir -p preflight/proofs preflight/evidence
+          CHROME_BIN="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$CHROME_BIN"
+          node scripts/render-aqua-sentinel-visual-proof.mjs \
+            --chrome "$CHROME_BIN" \
+            --page "${GITHUB_WORKSPACE}/sentient-os-web/index.html" \
+            --output-dir preflight/proofs \
+            --evidence-dir preflight/evidence/deterministic
+          node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
+            --chrome "$CHROME_BIN" \
+            --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
+            --evidence-dir preflight/evidence/live
+          test -s preflight/proofs/AquaSentinelOS-v0.7.4-Neural-Link-Fire-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.4-Settings-closed-phone.png
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+
+      - name: Compile Java and merge Android resources without packaging
+        working-directory: android-app
+        run: gradle --no-daemon :app:compileDebugJavaWithJavac :app:mergeDebugResources
+
+      - name: Retain preflight visual evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: AquaSentinelOS-v0.7.4-preflight-no-apk-${{ github.run_attempt }}
+          path: preflight/**
+          if-no-files-found: error
+          retention-days: 14
+
   build-apk:
-    if: github.event_name != 'pull_request' || github.head_ref == 'agent/aqua-sentinel-command-center-integration-20260730'
+    needs: preflight-no-apk
+    if: github.event_name == 'workflow_dispatch' && inputs.owner_visual_approval
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -200,6 +271,7 @@ jobs:
           test -s release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-closed-phone.png
           test -s release/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png
           test -s release/AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.4-Settings-closed-phone.png
           for checkpoint in 00 01 02 03 04 05 06; do
             test -s "release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-${checkpoint}.png"
             test "$(identify -format '%wx%h' "release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-${checkpoint}.png")" = "430x932"
@@ -241,12 +313,16 @@ jobs:
           test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-closed-phone.png)" = "430x932"
           test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png)" = "430x932"
           test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Settings-closed-phone.png)" = "430x932"
           ! cmp -s \
             release/AquaSentinelOS-v0.7.4-launch-proof.png \
             release/AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png
           ! cmp -s \
             release/AquaSentinelOS-v0.7.4-launch-proof.png \
             release/AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png
+          ! cmp -s \
+            release/AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png \
+            release/AquaSentinelOS-v0.7.4-Settings-closed-phone.png
           ! cmp -s \
             release/AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png \
             release/AquaSentinelOS-v0.7.4-Neural-Link-Rotate-closed-phone.png

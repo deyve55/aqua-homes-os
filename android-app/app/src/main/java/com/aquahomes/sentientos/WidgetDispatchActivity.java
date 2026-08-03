@@ -84,7 +84,7 @@ public final class WidgetDispatchActivity extends Activity {
             if ("action".equals(mode) && BuildConfig.ECOSYSTEM_PRESENTATION_MODE) {
                 destination.putExtra(
                     QuickCaptureActivity.EXTRA_COMMAND_TEXT,
-                    "Remind me to call John today at 5 PM"
+                    "Aqua, prepare my executive morning brief"
                 );
             }
         }

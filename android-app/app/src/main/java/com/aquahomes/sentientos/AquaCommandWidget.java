@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.graphics.Color;
 import android.util.SizeF;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +35,16 @@ public class AquaCommandWidget extends AppWidgetProvider {
     private static final long OUTBOUND_MILLIS = 700L;
     private static final long RETURN_MILLIS = 800L;
     private static final long FILED_MILLIS = 10000L;
+    private static final int[] SELECTED_NEURAL_ACTIVITY_IDS = {
+        R.id.widget_selected_outbound_action,
+        R.id.widget_selected_outbound_video,
+        R.id.widget_selected_outbound_photo,
+        R.id.widget_selected_outbound_file,
+        R.id.widget_selected_return_action,
+        R.id.widget_selected_return_video,
+        R.id.widget_selected_return_photo,
+        R.id.widget_selected_return_file
+    };
 
     static void updateAll(Context context) {
         AppWidgetManager manager = AppWidgetManager.getInstance(context);
@@ -76,12 +85,8 @@ public class AquaCommandWidget extends AppWidgetProvider {
     static int layoutForSize(int minWidth, int minHeight) {
         if (minWidth <= 0 || minHeight <= 0) return R.layout.aqua_command_widget;
         float ratio = (float) minWidth / (float) minHeight;
+        if (ratio >= 1.18f) return R.layout.aqua_command_widget_wide;
         if (minWidth <= 180 && minHeight <= 180) return R.layout.aqua_command_widget_2x2;
-        if (ratio >= 1.08f) {
-            return minHeight >= 155
-                ? R.layout.aqua_command_widget_compact_large
-                : R.layout.aqua_command_widget_compact;
-        }
         if (ratio >= 0.82f && minHeight <= 260) return R.layout.aqua_command_widget_2x2;
         return R.layout.aqua_command_widget;
     }
@@ -117,53 +122,54 @@ public class AquaCommandWidget extends AppWidgetProvider {
         );
     }
 
-    private static int joltDrawable(String mode, boolean compact) {
-        if (compact) {
-            switch (mode) {
-                case "home": return R.drawable.aqua_widget_jolt_compact_home;
-                case "action": return R.drawable.aqua_widget_jolt_compact_action;
-                case "video": return R.drawable.aqua_widget_jolt_compact_video;
-                case "photo": return R.drawable.aqua_widget_jolt_compact_photo;
-                case "file": return R.drawable.aqua_widget_jolt_compact_file;
-                default: return 0;
-            }
-        }
+    private static int selectedNeuralActivityId(String mode, String phase) {
+        if (!"outbound".equals(phase) && !"return".equals(phase)) return 0;
+        boolean returning = "return".equals(phase);
         switch (mode) {
-            case "home": return R.drawable.aqua_widget_jolt_home;
-            case "action": return R.drawable.aqua_widget_jolt_action;
-            case "video": return R.drawable.aqua_widget_jolt_video;
-            case "photo": return R.drawable.aqua_widget_jolt_photo;
-            case "file": return R.drawable.aqua_widget_jolt_file;
-            default: return 0;
+            case "action":
+                return returning
+                    ? R.id.widget_selected_return_action
+                    : R.id.widget_selected_outbound_action;
+            case "video":
+                return returning
+                    ? R.id.widget_selected_return_video
+                    : R.id.widget_selected_outbound_video;
+            case "photo":
+                return returning
+                    ? R.id.widget_selected_return_photo
+                    : R.id.widget_selected_outbound_photo;
+            case "file":
+                return returning
+                    ? R.id.widget_selected_return_file
+                    : R.id.widget_selected_outbound_file;
+            default:
+                return 0;
         }
     }
 
     private static RemoteViews buildLayoutViews(Context context, int layout) {
-        boolean compact = layout != R.layout.aqua_command_widget;
         RemoteViews views = new RemoteViews(context.getPackageName(), layout);
         views.setTextViewText(
             R.id.widget_filed_today,
             String.valueOf(FilingStore.filedTodayCount(context))
         );
         NeuralState neuralState = visibleNeuralState(context);
-        int activePath = joltDrawable(neuralState.mode, compact);
-        views.setViewVisibility(
-            R.id.widget_active_path,
-            activePath == 0 ? View.INVISIBLE : View.VISIBLE
+        int selectedActivity = selectedNeuralActivityId(
+            neuralState.mode,
+            neuralState.phase
         );
-        if (activePath != 0) {
-            views.setImageViewResource(R.id.widget_active_path, activePath);
-            views.setInt(
-                R.id.widget_active_path,
-                "setColorFilter",
-                "return".equals(neuralState.phase)
-                    ? Color.rgb(255, 194, 92)
-                    : Color.rgb(103, 239, 255)
+        for (int activityId : SELECTED_NEURAL_ACTIVITY_IDS) {
+            views.setViewVisibility(
+                activityId,
+                activityId == selectedActivity ? View.VISIBLE : View.INVISIBLE
             );
         }
-        boolean filed = "filed".equals(neuralState.phase);
-        views.setViewVisibility(R.id.widget_status, filed ? View.VISIBLE : View.INVISIBLE);
-        views.setTextViewText(R.id.widget_status, filed ? "FILED" : "");
+        String statusText = statusText(neuralState.phase);
+        views.setViewVisibility(
+            R.id.widget_status,
+            statusText.isEmpty() ? View.INVISIBLE : View.VISIBLE
+        );
+        views.setTextViewText(R.id.widget_status, statusText);
         views.setOnClickPendingIntent(R.id.widget_logo, openSentinel(context));
         views.setOnClickPendingIntent(R.id.widget_action, action(context, "action", 101));
         views.setOnClickPendingIntent(R.id.widget_video, action(context, "video", 102));
@@ -177,10 +183,10 @@ public class AquaCommandWidget extends AppWidgetProvider {
             Map<SizeF, RemoteViews> responsive = new LinkedHashMap<>();
             responsive.put(new SizeF(110f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_2x2));
             responsive.put(new SizeF(180f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_compact_large));
-            responsive.put(new SizeF(180f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_compact));
-            responsive.put(new SizeF(250f, 140f), buildLayoutViews(context, R.layout.aqua_command_widget_compact));
-            responsive.put(new SizeF(250f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_compact_large));
-            responsive.put(new SizeF(320f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_compact_large));
+            responsive.put(new SizeF(180f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
+            responsive.put(new SizeF(250f, 140f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
+            responsive.put(new SizeF(250f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
+            responsive.put(new SizeF(320f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
             responsive.put(new SizeF(180f, 260f), buildLayoutViews(context, R.layout.aqua_command_widget));
             responsive.put(new SizeF(250f, 390f), buildLayoutViews(context, R.layout.aqua_command_widget));
             return new RemoteViews(responsive);
@@ -236,15 +242,56 @@ public class AquaCommandWidget extends AppWidgetProvider {
         );
     }
 
+    static void showReceived(Context context, String mode) {
+        Context applicationContext = context.getApplicationContext();
+        long sequence = System.nanoTime();
+        setNeuralState(applicationContext, mode, "received", FILED_MILLIS, sequence);
+        Log.i("AquaCommandWidget", "AQUA_WIDGET_HANDOFF_RECEIVED mode=" + mode);
+        new Handler(Looper.getMainLooper()).postDelayed(
+            () -> clearNeuralState(applicationContext, sequence),
+            FILED_MILLIS + 60L
+        );
+    }
+
+    static void showAquaHasIt(Context context, String mode) {
+        Context applicationContext = context.getApplicationContext();
+        long sequence = System.nanoTime();
+        setNeuralState(applicationContext, mode, "queued", FILED_MILLIS, sequence);
+        Log.i("AquaCommandWidget", "AQUA_WIDGET_HANDOFF_CONFIRMED mode=" + mode);
+        new Handler(Looper.getMainLooper()).postDelayed(
+            () -> clearNeuralState(applicationContext, sequence),
+            FILED_MILLIS + 60L
+        );
+    }
+
+    static void showSavedLocally(Context context, String mode) {
+        Context applicationContext = context.getApplicationContext();
+        long sequence = System.nanoTime();
+        setNeuralState(applicationContext, mode, "saved", FILED_MILLIS, sequence);
+        Log.i("AquaCommandWidget", "AQUA_WIDGET_HANDOFF_SAVED_LOCALLY mode=" + mode);
+        new Handler(Looper.getMainLooper()).postDelayed(
+            () -> clearNeuralState(applicationContext, sequence),
+            FILED_MILLIS + 60L
+        );
+    }
+
     static void showFiled(Context context) {
         Context applicationContext = context.getApplicationContext();
         long sequence = System.nanoTime();
-        setNeuralState(applicationContext, "action", "filed", FILED_MILLIS, sequence);
+        setNeuralState(applicationContext, "action", "confirmed", FILED_MILLIS, sequence);
         Log.i("AquaCommandWidget", "AQUA_WIDGET_FILED_CONFIRMATION_RENDERED");
         new Handler(Looper.getMainLooper()).postDelayed(
             () -> clearNeuralState(applicationContext, sequence),
             FILED_MILLIS + 60L
         );
+    }
+
+    private static String statusText(String phase) {
+        if ("received".equals(phase)) return "RECEIVED";
+        if ("queued".equals(phase)) return "AQUA HAS IT";
+        if ("saved".equals(phase)) return "SAVED";
+        if ("confirmed".equals(phase)) return "CONFIRMED";
+        return "";
     }
 
     private static void setNeuralState(

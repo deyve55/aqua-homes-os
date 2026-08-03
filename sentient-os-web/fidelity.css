@@ -601,6 +601,7 @@ html,body,.sentinel,.os-surface,.aqua-hero{background:#000}
 .filing-item header strong,.filing-item header small{display:block}.filing-item header small{margin-top:3px;color:#9bb4bc}
 .filing-item header b{padding:5px 7px;border:1px solid #4e7180;border-radius:99px;color:#e8f9fd;font-size:9px;font-weight:500}
 .filing-item p{margin:12px 0 5px;color:#fff;line-height:1.35}.filing-item>small{color:#82a0aa}.filing-empty{padding:38px 20px;text-align:center;border:1px dashed #285263;border-radius:12px;color:#9ab4bd}
+.filing-item .filing-brain-reply{display:grid;grid-template-columns:auto 1fr;gap:8px;margin:10px 0 7px;padding:10px;border:1px solid rgba(49,218,247,.28);border-radius:9px;background:rgba(7,35,45,.78);color:#dffaff}.filing-brain-reply b{color:#62e7ff;font-size:10px;letter-spacing:.1em;text-transform:uppercase}.filing-item .filing-owner-gate{margin-top:9px;color:#ffd994;font-size:11px}
 .filing-clarify{width:100%;margin-top:12px;padding:10px;border:1px solid #2ab8d5;border-radius:8px;color:#f2fdff;background:#0a2732}
 @media(max-width:600px){.app-dashboard .dashboard-card{min-height:clamp(205px,38cqw,330px)}}
 
@@ -1715,4 +1716,151 @@ html,body{overscroll-behavior:none}
   .neural-stage:before,.neural-stage:after,.neural-core,.neural-core-field{transition-duration:.01ms!important}
   .neural-substrate-fire,.neural-signal,.neural-burst,.materialization-circuit-fire,.neural-approved-voice i,.neural-stage[data-phase="firing"] .neural-portal.is-primary .portal-pull{animation:none!important}
   .neural-materialization-approved{animation-duration:.01ms!important;animation-delay:0s!important}
+}
+
+/* v0.7.4 real-device rejection recovery.
+   The living layer is deliberately lightweight: one CSS-built obsidian field,
+   independent portals and mark, and SVG neuron traffic. No full-screen raster,
+   cross-fade, clip-path reveal, blur, mask, or duplicate compositing plate. */
+.neural-stage{
+  background:
+    radial-gradient(circle at 50% 44%,rgba(221,252,255,.09) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 50% 44%,rgba(35,225,251,.12),transparent 14%),
+    radial-gradient(ellipse at 50% 52%,rgba(0,93,126,.12),transparent 48%),
+    linear-gradient(180deg,#01080c 0,#000407 48%,#000 100%);
+  contain:layout paint;
+  touch-action:pan-y;
+}
+.neural-stage:before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:0;
+  background:
+    repeating-radial-gradient(ellipse at 50% 45%,transparent 0 10.8%,rgba(69,218,239,.035) 10.95% 11.05%,transparent 11.2% 19.8%),
+    linear-gradient(90deg,transparent 49.88%,rgba(81,224,245,.045) 50%,transparent 50.12%),
+    linear-gradient(0deg,transparent 49.88%,rgba(81,224,245,.028) 50%,transparent 50.12%);
+  opacity:1;
+  clip-path:none;
+  filter:none;
+  transform:none;
+  transition:none;
+  will-change:auto;
+  pointer-events:none;
+  animation:none;
+}
+.neural-stage:after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  inset:8% 7% 10%;
+  border:1px solid rgba(87,226,247,.06);
+  border-radius:50%;
+  background:radial-gradient(circle,transparent 39%,rgba(54,215,242,.035) 40% 40.4%,transparent 41%);
+  opacity:1;
+  clip-path:none;
+  filter:none;
+  transform:none;
+  transition:none;
+  will-change:auto;
+  pointer-events:none;
+}
+.neural-stage[data-phase="rotating"]:before,
+.neural-stage[data-phase="firing"]:before,
+.neural-stage[data-phase="transitioning"]:before,
+.neural-stage[data-phase="result"]:before{opacity:1;filter:none;transform:none;clip-path:none;animation:none}
+.neural-stage[data-phase="transitioning"]:after,
+.neural-stage[data-phase="result"]:after{opacity:1;filter:none;clip-path:none;transform:none}
+.neural-substrate-map,.neural-substrate-fire{display:none!important}
+.neural-vignette{z-index:2;opacity:.68;mix-blend-mode:normal}
+.neural-network{z-index:6;opacity:.96!important;filter:none!important;mix-blend-mode:normal;contain:layout paint}
+.neural-route{stroke:rgba(112,231,247,.25);stroke-width:.42;stroke-dasharray:.75 2.45;transition:opacity .28s}
+.neural-signal{stroke:#9af5ff;stroke-width:.9;stroke-linecap:round;stroke-dasharray:1.2 8.8;opacity:.74;filter:drop-shadow(0 0 2px #dffcff) drop-shadow(0 0 5px rgba(50,223,248,.75));animation:neural-path-fire 2.65s linear infinite}
+.neural-route-group:nth-child(2n) .neural-signal{stroke:#efbd6c;opacity:.58;animation-direction:reverse;animation-duration:3.7s}
+.neural-burst{opacity:.68}
+.neural-stage[data-phase="firing"] .neural-signal.is-active,
+.neural-stage[data-phase="firing"] .neural-burst.is-active{
+  opacity:1;
+  stroke:#fff;
+  stroke-width:1.9;
+  stroke-dasharray:3.2 7.8;
+  filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 11px #2ce6ff);
+  animation:neural-path-fire .24s linear infinite;
+}
+.neural-stage[data-phase="firing"] .neural-jolt{opacity:1}
+.neural-stage[data-phase="firing"] .neural-jolt>b{animation:neural-jolt-column .76s ease-out both}
+.neural-stage[data-phase="firing"] .neural-jolt i:first-of-type{animation:neural-jolt-up .42s .02s cubic-bezier(.12,.82,.16,1) both}
+.neural-stage[data-phase="firing"] .neural-jolt i:nth-of-type(2){animation:neural-jolt-up .4s .2s cubic-bezier(.12,.82,.16,1) both}
+.neural-stage[data-phase="firing"] .neural-jolt span{animation:neural-jolt-impact .5s .42s ease-out both}
+.neural-stage[data-phase="firing"] .neural-core-field{opacity:.58;animation:core-listen .7s ease-in-out infinite alternate}
+.neural-stage[data-phase="firing"] .neural-core-hit{opacity:.92;animation:core-presence .68s ease-in-out infinite}
+.neural-stage[data-phase="firing"] .neural-request-trail li:nth-child(2):before{background:#ffc264;box-shadow:0 0 8px #ffad33}
+.neural-stage[data-phase="firing"] .neural-request-trail li:last-child{opacity:.38}
+
+.neural-core,.neural-core-field{left:50%;top:45%;transition:left 1.15s cubic-bezier(.18,.82,.2,1),top 1.15s cubic-bezier(.18,.82,.2,1),width 1.15s cubic-bezier(.18,.82,.2,1),opacity .45s}
+.neural-core{width:clamp(122px,29%,188px);aspect-ratio:.94;background:radial-gradient(circle at 50% 55%,#000 0 48%,rgba(0,0,0,.98) 57%,rgba(0,0,0,.62) 68%,transparent 78%);filter:drop-shadow(0 16px 24px #000) drop-shadow(0 0 11px rgba(50,220,245,.18))}
+.neural-core:before{display:block;inset:-18%;border-color:rgba(107,230,248,.13);background:radial-gradient(circle,rgba(73,222,246,.09),transparent 60%);animation:core-presence 4.2s ease-in-out infinite}
+.neural-core:after{display:none}
+.neural-core>b{inset:-5%;border-color:rgba(117,234,250,.15);animation-duration:10s}
+.neural-core .aqua-mark{position:relative;z-index:3;display:block;width:92%;height:92%;overflow:visible;filter:drop-shadow(0 0 3px rgba(235,253,255,.64)) drop-shadow(0 0 13px rgba(34,211,240,.25))}
+.aqua-mark-orb{opacity:.7;animation:aqua-orb-breathe 2.8s ease-in-out infinite}
+.aqua-mark-orb-core{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 11px #26dcf8)}
+.neural-stage[data-phase="transitioning"] .neural-core,
+.neural-stage[data-phase="transitioning"] .neural-core-field,
+.neural-stage[data-phase="result"] .neural-core,
+.neural-stage[data-phase="result"] .neural-core-field{left:16.5%;top:26%;width:18%}
+
+.neural-portal{width:clamp(72px,19vw,104px);opacity:1;transition:opacity .3s,filter .3s;will-change:transform}
+.neural-portal .portal-pull{padding:5%;aspect-ratio:1;border-color:color-mix(in srgb,var(--portal-color) 58%,#718991);border-radius:50%;background:#000;box-shadow:inset 0 0 20px rgba(66,221,246,.055),0 0 0 1px rgba(255,255,255,.025),0 9px 22px #000;backdrop-filter:none;transition:transform .58s cubic-bezier(.16,.78,.18,1),filter .35s,box-shadow .35s}
+.neural-portal .portal-pull:before{inset:4%;border-color:color-mix(in srgb,var(--portal-color) 24%,transparent);box-shadow:inset 0 0 18px #000}
+.neural-portal .portal-node{width:100%;height:100%;overflow:hidden;border-color:color-mix(in srgb,var(--portal-color) 64%,#d8fbff);background:#000;box-shadow:inset 0 0 22px #000}
+.neural-portal .portal-node>img{left:7%;top:3%;width:86%;height:78%;object-fit:contain;object-position:50% 36%;image-rendering:auto;opacity:.92;filter:saturate(1.04) contrast(1.08) brightness(.98);transform:none;border-radius:8%}
+.neural-portal .portal-environment-shade{background:linear-gradient(180deg,transparent 0 63%,rgba(0,0,0,.42) 76%,#000 96%);box-shadow:inset 0 0 10px #000}
+.neural-portal .portal-node>i{z-index:4;display:grid;width:34%;color:#eaffff;border-color:color-mix(in srgb,var(--portal-color) 78%,#fff);background:rgba(0,7,11,.94);box-shadow:inset 0 0 9px color-mix(in srgb,var(--portal-color) 25%,transparent),0 0 5px #fff,0 0 14px var(--portal-color);font-size:clamp(12px,3vw,18px);backdrop-filter:none}
+.neural-portal .portal-node.has-environment>i{position:absolute;top:7%;right:7%;width:19%;font-size:clamp(6px,1.35vw,9px);opacity:.88;box-shadow:0 0 4px #fff,0 0 9px color-mix(in srgb,var(--portal-color) 70%,transparent)}
+.neural-portal .portal-node>strong{left:7%;right:7%;bottom:14%;font-size:clamp(6px,1.65vw,9px);font-weight:560}
+.neural-portal .portal-node>em{bottom:6%;font-size:clamp(4px,1vw,6px)}
+.neural-portal .portal-node>b{inset:3%;border-color:color-mix(in srgb,var(--portal-color) 33%,transparent)}
+.neural-portal.is-primary .portal-pull{transform:scale(1.13);box-shadow:inset 0 0 24px rgba(114,241,255,.08),0 0 8px rgba(255,255,255,.46),0 0 24px color-mix(in srgb,var(--portal-color) 48%,transparent)}
+.neural-portal.is-primary .portal-node>img{opacity:1;filter:saturate(1.12) contrast(1.08) brightness(1.08)}
+.neural-stage[data-phase="firing"] .neural-portal.is-primary .portal-pull{transform:scale(1.27);filter:brightness(1.25);animation:neural-requested-portal-charge .58s ease-in-out infinite alternate}
+.neural-stage[data-phase="transitioning"] .neural-portal,
+.neural-stage[data-phase="result"] .neural-portal{width:clamp(50px,12.6vw,65px)}
+
+.neural-thought{z-index:43;bottom:4.6%;width:min(78%,420px);background:linear-gradient(145deg,rgba(2,18,24,.87),rgba(0,4,7,.94));backdrop-filter:none}
+.neural-materialization-slot{z-index:52;contain:layout paint}
+.neural-materialization-approved{
+  inset:5.8% 2.5% 2.4% 27.5%;
+  overflow:hidden;
+  border:1px solid rgba(86,226,248,.22);
+  border-radius:clamp(18px,4vw,30px);
+  opacity:1;
+  background:linear-gradient(145deg,rgba(2,17,23,.995),rgba(0,3,5,1));
+  box-shadow:inset 0 0 40px rgba(36,212,241,.045),0 20px 40px rgba(0,0,0,.72);
+  transform:none;
+  transform-origin:0 0;
+  animation:none;
+  will-change:auto;
+}
+.neural-materialization-approved[data-neural-materialized="pending"]{opacity:0}
+.neural-materialization-approved[data-neural-materialized="pending"][data-morph-ready="true"]{opacity:1}
+.neural-materialization-circuit{opacity:.76;mix-blend-mode:normal}
+.neural-approved-voice{left:4%;top:2%;width:92%;height:11%}
+.neural-live-object{left:7%;right:7%;top:15%;bottom:13%}
+.neural-open-materialized-file{left:8%;right:8%;bottom:4.2%;height:6.8%}
+.neural-stage[data-phase="transitioning"] .neural-network{opacity:.6!important;filter:none}
+.neural-stage[data-phase="result"] .neural-network{opacity:.26!important}
+
+@keyframes aqua-orb-breathe{50%{opacity:1;transform:scale(1.12);transform-origin:center}}
+@media(max-width:600px){
+  .neural-core{width:29%}
+  .neural-portal{width:clamp(68px,19vw,80px)}
+  .neural-stage[data-phase="transitioning"] .neural-core,
+  .neural-stage[data-phase="transitioning"] .neural-core-field,
+  .neural-stage[data-phase="result"] .neural-core,
+  .neural-stage[data-phase="result"] .neural-core-field{left:14%;top:27%;width:17%}
+  .neural-materialization-approved{inset:5.5% 2% 2.2% 27%}
+}
+@media(prefers-reduced-motion:reduce){
+  .neural-stage:before,.aqua-mark-orb{animation:none!important}
 }

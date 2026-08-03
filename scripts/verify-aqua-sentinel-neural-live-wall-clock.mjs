@@ -106,6 +106,13 @@ const browserStateExpression = `(() => {
   const root = document.documentElement;
   const stage = document.querySelector('.neural-stage');
   const materialized = document.querySelector('[data-neural-materialized]');
+  const visiblePortals = Array.from(document.querySelectorAll('[data-portal-index]'))
+    .filter((portal) => Number(getComputedStyle(portal).opacity) > .15);
+  const jolt = document.querySelector('.neural-jolt');
+  const joltBeam = document.querySelector('.neural-jolt > b');
+  const substrate = document.querySelector('.neural-substrate-map');
+  const beforeStyle = stage ? getComputedStyle(stage, '::before') : null;
+  const afterStyle = stage ? getComputedStyle(stage, '::after') : null;
   return {
     ready: root?.dataset?.aquaPreviewReady || '',
     phase: root?.dataset?.aquaNeuralPhase || '',
@@ -119,6 +126,16 @@ const browserStateExpression = `(() => {
     materializationKind: materialized?.dataset?.materializationKind || '',
     receiptVisible: Boolean(document.querySelector('.neural-materialization-approved.is-receipt')),
     focusName: document.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
+    visiblePortals: visiblePortals.length,
+    portalsContained: visiblePortals.every((portal) => {
+      const image = portal.querySelector('.portal-node > img');
+      return image && getComputedStyle(image).objectFit === 'contain';
+    }),
+    joltOpacity: jolt ? Number(getComputedStyle(jolt).opacity) : 0,
+    joltAnimation: joltBeam ? getComputedStyle(joltBeam).animationName : '',
+    substrateDisplay: substrate ? getComputedStyle(substrate).display : '',
+    usesRasterUnderlay: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
+    usesRasterCompositor: Boolean(afterStyle?.backgroundImage?.includes('url(')),
   };
 })()`;
 
@@ -249,6 +266,11 @@ async function run() {
       assert.equal(state?.ready, "neural", `Neural preview was not ready before ${expectedPhase}`);
       assert.equal(state?.phase, expectedPhase, `Live Neuralink did not reach ${expectedPhase} by its wall-clock deadline`);
       assert.equal(state?.stagePhase, expectedPhase, `Stage and root phase diverged at ${expectedPhase}`);
+      assert.equal(state?.visiblePortals, 5, `Neuralink must keep exactly five recognizable portals at ${expectedPhase}`);
+      assert.equal(state?.portalsContained, true, `Portal artwork must remain contained at ${expectedPhase}`);
+      assert.equal(state?.substrateDisplay, "none", `Rejected mask substrates must stay disabled at ${expectedPhase}`);
+      assert.equal(state?.usesRasterUnderlay, false, `A rejected baked Neuralink plate returned at ${expectedPhase}`);
+      assert.equal(state?.usesRasterCompositor, false, `Rejected full-screen raster compositing returned at ${expectedPhase}`);
     }
 
     const rotating = timeline.find((entry) => entry.checkpoint && entry.phase === "rotating");
@@ -260,6 +282,8 @@ async function run() {
     assert(transitioning.elapsedMillis < result.elapsedMillis, "Result must follow transitioning in real time");
     assert.equal(rotating.focusName, "Aqua Receipts");
     assert.match(firing.detail, /large upward neuron burst through the selected path/);
+    assert.ok(firing.joltOpacity >= 0.99, "The firing phase must visibly reveal the upward jolt");
+    assert.match(firing.joltAnimation, /neural-jolt-column/);
     assert.equal(transitioning.materialized, "pending");
     assert.equal(result.materialized, "true");
     assert.equal(result.materializationKind, "receipts");
