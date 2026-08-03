@@ -950,7 +950,16 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURAL_JOLT_RENDERED mode=\$mode phase=return/);
   assert.match(widgetVerifier, /screenrecord --bit-rate 4000000 --time-limit 4/);
   assert.match(widgetVerifier, /\(sleep 1\.5; input tap \$tap_x \$tap_y\)/);
-  assert.match(widgetVerifier, /for frame_offset in 1\.75 1\.95 2\.15/);
+  assert.match(widgetVerifier, /command -v ffprobe >\/dev\/null/);
+  assert.match(widgetVerifier, /-count_frames/);
+  assert.match(widgetVerifier, /stream=nb_read_frames/);
+  assert.match(widgetVerifier, /frame_count < 2/);
+  assert.match(widgetVerifier, /select='eq\(n,0\)'/);
+  assert.match(widgetVerifier, /for frame_index in[\s\S]*frame_count \* 7 \/ 16[\s\S]*frame_count \* 8 \/ 16[\s\S]*frame_count \* 9 \/ 16/);
+  assert.match(widgetVerifier, /select='eq\(n,\$frame_index\)'/);
+  assert.match(widgetVerifier, /frame_count=\$frame_count frame_index=\$frame_index/);
+  assert.doesNotMatch(widgetVerifier, /-ss 0\.60/);
+  assert.doesNotMatch(widgetVerifier, /for frame_offset in 1\.75 1\.95 2\.15/);
   assert.match(widgetVerifier, /compare -metric AE -fuzz 4% "\$idle_crop" "\$active_crop"/);
   assert.match(widgetVerifier, /changed_pixels >= 40/);
   assert.doesNotMatch(widgetVerifier, /sleep 0\.12\s*\n\s*adb exec-out screencap -p > "\$active"/);

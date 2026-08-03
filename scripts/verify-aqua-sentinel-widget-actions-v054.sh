@@ -941,7 +941,8 @@ tap_launcher_control() {
   local width=""
   local height=""
   local changed_pixels=""
-  local frame_offset=""
+  local frame_count=""
+  local frame_index=""
   local idle="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-idle.png"
   local active="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-jolt.png"
   local idle_crop="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-idle-crop.png"
@@ -952,6 +953,7 @@ tap_launcher_control() {
   local render_observed="false"
 
   command -v ffmpeg >/dev/null
+  command -v ffprobe >/dev/null
   return_to_launcher
   for attempt in $(seq 1 20); do
     hierarchy_path="$(dump_ui "aqua-widget-${mode}-jolt-${attempt}")" || {
@@ -976,7 +978,23 @@ tap_launcher_control() {
     adb shell "(sleep 1.5; input tap $tap_x $tap_y) & screenrecord --bit-rate 4000000 --time-limit 4 $device_video"
     adb pull "$device_video" "$tap_video" >/dev/null
     test -s "$tap_video"
-    ffmpeg -loglevel error -y -i "$tap_video" -ss 0.60 -frames:v 1 "$idle"
+    frame_count="$(
+      ffprobe -v error \
+        -select_streams v:0 \
+        -count_frames \
+        -show_entries stream=nb_read_frames \
+        -of default=noprint_wrappers=1:nokey=1 \
+        "$tap_video" \
+        | tr -d '\r'
+    )"
+    if [[ ! "$frame_count" =~ ^[0-9]+$ ]] || ((frame_count < 2)); then
+      echo "The $mode jolt video did not contain two decodable frames: frame_count=$frame_count" >&2
+      return 1
+    fi
+    # Android screenrecord can close with a short, variable-duration clip when a
+    # widget tap cold-starts another activity. Select decoded frame indexes instead
+    # of seeking beyond the clip with fixed wall-clock timestamps.
+    ffmpeg -loglevel error -y -i "$tap_video" -vf "select='eq(n,0)'" -frames:v 1 "$idle"
     test -s "$idle"
     for render_attempt in $(seq 1 20); do
       adb logcat -d > "$render_evidence"
@@ -992,8 +1010,13 @@ tap_launcher_control() {
     fi
     convert "$idle" -crop "${width}x${height}+${left}+${top}" +repage "$idle_crop"
     changed_pixels="0"
-    for frame_offset in 1.75 1.95 2.15; do
-      ffmpeg -loglevel error -y -i "$tap_video" -ss "$frame_offset" -frames:v 1 "$active"
+    for frame_index in \
+      $((frame_count * 7 / 16)) \
+      $((frame_count * 8 / 16)) \
+      $((frame_count * 9 / 16)); do
+      ((frame_index < 1)) && frame_index=1
+      ((frame_index >= frame_count)) && frame_index=$((frame_count - 1))
+      ffmpeg -loglevel error -y -i "$tap_video" -vf "select='eq(n,$frame_index)'" -frames:v 1 "$active"
       test -s "$active"
       convert "$active" -crop "${width}x${height}+${left}+${top}" +repage "$active_crop"
       changed_pixels="$(compare -metric AE -fuzz 4% "$idle_crop" "$active_crop" null: 2>&1 || true)"
@@ -1007,7 +1030,7 @@ tap_launcher_control() {
     fi
     cp "$active" /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Tap-Jolt.png
     echo "AQUA_WIDGET_LAUNCHER_TAP mode=$mode resource=$resource_id"
-    echo "AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=$mode changed_pixels=$changed_pixels source=device_tap_video"
+    echo "AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=$mode changed_pixels=$changed_pixels source=device_tap_video frame_count=$frame_count frame_index=$frame_index"
     return 0
   done
 
