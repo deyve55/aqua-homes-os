@@ -182,14 +182,17 @@ const liveSnapshots = new Map();
 const customerPreviewSnapshots = new Map();
 const ecosystemPresentationSnapshots = new Map();
 const snapshotStates = new Map();
-// Five physical application portals stay fixed. Aqua swaps application content
-// between those openings; the portals never carousel, orbit, or leave the frame.
+// Seven physical application portals reproduce Dave's owner reference. Aqua
+// swaps application content between those openings; the portals never carousel,
+// orbit, or leave the frame. The central A is the only routing origin.
 const neuralRingSlots = [
-  { x: 50, y: 15.5, scale: 1.16, c1x: 50, c1y: 36, c2x: 50, c2y: 24 },
-  { x: 82.5, y: 34, scale: .97, c1x: 62, c1y: 42, c2x: 74, c2y: 33 },
-  { x: 77, y: 65, scale: .91, c1x: 63, c1y: 51, c2x: 73, c2y: 59 },
-  { x: 23, y: 65, scale: .91, c1x: 37, c1y: 51, c2x: 27, c2y: 59 },
-  { x: 17.5, y: 34, scale: .97, c1x: 38, c1y: 42, c2x: 26, c2y: 33 },
+  { x: 50, y: 15.7, scale: 1.34, c1x: 50, c1y: 34, c2x: 50, c2y: 23 },
+  { x: 17.4, y: 29.8, scale: .98, c1x: 36, c1y: 40, c2x: 27, c2y: 32 },
+  { x: 82.6, y: 29.8, scale: .98, c1x: 64, c1y: 40, c2x: 73, c2y: 32 },
+  { x: 15.7, y: 45.7, scale: .91, c1x: 35, c1y: 44, c2x: 25, c2y: 45 },
+  { x: 84.3, y: 45.7, scale: .91, c1x: 65, c1y: 44, c2x: 75, c2y: 45 },
+  { x: 17.2, y: 61.1, scale: .88, c1x: 36, c1y: 49, c2x: 27, c2y: 56 },
+  { x: 82.8, y: 61.1, scale: .88, c1x: 64, c1y: 49, c2x: 73, c2y: 56 },
 ];
 const NEURAL_SELECT_MILLIS = 220;
 const NEURAL_FIRE_MILLIS = 320;
@@ -206,7 +209,7 @@ const NEURAL_SEQUENCE_MORPH_AT = NEURAL_SELECT_MILLIS
 const NEURAL_SEQUENCE_RESULT_AT = NEURAL_SEQUENCE_MORPH_AT + NEURAL_MORPH_MILLIS;
 let neuralFocusIndex = -1;
 let neuralSupportIndexes = [];
-let neuralVisibleIndexes = [0, 1, 2, 3, 4];
+let neuralVisibleIndexes = [0, 5, 6, 1, 4, 3, 2];
 let neuralPhase = "rest";
 let neuralThought = "Aqua is listening across your company.";
 let neuralThoughtDetail = "Every system stays ready while her attention moves.";
@@ -230,8 +233,8 @@ let commandWidgetState = {
 let deviceDiagnostics = {
   generatedAt: 0,
   platform: "Browser preview",
-  versionName: "0.7.5-secondary-surfaces-test",
-  versionCode: 2026080204,
+  versionName: "0.7.7-owner-reference-neural-link-widget-test",
+  versionCode: 2026080302,
   gatewayConfigured: false,
   authenticated: false,
   microphoneGranted: false,
@@ -323,7 +326,7 @@ function aquaMarkMarkup(prefix = "aqua") {
 function neuralFixedSlotForSource(sourceIndex) {
   const slotIndex = neuralVisibleIndexes.indexOf(sourceIndex);
   if (slotIndex < 0) {
-    return { x: 50, y: 82, scale: .72, opacity: 0, c1x: 50, c1y: 56, c2x: 50, c2y: 72 };
+    return { x: 50, y: 84, scale: .72, opacity: 0, c1x: 50, c1y: 58, c2x: 50, c2y: 74 };
   }
   return { ...neuralRingSlots[slotIndex], opacity: 1, slotIndex };
 }
@@ -338,18 +341,18 @@ function promoteNeuralSource(sourceIndex) {
 }
 
 function neuralPathForSlot(slot) {
-  return `M50 45 C${slot.c1x} ${slot.c1y} ${slot.c2x} ${slot.c2y} ${slot.x} ${slot.y}`;
+  return `M50 43.7 C${slot.c1x} ${slot.c1y} ${slot.c2x} ${slot.c2y} ${slot.x} ${slot.y}`;
 }
 
 function neuralRouteTransform(slot) {
   const base = neuralRingSlots[0];
-  const baseLength = Math.max(.01, Math.hypot(base.x - 50, base.y - 45));
+  const baseLength = Math.max(.01, Math.hypot(base.x - 50, base.y - 43.7));
   const dx = Number(slot.x) - 50;
-  const dy = Number(slot.y) - 45;
+  const dy = Number(slot.y) - 43.7;
   const length = Math.max(.01, Math.hypot(dx, dy));
   const angle = Math.atan2(dx, -dy) * 180 / Math.PI;
   const stretch = length / baseLength;
-  return `translate(50 45) rotate(${angle.toFixed(3)}) scale(1 ${stretch.toFixed(4)}) translate(-50 -45)`;
+  return `translate(50 43.7) rotate(${angle.toFixed(3)}) scale(1 ${stretch.toFixed(4)}) translate(-50 -43.7)`;
 }
 
 function cancelNeuralMotion() {
@@ -382,7 +385,21 @@ async function animateNeuralMorph(duration) {
   stage.dataset.motion = "morph";
   layoutNeuralStage(0);
   renderNeuralMaterialization();
-  await new Promise((resolve) => setTimeout(resolve, duration));
+  const startedAt = performance.now();
+  await new Promise((resolve) => {
+    const paintMorph = (now) => {
+      if (token !== neuralMotionToken || neuralMaterialization === null) {
+        resolve();
+        return;
+      }
+      const progress = Math.max(0, Math.min(1, (now - startedAt) / duration));
+      neuralMorphProgress = progress;
+      layoutNeuralStage(progress);
+      if (progress < 1) requestAnimationFrame(paintMorph);
+      else resolve();
+    };
+    requestAnimationFrame(paintMorph);
+  });
   if (token !== neuralMotionToken || neuralMaterialization === null) return;
   neuralMorphProgress = 1;
   neuralPhase = "result";
@@ -409,6 +426,10 @@ function layoutNeuralStage(morphOverride = null) {
   stage.dataset.ackBudgetMillis = String(NEURAL_ACK_BUDGET_MILLIS);
   stage.dataset.presentationBudgetMillis = String(NEURAL_SEQUENCE_RESULT_AT);
   stage.dataset.fixedPortals = "true";
+  stage.dataset.referenceComposition = "owner-rest-and-morph-v077";
+  stage.dataset.referenceState = ["transitioning", "result"].includes(neuralPhase) ? "morphed" : "rest";
+  stage.dataset.materializationKind = String(neuralMaterialization?.kind || "");
+  stage.dataset.selectedApp = neuralSourceAt(neuralFocusIndex)?.name || "All systems";
   stage.dataset.acknowledged = neuralAcknowledgedAt >= neuralRequestStartedAt && neuralRequestStartedAt > 0
     ? "true"
     : "false";
@@ -454,11 +475,16 @@ function layoutNeuralStage(morphOverride = null) {
   const thought = stage.querySelector("[data-neural-thought]");
   const detail = stage.querySelector("[data-neural-thought-detail]");
   const focus = stage.querySelector("[data-neural-focus-name]");
+  const selected = stage.querySelector("[data-neural-selected-name]");
   if (thought) thought.textContent = neuralThought;
   if (detail) detail.textContent = neuralThoughtDetail;
   if (focus) {
     const source = neuralSourceAt(neuralFocusIndex);
     focus.textContent = source ? source.name : "ALL SYSTEMS";
+  }
+  if (selected) {
+    const source = neuralSourceAt(neuralFocusIndex);
+    selected.textContent = source ? source.name : "Aqua CRM";
   }
 }
 
@@ -1749,7 +1775,7 @@ function neuralWorkspaceMarkup() {
   const confirmedSources = apps.filter((app) => app.connected || liveSnapshots.has(app.name)).length;
 
   return `<section class="neural-shell" aria-label="Aqua Neuralink" data-neural-contract="AQUA SENTINEL NEURAL LINK">
-      <div class="neural-stage" data-phase="${escapeHtml(neuralPhase)}" data-neural-visible-portals="5" data-neural-added-ui-delay-ms="0" data-neural-acknowledged="false">
+      <div class="neural-stage" data-phase="${escapeHtml(neuralPhase)}" data-neural-visible-portals="7" data-neural-added-ui-delay-ms="0" data-neural-acknowledged="false" data-reference-composition="owner-rest-and-morph-v077">
         <header class="neural-titlebar">
           <button type="button" class="panel-close" aria-label="Back to Aqua Sentinel Home">‹</button>
           <h1>Aqua Neuralink</h1>
@@ -1776,6 +1802,7 @@ function neuralWorkspaceMarkup() {
           <span class="neural-core-hit" aria-hidden="true"></span>${aquaMarkMarkup("neural")}<b></b>
         </button>
         ${portals}
+        <div class="neural-selected-chip" aria-live="polite"><i aria-hidden="true"></i><span><small>PRIMARY</small><strong data-neural-selected-name>Aqua CRM</strong></span></div>
         <div class="neural-thought" aria-live="polite">
           <div class="neural-waveform" aria-hidden="true">${Array.from({ length: 28 }, (_, index) => `<i style="--wave:${(index * 17) % 29}"></i>`).join("")}</div>
           <small><i></i><span data-neural-focus-name>ALL SYSTEMS</span></small>
@@ -1786,6 +1813,7 @@ function neuralWorkspaceMarkup() {
           </ol>
         </div>
         <div class="neural-materialization-slot" data-neural-materialization-slot aria-live="polite"></div>
+        <button class="neural-continuation" type="button" data-neural-ask aria-label="Keep talking to Aqua"><i>A</i><span><b>Ask Aqua anything…</b><em>Keep talking to Aqua…</em></span><u aria-hidden="true"></u></button>
       </div>
     </section>`;
 }
@@ -1922,7 +1950,7 @@ function aboutMarkup() {
       <small>AQUA SOFTWARE COMPANY</small>
       <h1>Aqua Sentinel OS</h1>
       <p>Aqua is the owner command layer across the Aqua application ecosystem. Each satellite keeps its own authoritative records; Sentinel coordinates, explains, routes, and preserves receipts.</p>
-      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.7.5-secondary-surfaces-test")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
+      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.7.7-owner-reference-neural-link-widget-test")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
       <div class="about-boundaries">
         <article><i>✓</i><span><strong>Protected Home</strong><small>The approved first screen is unchanged by this repair.</small></span></article>
         <article><i>✓</i><span><strong>Server-owned intelligence</strong><small>API credentials and guarded actions do not live inside the APK.</small></span></article>
@@ -1947,7 +1975,7 @@ function settingsMarkup() {
       <button type="button" data-setting="integrations"><i>∞</i><span><strong>Ecosystem connections</strong><small>Installed applications, snapshots, and authoritative links</small></span><b>${state.installedAppCount || 0}/${state.registeredAppCount || apps.length}</b></button>
       <button type="button" data-setting="storage"><i>▤</i><span><strong>File Cabinet and synchronization</strong><small>Protected evidence, queues, cloud confirmation, and retention</small></span><b>${state.filingPendingCount || 0} PENDING</b></button>
       <button type="button" data-setting="diagnostics"><i>◇</i><span><strong>Diagnostics</strong><small>Run device checks and copy a repair receipt</small></span><b>CHECK</b></button>
-      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.7.5</b></button>
+      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.7.7</b></button>
     </div>`;
 }
 
@@ -2012,7 +2040,9 @@ function openPanel(kind) {
   systemPanel.querySelectorAll("[data-space]").forEach((button) => {
     button.addEventListener("click", () => openPanel(button.dataset.space));
   });
-  systemPanel.querySelector("[data-neural-ask]")?.addEventListener("click", startVoice);
+  systemPanel.querySelectorAll("[data-neural-ask]").forEach((button) => {
+    button.addEventListener("click", startVoice);
+  });
   systemPanel.querySelectorAll("[data-neural-portal]").forEach((button) => {
     button.addEventListener("click", () => {
       if (performance.now() < suppressNeuralPortalClickUntil) return;
@@ -2191,7 +2221,7 @@ function openPanel(kind) {
     receiveAuthState(JSON.stringify({ authenticated: false }));
   });
   if (kind === "neural") {
-    // Establish the five fixed portals before Neural Link can paint or report ready.
+    // Establish the seven fixed portals before Neural Link can paint or report ready.
     // Deferring this work by one frame briefly exposed every dormant source.
     layoutNeuralStage();
     renderNeuralMaterialization();
@@ -2261,7 +2291,7 @@ function seekNeuralSequencePreview(elapsedMillis) {
   if (elapsed < NEURAL_SELECT_MILLIS) {
     neuralPhase = "selecting";
     neuralThought = "Aqua Receipts is materializing in the top portal.";
-    neuralThoughtDetail = "The five black portals stay fixed while their application contents swap cleanly.";
+    neuralThoughtDetail = "The seven black portals stay fixed while their application contents swap cleanly.";
     layoutNeuralStage();
     renderNeuralMaterialization();
     return;
@@ -2311,24 +2341,30 @@ function activateDeterministicPreviewRoute() {
     if (previewPanel === "neural") {
       const demo = previewParameters.get("neuralDemo") || "rest";
       if (["focus", "select", "rotate", "fire", "transition", "company", "receipt", "result"].includes(demo)) {
-        neuralFocusIndex = 6;
-        neuralSupportIndexes = [0, 5, 4, 3];
-        neuralPhase = demo === "result"
+        const companyMorph = demo === "company";
+        neuralFocusIndex = companyMorph ? 0 : 6;
+        neuralSupportIndexes = companyMorph ? [5, 6, 4, 3] : [0, 5, 4, 3];
+        promoteNeuralSource(neuralFocusIndex);
+        neuralPhase = companyMorph || demo === "result"
           ? "result"
           : demo === "transition"
             ? "transitioning"
             : demo === "fire"
               ? "firing"
               : "selecting";
-        neuralThought = demo === "result"
+        neuralThought = companyMorph
+          ? "Here’s today’s company picture. Want me to go deeper?"
+          : demo === "result"
           ? "Aqua Receipts returned the requested file."
           : demo === "fire"
             ? "Receipts is locked in Aqua’s top portal."
             : "Aqua Receipts is materializing in the top portal.";
-        neuralThoughtDetail = demo === "fire"
+        neuralThoughtDetail = companyMorph
+          ? "Aqua Voice Active"
+          : demo === "fire"
           ? "Aqua is firing a large upward neuron burst through the selected path."
           : "CRM, Books, Timesheet, and Knowledge Vault remain active supporting thoughts.";
-        if (["transition", "result"].includes(demo)) {
+        if (!companyMorph && ["transition", "result"].includes(demo)) {
           neuralMaterialization = neuralMaterializationFor({
             primary: 6,
             supporting: [0, 5, 4, 3],

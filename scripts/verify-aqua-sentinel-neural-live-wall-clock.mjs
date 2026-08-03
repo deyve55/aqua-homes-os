@@ -120,6 +120,9 @@ const browserStateExpression = `(() => {
     stagePhase: stage?.dataset?.phase || '',
     motion: stage?.dataset?.motion || '',
     morphProgress: stage?.dataset?.morphProgress || '',
+    referenceComposition: stage?.dataset?.referenceComposition || '',
+    referenceState: stage?.dataset?.referenceState || '',
+    selectedApp: stage?.dataset?.selectedApp || '',
     fixedPortals: stage?.dataset?.fixedPortals || '',
     acknowledged: stage?.dataset?.acknowledged || '',
     ackLatencyMillis: Number(stage?.dataset?.ackLatencyMillis || NaN),
@@ -146,12 +149,16 @@ const browserStateExpression = `(() => {
     }),
     joltOpacity: jolt ? Number(getComputedStyle(jolt).opacity) : 0,
     joltAnimation: joltBeam ? getComputedStyle(joltBeam).animationName : '',
+    neuralNetworkOpacity: stage?.querySelector('.neural-network') ? Number(getComputedStyle(stage.querySelector('.neural-network')).opacity) : 0,
+    continuationVisible: Boolean(stage?.querySelector('.neural-continuation') && Number(getComputedStyle(stage.querySelector('.neural-continuation')).opacity) > .5),
     aquaMarkOpacity: aquaMark ? Number(getComputedStyle(aquaMark).opacity) : 0,
     aquaMarkAnimation: aquaMark ? getComputedStyle(aquaMark).animationName : '',
     substrateDisplay: substrate ? getComputedStyle(substrate).display : '',
     usesRasterUnderlay: Boolean(stageStyle?.backgroundImage?.includes('url(')),
     usesPseudoRasterUnderlay: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
     usesRasterCompositor: Boolean(afterStyle?.backgroundImage?.includes('url(')),
+    usesOwnerRestReference: Boolean(beforeStyle?.backgroundImage?.includes('neural-link-reference-rest-owner-v077.png')),
+    usesOwnerMorphReference: Boolean(afterStyle?.backgroundImage?.includes('neural-link-reference-morph-owner-v077.png')),
     portalArtworkContained: visiblePortals.every((portal) => {
       const node = portal.querySelector('.portal-node');
       const image = portal.querySelector('.portal-node > img');
@@ -250,23 +257,25 @@ async function run() {
         && restingState.phase === "rest"
         && restingState.stagePhase === "rest"
         && restingState.fixedPortals === "true"
-        && restingState.visiblePortals === 5
+        && restingState.visiblePortals === 7
         && restingState.portalsLoaded === true
         && restingState.portalArtworkContained === true) break;
       await delay(25);
     }
     assert.equal(restingState?.ready, "neural", "Neural preview did not become ready");
     assert.equal(restingState?.phase, "rest", "Live proof must begin from the real resting state");
-    assert.equal(restingState?.visiblePortals, 5, "The app-first screen must expose five fixed portals");
+    assert.equal(restingState?.visiblePortals, 7, "The owner-reference screen must expose seven fixed portals");
     assert.equal(restingState?.fixedPortals, "true", "The app portals must not use carousel motion");
     assert.equal(restingState?.portalsLoaded, true, "Every visible portal must contain loaded application artwork");
     assert.equal(restingState?.portalArtworkContained, true, "Application artwork escaped a black portal");
-    assert.equal(restingState?.usesRasterUnderlay, false, "The chaotic full-screen Neuralink raster returned");
-    assert.equal(restingState?.usesPseudoRasterUnderlay, false, "A pseudo-element raster compositor returned");
-    assert.equal(restingState?.usesRasterCompositor, false, "A second full-screen raster compositor returned");
+    assert.equal(restingState?.usesRasterUnderlay, false, "The live stage itself must remain a composited operating surface");
+    assert.equal(restingState?.usesOwnerRestReference, true, "Dave's exact rest composition is not installed");
+    assert.equal(restingState?.usesOwnerMorphReference, true, "Dave's exact morph composition is not installed");
+    assert.equal(restingState?.referenceComposition, "owner-rest-and-morph-v077");
+    assert.equal(restingState?.referenceState, "rest");
     assert.equal(restingState?.substrateDisplay, "none", "The legacy mechanical substrate must stay hidden");
-    assert.ok(restingState?.aquaMarkOpacity >= .99, "The static Aqua A is not visible");
-    assert.ok(!restingState?.aquaMarkAnimation || restingState.aquaMarkAnimation === "none", "The Aqua A must stay static");
+    assert.ok(restingState?.neuralNetworkOpacity >= .75, "The always-on cyan/gold mind is too faint");
+    assert.equal(restingState?.continuationVisible, true, "The live Ask Aqua continuation control is missing");
     const travelerBefore = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => getComputedStyle(traveler.closest('.neural-route-group')).visibility !== 'hidden').map((traveler) => { const bounds = traveler.getBoundingClientRect(); return [bounds.left, bounds.top]; })`);
     await delay(160);
     const travelerAfter = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => getComputedStyle(traveler.closest('.neural-route-group')).visibility !== 'hidden').map((traveler) => { const bounds = traveler.getBoundingClientRect(); return [bounds.left, bounds.top]; })`);
@@ -340,16 +349,19 @@ async function run() {
     assert.ok(transitioning.elapsedMillis < result.elapsedMillis, "The morph must finish before the result state");
     assert.equal(selecting.focusName, "Aqua Receipts");
     assert.ok(selecting.selectedPortalTop < 250, "Aqua Receipts did not materialize into the top portal");
-    assert.equal(selecting.visiblePortals, 5, "The portal swap changed the number of visible portals");
+    assert.equal(selecting.visiblePortals, 7, "The portal swap changed the number of visible portals");
     assert.equal(selecting.portalArtworkContained, true, "An app escaped its black portal during selection");
     assert.match(firing.detail, /cyan-and-gold signal upward with a visible tail/);
     assert.ok(firing.joltOpacity >= .6, "The firing phase must visibly reveal the upward jolt and tail");
-    assert.match(firing.joltAnimation, /neural-jolt-column/);
+    assert.match(firing.joltAnimation, /neural-owner-shot/);
     assert.equal(transitioning.materialized, "pending");
     assert.equal(result.materialized, "true");
     assert.equal(result.materializationKind, "receipts");
     assert.equal(result.receiptVisible, true);
     assert.equal(result.visiblePortals, 0, "The clean result surface must not sit over portal clutter");
+    assert.equal(result.referenceState, "morphed");
+    assert.ok(result.neuralNetworkOpacity >= .75, "Neural traffic disappeared after the operating-surface morph");
+    assert.equal(result.continuationVisible, true, "Keep talking to Aqua disappeared after morph");
 
     await writeFile(join(options.evidenceDirectory, "timeline.json"), `${JSON.stringify({
       clock: "host-monotonic-wall-clock",
@@ -363,7 +375,7 @@ async function run() {
     }, null, 2)}\n`);
     const finalDom = await evaluate(connection, sessionId, "document.documentElement.outerHTML");
     await writeFile(join(options.evidenceDirectory, "live-result.html"), finalDom);
-    process.stdout.write(`AQUA_NEURAL_APP_FIRST_VERIFIED dispatch_delay_ms=0 phases=selecting,firing,transitioning,result total_ms=${result.elapsedMillis}\n`);
+    process.stdout.write(`AQUA_NEURAL_OWNER_REFERENCE_VERIFIED portals=7 neural_motion=continuous dispatch_delay_ms=0 phases=selecting,firing,transitioning,result total_ms=${result.elapsedMillis}\n`);
   } catch (error) {
     await writeFile(join(options.evidenceDirectory, "failure.json"), `${JSON.stringify({
       clock: "host-monotonic-wall-clock",

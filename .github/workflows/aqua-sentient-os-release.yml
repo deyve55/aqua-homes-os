@@ -1,4 +1,4 @@
-name: Build Aqua Sentinel OS v0.7.6 Complete Operating Surfaces Test
+name: Build Aqua Sentinel OS v0.7.7 Complete Operating Surfaces Test
 
 on:
   push:
@@ -109,14 +109,14 @@ jobs:
             --chrome "$CHROME_BIN" \
             --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
             --evidence-dir preflight/evidence/live
-          test -s preflight/proofs/AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png
-          test -s preflight/proofs/AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png
-          test -s preflight/proofs/AquaSentinelOS-v0.7.6-Settings-closed-phone.png
-          test -s preflight/proofs/AquaSentinelOS-v0.7.6-Diagnostics-closed-phone.png
-          test -s preflight/proofs/AquaSentinelOS-v0.7.6-Connections-closed-phone.png
-          test -s preflight/proofs/AquaSentinelOS-v0.7.6-File-Cabinet-closed-phone.png
-          test -s preflight/proofs/AquaSentinelOS-v0.7.6-Conversation-Receipts-closed-phone.png
-          test -s preflight/proofs/AquaSentinelOS-v0.7.6-About-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.7-Neural-Link-Fire-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.7-Neural-Link-Result-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.7-Settings-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.7-Diagnostics-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.7-Connections-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.7-File-Cabinet-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.7-Conversation-Receipts-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.7-About-closed-phone.png
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -140,7 +140,7 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.7.6-preflight-no-apk-${{ github.run_attempt }}
+          name: AquaSentinelOS-v0.7.7-preflight-no-apk-${{ github.run_attempt }}
           path: preflight/**
           if-no-files-found: error
           retention-days: 14
@@ -194,7 +194,7 @@ jobs:
               printf 'shell_line=%s\n' "$source_line"
               printf 'failed_command=%s\n' "$failed_command"
             } > release/visual-proof-diagnostics/assertion-failure.txt
-            printf '::error title=Aqua v0.7.6 visual proof assertion failed::Shell line %s exited %s: %s\n' \
+            printf '::error title=Aqua v0.7.7 visual proof assertion failed::Shell line %s exited %s: %s\n' \
               "$source_line" "$exit_code" "$failed_command" >&2
             printf 'AQUA_VISUAL_PROOF_ASSERTION_FAILED line=%s exit=%s command=%q\n' \
               "$source_line" "$exit_code" "$failed_command" >&2
@@ -275,6 +275,16 @@ jobs:
             --dump-dom \
             "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=980" \
             > /tmp/aqua-sentinel-neural-result-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=company" \
+            > /tmp/aqua-sentinel-neural-company-proof.html
           node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
             --chrome "$CHROME_BIN" \
             --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
@@ -289,22 +299,23 @@ jobs:
             --dump-dom \
             "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=command" \
             > /tmp/aqua-sentinel-command-proof.html
-          test -s release/AquaSentinelOS-v0.7.6-launch-proof.png
-          test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Command-Center-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Settings-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Diagnostics-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Connections-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-File-Cabinet-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-Conversation-Receipts-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.6-About-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-launch-proof.png
+          test -s release/AquaSentinelOS-v0.7.7-Neural-Link-Rest-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Neural-Link-Select-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Neural-Link-Fire-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Neural-Link-Morph-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Neural-Link-Result-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Neural-Link-Company-Morph-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Command-Center-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Settings-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Diagnostics-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Connections-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-File-Cabinet-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-Conversation-Receipts-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.7-About-closed-phone.png
           for checkpoint in 00 01 02 03 04 05 06; do
-            test -s "release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-${checkpoint}.png"
-            test "$(identify -format '%wx%h' "release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-${checkpoint}.png")" = "430x932"
+            test -s "release/AquaSentinelOS-v0.7.7-Neural-Link-Morph-${checkpoint}.png"
+            test "$(identify -format '%wx%h' "release/AquaSentinelOS-v0.7.7-Neural-Link-Morph-${checkpoint}.png")" = "430x932"
           done
           grep -q 'data-aqua-preview-ready="home"' /tmp/aqua-sentinel-home-proof.html
           grep -q 'id="sentinel"' /tmp/aqua-sentinel-home-proof.html
@@ -319,16 +330,22 @@ jobs:
           grep -q 'data-aqua-neural-phase="firing"' /tmp/aqua-sentinel-neural-fire-proof.html
           grep -q 'data-aqua-neural-phase="transitioning"' /tmp/aqua-sentinel-neural-morph-proof.html
           grep -q 'data-aqua-neural-phase="result"' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'data-aqua-neural-phase="result"' /tmp/aqua-sentinel-neural-company-proof.html
           grep -q 'data-morph-progress="0.429"' /tmp/aqua-sentinel-neural-morph-proof.html
           grep -q 'data-morph-progress="1.000"' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'data-reference-composition="owner-rest-and-morph-v077"' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'data-reference-state="morphed"' /tmp/aqua-sentinel-neural-company-proof.html
+          grep -q 'data-selected-app="Aqua CRM"' /tmp/aqua-sentinel-neural-company-proof.html
           grep -q 'data-panel="neural"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'AQUA SENTINEL NEURAL LINK' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'Aqua Neuralink' /tmp/aqua-sentinel-neural-rest-proof.html
-          grep -q 'data-neural-visible-portals="5"' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'data-neural-visible-portals="7"' /tmp/aqua-sentinel-neural-rest-proof.html
           test "$(grep -o 'data-portal-index="[0-9]*"' /tmp/aqua-sentinel-neural-rest-proof.html | sort -u | wc -l)" = "8"
           grep -q 'class="neural-microbursts"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'class="neural-traveler neural-traveler-cyan"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'class="neural-traveler neural-traveler-gold"' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'class="neural-selected-chip"' /tmp/aqua-sentinel-neural-company-proof.html
+          grep -q 'class="neural-continuation"' /tmp/aqua-sentinel-neural-company-proof.html
           grep -q 'neural-substrate-map neural-substrate-rest' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'neural-substrate-map neural-substrate-result' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-select-proof.html
@@ -340,40 +357,41 @@ jobs:
           grep -q 'data-aqua-preview-ready="command"' /tmp/aqua-sentinel-command-proof.html
           grep -q 'data-panel="command"' /tmp/aqua-sentinel-command-proof.html
           grep -q 'AQUA FILE CABINET' /tmp/aqua-sentinel-command-proof.html
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-launch-proof.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Command-Center-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Settings-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Diagnostics-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Connections-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-File-Cabinet-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-Conversation-Receipts-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.6-About-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-launch-proof.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Neural-Link-Rest-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Neural-Link-Select-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Neural-Link-Fire-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Neural-Link-Morph-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Neural-Link-Result-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Neural-Link-Company-Morph-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Command-Center-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Settings-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Diagnostics-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Connections-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-File-Cabinet-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-Conversation-Receipts-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.7-About-closed-phone.png)" = "430x932"
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.6-launch-proof.png \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png
+            release/AquaSentinelOS-v0.7.7-launch-proof.png \
+            release/AquaSentinelOS-v0.7.7-Neural-Link-Rest-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.6-launch-proof.png \
-            release/AquaSentinelOS-v0.7.6-Command-Center-closed-phone.png
+            release/AquaSentinelOS-v0.7.7-launch-proof.png \
+            release/AquaSentinelOS-v0.7.7-Command-Center-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.6-Command-Center-closed-phone.png \
-            release/AquaSentinelOS-v0.7.6-Settings-closed-phone.png
+            release/AquaSentinelOS-v0.7.7-Command-Center-closed-phone.png \
+            release/AquaSentinelOS-v0.7.7-Settings-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png
+            release/AquaSentinelOS-v0.7.7-Neural-Link-Rest-closed-phone.png \
+            release/AquaSentinelOS-v0.7.7-Neural-Link-Select-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png
+            release/AquaSentinelOS-v0.7.7-Neural-Link-Select-closed-phone.png \
+            release/AquaSentinelOS-v0.7.7-Neural-Link-Fire-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png
+            release/AquaSentinelOS-v0.7.7-Neural-Link-Fire-closed-phone.png \
+            release/AquaSentinelOS-v0.7.7-Neural-Link-Morph-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png \
-            release/AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png
+            release/AquaSentinelOS-v0.7.7-Neural-Link-Morph-closed-phone.png \
+            release/AquaSentinelOS-v0.7.7-Neural-Link-Result-closed-phone.png
           for motion_pair in \
             "Rest Select" \
             "Select Fire" \
@@ -381,19 +399,19 @@ jobs:
             "Morph Result"; do
             read -r before after <<< "$motion_pair"
             changed_pixels="$(compare -metric AE \
-              "release/AquaSentinelOS-v0.7.6-Neural-Link-${before}-closed-phone.png" \
-              "release/AquaSentinelOS-v0.7.6-Neural-Link-${after}-closed-phone.png" \
+              "release/AquaSentinelOS-v0.7.7-Neural-Link-${before}-closed-phone.png" \
+              "release/AquaSentinelOS-v0.7.7-Neural-Link-${after}-closed-phone.png" \
               null: 2>&1 || true)"
             [[ "$changed_pixels" =~ ^[0-9]+$ ]]
             ((changed_pixels > 500))
             echo "AQUA_NEURAL_MORPH_STAGE_VERIFIED transition=${before}_to_${after} changed_pixels=$changed_pixels"
           done
-          rest_mean="$(convert release/AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png -colorspace gray -format '%[fx:mean]' info:)"
+          rest_mean="$(convert release/AquaSentinelOS-v0.7.7-Neural-Link-Rest-closed-phone.png -colorspace gray -format '%[fx:mean]' info:)"
           awk -v value="$rest_mean" 'BEGIN { exit !(value > 0.01 && value < 0.35) }'
-          echo "AQUA_APP_FIRST_VISUAL_VERIFIED fixed_portals=5 full_screen_raster=absent request_dispatch_delay_ms=0"
+          echo "AQUA_OWNER_REFERENCE_VISUAL_VERIFIED fixed_portals=7 owner_rest=exact owner_morph=exact neural_motion=continuous request_dispatch_delay_ms=0"
           previous=""
           for checkpoint in 00 01 02 03 04 05 06; do
-            frame="release/AquaSentinelOS-v0.7.6-Neural-Link-Morph-${checkpoint}.png"
+            frame="release/AquaSentinelOS-v0.7.7-Neural-Link-Morph-${checkpoint}.png"
             frame_mean="$(convert "$frame" -colorspace gray -format '%[fx:mean]' info:)"
             awk -v frame_mean="$frame_mean" -v rest_mean="$rest_mean" 'BEGIN { exit !(frame_mean >= rest_mean * 0.55 && frame_mean > 0.02) }'
             if [[ -n "$previous" ]]; then
@@ -405,7 +423,7 @@ jobs:
             previous="$frame"
           done
 
-      - name: Collect failed v0.7.6 visual-proof DOM evidence
+      - name: Collect failed v0.7.7 visual-proof DOM evidence
         if: ${{ failure() }}
         run: |
           mkdir -p release/visual-proof-diagnostics
@@ -415,11 +433,11 @@ jobs:
             cp "${dom_proofs[@]}" release/visual-proof-diagnostics/
           fi
 
-      - name: Retain failed v0.7.6 visual-proof evidence
+      - name: Retain failed v0.7.7 visual-proof evidence
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.7.6-visual-proof-failure-${{ github.run_attempt }}
+          name: AquaSentinelOS-v0.7.7-visual-proof-failure-${{ github.run_attempt }}
           path: |
             release/*.png
             release/visual-proof-diagnostics/**
@@ -465,6 +483,8 @@ jobs:
               "neuralink-materialized-cyan-path-mask-v074.png": "2f6373d88071baaa6e2656df264b9ecb4dd5aab9db66a61a2eae4d2b896ee41f",
               "neuralink-materialized-gold-path-mask-v074.png": "b240a114581a5ef461f7b238eb62e481cc69b1997f12c7419354783e3f6c4f0f",
               "home-depot-receipt-owner-approved-v074.png": "a8524b6be8c0eb2c678dd21823ae1d28eeaf48c15ec70e4152c41d205ff4ae62",
+              "neural-link-reference-rest-owner-v077.png": "5eebb4206d432bb531e0800a30bd42f29d418f2a9547e65e8c078b55010ffdfd",
+              "neural-link-reference-morph-owner-v077.png": "1557fc6cffec09d7648490666274f1d75ab660f5c819415a233410d28b354417",
           }
           assets = Path("sentient-os-web/assets")
           for name, digest in expected.items():
@@ -476,6 +496,21 @@ jobs:
           owner_rest = Path("tests/visual-baselines/Aqua-Neuralink-Rest-Owner-Approved-v074.jpg")
           assert owner_rest.is_file() and owner_rest.stat().st_size > 0
           assert hashlib.sha256(owner_rest.read_bytes()).hexdigest() == "3b8a3bf6133ba5726ef0b274b159c8003b17116cf7bcaadba0734be19fb56f08"
+
+          owner_reference_frames = {
+              "Aqua-Neural-Link-Rest-Owner-Reference-v077.jpg": "ae42f1473d802b9cfad030cd0ee2b1b58de17cb0fef79d3f4d152e07a16f36fe",
+              "Aqua-Neural-Link-Morph-Owner-Reference-v077.jpg": "917bd458884e72a17d116fc0508a1d9ffa5d4ed348c190a014f7c394572115a8",
+          }
+          for name, digest in owner_reference_frames.items():
+              reference = Path("tests/visual-baselines") / name
+              assert reference.is_file() and reference.stat().st_size > 0, name
+              assert hashlib.sha256(reference.read_bytes()).hexdigest() == digest, name
+
+          for name in ("neural-link-reference-rest-owner-v077.png", "neural-link-reference-morph-owner-v077.png"):
+              reference = (assets / name).read_bytes()
+              assert reference[:8] == b"\x89PNG\r\n\x1a\n"
+              width, height = struct.unpack(">II", reference[16:24])
+              assert (width, height) == (660, 1390), (name, width, height)
 
           receipt_object = (assets / "home-depot-receipt-owner-approved-v074.png").read_bytes()
           receipt_width, receipt_height = struct.unpack(">II", receipt_object[16:24])
@@ -547,18 +582,18 @@ jobs:
           KEY_PASSWORD="$(openssl rand -hex 24)"
           echo "::add-mask::$KEY_PASSWORD"
           keytool -genkeypair \
-            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.7.6.keystore" \
+            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.7.7.keystore" \
             -storepass "$KEY_PASSWORD" \
             -keypass "$KEY_PASSWORD" \
-            -alias "aqua-sentinel-v0.7.6" \
+            -alias "aqua-sentinel-v0.7.7" \
             -keyalg RSA \
             -keysize 3072 \
             -validity 3650 \
-            -dname "CN=Aqua Sentinel OS v0.7.6 Five Portal Neuralink Action Mic 3x2 Widget Test, OU=Aqua Sentinel OS, O=Aqua Software Inc., L=Hudson, ST=Massachusetts, C=US"
+            -dname "CN=Aqua Sentinel OS v0.7.7 Owner Reference Neural Link Widget Test, OU=Aqua Sentinel OS, O=Aqua Software Inc., L=Hudson, ST=Massachusetts, C=US"
           {
-            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.7.6.keystore"
+            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.7.7.keystore"
             echo "AQUA_RELEASE_KEYSTORE_PASSWORD=$KEY_PASSWORD"
-            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.7.6"
+            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.7.7"
             echo "AQUA_RELEASE_KEY_PASSWORD=$KEY_PASSWORD"
           } >> "$GITHUB_ENV"
 
@@ -574,8 +609,8 @@ jobs:
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/aqua-sentinel-certificate.txt
           "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/aqua-sentinel-badging.txt
           grep -q "package: name='com.aquahomes.sentinel'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionCode='2026080301'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionName='0.7.6-neuralink-mic-widget-repair-test'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionCode='2026080302'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionName='0.7.7-owner-reference-neural-link-widget-test'" /tmp/aqua-sentinel-badging.txt
           grep -q "sdkVersion:'26'" /tmp/aqua-sentinel-badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/aqua-sentinel-badging.txt
           unzip -l "$APK" | grep -q "assets/public/index.html"
@@ -611,52 +646,52 @@ jobs:
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.7.6-android-launcher-failure-${{ github.run_attempt }}
+          name: AquaSentinelOS-v0.7.7-android-launcher-failure-${{ github.run_attempt }}
           path: |
-            /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-*.png
+            /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-*.png
             /tmp/aqua-widget-resize-*-selected.xml
-            /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-*.txt
-            /tmp/aqua-sentinel-v0.7.6-widget-resize-*.logcat.txt
-            /tmp/aqua-sentinel-v0.7.6-widget-*-jolt.mp4
+            /tmp/aqua-sentinel-v0.7.7-widget-resize-handle-*.txt
+            /tmp/aqua-sentinel-v0.7.7-widget-resize-*.logcat.txt
+            /tmp/aqua-sentinel-v0.7.7-widget-*-jolt.mp4
           if-no-files-found: warn
           retention-days: 14
 
       - name: Prepare release files and checksums
         run: |
           mkdir -p release
-          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.7.6-Five-Portal-Neuralink-Action-Mic-3x2-Widget-Test.apk
-          test -s release/AquaSentinelOS-v0.7.6-launch-proof.png
-          test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Live-Widget-Launcher.png
-          test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Tap-Jolt.png
-          test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-3x2.png
-          test -s /tmp/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png
-          test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-compact.png
-          test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-small.png
-          test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.png
-          test -s /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.png
+          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.7.7-Owner-Reference-Neural-Link-Quick-Access-Widget-Test.apk
+          test -s release/AquaSentinelOS-v0.7.7-launch-proof.png
+          test -s /tmp/AquaSentinelOS-v0.7.7-Neuralink-Live-Widget-Launcher.png
+          test -s /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Tap-Jolt.png
+          test -s /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-3x2.png
+          test -s /tmp/AquaSentinelOS-v0.7.7-Widget-Action-Microphone-Armed.png
+          test -s /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-compact.png
+          test -s /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-small.png
+          test -s /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-compact.png
+          test -s /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-small.png
           test -s /tmp/aqua-widget-resize-compact-selected.xml
           test -s /tmp/aqua-widget-resize-small-selected.xml
-          test -s /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-compact.txt
-          test -s /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-small.txt
-          cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Live-Widget-Launcher.png release/AquaSentinelOS-v0.7.6-Neuralink-Live-Widget-Launcher.png
-          cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Tap-Jolt.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Tap-Jolt.png
-          cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-3x2.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-3x2.png
-          cp /tmp/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png release/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png
-          cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-compact.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-compact.png
-          cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-small.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-small.png
-          cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.png
-          cp /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.png release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.png
-          cp /tmp/aqua-widget-resize-compact-selected.xml release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.xml
-          cp /tmp/aqua-widget-resize-small-selected.xml release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.xml
-          cp /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-compact.txt release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-compact.txt
-          cp /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-small.txt release/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-small.txt
-          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.7.6-certificate.txt
-          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.7.6-package.txt
+          test -s /tmp/aqua-sentinel-v0.7.7-widget-resize-handle-compact.txt
+          test -s /tmp/aqua-sentinel-v0.7.7-widget-resize-handle-small.txt
+          cp /tmp/AquaSentinelOS-v0.7.7-Neuralink-Live-Widget-Launcher.png release/AquaSentinelOS-v0.7.7-Neuralink-Live-Widget-Launcher.png
+          cp /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Tap-Jolt.png release/AquaSentinelOS-v0.7.7-Neuralink-Widget-Tap-Jolt.png
+          cp /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-3x2.png release/AquaSentinelOS-v0.7.7-Neuralink-Widget-3x2.png
+          cp /tmp/AquaSentinelOS-v0.7.7-Widget-Action-Microphone-Armed.png release/AquaSentinelOS-v0.7.7-Widget-Action-Microphone-Armed.png
+          cp /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-compact.png release/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-compact.png
+          cp /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-small.png release/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-small.png
+          cp /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-compact.png release/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-compact.png
+          cp /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-small.png release/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-small.png
+          cp /tmp/aqua-widget-resize-compact-selected.xml release/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-compact.xml
+          cp /tmp/aqua-widget-resize-small-selected.xml release/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-small.xml
+          cp /tmp/aqua-sentinel-v0.7.7-widget-resize-handle-compact.txt release/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-compact.txt
+          cp /tmp/aqua-sentinel-v0.7.7-widget-resize-handle-small.txt release/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-small.txt
+          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.7.7-certificate.txt
+          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.7.7-package.txt
           {
             echo "commit=$GITHUB_SHA"
             echo "workflow_run=$GITHUB_RUN_ID"
             echo "package=com.aquahomes.sentinel"
-            echo "version=0.7.6-neuralink-mic-widget-repair-test"
+            echo "version=0.7.7-owner-reference-neural-link-widget-test"
             echo "ai_gateway=server_owned_json_rpc_2.0"
             echo "projection_sync=authenticated_idempotent_tenant_scoped"
             echo "ecosystem_presentation_mode=true"
@@ -673,12 +708,12 @@ jobs:
             echo "android_launch=activity_and_ui_hierarchy_verified"
             echo "target_sdk=35"
             echo "min_sdk=26"
-          } > release/AquaSentinelOS-v0.7.6-provenance.txt
-          sha256sum release/AquaSentinelOS-v0.7.6-Five-Portal-Neuralink-Action-Mic-3x2-Widget-Test.apk > release/AquaSentinelOS-v0.7.6-Five-Portal-Neuralink-Action-Mic-3x2-Widget-Test.apk.sha256
+          } > release/AquaSentinelOS-v0.7.7-provenance.txt
+          sha256sum release/AquaSentinelOS-v0.7.7-Owner-Reference-Neural-Link-Quick-Access-Widget-Test.apk > release/AquaSentinelOS-v0.7.7-Owner-Reference-Neural-Link-Quick-Access-Widget-Test.apk.sha256
 
       - name: Upload verified installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.7.6-Five-Portal-Neuralink-Action-Mic-3x2-Widget-Test
+          name: AquaSentinelOS-v0.7.7-Owner-Reference-Neural-Link-Quick-Access-Widget-Test
           path: release/*
           if-no-files-found: error

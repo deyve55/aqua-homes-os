@@ -212,31 +212,34 @@ function captureDefinitions() {
       name: "home",
       query: "preview=home",
       ready: "home",
-      output: "AquaSentinelOS-v0.7.6-launch-proof.png",
+      output: "AquaSentinelOS-v0.7.7-launch-proof.png",
     },
     {
       name: "neural-rest",
       query: "preview=neural&neuralDemo=rest",
       ready: "neural",
       phase: "rest",
-      visiblePortals: 5,
-      output: "AquaSentinelOS-v0.7.6-Neural-Link-Rest-closed-phone.png",
+      visiblePortals: 7,
+      referenceState: "rest",
+      output: "AquaSentinelOS-v0.7.7-Neural-Link-Rest-closed-phone.png",
     },
     {
       name: "neural-select",
       query: "preview=neural&neuralDemo=sequence&neuralAt=100",
       ready: "neural",
       phase: "selecting",
-      visiblePortals: 5,
-      output: "AquaSentinelOS-v0.7.6-Neural-Link-Select-closed-phone.png",
+      visiblePortals: 7,
+      referenceState: "rest",
+      output: "AquaSentinelOS-v0.7.7-Neural-Link-Select-closed-phone.png",
     },
     {
       name: "neural-fire",
       query: "preview=neural&neuralDemo=sequence&neuralAt=300",
       ready: "neural",
       phase: "firing",
-      visiblePortals: 5,
-      output: "AquaSentinelOS-v0.7.6-Neural-Link-Fire-closed-phone.png",
+      visiblePortals: 7,
+      referenceState: "rest",
+      output: "AquaSentinelOS-v0.7.7-Neural-Link-Fire-closed-phone.png",
     },
     {
       name: "neural-morph",
@@ -245,8 +248,8 @@ function captureDefinitions() {
       phase: "transitioning",
       morphProgress: "0.429",
       materialized: "pending",
-      visiblePortals: 5,
-      output: "AquaSentinelOS-v0.7.6-Neural-Link-Morph-closed-phone.png",
+      referenceState: "morphed",
+      output: "AquaSentinelOS-v0.7.7-Neural-Link-Morph-closed-phone.png",
     },
     {
       name: "neural-result",
@@ -256,7 +259,18 @@ function captureDefinitions() {
       morphProgress: "1.000",
       materialized: "true",
       fullMaterialization: true,
-      output: "AquaSentinelOS-v0.7.6-Neural-Link-Result-closed-phone.png",
+      referenceState: "morphed",
+      output: "AquaSentinelOS-v0.7.7-Neural-Link-Result-closed-phone.png",
+    },
+    {
+      name: "neural-company-morph",
+      query: "preview=neural&neuralDemo=company",
+      ready: "neural",
+      phase: "result",
+      morphProgress: "1.000",
+      referenceState: "morphed",
+      selectedApp: "Aqua CRM",
+      output: "AquaSentinelOS-v0.7.7-Neural-Link-Company-Morph-closed-phone.png",
     },
     ...MORPH_CHECKPOINTS.map(([name, neuralAt, morphProgress]) => ({
       name: `neural-morph-${name}`,
@@ -265,50 +279,50 @@ function captureDefinitions() {
       phase: "transitioning",
       morphProgress,
       materialized: "pending",
-      visiblePortals: 5,
-      output: `AquaSentinelOS-v0.7.6-Neural-Link-Morph-${name}.png`,
+      referenceState: "morphed",
+      output: `AquaSentinelOS-v0.7.7-Neural-Link-Morph-${name}.png`,
     })),
     {
       name: "command",
       query: "preview=command",
       ready: "command",
-      output: "AquaSentinelOS-v0.7.6-Command-Center-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.7-Command-Center-closed-phone.png",
     },
     {
       name: "settings",
       query: "preview=settings",
       ready: "settings",
-      output: "AquaSentinelOS-v0.7.6-Settings-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.7-Settings-closed-phone.png",
     },
     {
       name: "diagnostics",
       query: "preview=diagnostics",
       ready: "diagnostics",
-      output: "AquaSentinelOS-v0.7.6-Diagnostics-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.7-Diagnostics-closed-phone.png",
     },
     {
       name: "connections",
       query: "preview=data",
       ready: "data",
-      output: "AquaSentinelOS-v0.7.6-Connections-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.7-Connections-closed-phone.png",
     },
     {
       name: "file-cabinet",
       query: "preview=files",
       ready: "files",
-      output: "AquaSentinelOS-v0.7.6-File-Cabinet-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.7-File-Cabinet-closed-phone.png",
     },
     {
       name: "messages",
       query: "preview=messages",
       ready: "messages",
-      output: "AquaSentinelOS-v0.7.6-Conversation-Receipts-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.7-Conversation-Receipts-closed-phone.png",
     },
     {
       name: "about",
       query: "preview=about",
       ready: "about",
-      output: "AquaSentinelOS-v0.7.6-About-closed-phone.png",
+      output: "AquaSentinelOS-v0.7.7-About-closed-phone.png",
     },
   ];
 }
@@ -347,6 +361,9 @@ const stateExpression = `(() => {
     phase: root?.dataset?.aquaNeuralPhase || '',
     stagePhase: stage?.dataset?.phase || '',
     morphProgress: stage?.dataset?.morphProgress || '',
+    referenceComposition: stage?.dataset?.referenceComposition || '',
+    referenceState: stage?.dataset?.referenceState || '',
+    selectedApp: stage?.dataset?.selectedApp || '',
     materialized: materialized?.dataset?.neuralMaterialized || '',
     materializationOpacity: materializationStyle ? Number(materializationStyle.opacity) : 0,
     materializationWidth: materializationBounds?.width || 0,
@@ -361,6 +378,8 @@ const stateExpression = `(() => {
     focusName: stage?.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
     selectedPortalTop: selectedBounds?.top || 0,
     joltOpacity: jolt ? Number(getComputedStyle(jolt).opacity) : 0,
+    neuralNetworkOpacity: stage?.querySelector('.neural-network') ? Number(getComputedStyle(stage.querySelector('.neural-network')).opacity) : 0,
+    continuationVisible: Boolean(stage?.querySelector('.neural-continuation') && Number(getComputedStyle(stage.querySelector('.neural-continuation')).opacity) > .5),
     aquaMarkAnimation: aquaMark ? getComputedStyle(aquaMark).animationName : '',
     portalImagesLoaded: visiblePortals.every((portal) => {
       const image = portal.querySelector('.portal-node > img');
@@ -380,6 +399,10 @@ const stateExpression = `(() => {
     substrateDisplay: substrate ? getComputedStyle(substrate).display : '',
     beforeUsesRaster: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
     afterUsesRaster: Boolean(afterStyle?.backgroundImage?.includes('url(')),
+    beforeUsesOwnerReference: Boolean(beforeStyle?.backgroundImage?.includes('neural-link-reference-rest-owner-v077.png')),
+    afterUsesOwnerReference: Boolean(afterStyle?.backgroundImage?.includes('neural-link-reference-morph-owner-v077.png')),
+    beforeOpacity: beforeStyle ? Number(beforeStyle.opacity) : 0,
+    afterOpacity: afterStyle ? Number(afterStyle.opacity) : 0,
     stageUsesRaster: Boolean(stageStyle?.backgroundImage?.includes('url(')),
     imageFailures: Array.from(document.images)
       .filter((image) => !image.complete || image.naturalWidth <= 0)
@@ -425,21 +448,25 @@ async function waitForExpectedState(connection, sessionId, definition) {
       && state.ready === definition.ready
       && (!definition.phase || (state.phase === definition.phase && state.stagePhase === definition.phase))
       && (!definition.morphProgress || state.morphProgress === definition.morphProgress)
+      && (!definition.referenceState || state.referenceState === definition.referenceState)
+      && (!definition.selectedApp || state.selectedApp === definition.selectedApp)
       && (!definition.materialized || state.materialized === definition.materialized)
+      && (definition.ready !== "neural" || state.referenceComposition === "owner-rest-and-morph-v077")
+      && (definition.ready !== "neural" || (state.beforeUsesOwnerReference && state.afterUsesOwnerReference))
+      && (definition.ready !== "neural" || state.neuralNetworkOpacity >= .75)
+      && (definition.ready !== "neural" || state.continuationVisible)
       && (!definition.visiblePortals || state.visiblePortals === definition.visiblePortals)
       && (!definition.visiblePortals || state.portalImagesLoaded)
       && (!definition.visiblePortals || state.portalArtworkContained)
       && (!definition.visiblePortals || state.fixedPortals === "true")
-      && (!definition.visiblePortals || !state.aquaMarkAnimation || state.aquaMarkAnimation === "none")
       && (!definition.visiblePortals || state.substrateDisplay === "none")
-      && (!definition.visiblePortals || (!state.beforeUsesRaster && !state.afterUsesRaster))
       && (!definition.visiblePortals || !state.stageUsesRaster)
       && state.imageFailures.length === 0
       && (definition.phase !== "selecting" || (state.focusName === "Aqua Receipts" && state.selectedPortalTop < 250))
       && (definition.phase !== "firing" || state.joltOpacity >= .6)
       && (!definition.materialized
         || (definition.materialized === "pending"
-          ? state.morphShellOpacity > .1 && state.morphShellWidth > 0
+          ? state.afterOpacity > .1 && state.referenceState === "morphed"
           : state.materializationOpacity >= .98 && state.materializationWidth > 0));
     const fullMaterializationReady = !definition.fullMaterialization || (
       state.materializationTransform === 'none'

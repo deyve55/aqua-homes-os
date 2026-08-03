@@ -313,7 +313,7 @@ return_to_launcher() {
 }
 
 assert_widget_send_returned_to_launcher() {
-  local focus_path="/tmp/aqua-sentinel-v0.7.6-widget-send-focus.txt"
+  local focus_path="/tmp/aqua-sentinel-v0.7.7-widget-send-focus.txt"
   for attempt in $(seq 1 20); do
     {
       adb shell dumpsys window 2>/dev/null || true
@@ -336,7 +336,7 @@ assert_widget_send_returned_to_launcher() {
 
 assert_transient_capture_returned_to_launcher() {
   local mode="$1"
-  local focus_path="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-return-focus.txt"
+  local focus_path="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-return-focus.txt"
   local package_pattern="${package//./\\.}"
   local stable_launcher_samples=0
   for attempt in $(seq 1 20); do
@@ -430,8 +430,8 @@ for line in sys.stdin:
 }
 
 pin_widget_on_launcher() {
-  local pin_evidence="/tmp/aqua-sentinel-v0.7.6-widget-pin.logcat.txt"
-  local appwidget_state="/tmp/aqua-sentinel-v0.7.6-appwidget-host.txt"
+  local pin_evidence="/tmp/aqua-sentinel-v0.7.7-widget-pin.logcat.txt"
+  local appwidget_state="/tmp/aqua-sentinel-v0.7.7-appwidget-host.txt"
   local launcher_hierarchy=""
 
   clear_logcat
@@ -500,10 +500,10 @@ prove_neuralink_widget_activity() {
   local width=""
   local height=""
   local changed_pixels=""
-  local first="/tmp/aqua-sentinel-v0.7.6-widget-neural-activity-a.png"
-  local second="/tmp/aqua-sentinel-v0.7.6-widget-neural-activity-b.png"
-  local first_crop="/tmp/aqua-sentinel-v0.7.6-widget-neural-activity-a-crop.png"
-  local second_crop="/tmp/aqua-sentinel-v0.7.6-widget-neural-activity-b-crop.png"
+  local first="/tmp/aqua-sentinel-v0.7.7-widget-neural-activity-a.png"
+  local second="/tmp/aqua-sentinel-v0.7.7-widget-neural-activity-b.png"
+  local first_crop="/tmp/aqua-sentinel-v0.7.7-widget-neural-activity-a-crop.png"
+  local second_crop="/tmp/aqua-sentinel-v0.7.7-widget-neural-activity-b-crop.png"
 
   command -v convert >/dev/null
   command -v compare >/dev/null
@@ -545,7 +545,7 @@ prove_neuralink_widget_activity() {
     return 1
   fi
 
-  cp "$second" /tmp/AquaSentinelOS-v0.7.6-Neuralink-Live-Widget-Launcher.png
+  cp "$second" /tmp/AquaSentinelOS-v0.7.7-Neuralink-Live-Widget-Launcher.png
   echo "AQUA_WIDGET_NEURALINK_ACTIVITY_VERIFIED lanes=cyan_outbound_gold_return changed_pixels=$changed_pixels"
 }
 
@@ -635,7 +635,7 @@ PY
 }
 
 prove_widget_three_by_two() {
-  local evidence="/tmp/aqua-sentinel-v0.7.6-widget-three-by-two.logcat.txt"
+  local evidence="/tmp/aqua-sentinel-v0.7.7-widget-three-by-two.logcat.txt"
   local hierarchy_path=""
 
   adb logcat -d > "$evidence"
@@ -646,8 +646,8 @@ prove_widget_three_by_two() {
   fi
   hierarchy_path="$(dump_ui "aqua-widget-three-by-two")"
   assert_widget_control_geometry "$hierarchy_path" "three-by-two" >/dev/null
-  adb exec-out screencap -p > "/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-3x2.png"
-  test -s "/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-3x2.png"
+  adb exec-out screencap -p > "/tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-3x2.png"
+  test -s "/tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-3x2.png"
   echo "AQUA_WIDGET_3X2_PROPORTIONS_VERIFIED layout=three-by-two"
 }
 
@@ -675,7 +675,7 @@ prove_widget_resize() {
   local end_y=""
   local selected_hierarchy=""
   local post_drag_hierarchy=""
-  local selected_screenshot="/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-Handle-${label}.png"
+  local selected_screenshot="/tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-Handle-${label}.png"
   local handle_geometry=""
   local handle_side=""
   local handle_source=""
@@ -698,10 +698,10 @@ prove_widget_resize() {
   local frame_delta=""
   local geometry_changed="false"
   local callback_observed="false"
-  local handle_receipt="/tmp/aqua-sentinel-v0.7.6-widget-resize-handle-${label}.txt"
+  local handle_receipt="/tmp/aqua-sentinel-v0.7.7-widget-resize-handle-${label}.txt"
   local resize_attempt=""
   local resized="false"
-  local evidence="/tmp/aqua-sentinel-v0.7.6-widget-resize-${label}.logcat.txt"
+  local evidence="/tmp/aqua-sentinel-v0.7.7-widget-resize-${label}.logcat.txt"
 
   return_to_launcher
   hierarchy_path="$(dump_ui "aqua-widget-resize-${label}-before")"
@@ -867,8 +867,8 @@ prove_widget_resize() {
     echo "Launcher3 accepted a resize proof but Aqua's committed visible geometry did not change: $label" >&2
     return 1
   fi
-  adb exec-out screencap -p > "/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-${label}.png"
-  test -s "/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Resize-${label}.png"
+  adb exec-out screencap -p > "/tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-${label}.png"
+  test -s "/tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Resize-${label}.png"
   echo "AQUA_WIDGET_RESPONSIVE_RESIZE_VERIFIED label=$label axis=$axis callback=$callback_observed"
   echo "AQUA_WIDGET_REAL_RESIZE_VERIFIED label=$label before=$before_geometry after=$after_geometry"
 }
@@ -905,8 +905,8 @@ PY
 
 prove_handoff_confirmation() {
   local hierarchy_path=""
-  local action_evidence="/tmp/aqua-sentinel-v0.7.6-widget-action.logcat.txt"
-  local handoff_evidence="/tmp/aqua-sentinel-v0.7.6-widget-handoff.logcat.txt"
+  local action_evidence="/tmp/aqua-sentinel-v0.7.7-widget-action.logcat.txt"
+  local handoff_evidence="/tmp/aqua-sentinel-v0.7.7-widget-handoff.logcat.txt"
   if ! grep -Fq "AQUA_WIDGET_HANDOFF_RECEIVED mode=action" "$action_evidence" \
     && ! wait_for_log "AQUA_WIDGET_HANDOFF_RECEIVED mode=action" "$handoff_evidence" 12; then
     echo "Aqua Action never rendered its launcher-hosted RECEIVED acknowledgement" >&2
@@ -942,13 +942,13 @@ tap_launcher_control() {
   local height=""
   local changed_pixels=""
   local frame_offset=""
-  local idle="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-idle.png"
-  local active="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-jolt.png"
-  local idle_crop="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-idle-crop.png"
-  local active_crop="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-jolt-crop.png"
-  local device_video="/sdcard/aqua-sentinel-v0.7.6-widget-${mode}-jolt.mp4"
-  local tap_video="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-jolt.mp4"
-  local render_evidence="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-jolt-render.logcat.txt"
+  local idle="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-idle.png"
+  local active="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-jolt.png"
+  local idle_crop="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-idle-crop.png"
+  local active_crop="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-jolt-crop.png"
+  local device_video="/sdcard/aqua-sentinel-v0.7.7-widget-${mode}-jolt.mp4"
+  local tap_video="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-jolt.mp4"
+  local render_evidence="/tmp/aqua-sentinel-v0.7.7-widget-${mode}-jolt-render.logcat.txt"
   local render_observed="false"
 
   command -v ffmpeg >/dev/null
@@ -1005,7 +1005,7 @@ tap_launcher_control() {
       echo "The $mode Neuralink endpoint did not visibly react to its real launcher tap" >&2
       return 1
     fi
-    cp "$active" /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Tap-Jolt.png
+    cp "$active" /tmp/AquaSentinelOS-v0.7.7-Neuralink-Widget-Tap-Jolt.png
     echo "AQUA_WIDGET_LAUNCHER_TAP mode=$mode resource=$resource_id"
     echo "AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=$mode changed_pixels=$changed_pixels source=device_tap_video"
     return 0
@@ -1027,7 +1027,7 @@ terminate_sentinel_background_process "before-five-action-sequence"
 adb shell pm grant "$package" android.permission.RECORD_AUDIO
 
 for mode in home action file photo video; do
-  evidence="/tmp/aqua-sentinel-v0.7.6-widget-${mode}.logcat.txt"
+  evidence="/tmp/aqua-sentinel-v0.7.7-widget-${mode}.logcat.txt"
   expected_route="$mode"
   [[ "$mode" == "file" ]] && expected_route="voice"
   clear_logcat
@@ -1087,8 +1087,8 @@ for mode in home action file photo video; do
   fi
 
   if [[ "$mode" == "action" ]]; then
-    adb exec-out screencap -p > /tmp/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png
-    test -s /tmp/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png
+    adb exec-out screencap -p > /tmp/AquaSentinelOS-v0.7.7-Widget-Action-Microphone-Armed.png
+    test -s /tmp/AquaSentinelOS-v0.7.7-Widget-Action-Microphone-Armed.png
     adb shell input keyevent KEYCODE_BACK
     assert_transient_capture_returned_to_launcher "$mode"
     echo "AQUA_WIDGET_ACTION_MICROPHONE_VERIFIED handler=SpeechRecognizer"
@@ -1107,7 +1107,7 @@ done
 # The launcher tap above proves the FILE PendingIntent reaches the real voice-filing route.
 # Complete the deterministic downstream filing contract separately because the headless
 # emulator has no microphone input; do not mislabel synthetic speech as a launcher tap.
-file_evidence="/tmp/aqua-sentinel-v0.7.6-widget-file-completion.logcat.txt"
+file_evidence="/tmp/aqua-sentinel-v0.7.7-widget-file-completion.logcat.txt"
 clear_logcat
 adb shell am start -W \
   -n "$capture_activity" \
@@ -1124,7 +1124,7 @@ return_to_launcher
 echo "AQUA_WIDGET_BACKGROUND_FILE_STAYED_ON_LAUNCHER"
 prove_filed_today_count
 
-repeat_evidence="/tmp/aqua-sentinel-v0.7.6-widget-action-repeat.logcat.txt"
+repeat_evidence="/tmp/aqua-sentinel-v0.7.7-widget-action-repeat.logcat.txt"
 for repeat_index in $(seq 1 5); do
   clear_logcat
   tap_ui_node \
@@ -1145,5 +1145,5 @@ terminate_sentinel_background_process "post-filing-process-recreation"
 tap_ui_node \
   "launcher-hosted widget after process recreation" \
   "$package:id/widget_logo|Open Aqua Sentinel OS"
-wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.6-widget-recreated.logcat.txt 30
+wait_for_log "AQUA_WIDGET_HOME_OPENED" /tmp/aqua-sentinel-v0.7.7-widget-recreated.logcat.txt 30
 echo "AQUA_WIDGET_LAUNCHER_PROCESS_RECREATION_VERIFIED"

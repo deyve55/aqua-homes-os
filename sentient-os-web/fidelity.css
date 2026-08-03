@@ -2335,3 +2335,332 @@ html,body{overscroll-behavior:none}
   .system-panel[data-panel="neural"] .neural-signal,
   .system-panel[data-panel="neural"] .neural-traveler{animation:none!important}
 }
+
+/* v0.7.7 owner-reference Neural Link.
+   Dave's two supplied frames are the composition authority: the first is the
+   continuously living seven-portal mind, and the second is the post-shot
+   operating surface. DOM controls, neural travelers, truth state, and returned
+   objects stay live above the owner plates; neither frame is treated as a
+   blocking movie. */
+.system-panel[data-panel="neural"] .neural-stage{
+  container-type:size;
+  width:100%;
+  height:100dvh;
+  min-height:620px;
+  overflow:hidden;
+  border:0;
+  border-radius:clamp(24px,7vw,52px);
+  background:#000!important;
+  box-shadow:inset 0 0 80px rgba(0,0,0,.72),0 24px 70px #000;
+  contain:layout paint style;
+}
+.system-panel[data-panel="neural"] .neural-stage:before,
+.system-panel[data-panel="neural"] .neural-stage:after{
+  content:""!important;
+  display:block!important;
+  position:absolute;
+  inset:0;
+  width:auto;
+  height:auto;
+  border:0;
+  border-radius:inherit;
+  background-position:50% 50%;
+  background-size:cover;
+  background-repeat:no-repeat;
+  image-rendering:auto;
+  filter:contrast(1.025) saturate(1.04) brightness(.985);
+  transform:none;
+  pointer-events:none;
+}
+.system-panel[data-panel="neural"] .neural-stage:before{
+  z-index:1;
+  background-image:url("./assets/neural-link-reference-rest-owner-v077.png")!important;
+  opacity:1;
+  clip-path:inset(0 round clamp(24px,7vw,52px));
+}
+.system-panel[data-panel="neural"] .neural-stage:after{
+  z-index:2;
+  background-image:url("./assets/neural-link-reference-morph-owner-v077.png")!important;
+  opacity:0;
+  clip-path:circle(0 at 50% 43.7%);
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"]:before{
+  opacity:calc(1 - var(--neural-morph-progress));
+  filter:contrast(1.04) saturate(1.08) brightness(calc(1 - var(--neural-morph-progress) * .16));
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"]:after{
+  opacity:calc(.25 + var(--neural-morph-progress) * .75);
+  clip-path:circle(calc(7% + var(--neural-morph-progress) * 118%) at 50% 43.7%);
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"]:before{opacity:0!important}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"]:after{
+  opacity:1!important;
+  clip-path:circle(130% at 50% 43.7%);
+}
+.system-panel[data-panel="neural"] .neural-vignette{
+  z-index:4;
+  opacity:.2;
+  background:linear-gradient(180deg,rgba(0,0,0,.1),transparent 16% 86%,rgba(0,0,0,.22));
+  mix-blend-mode:multiply;
+}
+.system-panel[data-panel="neural"] .neural-titlebar{z-index:86;background:none;pointer-events:none}
+.system-panel[data-panel="neural"] .neural-titlebar h1{display:none}
+.system-panel[data-panel="neural"] .neural-titlebar .panel-close{
+  left:12px;
+  bottom:max(14px,env(safe-area-inset-bottom));
+  width:38px;
+  height:38px;
+  color:#dffcff;
+  background:rgba(0,12,17,.88);
+  border-color:rgba(86,226,247,.5);
+  pointer-events:auto;
+}
+
+/* Continuous cyan/gold neural traffic survives rest, speech, shot, morph, and result. */
+.system-panel[data-panel="neural"] .neural-network{
+  z-index:12;
+  opacity:.92!important;
+  overflow:visible;
+  mix-blend-mode:screen;
+  transition:opacity .32s,clip-path .42s;
+}
+.system-panel[data-panel="neural"] .neural-route{
+  stroke:rgba(151,239,250,.3);
+  stroke-width:.45;
+  stroke-dasharray:.55 2.75;
+}
+.system-panel[data-panel="neural"] .neural-signal{
+  stroke:#9af7ff;
+  stroke-width:.86;
+  stroke-dasharray:1.2 9.8;
+  opacity:.82;
+  filter:drop-shadow(0 0 2px #eaffff) drop-shadow(0 0 6px rgba(30,222,250,.9));
+  animation:neural-path-fire 2.25s linear infinite;
+}
+.system-panel[data-panel="neural"] .neural-route-group:nth-child(2n) .neural-signal{
+  stroke:#f1bc68;
+  opacity:.7;
+  animation-direction:reverse;
+  animation-duration:3.1s;
+}
+.system-panel[data-panel="neural"] .neural-traveler{opacity:.92;r:.72px}
+.system-panel[data-panel="neural"] .neural-traveler-gold{opacity:.76;r:.58px}
+.system-panel[data-panel="neural"] .neural-route-group.is-active .neural-signal{
+  stroke:#efffff;
+  stroke-width:1.9;
+  stroke-dasharray:4 7;
+  opacity:1;
+  filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 11px #39e4ff) drop-shadow(0 0 18px #e9ad53);
+  animation-duration:.28s;
+}
+.system-panel[data-panel="neural"] .neural-route-group.is-active .neural-traveler{opacity:1;r:1.05px}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-network{opacity:.9!important}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-network{
+  z-index:13;
+  opacity:.88!important;
+  clip-path:inset(0 66% 0 0);
+  pointer-events:none;
+}
+
+/* The owner plate supplies the exact rings and iconography. Live portal DOM is
+   transparent at rest, then reveals the selected app only while it engorges. */
+.system-panel[data-panel="neural"] .neural-portal{
+  z-index:30;
+  width:clamp(70px,18.8vw,104px)!important;
+  filter:none;
+  transition:opacity .22s,filter .22s;
+}
+.system-panel[data-panel="neural"] .neural-portal .portal-pull{
+  width:100%;
+  aspect-ratio:1;
+  padding:0;
+  overflow:visible;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  box-shadow:none;
+}
+.system-panel[data-panel="neural"] .neural-portal .portal-pull:before{
+  content:"";
+  display:block;
+  position:absolute;
+  inset:-8%;
+  border:1px solid transparent;
+  border-radius:50%;
+  background:radial-gradient(circle,transparent 56%,rgba(63,226,249,.08) 66%,transparent 76%);
+  opacity:.34;
+}
+.system-panel[data-panel="neural"] .neural-portal .portal-node{
+  width:100%;
+  height:100%;
+  opacity:0;
+  transform:scale(.9);
+  border-radius:50%;
+  background:#000;
+  transition:opacity .18s,transform .22s cubic-bezier(.16,.82,.18,1),filter .22s;
+}
+.system-panel[data-panel="neural"] .neural-portal.is-primary .portal-node{opacity:.94}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="selecting"] .neural-portal.is-primary .portal-pull{
+  animation:neural-owner-engorge .22s cubic-bezier(.16,.84,.18,1) both;
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="selecting"] .neural-portal.is-primary .portal-node{
+  transform:scale(1.08);
+  filter:brightness(1.18) saturate(1.08);
+  box-shadow:inset 0 0 16px #000,0 0 8px #fff,0 0 24px #39e4ff,0 0 42px rgba(235,177,82,.42);
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-portal.is-primary .portal-pull{
+  transform:scale(1.18);
+  filter:brightness(1.28);
+  animation:neural-owner-portal-charge .32s ease-in-out infinite alternate;
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-portal{opacity:calc(1 - var(--neural-morph-progress))!important}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-portal{opacity:0!important;pointer-events:none}
+.system-panel[data-panel="neural"] .neural-core,
+.system-panel[data-panel="neural"] .neural-core-field{
+  left:50%!important;
+  top:43.7%!important;
+  width:30%!important;
+  z-index:32;
+  transition:none!important;
+}
+.system-panel[data-panel="neural"] .neural-core .aqua-mark{opacity:0!important}
+.system-panel[data-panel="neural"] .neural-core-hit{inset:2%;opacity:.1;background:radial-gradient(circle,rgba(255,255,255,.22),rgba(38,221,248,.08) 34%,transparent 68%)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="selecting"] .neural-core-hit{opacity:.45;transform:scale(1.08)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-core-hit{opacity:1;transform:scale(1.2);animation:core-presence .34s ease-in-out infinite alternate}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-core,
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-core-field{opacity:0!important;pointer-events:none}
+
+/* One strong shot rises from the A into the promoted app and leaves a luminous tail. */
+.system-panel[data-panel="neural"] .neural-jolt{z-index:48;left:50%;top:9.4%;height:34.3%;width:18px;opacity:0}
+.system-panel[data-panel="neural"] .neural-jolt>b{inset:0 5px;background:linear-gradient(180deg,transparent,#fff 8%,#74f5ff 30%,#fff 48%,#efb65e 66%,#37e3fb 87%,transparent)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-jolt{opacity:1!important;filter:drop-shadow(0 0 7px #fff) drop-shadow(0 0 16px #39e5ff)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-jolt>b{animation:neural-owner-shot .32s cubic-bezier(.15,.8,.2,1) both;box-shadow:0 16px 16px rgba(52,227,250,.72),0 42px 34px rgba(52,227,250,.4),0 -8px 13px rgba(238,179,84,.42)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-jolt{opacity:0!important}
+
+/* Rest status becomes Aqua's voice card after the composition morphs. */
+.system-panel[data-panel="neural"] .neural-thought{
+  z-index:58;
+  left:50%;
+  top:auto;
+  bottom:10.8%;
+  width:min(58%,310px);
+  padding:9px 12px 11px;
+  opacity:1;
+  transform:translateX(-50%);
+  border:1px solid rgba(111,223,240,.32);
+  border-radius:15px;
+  background:linear-gradient(145deg,rgba(2,15,21,.72),rgba(0,4,7,.84));
+  box-shadow:inset 0 1px rgba(255,255,255,.07),0 14px 30px rgba(0,0,0,.66);
+  backdrop-filter:blur(3px);
+}
+.system-panel[data-panel="neural"] .neural-waveform{display:flex;height:25px;margin:0 0 5px}
+.system-panel[data-panel="neural"] .neural-request-trail{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:8px 0 0;padding:0;list-style:none}
+.system-panel[data-panel="neural"] .neural-request-trail li{position:relative;color:#9cb4ba;font-size:5px;text-align:center}.system-panel[data-panel="neural"] .neural-request-trail li:before{content:"";display:block;width:4px;aspect-ratio:1;margin:0 auto 3px;border:1px solid #dffcff;border-radius:50%;box-shadow:0 0 5px #4ce8ff}.system-panel[data-panel="neural"] .neural-request-trail li:nth-child(2):before{border-color:#f3c26f;box-shadow:0 0 5px #eab157}
+.system-panel[data-panel="neural"] .neural-thought small{font-size:6px}.system-panel[data-panel="neural"] .neural-thought strong{margin-top:4px;font-size:clamp(9px,2.35vw,13px)}.system-panel[data-panel="neural"] .neural-thought p{margin-top:3px;font-size:clamp(6px,1.55vw,9px)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-thought{opacity:calc(1 - var(--neural-morph-progress));transform:translateX(-50%) scale(calc(1 - var(--neural-morph-progress) * .08))}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-thought{
+  left:73%;
+  top:9.1%;
+  bottom:auto;
+  width:40%;
+  min-height:17%;
+  padding:11px 13px;
+  opacity:1!important;
+  transform:translateX(-50%);
+  border-color:rgba(115,224,241,.45);
+  border-radius:17px;
+  background:linear-gradient(145deg,rgba(7,30,39,.88),rgba(2,15,21,.94));
+  pointer-events:none;
+}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-thought small{justify-content:flex-start}.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-thought strong{text-align:left;font-size:clamp(10px,2.65vw,15px);line-height:1.3}.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-thought p{text-align:left;color:#53e2f4}.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-request-trail{display:none}.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-waveform{height:32px;margin-top:8px}
+
+.system-panel[data-panel="neural"] .neural-selected-chip{
+  position:absolute;
+  z-index:60;
+  left:46%;
+  top:5.3%;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:28%;
+  min-height:6%;
+  padding:7px 10px;
+  border:1px solid rgba(71,216,239,.4);
+  border-radius:12px;
+  background:linear-gradient(145deg,rgba(5,28,37,.94),rgba(1,11,16,.98));
+  box-shadow:inset 0 0 17px rgba(33,207,237,.06),0 0 14px rgba(33,207,237,.12);
+  opacity:0;
+  transform:translate(-50%,-8px) scale(.94);
+  pointer-events:none;
+}
+.system-panel[data-panel="neural"] .neural-selected-chip>i{width:18px;aspect-ratio:1;border:1px solid #58e2f5;border-radius:50%;box-shadow:0 0 8px rgba(57,224,248,.42)}
+.system-panel[data-panel="neural"] .neural-selected-chip span{min-width:0}.system-panel[data-panel="neural"] .neural-selected-chip small,.system-panel[data-panel="neural"] .neural-selected-chip strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.system-panel[data-panel="neural"] .neural-selected-chip small{color:#4fdff3;font-size:5px;letter-spacing:.14em}.system-panel[data-panel="neural"] .neural-selected-chip strong{margin-top:2px;color:#effdff;font-size:clamp(7px,1.8vw,10px);font-weight:500}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-selected-chip{opacity:var(--neural-morph-progress);transform:translate(-50%,0) scale(1)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-selected-chip{opacity:1;transform:translate(-50%,0) scale(1)}
+
+/* This live bar covers the browser screenshot overlays in the reference source
+   and keeps the real application conversation control accessible. */
+.system-panel[data-panel="neural"] .neural-continuation{
+  position:absolute;
+  z-index:88;
+  left:7%;
+  right:7%;
+  bottom:max(2.1%,env(safe-area-inset-bottom));
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) 38px;
+  gap:8px;
+  align-items:center;
+  min-height:48px;
+  padding:6px 8px;
+  border:1px solid rgba(88,215,236,.25);
+  border-radius:28px;
+  background:linear-gradient(145deg,rgba(1,12,17,.97),rgba(0,3,5,.99));
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 0 24px rgba(0,0,0,.74);
+  color:#dffaff;
+}
+.system-panel[data-panel="neural"] .neural-continuation>i{display:grid;place-items:center;width:32px;aspect-ratio:1;border:1px solid rgba(91,229,249,.72);border-radius:50%;font-family:Georgia,serif;font-style:normal;text-shadow:0 0 8px #44e6ff;box-shadow:inset 0 0 10px rgba(40,216,244,.14),0 0 9px rgba(40,216,244,.22)}
+.system-panel[data-panel="neural"] .neural-continuation span{min-width:0;text-align:left}.system-panel[data-panel="neural"] .neural-continuation b,.system-panel[data-panel="neural"] .neural-continuation em{display:block;overflow:hidden;color:#8caab2;font-size:clamp(9px,2.35vw,13px);font-style:normal;font-weight:400;text-overflow:ellipsis;white-space:nowrap}.system-panel[data-panel="neural"] .neural-continuation em{display:none}.system-panel[data-panel="neural"] .neural-continuation>u{display:grid;place-items:center;width:36px;aspect-ratio:1;border:1px solid rgba(80,222,244,.36);border-radius:50%;text-decoration:none}.system-panel[data-panel="neural"] .neural-continuation>u:before{content:"";width:14px;height:14px;border:2px solid #dffcff;border-top:0;border-left:0;transform:rotate(-45deg) translate(-2px,2px)}
+.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-continuation b,.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-continuation b{display:none}.system-panel[data-panel="neural"] .neural-stage[data-phase="transitioning"] .neural-continuation em,.system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-continuation em{display:block}
+
+/* Returned evidence occupies the large right operating surface. The owner CRM
+   composition remains visible when no specific file is materialized. */
+.system-panel[data-panel="neural"] .neural-morph-shell{display:none!important}
+.system-panel[data-panel="neural"] .neural-materialization-slot{z-index:64}
+.system-panel[data-panel="neural"] .neural-materialization-approved{
+  inset:27% 2.5% 7.7% 30%;
+  border:1px solid rgba(85,220,241,.46);
+  border-radius:20px;
+  background:linear-gradient(155deg,rgba(4,27,36,.97),rgba(0,8,12,.99));
+  box-shadow:inset 0 0 34px rgba(39,214,242,.05),0 20px 42px rgba(0,0,0,.66),0 0 18px rgba(45,221,246,.13);
+}
+.system-panel[data-panel="neural"] .neural-materialization-approved[data-neural-materialized="pending"]{opacity:0}
+.system-panel[data-panel="neural"] .neural-materialization-approved[data-neural-materialized="true"]{opacity:1}
+.system-panel[data-panel="neural"] .neural-approved-voice{display:none}
+.system-panel[data-panel="neural"] .neural-live-object{left:5%;right:5%;top:4%;bottom:12%}
+.system-panel[data-panel="neural"] .neural-open-materialized-file{left:6%;right:6%;bottom:2.5%;height:7%}
+
+@keyframes neural-owner-engorge{0%{transform:scale(.9);filter:brightness(.8)}68%{transform:scale(1.22);filter:brightness(1.24)}100%{transform:scale(1.16);filter:brightness(1.12)}}
+@keyframes neural-owner-portal-charge{from{filter:brightness(1.12) drop-shadow(0 0 8px #49e7ff)}to{filter:brightness(1.34) drop-shadow(0 0 18px #fff) drop-shadow(0 0 30px #e9ad53)}}
+@keyframes neural-owner-shot{0%{opacity:0;transform:translateY(58%) scaleY(.1)}34%{opacity:1;transform:translateY(18%) scaleY(.74)}100%{opacity:1;transform:translateY(-2%) scaleY(1)}}
+
+@media(max-width:600px){
+  .system-panel[data-panel="neural"] .neural-portal{width:18.8vw!important}
+  .system-panel[data-panel="neural"] .neural-thought{width:58%;padding:7px 9px 9px}
+  .system-panel[data-panel="neural"] .neural-stage[data-phase="result"] .neural-thought{left:73%;width:41%;padding:9px 10px}
+  .system-panel[data-panel="neural"] .neural-continuation{left:6%;right:6%;grid-template-columns:31px minmax(0,1fr) 34px;min-height:44px;padding:5px 7px}
+  .system-panel[data-panel="neural"] .neural-continuation>i{width:29px}
+  .system-panel[data-panel="neural"] .neural-continuation>u{width:32px}
+}
+@media(min-aspect-ratio:3/4){
+  .system-panel[data-panel="neural"] .neural-stage:before,
+  .system-panel[data-panel="neural"] .neural-stage:after{background-size:contain;background-color:#000}
+}
+@media(prefers-reduced-motion:reduce){
+  .system-panel[data-panel="neural"] .neural-stage:before,
+  .system-panel[data-panel="neural"] .neural-stage:after,
+  .system-panel[data-panel="neural"] .neural-portal .portal-node,
+  .system-panel[data-panel="neural"] .neural-selected-chip{transition-duration:.01ms!important}
+  .system-panel[data-panel="neural"] .neural-stage[data-phase="selecting"] .neural-portal.is-primary .portal-pull,
+  .system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-portal.is-primary .portal-pull,
+  .system-panel[data-panel="neural"] .neural-stage[data-phase="firing"] .neural-jolt>b{animation-duration:.01ms!important}
+}

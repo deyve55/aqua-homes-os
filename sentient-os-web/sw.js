@@ -1,13 +1,16 @@
-const CACHE_NAME = "aqua-sentinel-os-v0.3.0-functional-test";
+const CACHE_NAME = "aqua-sentinel-os-v0.7.7-owner-neural-link";
 const APP_FILES = [
   "./",
   "./index.html",
   "./styles.css",
+  "./fidelity.css",
   "./app.js",
   "./manifest.webmanifest",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
   "./assets/ui-hero.png",
+  "./assets/neural-link-reference-rest-owner-v077.png",
+  "./assets/neural-link-reference-morph-owner-v077.png",
 ];
 
 self.addEventListener("install", (event) => {
