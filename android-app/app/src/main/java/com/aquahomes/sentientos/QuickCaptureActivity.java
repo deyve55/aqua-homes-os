@@ -177,15 +177,10 @@ public class QuickCaptureActivity extends Activity {
         if ("ask".equals(mode)) {
             showCommandSurface();
         } else if ("action".equals(mode)) {
-            if (BuildConfig.ECOSYSTEM_PRESENTATION_MODE && !commandSeed.trim().isEmpty()) {
-                Log.i(
-                    "AquaCommandWidget",
-                    "AQUA_CAPTURE_ROUTE mode=action handler=PresentationContract"
-                );
-                submitCommand(commandSeed.trim());
-            } else {
-                captureRapidAction();
-            }
+            // A real launcher Action tap must always arm voice capture. Earlier
+            // test builds injected a presentation sentence here, which made the
+            // widget claim RECEIVED without ever opening the microphone.
+            captureRapidAction();
         } else if ("photo".equals(mode)) {
             captureMedia(false);
         } else if ("video".equals(mode)) {
@@ -540,6 +535,10 @@ public class QuickCaptureActivity extends Activity {
             .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 650L)
             .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 900L);
         speechRecognizer.startListening(intent);
+        Log.i(
+            "AquaCommandWidget",
+            "AQUA_CAPTURE_MIC_ARMED mode=" + recognitionRoute() + " handler=SpeechRecognizer"
+        );
         captureHandler.postDelayed(() -> {
             if (!completeRecognitionOnce()) return;
             Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=" + recognitionRoute() + " reason=timeout");

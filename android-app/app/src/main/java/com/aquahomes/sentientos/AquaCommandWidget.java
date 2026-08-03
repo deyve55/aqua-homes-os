@@ -85,10 +85,19 @@ public class AquaCommandWidget extends AppWidgetProvider {
     static int layoutForSize(int minWidth, int minHeight) {
         if (minWidth <= 0 || minHeight <= 0) return R.layout.aqua_command_widget;
         float ratio = (float) minWidth / (float) minHeight;
+        if (ratio >= 1.28f && ratio <= 1.82f) return R.layout.aqua_command_widget_3x2;
         if (ratio >= 1.18f) return R.layout.aqua_command_widget_wide;
         if (minWidth <= 180 && minHeight <= 180) return R.layout.aqua_command_widget_2x2;
         if (ratio >= 0.82f && minHeight <= 260) return R.layout.aqua_command_widget_2x2;
         return R.layout.aqua_command_widget;
+    }
+
+    static String layoutName(int layout) {
+        if (layout == R.layout.aqua_command_widget_3x2) return "three-by-two";
+        if (layout == R.layout.aqua_command_widget_wide) return "wide";
+        if (layout == R.layout.aqua_command_widget_2x2) return "two-by-two";
+        if (layout == R.layout.aqua_command_widget_compact_large) return "compact-large";
+        return "portrait";
     }
 
     private static int layoutFor(AppWidgetManager manager, int id) {
@@ -183,10 +192,12 @@ public class AquaCommandWidget extends AppWidgetProvider {
             Map<SizeF, RemoteViews> responsive = new LinkedHashMap<>();
             responsive.put(new SizeF(110f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_2x2));
             responsive.put(new SizeF(180f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_compact_large));
-            responsive.put(new SizeF(180f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
-            responsive.put(new SizeF(250f, 140f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
-            responsive.put(new SizeF(250f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
-            responsive.put(new SizeF(320f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
+            responsive.put(new SizeF(180f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
+            responsive.put(new SizeF(250f, 140f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
+            responsive.put(new SizeF(250f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
+            responsive.put(new SizeF(300f, 200f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
+            responsive.put(new SizeF(320f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
+            responsive.put(new SizeF(360f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
             responsive.put(new SizeF(180f, 260f), buildLayoutViews(context, R.layout.aqua_command_widget));
             responsive.put(new SizeF(250f, 390f), buildLayoutViews(context, R.layout.aqua_command_widget));
             return new RemoteViews(responsive);
@@ -214,6 +225,8 @@ public class AquaCommandWidget extends AppWidgetProvider {
                 + height
                 + " layout="
                 + layout
+                + " layoutName="
+                + layoutName(layout)
         );
     }
 
@@ -379,6 +392,8 @@ public class AquaCommandWidget extends AppWidgetProvider {
                 + minHeight
                 + " layout="
                 + layoutForSize(minWidth, minHeight)
+                + " layoutName="
+                + layoutName(layoutForSize(minWidth, minHeight))
         );
     }
 

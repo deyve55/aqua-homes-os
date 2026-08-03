@@ -318,9 +318,12 @@ const stateExpression = `(() => {
   const root = document.documentElement;
   const stage = document.querySelector('.neural-stage');
   const materialized = document.querySelector('[data-neural-materialized]');
+  const morphShell = document.querySelector('.neural-morph-shell');
   const materialization = materialized;
   const materializationStyle = materialization ? getComputedStyle(materialization) : null;
   const materializationBounds = materialization?.getBoundingClientRect();
+  const morphShellStyle = morphShell ? getComputedStyle(morphShell) : null;
+  const morphShellBounds = morphShell?.getBoundingClientRect();
   const returnedDocument = materialization?.querySelector('.neural-returned-document');
   const returnedDocumentBounds = returnedDocument?.getBoundingClientRect();
   const openFile = materialization?.querySelector('.neural-open-materialized-file');
@@ -333,6 +336,7 @@ const stateExpression = `(() => {
     });
   const beforeStyle = stage ? getComputedStyle(stage, '::before') : null;
   const afterStyle = stage ? getComputedStyle(stage, '::after') : null;
+  const stageStyle = stage ? getComputedStyle(stage) : null;
   const substrate = stage?.querySelector('.neural-substrate-map');
   return {
     documentReady: document.readyState,
@@ -344,17 +348,20 @@ const stateExpression = `(() => {
     materializationOpacity: materializationStyle ? Number(materializationStyle.opacity) : 0,
     materializationWidth: materializationBounds?.width || 0,
     materializationTransform: materializationStyle?.transform || '',
+    morphShellOpacity: morphShellStyle ? Number(morphShellStyle.opacity) : 0,
+    morphShellWidth: morphShellBounds?.width || 0,
     returnedDocumentWidth: returnedDocumentBounds?.width || 0,
     openFileWidth: openFileBounds?.width || 0,
     openFileTextFits: openFile ? openFile.scrollWidth <= openFile.clientWidth + 1 : false,
     visiblePortals: visiblePortals.length,
-    portalImagesContained: visiblePortals.every((portal) => {
+    portalImagesLoaded: visiblePortals.every((portal) => {
       const image = portal.querySelector('.portal-node > img');
-      return image && getComputedStyle(image).objectFit === 'contain';
+      return image && image.complete && image.naturalWidth > 0 && image.naturalHeight > 0;
     }),
     substrateDisplay: substrate ? getComputedStyle(substrate).display : '',
     beforeUsesRaster: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
     afterUsesRaster: Boolean(afterStyle?.backgroundImage?.includes('url(')),
+    stageUsesApprovedRaster: Boolean(stageStyle?.backgroundImage?.includes('neuralink-rest-v071.png')),
     imageFailures: Array.from(document.images)
       .filter((image) => !image.complete || image.naturalWidth <= 0)
       .map((image) => image.currentSrc || image.src),
@@ -378,7 +385,8 @@ async function settlePage(connection, sessionId) {
     }));
     for (const animation of document.getAnimations()) {
       try {
-        if (animation.id === 'aqua-neural-materialization-box') continue;
+        if (animation.id === 'aqua-neural-materialization-box'
+          || animation.id === 'aqua-neural-materialization-content') continue;
         const timing = animation.effect?.getComputedTiming?.();
         if (Number.isFinite(timing?.endTime) && animation.playState !== 'finished') animation.finish();
       } catch (_) {}
@@ -400,12 +408,15 @@ async function waitForExpectedState(connection, sessionId, definition) {
       && (!definition.morphProgress || state.morphProgress === definition.morphProgress)
       && (!definition.materialized || state.materialized === definition.materialized)
       && (!definition.visiblePortals || state.visiblePortals === definition.visiblePortals)
-      && (!definition.visiblePortals || state.portalImagesContained)
+      && (!definition.visiblePortals || state.portalImagesLoaded)
       && (!definition.visiblePortals || state.substrateDisplay === "none")
       && (!definition.visiblePortals || (!state.beforeUsesRaster && !state.afterUsesRaster))
+      && (!definition.visiblePortals || state.stageUsesApprovedRaster)
       && state.imageFailures.length === 0
       && (!definition.materialized
-        || (state.materializationOpacity >= 0.98 && state.materializationWidth > 0));
+        || (definition.materialized === "pending"
+          ? state.morphShellOpacity > .1 && state.morphShellWidth > 0
+          : state.materializationOpacity >= .98 && state.materializationWidth > 0));
     const fullMaterializationReady = !definition.fullMaterialization || (
       state.materializationTransform === 'none'
         && state.returnedDocumentWidth >= state.materializationWidth * .7

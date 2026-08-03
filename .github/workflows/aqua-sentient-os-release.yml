@@ -319,8 +319,12 @@ jobs:
           grep -q 'data-morph-progress="1.000"' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-panel="neural"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'AQUA SENTINEL NEURAL LINK' /tmp/aqua-sentinel-neural-rest-proof.html
-          grep -q 'AQUA NEURALINK' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'Aqua Neuralink' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'data-neural-visible-portals="5"' /tmp/aqua-sentinel-neural-rest-proof.html
+          test "$(grep -o 'data-portal-index="[0-9]*"' /tmp/aqua-sentinel-neural-rest-proof.html | sort -u | wc -l)" = "8"
           grep -q 'class="neural-microbursts"' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'class="neural-traveler neural-traveler-cyan"' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'class="neural-traveler neural-traveler-gold"' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'neural-substrate-map neural-substrate-rest' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'neural-substrate-map neural-substrate-result' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-rotate-proof.html
@@ -383,15 +387,10 @@ jobs:
           rest_mean="$(convert release/AquaSentinelOS-v0.7.5-Neural-Link-Rest-closed-phone.png -colorspace gray -format '%[fx:mean]' info:)"
           convert tests/visual-baselines/Aqua-Neuralink-Rest-Owner-Approved-v074.jpg \
             -resize '430x932^' -gravity center -extent 430x932 /tmp/aqua-neural-rest-owner-reference.png
-          convert sentient-os-web/assets/neuralink-materialization-five-portal-approved-v073.png \
-            -resize '430x932!' /tmp/aqua-neural-materialization-owner-reference.png
           rest_rmse="$(compare -metric RMSE /tmp/aqua-neural-rest-owner-reference.png release/AquaSentinelOS-v0.7.5-Neural-Link-Rest-closed-phone.png null: 2>&1 || true)"
           rest_normalized="$(sed -n 's/.*(\([^)]*\)).*/\1/p' <<< "$rest_rmse")"
-          result_rmse="$(compare -metric RMSE /tmp/aqua-neural-materialization-owner-reference.png release/AquaSentinelOS-v0.7.5-Neural-Link-Result-closed-phone.png null: 2>&1 || true)"
-          result_normalized="$(sed -n 's/.*(\([^)]*\)).*/\1/p' <<< "$result_rmse")"
-          awk -v value="$rest_normalized" 'BEGIN { exit !(value < 0.34) }'
-          awk -v value="$result_normalized" 'BEGIN { exit !(value < 0.36) }'
-          echo "AQUA_OWNER_VISUAL_REFERENCE_VERIFIED rest_rmse=$rest_normalized result_rmse=$result_normalized"
+          awk -v value="$rest_normalized" 'BEGIN { exit !(value < 0.20) }'
+          echo "AQUA_OWNER_VISUAL_REFERENCE_VERIFIED rest_rmse=$rest_normalized visible_portals=5 rotatable_sources=8 stable_underlay=neuralink-rest-v071.png"
           previous=""
           previous_delta=""
           for checkpoint in 00 01 02 03 04 05 06; do

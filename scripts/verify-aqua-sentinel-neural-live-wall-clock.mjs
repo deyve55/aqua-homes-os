@@ -113,6 +113,7 @@ const browserStateExpression = `(() => {
   const substrate = document.querySelector('.neural-substrate-map');
   const beforeStyle = stage ? getComputedStyle(stage, '::before') : null;
   const afterStyle = stage ? getComputedStyle(stage, '::after') : null;
+  const stageStyle = stage ? getComputedStyle(stage) : null;
   return {
     ready: root?.dataset?.aquaPreviewReady || '',
     phase: root?.dataset?.aquaNeuralPhase || '',
@@ -127,14 +128,20 @@ const browserStateExpression = `(() => {
     receiptVisible: Boolean(document.querySelector('.neural-materialization-approved.is-receipt')),
     focusName: document.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
     visiblePortals: visiblePortals.length,
-    portalsContained: visiblePortals.every((portal) => {
+    visibleTravelers: Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => {
+      const style = getComputedStyle(traveler);
+      const group = traveler.closest('.neural-route-group');
+      return Number(style.opacity) > .15 && group && getComputedStyle(group).visibility !== 'hidden';
+    }).length,
+    portalsLoaded: visiblePortals.every((portal) => {
       const image = portal.querySelector('.portal-node > img');
-      return image && getComputedStyle(image).objectFit === 'contain';
+      return image && image.complete && image.naturalWidth > 0 && image.naturalHeight > 0;
     }),
     joltOpacity: jolt ? Number(getComputedStyle(jolt).opacity) : 0,
     joltAnimation: joltBeam ? getComputedStyle(joltBeam).animationName : '',
     substrateDisplay: substrate ? getComputedStyle(substrate).display : '',
-    usesRasterUnderlay: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
+    usesApprovedStableUnderlay: Boolean(stageStyle?.backgroundImage?.includes('neuralink-rest-v071.png')),
+    usesPseudoRasterUnderlay: Boolean(beforeStyle?.backgroundImage?.includes('url(')),
     usesRasterCompositor: Boolean(afterStyle?.backgroundImage?.includes('url(')),
   };
 })()`;
@@ -266,10 +273,12 @@ async function run() {
       assert.equal(state?.ready, "neural", `Neural preview was not ready before ${expectedPhase}`);
       assert.equal(state?.phase, expectedPhase, `Live Neuralink did not reach ${expectedPhase} by its wall-clock deadline`);
       assert.equal(state?.stagePhase, expectedPhase, `Stage and root phase diverged at ${expectedPhase}`);
-      assert.equal(state?.visiblePortals, 5, `Neuralink must keep exactly five recognizable portals at ${expectedPhase}`);
-      assert.equal(state?.portalsContained, true, `Portal artwork must remain contained at ${expectedPhase}`);
+      assert.equal(state?.visiblePortals, 5, `Neuralink must keep exactly five application portals visible at ${expectedPhase}`);
+      assert.equal(state?.portalsLoaded, true, `Every portal must contain loaded application artwork at ${expectedPhase}`);
+      assert.ok(state?.visibleTravelers >= 10, `Every visible route must carry cyan and gold travelers at ${expectedPhase}`);
       assert.equal(state?.substrateDisplay, "none", `Rejected mask substrates must stay disabled at ${expectedPhase}`);
-      assert.equal(state?.usesRasterUnderlay, false, `A rejected baked Neuralink plate returned at ${expectedPhase}`);
+      assert.equal(state?.usesApprovedStableUnderlay, true, `The approved stable Neuralink architecture is missing at ${expectedPhase}`);
+      assert.equal(state?.usesPseudoRasterUnderlay, false, `A second raster underlay returned at ${expectedPhase}`);
       assert.equal(state?.usesRasterCompositor, false, `Rejected full-screen raster compositing returned at ${expectedPhase}`);
     }
 
@@ -284,6 +293,13 @@ async function run() {
     assert.match(firing.detail, /large upward neuron burst through the selected path/);
     assert.ok(firing.joltOpacity >= 0.99, "The firing phase must visibly reveal the upward jolt");
     assert.match(firing.joltAnimation, /neural-jolt-column/);
+    const travelerBefore = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => getComputedStyle(traveler.closest('.neural-route-group')).visibility !== 'hidden').map((traveler) => { const bounds = traveler.getBoundingClientRect(); return [bounds.left, bounds.top]; })`);
+    await delay(160);
+    const travelerAfter = await evaluate(connection, sessionId, `Array.from(document.querySelectorAll('.neural-traveler')).filter((traveler) => getComputedStyle(traveler.closest('.neural-route-group')).visibility !== 'hidden').map((traveler) => { const bounds = traveler.getBoundingClientRect(); return [bounds.left, bounds.top]; })`);
+    assert.ok(
+      travelerBefore.some((position, index) => Math.hypot(position[0] - travelerAfter[index][0], position[1] - travelerAfter[index][1]) > .5),
+      "Cyan and gold neuron particles must visibly travel along the live routes",
+    );
     assert.equal(transitioning.materialized, "pending");
     assert.equal(result.materialized, "true");
     assert.equal(result.materializationKind, "receipts");

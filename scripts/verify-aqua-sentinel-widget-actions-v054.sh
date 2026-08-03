@@ -424,8 +424,8 @@ def bounds(resource_name):
 surface = bounds("widget_resize_surface")
 art = bounds("widget_neural_art")
 activity = bounds("widget_neural_activity")
-if art != activity:
-    raise SystemExit(f"{label}: neural activity is not registered to the approved art: art={art} activity={activity}")
+if activity != surface:
+    raise SystemExit(f"{label}: neural activity does not cover the full host: surface={surface} activity={activity}")
 if not (surface[0] <= art[0] <= art[2] <= surface[2] and surface[1] <= art[1] <= art[3] <= surface[3]):
     raise SystemExit(f"{label}: approved art left the widget surface: surface={surface} art={art}")
 
@@ -442,17 +442,44 @@ surface_width = surface[2] - surface[0]
 surface_height = surface[3] - surface[1]
 horizontal_gap = surface_width - art_width
 vertical_gap = surface_height - art_height
-if horizontal_gap > max(24, int(surface_width * 0.08)) or vertical_gap > max(24, int(surface_height * 0.08)):
-    raise SystemExit(
-        f"{label}: approved art left a visible host surround: "
-        f"surface={surface} art={art} gap={horizontal_gap}x{vertical_gap}"
-    )
+is_three_by_two = 0.60 <= art_width / surface_width <= 0.72 and vertical_gap <= max(24, int(surface_height * 0.08))
+if is_three_by_two:
+    left_extension = art[0] - surface[0]
+    right_extension = surface[2] - art[2]
+    if abs(left_extension - right_extension) > max(8, int(surface_width * 0.025)):
+        raise SystemExit(
+            f"{label}: three-by-two approved art is not centered: "
+            f"surface={surface} art={art} extensions={left_extension},{right_extension}"
+        )
+else:
+    if horizontal_gap > max(24, int(surface_width * 0.08)) or vertical_gap > max(24, int(surface_height * 0.08)):
+        raise SystemExit(
+            f"{label}: approved art left a visible host surround: "
+            f"surface={surface} art={art} gap={horizontal_gap}x{vertical_gap}"
+        )
 ratio = art_width / art_height
 if not 0.45 <= ratio <= 2.25:
     raise SystemExit(f"{label}: launcher returned an unsupported host aspect: ratio={ratio:.4f} art={art}")
 
 print(surface[2] - surface[0], surface[3] - surface[1], art_width, art_height)
 PY
+}
+
+prove_widget_three_by_two() {
+  local evidence="/tmp/aqua-sentinel-v0.7.6-widget-three-by-two.logcat.txt"
+  local hierarchy_path=""
+
+  adb logcat -d > "$evidence"
+  if ! grep -Eq "AQUA_WIDGET_(READY|RESIZED).*layoutName=three-by-two" "$evidence"; then
+    echo "Launcher3 did not select Aqua's dedicated three-by-two layout" >&2
+    grep -E "AQUA_WIDGET_(READY|RESIZED)" "$evidence" >&2 || true
+    return 1
+  fi
+  hierarchy_path="$(dump_ui "aqua-widget-three-by-two")"
+  assert_widget_control_geometry "$hierarchy_path" "three-by-two" >/dev/null
+  adb exec-out screencap -p > "/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-3x2.png"
+  test -s "/tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-3x2.png"
+  echo "AQUA_WIDGET_3X2_PROPORTIONS_VERIFIED layout=three-by-two"
 }
 
 prove_widget_resize() {
@@ -664,9 +691,11 @@ tap_launcher_control() {
 
 pin_widget_on_launcher
 prove_neuralink_widget_activity
+prove_widget_three_by_two
 prove_widget_resize "compact" "horizontal"
 prove_widget_resize "small" "vertical"
 terminate_sentinel_background_process "before-five-action-sequence"
+adb shell pm grant "$package" android.permission.RECORD_AUDIO
 
 for mode in home action file photo video; do
   evidence="/tmp/aqua-sentinel-v0.7.5-widget-${mode}.logcat.txt"
@@ -686,6 +715,7 @@ for mode in home action file photo video; do
   jolted=false
   returned=false
   arrived=false
+  mic_armed=false
   for attempt in $(seq 1 24); do
     sleep 1
     adb logcat -d > "$evidence"
@@ -711,35 +741,28 @@ for mode in home action file photo video; do
       if grep -Fq "AQUA_CAPTURE_ROUTE mode=$expected_route" "$evidence"; then
         routed=true
       fi
+      if [[ "$mode" == "action" ]] && grep -Fq "AQUA_CAPTURE_MIC_ARMED mode=action handler=SpeechRecognizer" "$evidence"; then
+        mic_armed=true
+        routed=true
+      fi
     fi
-    if [[ "$jolted" == "true" && "$returned" == "true" && "$arrived" == "true" && "$received" == "true" && "$routed" == "true" ]]; then
+    if [[ "$jolted" == "true" && "$returned" == "true" && "$arrived" == "true" && "$received" == "true" && "$routed" == "true" && ( "$mode" != "action" || "$mic_armed" == "true" ) ]]; then
       break
     fi
   done
 
-  if [[ "$jolted" != "true" || "$returned" != "true" || "$arrived" != "true" || "$received" != "true" || "$routed" != "true" ]]; then
+  if [[ "$jolted" != "true" || "$returned" != "true" || "$arrived" != "true" || "$received" != "true" || "$routed" != "true" || ( "$mode" == "action" && "$mic_armed" != "true" ) ]]; then
     echo "Launcher-hosted widget tap did not light and resolve its route: $mode" >&2
     grep -E "AQUA_WIDGET|AQUA_CAPTURE|QuickCaptureActivity|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
     exit 1
   fi
 
   if [[ "$mode" == "action" ]]; then
-    submitted=false
-    background_sent=false
-    for receipt_attempt in $(seq 1 12); do
-      sleep 1
-      adb logcat -d > "$evidence"
-      grep -Fq "AQUA_WIDGET_HANDOFF_RECEIVED" "$evidence" && submitted=true
-      grep -Fq "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT" "$evidence" && background_sent=true
-      if [[ "$submitted" == "true" && "$background_sent" == "true" ]]; then break; fi
-    done
-    if [[ "$submitted" != "true" || "$background_sent" != "true" ]]; then
-      echo "Aqua Action did not complete its silent background dispatch" >&2
-      grep -E "AQUA_WIDGET|AndroidRuntime|FATAL EXCEPTION" "$evidence" || true
-      exit 1
-    fi
-    prove_handoff_confirmation
-    assert_widget_send_returned_to_launcher
+    adb exec-out screencap -p > /tmp/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png
+    test -s /tmp/AquaSentinelOS-v0.7.6-Widget-Action-Microphone-Armed.png
+    adb shell input keyevent KEYCODE_BACK
+    assert_transient_capture_returned_to_launcher "$mode"
+    echo "AQUA_WIDGET_ACTION_MICROPHONE_VERIFIED handler=SpeechRecognizer"
   fi
 
   if [[ "$mode" == "file" || "$mode" == "photo" || "$mode" == "video" ]]; then
@@ -778,11 +801,12 @@ for repeat_index in $(seq 1 5); do
   tap_ui_node \
     "Aqua Action stability run ${repeat_index}" \
     "^$package:id/widget_action(?: |$)"
-  if ! wait_for_log "AQUA_WIDGET_MESSAGE_BACKGROUND_SENT" "$repeat_evidence" 30; then
-    echo "Aqua Action stability run $repeat_index did not complete" >&2
+  if ! wait_for_log "AQUA_CAPTURE_MIC_ARMED mode=action handler=SpeechRecognizer" "$repeat_evidence" 30; then
+    echo "Aqua Action stability run $repeat_index did not arm the microphone" >&2
     exit 1
   fi
-  assert_widget_send_returned_to_launcher
+  adb shell input keyevent KEYCODE_BACK
+  assert_transient_capture_returned_to_launcher "action-repeat-$repeat_index"
   assert_no_sentinel_crash "$repeat_evidence" "Aqua-Action-repeat-$repeat_index"
   sleep 2
 done

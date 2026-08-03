@@ -81,12 +81,6 @@ public final class WidgetDispatchActivity extends Activity {
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
                 );
-            if ("action".equals(mode) && BuildConfig.ECOSYSTEM_PRESENTATION_MODE) {
-                destination.putExtra(
-                    QuickCaptureActivity.EXTRA_COMMAND_TEXT,
-                    "Aqua, prepare my executive morning brief"
-                );
-            }
         }
         startActivity(destination);
         overridePendingTransition(0, 0);

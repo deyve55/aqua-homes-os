@@ -1866,6 +1866,258 @@ html,body{overscroll-behavior:none}
   .neural-stage:before,.aqua-mark-orb{animation:none!important}
 }
 
+/* v0.7.6 owner-reference recovery.
+   The detailed approved plate is one stable, non-animated underlay. Living
+   content is limited to five independently rendered application portals, SVG
+   neuron traffic, the core listening glow, and the selected result surface. */
+.neural-stage{
+  background:#000 url("./assets/neuralink-rest-v071.png") 50% 50%/100% 100% no-repeat;
+  contain:layout;
+  isolation:isolate;
+}
+.neural-stage:before,.neural-stage:after{content:none!important;display:none!important}
+.neural-vignette{
+  z-index:2;
+  opacity:.34;
+  background:linear-gradient(180deg,rgba(0,0,0,.2),transparent 12% 82%,rgba(0,0,0,.38));
+}
+.neural-substrate-map,.neural-substrate-fire{display:none!important}
+.neural-rings{display:none!important}
+
+.neural-titlebar{
+  position:absolute;
+  z-index:80;
+  inset:0 0 auto 0;
+  height:7.2%;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  padding:0 2.2%;
+  border:0!important;
+  background:linear-gradient(180deg,rgba(0,0,0,.72),transparent);
+}
+.neural-titlebar h1{
+  margin:0;
+  color:#f2fbfd;
+  font-size:clamp(25px,6.25vw,38px);
+  font-weight:300;
+  letter-spacing:.015em;
+  text-transform:none;
+  text-shadow:0 2px 13px #000,0 0 18px rgba(80,223,247,.2);
+}
+.neural-titlebar .panel-close{
+  position:fixed;
+  z-index:110;
+  left:14px;
+  bottom:max(14px,env(safe-area-inset-bottom));
+  width:46px;
+  height:46px;
+}
+.neural-source-count{display:none!important}
+
+.neural-core,.neural-core-field{
+  left:50%!important;
+  top:45.2%!important;
+  width:30%!important;
+  opacity:1;
+  transition:none!important;
+}
+.neural-core{
+  z-index:38;
+  aspect-ratio:1;
+  background:transparent!important;
+  filter:none!important;
+}
+.neural-core:before,.neural-core:after,.neural-core>b{display:none!important}
+.neural-core .aqua-mark{opacity:0}
+.neural-core-hit{
+  inset:8%;
+  opacity:.16;
+  background:radial-gradient(circle,rgba(224,252,255,.26),rgba(31,217,246,.08) 34%,transparent 69%);
+}
+.neural-stage[data-phase="firing"] .neural-core-hit{
+  opacity:.92;
+  animation:core-presence .68s ease-in-out infinite;
+}
+.neural-core-field{z-index:7;opacity:.22}
+
+.neural-network{
+  z-index:9;
+  opacity:.98!important;
+  filter:none!important;
+  mix-blend-mode:normal;
+  contain:none;
+}
+.neural-core-glow{cx:50;cy:45.2;opacity:.14}
+.neural-route{stroke:rgba(135,239,252,.36);stroke-width:.52;stroke-dasharray:.48 2.1}
+.neural-signal{
+  stroke:#a8f8ff;
+  stroke-width:.72;
+  stroke-dasharray:1.05 8.95;
+  opacity:.78;
+  filter:drop-shadow(0 0 2px #eaffff) drop-shadow(0 0 5px rgba(35,221,249,.74));
+  animation-duration:2.45s;
+}
+.neural-route-group:nth-child(2n) .neural-signal{stroke:#f0bc69;opacity:.62;animation-duration:3.25s}
+.neural-burst{opacity:.76}
+.neural-stage[data-phase="transitioning"] .neural-network,
+.neural-stage[data-phase="result"] .neural-network{opacity:.82!important}
+
+.neural-traveler{
+  opacity:.72;
+  fill:#c9fbff;
+  filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 5px #28def8);
+}
+.neural-traveler-gold{
+  opacity:.58;
+  fill:#ffd08b;
+  filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 5px #e9a846);
+}
+.neural-route-group.is-active .neural-traveler{opacity:1;r:1.08px}
+.neural-route-group.is-supporting .neural-traveler{opacity:.9;r:.86px}
+
+.neural-portal{
+  z-index:30;
+  width:clamp(76px,19.5vw,108px)!important;
+  opacity:1!important;
+  filter:none;
+  will-change:transform;
+}
+.neural-portal .portal-pull{
+  display:grid;
+  place-items:center;
+  width:100%;
+  aspect-ratio:1;
+  padding:0;
+  overflow:visible;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  box-shadow:none;
+}
+.neural-portal .portal-pull:before{display:none}
+.neural-portal .portal-node{
+  width:76%;
+  height:76%;
+  overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--portal-color) 76%,#eaffff);
+  border-radius:50%;
+  background:#000;
+  box-shadow:inset 0 0 18px #000,0 0 5px #fff,0 0 16px color-mix(in srgb,var(--portal-color) 58%,transparent);
+}
+.neural-portal .portal-node>img{
+  left:3%;
+  top:3%;
+  width:94%;
+  height:75%;
+  object-fit:cover;
+  object-position:50% 16%;
+  opacity:1;
+  filter:saturate(1.08) contrast(1.16) brightness(.94);
+  transform:none;
+  border-radius:42%;
+}
+.neural-portal .portal-environment-shade{
+  background:linear-gradient(180deg,transparent 0 52%,rgba(0,0,0,.3) 65%,#000 92%);
+  box-shadow:inset 0 0 10px #000;
+}
+.neural-portal .portal-node>i{
+  position:absolute;
+  z-index:4;
+  top:8%;
+  right:8%;
+  width:22%;
+  font-size:clamp(6px,1.35vw,9px);
+  opacity:.92;
+  background:rgba(0,5,8,.9);
+  backdrop-filter:none;
+}
+.neural-portal .portal-node>strong{
+  left:3%;
+  right:3%;
+  bottom:12%;
+  padding:2px 1px;
+  border-radius:5px;
+  background:rgba(0,3,5,.88);
+  color:#eaffff;
+  font-size:clamp(7px,1.75vw,10px);
+  text-shadow:0 0 6px #2ae1fb;
+  line-height:1.05;
+}
+.neural-portal .portal-node>em{bottom:4%;font-size:clamp(4px,.95vw,6px)}
+.neural-portal .portal-node>b{inset:3%;border-color:color-mix(in srgb,var(--portal-color) 40%,transparent)}
+.neural-portal .portal-node>u{display:none}
+.neural-portal.is-primary .portal-pull{transform:scale(1.12)}
+.neural-stage[data-phase="firing"] .neural-portal.is-primary .portal-pull{
+  transform:scale(1.2);
+  filter:brightness(1.22);
+  animation:neural-requested-portal-charge .58s ease-in-out infinite alternate;
+}
+.neural-stage[data-phase="transitioning"] .neural-portal,
+.neural-stage[data-phase="result"] .neural-portal{
+  z-index:60;
+  width:clamp(76px,19.5vw,108px)!important;
+}
+
+.neural-jolt{left:50%;top:9.8%;height:35.3%;z-index:46}
+.neural-thought-residue{z-index:8;opacity:.36}
+.neural-thought{
+  z-index:48;
+  left:50%;
+  bottom:4.2%;
+  width:min(78%,430px);
+  padding:11px 14px 13px;
+  opacity:1;
+  transform:translateX(-50%);
+  border:1px solid rgba(85,219,241,.34);
+  border-radius:17px;
+  background:linear-gradient(145deg,rgba(2,17,24,.94),rgba(0,4,7,.97));
+  box-shadow:inset 0 1px rgba(255,255,255,.07),0 16px 34px rgba(0,0,0,.72);
+  backdrop-filter:none;
+}
+.neural-thought strong{font-size:clamp(12px,3vw,17px)}
+.neural-thought p{font-size:clamp(8px,1.9vw,11px)}
+.neural-stage[data-phase="transitioning"] .neural-thought,
+.neural-stage[data-phase="result"] .neural-thought{
+  opacity:0;
+  transform:translate(-50%,14px) scale(.96);
+  pointer-events:none;
+}
+
+.neural-materialization-slot{z-index:52;contain:layout}
+.neural-morph-shell,
+.neural-materialization-approved{
+  inset:24% 15% 14%;
+  border:1px solid rgba(93,231,251,.58);
+  border-radius:clamp(22px,5vw,34px);
+  background:linear-gradient(145deg,rgba(2,17,23,.985),rgba(0,3,5,.995));
+  box-shadow:inset 0 0 42px rgba(36,212,241,.07),0 22px 46px rgba(0,0,0,.78),0 0 22px rgba(35,219,246,.13);
+}
+.neural-morph-shell{
+  position:absolute;
+  z-index:54;
+  display:block;
+  box-sizing:border-box;
+  pointer-events:none;
+  background:radial-gradient(circle at 50% 18%,rgba(73,229,251,.13),rgba(1,13,18,.96) 62%,#000);
+  will-change:left,top,width,height,border-radius;
+}
+.neural-morph-shell[data-morph-complete="true"]{opacity:0}
+.neural-materialization-approved{z-index:55;box-sizing:border-box;overflow:hidden;animation:none;transform:none}
+.neural-materialization-approved[data-neural-materialized="pending"],
+.neural-materialization-approved[data-neural-materialized="pending"][data-morph-ready="true"]{opacity:0}
+.neural-materialization-approved[data-neural-materialized="true"]{opacity:1}
+.neural-approved-voice{left:5%;top:2%;width:90%;height:10.5%}
+.neural-live-object{left:6%;right:6%;top:14%;bottom:12.5%}
+.neural-open-materialized-file{left:8%;right:8%;bottom:3.4%;height:6.5%}
+
+@media(max-width:600px){
+  .neural-portal{width:19.5vw!important}
+  .neural-stage[data-phase="transitioning"] .neural-portal,
+  .neural-stage[data-phase="result"] .neural-portal{width:19.5vw!important}
+  .neural-morph-shell,.neural-materialization-approved{inset:24% 12.5% 13%}
+}
+
 /* v0.7.5 operating-surface completion. These rules are scoped to secondary
    Sentinel panels; the owner-approved Home composition is intentionally untouched. */
 .system-panel[data-panel="command"],

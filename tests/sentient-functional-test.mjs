@@ -174,7 +174,7 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(html, /data-panel="neural"[\s\S]*Neural Link/);
   assert.match(html, /data-panel="command"[\s\S]*Command/);
   assert.match(script, /AQUA SENTINEL NEURAL LINK/);
-  assert.match(script, />AQUA NEURALINK</);
+  assert.match(script, />Aqua Neuralink</);
   assert.doesNotMatch(script, /systemHeader\("Neural Workspace"\)/);
   assert.match(script, /class="neural-network"/);
   assert.match(script, /class="neural-microbursts"/);
@@ -187,39 +187,40 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /neural-substrate-map neural-substrate-result/);
   assert.match(script, /neural-substrate-fire neural-substrate-cyan/);
   assert.match(script, /const neuralRingSlots =/);
+  assert.match(script, /Five application portals are visible at once/);
+  assert.match(script, /data-neural-visible-portals="5"/);
+  assert.match(script, /let neuralIdleOffset = 0/);
+  assert.match(script, /\{ x: 50, y: 15\.5, scale: 1\.16/);
+  assert.match(script, /\{ x: 82\.5, y: 34, scale: \.97/);
+  assert.match(script, /\{ x: 23, y: 65, scale: \.91/);
+  assert.match(script, /const neuralOrbitKeyframes =/);
   assert.match(script, /function identifyNeuralIntent\(rawText\)/);
   assert.match(script, /function beginNeuralRequest\(command\)/);
   assert.match(script, /function isExplicitDeepOpen\(rawText\)/);
   assert.match(script, /directIntent && isExplicitDeepOpen\(command\)/);
   assert.match(script, /pendingNeuralIntent && !isExplicitDeepOpen\(pendingNeuralIntent\.command\)/);
   assert.match(script, /data-neural-path="\$\{index\}"/);
+  assert.match(script, /class="neural-traveler neural-traveler-cyan"/);
+  assert.match(script, /class="neural-traveler neural-traveler-gold"/);
   assert.match(script, /label: `Go deeper into \$\{app\.name\}`/);
   assert.match(script, /Presentation · Not Live/);
-  assert.match(script, /const neuralMaterializedSlots =/);
-  assert.match(script, /Five portals are visible at once/);
-  assert.match(script, /const neuralOrbitKeyframes =/);
-  assert.match(script, /\{ x: 50, y: 15\.5, scale: 1\.16/);
-  assert.match(script, /position: -3, x: 42, y: 82, scale: \.68, opacity: 0/);
-  assert.match(script, /\{ x: 11\.3, y: 92\.2, scale: 0\.88/);
   assert.match(script, /const NEURAL_ROTATE_MILLIS = 1380/);
   assert.match(script, /const NEURAL_FIRE_MILLIS = 920/);
   assert.match(script, /const NEURAL_MORPH_MILLIS = 2600/);
   assert.match(script, /function neuralCatmullRom\(before, from, to, after, progress\)/);
   assert.match(script, /x: neuralCatmullRom\(before\.x, from\.x, to\.x, after\.x, mix\)/);
   assert.match(script, /y: neuralCatmullRom\(before\.y, from\.y, to\.y, after\.y, mix\)/);
-  assert.match(script, /function neuralMorphSlot\(from, to, progress\)/);
-  assert.match(script, /return neuralMorphSlot\(ringSlot, materializedSlot, neuralEase\(progress\)\)/);
   assert.match(script, /portal\.animate\(keyframes/);
   assert.match(script, /function coastNeuralRing\(stage, initialOffset, initialVelocity\)/);
   assert.match(script, /neuralStage\.addEventListener\("pointermove"/);
   assert.match(script, /requestAnimationFrame\(coast\)/);
   assert.match(script, /The ring now rests until Dave touches it or asks Aqua/);
-  assert.match(script, /function neuralDisplaySlot\(sourceIndex, offset, isMaterialized, morphProgress, materializedOrder\)/);
   assert.match(script, /function neuralRouteTransform\(slot\)/);
   assert.match(script, /data-neural-source-group="\$\{index\}"/);
   assert.match(script, /group\.setAttribute\("transform", neuralRouteTransform\(slot\)\)/);
   assert.match(script, /group\.animate\(keyframes/);
-  assert.match(script, /if \(materializedIndex < 0\) return \{ \.\.\.ringSlot, opacity: 0 \}/);
+  assert.match(script, /group\.style\.visibility = "visible"/);
+  assert.match(script, /portal\.style\.opacity = String\(slot\.opacity \?\? 1\)/);
   assert.match(script, /materializationAnimation\.id = "aqua-neural-materialization-box"/);
   assert.match(script, /left: `\$\{sourceBox\.left\}px`/);
   assert.doesNotMatch(script, /content\.animate\(\[/);
@@ -229,7 +230,7 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /const NEURAL_MOTION_SETTLE_GRACE_MILLIS = 160/);
   assert.match(script, /function waitForNeuralMotion\(animations, duration\)/);
   assert.match(script, /setTimeout\(finish, duration \+ NEURAL_MOTION_SETTLE_GRACE_MILLIS\)/);
-  assert.equal((script.match(/await waitForNeuralMotion\(animations, duration\)/g) || []).length, 2);
+  assert.equal((script.match(/await waitForNeuralMotion\(animations, duration\)/g) || []).length, 1);
   assert.doesNotMatch(script, /neuralMotionFrame|requestAnimationFrame\(tick\)/);
   assert.doesNotMatch(script, /setAttribute\("d"/);
   assert.match(script, /neuralPhase = "rotating"/);
@@ -248,7 +249,9 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /function animateMaterializationFromPortal\(\)/);
   assert.match(script, /source\.getBoundingClientRect\(\)/);
   assert.match(script, /targetBounds = surface\.getBoundingClientRect\(\)/);
+  assert.match(script, /shell\.animate\(\[/);
   assert.match(script, /surface\.animate\(\[/);
+  assert.match(script, /class="neural-morph-shell"/);
   assert.match(script, /borderRadius: targetRadius/);
   assert.doesNotMatch(
     script.match(/function animateMaterializationFromPortal\(\) \{([\s\S]*?)\n\}/)?.[1] || "",
@@ -271,18 +274,20 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(fidelity, /neuralink-rest-gold-path-mask-v074\.png/);
   assert.match(fidelity, /neuralink-materialized-cyan-path-mask-v074\.png/);
   assert.match(fidelity, /neuralink-materialized-gold-path-mask-v074\.png/);
-  assert.match(fidelity, /v0\.7\.5 real-device rejection recovery/);
-  assert.match(fidelity, /\.neural-substrate-map,\.neural-substrate-fire\{display:none!important\}/);
-  assert.match(fidelity, /No full-screen raster/);
+  assert.match(fidelity, /v0\.7\.6 owner-reference recovery/);
+  assert.match(fidelity, /one stable, non-animated underlay/);
+  assert.match(fidelity, /background:#000 url\("\.\/assets\/neuralink-rest-v071\.png"\) 50% 50%\/100% 100% no-repeat/);
+  assert.match(fidelity, /\.neural-stage:before,\.neural-stage:after\{content:none!important;display:none!important\}/);
   assert.match(fidelity, /\.neural-stage\[data-phase="firing"\] \.neural-jolt\{opacity:1;transition:none\}/);
-  assert.match(fidelity, /object-fit:contain/);
-  assert.match(fidelity, /\.neural-network\{z-index:6;opacity:\.96!important;filter:none!important;mix-blend-mode:normal/);
+  assert.match(fidelity, /object-fit:cover/);
+  assert.match(fidelity, /\.neural-stage\[data-phase="transitioning"\] \.neural-portal,[\s\S]*width:clamp\(76px,19\.5vw,108px\)!important/);
+  assert.match(fidelity, /\.neural-morph-shell/);
+  assert.match(fidelity, /\.neural-route-group\.is-active \.neural-traveler/);
   assert.match(fidelity, /\.neural-materialization-circuit\{opacity:\.76;mix-blend-mode:normal\}/);
-  assert.match(fidelity, /opacity:\.92;filter:saturate\(1\.04\) contrast\(1\.08\) brightness\(\.98\)/);
-  assert.match(fidelity, /\.neural-portal \.portal-node\.has-environment>i\{position:absolute;top:7%;right:7%;width:19%/);
-  const realDeviceRecovery = fidelity.slice(fidelity.lastIndexOf("v0.7.5 real-device rejection recovery"));
-  assert.doesNotMatch(realDeviceRecovery, /background-image:url/);
-  assert.doesNotMatch(realDeviceRecovery, /opacity:\.18/);
+  const ownerReferenceRecovery = fidelity.slice(fidelity.lastIndexOf("v0.7.6 owner-reference recovery"));
+  assert.match(ownerReferenceRecovery, /neuralink-rest-v071\.png/);
+  assert.doesNotMatch(ownerReferenceRecovery, /neuralink-materialized-v071\.png/);
+  assert.doesNotMatch(ownerReferenceRecovery, /left:11\.3%/);
   assert.match(fidelity, /@keyframes neural-substrate-cyan-out/);
   assert.match(fidelity, /@keyframes neural-substrate-gold-return/);
   assert.match(fidelity, /@keyframes neural-path-fire/);
@@ -475,11 +480,12 @@ test("v0.7.5 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(visualRenderer, /document\.fonts\?\.ready/);
   assert.match(visualRenderer, /document\.getAnimations\(\)/);
   assert.match(visualRenderer, /Page\.captureScreenshot/);
-  assert.match(visualRenderer, /materializationOpacity >= 0\.98/);
+  assert.match(visualRenderer, /materializationOpacity >= \.98/);
   assert.match(visualRenderer, /visiblePortals: 5/);
-  assert.match(visualRenderer, /portalImagesContained/);
+  assert.match(visualRenderer, /portalImagesLoaded/);
   assert.match(visualRenderer, /substrateDisplay === "none"/);
   assert.match(visualRenderer, /!state\.beforeUsesRaster && !state\.afterUsesRaster/);
+  assert.match(visualRenderer, /state\.stageUsesApprovedRaster/);
   assert.match(visualRenderer, /preview=settings/);
   assert.match(visualRenderer, /Settings-closed-phone\.png/);
   assert.match(workflow, /AquaSentinelOS-v0\.7\.5-Settings-closed-phone\.png/);
@@ -497,9 +503,12 @@ test("v0.7.5 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(neuralLiveProof, /bound-aqua-receipts-portal-click/);
   assert.match(neuralLiveProof, /materializationKind, "receipts"/);
   assert.match(neuralLiveProof, /visiblePortals, 5/);
-  assert.match(neuralLiveProof, /portalsContained, true/);
+  assert.match(neuralLiveProof, /visibleTravelers >= 10/);
+  assert.match(neuralLiveProof, /neuron particles must visibly travel/);
+  assert.match(neuralLiveProof, /portalsLoaded, true/);
   assert.match(neuralLiveProof, /substrateDisplay, "none"/);
-  assert.match(neuralLiveProof, /usesRasterUnderlay, false/);
+  assert.match(neuralLiveProof, /usesApprovedStableUnderlay, true/);
+  assert.match(neuralLiveProof, /usesPseudoRasterUnderlay, false/);
   assert.match(neuralLiveProof, /usesRasterCompositor, false/);
   assert.match(neuralLiveProof, /firing\.joltOpacity >= 0\.99/);
   assert.match(neuralLiveProof, /neural-jolt-column/);
@@ -721,7 +730,10 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(capture, /AQUA_CAPTURE_ROUTE mode=/);
   assert.match(capture, /AQUA_CAPTURE_SAVED type=/);
   assert.match(capture, /captureRapidAction\(\)/);
-  assert.match(capture, /AQUA_CAPTURE_ROUTE mode=action handler=PresentationContract/);
+  assert.match(capture, /AQUA_CAPTURE_MIC_ARMED mode=/);
+  const actionRouteBody = capture.match(/private void routeCapture\(\) \{([\s\S]*?)\n    \}/)?.[1] || "";
+  assert.match(actionRouteBody, /"action"\.equals\(mode\)[\s\S]*captureRapidAction\(\)/);
+  assert.doesNotMatch(actionRouteBody, /commandSeed|submitCommand/);
   assert.match(capture, /AQUA_WIDGET_HANDOFF_RECEIVED id=/);
   assert.match(capture, /submitAssistantHandoff\("action", text, "", true\)/);
   assert.match(capture, /WidgetMessageService\.enqueue\(/);
@@ -764,7 +776,7 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(messageService, /AQUA_WIDGET_MESSAGE_BACKGROUND_SENT/);
   assert.doesNotMatch(messageService, /MainActivity\.class/);
   assert.match(capture, /EXTRA_COMMAND_TEXT = "widget_command_text"/);
-  assert.match(dispatch, /Aqua, prepare my executive morning brief/);
+  assert.doesNotMatch(dispatch, /Aqua, prepare my executive morning brief|EXTRA_COMMAND_TEXT/);
   assert.match(activity, /AQUA_WIDGET_MESSAGE_DELIVERED id=/);
   assert.match(activity, /AQUA_WIDGET_HOME_OPENED/);
   assert.match(activity, /window\.receiveWidgetCommand/);
@@ -818,6 +830,10 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.doesNotMatch(widgetVerifier, /grep -Fq "\$package:id\/widget_active_path" "\$launcher_hierarchy"/);
   assert.match(widgetVerifier, /AQUA_WIDGET_NEURALINK_ACTIVITY_VERIFIED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_REAL_RESIZE_VERIFIED/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_3X2_PROPORTIONS_VERIFIED/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_ACTION_MICROPHONE_VERIFIED/);
+  assert.match(widgetVerifier, /AQUA_CAPTURE_MIC_ARMED mode=action handler=SpeechRecognizer/);
+  assert.match(widgetVerifier, /pm grant "\$package" android\.permission\.RECORD_AUDIO/);
   assert.match(widgetVerifier, /AQUA_WIDGET_REPEAT_STABILITY_VERIFIED runs=5/);
   assert.match(widgetVerifier, /assert_no_sentinel_crash/);
   assert.match(widgetVerifier, /local package_pattern=/);
@@ -843,7 +859,6 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(widgetVerifier, /compare -metric AE/);
   assert.doesNotMatch(widgetVerifier, /wait_for_adb/);
   assert.match(widgetVerifier, /AQUA_WIDGET_FILED_TODAY_VERIFIED/);
-  assert.match(widgetVerifier, /AQUA_WIDGET_HANDOFF_CONFIRMATION_VERIFIED/);
   assert.match(widgetVerifier, /AQUA_WIDGET_BACKGROUND_FILE_STAYED_ON_LAUNCHER/);
   assert.match(widgetVerifier, /if grep -Fq "AQUA_FILING_CABINET_OPENED"/);
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_TAP mode=\$mode resource=\$resource_id/);
@@ -857,17 +872,14 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(widgetVerifier, /AQUA_WIDGET_ACTION_RECEIVED mode=\$mode/);
   assert.match(widgetVerifier, /AQUA_WIDGET_HOME_OPENED/);
   assert.match(widgetVerifier, /AQUA_CAPTURE_ROUTE mode=\$expected_route/);
-  assert.match(widgetVerifier, /AQUA_WIDGET_HANDOFF_RECEIVED/);
-  assert.match(widgetVerifier, /AQUA_WIDGET_MESSAGE_BACKGROUND_SENT/);
-  assert.match(widgetVerifier, /AQUA_WIDGET_BACKGROUND_SEND_STAYED_ON_LAUNCHER/);
-  assert.match(widgetVerifier, /Aqua Action did not complete its silent background dispatch/);
+  assert.doesNotMatch(widgetVerifier, /Aqua Action did not complete its silent background dispatch/);
   assert.doesNotMatch(widgetVerifier, /tap_resource|widget_command_send|widget_command_input/);
   assert.match(widgetVerifier, /AQUA_WIDGET_LAUNCHER_PROCESS_RECREATION_VERIFIED/);
   assert.doesNotMatch(widgetVerifier, /AQUA_WIDGET_REMOTE_VIEWS_TAP/);
 });
 
 test("responsive widget fills every supported host while preserving approved art and action zones", async () => {
-  const [gradle, manifest, widget, widgetLayout, compactLayout, compactLargeLayout, microLayout, wideLayout, widgetInfo, capture, activity, store, verifier, script, styles, neural4x6, neural2x2, neuralWide, activity4x6, activityWide, widget4x6, widget2x2] = await Promise.all([
+  const [gradle, manifest, widget, widgetLayout, compactLayout, compactLargeLayout, microLayout, threeByTwoLayout, wideLayout, widgetInfo, capture, activity, store, verifier, script, styles, neural4x6, neural2x2, neuralWide, activity4x6, activityWide, widget4x6, widget2x2] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read("android-app/app/src/main/AndroidManifest.xml"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/AquaCommandWidget.java"),
@@ -875,6 +887,7 @@ test("responsive widget fills every supported host while preserving approved art
     read("android-app/app/src/main/res/layout/aqua_command_widget_compact.xml"),
     read("android-app/app/src/main/res/layout/aqua_command_widget_compact_large.xml"),
     read("android-app/app/src/main/res/layout/aqua_command_widget_2x2.xml"),
+    read("android-app/app/src/main/res/layout/aqua_command_widget_3x2.xml"),
     read("android-app/app/src/main/res/layout/aqua_command_widget_wide.xml"),
     read("android-app/app/src/main/res/xml/aqua_command_widget_info.xml"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/QuickCaptureActivity.java"),
@@ -944,6 +957,15 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(microLayout, /android:scaleType="centerCrop"/);
   assert.doesNotMatch(microLayout, /widget_shimmer|fitXY/);
   assert.doesNotMatch(microLayout, /android:text="(?:ASK|VIDEO|PHOTO|FILE|AQUA)"/);
+  assert.match(threeByTwoLayout, /three by two proportional surface/);
+  assert.match(threeByTwoLayout, /@drawable\/aqua_widget_2x2_approved_v073/);
+  assert.match(threeByTwoLayout, /android:weightSum="6"/);
+  assert.equal((threeByTwoLayout.match(/android:layout_weight="1"/g) || []).length >= 2, true);
+  assert.match(threeByTwoLayout, /android:layout_weight="4"/);
+  assert.match(threeByTwoLayout, /android:scaleType="centerInside"/);
+  assert.match(threeByTwoLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
+  assert.match(threeByTwoLayout, /@drawable\/aqua_widget_neural_activity_wide/);
+  assert.match(threeByTwoLayout, /@layout\/aqua_widget_selected_neural_activity_wide/);
   assert.match(wideLayout, /Aqua Neuralink wide responsive surface/);
   assert.match(wideLayout, /@drawable\/aqua_widget_neural_paths_wide/);
   assert.match(neuralWide, /<vector/);
@@ -951,8 +973,9 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(wideLayout, /@drawable\/aqua_widget_icon_action/);
   assert.match(wideLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_logo[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.match(wideLayout, /android:layout_width="match_parent"[\s\S]*android:layout_height="match_parent"/);
-  assert.match(widgetInfo, /android:targetCellWidth="4"/);
-  assert.match(widgetInfo, /android:targetCellHeight="6"/);
+  assert.match(widgetInfo, /android:targetCellWidth="3"/);
+  assert.match(widgetInfo, /android:targetCellHeight="2"/);
+  assert.match(widgetInfo, /android:initialLayout="@layout\/aqua_command_widget_3x2"/);
   assert.match(widgetInfo, /android:minWidth="110dp"/);
   assert.match(widgetInfo, /android:minHeight="110dp"/);
   assert.match(widgetInfo, /android:minResizeWidth="110dp"/);
@@ -968,13 +991,17 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(widget, /R\.layout\.aqua_command_widget_compact_large/);
   assert.match(widget, /R\.layout\.aqua_command_widget_2x2/);
   assert.match(widget, /R\.layout\.aqua_command_widget_wide/);
+  assert.match(widget, /R\.layout\.aqua_command_widget_3x2/);
   assert.match(widget, /OPTION_APPWIDGET_MIN_WIDTH/);
   assert.match(widget, /static int layoutForSize\(int minWidth, int minHeight\)/);
   assert.match(widget, /new RemoteViews\(responsive\)/);
   assert.match(widget, /new SizeF\(110f, 110f\)/);
   assert.match(widget, /new SizeF\(180f, 180f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_compact_large\)/);
   assert.match(widget, /new SizeF\(320f, 180f\)/);
-  assert.match(widget, /new SizeF\(320f, 180f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_wide\)/);
+  assert.match(widget, /new SizeF\(300f, 200f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_3x2\)/);
+  assert.match(widget, /new SizeF\(320f, 180f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_3x2\)/);
+  assert.match(widget, /layoutName\(int layout\)/);
+  assert.match(widget, /return "three-by-two"/);
   assert.match(widget, /new SizeF\(250f, 390f\)/);
   assert.match(widget, /SELECTED_NEURAL_ACTIVITY_IDS/);
   assert.match(widget, /activityId == selectedActivity \? View\.VISIBLE : View\.INVISIBLE/);
