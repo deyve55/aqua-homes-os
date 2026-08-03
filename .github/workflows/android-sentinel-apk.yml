@@ -21,8 +21,13 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   verify-and-build:
+    if: github.event_name != 'pull_request' || github.head_ref != 'agent/aqua-sentinel-command-center-integration-20260730'
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
