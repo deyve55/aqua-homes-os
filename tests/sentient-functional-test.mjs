@@ -873,6 +873,13 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(widgetVerifier, /aqua-widget-resize-\$\{label\}-selected/);
   assert.match(widgetVerifier, /Neuralink-Widget-Resize-Handle-\$\{label\}\.png/);
   assert.match(widgetVerifier, /AQUA_WIDGET_RESIZE_HANDLE_DETECTED/);
+  assert.match(widgetVerifier, /for resize_attempt in \$\(seq 1 3\); do/);
+  assert.match(widgetVerifier, /aqua-widget-resize-\$\{label\}-attempt-\$\{resize_attempt\}-before/);
+  assert.match(widgetVerifier, /attempt=\$resize_attempt outcome=missing_resize_handle/);
+  assert.match(widgetVerifier, /attempt=\$resize_attempt side=\$handle_side/);
+  assert.match(widgetVerifier, /outcome=no_callback/);
+  assert.match(widgetVerifier, /AQUA_WIDGET_RESIZE_RETRY label=\$label axis=\$axis attempt=\$resize_attempt reason=no_callback/);
+  assert.match(widgetVerifier, /did not produce a real widget resize callback for \$label after 3 attempts/);
   assert.match(widgetVerifier, /source=\$handle_source/);
   assert.match(widgetVerifier, /drag=\$start_x,\$start_y->\$end_x,\$end_y/);
   assert.doesNotMatch(widgetVerifier, /for resize_attempt in \$\(seq 1 7\)/);

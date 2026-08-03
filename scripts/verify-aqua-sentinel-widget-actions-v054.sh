@@ -683,6 +683,7 @@ prove_widget_resize() {
   local handle_right=""
   local handle_bottom=""
   local handle_receipt="/tmp/aqua-sentinel-v0.7.6-widget-resize-handle-${label}.txt"
+  local resize_attempt=""
   local resized="false"
   local evidence="/tmp/aqua-sentinel-v0.7.6-widget-resize-${label}.logcat.txt"
 
@@ -710,10 +711,25 @@ prove_widget_resize() {
   fi
   screen_width="${BASH_REMATCH[1]}"
   screen_height="${BASH_REMATCH[2]}"
-  clear_logcat
+  : > "$handle_receipt"
 
-  for selection_attempt in $(seq 1 4); do
+  for resize_attempt in $(seq 1 3); do
+    handle_geometry=""
+    selected_hierarchy=""
     return_to_launcher
+    hierarchy_path="$(dump_ui "aqua-widget-resize-${label}-attempt-${resize_attempt}-before")" || true
+    if [[ -z "$hierarchy_path" ]]; then
+      echo "attempt=$resize_attempt outcome=missing_widget_hierarchy" >> "$handle_receipt"
+      continue
+    fi
+    surface_bounds="$(ui_node_bounds "$hierarchy_path" "^$package:id/widget_resize_surface(?: |$)")"
+    if [[ -z "$surface_bounds" ]]; then
+      echo "attempt=$resize_attempt outcome=missing_widget_surface" >> "$handle_receipt"
+      continue
+    fi
+    read -r left top right bottom <<< "$surface_bounds"
+    center_x=$(((left + right) / 2))
+    center_y=$(((top + bottom) / 2))
     adb shell input swipe "$center_x" "$center_y" "$center_x" "$center_y" 1300
     sleep 1
     selected_hierarchy="$(dump_ui "aqua-widget-resize-${label}-selected")" || true
@@ -726,42 +742,46 @@ prove_widget_resize() {
           || true
       )"
     fi
-    if [[ -n "$handle_geometry" ]]; then
+    if [[ -z "$handle_geometry" || -z "$selected_hierarchy" ]]; then
+      echo "attempt=$resize_attempt outcome=missing_resize_handle" >> "$handle_receipt"
+      adb shell input keyevent KEYCODE_BACK || true
+      sleep 1
+      continue
+    fi
+
+    read -r start_x start_y end_x end_y handle_side handle_source \
+      handle_left handle_top handle_right handle_bottom <<< "$handle_geometry"
+    {
+      echo "attempt=$resize_attempt"
+      echo "launcher=$launcher_package"
+      echo "axis=$axis"
+      echo "side=$handle_side"
+      echo "source=$handle_source"
+      echo "measured_bounds=$handle_left,$handle_top,$handle_right,$handle_bottom"
+      echo "drag=$start_x,$start_y->$end_x,$end_y"
+      echo "hierarchy=$selected_hierarchy"
+      echo "screenshot=$selected_screenshot"
+    } >> "$handle_receipt"
+    echo "AQUA_WIDGET_RESIZE_HANDLE_DETECTED label=$label axis=$axis attempt=$resize_attempt side=$handle_side source=$handle_source bounds=$handle_left,$handle_top,$handle_right,$handle_bottom"
+    echo "Resizing Aqua widget $label attempt $resize_attempt from detected $handle_side handle $start_x,$start_y to $end_x,$end_y"
+    clear_logcat
+    adb shell input swipe "$start_x" "$start_y" "$end_x" "$end_y" 1100
+    if wait_for_log "AQUA_WIDGET_RESIZED id=.*size=.*layout=" "$evidence" 8; then
+      resized="true"
+      echo "outcome=resize_callback" >> "$handle_receipt"
+      adb shell input keyevent KEYCODE_BACK || true
       break
     fi
+    echo "outcome=no_callback" >> "$handle_receipt"
+    echo "AQUA_WIDGET_RESIZE_RETRY label=$label axis=$axis attempt=$resize_attempt reason=no_callback"
     adb shell input keyevent KEYCODE_BACK || true
     sleep 1
   done
 
-  if [[ -z "$handle_geometry" || -z "$selected_hierarchy" ]]; then
-    echo "The active launcher did not expose a measurable resize handle for $label" >&2
+  if [[ "$resized" != "true" ]]; then
+    echo "The detected launcher resize handle did not produce a real widget resize callback for $label after 3 attempts" >&2
     [[ -n "$selected_hierarchy" && -s "$selected_hierarchy" ]] \
       && grep -Ei "resize|AppWidget" "$selected_hierarchy" >&2 || true
-    return 1
-  fi
-
-  read -r start_x start_y end_x end_y handle_side handle_source \
-    handle_left handle_top handle_right handle_bottom <<< "$handle_geometry"
-  {
-    echo "launcher=$launcher_package"
-    echo "axis=$axis"
-    echo "side=$handle_side"
-    echo "source=$handle_source"
-    echo "measured_bounds=$handle_left,$handle_top,$handle_right,$handle_bottom"
-    echo "drag=$start_x,$start_y->$end_x,$end_y"
-    echo "hierarchy=$selected_hierarchy"
-    echo "screenshot=$selected_screenshot"
-  } > "$handle_receipt"
-  echo "AQUA_WIDGET_RESIZE_HANDLE_DETECTED label=$label axis=$axis side=$handle_side source=$handle_source bounds=$handle_left,$handle_top,$handle_right,$handle_bottom"
-  echo "Resizing Aqua widget $label from detected $handle_side handle $start_x,$start_y to $end_x,$end_y"
-  adb shell input swipe "$start_x" "$start_y" "$end_x" "$end_y" 1100
-  if wait_for_log "AQUA_WIDGET_RESIZED id=.*size=.*layout=" "$evidence" 8; then
-    resized="true"
-  fi
-  adb shell input keyevent KEYCODE_BACK || true
-
-  if [[ "$resized" != "true" ]]; then
-    echo "The detected launcher resize handle did not produce a real widget resize callback for $label" >&2
     grep -E "AQUA_WIDGET_RESIZED|Launcher3|AndroidRuntime|FATAL EXCEPTION" "$evidence" >&2 || true
     return 1
   fi
