@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 31812)
+Total output lines: 2939
+
 const apps = [
   {
     name: "Aqua CRM",
@@ -510,6 +513,24 @@ function neuralPortalAnimationsBetween(stage, slotAtProgress, duration) {
       fill: "forwards",
     }));
   });
+  stage.querySelectorAll("[data-neural-source-group]").forEach((group) => {
+    const sourceIndex = Number(group.dataset.neuralSourceGroup);
+    const keyframes = Array.from({ length: sampleCount + 1 }, (_, sampleIndex) => {
+      const progress = sampleIndex / sampleCount;
+      const slot = slotAtProgress(sourceIndex, progress);
+      return {
+        transform: neuralRouteTransform(slot),
+        opacity: String(slot.opacity ?? 1),
+        offset: progress,
+      };
+    });
+    group.style.visibility = "visible";
+    animations.push(group.animate(keyframes, {
+      duration,
+      easing: "linear",
+      fill: "forwards",
+    }));
+  });
   neuralPortalAnimations = animations;
   return animations;
 }
@@ -570,6 +591,7 @@ async function animateNeuralMorph(duration) {
   const animations = neuralPortalAnimationsBetween(stage, (index, progress) => {
     const ringSlot = neuralSlotForSource(index, offset);
     const materializedIndex = order.indexOf(index);
+    if (materializedIndex < 0) return { ...ringSlot, opacity: 0 };
     const materializedSlot = neuralMaterializedSlots[materializedIndex] || {
       x: 11.3, y: 99, scale: 0.1, c1x: 15, c1y: 49, c2x: 11.3, c2y: 90,
     };
@@ -1372,184 +1394,7 @@ function deckGeometry(position) {
 function applyDeckPosition(offsetPx, animate) {
   const progress = offsetPx / deckStepPx();
   cardsTrack.querySelectorAll(".app-card").forEach((card) => {
-    const index = Number(card.dataset.index);
-    let position = relative(index) + progress;
-    if (position > apps.length / 2) position -= apps.length;
-    if (position < -apps.length / 2) position += apps.length;
-    const distance = Math.abs(position);
-    const geometry = deckGeometry(position);
-    const visible = distance < DECK_PATH.length - 1;
-    card.className = `app-card${Math.abs(position) < 0.5 ? " active" : ""}`;
-    card.style.transition = animate
-      ? "left .28s cubic-bezier(.18,.78,.22,1),top .28s cubic-bezier(.18,.78,.22,1),width .28s cubic-bezier(.18,.78,.22,1),height .28s cubic-bezier(.18,.78,.22,1),transform .28s cubic-bezier(.18,.78,.22,1),opacity .2s"
-      : "none";
-    card.style.left = `${geometry.center}%`;
-    card.style.top = `${geometry.top}%`;
-    card.style.width = `${geometry.width}%`;
-    card.style.height = `${geometry.height}%`;
-    card.style.zIndex = String(Math.max(1, 12 - Math.round(distance * 3)));
-    card.style.opacity = visible ? String(Math.max(0, geometry.opacity)) : "0";
-    card.style.pointerEvents = visible ? "auto" : "none";
-    card.style.transform = `translateX(-50%) translateZ(${geometry.depth}px) rotateY(${geometry.angle}deg)`;
-    card.setAttribute(
-      "aria-label",
-      Math.abs(position) < 0.5 ? `Open ${apps[index].name}` : `Move ${apps[index].name} to center`,
-    );
-  });
-}
-
-function renderDashboard() {
-  const selected = selectedView(apps[active]);
-  const presentation = snapshotPresentation(selected);
-  const updated = selected.previewOnly
-    ? "Presentation mode · synthetic preview"
-    : formatSnapshotTime(selected.capturedAt);
-  const previewImageUrl = safePreviewImage(selected.previewImage);
-  appDashboard.style.setProperty("--app-color", selected.color);
-  selectedAppLabel.textContent = selected.name;
-  selectedAppLabel.style.setProperty("--app-color", selected.color);
-  document.getElementById("primaryTitle").textContent = selected.primaryTitle;
-  document.getElementById("primaryDetail").textContent = selected.primaryDetail;
-  document.getElementById("primaryValue").textContent = selected.primaryValue;
-  document.getElementById("primarySource").textContent = selected.name;
-  document.getElementById("primaryStatus").textContent = presentation.label;
-  document.getElementById("primaryBadge").textContent = presentation.label;
-  document.getElementById("primaryBadge").className = presentation.className;
-  document.getElementById("primaryUpdated").textContent = updated;
-  document.getElementById("primaryScreen").innerHTML = dashboardPanelMarkup(
-    selected,
-    selected,
-    previewImageUrl,
-    "primary",
-  );
-  document.getElementById("secondaryTitle").textContent = selected.secondaryTitle;
-  document.getElementById("secondaryDetail").textContent =
-    selected.secondaryDetail;
-  document.getElementById("secondaryValue").textContent =
-    selected.secondaryValue;
-  document.getElementById("secondarySource").textContent = selected.name;
-  document.getElementById("secondaryStatus").textContent = presentation.label;
-  document.getElementById("secondaryBadge").textContent = presentation.label;
-  document.getElementById("secondaryBadge").className = presentation.className;
-  document.getElementById("secondaryUpdated").textContent = updated;
-  document.getElementById("secondaryScreen").innerHTML = dashboardPanelMarkup(
-    selected,
-    selected,
-    previewImageUrl,
-    "secondary",
-  );
-}
-
-function render() {
-  renderCards();
-  renderDashboard();
-}
-
-function revealSelectedAppLabel() {
-  selectedAppLabel.classList.remove("is-visible");
-  void selectedAppLabel.offsetWidth;
-  selectedAppLabel.classList.add("is-visible");
-}
-
-function finishRotation(openAfter) {
-  rotating = false;
-  appDeck.classList.remove("is-rotating");
-  appDeck.classList.add("is-settled");
-  renderDashboard();
-  revealSelectedAppLabel();
-  deckDots.querySelectorAll("button").forEach((dot, index) => {
-    dot.classList.toggle("active", index === active);
-  });
-  requestSnapshot(apps[active]);
-  if (openAfter) openWorkspace();
-}
-
-function snapDeck(openAfter = false) {
-  applyDeckPosition(0, true);
-  clearTimeout(rotationTimer);
-  rotationTimer = setTimeout(() => finishRotation(openAfter), 290);
-}
-
-function centerApp(index, openAfter) {
-  clearTimeout(rotationTimer);
-  rotating = true;
-  appDeck.classList.remove("is-settled");
-  appDeck.classList.add("is-rotating");
-  selectedAppLabel.classList.remove("is-visible");
-  active = (index + apps.length) % apps.length;
-  closeOverlays();
-  render();
-  requestSnapshot(apps[active]);
-  rotationTimer = setTimeout(() => finishRotation(openAfter), 320);
-}
-
-function rotate(direction) {
-  centerApp(active + direction, false);
-}
-
-function openWorkspace() {
-  if (rotating) return;
-  const selected = apps[active];
-  if (window.AquaBridge?.launchApp) {
-    window.AquaBridge.launchApp(selected.name, JSON.stringify(selected.packages));
-    return;
-  }
-  workspace.style.setProperty("--app-color", selected.color);
-  workspace.innerHTML = `
-    <button class="workspace-close" type="button" aria-label="Return to Sentinel">‹</button>
-    <div class="workspace-brand">
-      <span>${escapeHtml(selected.icon)}</span>
-      <small>${escapeHtml(selected.short)}</small>
-      <h1>${escapeHtml(selected.name)}</h1>
-      <p>Opened inside Aqua Sentinel OS</p>
-    </div>
-    <div class="workspace-widgets">
-      ${selected.widgets.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
-    </div>
-    <div class="workspace-grid">
-      <button type="button" data-detail="primary">
-        <small>${escapeHtml(selected.primaryTitle)}</small>
-        <strong>${escapeHtml(selected.primaryValue)}</strong>
-        <p>${escapeHtml(selected.primaryDetail)}</p>
-      </button>
-      <button type="button" data-detail="secondary">
-        <small>${escapeHtml(selected.secondaryTitle)}</small>
-        <strong>${escapeHtml(selected.secondaryValue)}</strong>
-        <p>${escapeHtml(selected.secondaryDetail)}</p>
-      </button>
-    </div>
-    <section class="workspace-activity">
-      <small>RECENT SENTINEL ACTIVITY</small>
-      ${selected.activity.map((item) => `<p><i>✓</i>${escapeHtml(item)}</p>`).join("")}
-    </section>
-    <div class="workspace-actions">
-      <button class="ask-aqua" type="button">Ask Aqua about ${escapeHtml(selected.name)}</button>
-      <button class="connection-status" type="button">
-        ${selected.connected ? "Open connected app" : "Connection status"}
-      </button>
-    </div>
-  `;
-  workspace.hidden = false;
-  workspace.querySelector(".workspace-close").addEventListener("click", () => {
-    workspace.hidden = true;
-  });
-  workspace.querySelectorAll("[data-detail]").forEach((button) => {
-    button.addEventListener("click", () => openDetail(button.dataset.detail));
-  });
-  workspace.querySelector(".ask-aqua").addEventListener("click", startVoice);
-  workspace.querySelector(".connection-status").addEventListener("click", () => {
-    notify(
-      selected.connected
-        ? `${selected.name} is registered with Sentinel`
-        : `${selected.name} is awaiting its production data gateway`,
-    );
-  });
-}
-
-function openDetail(kind) {
-  const selected = selectedView(apps[active]);
-  const primary = kind === "primary";
-  detailSheet.style.setProperty("--app-color", selected.color);
+    const inde…1812 tokens truncated…y("--app-color", selected.color);
   detailSheet.innerHTML = `
     <button class="sheet-close" type="button" aria-label="Close details">×</button>
     <small>${escapeHtml(selected.name)} · ${primary ? "01" : "02"}</small>

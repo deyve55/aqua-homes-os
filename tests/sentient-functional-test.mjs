@@ -218,6 +218,8 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(script, /function neuralRouteTransform\(slot\)/);
   assert.match(script, /data-neural-source-group="\$\{index\}"/);
   assert.match(script, /group\.setAttribute\("transform", neuralRouteTransform\(slot\)\)/);
+  assert.match(script, /group\.animate\(keyframes/);
+  assert.match(script, /if \(materializedIndex < 0\) return \{ \.\.\.ringSlot, opacity: 0 \}/);
   assert.match(script, /sourceIndex === neuralFocusIndex/);
   assert.match(script, /neuralSupportIndexes\.includes\(sourceIndex\)/);
   assert.match(script, /Promise\.allSettled\(animations\.map/);
