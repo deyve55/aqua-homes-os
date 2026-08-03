@@ -163,9 +163,12 @@ jobs:
 
       - name: Restore checksum-locked Aqua Sentinel OS launcher
         run: |
-          if ! command -v convert >/dev/null; then
+          missing_packages=()
+          command -v convert >/dev/null || missing_packages+=(imagemagick)
+          command -v ffmpeg >/dev/null || missing_packages+=(ffmpeg)
+          if (( ${#missing_packages[@]} )); then
             sudo apt-get update
-            sudo apt-get install -y imagemagick
+            sudo apt-get install -y "${missing_packages[@]}"
           fi
           bash scripts/restore-aqua-sentinel-launcher-v045.sh
 
@@ -614,6 +617,7 @@ jobs:
             /tmp/aqua-widget-resize-*-selected.xml
             /tmp/aqua-sentinel-v0.7.6-widget-resize-handle-*.txt
             /tmp/aqua-sentinel-v0.7.6-widget-resize-*.logcat.txt
+            /tmp/aqua-sentinel-v0.7.6-widget-*-jolt.mp4
           if-no-files-found: warn
           retention-days: 14
 

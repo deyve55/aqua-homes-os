@@ -941,13 +941,17 @@ tap_launcher_control() {
   local width=""
   local height=""
   local changed_pixels=""
+  local frame_offset=""
   local idle="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-idle.png"
   local active="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-jolt.png"
   local idle_crop="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-idle-crop.png"
   local active_crop="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-jolt-crop.png"
+  local device_video="/sdcard/aqua-sentinel-v0.7.6-widget-${mode}-jolt.mp4"
+  local tap_video="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-jolt.mp4"
   local render_evidence="/tmp/aqua-sentinel-v0.7.6-widget-${mode}-jolt-render.logcat.txt"
   local render_observed="false"
 
+  command -v ffmpeg >/dev/null
   return_to_launcher
   for attempt in $(seq 1 20); do
     hierarchy_path="$(dump_ui "aqua-widget-${mode}-jolt-${attempt}")" || {
@@ -964,9 +968,16 @@ tap_launcher_control() {
     height=$((bottom - top))
     tap_x=$(((left + right) / 2))
     tap_y=$(((top + bottom) / 2))
-    adb exec-out screencap -p > "$idle"
     echo "Tapping launcher-hosted widget $mode control at $tap_x,$tap_y"
-    adb shell input tap "$tap_x" "$tap_y"
+    adb shell rm -f "$device_video"
+    # A full screencap can take several seconds on the software-rendered CI Pixel,
+    # longer than Aqua's 700 ms outbound pulse. Record and tap on the device clock,
+    # then extract frames that are guaranteed to straddle the real launcher tap.
+    adb shell "(sleep 1.5; input tap $tap_x $tap_y) & screenrecord --bit-rate 4000000 --time-limit 4 $device_video"
+    adb pull "$device_video" "$tap_video" >/dev/null
+    test -s "$tap_video"
+    ffmpeg -loglevel error -y -i "$tap_video" -ss 0.60 -frames:v 1 "$idle"
+    test -s "$idle"
     for render_attempt in $(seq 1 20); do
       adb logcat -d > "$render_evidence"
       if grep -Fq "AQUA_WIDGET_NEURAL_JOLT_RENDERED mode=$mode phase=outbound" "$render_evidence"; then
@@ -979,18 +990,24 @@ tap_launcher_control() {
       echo "The $mode Neuralink endpoint did not render its outbound jolt after the real launcher tap" >&2
       return 1
     fi
-    sleep 0.12
-    adb exec-out screencap -p > "$active"
     convert "$idle" -crop "${width}x${height}+${left}+${top}" +repage "$idle_crop"
-    convert "$active" -crop "${width}x${height}+${left}+${top}" +repage "$active_crop"
-    changed_pixels="$(compare -metric AE "$idle_crop" "$active_crop" null: 2>&1 || true)"
-    if [[ ! "$changed_pixels" =~ ^[0-9]+$ ]] || ((changed_pixels <= 0)); then
+    changed_pixels="0"
+    for frame_offset in 1.75 1.95 2.15; do
+      ffmpeg -loglevel error -y -i "$tap_video" -ss "$frame_offset" -frames:v 1 "$active"
+      test -s "$active"
+      convert "$active" -crop "${width}x${height}+${left}+${top}" +repage "$active_crop"
+      changed_pixels="$(compare -metric AE -fuzz 4% "$idle_crop" "$active_crop" null: 2>&1 || true)"
+      if [[ "$changed_pixels" =~ ^[0-9]+$ ]] && ((changed_pixels >= 40)); then
+        break
+      fi
+    done
+    if [[ ! "$changed_pixels" =~ ^[0-9]+$ ]] || ((changed_pixels < 40)); then
       echo "The $mode Neuralink endpoint did not visibly react to its real launcher tap" >&2
       return 1
     fi
     cp "$active" /tmp/AquaSentinelOS-v0.7.6-Neuralink-Widget-Tap-Jolt.png
     echo "AQUA_WIDGET_LAUNCHER_TAP mode=$mode resource=$resource_id"
-    echo "AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=$mode changed_pixels=$changed_pixels"
+    echo "AQUA_WIDGET_NEURAL_JOLT_PIXELS_VERIFIED mode=$mode changed_pixels=$changed_pixels source=device_tap_video"
     return 0
   done
 
