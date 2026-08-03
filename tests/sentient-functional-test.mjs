@@ -317,6 +317,7 @@ test("Android blocks cleartext traffic and backup extraction", async () => {
   assert.match(manifest, /android:usesCleartextTraffic="false"/);
   assert.match(manifest, /android:allowBackup="false"/);
   assert.match(manifest, /android\.permission\.RECORD_AUDIO/);
+  assert.match(manifest, /android\.speech\.RecognitionService/);
   assert.match(manifest, /android\.permission\.INTERNET/);
 });
 
@@ -814,6 +815,7 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.doesNotMatch(capture, /openFilingCabinet|putExtra\("open_filing", true\)/);
   assert.match(styles, /<item name="android:clickable">true<\/item>/);
   assert.match(workflow, /bash scripts\/verify-aqua-sentinel-android-launch-v060\.sh/);
+  assert.match(workflow, /target: google_apis/);
   assert.match(workflow, /widget_dispatch=launcher_hosted_remote_views_taps_verified/);
   assert.match(workflow, /::add-mask::\$KEY_PASSWORD/);
   assert.match(androidLaunch, /bash scripts\/verify-aqua-sentinel-widget-actions-v054\.sh/);
