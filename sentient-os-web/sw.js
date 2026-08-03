@@ -1,4 +1,4 @@
-const CACHE_NAME = "aqua-sentinel-os-v0.8.0-live-neural-link";
+const CACHE_NAME = "aqua-sentinel-os-v0.8.0-physical-device-review";
 const APP_FILES = [
   "./",
   "./index.html",

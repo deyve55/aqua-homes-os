@@ -174,10 +174,11 @@ test("Aqua Brain can use live web search without moving the API key into the APK
 });
 
 test("the premium Neural Link keeps seven owner-reference portals alive while Aqua morphs into the operating surface", async () => {
-  const [html, script, fidelity] = await Promise.all([
+  const [html, script, fidelity, serviceWorker] = await Promise.all([
     read("sentient-os-web/index.html"),
     read("sentient-os-web/app.js"),
     read("sentient-os-web/fidelity.css"),
+    read("sentient-os-web/sw.js"),
   ]);
   assert.match(html, /data-panel="neural"[\s\S]*Neural Link/);
   assert.match(html, /data-panel="command"[\s\S]*Command/);
@@ -195,18 +196,27 @@ test("the premium Neural Link keeps seven owner-reference portals alive while Aq
   assert.match(script, /neural-substrate-map neural-substrate-result/);
   assert.match(script, /neural-substrate-fire neural-substrate-cyan/);
   assert.match(script, /const neuralRingSlots =/);
-  assert.match(script, /Seven physical application portals reproduce Dave's owner reference/);
+  assert.match(script, /Sentinel sits above the ecosystem/);
   assert.match(script, /data-neural-visible-portals="7"/);
   assert.match(script, /let neuralVisibleIndexes = \[0, 5, 6, 1, 4, 3, 2\]/);
   assert.match(script, /function neuralFixedSlotForSource\(sourceIndex\)/);
   assert.match(script, /function promoteNeuralSource\(sourceIndex\)/);
   assert.match(script, /neuralVisibleIndexes\[destinationSlot\] = previousTop/);
   assert.match(script, /neuralVisibleIndexes\[0\] = sourceIndex/);
-  assert.match(script, /\{ x: 50, y: 15\.7, scale: 1\.34/);
-  assert.match(script, /\{ x: 17\.4, y: 29\.8, scale: \.98/);
-  assert.match(script, /\{ x: 82\.8, y: 61\.1, scale: \.88/);
+  assert.match(script, /const NEURAL_ORIGIN = \{ x: 50, y: 30 \}/);
+  assert.match(script, /\{ x: 50, y: 47, scale: 1\.18/);
+  assert.match(script, /\{ x: 22, y: 49, scale: \.94/);
+  assert.match(script, /\{ x: 87, y: 65, scale: \.84/);
   assert.match(script, /function identifyNeuralIntent\(rawText\)/);
   assert.match(script, /function beginNeuralRequest\(command\)/);
+  assert.match(script, /function identifySentinelNavigation\(rawText\)/);
+  assert.match(script, /function navigateSentinelByVoice\(destination\)/);
+  for (const panel of ["diagnostics", "command", "files", "settings", "data", "messages", "home", "neural"]) {
+    assert.match(script, new RegExp(`panel: "${panel}"`));
+  }
+  assert.match(script, /const sentinelDestination = identifySentinelNavigation\(command\)/);
+  assert.match(script, /sentinelDestination && navigateSentinelByVoice\(sentinelDestination\)/);
+  assert.match(script, /Applications: \$\{appStates\}/);
   assert.match(script, /function isExplicitDeepOpen\(rawText\)/);
   assert.match(script, /directIntent && isExplicitDeepOpen\(command\)/);
   assert.match(script, /function scheduleNeuralDestination\(intent\)/);
@@ -222,7 +232,12 @@ test("the premium Neural Link keeps seven owner-reference portals alive while Aq
   assert.match(script, /function returnNeuralToRest\(\)/);
   assert.match(script, /data-neural-path="\$\{index\}"/);
   assert.doesNotMatch(script, /class="neural-traveler/);
-  assert.match(script, /const bursts = \[0, 1, 2, 3, 4, 5\]/);
+  assert.match(script, /const bursts = \[0, 1, 2, 3\]/);
+  assert.doesNotMatch(script, /const bursts = \[0, 1, 2, 3, 4, 5\]/);
+  assert.match(script, /function paintNeuralMorphProgress\(stage, progress\)/);
+  const morphPainter = script.match(/const paintMorph = \(now\) => \{([\s\S]*?)\n    \};/)?.[1] || "";
+  assert.match(morphPainter, /paintNeuralMorphProgress\(stage, progress\)/);
+  assert.doesNotMatch(morphPainter, /layoutNeuralStage/);
   assert.match(script, /label: `Go deeper into \$\{app\.name\}`/);
   assert.match(script, /Presentation · Not Live/);
   assert.match(script, /const NEURAL_SELECT_MILLIS = 220/);
@@ -300,7 +315,12 @@ test("the premium Neural Link keeps seven owner-reference portals alive while Aq
   assert.match(appFirstNeuralink, /\.neural-network\{[\s\S]*opacity:\.6!important/);
   assert.match(appFirstNeuralink, /\.neural-signal\{[\s\S]*opacity:\.68/);
   assert.match(fidelity, /neural-link-live-substrate-v080\.png/);
+  assert.match(serviceWorker, /aqua-sentinel-os-v0\.8\.0-physical-device-review/);
   assert.match(fidelity, /\.aqua-mark-orb,[\s\S]*\.aqua-mark-orb-core\{display:none!important\}/);
+  assert.match(fidelity, /\.neural-jolt\{display:none!important\}/);
+  assert.match(fidelity, /stroke-dasharray:14 86/);
+  assert.match(fidelity, /@keyframes aqua-neural-edge-listen/);
+  assert.match(fidelity, /data-aqua-state="listening"[\s\S]*\.aqua-mark-outer/);
   assert.match(appFirstNeuralink, /data-phase="firing"[\s\S]*neural-jolt-column/);
   assert.match(appFirstNeuralink, /data-phase="result"[\s\S]*\.neural-portal,[\s\S]*opacity:0!important/);
   assert.match(appFirstNeuralink, /data-phase="result"[^}]*\.neural-portal\{transition:none!important\}/);
@@ -320,8 +340,9 @@ test("the premium Neural Link keeps seven owner-reference portals alive while Aq
   assert.match(ownerReferenceNeuralink, /\.neural-selected-chip/);
   assert.match(ownerReferenceNeuralink, /\.neural-continuation/);
   assert.ok(
-    fidelity.lastIndexOf("neural-jolt-up") > fidelity.lastIndexOf("neural-jolt-return"),
-    "the final working-state override must fire both request pulses upward",
+    fidelity.lastIndexOf(".neural-jolt{display:none!important}")
+      > fidelity.lastIndexOf("neural-jolt-up"),
+    "the final physical-device override must suppress legacy circular travelers",
   );
   assert.match(fidelity, /data-phase="transitioning"/);
   assert.match(fidelity, /@keyframes approved-neuron-perimeter/);
@@ -664,11 +685,15 @@ test("v0.5.0 compact rail and filing cabinet share one protected widget inbox", 
   assert.match(script, /Aqua File Cabinet/);
   assert.match(script, /window\.receiveFilingInbox/);
   assert.match(script, /needsClarification/);
-  assert.match(script, /Tell Aqua where this goes/);
+  assert.match(script, /Ask Aqua what this is for/);
+  assert.match(script, /data-file-id/);
+  assert.match(script, /data-discard-id/);
   assert.match(script, /Hey, you have \$\{pending\} pending/);
   assert.match(activity, /getFilingInbox/);
   assert.match(activity, /startFilingCapture/);
   assert.match(activity, /startFilingClarification/);
+  assert.match(activity, /fileFilingItem/);
+  assert.match(activity, /discardFilingItem/);
   assert.match(store, /AES\/GCM\/NoPadding/);
   assert.match(store, /AndroidKeyStore/);
   assert.match(store, /Aqua Books · Executive Intake/);
@@ -678,6 +703,8 @@ test("v0.5.0 compact rail and filing cabinet share one protected widget inbox", 
   assert.match(store, /needsApproval/);
   assert.match(store, /"Queued"/);
   assert.match(store, /static synchronized boolean clarify/);
+  assert.match(store, /static synchronized boolean fileLocally/);
+  assert.match(store, /static synchronized boolean discard/);
   assert.match(widget, /widget_action/);
   assert.match(widget, /widget_video/);
   assert.match(widget, /widget_photo/);
@@ -685,6 +712,7 @@ test("v0.5.0 compact rail and filing cabinet share one protected widget inbox", 
   assert.match(capture, /ACTION_IMAGE_CAPTURE/);
   assert.match(capture, /ACTION_VIDEO_CAPTURE/);
   assert.match(capture, /FilingStore\.enqueue/);
+  assert.match(capture, /Aqua filed it securely on this phone/);
   assert.match(manifest, /\.AquaCommandWidget/);
   assert.match(manifest, /\.QuickCaptureActivity/);
   assert.match(manifest, /com\.aquasoftware\.sentinel\.action\.FILE/);
@@ -1129,12 +1157,12 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(widget, /R\.layout\.aqua_command_widget_3x2/);
   assert.match(widget, /OPTION_APPWIDGET_MIN_WIDTH/);
   assert.match(widget, /static int layoutForSize\(int minWidth, int minHeight\)/);
-  assert.match(widget, /new RemoteViews\(responsive\)/);
-  assert.match(widget, /new SizeF\(110f, 110f\)/);
-  assert.match(widget, /new SizeF\(180f, 180f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_compact_large\)/);
-  assert.match(widget, /new SizeF\(320f, 180f\)/);
-  assert.match(widget, /new SizeF\(300f, 200f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_3x2\)/);
-  assert.match(widget, /new SizeF\(320f, 180f\), buildLayoutViews\(context, R\.layout\.aqua_command_widget_3x2\)/);
+  assert.match(widget, /OPTION_APPWIDGET_SIZES/);
+  assert.match(widget, /private static ArrayList<SizeF> exactHostSizes\(Bundle options\)/);
+  assert.match(widget, /for \(SizeF hostSize : hostSizes\)/);
+  assert.match(widget, /layoutForSize\(width, height\)/);
+  assert.match(widget, /new RemoteViews\(exact\)/);
+  assert.doesNotMatch(widget, /new SizeF\(110f, 110f\)/);
   assert.match(widget, /layoutName\(int layout\)/);
   assert.match(widget, /return "three-by-two"/);
   assert.match(widget, /ratio >= 1\.10f && ratio <= 2\.20f/);
@@ -1158,7 +1186,7 @@ test("responsive widget fills every supported host while preserving approved art
     "wide 3x2 hosts must resolve before compact fallbacks",
   );
   assert.ok(214 / 133 >= 1.10 && 214 / 133 <= 2.20);
-  assert.match(widget, /new SizeF\(250f, 390f\)/);
+  assert.match(widget, /return buildLayoutViews\(context, layoutFor\(manager, id\)\)/);
   assert.match(widget, /SELECTED_NEURAL_ACTIVITY_IDS/);
   assert.match(widget, /activityId == selectedActivity \? View\.VISIBLE : View\.INVISIBLE/);
   assert.match(selectedActivity4x6, /widget_selected_outbound_action/);
@@ -1222,6 +1250,15 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(capture, /handler=PresentationContract/);
   assert.match(capture, /mode = "file"\.equals\(requestedMode\) \? "voice" : requestedMode/);
   assert.match(store, /ACTION_INBOX_CHANGED/);
+  assert.match(store, /static synchronized boolean fileLocally\(Context context, String itemId\)/);
+  assert.match(store, /static synchronized boolean discard\(Context context, String itemId\)/);
+  assert.match(store, /Filed by Aqua on this phone/);
+  assert.match(store, /context\.getFilesDir\(\),\s*"filing-evidence"/);
+  assert.match(activity, /public boolean fileFilingItem\(String itemId\)/);
+  assert.match(activity, /public boolean discardFilingItem\(String itemId\)/);
+  assert.match(script, /data-file-id="\$\{escapeHtml\(item\.id\)\}"/);
+  assert.match(script, /data-discard-id="\$\{escapeHtml\(item\.id\)\}"/);
+  assert.match(script, /Ask Aqua what this is for/);
   assert.match(store, /setPackage\(context\.getPackageName\(\)\)/);
   assert.match(activity, /private void deliverFilingInbox\(\)/);
   assert.match(activity, /AQUA_FILING_INBOX_DELIVERED items=/);

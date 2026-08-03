@@ -10,6 +10,7 @@ import android.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.text.DateFormat;
@@ -363,7 +364,9 @@ final class FilingStore {
                 item.put("destination", destination)
                     .put("confidence", 1.0)
                     .put("needsClarification", false)
-                    .put("state", "Queued")
+                    .put("state", "Filed Locally")
+                    .put("handoffState", "Filed by Aqua on this phone")
+                    .put("filedAt", System.currentTimeMillis())
                     .put("clarification", direction);
                 writeItems(context, items);
                 AquaCommandWidget.updateAll(context);
@@ -374,6 +377,76 @@ final class FilingStore {
                 );
                 return true;
             }
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    static synchronized boolean fileLocally(Context context, String itemId) {
+        if (itemId == null || itemId.isEmpty()) return false;
+        try {
+            JSONArray items = readItems(context);
+            for (int index = 0; index < items.length(); index++) {
+                JSONObject item = items.optJSONObject(index);
+                if (item == null || !itemId.equals(item.optString("id", ""))) continue;
+                if (
+                    item.optBoolean("needsClarification", true)
+                        || item.optBoolean("needsApproval", false)
+                ) {
+                    return false;
+                }
+                item.put("state", "Filed Locally")
+                    .put("handoffState", "Filed by Aqua on this phone")
+                    .put("filedAt", System.currentTimeMillis());
+                writeItems(context, items);
+                AquaCommandWidget.updateAll(context);
+                context.sendBroadcast(
+                    new Intent(ACTION_INBOX_CHANGED)
+                        .setPackage(context.getPackageName())
+                        .putExtra("filing_item_id", itemId)
+                );
+                return true;
+            }
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    static synchronized boolean discard(Context context, String itemId) {
+        if (itemId == null || itemId.isEmpty()) return false;
+        try {
+            JSONArray items = readItems(context);
+            JSONArray retained = new JSONArray();
+            boolean found = false;
+            for (int index = 0; index < items.length(); index++) {
+                JSONObject item = items.optJSONObject(index);
+                if (item == null || !itemId.equals(item.optString("id", ""))) {
+                    retained.put(items.get(index));
+                    continue;
+                }
+                found = true;
+                String evidencePath = item.optString("evidencePath", "");
+                if (!evidencePath.isEmpty()) {
+                    File evidenceRoot = new File(
+                        context.getFilesDir(),
+                        "filing-evidence"
+                    ).getCanonicalFile();
+                    File evidence = new File(evidencePath).getCanonicalFile();
+                    boolean protectedEvidence = evidence.getPath().startsWith(
+                        evidenceRoot.getPath() + File.separator
+                    );
+                    if (protectedEvidence && evidence.exists() && !evidence.delete()) {
+                        return false;
+                    }
+                }
+            }
+            if (!found) return false;
+            writeItems(context, retained);
+            AquaCommandWidget.updateAll(context);
+            context.sendBroadcast(
+                new Intent(ACTION_INBOX_CHANGED)
+                    .setPackage(context.getPackageName())
+                    .putExtra("filing_item_id", itemId)
+            );
+            return true;
         } catch (Exception ignored) {}
         return false;
     }

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -187,21 +188,32 @@ public class AquaCommandWidget extends AppWidgetProvider {
         return views;
     }
 
-    private static RemoteViews buildViews(Context context, AppWidgetManager manager, int id) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Map<SizeF, RemoteViews> responsive = new LinkedHashMap<>();
-            responsive.put(new SizeF(110f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_2x2));
-            responsive.put(new SizeF(180f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_compact_large));
-            responsive.put(new SizeF(180f, 110f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
-            responsive.put(new SizeF(250f, 140f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
-            responsive.put(new SizeF(250f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
-            responsive.put(new SizeF(300f, 200f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
-            responsive.put(new SizeF(320f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_3x2));
-            responsive.put(new SizeF(360f, 180f), buildLayoutViews(context, R.layout.aqua_command_widget_wide));
-            responsive.put(new SizeF(180f, 260f), buildLayoutViews(context, R.layout.aqua_command_widget));
-            responsive.put(new SizeF(250f, 390f), buildLayoutViews(context, R.layout.aqua_command_widget));
-            return new RemoteViews(responsive);
+    @SuppressWarnings("deprecation")
+    private static ArrayList<SizeF> exactHostSizes(Bundle options) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || options == null) {
+            return null;
         }
+        return options.getParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES);
+    }
+
+    private static RemoteViews buildViews(Context context, AppWidgetManager manager, int id) {
+        Bundle options = manager.getAppWidgetOptions(id);
+        ArrayList<SizeF> hostSizes = exactHostSizes(options);
+        if (hostSizes != null && !hostSizes.isEmpty()) {
+            Map<SizeF, RemoteViews> exact = new LinkedHashMap<>();
+            for (SizeF hostSize : hostSizes) {
+                if (hostSize == null) continue;
+                int width = Math.max(1, Math.round(hostSize.getWidth()));
+                int height = Math.max(1, Math.round(hostSize.getHeight()));
+                exact.put(
+                    hostSize,
+                    buildLayoutViews(context, layoutForSize(width, height))
+                );
+            }
+            if (!exact.isEmpty()) return new RemoteViews(exact);
+        }
+        // Some launchers omit OPTION_APPWIDGET_SIZES. In that case update the
+        // one current, full-host layout whenever onAppWidgetOptionsChanged fires.
         return buildLayoutViews(context, layoutFor(manager, id));
     }
 

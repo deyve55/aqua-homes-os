@@ -788,7 +788,7 @@ public class QuickCaptureActivity extends Activity {
             boolean clarified = FilingStore.clarify(this, itemId, text);
             if (clarified) {
                 Log.i("AquaCommandWidget", "AQUA_CAPTURE_SAVED type=clarification");
-                Toast.makeText(this, "Received. Aqua has your filing direction.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Received. Aqua filed it securely on this phone.", Toast.LENGTH_SHORT).show();
                 finishAndRemoveTask();
                 return;
             }

@@ -1340,5 +1340,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 startActivity(intent);
             });
         }
+
+        @JavascriptInterface
+        public boolean fileFilingItem(String itemId) {
+            return FilingStore.fileLocally(MainActivity.this, itemId);
+        }
+
+        @JavascriptInterface
+        public boolean discardFilingItem(String itemId) {
+            return FilingStore.discard(MainActivity.this, itemId);
+        }
     }
 }
