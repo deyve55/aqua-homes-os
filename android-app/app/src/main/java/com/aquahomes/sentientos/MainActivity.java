@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -83,6 +85,24 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         "com.aquasoftware.sentinel.HOME_SNAPSHOT_RESPONSE";
     private static final String SNAPSHOT_CONTRACT_VERSION = "1.0";
     private static final int MAX_SNAPSHOT_BYTES = 384 * 1024;
+    private static final String[] DIAGNOSTIC_APP_NAMES = {
+        "Aqua CRM",
+        "AquaDraw",
+        "AquaCam",
+        "Aqua Knowledge Vault",
+        "Aqua Timesheet",
+        "Aqua Books",
+        "Aqua Receipts"
+    };
+    private static final String[][] DIAGNOSTIC_APP_PACKAGES = {
+        { "com.aquasoftware.crm.fieldtest", "com.aquasoftware.crm.test", "com.aquasoftware.crm" },
+        { "com.aquahomesdesigngroup.draw.v0189option1", "com.aquahomesdesigngroup.draw.v0187fresh", "com.aquahomesdesigngroup.draw.beta", "com.aquahomesdesigngroup.draw" },
+        { "com.aquahomesdesign.cam.obsidianpreview", "com.aquahomesdesign.cam" },
+        { "com.aquahomes.knowledgevault" },
+        { "com.aquahomes.timesheet.engineering", "com.aquahomes.timesheet" },
+        { "com.aquasoftware.aquabooks" },
+        { "com.aquasoftware.receipts.test", "com.aquasoftware.receipts" }
+    };
 
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private WebView webView;
@@ -288,6 +308,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         if (webAppReady) {
             deliverFilingInbox();
             deliverCommandWidgetStatus("Ready");
+            deliverDeviceDiagnostics();
         }
     }
 
@@ -636,6 +657,117 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 Log.e("AquaCommandWidget", "AQUA_WIDGET_PIN_FAILED", error);
                 deliverCommandWidgetStatus("Needs Attention");
             }
+        });
+    }
+
+    private String installedPackage(String[] packageNames) {
+        if (packageNames == null) return "";
+        for (String packageName : packageNames) {
+            if (
+                packageName != null
+                    && !packageName.isEmpty()
+                    && getPackageManager().getLaunchIntentForPackage(packageName) != null
+            ) {
+                return packageName;
+            }
+        }
+        return "";
+    }
+
+    private boolean intentHandlerAvailable(String action) {
+        return new Intent(action).resolveActivity(getPackageManager()) != null;
+    }
+
+    private JSONObject deviceDiagnostics() {
+        JSONObject payload = new JSONObject();
+        try {
+            JSONArray appStates = new JSONArray();
+            int installedApps = 0;
+            for (int index = 0; index < DIAGNOSTIC_APP_NAMES.length; index++) {
+                String installedPackage = installedPackage(DIAGNOSTIC_APP_PACKAGES[index]);
+                if (!installedPackage.isEmpty()) installedApps++;
+                appStates.put(
+                    new JSONObject()
+                        .put("name", DIAGNOSTIC_APP_NAMES[index])
+                        .put("installed", !installedPackage.isEmpty())
+                        .put("packageName", installedPackage)
+                );
+            }
+            payload
+                .put("generatedAt", System.currentTimeMillis())
+                .put("platform", "Android " + Build.VERSION.RELEASE)
+                .put("versionName", BuildConfig.VERSION_NAME)
+                .put("versionCode", BuildConfig.VERSION_CODE)
+                .put("gatewayConfigured", !AQUA_GATEWAY_URL.trim().isEmpty())
+                .put("authenticated", sessionIsCurrent())
+                .put(
+                    "microphoneGranted",
+                    checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                        == PackageManager.PERMISSION_GRANTED
+                )
+                .put("speechRecognizerAvailable", SpeechRecognizer.isRecognitionAvailable(this))
+                .put(
+                    "calendarReadGranted",
+                    checkSelfPermission(Manifest.permission.READ_CALENDAR)
+                        == PackageManager.PERMISSION_GRANTED
+                )
+                .put(
+                    "calendarWriteGranted",
+                    checkSelfPermission(Manifest.permission.WRITE_CALENDAR)
+                        == PackageManager.PERMISSION_GRANTED
+                )
+                .put("photoCaptureAvailable", intentHandlerAvailable("android.media.action.IMAGE_CAPTURE"))
+                .put("videoCaptureAvailable", intentHandlerAvailable("android.media.action.VIDEO_CAPTURE"))
+                .put("widgetInstalledCount", AquaCommandWidget.installedCount(this))
+                .put("filingPendingCount", FilingStore.pendingCount(this))
+                .put("filedTodayCount", FilingStore.filedTodayCount(this))
+                .put("installedAppCount", installedApps)
+                .put("registeredAppCount", DIAGNOSTIC_APP_NAMES.length)
+                .put("apps", appStates);
+        } catch (Exception error) {
+            try {
+                payload.put("diagnosticError", "Sentinel could not complete one or more device checks.");
+            } catch (JSONException ignored) {}
+        }
+        return payload;
+    }
+
+    private void deliverDeviceDiagnostics() {
+        sendJsonCallback("receiveDeviceDiagnostics", deviceDiagnostics());
+    }
+
+    private void openAppPermissionSettings() {
+        runOnUiThread(() -> {
+            try {
+                Intent intent = new Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + getPackageName())
+                );
+                startActivity(intent);
+            } catch (Exception error) {
+                try {
+                    startActivity(new Intent(Settings.ACTION_SETTINGS));
+                } catch (Exception ignored) {
+                    sendError("Android settings are not available on this device.");
+                }
+            }
+        });
+    }
+
+    private void copyDiagnosticReceipt(String receipt) {
+        runOnUiThread(() -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            if (clipboard == null) {
+                sendError("The Android clipboard is not available.");
+                return;
+            }
+            clipboard.setPrimaryClip(
+                ClipData.newPlainText(
+                    "Aqua Sentinel diagnostic receipt",
+                    receipt == null ? "" : receipt
+                )
+            );
+            evaluateJavascript("window.receiveDiagnosticCopy?.();");
         });
     }
 
@@ -1168,6 +1300,26 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @JavascriptInterface
         public void installOrRepairCommandWidget() {
             MainActivity.this.installOrRepairCommandWidget();
+        }
+
+        @JavascriptInterface
+        public String getDeviceDiagnostics() {
+            return deviceDiagnostics().toString();
+        }
+
+        @JavascriptInterface
+        public void refreshDeviceDiagnostics() {
+            deliverDeviceDiagnostics();
+        }
+
+        @JavascriptInterface
+        public void openAppPermissionSettings() {
+            MainActivity.this.openAppPermissionSettings();
+        }
+
+        @JavascriptInterface
+        public void copyDiagnosticReceipt(String receipt) {
+            MainActivity.this.copyDiagnosticReceipt(receipt);
         }
 
         @JavascriptInterface

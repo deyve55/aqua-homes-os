@@ -1,4 +1,4 @@
-name: Build Aqua Sentinel OS v0.7.4 Exact Fidelity Materialization and Widget Test
+name: Build Aqua Sentinel OS v0.7.5 Complete Operating Surfaces Test
 
 on:
   push:
@@ -48,7 +48,7 @@ on:
   workflow_dispatch:
     inputs:
       owner_visual_approval:
-        description: "Dave approved the current real-device Neuralink, materialization, settings, and widget proof"
+        description: "Dave approved building the current Neuralink, widget, and completed operating surfaces test APK"
         required: true
         default: false
         type: boolean
@@ -57,7 +57,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -80,7 +80,7 @@ jobs:
           npm ci
           npm test
 
-      - name: Render and inspect Neuralink, materialization, settings, and Home without an APK
+      - name: Render and inspect Home, Neuralink, and every secondary operating surface without an APK
         run: |
           set -Eeuo pipefail
           mkdir -p preflight/proofs preflight/evidence
@@ -95,9 +95,14 @@ jobs:
             --chrome "$CHROME_BIN" \
             --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
             --evidence-dir preflight/evidence/live
-          test -s preflight/proofs/AquaSentinelOS-v0.7.4-Neural-Link-Fire-closed-phone.png
-          test -s preflight/proofs/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png
-          test -s preflight/proofs/AquaSentinelOS-v0.7.4-Settings-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.5-Neural-Link-Fire-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.5-Neural-Link-Result-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.5-Settings-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.5-Diagnostics-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.5-Connections-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.5-File-Cabinet-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.5-Conversation-Receipts-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.7.5-About-closed-phone.png
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -120,14 +125,14 @@ jobs:
       - name: Retain preflight visual evidence
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.7.4-preflight-no-apk-${{ github.run_attempt }}
+          name: AquaSentinelOS-v0.7.5-preflight-no-apk-${{ github.run_attempt }}
           path: preflight/**
           if-no-files-found: error
           retention-days: 14
 
   build-apk:
     needs: preflight-no-apk
-    if: github.event_name == 'workflow_dispatch' && inputs.owner_visual_approval
+    if: (github.event_name == 'workflow_dispatch' && inputs.owner_visual_approval) || (github.event_name == 'push' && github.ref_name == 'agent/aqua-sentinel-command-center-integration-20260730' && contains(github.event.head_commit.message, '[build-test-apk]'))
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -152,7 +157,7 @@ jobs:
           npm ci
           npm test
 
-      - name: Render closed-phone Home, living Neural Link, and Command Center proofs
+      - name: Render closed-phone Home, Neuralink, widget command, and completed operating-surface proofs
         run: |
           set -Eeuo pipefail
           mkdir -p release/visual-proof-diagnostics
@@ -169,7 +174,7 @@ jobs:
               printf 'shell_line=%s\n' "$source_line"
               printf 'failed_command=%s\n' "$failed_command"
             } > release/visual-proof-diagnostics/assertion-failure.txt
-            printf '::error title=Aqua v0.7.4 visual proof assertion failed::Shell line %s exited %s: %s\n' \
+            printf '::error title=Aqua v0.7.5 visual proof assertion failed::Shell line %s exited %s: %s\n' \
               "$source_line" "$exit_code" "$failed_command" >&2
             printf 'AQUA_VISUAL_PROOF_ASSERTION_FAILED line=%s exit=%s command=%q\n' \
               "$source_line" "$exit_code" "$failed_command" >&2
@@ -264,17 +269,22 @@ jobs:
             --dump-dom \
             "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=command" \
             > /tmp/aqua-sentinel-command-proof.html
-          test -s release/AquaSentinelOS-v0.7.4-launch-proof.png
-          test -s release/AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.4-Neural-Link-Rotate-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.4-Neural-Link-Fire-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png
-          test -s release/AquaSentinelOS-v0.7.4-Settings-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-launch-proof.png
+          test -s release/AquaSentinelOS-v0.7.5-Neural-Link-Rest-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-Neural-Link-Rotate-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-Neural-Link-Fire-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-Neural-Link-Morph-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-Neural-Link-Result-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-Command-Center-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-Settings-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-Diagnostics-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-Connections-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-File-Cabinet-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-Conversation-Receipts-closed-phone.png
+          test -s release/AquaSentinelOS-v0.7.5-About-closed-phone.png
           for checkpoint in 00 01 02 03 04 05 06; do
-            test -s "release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-${checkpoint}.png"
-            test "$(identify -format '%wx%h' "release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-${checkpoint}.png")" = "430x932"
+            test -s "release/AquaSentinelOS-v0.7.5-Neural-Link-Morph-${checkpoint}.png"
+            test "$(identify -format '%wx%h' "release/AquaSentinelOS-v0.7.5-Neural-Link-Morph-${checkpoint}.png")" = "430x932"
           done
           grep -q 'data-aqua-preview-ready="home"' /tmp/aqua-sentinel-home-proof.html
           grep -q 'id="sentinel"' /tmp/aqua-sentinel-home-proof.html
@@ -306,35 +316,40 @@ jobs:
           grep -q 'data-aqua-preview-ready="command"' /tmp/aqua-sentinel-command-proof.html
           grep -q 'data-panel="command"' /tmp/aqua-sentinel-command-proof.html
           grep -q 'AQUA FILE CABINET' /tmp/aqua-sentinel-command-proof.html
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-launch-proof.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Neural-Link-Rotate-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Neural-Link-Fire-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png)" = "430x932"
-          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.4-Settings-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-launch-proof.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Neural-Link-Rest-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Neural-Link-Rotate-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Neural-Link-Fire-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Neural-Link-Morph-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Neural-Link-Result-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Command-Center-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Settings-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Diagnostics-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Connections-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-File-Cabinet-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-Conversation-Receipts-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.7.5-About-closed-phone.png)" = "430x932"
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.4-launch-proof.png \
-            release/AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png
+            release/AquaSentinelOS-v0.7.5-launch-proof.png \
+            release/AquaSentinelOS-v0.7.5-Neural-Link-Rest-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.4-launch-proof.png \
-            release/AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png
+            release/AquaSentinelOS-v0.7.5-launch-proof.png \
+            release/AquaSentinelOS-v0.7.5-Command-Center-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.4-Command-Center-closed-phone.png \
-            release/AquaSentinelOS-v0.7.4-Settings-closed-phone.png
+            release/AquaSentinelOS-v0.7.5-Command-Center-closed-phone.png \
+            release/AquaSentinelOS-v0.7.5-Settings-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png \
-            release/AquaSentinelOS-v0.7.4-Neural-Link-Rotate-closed-phone.png
+            release/AquaSentinelOS-v0.7.5-Neural-Link-Rest-closed-phone.png \
+            release/AquaSentinelOS-v0.7.5-Neural-Link-Rotate-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.4-Neural-Link-Rotate-closed-phone.png \
-            release/AquaSentinelOS-v0.7.4-Neural-Link-Fire-closed-phone.png
+            release/AquaSentinelOS-v0.7.5-Neural-Link-Rotate-closed-phone.png \
+            release/AquaSentinelOS-v0.7.5-Neural-Link-Fire-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.4-Neural-Link-Fire-closed-phone.png \
-            release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-closed-phone.png
+            release/AquaSentinelOS-v0.7.5-Neural-Link-Fire-closed-phone.png \
+            release/AquaSentinelOS-v0.7.5-Neural-Link-Morph-closed-phone.png
           ! cmp -s \
-            release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-closed-phone.png \
-            release/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png
+            release/AquaSentinelOS-v0.7.5-Neural-Link-Morph-closed-phone.png \
+            release/AquaSentinelOS-v0.7.5-Neural-Link-Result-closed-phone.png
           for motion_pair in \
             "Rest Rotate" \
             "Rotate Fire" \
@@ -342,28 +357,28 @@ jobs:
             "Morph Result"; do
             read -r before after <<< "$motion_pair"
             changed_pixels="$(compare -metric AE \
-              "release/AquaSentinelOS-v0.7.4-Neural-Link-${before}-closed-phone.png" \
-              "release/AquaSentinelOS-v0.7.4-Neural-Link-${after}-closed-phone.png" \
+              "release/AquaSentinelOS-v0.7.5-Neural-Link-${before}-closed-phone.png" \
+              "release/AquaSentinelOS-v0.7.5-Neural-Link-${after}-closed-phone.png" \
               null: 2>&1 || true)"
             [[ "$changed_pixels" =~ ^[0-9]+$ ]]
             ((changed_pixels > 500))
             echo "AQUA_NEURAL_MORPH_STAGE_VERIFIED transition=${before}_to_${after} changed_pixels=$changed_pixels"
           done
-          rest_mean="$(convert release/AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png -colorspace gray -format '%[fx:mean]' info:)"
+          rest_mean="$(convert release/AquaSentinelOS-v0.7.5-Neural-Link-Rest-closed-phone.png -colorspace gray -format '%[fx:mean]' info:)"
           convert tests/visual-baselines/Aqua-Neuralink-Rest-Owner-Approved-v074.jpg \
             -resize '430x932^' -gravity center -extent 430x932 /tmp/aqua-neural-rest-owner-reference.png
           convert sentient-os-web/assets/neuralink-materialization-five-portal-approved-v073.png \
             -resize '430x932!' /tmp/aqua-neural-materialization-owner-reference.png
-          rest_rmse="$(compare -metric RMSE /tmp/aqua-neural-rest-owner-reference.png release/AquaSentinelOS-v0.7.4-Neural-Link-Rest-closed-phone.png null: 2>&1 || true)"
+          rest_rmse="$(compare -metric RMSE /tmp/aqua-neural-rest-owner-reference.png release/AquaSentinelOS-v0.7.5-Neural-Link-Rest-closed-phone.png null: 2>&1 || true)"
           rest_normalized="$(sed -n 's/.*(\([^)]*\)).*/\1/p' <<< "$rest_rmse")"
-          result_rmse="$(compare -metric RMSE /tmp/aqua-neural-materialization-owner-reference.png release/AquaSentinelOS-v0.7.4-Neural-Link-Result-closed-phone.png null: 2>&1 || true)"
+          result_rmse="$(compare -metric RMSE /tmp/aqua-neural-materialization-owner-reference.png release/AquaSentinelOS-v0.7.5-Neural-Link-Result-closed-phone.png null: 2>&1 || true)"
           result_normalized="$(sed -n 's/.*(\([^)]*\)).*/\1/p' <<< "$result_rmse")"
           awk -v value="$rest_normalized" 'BEGIN { exit !(value < 0.34) }'
           awk -v value="$result_normalized" 'BEGIN { exit !(value < 0.36) }'
           echo "AQUA_OWNER_VISUAL_REFERENCE_VERIFIED rest_rmse=$rest_normalized result_rmse=$result_normalized"
           previous=""
           for checkpoint in 00 01 02 03 04 05 06; do
-            frame="release/AquaSentinelOS-v0.7.4-Neural-Link-Morph-${checkpoint}.png"
+            frame="release/AquaSentinelOS-v0.7.5-Neural-Link-Morph-${checkpoint}.png"
             frame_mean="$(convert "$frame" -colorspace gray -format '%[fx:mean]' info:)"
             awk -v frame_mean="$frame_mean" -v rest_mean="$rest_mean" 'BEGIN { exit !(frame_mean >= rest_mean * 0.55 && frame_mean > 0.02) }'
             if [[ -n "$previous" ]]; then
@@ -375,7 +390,7 @@ jobs:
             previous="$frame"
           done
 
-      - name: Collect failed v0.7.4 visual-proof DOM evidence
+      - name: Collect failed v0.7.5 visual-proof DOM evidence
         if: ${{ failure() }}
         run: |
           mkdir -p release/visual-proof-diagnostics
@@ -385,11 +400,11 @@ jobs:
             cp "${dom_proofs[@]}" release/visual-proof-diagnostics/
           fi
 
-      - name: Retain failed v0.7.4 visual-proof evidence
+      - name: Retain failed v0.7.5 visual-proof evidence
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.7.4-visual-proof-failure-${{ github.run_attempt }}
+          name: AquaSentinelOS-v0.7.5-visual-proof-failure-${{ github.run_attempt }}
           path: |
             release/*.png
             release/visual-proof-diagnostics/**
@@ -517,18 +532,18 @@ jobs:
           KEY_PASSWORD="$(openssl rand -hex 24)"
           echo "::add-mask::$KEY_PASSWORD"
           keytool -genkeypair \
-            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.7.4.keystore" \
+            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.7.5.keystore" \
             -storepass "$KEY_PASSWORD" \
             -keypass "$KEY_PASSWORD" \
-            -alias "aqua-sentinel-v0.7.4" \
+            -alias "aqua-sentinel-v0.7.5" \
             -keyalg RSA \
             -keysize 3072 \
             -validity 3650 \
-            -dname "CN=Aqua Sentinel OS v0.7.4 Exact Fidelity Materialization Widget Test, OU=Aqua Sentinel OS, O=Aqua Software Inc., L=Hudson, ST=Massachusetts, C=US"
+            -dname "CN=Aqua Sentinel OS v0.7.5 Exact Fidelity Materialization Widget Test, OU=Aqua Sentinel OS, O=Aqua Software Inc., L=Hudson, ST=Massachusetts, C=US"
           {
-            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.7.4.keystore"
+            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.7.5.keystore"
             echo "AQUA_RELEASE_KEYSTORE_PASSWORD=$KEY_PASSWORD"
-            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.7.4"
+            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.7.5"
             echo "AQUA_RELEASE_KEY_PASSWORD=$KEY_PASSWORD"
           } >> "$GITHUB_ENV"
 
@@ -544,8 +559,8 @@ jobs:
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/aqua-sentinel-certificate.txt
           "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/aqua-sentinel-badging.txt
           grep -q "package: name='com.aquahomes.sentinel'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionCode='2026080203'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionName='0.7.4-living-neural-fidelity-widget'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionCode='2026080204'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionName='0.7.5-secondary-surfaces-test'" /tmp/aqua-sentinel-badging.txt
           grep -q "sdkVersion:'26'" /tmp/aqua-sentinel-badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/aqua-sentinel-badging.txt
           unzip -l "$APK" | grep -q "assets/public/index.html"
@@ -580,23 +595,23 @@ jobs:
       - name: Prepare release files and checksums
         run: |
           mkdir -p release
-          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.7.4-Exact-Fidelity-Materialization-Widget-Test.apk
-          test -s release/AquaSentinelOS-v0.7.4-launch-proof.png
-          test -s /tmp/AquaSentinelOS-v0.7.4-Neuralink-Live-Widget-Launcher.png
-          test -s /tmp/AquaSentinelOS-v0.7.4-Neuralink-Widget-Tap-Jolt.png
-          test -s /tmp/AquaSentinelOS-v0.7.4-Neuralink-Widget-Resize-compact.png
-          test -s /tmp/AquaSentinelOS-v0.7.4-Neuralink-Widget-Resize-small.png
-          cp /tmp/AquaSentinelOS-v0.7.4-Neuralink-Live-Widget-Launcher.png release/AquaSentinelOS-v0.7.4-Neuralink-Live-Widget-Launcher.png
-          cp /tmp/AquaSentinelOS-v0.7.4-Neuralink-Widget-Tap-Jolt.png release/AquaSentinelOS-v0.7.4-Neuralink-Widget-Tap-Jolt.png
-          cp /tmp/AquaSentinelOS-v0.7.4-Neuralink-Widget-Resize-compact.png release/AquaSentinelOS-v0.7.4-Neuralink-Widget-Resize-compact.png
-          cp /tmp/AquaSentinelOS-v0.7.4-Neuralink-Widget-Resize-small.png release/AquaSentinelOS-v0.7.4-Neuralink-Widget-Resize-small.png
-          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.7.4-certificate.txt
-          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.7.4-package.txt
+          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.7.5-Exact-Fidelity-Materialization-Widget-Test.apk
+          test -s release/AquaSentinelOS-v0.7.5-launch-proof.png
+          test -s /tmp/AquaSentinelOS-v0.7.5-Neuralink-Live-Widget-Launcher.png
+          test -s /tmp/AquaSentinelOS-v0.7.5-Neuralink-Widget-Tap-Jolt.png
+          test -s /tmp/AquaSentinelOS-v0.7.5-Neuralink-Widget-Resize-compact.png
+          test -s /tmp/AquaSentinelOS-v0.7.5-Neuralink-Widget-Resize-small.png
+          cp /tmp/AquaSentinelOS-v0.7.5-Neuralink-Live-Widget-Launcher.png release/AquaSentinelOS-v0.7.5-Neuralink-Live-Widget-Launcher.png
+          cp /tmp/AquaSentinelOS-v0.7.5-Neuralink-Widget-Tap-Jolt.png release/AquaSentinelOS-v0.7.5-Neuralink-Widget-Tap-Jolt.png
+          cp /tmp/AquaSentinelOS-v0.7.5-Neuralink-Widget-Resize-compact.png release/AquaSentinelOS-v0.7.5-Neuralink-Widget-Resize-compact.png
+          cp /tmp/AquaSentinelOS-v0.7.5-Neuralink-Widget-Resize-small.png release/AquaSentinelOS-v0.7.5-Neuralink-Widget-Resize-small.png
+          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.7.5-certificate.txt
+          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.7.5-package.txt
           {
             echo "commit=$GITHUB_SHA"
             echo "workflow_run=$GITHUB_RUN_ID"
             echo "package=com.aquahomes.sentinel"
-            echo "version=0.7.4-living-neural-fidelity-widget"
+            echo "version=0.7.5-secondary-surfaces-test"
             echo "ai_gateway=server_owned_json_rpc_2.0"
             echo "projection_sync=authenticated_idempotent_tenant_scoped"
             echo "ecosystem_presentation_mode=true"
@@ -612,12 +627,12 @@ jobs:
             echo "android_launch=activity_and_ui_hierarchy_verified"
             echo "target_sdk=35"
             echo "min_sdk=26"
-          } > release/AquaSentinelOS-v0.7.4-provenance.txt
-          sha256sum release/AquaSentinelOS-v0.7.4-Exact-Fidelity-Materialization-Widget-Test.apk > release/AquaSentinelOS-v0.7.4-Exact-Fidelity-Materialization-Widget-Test.apk.sha256
+          } > release/AquaSentinelOS-v0.7.5-provenance.txt
+          sha256sum release/AquaSentinelOS-v0.7.5-Exact-Fidelity-Materialization-Widget-Test.apk > release/AquaSentinelOS-v0.7.5-Exact-Fidelity-Materialization-Widget-Test.apk.sha256
 
       - name: Upload verified installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.7.4-Exact-Fidelity-Materialization-Widget-Test
+          name: AquaSentinelOS-v0.7.5-Exact-Fidelity-Materialization-Widget-Test
           path: release/*
           if-no-files-found: error

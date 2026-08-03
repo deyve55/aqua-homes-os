@@ -172,8 +172,9 @@ let authenticatedEmail = "";
 let gatewayConfigured = false;
 let filingInbox = [];
 let filingBriefAnnounced = false;
-let sound = true;
-let notifications = true;
+const preferenceStorageKey = "aqua-sentinel-owner-preferences-v1";
+let sound = loadOwnerPreferences().sound;
+let notifications = loadOwnerPreferences().notifications;
 const widgetMessageStorageKey = "aqua-sentinel-widget-messages-v1";
 let widgetMessages = loadWidgetMessages();
 let widgetCommandInFlight = null;
@@ -240,6 +241,26 @@ let commandWidgetState = {
   supported: false,
   installedCount: 0,
   state: "Checking",
+};
+let deviceDiagnostics = {
+  generatedAt: 0,
+  platform: "Browser preview",
+  versionName: "0.7.5-secondary-surfaces-test",
+  versionCode: 2026080204,
+  gatewayConfigured: false,
+  authenticated: false,
+  microphoneGranted: false,
+  speechRecognizerAvailable: false,
+  calendarReadGranted: false,
+  calendarWriteGranted: false,
+  photoCaptureAvailable: false,
+  videoCaptureAvailable: false,
+  widgetInstalledCount: 0,
+  filingPendingCount: 0,
+  filedTodayCount: 0,
+  installedAppCount: 0,
+  registeredAppCount: apps.length,
+  apps: [],
 };
 
 function neuralSourceAt(index) {
@@ -997,6 +1018,27 @@ function enableCustomerPreviewIfAuthorized() {
   });
 }
 
+function loadOwnerPreferences() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(preferenceStorageKey) || "{}");
+    return {
+      sound: saved.sound !== false,
+      notifications: saved.notifications !== false,
+    };
+  } catch {
+    return { sound: true, notifications: true };
+  }
+}
+
+function saveOwnerPreferences() {
+  try {
+    localStorage.setItem(
+      preferenceStorageKey,
+      JSON.stringify({ sound, notifications }),
+    );
+  } catch (_) {}
+}
+
 function loadWidgetMessages() {
   try {
     const parsed = JSON.parse(localStorage.getItem(widgetMessageStorageKey) || "[]");
@@ -1039,6 +1081,7 @@ function flushNextWidgetCommand() {
 }
 
 function widgetMessagesMarkup() {
+  const retained = widgetMessages.filter((message) => /saved|attention/i.test(message.state)).length;
   const messages = widgetMessages.length
     ? widgetMessages.map((message) => `
         <article class="widget-message ${message.role === "Aqua" ? "aqua" : "owner"}">
@@ -1048,7 +1091,13 @@ function widgetMessagesMarkup() {
         </article>`).join("")
     : `<div class="widget-message-empty">Messages fired from the Aqua Command Center widget will appear here.</div>`;
   return `${systemHeader("Messages")}
-    <div class="widget-message-receipt">Command Center messages are saved locally first, then sent through Aqua when authenticated.</div>
+    <section class="receipt-shell">
+      <div class="widget-message-receipt"><strong>Conversation receipts</strong><span>Every handoff is saved locally first, then sent through Aqua when authenticated.</span><b>${retained ? `${retained} RETAINED` : "CURRENT"}</b></div>
+      <div class="receipt-actions">
+        <button type="button" data-message-action="voice">Give Aqua another instruction</button>
+        <button type="button" data-message-action="retry" ${retained ? "" : "disabled"}>Retry retained commands</button>
+      </div>
+    </section>
     <div class="widget-message-list">${messages}</div>`;
 }
 
@@ -1118,7 +1167,9 @@ window.pulseAquaSpeech = () => {
 };
 
 let toastTimer = null;
-function notify(message) {
+function notify(message, force = false) {
+  const critical = /could not|failed|attention|required|unavailable|not installed|not configured/i.test(String(message || ""));
+  if (!notifications && !critical && !force) return;
   clearTimeout(toastTimer);
   toast.textContent = message;
   toast.hidden = false;
@@ -1921,6 +1972,7 @@ function filingCabinetMarkup(includeHeader = true) {
       <button type="button" data-filing-action="voice">File by voice</button>
       <button type="button" data-filing-action="photo">Add photo</button>
       <button type="button" data-filing-action="video">Add video</button>
+      <button type="button" data-filing-refresh>Refresh cabinet</button>
     </div>
     <div class="filing-list">${items}</div>`;
 }
@@ -2015,6 +2067,7 @@ function commandCenterMarkup() {
         <b>${pending ? "Needs Attention" : "Open Vault"}</b>
       </button>
       <div class="command-capture" aria-label="Quick filing actions">
+        <button type="button" data-command-ask><i>A</i><span>Aqua Action</span></button>
         <button type="button" data-filing-action="voice"><i>≈</i><span>File by voice</span></button>
         <button type="button" data-filing-action="photo"><i>▧</i><span>Add photo</span></button>
         <button type="button" data-filing-action="video"><i>▶</i><span>Add video</span></button>
@@ -2026,7 +2079,7 @@ function commandCenterMarkup() {
       </button>
       <div class="command-status">
         <article><i>◌</i><span><strong>Aqua conversation</strong><small>${queuedMessages ? `${queuedMessages} locally retained` : "No unsent owner commands"}</small></span><b>${authenticated ? "Connected" : "Local"}</b></article>
-        <article><i>◇</i><span><strong>Ecosystem links</strong><small>Satellite adapters report their own authority</small></span><b>Inspect</b></article>
+        <article><i>◇</i><span><strong>Ecosystem links</strong><small>${deviceDiagnostics.installedAppCount || 0} of ${deviceDiagnostics.registeredAppCount || apps.length} apps found on this phone</small></span><b>${deviceDiagnostics.installedAppCount ? "Inspect" : "Check"}</b></article>
       </div>
       <div class="command-actions">
         <button type="button" data-command-view="messages"><span>Conversation receipts</span><small>Saved, delivered, and needs-attention commands</small></button>
@@ -2041,41 +2094,120 @@ function commandCenterMarkup() {
     </section>`;
 }
 
+function diagnosticReceiptText() {
+  const state = deviceDiagnostics;
+  return [
+    "Aqua Sentinel OS diagnostic receipt",
+    `Version: ${state.versionName || "unknown"} (${state.versionCode || "unknown"})`,
+    `Platform: ${state.platform || "unknown"}`,
+    `Aqua Brain: ${state.gatewayConfigured ? (state.authenticated ? "connected" : "configured, owner session needed") : "standalone; gateway not configured"}`,
+    `Voice: ${state.microphoneGranted && state.speechRecognizerAvailable ? "ready" : "needs attention"}`,
+    `Calendar: ${state.calendarReadGranted && state.calendarWriteGranted ? "ready" : "permission needed"}`,
+    `Capture: photo=${Boolean(state.photoCaptureAvailable)} video=${Boolean(state.videoCaptureAvailable)}`,
+    `Widget: ${state.widgetInstalledCount || 0} installed`,
+    `File Cabinet: ${state.filingPendingCount || 0} pending; ${state.filedTodayCount || 0} captured today`,
+    `Ecosystem: ${state.installedAppCount || 0}/${state.registeredAppCount || apps.length} apps installed`,
+  ].join("\n");
+}
+
 function diagnosticsMarkup() {
+  const state = deviceDiagnostics;
   const nativeReady = Boolean(window.AquaBridge);
+  const voiceReady = Boolean(state.microphoneGranted && state.speechRecognizerAvailable);
+  const calendarReady = Boolean(state.calendarReadGranted && state.calendarWriteGranted);
+  const captureReady = Boolean(state.photoCaptureAvailable && state.videoCaptureAvailable);
+  const widgetReady = Number(state.widgetInstalledCount) > 0;
   const issues = [];
-  if (!authenticated) issues.push("Owner session is not connected.");
-  if (!nativeReady) issues.push("Native Android bridges are unavailable in this browser preview.");
-  apps.filter((app) => !app.connected).forEach((app) => {
-    issues.push(`${app.name} has not published a confirmed Sentinel adapter.`);
-  });
+  if (nativeReady && !voiceReady) issues.push("Open Android permissions and allow microphone access so Aqua can listen.");
+  if (nativeReady && !calendarReady) issues.push("Calendar read/write permission is needed for verified scheduling actions.");
+  if (nativeReady && !captureReady) issues.push("Android did not report both photo and video capture handlers.");
+  if (nativeReady && !widgetReady) issues.push("The Aqua Command Center widget has not been placed on this launcher.");
+  if (Number(state.filingPendingCount) > 0) issues.push(`${state.filingPendingCount} File Cabinet ${state.filingPendingCount === 1 ? "item needs" : "items need"} direction.`);
+  if (state.diagnosticError) issues.push(state.diagnosticError);
+  const confirmed = nativeReady && issues.length === 0;
   return `${systemHeader("Diagnostics")}
     <section class="diagnostic-shell">
-      <div class="diagnostic-orb ${issues.length ? "attention" : "confirmed"}"><i></i><strong>${issues.length ? "Aqua found connection boundaries" : "Sentinel is fully connected"}</strong><small>No silent failures</small></div>
-      <div class="diagnostic-list">
-        <article><span><strong>Owner session</strong><small>Encrypted device session and gateway identity</small></span><b>${authenticated ? "Confirmed" : "Needs Attention"}</b></article>
-        <article><span><strong>Aqua gateway</strong><small>Server-only AI and guarded capability routing</small></span><b>${authenticated ? "Session ready" : "Sign in required"}</b></article>
-        <article><span><strong>Voice and device bridge</strong><small>Speech, capture, File Cabinet, and app launch</small></span><b>${nativeReady ? "Available" : "Preview only"}</b></article>
+      <div class="diagnostic-orb ${confirmed ? "confirmed" : "attention"}"><i></i><strong>${confirmed ? "Sentinel device systems are ready" : "Aqua found actionable boundaries"}</strong><small>${nativeReady ? `Checked ${escapeHtml(state.platform || "Android")}` : "Live checks run inside the installed APK"}</small></div>
+      <div class="diagnostic-list expanded">
+        <article><i>◌</i><span><strong>Owner and Aqua Brain</strong><small>${state.gatewayConfigured ? "Server-owned gateway is configured" : "Standalone is active; gateway is not configured in this test build"}</small></span><b>${state.authenticated ? "Connected" : state.gatewayConfigured ? "Sign in" : "Standalone"}</b></article>
+        <article><i>≈</i><span><strong>Voice and microphone</strong><small>Permission plus Android speech recognition</small></span><b>${voiceReady ? "Ready" : nativeReady ? "Review" : "APK check"}</b></article>
+        <article><i>◷</i><span><strong>Calendar action path</strong><small>Read-back verification and duplicate protection</small></span><b>${calendarReady ? "Ready" : nativeReady ? "Permission" : "APK check"}</b></article>
+        <article><i>▧</i><span><strong>Photo and video handoff</strong><small>Protected evidence return to the File Cabinet</small></span><b>${captureReady ? "Ready" : nativeReady ? "Review" : "APK check"}</b></article>
+        <article><i>A</i><span><strong>Command Center widget</strong><small>${state.filedTodayCount || 0} captured today · ${state.filingPendingCount || 0} pending</small></span><b>${widgetReady ? `${state.widgetInstalledCount} active` : nativeReady ? "Add" : "APK check"}</b></article>
+        <article><i>∞</i><span><strong>Aqua ecosystem</strong><small>Installed applications found on this phone</small></span><b>${state.installedAppCount || 0}/${state.registeredAppCount || apps.length}</b></article>
       </div>
       <div class="diagnostic-reports">${issues.length
         ? issues.map((issue) => `<p><i>!</i><span>${escapeHtml(issue)}</span></p>`).join("")
-        : `<p><i>✓</i><span>No actionable failures are visible.</span></p>`}</div>
+        : `<p class="confirmed"><i>✓</i><span>No actionable device failures are visible.</span></p>`}</div>
+      <div class="diagnostic-actions">
+        <button type="button" data-diagnostic-action="refresh">Run checks again</button>
+        <button type="button" data-diagnostic-action="permissions">Open Android permissions</button>
+        <button type="button" data-diagnostic-action="copy">Copy repair receipt</button>
+      </div>
       <button class="diagnostic-return" type="button" data-space="command">Return to Command Center</button>
     </section>`;
 }
 
+function connectionsMarkup() {
+  const nativeStates = Array.isArray(deviceDiagnostics.apps) ? deviceDiagnostics.apps : [];
+  const rows = apps.map((app, index) => {
+    const nativeState = nativeStates.find((entry) => entry?.name === app.name);
+    const live = app.connected || liveSnapshots.has(app.name);
+    const installed = Boolean(nativeState?.installed);
+    const state = live ? "CONFIRMED" : installed ? "INSTALLED" : "NOT FOUND";
+    const detail = live
+      ? "Authoritative home snapshot received"
+      : installed
+        ? "App can open; Sentinel snapshot adapter is awaiting confirmation"
+        : "Install this Aqua app to activate its local launch path";
+    return `<article class="connection-row ${live ? "confirmed" : installed ? "installed" : "missing"}">
+      <i style="--connection-color:${escapeHtml(app.color)}">${escapeHtml(app.icon)}</i>
+      <span><strong>${escapeHtml(app.name)}</strong><small>${escapeHtml(detail)}</small></span>
+      <b>${state}</b>
+      <div><button type="button" data-integration-open="${index}">Open app</button><button type="button" data-integration-refresh="${index}" ${installed ? "" : "disabled"}>Refresh link</button></div>
+    </article>`;
+  }).join("");
+  return `${systemHeader("Ecosystem Connections")}
+    <section class="connections-shell">
+      <div class="connections-summary"><small>AQUA NERVOUS SYSTEM</small><strong>${deviceDiagnostics.installedAppCount || 0} of ${deviceDiagnostics.registeredAppCount || apps.length} applications found</strong><p>Installed, connected, and authoritative are separate states. Aqua never labels a missing adapter as live.</p></div>
+      <div class="connection-list">${rows}</div>
+      <button class="diagnostic-return" type="button" data-space="settings">Return to Settings</button>
+    </section>`;
+}
+
+function aboutMarkup() {
+  return `${systemHeader("About")}
+    <section class="about-shell">
+      <div class="about-mark">${aquaMarkMarkup("about")}</div>
+      <small>AQUA SOFTWARE COMPANY</small>
+      <h1>Aqua Sentinel OS</h1>
+      <p>Aqua is the owner command layer across the Aqua application ecosystem. Each satellite keeps its own authoritative records; Sentinel coordinates, explains, routes, and preserves receipts.</p>
+      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.7.5-secondary-surfaces-test")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
+      <div class="about-boundaries">
+        <article><i>✓</i><span><strong>Protected Home</strong><small>The approved first screen is unchanged by this repair.</small></span></article>
+        <article><i>✓</i><span><strong>Server-owned intelligence</strong><small>API credentials and guarded actions do not live inside the APK.</small></span></article>
+        <article><i>✓</i><span><strong>Truthful authority</strong><small>Local, queued, preview, and confirmed states remain visibly different.</small></span></article>
+      </div>
+      <button class="diagnostic-return" type="button" data-space="settings">Return to Settings</button>
+    </section>`;
+}
+
 function settingsMarkup() {
+  const state = deviceDiagnostics;
+  const voiceReady = Boolean(state.microphoneGranted && state.speechRecognizerAvailable);
+  const calendarReady = Boolean(state.calendarReadGranted && state.calendarWriteGranted);
   return `${systemHeader("Settings")}
-    <section class="settings-hero"><small>AQUA SENTINEL OS</small><h1>Make Aqua feel like yours.</h1><p>These controls change Sentinel’s behavior and connected services. The approved Home artwork remains protected.</p></section>
+    <section class="settings-hero"><small>AQUA SENTINEL OS</small><h1>Make Aqua feel like yours.</h1><p>These controls change Sentinel’s operating behavior and open the real Android boundaries behind it. The approved Home artwork remains protected.</p></section>
+    <div class="settings-runtime"><span><small>OPERATING MODE</small><strong>${authenticated ? "Sentinel connected" : "Standalone"}</strong></span><span><small>DEVICE CHECK</small><strong>${voiceReady && calendarReady ? "Ready" : "Review permissions"}</strong></span></div>
     <div class="settings-list enriched">
-      <button type="button" data-setting="sound"><i>◉</i><span><strong>Aqua voice feedback</strong><small>Speech, shimmer, and speaking presence</small></span><b>${sound ? "ON" : "OFF"}</b></button>
-      <button type="button" data-setting="notifications"><i>◇</i><span><strong>Owner notifications</strong><small>Approvals, receipts, filing, and failures</small></span><b>${notifications ? "ON" : "OFF"}</b></button>
+      <button type="button" data-setting="sound"><i>◉</i><span><strong>Aqua voice feedback</strong><small>Spoken responses and filing briefs</small></span><b>${sound ? "ON" : "OFF"}</b></button>
+      <button type="button" data-setting="notifications"><i>◇</i><span><strong>In-app owner alerts</strong><small>Routine receipts and confirmations; critical failures remain visible</small></span><b>${notifications ? "ON" : "OFF"}</b></button>
       <button type="button" data-setting="voice-test"><i>≈</i><span><strong>Voice and presence test</strong><small>Hear Aqua and verify the living center</small></span><b>TEST</b></button>
-      <button type="button" data-setting="permissions"><i>⌾</i><span><strong>Privacy and permissions</strong><small>Microphone, camera, files, and connected app access</small></span><b>REVIEW</b></button>
-      <button type="button" data-setting="integrations"><i>∞</i><span><strong>Ecosystem connections</strong><small>Authoritative apps, capabilities, and deep links</small></span><b>${apps.filter((app) => app.connected).length}/${apps.length}</b></button>
-      <button type="button" data-setting="storage"><i>▤</i><span><strong>Storage and synchronization</strong><small>Local evidence, queues, cloud confirmation, and retention</small></span><b>OPEN</b></button>
-      <button type="button" data-setting="diagnostics"><i>◇</i><span><strong>Diagnostics</strong><small>Actionable reports with correlation receipts</small></span><b>CHECK</b></button>
-      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.7</b></button>
+      <button type="button" data-setting="permissions"><i>⌾</i><span><strong>Privacy and permissions</strong><small>Microphone and calendar access in Android settings</small></span><b>${voiceReady && calendarReady ? "READY" : "REVIEW"}</b></button>
+      <button type="button" data-setting="integrations"><i>∞</i><span><strong>Ecosystem connections</strong><small>Installed applications, snapshots, and authoritative links</small></span><b>${state.installedAppCount || 0}/${state.registeredAppCount || apps.length}</b></button>
+      <button type="button" data-setting="storage"><i>▤</i><span><strong>File Cabinet and synchronization</strong><small>Protected evidence, queues, cloud confirmation, and retention</small></span><b>${state.filingPendingCount || 0} PENDING</b></button>
+      <button type="button" data-setting="diagnostics"><i>◇</i><span><strong>Diagnostics</strong><small>Run device checks and copy a repair receipt</small></span><b>CHECK</b></button>
+      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.7.5</b></button>
     </div>`;
 }
 
@@ -2093,7 +2225,9 @@ function openPanel(kind) {
   }
   const railKind = ["messages", "files", "diagnostics"].includes(kind)
     ? "command"
-    : kind;
+    : ["data", "about"].includes(kind)
+      ? "settings"
+      : kind;
   document.querySelectorAll(".bottom-rail button").forEach((button) => {
     button.classList.toggle("active", button.dataset.panel === railKind);
   });
@@ -2113,20 +2247,11 @@ function openPanel(kind) {
   } else if (kind === "diagnostics") {
     systemPanel.innerHTML = diagnosticsMarkup();
   } else if (kind === "data") {
-    systemPanel.innerHTML =
-      systemHeader("Data Hub") +
-      `<div class="registry-grid">${apps
-        .map(
-          (app, index) => `
-            <button type="button" data-app="${index}">
-              <i style="color:${app.color}">${escapeHtml(app.icon)}</i>
-              <strong>${escapeHtml(app.name)}</strong>
-              <small>${app.connected ? "SENTINEL CORE" : "GATEWAY PENDING"}</small>
-            </button>`,
-        )
-        .join("")}</div>`;
+    systemPanel.innerHTML = connectionsMarkup();
   } else if (kind === "settings") {
     systemPanel.innerHTML = settingsMarkup();
+  } else if (kind === "about") {
+    systemPanel.innerHTML = aboutMarkup();
   } else {
     systemPanel.innerHTML =
       systemHeader("Sign Out") +
@@ -2250,6 +2375,10 @@ function openPanel(kind) {
   systemPanel.querySelectorAll("[data-command-view]").forEach((button) => {
     button.addEventListener("click", () => openPanel(button.dataset.commandView));
   });
+  systemPanel.querySelector("[data-command-ask]")?.addEventListener("click", () => {
+    openPanel("home");
+    startVoice();
+  });
   systemPanel.querySelector("[data-command-widget]")?.addEventListener("click", () => {
     if (!window.AquaBridge?.installOrRepairCommandWidget) {
       notify("Widget installation is available in the Android APK.");
@@ -2271,9 +2400,11 @@ function openPanel(kind) {
       const setting = button.dataset.setting;
       if (setting === "sound") {
         sound = !sound;
+        saveOwnerPreferences();
         openPanel("settings");
       } else if (setting === "notifications") {
         notifications = !notifications;
+        saveOwnerPreferences();
         openPanel("settings");
       } else if (setting === "voice-test") {
         systemPanel.hidden = true;
@@ -2290,12 +2421,75 @@ function openPanel(kind) {
       } else if (setting === "storage") {
         openPanel("files");
       } else if (setting === "permissions") {
-        notify("Android permission controls open from the installed app when a protected capability is requested.");
+        if (window.AquaBridge?.openAppPermissionSettings) {
+          window.AquaBridge.openAppPermissionSettings();
+        } else {
+          notify("Android permission controls are available in the installed APK.");
+        }
+      } else if (setting === "about") {
+        openPanel("about");
       } else {
         notify(
           "Aqua Sentinel OS · server-owned AI · encrypted device sessions · authoritative satellite records",
         );
       }
+    });
+  });
+  systemPanel.querySelectorAll("[data-integration-open]").forEach((button) => {
+    button.addEventListener("click", () => launchAppByIndex(Number(button.dataset.integrationOpen)));
+  });
+  systemPanel.querySelectorAll("[data-integration-refresh]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const index = Number(button.dataset.integrationRefresh);
+      requestSnapshot(apps[index]);
+      notify(`Aqua requested a fresh ${apps[index]?.name || "application"} home snapshot.`);
+    });
+  });
+  systemPanel.querySelectorAll("[data-diagnostic-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const action = button.dataset.diagnosticAction;
+      if (action === "refresh") {
+        window.refreshDeviceDiagnostics();
+      } else if (action === "permissions") {
+        if (window.AquaBridge?.openAppPermissionSettings) {
+          window.AquaBridge.openAppPermissionSettings();
+        } else {
+          notify("Android permission controls are available in the installed APK.");
+        }
+      } else if (action === "copy") {
+        const receipt = diagnosticReceiptText();
+        if (window.AquaBridge?.copyDiagnosticReceipt) {
+          window.AquaBridge.copyDiagnosticReceipt(receipt);
+        } else if (navigator.clipboard?.writeText) {
+          navigator.clipboard.writeText(receipt).then(
+            () => window.receiveDiagnosticCopy(),
+            () => notify("The diagnostic receipt is ready in the installed Android APK."),
+          );
+        } else {
+          notify("The diagnostic receipt is ready in the installed Android APK.");
+        }
+      }
+    });
+  });
+  systemPanel.querySelectorAll("[data-message-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.messageAction === "voice") {
+        openPanel("home");
+        startVoice();
+        return;
+      }
+      if (!authenticated) {
+        notify("Your commands remain saved. Connect Aqua Brain to retry them.");
+        return;
+      }
+      widgetMessages.forEach((message) => {
+        if (message.role === "You" && /attention/i.test(message.state)) {
+          message.state = "Saved locally · awaiting Aqua";
+        }
+      });
+      saveWidgetMessages();
+      flushNextWidgetCommand();
+      openPanel("messages");
     });
   });
   systemPanel.querySelectorAll("[data-filing-action]").forEach((button) => {
@@ -2308,6 +2502,10 @@ function openPanel(kind) {
         notify("Filing capture is available in the installed Android app.");
       }
     });
+  });
+  systemPanel.querySelector("[data-filing-refresh]")?.addEventListener("click", () => {
+    window.refreshFilingInbox();
+    notify("Aqua refreshed the protected File Cabinet.");
   });
   systemPanel.querySelectorAll("[data-clarify-id]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -2437,7 +2635,7 @@ function seekNeuralSequencePreview(elapsedMillis) {
 function activateDeterministicPreviewRoute() {
   const previewParameters = new URLSearchParams(window.location.search);
   const previewPanel = previewParameters.get("preview");
-  if (!["home", "neural", "command", "settings", "diagnostics"].includes(previewPanel)) {
+  if (!["home", "neural", "command", "settings", "diagnostics", "data", "files", "messages", "about"].includes(previewPanel)) {
     return false;
   }
   authenticated = true;
@@ -2665,6 +2863,7 @@ window.receiveAuthState = (raw) => {
   }
   authenticated = Boolean(state?.authenticated);
   authenticatedEmail = String(state?.email || "");
+  deviceDiagnostics.authenticated = authenticated;
   authPanel.hidden = true;
   updateOwnerAccessControl();
   if (authenticated) {
@@ -2689,9 +2888,49 @@ window.receiveCommandWidgetStatus = (raw) => {
     installedCount: Math.max(0, Number(state.installedCount) || 0),
     state: String(state.state || "Ready"),
   };
+  deviceDiagnostics.widgetInstalledCount = commandWidgetState.installedCount;
   if (!systemPanel.hidden && systemPanel.dataset.panel === "command") {
     openPanel("command");
   }
+};
+
+window.receiveDeviceDiagnostics = (raw) => {
+  let state = raw;
+  try {
+    if (typeof raw === "string") state = JSON.parse(raw);
+  } catch {
+    state = null;
+  }
+  if (!state || typeof state !== "object") return;
+  deviceDiagnostics = {
+    ...deviceDiagnostics,
+    ...state,
+    apps: Array.isArray(state.apps) ? state.apps : deviceDiagnostics.apps,
+  };
+  if (
+    !systemPanel.hidden
+      && ["command", "settings", "diagnostics", "data", "about"].includes(systemPanel.dataset.panel)
+  ) {
+    openPanel(systemPanel.dataset.panel);
+  }
+};
+
+window.refreshDeviceDiagnostics = () => {
+  try {
+    if (window.AquaBridge?.getDeviceDiagnostics) {
+      window.receiveDeviceDiagnostics(window.AquaBridge.getDeviceDiagnostics());
+      return;
+    }
+    if (window.AquaBridge?.refreshDeviceDiagnostics) {
+      window.AquaBridge.refreshDeviceDiagnostics();
+      return;
+    }
+  } catch (_) {}
+  notify("Live device checks run inside the installed Android APK.");
+};
+
+window.receiveDiagnosticCopy = () => {
+  notify("Diagnostic repair receipt copied.", true);
 };
 
 window.receiveAuthResult = (raw) => {
@@ -2737,7 +2976,7 @@ window.receiveFilingInbox = (raw) => {
   }
   updateFilingBadge();
   const pending = filingInbox.filter((item) => item.needsClarification).length;
-  if (authenticated && sound && pending > 0 && !filingBriefAnnounced) {
+  if (authenticated && notifications && sound && pending > 0 && !filingBriefAnnounced) {
     filingBriefAnnounced = true;
     window.AquaBridge?.speak(`Hey, you have ${pending} pending ${pending === 1 ? "item" : "items"} that ${pending === 1 ? "needs" : "need"} to be filed.`);
   }
@@ -2934,6 +3173,11 @@ try {
 try {
   if (window.AquaBridge?.getCommandWidgetStatus) {
     window.receiveCommandWidgetStatus(window.AquaBridge.getCommandWidgetStatus());
+  }
+} catch (_) {}
+try {
+  if (window.AquaBridge?.getDeviceDiagnostics) {
+    window.receiveDeviceDiagnostics(window.AquaBridge.getDeviceDiagnostics());
   }
 } catch (_) {}
 updateOwnerAccessControl();

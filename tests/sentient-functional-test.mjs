@@ -134,8 +134,8 @@ test("an unavailable gateway cannot block truthful Standalone startup", async ()
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
   ]);
-  assert.match(gradle, /versionCode = 2026080203/);
-  assert.match(gradle, /versionName = "0\.7\.4-living-neural-fidelity-widget"/);
+  assert.match(gradle, /versionCode = 2026080204/);
+  assert.match(gradle, /versionName = "0\.7\.5-secondary-surfaces-test"/);
   assert.match(gradle, /\.orElse\(providers\.environmentVariable\("AQUA_GATEWAY_URL"\)\)\s*\.orElse\(""\)/);
   assert.doesNotMatch(gradle, /\.orElse\("https:\/\/api\.aquahomesos\.com\/gateway"\)/);
   assert.match(html, /id="ownerAccessButton"[^>]*data-panel="connect"/);
@@ -271,7 +271,7 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(fidelity, /neuralink-rest-gold-path-mask-v074\.png/);
   assert.match(fidelity, /neuralink-materialized-cyan-path-mask-v074\.png/);
   assert.match(fidelity, /neuralink-materialized-gold-path-mask-v074\.png/);
-  assert.match(fidelity, /v0\.7\.4 real-device rejection recovery/);
+  assert.match(fidelity, /v0\.7\.5 real-device rejection recovery/);
   assert.match(fidelity, /\.neural-substrate-map,\.neural-substrate-fire\{display:none!important\}/);
   assert.match(fidelity, /No full-screen raster/);
   assert.match(fidelity, /\.neural-stage\[data-phase="firing"\] \.neural-jolt\{opacity:1;transition:none\}/);
@@ -280,7 +280,7 @@ test("the living Neural Link focuses one thought without isolating Aqua's other 
   assert.match(fidelity, /\.neural-materialization-circuit\{opacity:\.76;mix-blend-mode:normal\}/);
   assert.match(fidelity, /opacity:\.92;filter:saturate\(1\.04\) contrast\(1\.08\) brightness\(\.98\)/);
   assert.match(fidelity, /\.neural-portal \.portal-node\.has-environment>i\{position:absolute;top:7%;right:7%;width:19%/);
-  const realDeviceRecovery = fidelity.slice(fidelity.lastIndexOf("v0.7.4 real-device rejection recovery"));
+  const realDeviceRecovery = fidelity.slice(fidelity.lastIndexOf("v0.7.5 real-device rejection recovery"));
   assert.doesNotMatch(realDeviceRecovery, /background-image:url/);
   assert.doesNotMatch(realDeviceRecovery, /opacity:\.18/);
   assert.match(fidelity, /@keyframes neural-substrate-cyan-out/);
@@ -394,7 +394,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async () => {
+test("v0.7.5 preserves Home and proves the full Neuralink morph sequence", async () => {
   const [gradle, workflow, script, html, fidelity, androidLaunch, neuralLiveProof, visualRenderer] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -405,18 +405,18 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
     read("scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"),
     read("scripts/render-aqua-sentinel-visual-proof.mjs"),
   ]);
-  assert.match(gradle, /versionCode = 2026080203/);
-  assert.match(gradle, /versionName = "0\.7\.4-living-neural-fidelity-widget"/);
+  assert.match(gradle, /versionCode = 2026080204/);
+  assert.match(gradle, /versionName = "0\.7\.5-secondary-surfaces-test"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
   assert.doesNotMatch(gradle, /storeFile = file\(System\.getenv\("AQUA_RELEASE_KEYSTORE_PATH"\)\)/);
   assert.match(gradle, /\?\.let \{ storeFile = file\(it\) \}/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.4-Exact-Fidelity-Materialization-Widget-Test\.apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.5-Exact-Fidelity-Materialization-Widget-Test\.apk/);
   assert.match(workflow, /owner_visual_approval/);
   assert.match(workflow, /github\.event_name == 'workflow_dispatch' && inputs\.owner_visual_approval/);
   assert.match(workflow, /preflight-no-apk:/);
   assert.match(workflow, /compileDebugJavaWithJavac :app:mergeDebugResources/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.4-preflight-no-apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.5-preflight-no-apk/);
   assert.match(visualRenderer, /AQUA_RESULT_DOCUMENT_PIXEL_GATE/);
   assert.match(visualRenderer, /resultDocumentPixelMean >= \.28/);
   assert.match(visualRenderer, /inflateSync/);
@@ -443,7 +443,7 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
     /window\.location\.protocol === "file:" && \["home", "neural"\]\.includes\(previewPanel\)/,
   );
   assert.match(script, /function activateDeterministicPreviewRoute\(\)/);
-  assert.match(script, /\["home", "neural", "command", "settings", "diagnostics"\]\.includes\(previewPanel\)/);
+  assert.match(script, /\["home", "neural", "command", "settings", "diagnostics", "data", "files", "messages", "about"\]\.includes\(previewPanel\)/);
   assert.match(script, /previewPanel === "home"/);
   assert.match(script, /const demo = previewParameters\.get\("neuralDemo"\) \|\| "rest"/);
   assert.match(script, /if \(\["focus", "rotate", "fire", "transition", "company", "receipt", "result"\]\.includes\(demo\)\)/);
@@ -482,7 +482,7 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(visualRenderer, /!state\.beforeUsesRaster && !state\.afterUsesRaster/);
   assert.match(visualRenderer, /preview=settings/);
   assert.match(visualRenderer, /Settings-closed-phone\.png/);
-  assert.match(workflow, /AquaSentinelOS-v0\.7\.4-Settings-closed-phone\.png/);
+  assert.match(workflow, /AquaSentinelOS-v0\.7\.5-Settings-closed-phone\.png/);
   assert.match(visualRenderer, /AQUA_DETERMINISTIC_VISUAL_PROOF_RENDERED/);
   assert.match(workflow, /neural-live-wall-clock/);
   assert.match(workflow, /--url ".*neuralDemo=rest"/);
@@ -521,7 +521,7 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(androidLaunch, /KEYCODE_WAKEUP/);
   assert.match(androidLaunch, /wm dismiss-keyguard/);
   assert.match(workflow, /-gpu software/);
-  assert.match(workflow, /group: \$\{\{ github\.workflow \}\}-\$\{\{ github\.event\.pull_request\.head\.ref \|\| github\.ref_name \}\}/);
+  assert.match(workflow, /group: \$\{\{ github\.workflow \}\}-\$\{\{ github\.event_name \}\}-\$\{\{ github\.event\.pull_request\.head\.ref \|\| github\.ref_name \}\}/);
   assert.match(workflow, /cancel-in-progress: true/);
   assert.match(androidLaunch, /wait_for_adb\(\)/);
   assert.match(androidLaunch, /timeout 5s adb wait-for-device/);
@@ -1047,4 +1047,72 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(verifier, /AQUA_WIDGET_BACKGROUND_FILE_STAYED_ON_LAUNCHER/);
   assert.doesNotMatch(verifier, /wait_for_log "AQUA_FILING_CABINET_OPENED"/);
   assert.doesNotMatch(verifier, /wait_for_log "AQUA_FILING_INBOX_DELIVERED/);
+});
+
+test("v0.7.5 secondary operating surfaces execute real Android boundaries", async () => {
+  const [script, fidelity, activity, renderer, workflow, gradle, html] = await Promise.all([
+    read("sentient-os-web/app.js"),
+    read("sentient-os-web/fidelity.css"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+    read("scripts/render-aqua-sentinel-visual-proof.mjs"),
+    read(".github/workflows/aqua-sentient-os-release.yml"),
+    read("android-app/app/build.gradle.kts"),
+    read("sentient-os-web/index.html"),
+  ]);
+
+  assert.match(gradle, /versionCode = 2026080204/);
+  assert.match(gradle, /versionName = "0\.7\.5-secondary-surfaces-test"/);
+  assert.match(script, /preferenceStorageKey = "aqua-sentinel-owner-preferences-v1"/);
+  assert.match(script, /function saveOwnerPreferences\(\)/);
+  assert.match(script, /In-app owner alerts/);
+  assert.match(script, /data-command-ask/);
+  assert.match(script, /function diagnosticsMarkup\(\)/);
+  assert.match(script, /function diagnosticReceiptText\(\)/);
+  assert.match(script, /function connectionsMarkup\(\)/);
+  assert.match(script, /function aboutMarkup\(\)/);
+  assert.match(script, /window\.receiveDeviceDiagnostics/);
+  assert.match(script, /window\.refreshDeviceDiagnostics/);
+  assert.match(script, /AquaBridge\.openAppPermissionSettings/);
+  assert.match(script, /AquaBridge\.copyDiagnosticReceipt/);
+  assert.match(script, /data-integration-open/);
+  assert.match(script, /data-integration-refresh/);
+  assert.match(script, /data-message-action="retry"/);
+  assert.match(script, /data-filing-refresh/);
+  const clarificationBinding = script.match(/systemPanel\.querySelectorAll\("\[data-clarify-id\]"\)[\s\S]*?\n  \}\);/)?.[0] || "";
+  assert.equal(
+    clarificationBinding.match(/startFilingClarification/g)?.length,
+    2,
+    "one capability check and one invocation are allowed; duplicate launches are forbidden",
+  );
+
+  assert.match(activity, /private JSONObject deviceDiagnostics\(\)/);
+  assert.match(activity, /microphoneGranted/);
+  assert.match(activity, /calendarReadGranted/);
+  assert.match(activity, /calendarWriteGranted/);
+  assert.match(activity, /photoCaptureAvailable/);
+  assert.match(activity, /videoCaptureAvailable/);
+  assert.match(activity, /widgetInstalledCount/);
+  assert.match(activity, /installedAppCount/);
+  assert.match(activity, /public String getDeviceDiagnostics\(\)/);
+  assert.match(activity, /public void openAppPermissionSettings\(\)/);
+  assert.match(activity, /Settings\.ACTION_APPLICATION_DETAILS_SETTINGS/);
+  assert.match(activity, /ClipData\.newPlainText/);
+
+  for (const panel of ["diagnostics", "data", "files", "messages", "about"]) {
+    assert.match(script, new RegExp(`previewPanel[\\s\\S]*${panel}`));
+    assert.match(renderer, new RegExp(`preview=${panel}`));
+  }
+  for (const proof of ["Diagnostics", "Connections", "File-Cabinet", "Conversation-Receipts", "About"]) {
+    assert.match(renderer, new RegExp(`${proof}-closed-phone\\.png`));
+    assert.match(workflow, new RegExp(`${proof}-closed-phone\\.png`));
+  }
+  assert.match(workflow, /\[build-test-apk\]/);
+  assert.match(workflow, /github\.event_name == 'push'/);
+  assert.match(workflow, /contains\(github\.event\.head_commit\.message, '\[build-test-apk\]'\)/);
+  assert.match(fidelity, /v0\.7\.5 operating-surface completion/);
+  assert.match(fidelity, /\.connections-shell,\.about-shell/);
+  assert.match(fidelity, /\.diagnostic-actions/);
+
+  const protectedHome = createHash("sha256").update(html).digest("hex");
+  assert.equal(protectedHome, "750f50c7dc795c7e0834946f8866838d1fd2579e2d8b6a9ab51e7847cceb4567");
 });
