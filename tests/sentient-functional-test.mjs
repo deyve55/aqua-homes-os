@@ -922,6 +922,7 @@ test("responsive widget fills every supported host while preserving approved art
   assert.doesNotMatch(compactLayout, /widget_active_path|aqua_widget_jolt/);
   assert.match(compactLayout, /id="@\+id\/widget_neural_activity"/);
   assert.match(compactLayout, /@drawable\/aqua_widget_neural_activity_2x2/);
+  assert.match(compactLayout, /android:scaleType="centerCrop"/);
   assert.doesNotMatch(compactLayout, /widget_shimmer|fitXY/);
   assert.match(compactLayout, /android:layout_width="match_parent"[\s\S]*android:layout_height="match_parent"/);
   assert.doesNotMatch(compactLayout, /android:layout_width="110dp"[\s\S]*android:layout_height="110dp"/);
@@ -931,6 +932,7 @@ test("responsive widget fills every supported host while preserving approved art
   assert.doesNotMatch(compactLargeLayout, /android:layout_width="180dp"[\s\S]*android:layout_height="180dp"/);
   assert.match(compactLargeLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.match(compactLargeLayout, /id="@\+id\/widget_neural_activity"/);
+  assert.match(compactLargeLayout, /android:scaleType="centerCrop"/);
   assert.doesNotMatch(compactLargeLayout, /widget_shimmer|fitXY/);
   assert.match(microLayout, /two by two living surface/);
   assert.match(microLayout, /@drawable\/aqua_widget_2x2_approved_v073/);
@@ -939,10 +941,12 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(microLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_photo[\s\S]*widget_file/);
   assert.match(microLayout, /id="@\+id\/widget_status"/);
   assert.match(microLayout, /id="@\+id\/widget_neural_activity"/);
+  assert.match(microLayout, /android:scaleType="centerCrop"/);
   assert.doesNotMatch(microLayout, /widget_shimmer|fitXY/);
   assert.doesNotMatch(microLayout, /android:text="(?:ASK|VIDEO|PHOTO|FILE|AQUA)"/);
   assert.match(wideLayout, /Aqua Neuralink wide responsive surface/);
   assert.match(wideLayout, /@drawable\/aqua_widget_neural_paths_wide/);
+  assert.match(neuralWide, /<vector/);
   assert.match(wideLayout, /@drawable\/aqua_widget_neural_activity_wide/);
   assert.match(wideLayout, /@drawable\/aqua_widget_icon_action/);
   assert.match(wideLayout, /widget_action[\s\S]*widget_video[\s\S]*widget_logo[\s\S]*widget_photo[\s\S]*widget_file/);
@@ -1041,6 +1045,8 @@ test("responsive widget fills every supported host while preserving approved art
   assert.match(activity, /AQUA_FILING_CABINET_OPENED/);
   assert.match(activity, /BuildConfig\.ECOSYSTEM_PRESENTATION_MODE/);
   assert.match(verifier, /AQUA_WIDGET_LAUNCHER_TAP mode=\$mode resource=\$resource_id/);
+  assert.match(verifier, /approved art left a visible host surround/);
+  assert.match(verifier, /horizontal_gap > max\(24, int\(surface_width \* 0\.08\)\)/);
   assert.match(verifier, /AQUA_CAPTURE_SAVED type=voice/);
   assert.match(verifier, /AQUA_CAPTURE_BACKGROUND_COMPLETE type=voice/);
   assert.match(verifier, /AQUA_WIDGET_FILED_TODAY_VERIFIED count=\$filed_today/);

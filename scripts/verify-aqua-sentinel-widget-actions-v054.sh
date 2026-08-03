@@ -438,9 +438,18 @@ for resource_name in ("widget_logo", "widget_action", "widget_video", "widget_ph
 
 art_width = art[2] - art[0]
 art_height = art[3] - art[1]
+surface_width = surface[2] - surface[0]
+surface_height = surface[3] - surface[1]
+horizontal_gap = surface_width - art_width
+vertical_gap = surface_height - art_height
+if horizontal_gap > max(24, int(surface_width * 0.08)) or vertical_gap > max(24, int(surface_height * 0.08)):
+    raise SystemExit(
+        f"{label}: approved art left a visible host surround: "
+        f"surface={surface} art={art} gap={horizontal_gap}x{vertical_gap}"
+    )
 ratio = art_width / art_height
-if not (0.60 <= ratio <= 0.74 or 0.92 <= ratio <= 1.08):
-    raise SystemExit(f"{label}: approved art was stretched: ratio={ratio:.4f} art={art}")
+if not 0.45 <= ratio <= 2.25:
+    raise SystemExit(f"{label}: launcher returned an unsupported host aspect: ratio={ratio:.4f} art={art}")
 
 print(surface[2] - surface[0], surface[3] - surface[1], art_width, art_height)
 PY
