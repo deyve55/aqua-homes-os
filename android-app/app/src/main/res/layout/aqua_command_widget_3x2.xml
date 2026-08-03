@@ -3,7 +3,7 @@
     android:id="@+id/widget_resize_surface"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/aqua_widget_background"
+    android:background="@drawable/aqua_widget_background_3x2"
     android:padding="0dp">
 
     <ImageView
