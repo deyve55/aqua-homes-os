@@ -420,6 +420,7 @@ test("v0.7.4 preserves Home and proves the full Neuralink morph sequence", async
   assert.match(visualRenderer, /AQUA_RESULT_DOCUMENT_PIXEL_GATE/);
   assert.match(visualRenderer, /resultDocumentPixelMean >= \.28/);
   assert.match(visualRenderer, /inflateSync/);
+  assert.match(visualRenderer, /maxRetries: 5/);
   const noApkPreflight = workflow.match(/preflight-no-apk:[\s\S]*?\n  build-apk:/)?.[0] || "";
   assert.doesNotMatch(noApkPreflight, /assemble|\.apk/);
   assert.match(workflow, /-Paqua\.ecosystemPreview=true/);
