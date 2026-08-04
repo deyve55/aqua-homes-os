@@ -350,8 +350,8 @@ jobs:
           grep -q 'neural-substrate-map neural-substrate-result' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-select-proof.html
           grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-fire-proof.html
-          grep -q 'Aqua Receipts is materializing in the top portal' /tmp/aqua-sentinel-neural-select-proof.html
-          grep -q 'Aqua is firing one clean cyan-and-gold signal upward with a visible tail' /tmp/aqua-sentinel-neural-fire-proof.html
+          test "$(grep -o 'class=\"neural-route-group is-active\" data-neural-source-group=\"6\"' /tmp/aqua-sentinel-neural-select-proof.html | wc -l)" = "1"
+          test "$(grep -o 'class=\"neural-burst burst-[0-3] is-active\"[^>]*pathLength=\"100\"[^>]*data-neural-burst=\"6\"[^>]*data-neural-lane=\"[0-3]\"' /tmp/aqua-sentinel-neural-fire-proof.html | wc -l)" = "4"
           grep -q 'class="neural-materialization-approved is-receipt"' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-neural-materialized="true"' /tmp/aqua-sentinel-neural-result-proof.html
           grep -q 'data-aqua-preview-ready="command"' /tmp/aqua-sentinel-command-proof.html
