@@ -641,6 +641,72 @@ function beginNeuralRequest(command) {
   return intent;
 }
 
+const neuralCapabilityIndexes = Object.freeze({
+  crm: 0,
+  draw: 1,
+  cam: 2,
+  "knowledge-vault": 3,
+  timesheet: 4,
+  books: 5,
+  receipts: 6,
+  "sentinel-files": apps.length,
+});
+
+function beginLiveAquaRequest(command, intent = null) {
+  cancelNeuralMotion();
+  clearTimeout(neuralFireTimer);
+  clearTimeout(neuralTransitionTimer);
+  neuralRequestStartedAt = performance.now();
+  neuralAcknowledgedAt = 0;
+  pendingNeuralIntent = intent ? { ...intent, command } : { command };
+  neuralFocusIndex = -1;
+  neuralSupportIndexes = [];
+  neuralPhase = "working";
+  neuralMorphProgress = 0;
+  neuralMaterialization = null;
+  neuralThought = "Aqua is deciding which source should answer.";
+  neuralThoughtDetail = "Aqua stays centered until the secure gateway confirms a real application route.";
+  layoutNeuralStage();
+  renderNeuralMaterialization();
+}
+
+function confirmedNeuralIntent(response) {
+  const sourceApp = String(
+    response?.materialization?.sourceApp || response?.action?.app || "",
+  ).toLowerCase();
+  let primary = apps.findIndex((app) => {
+    const name = app.name.toLowerCase();
+    return sourceApp && (
+      name === sourceApp || name.includes(sourceApp) || sourceApp.includes(name)
+    );
+  });
+  if (primary < 0) {
+    const sources = Array.isArray(response?.receipt?.sources)
+      ? response.receipt.sources.map((source) => String(source).toLowerCase())
+      : [];
+    const capability = sources.find((source) => Number.isInteger(neuralCapabilityIndexes[source]));
+    if (capability) primary = neuralCapabilityIndexes[capability];
+  }
+  if (!Number.isInteger(primary) || primary < 0) return null;
+  const pending = pendingNeuralIntent || {};
+  return {
+    primary,
+    supporting: Array.isArray(pending.supporting) ? pending.supporting : [],
+    kind: pending.kind || response?.materialization?.kind || "record",
+    command: pending.command || "",
+  };
+}
+
+function activateConfirmedNeuralRoute(response) {
+  const intent = confirmedNeuralIntent(response);
+  if (!intent) return null;
+  neuralRequestStartedAt = performance.now();
+  pendingNeuralIntent = intent;
+  if (systemPanel.hidden || systemPanel.dataset.panel !== "neural") openPanel("neural");
+  focusNeuralSource(intent.primary, intent.supporting, intent.command);
+  return intent;
+}
+
 function neuralMaterializationFor(intent) {
   const source = neuralSourceAt(intent.primary);
   if (!source) return null;
@@ -2579,9 +2645,10 @@ window.receiveAquaText = (text) => {
     scheduleNeuralDestination(intent);
     return;
   }
-  const neuralIntent = beginNeuralRequest(command);
+  const neuralIntent = identifyNeuralIntent(command);
   if (!authenticated) {
     if (neuralIntent) {
+      beginNeuralRequest(command);
       completeStandaloneNeuralRequest(neuralIntent);
     } else {
       notify("Aqua heard you. Connect Aqua Brain for general answers; local app navigation remains available.");
@@ -2589,6 +2656,7 @@ window.receiveAquaText = (text) => {
     }
     return;
   }
+  beginLiveAquaRequest(command, neuralIntent);
   const selected = apps[active];
   const context = {
     surface: systemPanel.hidden ? "Home" : systemPanel.dataset.panel || "Home",
@@ -2634,6 +2702,7 @@ window.receiveWidgetCommand = (text) => {
 window.receiveAquaResponse = (raw) => {
   try {
     const response = typeof raw === "string" ? JSON.parse(raw) : raw;
+    const confirmedIntent = activateConfirmedNeuralRoute(response);
     applyAquaAction(response.action);
     if (response.materialization?.present) {
       const sourceIndex = apps.findIndex((app) => app.name === response.materialization.sourceApp);
@@ -2645,6 +2714,14 @@ window.receiveAquaResponse = (raw) => {
       }
       neuralThought = `${response.materialization.sourceApp || "Aqua"} returned the requested information.`;
       neuralThoughtDetail = "Aqua remains visible and ready while the evidence is held in front.";
+    }
+    if (!confirmedIntent && !response.materialization?.present) {
+      neuralFocusIndex = -1;
+      neuralSupportIndexes = [];
+      neuralPhase = "working";
+      neuralThought = "Aqua answered from outside the app network.";
+      neuralThoughtDetail = "No application tether fired because the secure gateway did not route this answer to an Aqua app.";
+      layoutNeuralStage();
     }
     showMaterialization(response.materialization, true);
     const reply = String(response.reply || "I’m ready.");

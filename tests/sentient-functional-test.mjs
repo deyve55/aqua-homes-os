@@ -173,6 +173,22 @@ test("Aqua Brain can use live web search without moving the API key into the APK
   assert.doesNotMatch(agent, /OPENAI_API_KEY\s*=/);
 });
 
+test("authenticated neural firing waits for a server-confirmed Aqua application route", async () => {
+  const [agent, script] = await Promise.all([
+    read("backend/aqua-agent.mjs"),
+    read("sentient-os-web/app.js"),
+  ]);
+  assert.match(agent, /name: 'route_aqua_capability'/);
+  assert.match(agent, /context\.routedCapability = manifest/);
+  assert.match(agent, /parsed\.receipt\.sources = Array\.from\(new Set/);
+  assert.match(script, /function beginLiveAquaRequest\(command, intent = null\)/);
+  assert.match(script, /neuralFocusIndex = -1;[\s\S]*Aqua stays centered until the secure gateway confirms/);
+  assert.match(script, /function confirmedNeuralIntent\(response\)/);
+  assert.match(script, /function activateConfirmedNeuralRoute\(response\)/);
+  assert.match(script, /const confirmedIntent = activateConfirmedNeuralRoute\(response\);/);
+  assert.match(script, /No application tether fired because the secure gateway did not route this answer/);
+});
+
 test("the premium Neural Link keeps seven owner-reference portals alive while Aqua morphs into the operating surface", async () => {
   const [html, script, fidelity, serviceWorker] = await Promise.all([
     read("sentient-os-web/index.html"),

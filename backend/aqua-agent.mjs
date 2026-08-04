@@ -20,6 +20,7 @@ TRUTH AND AUTHORITY
 ACTIONS AND SAFETY
 - Search and read-only preview may happen without confirmation.
 - Use live web search when the user explicitly asks to search the web, requests current information, or the answer depends on facts that may have changed. State that web results are external and name the sources briefly.
+- When a request needs information or an operation from an Aqua application, call route_aqua_capability before searching or preparing an action. This server-confirmed route is what activates that application's neural tether. Do not call it for a general web or conversational answer.
 - Any creation, edit, filing, approval, send, call, share, financial, destructive, or externally visible action must first be prepared as an intent.
 - A prepared intent is not completed work. It remains Queued and requires explicit confirmation.
 - Never invent a deep link, record identifier, source, confidence, or receipt.
@@ -60,6 +61,36 @@ function recordToMaterialization(record) {
 }
 
 export function createAquaAgentRuntime({ config, registry, store, runner = run }) {
+  const routeCapability = tool({
+    name: 'route_aqua_capability',
+    description:
+      'Select the one authoritative Aqua application needed for this request. This records a real server-side route so Sentinel may activate only that application tether.',
+    parameters: z.object({
+      capability: z.string().min(1).max(100),
+      purpose: z.string().min(1).max(1_000),
+    }),
+    execute: async ({ capability, purpose }, runContext) => {
+      const context = runContext.context;
+      const manifest = registry.get(capability);
+      if (!manifest) {
+        return JSON.stringify({
+          routed: false,
+          status: 'Needs Attention',
+          report: 'No registered Aqua capability matches that route.',
+        });
+      }
+      context.routedCapability = manifest;
+      return JSON.stringify({
+        routed: true,
+        capability: manifest.id,
+        application: manifest.name,
+        authority: manifest.authority,
+        adapterStatus: manifest.status,
+        purpose,
+      });
+    },
+  });
+
   const searchObjects = tool({
     name: 'search_authoritative_objects',
     description:
@@ -167,6 +198,7 @@ export function createAquaAgentRuntime({ config, registry, store, runner = run }
       store: false,
     },
     tools: [
+      routeCapability,
       searchObjects,
       listCapabilities,
       webSearchTool({ searchContextSize: 'medium', externalWebAccess: true }),
@@ -183,6 +215,7 @@ export function createAquaAgentRuntime({ config, registry, store, runner = run }
         identity,
         correlationId,
         preparedIntent: null,
+        routedCapability: null,
         lastSearch: [],
       };
       const result = await runner(
@@ -198,6 +231,7 @@ export function createAquaAgentRuntime({ config, registry, store, runner = run }
       );
       const parsed = AquaAgentOutputSchema.parse(result.finalOutput);
       const prepared = context.preparedIntent;
+      const routed = context.routedCapability;
       const searched = context.lastSearch;
 
       if (prepared) {
@@ -213,6 +247,13 @@ export function createAquaAgentRuntime({ config, registry, store, runner = run }
         parsed.receipt.correlationId = correlationId;
         parsed.receipt.intentId = '';
         parsed.receipt.confirmationToken = '';
+      }
+
+      if (routed) {
+        parsed.receipt.sources = Array.from(new Set([
+          routed.id,
+          ...parsed.receipt.sources,
+        ]));
       }
 
       if (searched.length === 1 && !parsed.materialization.present) {
