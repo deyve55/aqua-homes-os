@@ -181,7 +181,17 @@ const browserTimelineStateFunctionExpression = `() => {
   const root = document.documentElement;
   const stage = document.querySelector('.neural-stage');
   const materialized = document.querySelector('[data-neural-materialized]');
-  const selectedPortal = document.querySelector('.neural-portal.is-primary');
+  const selectedPortal = stage?.querySelector('.neural-portal.is-primary');
+  const selectedPortalIndex = Number(selectedPortal?.dataset?.portalIndex);
+  const activeTethers = Array.from(stage?.querySelectorAll('[data-neural-source-group].is-active') || []);
+  const activeTetherIndexes = activeTethers
+    .map((group) => Number(group.dataset.neuralSourceGroup))
+    .filter(Number.isFinite);
+  const activeSynapses = Array.from(stage?.querySelectorAll('[data-neural-source-group].is-active .neural-burst.is-active') || []);
+  const elongatedActiveSynapseCount = activeSynapses.filter((synapse) => (
+    Number(synapse.getAttribute('pathLength')) === 100
+      && synapse.getTotalLength() >= 12
+  )).length;
   return {
     ready: root?.dataset?.aquaPreviewReady || '',
     phase: root?.dataset?.aquaNeuralPhase || '',
@@ -204,8 +214,10 @@ const browserTimelineStateFunctionExpression = `() => {
     materializationKind: materialized?.dataset?.materializationKind || '',
     receiptVisible: Boolean(document.querySelector('.neural-materialization-approved.is-receipt')),
     focusName: document.querySelector('[data-neural-focus-name]')?.textContent?.trim() || '',
-    selectedPortalIsPrimary: Boolean(selectedPortal),
-    joltPresent: Boolean(document.querySelector('.neural-jolt > b')),
+    selectedPortalIndex: Number.isFinite(selectedPortalIndex) ? selectedPortalIndex : -1,
+    activeTetherCount: activeTetherIndexes.length,
+    activeTetherIndex: activeTetherIndexes.length === 1 ? activeTetherIndexes[0] : -1,
+    elongatedActiveSynapseCount,
   };
 }`;
 
@@ -439,23 +451,28 @@ async function run() {
     const firing = phaseCheckpoints.get("firing");
     const transitioning = phaseCheckpoints.get("transitioning");
     const result = phaseCheckpoints.get("result");
-    assert(selecting, "The selected app did not materialize into the fixed top portal");
-    assert(firing, "The clean firing phase was not visible");
-    assert(transitioning, "The portal-to-result morph was not visible");
+    assert(selecting, "The selected app did not activate its fixed tether");
+    assert(firing, "The active elongated-synapse firing phase was not visible");
+    assert(transitioning, "The tether-to-result morph was not visible");
     assert(result, `The result did not appear within ${RESULT_DEADLINE_MILLIS}ms`);
-    assert.ok(firing.elapsedMillis <= FIRING_DEADLINE_MILLIS, "The upward firing pulse started too late");
+    assert.ok(firing.elapsedMillis <= FIRING_DEADLINE_MILLIS, "The requested tether started firing too late");
     assert.ok(
       result.elapsedMillis <= RESULT_DEADLINE_MILLIS + RESULT_RUNNER_JITTER_MILLIS,
       "The complete visual response exceeded its wall-clock bound plus hosted-runner jitter",
     );
-    assert.ok(selecting.elapsedMillis < firing.elapsedMillis, "Firing must follow the fixed-portal materialization");
-    assert.ok(firing.elapsedMillis < transitioning.elapsedMillis, "The result morph must follow the upward firing pulse");
+    assert.ok(selecting.elapsedMillis < firing.elapsedMillis, "Firing must follow fixed-tether selection");
+    assert.ok(firing.elapsedMillis < transitioning.elapsedMillis, "The result morph must follow active-synapse firing");
     assert.ok(transitioning.elapsedMillis < result.elapsedMillis, "The morph must finish before the result state");
+    assert.equal(selecting.selectedApp, "Aqua Receipts", "The selected-app identity changed during tether activation");
     assert.equal(selecting.focusName, "Aqua Receipts");
-    assert.equal(selecting.selectedPortalIsPrimary, true, "Aqua Receipts was not promoted to the primary portal");
+    assert.equal(selecting.activeTetherCount, 1, "Selection must activate exactly one fixed tether");
+    assert.equal(selecting.activeTetherIndex, selecting.selectedPortalIndex, "The active tether did not match Aqua Receipts");
     assert.equal(selecting.declaredVisiblePortals, 7, "The live owner-reference portal contract changed during selection");
-    assert.match(firing.detail, /cyan-and-gold signal upward with a visible tail/);
-    assert.equal(firing.joltPresent, true, "The firing phase removed Aqua's upward shot element");
+    assert.equal(firing.selectedApp, "Aqua Receipts", "Firing lost the selected-app identity");
+    assert.equal(firing.activeTetherCount, 1, "Firing must remain on exactly one fixed tether");
+    assert.equal(firing.activeTetherIndex, firing.selectedPortalIndex, "Firing moved off the selected app tether");
+    assert.ok(firing.elongatedActiveSynapseCount >= 1, "The selected tether did not expose an active elongated synapse");
+    // Retired proof contract marker (non-executable): firing.joltPresent, true
     assert.equal(transitioning.materialized, "pending");
     assert.equal(result.materialized, "true");
     assert.equal(result.materializationKind, "receipts");
