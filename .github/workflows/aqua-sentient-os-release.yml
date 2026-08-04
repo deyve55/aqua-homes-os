@@ -341,8 +341,8 @@ jobs:
           grep -q 'AQUA SENTINEL' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'data-neural-visible-portals="7"' /tmp/aqua-sentinel-neural-rest-proof.html
           test "$(grep -o 'data-portal-index="[0-9]*"' /tmp/aqua-sentinel-neural-rest-proof.html | sort -u | wc -l)" = "8"
-          grep -q 'class="neural-microbursts"' /tmp/aqua-sentinel-neural-rest-proof.html
-          test "$(grep -o 'class="neural-burst burst-[0-9]"' /tmp/aqua-sentinel-neural-rest-proof.html | wc -l)" = "48"
+          test "$(grep -o 'data-neural-source-group="[0-7]"' /tmp/aqua-sentinel-neural-rest-proof.html | sort -u | wc -l)" = "8"
+          test "$(grep -o 'class="neural-burst burst-[0-3]"[^>]*pathLength="100"[^>]*data-neural-burst="[0-7]"[^>]*data-neural-lane="[0-3]"' /tmp/aqua-sentinel-neural-rest-proof.html | wc -l)" = "32"
           ! grep -q 'class="neural-traveler' /tmp/aqua-sentinel-neural-rest-proof.html
           grep -q 'class="neural-selected-chip"' /tmp/aqua-sentinel-neural-company-proof.html
           grep -q 'class="neural-continuation"' /tmp/aqua-sentinel-neural-company-proof.html
