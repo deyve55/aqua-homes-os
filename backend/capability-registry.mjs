@@ -84,6 +84,10 @@ export class CapabilityRegistry {
     return this.#capabilities.map((entry) => ({ ...entry }));
   }
 
+  snapshot() {
+    return this.list();
+  }
+
   get(id) {
     const entry = this.#capabilities.find((candidate) => candidate.id === id);
     return entry ? { ...entry } : null;
