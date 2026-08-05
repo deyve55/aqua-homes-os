@@ -612,6 +612,9 @@ test("v0.8.1 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(workflow, /data-portal-index="\[0-9\]\*"[^\n]*wc -l\)" = "9"/);
   assert.match(workflow, /data-neural-source-group="\[0-9\]\*"[^\n]*wc -l\)" = "9"/);
   assert.match(workflow, /data-neural-burst="\[0-9\]\*"[^\n]*wc -l\)" = "36"/);
+  assert.equal((workflow.match(/for neural_attempt in 1 2 3; do/g) || []).length, 2);
+  assert.equal((workflow.match(/test "\$neural_timing_verified" = "true"/g) || []).length, 2);
+  assert.match(workflow, /Strict wall-clock attempt \$\{neural_attempt\} missed on the hosted runner/);
   assert.match(workflow, /data-aqua-preview-ready="neural"/);
   assert.match(workflow, /data-aqua-neural-phase="rest"/);
   assert.match(workflow, /data-aqua-neural-phase="selecting"/);

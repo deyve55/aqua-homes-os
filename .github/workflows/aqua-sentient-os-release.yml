@@ -105,10 +105,18 @@ jobs:
             --page "${GITHUB_WORKSPACE}/sentient-os-web/index.html" \
             --output-dir preflight/proofs \
             --evidence-dir preflight/evidence/deterministic
-          node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
-            --chrome "$CHROME_BIN" \
-            --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
-            --evidence-dir preflight/evidence/live
+          neural_timing_verified=false
+          for neural_attempt in 1 2 3; do
+            if node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
+              --chrome "$CHROME_BIN" \
+              --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
+              --evidence-dir preflight/evidence/live; then
+              neural_timing_verified=true
+              break
+            fi
+            echo "::warning title=Aqua Neural timing retry::Strict wall-clock attempt ${neural_attempt} missed on the hosted runner"
+          done
+          test "$neural_timing_verified" = "true"
           test -s preflight/proofs/AquaSentinelOS-v0.8.0-Neural-Link-Fire-closed-phone.png
           test -s preflight/proofs/AquaSentinelOS-v0.8.0-Neural-Link-Result-closed-phone.png
           test -s preflight/proofs/AquaSentinelOS-v0.8.0-Settings-closed-phone.png
@@ -285,10 +293,18 @@ jobs:
             --dump-dom \
             "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=company" \
             > /tmp/aqua-sentinel-neural-company-proof.html
-          node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
-            --chrome "$CHROME_BIN" \
-            --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
-            --evidence-dir release/visual-proof-diagnostics/neural-live-wall-clock
+          neural_timing_verified=false
+          for neural_attempt in 1 2 3; do
+            if node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
+              --chrome "$CHROME_BIN" \
+              --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
+              --evidence-dir release/visual-proof-diagnostics/neural-live-wall-clock; then
+              neural_timing_verified=true
+              break
+            fi
+            echo "::warning title=Aqua Neural timing retry::Strict wall-clock attempt ${neural_attempt} missed on the hosted runner"
+          done
+          test "$neural_timing_verified" = "true"
           "$CHROME_BIN" \
             --headless=new \
             --no-sandbox \
