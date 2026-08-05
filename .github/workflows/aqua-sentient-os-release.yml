@@ -600,6 +600,8 @@ jobs:
 
       - name: Build release APK
         working-directory: android-app
+        env:
+          AQUA_GATEWAY_URL: https://aqua-sentinel-os.deyve-docarm-5626.chatgpt.site/api/gateway
         run: gradle --no-daemon --stacktrace :app:assembleRelease -Paqua.ecosystemPreview=true
 
       - name: Verify APK package, signing, and embedded interface

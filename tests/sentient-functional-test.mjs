@@ -150,6 +150,23 @@ test("native voice uses protected Realtime 2.1 and GPT-4o Transcribe with a trut
   assert.match(activity, /startLegacyListening/);
 });
 
+test("owner access uses a one-time activation page and keeps the session in Android Keystore", async () => {
+  const [page, script, activity, workflow] = await Promise.all([
+    read("sentient-os-web/index.html"),
+    read("sentient-os-web/app.js"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+    read(".github/workflows/aqua-sentient-os-release.yml"),
+  ]);
+  assert.match(page, /Get One-Time Activation Code/);
+  assert.match(page, /autocomplete="one-time-code"/);
+  assert.match(script, /openActivationPage/);
+  assert.match(activity, /public void openActivationPage\(\)/);
+  assert.match(activity, /\/activate/);
+  assert.match(activity, /"activationCode", activationCode/);
+  assert.match(activity, /AndroidKeyStore/);
+  assert.match(workflow, /AQUA_GATEWAY_URL: https:\/\/aqua-sentinel-os\.deyve-docarm-5626\.chatgpt\.site\/api\/gateway/);
+});
+
 test("voice models are server-selected and the ecosystem routing contract is exact", async () => {
   const [policy, realtime, environment] = await Promise.all([
     read("backend/model-policy.mjs"),

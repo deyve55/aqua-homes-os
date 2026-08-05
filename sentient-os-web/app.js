@@ -1050,6 +1050,7 @@ const authPassword = document.getElementById("authPassword");
 const authSubmit = document.getElementById("authSubmit");
 const authMessage = document.getElementById("authMessage");
 const authContinueStandalone = document.getElementById("authContinueStandalone");
+const authActivation = document.getElementById("authActivation");
 const ownerAccessButton = document.getElementById("ownerAccessButton");
 const ownerAccessLabel = document.getElementById("ownerAccessLabel");
 const toast = document.getElementById("sentinelToast");
@@ -1080,11 +1081,12 @@ function openOwnerAccess() {
   authEmail.disabled = !gatewayConfigured;
   authPassword.disabled = !gatewayConfigured;
   authSubmit.disabled = !gatewayConfigured;
+  authActivation.disabled = !gatewayConfigured;
   authSubmit.textContent = gatewayConfigured
     ? "Connect Aqua Brain"
     : "Gateway Not Configured";
   authMessage.textContent = gatewayConfigured
-    ? "Connect Aqua Brain when the gateway is available, or continue in Standalone mode."
+    ? "Generate a one-time code, then enter the owner email and code below."
     : "Aqua Brain is not configured in this test build. Sentinel remains available in Standalone mode.";
 }
 
@@ -3296,6 +3298,14 @@ authForm.addEventListener("submit", (event) => {
     return;
   }
   window.AquaBridge.signIn(authEmail.value.trim(), authPassword.value);
+});
+
+authActivation.addEventListener("click", () => {
+  if (!gatewayConfigured || !window.AquaBridge?.openActivationPage) {
+    authMessage.textContent = "The secure activation page is available in the installed Android APK.";
+    return;
+  }
+  window.AquaBridge.openActivationPage();
 });
 
 authContinueStandalone.addEventListener("click", () => {

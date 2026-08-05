@@ -164,9 +164,12 @@
         <small>AQUA SENTINEL OS</small>
         <h1>Owner access</h1>
         <p>
-          Sign in to connect Aqua’s secure intelligence and persistent business
-          memory. This is Aqua authentication—no ChatGPT redirect.
+          Connect this phone to Aqua’s secure intelligence and persistent
+          business memory with a one-time owner activation code.
         </p>
+        <button id="authActivation" class="auth-standalone" type="button">
+          Get One-Time Activation Code
+        </button>
         <form id="authForm">
           <label>
             Email
@@ -179,11 +182,14 @@
             />
           </label>
           <label>
-            Password
+            One-time activation code
             <input
               id="authPassword"
-              type="password"
-              autocomplete="current-password"
+              type="text"
+              inputmode="text"
+              autocomplete="one-time-code"
+              autocapitalize="characters"
+              spellcheck="false"
               required
             />
           </label>

@@ -1160,13 +1160,13 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         });
     }
 
-    private void signInOwner(String email, String password) {
+    private void signInOwner(String email, String activationCode) {
         networkExecutor.execute(() -> {
             JSONObject callback = new JSONObject();
             try {
-                if (email.trim().isEmpty() || password.isEmpty()) {
+                if (email.trim().isEmpty() || activationCode.isEmpty()) {
                     throw new IllegalArgumentException(
-                        "Enter the owner email and password."
+                        "Enter the owner email and one-time activation code."
                     );
                 }
                 if (AQUA_GATEWAY_URL.trim().isEmpty()) {
@@ -1176,7 +1176,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 }
                 JSONObject params = new JSONObject()
                     .put("email", email.trim().toLowerCase(Locale.US))
-                    .put("password", password)
+                    .put("activationCode", activationCode)
                     .put("deviceId", installationId());
                 HttpResult result = postJson(
                     AQUA_GATEWAY_URL,
@@ -1200,6 +1200,26 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 } catch (JSONException ignored) {}
             }
             sendJsonCallback("receiveAuthResult", callback);
+        });
+    }
+
+    private void openActivationPage() {
+        runOnUiThread(() -> {
+            try {
+                if (AQUA_GATEWAY_URL.trim().isEmpty()) {
+                    throw new IllegalStateException("Aqua Brain is not configured in this build.");
+                }
+                URL gateway = new URL(AQUA_GATEWAY_URL);
+                URL activation = new URL(
+                    gateway.getProtocol(),
+                    gateway.getHost(),
+                    gateway.getPort(),
+                    "/activate"
+                );
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(activation.toString())));
+            } catch (Exception error) {
+                sendError("Sentinel could not open the secure activation page.");
+            }
         });
     }
 
@@ -1405,6 +1425,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @JavascriptInterface
         public void signIn(String email, String password) {
             signInOwner(email, password);
+        }
+
+        @JavascriptInterface
+        public void openActivationPage() {
+            MainActivity.this.openActivationPage();
         }
 
         @JavascriptInterface
