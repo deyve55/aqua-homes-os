@@ -28,6 +28,7 @@ const env = Object.freeze({
   AQUA_OWNER_PASSWORD_HASH: hashPassword(ownerPassword, 'worker-test-salt'),
   SENTINEL_CLIENT_TOKEN: sentinelClientToken,
   AQUA_PULSE_SITE_TOKEN: pulseSiteToken,
+  AQUA_SENTINEL_TENANT_IDS_JSON: JSON.stringify(['tenant-aqua-homes']),
   AQUA_PULSE_COMMAND_ENDPOINT:
     'https://aqua-pulse.deyve-docarm-5626.chatgpt.site/api/sentinel/v1/commands',
   AQUA_ADAPTER_CREDENTIALS_JSON: JSON.stringify({
@@ -51,25 +52,31 @@ function post(body, headers = {}) {
 }
 
 function fileCabinetEnvelope(now = new Date()) {
-  const commandId = 'cmd-11111111-1111-4111-8111-111111111111';
+  const eventId = 'evt-11111111-1111-4111-8111-111111111111';
   const correlationId = 'cor-22222222-2222-4222-8222-222222222222';
   const idempotencyKey = 'idem-33333333-3333-4333-8333-333333333333';
   return {
-    contractId: 'aqua-sentinel-sdk-v1',
-    contractVersion: '1.1.0',
+    contract: 'aqua-sentinel-sdk-v1',
+    version: '1.1.0',
     command: 'file_cabinet.deliver',
-    sourcePackage: 'com.aquahomes.sentinel',
-    targetPackage: 'com.aquasoftware.aquapulse',
-    commandId,
+    eventId,
     correlationId,
     idempotencyKey,
-    acknowledgementToken: 'ack-44444444-4444-4444-8444-444444444444',
+    fileCabinetItemId: 'item-55555555-5555-4555-8555-555555555555',
+    acknowledgementToken: 'ack-token-44444444-4444-4444-8444-444444444444',
+    tenantId: 'tenant-aqua-homes',
+    legalEntityId: 'entity-aqua-software-inc',
+    source: {
+      appId: 'aqua-sentinel-os',
+      package: 'com.aquahomes.sentinel',
+    },
+    target: {
+      appId: 'aqua-pulse',
+      package: 'com.aquasoftware.aquapulse',
+    },
     issuedAt: now.toISOString(),
     expiresAt: new Date(now.getTime() + 5 * 60_000).toISOString(),
     item: {
-      itemId: 'item-55555555-5555-4555-8555-555555555555',
-      correlationId,
-      idempotencyKey,
       scope: 'business',
       title: 'AquaPulse File Cabinet conformance',
       details: 'A non-bookkeeping conformance record.',
@@ -77,7 +84,12 @@ function fileCabinetEnvelope(now = new Date()) {
       fileCabinetRef:
         'content://com.aquahomes.sentinel.filecabinet/one-time/item-55555555-5555-4555-8555-555555555555',
       createdAt: now.toISOString(),
-      source: { app: 'com.aquahomes.sentinel', commandId },
+      evidence: {
+        authorityAppId: 'aqua-sentinel-os',
+        sourceRecordId: 'source-conformance-001',
+        contentType: 'application/json',
+        sha256: 'b50f108ae9bf5ce3fa893131f0701fe9431ed50a5f1db0ebd639c18b446aeeae',
+      },
     },
   };
 }
@@ -128,12 +140,15 @@ test('File Cabinet relay sends the identical SDK 1.1 packet twice and preserves 
     calls.push({ url, init });
     return Response.json({
       ok: true,
-      contractId: envelope.contractId,
-      contractVersion: envelope.contractVersion,
-      commandId: envelope.commandId,
+      contract: envelope.contract,
+      version: envelope.version,
+      command: envelope.command,
+      eventId: envelope.eventId,
       correlationId: envelope.correlationId,
       idempotencyKey: envelope.idempotencyKey,
+      fileCabinetItemId: envelope.fileCabinetItemId,
       acknowledgementToken: envelope.acknowledgementToken,
+      acknowledgementId: 'ack-id-66666666-6666-4666-8666-666666666666',
       status: calls.length === 1 ? 'accepted_and_saved' : 'duplicate_ignored',
       acknowledgedAt: '2026-08-05T12:00:01.000Z',
       fileCabinetRef: envelope.item.fileCabinetRef,
@@ -144,9 +159,13 @@ test('File Cabinet relay sends the identical SDK 1.1 packet twice and preserves 
   const first = await handler.fetch(fileCabinetRequest(envelope), env);
   const second = await handler.fetch(fileCabinetRequest(envelope), env);
   assert.equal(first.status, 201);
-  assert.equal((await first.json()).status, 'accepted_and_saved');
+  const firstAcknowledgement = await first.json();
+  assert.equal(firstAcknowledgement.status, 'accepted_and_saved');
   assert.equal(second.status, 200);
-  assert.equal((await second.json()).status, 'duplicate_ignored');
+  const duplicateAcknowledgement = await second.json();
+  assert.equal(duplicateAcknowledgement.status, 'duplicate_ignored');
+  assert.equal(duplicateAcknowledgement.acknowledgementId, firstAcknowledgement.acknowledgementId);
+  assert.equal(duplicateAcknowledgement.acknowledgedAt, firstAcknowledgement.acknowledgedAt);
   assert.equal(calls.length, 2);
   assert.equal(
     calls[0].url,
@@ -163,12 +182,15 @@ test('File Cabinet relay fails closed on expired packets and mismatched acknowle
   const handler = createWorkerHandler({
     fetchImpl: async () => Response.json({
       ok: true,
-      contractId: envelope.contractId,
-      contractVersion: envelope.contractVersion,
-      commandId: envelope.commandId,
+      contract: envelope.contract,
+      version: envelope.version,
+      command: envelope.command,
+      eventId: envelope.eventId,
       correlationId: 'cor-wrong-acknowledgement',
       idempotencyKey: envelope.idempotencyKey,
+      fileCabinetItemId: envelope.fileCabinetItemId,
       acknowledgementToken: envelope.acknowledgementToken,
+      acknowledgementId: 'ack-id-66666666-6666-4666-8666-666666666666',
       status: 'accepted_and_saved',
       acknowledgedAt: '2026-08-05T12:00:01.000Z',
       fileCabinetRef: envelope.item.fileCabinetRef,
@@ -184,6 +206,38 @@ test('File Cabinet relay fails closed on expired packets and mismatched acknowle
   const mismatch = await handler.fetch(fileCabinetRequest(current), env);
   assert.equal(mismatch.status, 502);
   assert.equal((await mismatch.json()).status, 'acknowledgement_mismatch');
+});
+
+test('File Cabinet relay rejects legacy aliases, wrong routes, and unapproved tenants', async () => {
+  const handler = createWorkerHandler({ fetchImpl: async () => {
+    throw new Error('The upstream must not be called for a rejected packet.');
+  } });
+
+  const legacy = fileCabinetEnvelope();
+  legacy.contractId = legacy.contract;
+  delete legacy.contract;
+  const legacyResponse = await handler.fetch(fileCabinetRequest(legacy), env);
+  assert.equal(legacyResponse.status, 400);
+  assert.equal((await legacyResponse.json()).status, 'invalid_envelope');
+
+  const wrongRoute = fileCabinetEnvelope();
+  wrongRoute.target.appId = 'aqua-crm';
+  const routeResponse = await handler.fetch(fileCabinetRequest(wrongRoute), env);
+  assert.equal(routeResponse.status, 400);
+  assert.equal((await routeResponse.json()).status, 'invalid_route');
+
+  const wrongTenant = fileCabinetEnvelope();
+  wrongTenant.tenantId = 'tenant-not-authorized';
+  const tenantResponse = await handler.fetch(fileCabinetRequest(wrongTenant), env);
+  assert.equal(tenantResponse.status, 403);
+  assert.equal((await tenantResponse.json()).status, 'tenant_denied');
+
+  const missingTenantConfiguration = await handler.fetch(
+    fileCabinetRequest(fileCabinetEnvelope()),
+    { ...env, AQUA_SENTINEL_TENANT_IDS_JSON: '' },
+  );
+  assert.equal(missingTenantConfiguration.status, 503);
+  assert.equal((await missingTenantConfiguration.json()).status, 'relay_not_configured');
 });
 
 test('Durable Worker authenticates the owner and protects capabilities', async () => {

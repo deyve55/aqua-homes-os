@@ -1,0 +1,21 @@
+{
+  "contract": "aqua-sentinel-sdk-v1",
+  "version": "1.1.0",
+  "authority_repository": "deyve55/Aqua-brain-and-nervous-system",
+  "authority_branch": "main",
+  "release_pull_request": 3,
+  "release_merge_commit": "dae0e243405d84fafe1985e17d4ed9c01a14dc83",
+  "validated_schema_source_commit": "7ac26021d1fad4e1dc9802773bb9f154c55e373b",
+  "manifest_path": "contracts/aqua-sentinel-sdk-v1/1.1.0/manifest.json",
+  "sha256": {
+    "file-cabinet-deliver.schema.json": "74f59e091aed702de0da868cd00ebca9b0282b1c485924cbb2a199f39078cb0f",
+    "acknowledgement.schema.json": "58044b756fa7a8f66ebd7d5f5277f686b8c63aa2ed417e482e01fc5b80dd4f96"
+  },
+  "projection_sdk": {
+    "package": "@deyve55/aqua-integration-sdk",
+    "version": "1.10.0",
+    "relationship": "separate-read-only-projection-layer"
+  },
+  "consumer": "aqua-sentinel-traffic-cop",
+  "runtime_deployment_verified": false
+}

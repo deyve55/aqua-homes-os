@@ -11,23 +11,33 @@ const RELAY_TIMEOUT_MS = 20_000;
 const AUTH_DIGEST_KEY = 'aqua-sentinel-traffic-cop-auth-v1';
 
 const identifier = z.string().min(8).max(200);
+const appIdentifier = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(100);
+const packageIdentifier = z.string()
+  .regex(/^[A-Za-z][A-Za-z0-9_]*(?:\.[A-Za-z][A-Za-z0-9_]*)+$/)
+  .max(200);
 
 const FileCabinetEnvelopeSchema = z.object({
-  contractId: z.literal('aqua-sentinel-sdk-v1'),
-  contractVersion: z.literal('1.1.0'),
+  contract: z.literal('aqua-sentinel-sdk-v1'),
+  version: z.literal('1.1.0'),
   command: z.literal('file_cabinet.deliver'),
-  sourcePackage: z.literal('com.aquahomes.sentinel'),
-  targetPackage: z.literal('com.aquasoftware.aquapulse'),
-  commandId: identifier,
+  eventId: identifier,
   correlationId: identifier,
   idempotencyKey: identifier,
+  fileCabinetItemId: identifier,
   acknowledgementToken: identifier,
+  tenantId: z.string().min(3).max(160),
+  legalEntityId: z.string().min(3).max(160).optional(),
+  source: z.object({
+    appId: appIdentifier,
+    package: packageIdentifier,
+  }).strict(),
+  target: z.object({
+    appId: appIdentifier,
+    package: packageIdentifier,
+  }).strict(),
   issuedAt: z.string().datetime({ offset: true }),
   expiresAt: z.string().datetime({ offset: true }),
   item: z.object({
-    itemId: identifier,
-    correlationId: identifier,
-    idempotencyKey: identifier,
     scope: z.enum(['business', 'personal']),
     title: z.string().min(1).max(240),
     details: z.string().max(4_000),
@@ -37,40 +47,35 @@ const FileCabinetEnvelopeSchema = z.object({
     ),
     entityReference: z.object({
       authority: z.literal('aqua-crm'),
-      customerId: z.string().min(1).max(160),
-      jobId: z.string().min(1).max(160),
+      customerId: z.string().min(1).max(200),
+      jobId: z.string().min(1).max(200),
     }).optional(),
     createdAt: z.string().datetime({ offset: true }),
-    source: z.object({
-      app: z.literal('com.aquahomes.sentinel'),
-      commandId: identifier,
+    evidence: z.object({
+      authorityAppId: appIdentifier,
+      sourceRecordId: z.string().min(1).max(200),
+      contentType: z.string().min(3).max(160),
+      sha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
     }).strict(),
   }).strict(),
-}).strict().superRefine((value, context) => {
-  if (value.item.correlationId !== value.correlationId) {
-    context.addIssue({ code: 'custom', path: ['item', 'correlationId'], message: 'Correlation ID mismatch.' });
-  }
-  if (value.item.idempotencyKey !== value.idempotencyKey) {
-    context.addIssue({ code: 'custom', path: ['item', 'idempotencyKey'], message: 'Idempotency key mismatch.' });
-  }
-  if (value.item.source.commandId !== value.commandId) {
-    context.addIssue({ code: 'custom', path: ['item', 'source', 'commandId'], message: 'Command ID mismatch.' });
-  }
-});
+}).strict();
 
 const PulseAcknowledgementSchema = z.object({
   ok: z.literal(true),
-  contractId: z.literal('aqua-sentinel-sdk-v1'),
-  contractVersion: z.literal('1.1.0'),
-  commandId: identifier,
+  contract: z.literal('aqua-sentinel-sdk-v1'),
+  version: z.literal('1.1.0'),
+  command: z.literal('file_cabinet.deliver'),
+  eventId: identifier,
   correlationId: identifier,
   idempotencyKey: identifier,
+  fileCabinetItemId: identifier,
   acknowledgementToken: identifier,
+  acknowledgementId: identifier,
   status: z.enum(['accepted_and_saved', 'duplicate_ignored']),
   acknowledgedAt: z.string().datetime({ offset: true }),
   fileCabinetRef: z.string().min(1).max(1_000),
   message: z.string().max(1_000).optional(),
-}).passthrough();
+}).strict();
 
 function json(value, status) {
   return new Response(JSON.stringify(value), {
@@ -139,12 +144,31 @@ function validTimeWindow(envelope, now) {
   );
 }
 
+function tenantAllowed(value, configuredTenants) {
+  let tenantIds;
+  try {
+    tenantIds = JSON.parse(configuredTenants ?? '');
+  } catch {
+    return null;
+  }
+  if (
+    !Array.isArray(tenantIds) ||
+    tenantIds.length === 0 ||
+    tenantIds.some((tenantId) => typeof tenantId !== 'string' || tenantId.length < 3)
+  ) {
+    return null;
+  }
+  return tenantIds.includes(value);
+}
+
 function acknowledgementMatches(envelope, acknowledgement) {
   return (
-    acknowledgement.commandId === envelope.commandId &&
+    acknowledgement.eventId === envelope.eventId &&
     acknowledgement.correlationId === envelope.correlationId &&
     acknowledgement.idempotencyKey === envelope.idempotencyKey &&
-    acknowledgement.acknowledgementToken === envelope.acknowledgementToken
+    acknowledgement.fileCabinetItemId === envelope.fileCabinetItemId &&
+    acknowledgement.acknowledgementToken === envelope.acknowledgementToken &&
+    acknowledgement.fileCabinetRef === envelope.item.fileCabinetRef
   );
 }
 
@@ -167,6 +191,24 @@ export async function relayFileCabinetDelivery(
   const parsedEnvelope = FileCabinetEnvelopeSchema.safeParse(parsedBody.value);
   if (!parsedEnvelope.success || !validTimeWindow(parsedEnvelope.data, now)) {
     return json({ ok: false, status: 'invalid_envelope' }, 400);
+  }
+  if (
+    parsedEnvelope.data.source.appId !== 'aqua-sentinel-os' ||
+    parsedEnvelope.data.source.package !== 'com.aquahomes.sentinel' ||
+    parsedEnvelope.data.target.appId !== 'aqua-pulse' ||
+    parsedEnvelope.data.target.package !== 'com.aquasoftware.aquapulse'
+  ) {
+    return json({ ok: false, status: 'invalid_route' }, 400);
+  }
+  const allowedTenant = tenantAllowed(
+    parsedEnvelope.data.tenantId,
+    env.AQUA_SENTINEL_TENANT_IDS_JSON,
+  );
+  if (allowedTenant === null) {
+    return json({ ok: false, status: 'relay_not_configured' }, 503);
+  }
+  if (!allowedTenant) {
+    return json({ ok: false, status: 'tenant_denied' }, 403);
   }
 
   let endpoint;

@@ -421,3 +421,53 @@ Exact next action: install the exact artifact on Dave's Fold 7 for physical
 acceptance, then onboard each approved satellite backend to SDK v1.10.0 with an
 exact version pin and conformance proof.
 
+## 14. Backend ecosystem continuation — 2026-08-05
+
+The backend-only continuation began from exact PR #194 head
+`1dc0d8508bfeafec04a111a0fdd732ae702c9dfd`. No Sentinel application design,
+navigation, workflow, Android identity, or v0.8.5 direction was changed, and PR
+#194 remains draft and unmerged.
+
+### Canonical command contract
+
+Aqua Brain PR #3 published `aqua-sentinel-sdk-v1@1.1.0` to `main` at merge
+commit `dae0e243405d84fafe1985e17d4ed9c01a14dc83`. The schema-bearing source
+commit `7ac26021d1fad4e1dc9802773bb9f154c55e373b` passed local schema,
+two-delivery replay, manifest, and secret-pattern gates and GitHub Actions run
+`31008262556`. Subsequent continuity and release-status heads passed runs
+`31008553520` and `31008791334`.
+
+Traffic Cop pins that release in
+`docs/ai-backend/aqua-sentinel-command-contract-pin.json`. The command contract
+is separate from the read-only projection package
+`@deyve55/aqua-integration-sdk@1.10.0`.
+
+### Traffic Cop source checkpoint
+
+`backend/file-cabinet-relay.mjs` now accepts and forwards only the canonical
+strict envelope: `contract`, `version`, `eventId`, `correlationId`,
+`idempotencyKey`, `fileCabinetItemId`, `acknowledgementToken`, explicit tenant,
+source, target, expiry, item, and evidence fields. It requires the exact
+Sentinel-to-AquaPulse route, a server-side tenant allowlist, and a strict
+acknowledgement with stable identity. Pre-release aliases are rejected rather
+than forwarded as a competing 1.1.0 wire shape.
+
+Local evidence:
+
+- worker tests: 8/8 passed;
+- full repository tests: 50/50 passed;
+- Wrangler deployment dry-run: passed.
+
+### Deployment truth boundary
+
+Traffic Cop is not yet claimed deployed. No Cloudflare credential was present
+in the CLI environment, and Cloudflare Dashboard held the cloud browser in a
+human-verification loop after the single permitted retry. No live external
+two-delivery request has been run. The prepared AquaPulse receiver must first
+adopt this same canonical contract; its prior payload and acknowledgement
+shape was incompatible despite isolated local tests.
+
+Exact next action: publish this backend-only checkpoint on PR #194, reconcile
+and deploy AquaPulse against the same Brain pin, then deploy Traffic Cop with
+protected server-side credentials and require a real `accepted_and_saved`
+followed by `duplicate_ignored` with the same acknowledgement identity.
