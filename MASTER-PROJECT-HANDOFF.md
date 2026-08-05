@@ -471,3 +471,53 @@ Exact next action: publish this backend-only checkpoint on PR #194, reconcile
 and deploy AquaPulse against the same Brain pin, then deploy Traffic Cop with
 protected server-side credentials and require a real `accepted_and_saved`
 followed by `duplicate_ignored` with the same acknowledgement identity.
+
+## 15. Backend ecosystem evidence update — 2026-08-05 10:13 EDT
+
+### Sentinel / Traffic Cop
+
+The backend-only Traffic Cop checkpoint is published on the existing draft PR
+#194 line at `7ef4a8096b3aaf172643fc64022382d982aa9665`. It changed the relay,
+tests, contract pin, and continuity records only; no application UI or Android
+payload was changed. GitHub regression run `31009160665` and operating-surfaces
+run `31009159290` both succeeded. Traffic Cop is still not deployed because no
+Cloudflare CLI credential is available and the dashboard is held at human
+verification. No Traffic Cop live crossing is claimed.
+
+### AquaPulse
+
+The older GitHub v0.1.5 branch carries backend checkpoint
+`83f97981a5029bc1ec21f31e6e59ba51e6bd1c1a`; GitHub Actions run
+`31010476892` succeeded. That application tree must not overwrite the newer
+v0.1.6 Sites source.
+
+The active protected v0.1.6 source deployed as Sites version 24 from
+`afa442f6ca88f9dfe016e57cf17637c673e1edaf`, deployment
+`appgdep_6a733e34fce881918e9ebdfb199c0f39`, environment revision 3, with a
+terminal `succeeded` status. A direct authenticated production probe returned
+health `200`, first delivery `201 accepted_and_saved`, and exact-packet retry
+`200 duplicate_ignored`, preserving the acknowledgement ID and timestamp. This
+credits AquaPulse's receiver and D1 persistence only, not Traffic Cop.
+
+### AquaCam
+
+AquaCam application PR #12 remains untouched at
+`4454612ec92141eecc692a2156e9fcf8ee5099bb`. The dedicated backend PR #1 now
+contains an additive server-only `@deyve55/aqua-integration-sdk@1.10.0` seam at
+implementation checkpoint `d04fb88cfc03934d4198a83ae232f9ded00faad2`, with
+continuity head `e2c764d95f13ad2f909e10fa3b3404168a3a027e`. Local adapter conformance is
+5/5. Authenticated restricted-package CI, adapter credentials, Cloudflare
+deployment, and a live gateway replay proof remain pending.
+
+### Still blocked or intentionally untouched
+
+- Aqua CRM PR #2 still needs package-level GitHub Packages access after its
+  `403 read_package` failure.
+- Aqua Posts remains untouched because its exact repository is not verified.
+- No secret value is stored in source or this handoff.
+
+Exact next action: authenticate the Cloudflare account so Traffic Cop can
+receive the matching managed AquaPulse credential and deploy, and authenticate
+GitHub package settings so CRM and AquaCam can receive restricted-package read
+access. Then require real CI/deployment receipts and run Traffic Cop's two exact
+deliveries to AquaPulse before crediting the cross-app route.
