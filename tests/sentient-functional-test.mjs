@@ -105,12 +105,15 @@ test("carousel previews use reversible presentation data and verified refreshabl
   assert.match(contract, /compressed current home-screen thumbnail/);
 });
 
-test("native voice uses authenticated Aqua Brain and not local scripted answers", async () => {
+test("native voice uses protected Realtime 2.1 and GPT-4o Transcribe with a truthful local fallback", async () => {
   const [script, activity] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
   ]);
   assert.match(script, /AquaBridge\.askAqua/);
+  assert.match(script, /window\.startAquaRealtime/);
+  assert.match(script, /RTCPeerConnection/);
+  assert.match(script, /receiveRealtimeToolResult/);
   assert.match(script, /receiveAquaResponse/);
   assert.match(script, /applyAquaAction/);
   assert.match(script, /showMaterialization/);
@@ -119,12 +122,31 @@ test("native voice uses authenticated Aqua Brain and not local scripted answers"
   assert.match(activity, /"jsonrpc", "2\.0"/);
   assert.match(activity, /"session\.create"/);
   assert.match(activity, /"aqua\.chat"/);
+  assert.match(activity, /postRealtimeSdp/);
+  assert.match(activity, /"\/realtime"/);
+  assert.match(activity, /PermissionRequest\.RESOURCE_AUDIO_CAPTURE/);
   assert.match(activity, /AndroidKeyStore/);
   assert.doesNotMatch(activity, /grant_type=password/);
   assert.doesNotMatch(activity, /grant_type=refresh_token/);
   assert.doesNotMatch(activity, /supabase/i);
   assert.match(activity, /SpeechRecognizer/);
   assert.match(activity, /TextToSpeech/);
+  assert.match(activity, /startLegacyListening/);
+});
+
+test("voice models are server-selected and the ecosystem routing contract is exact", async () => {
+  const [policy, realtime, environment] = await Promise.all([
+    read("backend/model-policy.mjs"),
+    read("backend/realtime-session.mjs"),
+    read(".env.example"),
+  ]);
+  const routingSources = `${policy}\n${realtime}\n${environment}`;
+  assert.match(routingSources, /gpt-realtime-2\.1/);
+  assert.match(routingSources, /gpt-4o-transcribe/);
+  assert.match(policy, /gpt-realtime-2\.1-mini/);
+  assert.match(realtime, /semantic_vad/);
+  assert.match(realtime, /eagerness: 'low'/);
+  assert.doesNotMatch(realtime, /gpt-4o-mini-transcribe/);
 });
 
 test("an unavailable gateway cannot block truthful Standalone startup", async () => {

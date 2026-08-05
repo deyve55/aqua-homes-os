@@ -17,6 +17,7 @@ import {
   ReceiptEvidenceConflictError,
   ReceiptImageValidationError,
 } from './receipt-intelligence.mjs';
+import { publicAquaModelPolicy } from './model-policy.mjs';
 
 export class RpcError extends Error {
   constructor(code, message, data = undefined) {
@@ -111,6 +112,10 @@ export function createGateway({
           case 'aqua.capabilities.list': {
             requireIdentity(config, headers);
             return ok(request.id, { capabilities: registry.list() });
+          }
+          case 'aqua.models.policy': {
+            requireIdentity(config, headers);
+            return ok(request.id, publicAquaModelPolicy(config));
           }
           case 'aqua.adapter.sync': {
             const params = AdapterSyncParamsSchema.parse(request.params);

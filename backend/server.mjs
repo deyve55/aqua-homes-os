@@ -5,12 +5,17 @@ import { ProjectionStore } from './projection-store.mjs';
 import { createAquaAgentRuntime } from './aqua-agent.mjs';
 import { createReceiptIntelligenceRuntime } from './receipt-intelligence.mjs';
 import { createGateway } from './gateway.mjs';
+import {
+  authenticateRealtimeRequest,
+  createRealtimeSessionRuntime,
+} from './realtime-session.mjs';
 
 export function createServer(config = loadConfig()) {
   const registry = new CapabilityRegistry();
   const store = new ProjectionStore();
   const agentRuntime = createAquaAgentRuntime({ config, registry, store });
   const receiptRuntime = createReceiptIntelligenceRuntime({ config });
+  const realtimeRuntime = createRealtimeSessionRuntime({ config });
   const gateway = createGateway({
     config,
     registry,
@@ -27,6 +32,39 @@ export function createServer(config = loadConfig()) {
     if (request.method === 'GET' && request.url === '/health') {
       response.statusCode = 200;
       response.end(JSON.stringify({ service: 'Aqua Sentinel Gateway', status: 'Confirmed' }));
+      return;
+    }
+    if (request.method === 'POST' && request.url === '/realtime') {
+      const identity = authenticateRealtimeRequest(config, request.headers);
+      if (!identity) {
+        response.statusCode = 401;
+        response.end('A valid Sentinel session is required.');
+        return;
+      }
+      let sdp = '';
+      let tooLarge = false;
+      request.setEncoding('utf8');
+      request.on('data', (chunk) => {
+        if (tooLarge) return;
+        sdp += chunk;
+        if (Buffer.byteLength(sdp) > 100_000) {
+          tooLarge = true;
+          response.statusCode = 413;
+          response.end('Invalid SDP.');
+          request.destroy();
+        }
+      });
+      request.on('end', async () => {
+        if (tooLarge) return;
+        const result = await realtimeRuntime.connect({
+          identity,
+          sdp,
+          appId: 'aqua-sentinel-os',
+        });
+        response.statusCode = result.status;
+        response.setHeader('Content-Type', result.contentType ?? 'text/plain; charset=utf-8');
+        response.end(result.body);
+      });
       return;
     }
     if (request.method !== 'POST' || request.url !== '/gateway') {

@@ -1,6 +1,6 @@
 {
-  "schema_version": "2.1.0",
-  "updated_at": "2026-08-05T10:13:16-04:00",
+  "schema_version": "2.2.0",
+  "updated_at": "2026-08-05T13:34:39-04:00",
   "timezone": "America/New_York",
   "owner": "Dave (Deyve)",
   "company": "Aqua Software Inc.",
@@ -72,7 +72,10 @@
     "truthful_missing_source_behavior": true,
     "home_dashboard_vertical_layout": true,
     "visible_ecosystem_presentation_panels": true,
-    "deterministic_home_presentation_proof": true
+    "deterministic_home_presentation_proof": true,
+    "canonical_realtime_voice_sdp_bridge": true,
+    "server_owned_model_routing_policy": true,
+    "gpt_4o_transcription_contract": true
   },
   "backend": {
     "gateway_url_default": "https://api.aquahomesos.com/gateway",
@@ -282,6 +285,30 @@
       "touched": false
     },
     "truth_boundary": "AquaPulse's direct production receiver proof does not prove a Traffic Cop crossing. Traffic Cop remains undeployed, CRM package access remains blocked, AquaCam authenticated package CI/deployment remain pending, and Posts remains untouched until its exact repository is verified."
+  },
+  "sentinel_realtime_voice_checkpoint_2026_08_05": {
+    "source_base": "5dd823a5055f207486fb00b8e0ddbe6f26502dc2",
+    "application_source": "sentient-os-web",
+    "android_wrapper": "android-app",
+    "approved_visuals_modified": false,
+    "reduced_sites_preview_used_as_application_source": false,
+    "model_policy": {
+      "satellite_default": "gpt-realtime-2.1-mini",
+      "satellite_escalation": "gpt-realtime-2.1",
+      "sentinel_voice_default": "gpt-realtime-2.1",
+      "sentinel_isolated_simple_text_allowed": "gpt-realtime-2.1-mini",
+      "transcription": "gpt-4o-transcribe"
+    },
+    "voice_transport": "authenticated Android-to-Sentinel SDP proxy; primary OpenAI API key remains server-side",
+    "turn_detection": "semantic_vad, low eagerness, interruption enabled",
+    "confirmation_boundary": "exact text confirmation required before destructive, external, financial, filing, publishing, employment, legal, or other sensitive action",
+    "local_repository_tests": "53/53 passed",
+    "worker_dry_run": "passed",
+    "android_compile": "PENDING_GITHUB_ACTIONS",
+    "test_apk": "PENDING_GITHUB_ACTIONS",
+    "deployed": false,
+    "live_voice_test": "NOT_RUN",
+    "truth_boundary": "The canonical source and protected Realtime path are implemented and locally verified. Android compilation, APK installation, production Worker deployment, and a real device voice round trip are not yet claimed."
   },
   "secrets": {
     "api_keys_committed": false,

@@ -6,6 +6,10 @@ import { createAquaAgentRuntime } from './aqua-agent.mjs';
 import { createReceiptIntelligenceRuntime } from './receipt-intelligence.mjs';
 import { createGateway } from './gateway.mjs';
 import {
+  authenticateRealtimeRequest,
+  createRealtimeSessionRuntime,
+} from './realtime-session.mjs';
+import {
   relayFileCabinetDelivery,
   SENTINEL_FILE_CABINET_PATH,
 } from './file-cabinet-relay.mjs';
@@ -46,7 +50,12 @@ export function loadWorkerConfig(env) {
     openAiApiKey: env.OPENAI_API_KEY ?? '',
     model: env.OPENAI_MODEL ?? 'gpt-5.6',
     receiptVisionModel: env.OPENAI_RECEIPT_VISION_MODEL ?? 'gpt-5.6',
-    realtimeModel: env.OPENAI_REALTIME_MODEL ?? 'gpt-realtime-2.1',
+    realtimeStandardModel:
+      env.OPENAI_REALTIME_STANDARD_MODEL ?? 'gpt-realtime-2.1-mini',
+    realtimeFullModel:
+      env.OPENAI_REALTIME_FULL_MODEL ?? env.OPENAI_REALTIME_MODEL ?? 'gpt-realtime-2.1',
+    transcriptionModel:
+      env.OPENAI_TRANSCRIPTION_MODEL ?? 'gpt-4o-transcribe',
     sessionSecret: env.AQUA_SESSION_SECRET ?? '',
     sessionTtlSeconds: Number.parseInt(env.AQUA_SESSION_TTL_SECONDS ?? '900', 10),
     ownerEmail: env.AQUA_OWNER_EMAIL ?? '',
@@ -118,10 +127,12 @@ function createRuntime(env, snapshot = {}) {
   const store = new ProjectionStore(snapshot.store ?? []);
   const agentRuntime = createAquaAgentRuntime({ config, registry, store });
   const receiptRuntime = createReceiptIntelligenceRuntime({ config });
+  const realtimeRuntime = createRealtimeSessionRuntime({ config });
   return {
     config,
     registry,
     store,
+    realtimeRuntime,
     gateway: createGateway({ config, registry, store, agentRuntime, receiptRuntime }),
   };
 }
@@ -169,6 +180,30 @@ export class AquaGatewayDurableObject {
     if (request.method === 'GET' && url.pathname === '/health') {
       return json({ service: 'Aqua Sentinel Gateway', status: 'Confirmed' });
     }
+    if (request.method === 'POST' && url.pathname === '/realtime') {
+      const identity = authenticateRealtimeRequest(this.runtime.config, request.headers);
+      if (!identity) return new Response('A valid Sentinel session is required.', {
+        status: 401,
+        headers: { 'cache-control': 'no-store', 'content-type': 'text/plain; charset=utf-8' },
+      });
+      const declared = Number.parseInt(request.headers.get('content-length') ?? '', 10);
+      if (Number.isFinite(declared) && declared > 100_000) {
+        return new Response('Invalid SDP.', { status: 413 });
+      }
+      const result = await this.runtime.realtimeRuntime.connect({
+        identity,
+        sdp: await request.text(),
+        appId: 'aqua-sentinel-os',
+      });
+      return new Response(result.body, {
+        status: result.status,
+        headers: {
+          'cache-control': 'no-store',
+          'content-type': result.contentType ?? 'text/plain; charset=utf-8',
+          'x-content-type-options': 'nosniff',
+        },
+      });
+    }
     if (request.method !== 'POST' || url.pathname !== '/gateway') {
       return json({ error: 'Not found.' }, 404);
     }
@@ -207,7 +242,7 @@ export function createWorkerHandler({ fetchImpl = fetch } = {}) {
       if (request.method === 'POST' && url.pathname === SENTINEL_FILE_CABINET_PATH) {
         return relayFileCabinetDelivery(request, env, { fetchImpl });
       }
-      if (!['/health', '/gateway'].includes(url.pathname)) {
+      if (!['/health', '/gateway', '/realtime'].includes(url.pathname)) {
         return json({ error: 'Not found.' }, 404);
       }
       if (!env.AQUA_GATEWAY) {

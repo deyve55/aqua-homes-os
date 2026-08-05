@@ -523,3 +523,44 @@ receive the matching managed AquaPulse credential and deploy, and authenticate
 GitHub package settings so CRM and AquaCam can receive restricted-package read
 access. Then require real CI/deployment receipts and run Traffic Cop's two exact
 deliveries to AquaPulse before crediting the cross-app route.
+
+## 16. Canonical Sentinel Realtime voice checkpoint — 2026-08-05 13:34 EDT
+
+The owner rejected the reduced Sites preview as the application surface because
+it did not contain the approved Sentinel cards, carousel, central/side Aqua,
+hero pulse, and operating pages. That preview is not the canonical Sentinel
+application source. The continuation returned to PR #194 at base
+`5dd823a5055f207486fb00b8e0ddbe6f26502dc2`, using `sentient-os-web` and
+`android-app`. No approved visual asset, card geometry, carousel behavior,
+navigation layout, app identity, or product workflow was removed or redesigned.
+
+The canonical application now contains an additive protected Realtime voice
+seam:
+
+- Aqua Sentinel voice defaults to full `gpt-realtime-2.1` with `xhigh`
+  reasoning;
+- clearly isolated simple text/navigation work may use
+  `gpt-realtime-2.1-mini` without downgrading the active Sentinel voice session;
+- satellite apps default to `gpt-realtime-2.1-mini` and escalate to full
+  `gpt-realtime-2.1` for complex, consequential, or tool-backed work;
+- every Aqua speech path uses exact `gpt-4o-transcribe` as the transcription
+  contract;
+- the production OpenAI key remains server-side while the authenticated Android
+  bridge sends only SDP to `/realtime` and receives only the SDP answer;
+- semantic VAD uses low eagerness so Aqua waits longer for the owner to finish;
+- the Realtime session can navigate Sentinel, open a registered Aqua app, or
+  call the protected Aqua Brain; and
+- destructive, external, financial, filing, publishing, employment, legal, and
+  other sensitive actions require exact understood-text confirmation.
+
+Local validation is 53/53 repository tests plus a successful Wrangler dry-run.
+The approved Home, Neural Link, hero, carousel, application cards, dashboard
+cards, operating surfaces, and launcher tests remain green. The restored
+workspace does not contain Gradle or an Android SDK, so Java compilation and APK
+packaging are pending the repository's protected GitHub Actions workflow. No
+production Worker deployment or real-device voice round trip is claimed yet.
+
+Exact next action: publish this checkpoint to the existing draft PR #194 with
+the `[build-test-apk]` marker, require the full CI/Android/visual workflow to
+pass, preserve the draft/unmerged state, and record the exact commit, workflow,
+and artifact before crediting Sentinel as test-runnable.

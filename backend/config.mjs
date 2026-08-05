@@ -40,8 +40,20 @@ export function loadConfig(overrides = {}) {
       overrides.receiptVisionModel ??
       process.env.OPENAI_RECEIPT_VISION_MODEL ??
       'gpt-5.6',
-    realtimeModel:
-      overrides.realtimeModel ?? process.env.OPENAI_REALTIME_MODEL ?? 'gpt-realtime-2.1',
+    realtimeStandardModel:
+      overrides.realtimeStandardModel ??
+      process.env.OPENAI_REALTIME_STANDARD_MODEL ??
+      'gpt-realtime-2.1-mini',
+    realtimeFullModel:
+      overrides.realtimeFullModel ??
+      overrides.realtimeModel ??
+      process.env.OPENAI_REALTIME_FULL_MODEL ??
+      process.env.OPENAI_REALTIME_MODEL ??
+      'gpt-realtime-2.1',
+    transcriptionModel:
+      overrides.transcriptionModel ??
+      process.env.OPENAI_TRANSCRIPTION_MODEL ??
+      'gpt-4o-transcribe',
     openAiApiKey: overrides.openAiApiKey ?? process.env.OPENAI_API_KEY ?? '',
     sessionSecret,
     sessionTtlSeconds:

@@ -2595,6 +2595,256 @@ function activateDeterministicPreviewRoute() {
   return true;
 }
 
+let realtimePeerConnection = null;
+let realtimeDataChannel = null;
+let realtimeMicrophoneStream = null;
+let realtimeRemoteAudio = null;
+const completedRealtimeToolCalls = new Set();
+
+function sendRealtimeEvent(event) {
+  if (!realtimeDataChannel || realtimeDataChannel.readyState !== "open") return false;
+  realtimeDataChannel.send(JSON.stringify(event));
+  return true;
+}
+
+function stopAquaRealtime() {
+  realtimeDataChannel?.close();
+  realtimePeerConnection?.close();
+  realtimeMicrophoneStream?.getTracks().forEach((track) => track.stop());
+  if (realtimeRemoteAudio) {
+    realtimeRemoteAudio.pause();
+    realtimeRemoteAudio.srcObject = null;
+  }
+  realtimeDataChannel = null;
+  realtimePeerConnection = null;
+  realtimeMicrophoneStream = null;
+  realtimeRemoteAudio = null;
+  document.documentElement.style.setProperty("--voice-level", "0.08");
+}
+
+function realtimeDestination(destination) {
+  const labels = {
+    home: "Home",
+    neural: "Neural Link",
+    command: "Command Center",
+    files: "File Cabinet",
+    settings: "Settings",
+    data: "Ecosystem Connections",
+    messages: "Conversation Receipts",
+    diagnostics: "Diagnostics",
+  };
+  if (!labels[destination]) return null;
+  return { panel: destination, label: labels[destination], refresh: destination === "diagnostics" };
+}
+
+function sendRealtimeToolOutput(callId, output) {
+  sendRealtimeEvent({
+    type: "conversation.item.create",
+    item: {
+      type: "function_call_output",
+      call_id: callId,
+      output: JSON.stringify(output),
+    },
+  });
+  sendRealtimeEvent({ type: "response.create" });
+}
+
+function completeRealtimeToolCall(item) {
+  const callId = String(item?.call_id || "");
+  if (!callId || completedRealtimeToolCalls.has(callId)) return;
+  completedRealtimeToolCalls.add(callId);
+  let args = {};
+  try {
+    args = JSON.parse(item.arguments || "{}");
+  } catch {
+    sendRealtimeToolOutput(callId, { status: "failed", error: "Invalid tool arguments" });
+    return;
+  }
+
+  if (item.name === "navigate_sentinel") {
+    const destination = realtimeDestination(String(args.destination || ""));
+    if (!destination) {
+      sendRealtimeToolOutput(callId, { status: "failed", error: "Unknown Sentinel destination" });
+      return;
+    }
+    if (destination.refresh) window.refreshDeviceDiagnostics?.();
+    if (destination.panel === "home") closeOverlays();
+    else if (destination.panel === "neural") {
+      returnNeuralToRest();
+      openPanel("neural");
+    } else openPanel(destination.panel);
+    sendRealtimeToolOutput(callId, { status: "confirmed", destination: destination.label });
+    return;
+  }
+
+  if (item.name === "open_aqua_app") {
+    const requested = String(args.app || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const index = apps.findIndex((app) => {
+      const name = app.name.toLowerCase().replace(/[^a-z0-9]/g, "");
+      return name === requested || name.includes(requested) || requested.includes(name);
+    });
+    if (index < 0) {
+      sendRealtimeToolOutput(callId, { status: "failed", error: "That app is not registered in Sentinel" });
+      return;
+    }
+    centerApp(index, true);
+    sendRealtimeToolOutput(callId, { status: "confirmed", app: apps[index].name });
+    return;
+  }
+
+  if (item.name === "ask_aqua_brain") {
+    const text = String(args.text || "").trim();
+    const selected = apps[active];
+    if (!text || !window.AquaBridge?.askAquaRealtime) {
+      sendRealtimeToolOutput(callId, { status: "failed", error: "Aqua Brain is unavailable" });
+      return;
+    }
+    const context = {
+      surface: systemPanel.hidden ? "Home" : systemPanel.dataset.panel || "Home",
+      selectedApp: selected.name,
+      connected: selected.connected,
+    };
+    window.AquaBridge.askAquaRealtime(
+      callId,
+      text,
+      selected.name,
+      JSON.stringify(context),
+    );
+    return;
+  }
+
+  sendRealtimeToolOutput(callId, { status: "failed", error: "Unsupported Aqua tool" });
+}
+
+function handleAquaRealtimeEvent(event) {
+  if (event.type === "input_audio_buffer.speech_started") {
+    setAquaState("listening");
+    return;
+  }
+  if (event.type === "input_audio_buffer.speech_stopped") {
+    setAquaState("thinking");
+    return;
+  }
+  if (event.type === "conversation.item.input_audio_transcription.delta" && event.delta) {
+    window.receiveAquaPartial(event.delta);
+    return;
+  }
+  if (event.type === "conversation.item.input_audio_transcription.completed" && event.transcript) {
+    neuralThought = String(event.transcript);
+    neuralThoughtDetail = "Aqua heard this. Consequential details will be confirmed before action.";
+    layoutNeuralStage();
+    return;
+  }
+  if (event.type === "response.output_audio_transcript.delta") {
+    setAquaState("speaking");
+    return;
+  }
+  if (event.type === "response.output_audio.done") {
+    setAquaState("listening");
+    return;
+  }
+  if (event.type === "response.output_item.done" && event.item?.type === "function_call") {
+    completeRealtimeToolCall(event.item);
+    return;
+  }
+  if (event.type === "response.done") {
+    (event.response?.output || [])
+      .filter((item) => item.type === "function_call")
+      .forEach(completeRealtimeToolCall);
+    return;
+  }
+  if (event.type === "error") {
+    window.receiveAquaError(event.error?.message || "Aqua live voice encountered an error.");
+  }
+}
+
+window.startAquaRealtime = async () => {
+  if (realtimePeerConnection) {
+    stopAquaRealtime();
+    setAquaState("idle");
+    return;
+  }
+  setAquaState("thinking");
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error("This Android voice surface does not support secure live audio.");
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    });
+    const connection = new RTCPeerConnection();
+    const audio = new Audio();
+    audio.autoplay = true;
+    audio.onplay = () => setAquaState("speaking");
+    connection.ontrack = (event) => {
+      audio.srcObject = event.streams[0];
+    };
+    connection.onconnectionstatechange = () => {
+      if (["failed", "closed"].includes(connection.connectionState)) {
+        stopAquaRealtime();
+        setAquaState(connection.connectionState === "failed" ? "error" : "idle");
+      }
+    };
+    connection.addTrack(stream.getAudioTracks()[0], stream);
+    const channel = connection.createDataChannel("oai-events");
+    channel.addEventListener("message", (message) => {
+      try {
+        handleAquaRealtimeEvent(JSON.parse(message.data));
+      } catch {
+        window.receiveAquaError("Aqua received an unreadable live voice event.");
+      }
+    });
+    realtimePeerConnection = connection;
+    realtimeDataChannel = channel;
+    realtimeMicrophoneStream = stream;
+    realtimeRemoteAudio = audio;
+    completedRealtimeToolCalls.clear();
+    const offer = await connection.createOffer();
+    await connection.setLocalDescription(offer);
+    window.AquaBridge.connectRealtime(offer.sdp || "");
+  } catch (error) {
+    stopAquaRealtime();
+    window.receiveAquaError(error?.message || "Aqua could not start live voice.");
+    window.AquaBridge?.startLegacyListening?.();
+  }
+};
+
+window.receiveRealtimeAnswer = async (raw) => {
+  let answer;
+  try {
+    answer = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (!answer?.success || !answer.sdp || !realtimePeerConnection) {
+      throw new Error(answer?.error || "Aqua live voice could not connect.");
+    }
+    await realtimePeerConnection.setRemoteDescription({ type: "answer", sdp: answer.sdp });
+    setAquaState("listening");
+  } catch (error) {
+    stopAquaRealtime();
+    window.receiveAquaError(error?.message || "Aqua live voice could not connect.");
+    window.AquaBridge?.startLegacyListening?.();
+  }
+};
+
+window.receiveRealtimeToolResult = (raw) => {
+  let payload;
+  try {
+    payload = typeof raw === "string" ? JSON.parse(raw) : raw;
+  } catch {
+    return;
+  }
+  if (!payload?.callId) return;
+  if (payload.result) {
+    applyAquaAction(payload.result.action);
+    if (payload.result.materialization?.present) showMaterialization(payload.result.materialization, true);
+  }
+  sendRealtimeToolOutput(
+    payload.callId,
+    payload.error
+      ? { status: "failed", error: payload.error }
+      : { status: "confirmed", result: payload.result },
+  );
+};
+
 function startVoice() {
   if (systemPanel.hidden || systemPanel.dataset.panel !== "neural") {
     returnNeuralToRest();

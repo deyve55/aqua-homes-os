@@ -102,12 +102,16 @@ function fileCabinetRequest(envelope, authorization = `Bearer ${sentinelClientTo
   });
 }
 
-test('Worker entry exposes only health, gateway, and the protected File Cabinet relay', async () => {
+test('Worker entry exposes only health, gateway, Realtime, and the protected File Cabinet relay', async () => {
   const durable = { fetch: async () => new Response('ok') };
   const handler = createWorkerHandler();
   const binding = { idFromName: (name) => name, get: () => durable };
   assert.equal((await handler.fetch(
     new Request('https://gateway.example/health'),
+    { AQUA_GATEWAY: binding },
+  )).status, 200);
+  assert.equal((await handler.fetch(
+    new Request('https://gateway.example/realtime', { method: 'POST', body: 'v=0' }),
     { AQUA_GATEWAY: binding },
   )).status, 200);
   assert.equal((await handler.fetch(

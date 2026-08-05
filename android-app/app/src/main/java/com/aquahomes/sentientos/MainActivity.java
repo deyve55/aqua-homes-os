@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.webkit.WebChromeClient;
+import android.webkit.PermissionRequest;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -109,6 +110,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private SpeechRecognizer speechRecognizer;
     private TextToSpeech textToSpeech;
     private boolean listenAfterPermission;
+    private boolean legacyVoiceRequested;
     private final Map<String, SnapshotRequest> pendingSnapshots = new HashMap<>();
     private boolean snapshotReceiverRegistered;
     private boolean filingReceiverRegistered;
@@ -184,7 +186,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         webView.setHapticFeedbackEnabled(false);
         configureWebView(webView.getSettings());
         webView.setWebViewClient(new LockedWebViewClient());
-        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebChromeClient(new LockedWebChromeClient());
         webView.addJavascriptInterface(new AquaBridge(), "AquaBridge");
         setContentView(webView);
         hideSystemUi();
@@ -267,6 +269,35 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 }
             }
             return true;
+        }
+    }
+
+    private class LockedWebChromeClient extends WebChromeClient {
+        @Override
+        public void onPermissionRequest(PermissionRequest request) {
+            runOnUiThread(() -> {
+                String origin = request.getOrigin() == null
+                    ? ""
+                    : request.getOrigin().toString();
+                boolean trustedLocalOrigin =
+                    origin.startsWith("file://")
+                        && webView.getUrl() != null
+                        && webView.getUrl().startsWith(LOCAL_APP_PREFIX);
+                boolean microphoneGranted =
+                    checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                        == PackageManager.PERMISSION_GRANTED;
+                if (!trustedLocalOrigin || !microphoneGranted) {
+                    request.deny();
+                    return;
+                }
+                for (String resource : request.getResources()) {
+                    if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource)) {
+                        request.grant(new String[] { PermissionRequest.RESOURCE_AUDIO_CAPTURE });
+                        return;
+                    }
+                }
+                request.deny();
+            });
         }
     }
 
@@ -377,6 +408,16 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             );
             return;
         }
+
+        if (
+            !legacyVoiceRequested
+                && !AQUA_GATEWAY_URL.trim().isEmpty()
+                && sessionIsCurrent()
+        ) {
+            evaluateJavascript("window.startAquaRealtime?.();");
+            return;
+        }
+        legacyVoiceRequested = false;
 
         if (!SpeechRecognizer.isRecognitionAvailable(this)) {
             sendError("Speech recognition is not available on this device.");
@@ -1001,6 +1042,50 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         return new HttpResult(status, response.toString());
     }
 
+    private String realtimeEndpoint() throws Exception {
+        URL gateway = new URL(AQUA_GATEWAY_URL);
+        return new URL(
+            gateway.getProtocol(),
+            gateway.getHost(),
+            gateway.getPort(),
+            "/realtime"
+        ).toString();
+    }
+
+    private HttpResult postRealtimeSdp(String sdp, String accessToken) throws Exception {
+        HttpURLConnection connection = (HttpURLConnection) new URL(realtimeEndpoint())
+            .openConnection();
+        connection.setRequestMethod("POST");
+        connection.setConnectTimeout(20000);
+        connection.setReadTimeout(90000);
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/sdp");
+        connection.setRequestProperty("Accept", "application/sdp");
+        connection.setRequestProperty("Authorization", "Bearer " + accessToken);
+        byte[] bytes = sdp.getBytes(StandardCharsets.UTF_8);
+        connection.setFixedLengthStreamingMode(bytes.length);
+        try (OutputStream output = connection.getOutputStream()) {
+            output.write(bytes);
+        }
+        int status = connection.getResponseCode();
+        InputStream stream = status >= 200 && status < 400
+            ? connection.getInputStream()
+            : connection.getErrorStream();
+        StringBuilder response = new StringBuilder();
+        if (stream != null) {
+            try (
+                BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(stream, StandardCharsets.UTF_8)
+                )
+            ) {
+                String line;
+                while ((line = reader.readLine()) != null) response.append(line).append('\n');
+            }
+        }
+        connection.disconnect();
+        return new HttpResult(status, response.toString().trim());
+    }
+
     private JSONObject rpcRequest(String method, JSONObject params) throws JSONException {
         return new JSONObject()
             .put("jsonrpc", "2.0")
@@ -1134,6 +1219,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
     private void askAqua(String text, String selectedApp, String uiContext) {
+        askAqua(text, selectedApp, uiContext, "");
+    }
+
+    private void askAqua(
+        String text,
+        String selectedApp,
+        String uiContext,
+        String realtimeCallId
+    ) {
         networkExecutor.execute(() -> {
             try {
                 String accessToken = readSecureValue(ACCESS_TOKEN);
@@ -1180,14 +1274,69 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     result,
                     "Aqua could not complete that secure request."
                 );
-                sendJsonCallback("receiveAquaResponse", payload);
+                if (realtimeCallId == null || realtimeCallId.isEmpty()) {
+                    sendJsonCallback("receiveAquaResponse", payload);
+                } else {
+                    sendJsonCallback(
+                        "receiveRealtimeToolResult",
+                        new JSONObject()
+                            .put("callId", realtimeCallId)
+                            .put("result", payload)
+                    );
+                }
             } catch (Exception error) {
-                sendError(
-                    error.getMessage() == null
-                        ? "Aqua could not complete that request."
-                        : error.getMessage()
-                );
+                String message = error.getMessage() == null
+                    ? "Aqua could not complete that request."
+                    : error.getMessage();
+                if (realtimeCallId == null || realtimeCallId.isEmpty()) {
+                    sendError(message);
+                } else {
+                    try {
+                        sendJsonCallback(
+                            "receiveRealtimeToolResult",
+                            new JSONObject()
+                                .put("callId", realtimeCallId)
+                                .put("error", message)
+                        );
+                    } catch (JSONException ignored) {}
+                }
             }
+        });
+    }
+
+    private void connectRealtime(String sdp) {
+        networkExecutor.execute(() -> {
+            JSONObject callback = new JSONObject();
+            try {
+                String accessToken = readSecureValue(ACCESS_TOKEN);
+                if (accessToken.isEmpty() || !sessionIsCurrent()) {
+                    throw new SecurityException(
+                        "Owner sign-in is required before Aqua live voice can connect."
+                    );
+                }
+                HttpResult result = postRealtimeSdp(sdp, accessToken);
+                if (!result.isSuccess()) {
+                    if (result.status == 401 || result.status == 403) clearSession();
+                    throw new IllegalStateException(
+                        result.body.isEmpty()
+                            ? "Aqua live voice could not establish a secure session."
+                            : result.body
+                    );
+                }
+                callback.put("success", true).put("sdp", result.body);
+            } catch (Exception error) {
+                try {
+                    callback
+                        .put("success", false)
+                        .put(
+                            "error",
+                            error.getMessage() == null
+                                ? "Aqua live voice could not connect."
+                                : error.getMessage()
+                        );
+                } catch (JSONException ignored) {}
+            }
+            sendJsonCallback("receiveRealtimeAnswer", callback);
         });
     }
 
@@ -1239,6 +1388,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
 
         @JavascriptInterface
+        public void startLegacyListening() {
+            runOnUiThread(() -> {
+                legacyVoiceRequested = true;
+                MainActivity.this.startListening();
+            });
+        }
+
+        @JavascriptInterface
         public void speak(String text) {
             speakText(text);
         }
@@ -1260,6 +1417,26 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             String uiContext
         ) {
             MainActivity.this.askAqua(text, selectedApp, uiContext);
+        }
+
+        @JavascriptInterface
+        public void askAquaRealtime(
+            String callId,
+            String text,
+            String selectedApp,
+            String uiContext
+        ) {
+            MainActivity.this.askAqua(
+                text,
+                selectedApp,
+                uiContext,
+                callId
+            );
+        }
+
+        @JavascriptInterface
+        public void connectRealtime(String sdp) {
+            MainActivity.this.connectRealtime(sdp);
         }
 
         @JavascriptInterface

@@ -3,6 +3,15 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { CapabilityRegistry } from '../backend/capability-registry.mjs';
 import { loadConfig } from '../backend/config.mjs';
+import {
+  AQUA_MODEL_DEFAULTS,
+  publicAquaModelPolicy,
+  selectAquaRealtimeModel,
+} from '../backend/model-policy.mjs';
+import {
+  buildRealtimeSession,
+  createRealtimeSessionRuntime,
+} from '../backend/realtime-session.mjs';
 import { ProjectionStore } from '../backend/projection-store.mjs';
 import { issueSession, verifySession } from '../backend/auth.mjs';
 import { createGateway } from '../backend/gateway.mjs';
@@ -37,6 +46,75 @@ const identity = {
 function request(id, method, params = {}) {
   return { jsonrpc: '2.0', id, method, params };
 }
+
+test('Aqua model policy keeps satellites economical and Sentinel voice full capability', () => {
+  assert.equal(AQUA_MODEL_DEFAULTS.satelliteRealtime, 'gpt-realtime-2.1-mini');
+  assert.equal(AQUA_MODEL_DEFAULTS.fullRealtime, 'gpt-realtime-2.1');
+  assert.equal(AQUA_MODEL_DEFAULTS.transcription, 'gpt-4o-transcribe');
+  assert.equal(
+    selectAquaRealtimeModel({ appId: 'aqua-draw', capability: 'simple' }),
+    'gpt-realtime-2.1-mini',
+  );
+  assert.equal(
+    selectAquaRealtimeModel({ appId: 'aqua-draw', capability: 'complex' }),
+    'gpt-realtime-2.1',
+  );
+  assert.equal(
+    selectAquaRealtimeModel({ appId: 'aqua-sentinel-os', capability: 'simple' }),
+    'gpt-realtime-2.1',
+  );
+  assert.deepEqual(publicAquaModelPolicy(config), {
+    version: '1.0.0',
+    sentinel: {
+      default: 'gpt-realtime-2.1',
+      simpleTextMayUse: 'gpt-realtime-2.1-mini',
+    },
+    satellites: {
+      default: 'gpt-realtime-2.1-mini',
+      escalateTo: 'gpt-realtime-2.1',
+    },
+    transcription: 'gpt-4o-transcribe',
+    confirmationRequiredFor: [
+      'destructive',
+      'external',
+      'financial',
+      'filing',
+      'publishing',
+      'sensitive',
+    ],
+  });
+});
+
+test('Sentinel Realtime SDP uses full 2.1, GPT-4o Transcribe, patient VAD, and no client API key', async () => {
+  let upstream;
+  const runtime = createRealtimeSessionRuntime({
+    config,
+    fetchImpl: async (url, init) => {
+      upstream = { url, init };
+      return new Response('v=0\r\no=aqua-answer', {
+        status: 201,
+        headers: { 'content-type': 'application/sdp' },
+      });
+    },
+  });
+  const result = await runtime.connect({
+    identity,
+    sdp: 'v=0\r\no=aqua-offer',
+    appId: 'aqua-sentinel-os',
+  });
+  assert.equal(result.status, 201);
+  assert.equal(upstream.url, 'https://api.openai.com/v1/realtime/calls');
+  assert.equal(upstream.init.headers.authorization, 'Bearer test-only');
+  const session = JSON.parse(upstream.init.body.get('session'));
+  assert.equal(session.model, 'gpt-realtime-2.1');
+  assert.equal(session.reasoning.effort, 'xhigh');
+  assert.equal(session.audio.input.transcription.model, 'gpt-4o-transcribe');
+  assert.equal(session.audio.input.turn_detection.type, 'semantic_vad');
+  assert.equal(session.audio.input.turn_detection.eagerness, 'low');
+  assert.equal(session.audio.input.turn_detection.interrupt_response, true);
+  assert.equal(upstream.init.body.get('sdp'), 'v=0\r\no=aqua-offer');
+  assert.doesNotMatch(JSON.stringify(buildRealtimeSession(config)), /test-only/);
+});
 
 function receiptAnalysisFixture() {
   const evidence = [{
@@ -251,6 +329,13 @@ test('gateway exposes health publicly but protects ecosystem capabilities', asyn
     authorization: `Bearer ${token}`,
   });
   assert.ok(allowed.result.capabilities.length >= 8);
+
+  const deniedPolicy = await gateway.dispatch(request(31, 'aqua.models.policy'));
+  assert.equal(deniedPolicy.error.code, -32001);
+  const allowedPolicy = await gateway.dispatch(request(32, 'aqua.models.policy'), {
+    authorization: `Bearer ${token}`,
+  });
+  assert.equal(allowedPolicy.result.transcription, 'gpt-4o-transcribe');
 });
 
 test('satellite projection sync is authenticated, tenant scoped, and idempotent', async () => {
