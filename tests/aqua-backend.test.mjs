@@ -6,6 +6,7 @@ import { loadConfig } from '../backend/config.mjs';
 import { ProjectionStore } from '../backend/projection-store.mjs';
 import { issueSession, verifySession } from '../backend/auth.mjs';
 import { createGateway } from '../backend/gateway.mjs';
+import { createAquaAgentRuntime } from '../backend/aqua-agent.mjs';
 import { AquaAgentOutputSchema, emptyMaterialization } from '../backend/contracts.mjs';
 import {
   createReceiptIntelligenceRuntime,
@@ -183,6 +184,50 @@ test('structured Aqua output requires truthful materialization and receipt shape
   });
   assert.equal(output.materialization.present, false);
   assert.equal(output.receipt.status, 'Needs Attention');
+});
+
+test('Aqua records an app source only after the server-side capability route executes', async () => {
+  const registry = new CapabilityRegistry();
+  const runtime = createAquaAgentRuntime({
+    config,
+    registry,
+    store: new ProjectionStore(),
+    runner: async (agent, _input, options) => {
+      const route = agent.tools.find((candidate) => candidate.name === 'route_aqua_capability');
+      assert.ok(route);
+      await route.invoke(
+        { context: options.context },
+        JSON.stringify({ capability: 'receipts', purpose: 'Review receipt intake status' }),
+      );
+      return {
+        finalOutput: {
+          reply: 'Aqua Receipts is the authoritative source, but its adapter is not connected.',
+          action: { type: 'none', target: '', app: '' },
+          materialization: emptyMaterialization,
+          receipt: {
+            status: 'Needs Attention',
+            correlationId: '',
+            sources: [],
+            requiresConfirmation: false,
+            intentId: '',
+            confirmationToken: '',
+          },
+        },
+      };
+    },
+  });
+  const result = await runtime.chat({
+    identity,
+    params: {
+      text: 'What receipts still need a project?',
+      conversationId: 'route-proof',
+      selectedApp: '',
+      uiContext: { surface: 'Neural Link' },
+      safetyIdentifier: 'route-proof-device',
+    },
+  });
+  assert.deepEqual(result.receipt.sources, ['receipts']);
+  assert.equal(result.materialization.present, false);
 });
 
 test('gateway exposes health publicly but protects ecosystem capabilities', async () => {

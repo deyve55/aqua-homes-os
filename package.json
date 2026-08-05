@@ -6,14 +6,21 @@
   "description": "Aqua Homes OS prototypes and Android role proof",
   "scripts": {
     "start:gateway": "node --env-file-if-exists=.env.local backend/server.mjs",
+    "dev:worker": "wrangler dev",
+    "deploy:worker": "wrangler deploy",
+    "check:worker": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
     "smoke:aqua": "node --env-file-if-exists=.env.local backend/smoke.mjs",
     "test:backend": "node --test tests/aqua-backend.test.mjs",
+    "test:worker": "node --test tests/aqua-worker.test.mjs",
     "test:sentinel": "node --test tests/sentinel-smoke.mjs",
     "test:sentient-functional": "node --test tests/sentient-functional-test.mjs",
-    "test": "npm run test:backend && npm run test:sentinel && npm run test:sentient-functional"
+    "test": "npm run test:backend && npm run test:worker && npm run test:sentinel && npm run test:sentient-functional"
   },
   "dependencies": {
     "@openai/agents": "0.14.1",
     "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "wrangler": "4.118.0"
   }
 }

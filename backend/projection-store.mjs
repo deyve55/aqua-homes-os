@@ -10,7 +10,34 @@ export class ProjectionStore {
   #syncReceipts = new Map();
 
   constructor(seed = []) {
-    this.#records = seed.map((record) => ({ ...record }));
+    if (Array.isArray(seed)) {
+      this.#records = seed.map((record) => ({ ...record }));
+      return;
+    }
+    this.#records = Array.isArray(seed?.records)
+      ? seed.records.map((record) => ({ ...record }))
+      : [];
+    this.#intents = new Map(
+      Array.isArray(seed?.intents)
+        ? seed.intents.map((intent) => [intent.intentId, { ...intent }])
+        : [],
+    );
+    this.#syncReceipts = new Map(
+      Array.isArray(seed?.syncReceipts)
+        ? seed.syncReceipts.map(([key, receipt]) => [key, { ...receipt }])
+        : [],
+    );
+  }
+
+  snapshot() {
+    return {
+      records: this.#records.map((record) => ({ ...record })),
+      intents: Array.from(this.#intents.values(), (intent) => ({ ...intent })),
+      syncReceipts: Array.from(
+        this.#syncReceipts.entries(),
+        ([key, receipt]) => [key, { ...receipt }],
+      ),
+    };
   }
 
   search({ query, kinds = [], limit = 5, tenantId }) {
