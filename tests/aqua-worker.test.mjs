@@ -18,12 +18,18 @@ class FakeState {
 }
 
 const ownerPassword = 'temporary-test-password';
+const sentinelClientToken = 'test-sentinel-client-token-with-sufficient-entropy';
+const pulseSiteToken = 'test-private-site-token-with-sufficient-entropy';
 const env = Object.freeze({
   OPENAI_API_KEY: 'test-openai-key',
   OPENAI_MODEL: 'gpt-5.6',
   AQUA_SESSION_SECRET: 'worker-session-secret-with-sufficient-entropy',
   AQUA_OWNER_EMAIL: 'owner@example.com',
   AQUA_OWNER_PASSWORD_HASH: hashPassword(ownerPassword, 'worker-test-salt'),
+  SENTINEL_CLIENT_TOKEN: sentinelClientToken,
+  AQUA_PULSE_SITE_TOKEN: pulseSiteToken,
+  AQUA_PULSE_COMMAND_ENDPOINT:
+    'https://aqua-pulse.deyve-docarm-5626.chatgpt.site/api/sentinel/v1/commands',
   AQUA_ADAPTER_CREDENTIALS_JSON: JSON.stringify({
     receipts: {
       key: 'receipts-adapter-key-with-sufficient-entropy',
@@ -44,7 +50,47 @@ function post(body, headers = {}) {
   });
 }
 
-test('Worker entry exposes only health and gateway through the Durable Object binding', async () => {
+function fileCabinetEnvelope(now = new Date()) {
+  const commandId = 'cmd-11111111-1111-4111-8111-111111111111';
+  const correlationId = 'cor-22222222-2222-4222-8222-222222222222';
+  const idempotencyKey = 'idem-33333333-3333-4333-8333-333333333333';
+  return {
+    contractId: 'aqua-sentinel-sdk-v1',
+    contractVersion: '1.1.0',
+    command: 'file_cabinet.deliver',
+    sourcePackage: 'com.aquahomes.sentinel',
+    targetPackage: 'com.aquasoftware.aquapulse',
+    commandId,
+    correlationId,
+    idempotencyKey,
+    acknowledgementToken: 'ack-44444444-4444-4444-8444-444444444444',
+    issuedAt: now.toISOString(),
+    expiresAt: new Date(now.getTime() + 5 * 60_000).toISOString(),
+    item: {
+      itemId: 'item-55555555-5555-4555-8555-555555555555',
+      correlationId,
+      idempotencyKey,
+      scope: 'business',
+      title: 'AquaPulse File Cabinet conformance',
+      details: 'A non-bookkeeping conformance record.',
+      itemType: 'conformance_test',
+      fileCabinetRef:
+        'content://com.aquahomes.sentinel.filecabinet/one-time/item-55555555-5555-4555-8555-555555555555',
+      createdAt: now.toISOString(),
+      source: { app: 'com.aquahomes.sentinel', commandId },
+    },
+  };
+}
+
+function fileCabinetRequest(envelope, authorization = `Bearer ${sentinelClientToken}`) {
+  return new Request('https://gateway.example/api/sentinel/v1/commands', {
+    method: 'POST',
+    headers: { authorization, 'content-type': 'application/json' },
+    body: JSON.stringify(envelope),
+  });
+}
+
+test('Worker entry exposes only health, gateway, and the protected File Cabinet relay', async () => {
   const durable = { fetch: async () => new Response('ok') };
   const handler = createWorkerHandler();
   const binding = { idFromName: (name) => name, get: () => durable };
@@ -56,6 +102,88 @@ test('Worker entry exposes only health and gateway through the Durable Object bi
     new Request('https://gateway.example/private'),
     { AQUA_GATEWAY: binding },
   )).status, 404);
+});
+
+test('File Cabinet relay rejects missing credentials and invalid bearer tokens', async () => {
+  const handler = createWorkerHandler({ fetchImpl: async () => {
+    throw new Error('The upstream must not be called.');
+  } });
+  const envelope = fileCabinetEnvelope();
+
+  const unconfigured = await handler.fetch(fileCabinetRequest(envelope), {
+    AQUA_PULSE_SITE_TOKEN: pulseSiteToken,
+  });
+  assert.equal(unconfigured.status, 503);
+  assert.equal((await unconfigured.json()).status, 'relay_not_configured');
+
+  const denied = await handler.fetch(fileCabinetRequest(envelope, 'Bearer wrong-token'), env);
+  assert.equal(denied.status, 401);
+  assert.equal((await denied.json()).status, 'unauthorized');
+});
+
+test('File Cabinet relay sends the identical SDK 1.1 packet twice and preserves typed acknowledgements', async () => {
+  const envelope = fileCabinetEnvelope();
+  const calls = [];
+  const fetchImpl = async (url, init) => {
+    calls.push({ url, init });
+    return Response.json({
+      ok: true,
+      contractId: envelope.contractId,
+      contractVersion: envelope.contractVersion,
+      commandId: envelope.commandId,
+      correlationId: envelope.correlationId,
+      idempotencyKey: envelope.idempotencyKey,
+      acknowledgementToken: envelope.acknowledgementToken,
+      status: calls.length === 1 ? 'accepted_and_saved' : 'duplicate_ignored',
+      acknowledgedAt: '2026-08-05T12:00:01.000Z',
+      fileCabinetRef: envelope.item.fileCabinetRef,
+    }, { status: calls.length === 1 ? 201 : 200 });
+  };
+  const handler = createWorkerHandler({ fetchImpl });
+
+  const first = await handler.fetch(fileCabinetRequest(envelope), env);
+  const second = await handler.fetch(fileCabinetRequest(envelope), env);
+  assert.equal(first.status, 201);
+  assert.equal((await first.json()).status, 'accepted_and_saved');
+  assert.equal(second.status, 200);
+  assert.equal((await second.json()).status, 'duplicate_ignored');
+  assert.equal(calls.length, 2);
+  assert.equal(
+    calls[0].url,
+    'https://aqua-pulse.deyve-docarm-5626.chatgpt.site/api/sentinel/v1/commands',
+  );
+  assert.equal(calls[0].init.headers.authorization, `Bearer ${sentinelClientToken}`);
+  assert.equal(calls[0].init.headers['oai-sites-authorization'], `Bearer ${pulseSiteToken}`);
+  assert.equal(calls[0].init.body, calls[1].init.body);
+  assert.deepEqual(JSON.parse(calls[0].init.body), envelope);
+});
+
+test('File Cabinet relay fails closed on expired packets and mismatched acknowledgements', async () => {
+  const envelope = fileCabinetEnvelope();
+  const handler = createWorkerHandler({
+    fetchImpl: async () => Response.json({
+      ok: true,
+      contractId: envelope.contractId,
+      contractVersion: envelope.contractVersion,
+      commandId: envelope.commandId,
+      correlationId: 'cor-wrong-acknowledgement',
+      idempotencyKey: envelope.idempotencyKey,
+      acknowledgementToken: envelope.acknowledgementToken,
+      status: 'accepted_and_saved',
+      acknowledgedAt: '2026-08-05T12:00:01.000Z',
+      fileCabinetRef: envelope.item.fileCabinetRef,
+    }, { status: 201 }),
+  });
+
+  const expiredEnvelope = fileCabinetEnvelope(new Date('2020-01-01T00:00:00.000Z'));
+  const expired = await handler.fetch(fileCabinetRequest(expiredEnvelope), env);
+  assert.equal(expired.status, 400);
+  assert.equal((await expired.json()).status, 'invalid_envelope');
+
+  const current = fileCabinetEnvelope(new Date());
+  const mismatch = await handler.fetch(fileCabinetRequest(current), env);
+  assert.equal(mismatch.status, 502);
+  assert.equal((await mismatch.json()).status, 'acknowledgement_mismatch');
 });
 
 test('Durable Worker authenticates the owner and protects capabilities', async () => {
