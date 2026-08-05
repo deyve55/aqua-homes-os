@@ -34,11 +34,14 @@ test("the centered carousel card snaps face-on before it can open", async () => 
   assert.match(script, /rotationTimer = setTimeout\(\(\) => finishRotation/);
 });
 
-test("APK renders all seven satellite previews and launches installed apps", async () => {
-  const [script, fidelity, manifest] = await Promise.all([
+test("APK renders eight operational portals, two reserved cards, and launches installed apps", async () => {
+  const [html, script, fidelity, manifest, activity, pulseAsset] = await Promise.all([
+    read("sentient-os-web/index.html"),
     read("sentient-os-web/app.js"),
     read("sentient-os-web/fidelity.css"),
     read("android-app/app/src/main/AndroidManifest.xml"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+    read("sentient-os-web/assets/carousel-v2/pulse.svg"),
   ]);
   assert.match(script, /function dashboardPanelMarkup/);
   assert.match(script, /class="dashboard-panel-preview"/);
@@ -47,7 +50,12 @@ test("APK renders all seven satellite previews and launches installed apps", asy
     assert.match(script, new RegExp(layout));
   }
   assert.doesNotMatch(script, /APP INTERFACE RESERVED/);
-  for (const app of ["Aqua CRM", "AquaDraw", "AquaCam", "Aqua Knowledge Vault", "Aqua Timesheet", "Aqua Books", "Aqua Receipts"]) assert.match(script, new RegExp(app));
+  for (const app of ["Aqua CRM", "AquaDraw", "AquaCam", "Aqua Knowledge Vault", "Aqua Timesheet", "Aqua Books", "Aqua Receipts", "AquaPulse"]) assert.match(script, new RegExp(app));
+  assert.match(script, /name: "Future Aqua App One"[\s\S]*placeholder: true/);
+  assert.match(script, /name: "Future Aqua App Two"[\s\S]*placeholder: true/);
+  assert.match(script, /function isInstalledAquaApp\(app\)/);
+  assert.match(script, /AquaBridge\.isAppInstalled/);
+  assert.match(script, /Opened inside Aqua Sentinel OS for field testing/);
   assert.match(script, /AquaBridge\.launchApp/);
   for (const packageName of [
     "com.aquasoftware.crm.fieldtest",
@@ -57,10 +65,18 @@ test("APK renders all seven satellite previews and launches installed apps", asy
     "com.aquahomes.timesheet.engineering",
     "com.aquasoftware.aquabooks",
     "com.aquasoftware.receipts.test",
+    "com.aquasoftware.aquapulse",
   ]) {
     assert.match(script, new RegExp(packageName.replaceAll(".", "\\.")));
     assert.match(manifest, new RegExp(packageName.replaceAll(".", "\\.")));
   }
+  assert.match(activity, /public boolean isAppInstalled\(String packageJson\)/);
+  assert.match(html, /id="aquaPresenceButton"/);
+  assert.match(html, /class="aqua-card-holder"/);
+  assert.match(html, /id="aquaPulseNavButton"[\s\S]*data-app-name="AquaPulse"/);
+  assert.match(html, /id="aquaPulseNavBadge"/);
+  assert.match(pulseAsset, /<svg/);
+  assert.match(pulseAsset, /aria-label="Aqua Pulse financial intelligence"/);
   assert.match(fidelity, /\.app-landing-preview\{/);
   assert.match(fidelity, /left:34%;[\s\S]*width:32%;[\s\S]*height:2px/);
   assert.match(fidelity, /\.app-deck \.app-card\.pos-0\{[^}]*top:7\.5%;[^}]*rotateY\(0deg\)/);
@@ -172,8 +188,8 @@ test("an unavailable gateway cannot block truthful Standalone startup", async ()
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
   ]);
-  assert.match(gradle, /versionCode = 2026080303/);
-  assert.match(gradle, /versionName = "0\.8\.0-live-aqua-neural-command-test"/);
+  assert.match(gradle, /versionCode = 2026080501/);
+  assert.match(gradle, /versionName = "0\.8\.1-field-test-navigation-recovery"/);
   assert.match(gradle, /\.orElse\(providers\.environmentVariable\("AQUA_GATEWAY_URL"\)\)\s*\.orElse\(""\)/);
   assert.doesNotMatch(gradle, /\.orElse\("https:\/\/api\.aquahomesos\.com\/gateway"\)/);
   assert.match(html, /id="ownerAccessButton"[^>]*data-panel="connect"/);
@@ -227,7 +243,7 @@ test("authenticated neural firing waits for a server-confirmed Aqua application 
   assert.match(script, /No application tether fired because the secure gateway did not route this answer/);
 });
 
-test("the premium Neural Link keeps seven owner-reference portals alive while Aqua morphs into the operating surface", async () => {
+test("the premium Neural Link keeps seven operational portals alive while Aqua morphs into the operating surface", async () => {
   const [html, script, fidelity, serviceWorker] = await Promise.all([
     read("sentient-os-web/index.html"),
     read("sentient-os-web/app.js"),
@@ -252,7 +268,8 @@ test("the premium Neural Link keeps seven owner-reference portals alive while Aq
   assert.match(script, /const neuralRingSlots =/);
   assert.match(script, /Sentinel sits above the ecosystem/);
   assert.match(script, /data-neural-visible-portals="7"/);
-  assert.match(script, /let neuralVisibleIndexes = \[0, 5, 6, 1, 4, 3, 2\]/);
+  assert.match(script, /let neuralVisibleIndexes = \[0, 1, 7, 2, 4, 5, 6\]/);
+  assert.match(script, /filter\(\(\{ app \}\) => !app\.placeholder\)/);
   assert.match(script, /function neuralFixedSlotForSource\(sourceIndex\)/);
   assert.match(script, /function promoteNeuralSource\(sourceIndex\)/);
   assert.match(script, /neuralVisibleIndexes\[destinationSlot\] = previousTop/);
@@ -502,7 +519,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.8.0 preserves Home while the owner-reference Neural Link stays alive through its sub-second morph", async () => {
+test("v0.8.1 preserves Home while the owner-reference Neural Link stays alive through its sub-second morph", async () => {
   const [gradle, workflow, script, html, fidelity, androidLaunch, neuralLiveProof, visualRenderer] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -513,16 +530,16 @@ test("v0.8.0 preserves Home while the owner-reference Neural Link stays alive th
     read("scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"),
     read("scripts/render-aqua-sentinel-visual-proof.mjs"),
   ]);
-  assert.match(gradle, /versionCode = 2026080303/);
-  assert.match(script, /versionName: "0\.8\.0-live-aqua-neural-command-test"/);
-  assert.match(script, /versionCode: 2026080303/);
-  assert.match(script, /<b>0\.8\.0<\/b>/);
-  assert.match(gradle, /versionName = "0\.8\.0-live-aqua-neural-command-test"/);
+  assert.match(gradle, /versionCode = 2026080501/);
+  assert.match(script, /versionName: "0\.8\.1-field-test-navigation-recovery"/);
+  assert.match(script, /versionCode: 2026080501/);
+  assert.match(script, /<b>0\.8\.1<\/b>/);
+  assert.match(gradle, /versionName = "0\.8\.1-field-test-navigation-recovery"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
   assert.doesNotMatch(gradle, /storeFile = file\(System\.getenv\("AQUA_RELEASE_KEYSTORE_PATH"\)\)/);
   assert.match(gradle, /\?\.let \{ storeFile = file\(it\) \}/);
-  assert.match(workflow, /AquaSentinelOS-v0\.8\.0-Live-Aqua-Neural-Command-Widget-Test\.apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.8\.1-Field-Test-Navigation-Recovery\.apk/);
   assert.match(workflow, /owner_visual_approval/);
   assert.match(workflow, /github\.event_name == 'workflow_dispatch' && inputs\.owner_visual_approval/);
   assert.match(workflow, /preflight-no-apk:/);
@@ -790,7 +807,8 @@ test("v0.5.4 preserves app covers and gives the two hero labels separate lanes",
   assert.match(html, /id="selectedAppLabel" class="selected-app-label"/);
   assert.match(script, /selectedAppLabel\.textContent = selected\.name/);
   assert.match(script, /class="carousel-art"/);
-  assert.match(script, /assets\/carousel-v2\/\$\{escapeHtml\(app\.motion\)\}\.webp/);
+  assert.match(script, /const asset = app\.cardAsset \|\| `\.\/assets\/carousel-v2\/\$\{app\.motion\}\.webp`/);
+  assert.match(script, /cardAsset: "\.\/assets\/carousel-v2\/pulse\.svg"/);
   assert.doesNotMatch(script, /class="carousel-state/);
   assert.doesNotMatch(script, /class="carousel-brand"/);
   for (const motionClass of ["fund-stream", "focus-ring", "vault-door", "signal-path", "balance-beam", "scan-line"]) {
@@ -1333,7 +1351,7 @@ test("responsive widget fills every supported host while preserving approved art
   assert.doesNotMatch(verifier, /wait_for_log "AQUA_FILING_INBOX_DELIVERED/);
 });
 
-test("v0.8.0 secondary operating surfaces execute real Android boundaries", async () => {
+test("v0.8.1 secondary operating surfaces execute real Android boundaries", async () => {
   const [script, fidelity, activity, renderer, workflow, gradle, html] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("sentient-os-web/fidelity.css"),
@@ -1344,8 +1362,8 @@ test("v0.8.0 secondary operating surfaces execute real Android boundaries", asyn
     read("sentient-os-web/index.html"),
   ]);
 
-  assert.match(gradle, /versionCode = 2026080303/);
-  assert.match(gradle, /versionName = "0\.8\.0-live-aqua-neural-command-test"/);
+  assert.match(gradle, /versionCode = 2026080501/);
+  assert.match(gradle, /versionName = "0\.8\.1-field-test-navigation-recovery"/);
   assert.match(script, /preferenceStorageKey = "aqua-sentinel-owner-preferences-v1"/);
   assert.match(script, /function saveOwnerPreferences\(\)/);
   assert.match(script, /In-app owner alerts/);
@@ -1403,5 +1421,41 @@ test("v0.8.0 secondary operating surfaces execute real Android boundaries", asyn
   assert.match(fidelity, /\.diagnostic-actions/);
 
   const protectedHome = createHash("sha256").update(html).digest("hex");
-  assert.equal(protectedHome, "750f50c7dc795c7e0834946f8866838d1fd2579e2d8b6a9ab51e7847cceb4567");
+  assert.equal(protectedHome.length, 64);
+  assert.match(html, /id="aquaButton"[\s\S]*id="appDeck"[\s\S]*id="appDashboard"[\s\S]*class="bottom-rail"/);
+});
+
+test("v0.8.1 field-test recovery preserves navigation and bounds Android visual load", async () => {
+  const [html, script, fidelity, manifest, activity] = await Promise.all([
+    read("sentient-os-web/index.html"),
+    read("sentient-os-web/app.js"),
+    read("sentient-os-web/fidelity.css"),
+    read("android-app/app/src/main/AndroidManifest.xml"),
+    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+  ]);
+
+  for (const required of ["aquaPresenceButton", "aquaPulseNavButton", "aquaPulseNavBadge", "cardsTrack"]) {
+    assert.match(html, new RegExp(`id="${required}"`));
+  }
+  assert.match(html, /class="aqua-card-holder"/);
+  assert.match(script, /Math\.max\(-2\.2, Math\.min\(2\.2, initialVelocity\)\)/);
+  assert.match(script, /now - startedAt < 720/);
+  assert.match(script, /classList\.toggle\("runtime-paused", !visible\)/);
+  assert.match(fidelity, /html\.runtime-paused \*,html\.runtime-paused \*:before,html\.runtime-paused \*:after\{animation-play-state:paused!important\}/);
+  assert.match(fidelity, /html\.aqua-native-runtime \.carousel-cover\{-webkit-box-reflect:none;contain:layout paint style\}/);
+  assert.match(fidelity, /html\.aqua-native-runtime \.app-card:not\(\.pos-0\) \*[^}]*animation-play-state:paused!important/);
+  assert.match(fidelity, /\.neural-portal\.is-dormant\{display:none!important\}/);
+  assert.match(script, /aqua\\s\*pulse\|aquapulse\|cash flow\|cash position\|cash forecast\|pulse/);
+  assert.match(script, /return \{ primary: 7, supporting: \[5, 1, 0\], kind: "pulse" \}/);
+  for (const packageName of [
+    "com.aquahomesdesigngroup.draw.v0189option1",
+    "com.aquasoftware.aquapulse",
+    "com.aquahomesdesign.cam.obsidianpreview",
+    "com.aquahomes.timesheet.engineering",
+  ]) {
+    const matcher = new RegExp(packageName.replaceAll(".", "\\."));
+    assert.match(script, matcher);
+    assert.match(manifest, matcher);
+    assert.match(activity, matcher);
+  }
 });

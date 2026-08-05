@@ -37,8 +37,16 @@
             Tap here to speak to Aqua
           </div>
           <div id="selectedAppLabel" class="selected-app-label" aria-live="polite">
-            Aqua CRM
+            AquaDraw
           </div>
+          <button
+            id="aquaPresenceButton"
+            class="aqua-presence-button"
+            type="button"
+            aria-label="Open Aqua"
+          >
+            <span>A</span><i aria-hidden="true"></i>
+          </button>
         </section>
 
         <section
@@ -58,6 +66,9 @@
           >
             ‹
           </button>
+          <div class="aqua-card-holder" aria-hidden="true">
+            <span>AQUA APP DOCK</span>
+          </div>
           <div id="cardsTrack" class="cards-track"></div>
           <button
             id="nextApp"
@@ -126,6 +137,10 @@
           </button>
           <button type="button" data-panel="neural">
             <span>◉</span><small>Neural Link</small>
+          </button>
+          <button id="aquaPulseNavButton" type="button" data-app-name="AquaPulse">
+            <span class="pulse-nav-icon" aria-hidden="true"><img src="./assets/carousel-v2/pulse.svg" alt="" /></span><small>Pulse</small>
+            <b id="aquaPulseNavBadge" aria-label="New AquaPulse field-test portal">NEW</b>
           </button>
           <button id="filingCabinetButton" type="button" data-panel="command">
             <span class="file-cabinet-icon" aria-hidden="true"><i></i><i></i></span><small>Command</small>

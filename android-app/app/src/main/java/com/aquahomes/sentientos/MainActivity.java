@@ -93,7 +93,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         "Aqua Knowledge Vault",
         "Aqua Timesheet",
         "Aqua Books",
-        "Aqua Receipts"
+        "Aqua Receipts",
+        "AquaPulse"
     };
     private static final String[][] DIAGNOSTIC_APP_PACKAGES = {
         { "com.aquasoftware.crm.fieldtest", "com.aquasoftware.crm.test", "com.aquasoftware.crm" },
@@ -102,7 +103,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         { "com.aquahomes.knowledgevault" },
         { "com.aquahomes.timesheet.engineering", "com.aquahomes.timesheet" },
         { "com.aquasoftware.aquabooks" },
-        { "com.aquasoftware.receipts.test", "com.aquasoftware.receipts" }
+        { "com.aquasoftware.receipts.test", "com.aquasoftware.receipts" },
+        { "com.aquasoftware.aquapulse" }
     };
 
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
@@ -1442,6 +1444,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @JavascriptInterface
         public void launchApp(String appName, String packageJson) {
             launchRegisteredApp(appName, packageJson);
+        }
+
+        @JavascriptInterface
+        public boolean isAppInstalled(String packageJson) {
+            try {
+                return !firstInstalledPackage(packageJson).isEmpty();
+            } catch (Exception ignored) {
+                return false;
+            }
         }
 
         @JavascriptInterface

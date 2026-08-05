@@ -150,6 +150,70 @@ const apps = [
     widgets: ["Capture", "Inbox", "Projects"],
     connected: false,
   },
+  {
+    name: "AquaPulse",
+    cardName: "Pulse",
+    motion: "pulse",
+    short: "CASH FLOW",
+    icon: "A",
+    cardAsset: "./assets/carousel-v2/pulse.svg",
+    neuralAsset: "./assets/carousel-v2/pulse.svg",
+    color: "#38d9ef",
+    preview: { eyebrow: "AQUA PULSE", title: "Cash Flow Command", metric: "Current pulse", value: "—", tiles: ["Accounts", "Jobs", "Forecast"] },
+    packages: ["com.aquasoftware.aquapulse"],
+    status: "Pulse workspace ready",
+    primaryTitle: "Cash Flow Pulse",
+    primaryValue: "Awaiting live data",
+    primaryDetail: "Sentinel has not received an AquaPulse home snapshot yet",
+    secondaryTitle: "Needs Attention",
+    secondaryValue: "Not confirmed",
+    secondaryDetail: "Open AquaPulse or connect its Sentinel preview contract",
+    activity: ["Account registry available", "Job cash-flow view available", "File Cabinet intake registered"],
+    widgets: ["Accounts", "Jobs", "Forecast"],
+    connected: false,
+  },
+  {
+    name: "Future Aqua App One",
+    cardName: "Coming Next",
+    motion: "future",
+    short: "RESERVED PORTAL",
+    icon: "+",
+    color: "#557786",
+    preview: { eyebrow: "AQUA ECOSYSTEM", title: "New application portal", metric: "Status", value: "Reserved", tiles: ["Identity", "Workflow", "Data"] },
+    packages: [],
+    status: "Reserved for the next Aqua application",
+    primaryTitle: "Application Portal",
+    primaryValue: "Coming online",
+    primaryDetail: "This card preserves the approved position for a new Aqua application",
+    secondaryTitle: "Integration State",
+    secondaryValue: "Not assigned",
+    secondaryDetail: "The app name, package, and capability contract will be connected when approved",
+    activity: ["Portal position preserved", "App identity not assigned", "No backend claim"],
+    widgets: ["Identity", "Workflow", "Data"],
+    connected: false,
+    placeholder: true,
+  },
+  {
+    name: "Future Aqua App Two",
+    cardName: "Coming Next",
+    motion: "future",
+    short: "RESERVED PORTAL",
+    icon: "+",
+    color: "#6b7185",
+    preview: { eyebrow: "AQUA ECOSYSTEM", title: "New application portal", metric: "Status", value: "Reserved", tiles: ["Identity", "Workflow", "Data"] },
+    packages: [],
+    status: "Reserved for the next Aqua application",
+    primaryTitle: "Application Portal",
+    primaryValue: "Coming online",
+    primaryDetail: "This card preserves the approved position for a new Aqua application",
+    secondaryTitle: "Integration State",
+    secondaryValue: "Not assigned",
+    secondaryDetail: "The app name, package, and capability contract will be connected when approved",
+    activity: ["Portal position preserved", "App identity not assigned", "No backend claim"],
+    widgets: ["Identity", "Workflow", "Data"],
+    connected: false,
+    placeholder: true,
+  },
 ];
 
 const stateLabels = {
@@ -161,7 +225,7 @@ const stateLabels = {
   error: "AQUA NEEDS ATTENTION",
 };
 
-let active = 0;
+let active = apps.findIndex((app) => app.name === "AquaDraw");
 let rotating = false;
 let rotationTimer = null;
 let drag = null;
@@ -210,7 +274,7 @@ const NEURAL_SEQUENCE_MORPH_AT = NEURAL_SELECT_MILLIS
 const NEURAL_SEQUENCE_RESULT_AT = NEURAL_SEQUENCE_MORPH_AT + NEURAL_MORPH_MILLIS;
 let neuralFocusIndex = -1;
 let neuralSupportIndexes = [];
-let neuralVisibleIndexes = [0, 5, 6, 1, 4, 3, 2];
+let neuralVisibleIndexes = [0, 1, 7, 2, 4, 5, 6];
 let neuralPhase = "rest";
 let neuralThought = "Aqua is listening across your company.";
 let neuralThoughtDetail = "Every system stays ready while her attention moves.";
@@ -236,8 +300,8 @@ let commandWidgetState = {
 let deviceDiagnostics = {
   generatedAt: 0,
   platform: "Browser preview",
-  versionName: "0.8.0-live-aqua-neural-command-test",
-  versionCode: 2026080303,
+  versionName: "0.8.1-field-test-navigation-recovery",
+  versionCode: 2026080501,
   gatewayConfigured: false,
   authenticated: false,
   microphoneGranted: false,
@@ -558,6 +622,9 @@ function identifyNeuralIntent(rawText) {
   if (/timesheet|time card|timecard|clocked|crew hours|labor hours|payroll/.test(text)) {
     return { primary: 4, supporting: [0, 5], kind: "workforce" };
   }
+  if (/aqua\s*pulse|aquapulse|cash flow|cash position|cash forecast|pulse/.test(text)) {
+    return { primary: 7, supporting: [5, 1, 0], kind: "pulse" };
+  }
   if (/cash|books|accounting|ledger|bank|profit|revenue|bill|invoice|financial/.test(text)) {
     return { primary: 5, supporting: [0, 1, 6], kind: "financial" };
   }
@@ -621,7 +688,7 @@ function navigateSentinelByVoice(destination) {
 
 function isExplicitDeepOpen(rawText) {
   const text = String(rawText || "").toLowerCase();
-  return /\b(?:let'?s\s+go(?:\s+to)?|take me to|switch to|go to|go deeper(?:(?: into| to))?|go into|launch|open)\s+(?:the\s+)?(?:actual\s+)?(?:aqua\s+)?(?:crm|draw|cam|knowledge(?: vault)?|timesheet|books|receipts|file cabinet|app)\b/.test(text);
+  return /\b(?:let'?s\s+go(?:\s+to)?|take me to|switch to|go to|go deeper(?:(?: into| to))?|go into|launch|open)\s+(?:the\s+)?(?:actual\s+)?(?:aqua\s+)?(?:crm|draw|cam|pulse|knowledge(?: vault)?|timesheet|books|receipts|file cabinet|app)\b/.test(text);
 }
 
 function beginNeuralRequest(command) {
@@ -649,6 +716,7 @@ const neuralCapabilityIndexes = Object.freeze({
   timesheet: 4,
   books: 5,
   receipts: 6,
+  pulse: 7,
   "sentinel-files": apps.length,
 });
 
@@ -966,6 +1034,7 @@ function widgetMessagesMarkup() {
 }
 
 const sentinel = document.getElementById("sentinel");
+document.documentElement.classList.toggle("aqua-native-runtime", Boolean(window.AquaBridge));
 const appDeck = document.getElementById("appDeck");
 const cardsTrack = document.getElementById("cardsTrack");
 const deckDots = document.getElementById("deckDots");
@@ -1119,11 +1188,21 @@ function renderFallbackPreview(app, view) {
       <h3>${escapeHtml(view.preview.title)}</h3>
       <div class="mini-inbox"><span><b>▣</b>${tile(0)}</span><span><b>✉</b>${tile(1)}</span><span><b>▤</b>${tile(2)}</span></div>
       <div class="mini-receipt"><i></i><span><b>Receipt inbox</b><small>Awaiting confirmed items</small></span><em>›</em></div>`,
+    AquaPulse: `
+      ${sharedHeader}
+      <h3>${escapeHtml(view.preview.title)}</h3>
+      <div class="mini-pulse"><small>${escapeHtml(view.preview.metric)}</small><strong>${escapeHtml(view.preview.value)}</strong><i><b></b></i></div>
+      <div class="mini-budget"><span>${tile(0)}<b></b></span><span>${tile(1)}<b></b></span><span>${tile(2)}<b></b></span></div>`,
   };
   return layouts[app.name] || `${sharedHeader}<h3>${escapeHtml(view.preview.title)}</h3>`;
 }
 
 function renderCarouselCover(app) {
+  if (app.placeholder) {
+    return `<div class="future-card-placeholder" aria-hidden="true">
+      <i>A</i><strong>COMING NEXT</strong><small>RESERVED AQUA APP PORTAL</small><span></span>
+    </div>`;
+  }
   const motionMarkup = {
     crm: '<i></i><i></i><i></i><i></i><i></i>',
     draw: '<i class="fund-stream"></i><b class="approval-flare"></b>',
@@ -1132,9 +1211,11 @@ function renderCarouselCover(app) {
     timesheet: '<i class="signal-path"></i><b class="punch-marker">✓</b>',
     books: '<i class="balance-beam"></i><b class="cash-pulse">$</b>',
     receipts: '<i class="scan-line"></i><b class="scan-confirm">✓</b>',
+    pulse: '<i class="pulse-line"></i><b class="pulse-core">A</b>',
   };
+  const asset = app.cardAsset || `./assets/carousel-v2/${app.motion}.webp`;
   return `
-    <img class="carousel-art" src="./assets/carousel-v2/${escapeHtml(app.motion)}.webp" alt="">
+    <img class="carousel-art" src="${escapeHtml(asset)}" alt="">
     <div class="carousel-motion motion-${escapeHtml(app.motion)}" aria-hidden="true">
       ${motionMarkup[app.motion] || "<i></i>"}
     </div>`;
@@ -1210,6 +1291,7 @@ function safePreviewImage(previewImage) {
 }
 
 function requestSnapshot(app) {
+  if (!app || app.placeholder || !app.packages.length) return;
   if (!window.AquaBridge?.requestAppSnapshot) return;
   snapshotStates.set(app.name, "refreshing");
   window.AquaBridge.requestAppSnapshot(app.name, JSON.stringify(app.packages));
@@ -1421,10 +1503,21 @@ function rotate(direction) {
   centerApp(active + direction, false);
 }
 
+function isInstalledAquaApp(app) {
+  if (!app || app.placeholder || !app.packages.length) return false;
+  if (!window.AquaBridge?.isAppInstalled) return false;
+  try {
+    return Boolean(window.AquaBridge.isAppInstalled(JSON.stringify(app.packages)));
+  } catch (_) {
+    return false;
+  }
+}
+
 function openWorkspace() {
   if (rotating) return;
   const selected = apps[active];
-  if (window.AquaBridge?.launchApp) {
+  const installed = isInstalledAquaApp(selected);
+  if (installed && window.AquaBridge?.launchApp) {
     window.AquaBridge.launchApp(selected.name, JSON.stringify(selected.packages));
     return;
   }
@@ -1435,7 +1528,7 @@ function openWorkspace() {
       <span>${escapeHtml(selected.icon)}</span>
       <small>${escapeHtml(selected.short)}</small>
       <h1>${escapeHtml(selected.name)}</h1>
-      <p>Opened inside Aqua Sentinel OS</p>
+      <p>${selected.placeholder ? "Reserved inside Aqua Sentinel OS" : "Opened inside Aqua Sentinel OS for field testing"}</p>
     </div>
     <div class="workspace-widgets">
       ${selected.widgets.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
@@ -1459,7 +1552,7 @@ function openWorkspace() {
     <div class="workspace-actions">
       <button class="ask-aqua" type="button">Ask Aqua about ${escapeHtml(selected.name)}</button>
       <button class="connection-status" type="button">
-        ${selected.connected ? "Open connected app" : "Connection status"}
+        ${selected.placeholder ? "Coming online" : installed ? "Open installed app" : "Test workspace · app not installed"}
       </button>
     </div>
   `;
@@ -1472,10 +1565,16 @@ function openWorkspace() {
   });
   workspace.querySelector(".ask-aqua").addEventListener("click", startVoice);
   workspace.querySelector(".connection-status").addEventListener("click", () => {
+    if (installed && window.AquaBridge?.launchApp) {
+      window.AquaBridge.launchApp(selected.name, JSON.stringify(selected.packages));
+      return;
+    }
     notify(
-      selected.connected
+      selected.placeholder
+        ? "This Aqua app portal is reserved and has not been assigned yet."
+        : selected.connected
         ? `${selected.name} is registered with Sentinel`
-        : `${selected.name} is awaiting its production data gateway`,
+        : `${selected.name} is available as a Sentinel test workspace; install its APK to open the full app`,
     );
   });
 }
@@ -1508,11 +1607,21 @@ function openDetail(kind) {
 function launchAppByIndex(index) {
   const app = apps[index];
   if (!app) return;
-  if (window.AquaBridge?.launchApp) {
+  active = index;
+  render();
+  document.querySelectorAll(".bottom-rail button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.appName === app.name);
+  });
+  if (isInstalledAquaApp(app) && window.AquaBridge?.launchApp) {
     window.AquaBridge.launchApp(app.name, JSON.stringify(app.packages));
   } else {
-    active = index;
-    notify(`${app.name} opens from the installed Android app.`);
+    closeOverlays();
+    openWorkspace();
+    notify(
+      app.placeholder
+        ? "This Aqua app portal is reserved for a future application."
+        : `${app.name} opened in Sentinel test mode; install its APK for the full application`,
+    );
   }
 }
 
@@ -1523,7 +1632,7 @@ function returnNeuralToRest() {
   clearTimeout(neuralDestinationTimer);
   neuralFocusIndex = -1;
   neuralSupportIndexes = [];
-  neuralVisibleIndexes = [0, 5, 6, 1, 4, 3, 2];
+  neuralVisibleIndexes = [0, 1, 7, 2, 4, 5, 6];
   neuralPhase = "rest";
   neuralMorphProgress = 0;
   neuralPhaseReadyAt = 0;
@@ -1897,10 +2006,12 @@ function filingCabinetMarkup(includeHeader = true) {
 
 function neuralWorkspaceMarkup() {
   const portalApps = [
-    ...apps,
-    neuralSourceAt(apps.length),
+    ...apps
+      .map((app, index) => ({ app, index }))
+      .filter(({ app }) => !app.placeholder),
+    { app: neuralSourceAt(apps.length), index: apps.length },
   ];
-  const portals = portalApps.map((app, index) => {
+  const portals = portalApps.map(({ app, index }) => {
     const connection = neuralConnectionState(index);
     const name = app.name.replace("Aqua Knowledge Vault", "Knowledge Vault").replace("Aqua ", "");
     const environment = app.neuralAsset
@@ -1913,7 +2024,7 @@ function neuralWorkspaceMarkup() {
     </article>`;
   }).join("");
   const baseNeuralPath = neuralPathForSlot(neuralRingSlots[0]);
-  const routes = portalApps.map((app, index) => {
+  const routes = portalApps.map(({ app, index }) => {
     const slot = neuralFixedSlotForSource(index);
     const bursts = [0, 1, 2, 3].map((laneIndex) => `
       <path class="neural-burst burst-${laneIndex}" d="${baseNeuralPath}" pathLength="100" data-neural-burst="${index}" data-neural-lane="${laneIndex}" style="--burst-delay:${(-index * .31 - laneIndex * .67).toFixed(2)}s;--burst-speed:${(2.15 + (index % 3) * .38 + laneIndex * .29).toFixed(2)}s"></path>`).join("");
@@ -1924,7 +2035,7 @@ function neuralWorkspaceMarkup() {
       <g class="neural-microbursts">${bursts}</g>
     </g>`;
   }).join("");
-  const confirmedSources = apps.filter((app) => app.connected || liveSnapshots.has(app.name)).length;
+  const confirmedSources = apps.filter((app) => !app.placeholder && (app.connected || liveSnapshots.has(app.name))).length;
 
   return `<section class="neural-shell" aria-label="Aqua Neuralink" data-neural-contract="AQUA SENTINEL NEURAL LINK">
       <div class="neural-stage" data-phase="${escapeHtml(neuralPhase)}" data-neural-visible-portals="7" data-neural-added-ui-delay-ms="0" data-neural-acknowledged="false" data-reference-composition="live-neural-substrate-v080">
@@ -2109,7 +2220,7 @@ function aboutMarkup() {
       <small>AQUA SOFTWARE COMPANY</small>
       <h1>Aqua Sentinel OS</h1>
       <p>Aqua is the owner command layer across the Aqua application ecosystem. Each satellite keeps its own authoritative records; Sentinel coordinates, explains, routes, and preserves receipts.</p>
-      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.8.0-live-aqua-neural-command-test")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
+      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.8.1-field-test-navigation-recovery")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
       <div class="about-boundaries">
         <article><i>✓</i><span><strong>Protected Home</strong><small>The approved first screen is unchanged by this repair.</small></span></article>
         <article><i>✓</i><span><strong>Server-owned intelligence</strong><small>API credentials and guarded actions do not live inside the APK.</small></span></article>
@@ -2134,7 +2245,7 @@ function settingsMarkup() {
       <button type="button" data-setting="integrations"><i>∞</i><span><strong>Ecosystem connections</strong><small>Installed applications, snapshots, and authoritative links</small></span><b>${state.installedAppCount || 0}/${state.registeredAppCount || apps.length}</b></button>
       <button type="button" data-setting="storage"><i>▤</i><span><strong>File Cabinet and synchronization</strong><small>Protected evidence, queues, cloud confirmation, and retention</small></span><b>${state.filingPendingCount || 0} PENDING</b></button>
       <button type="button" data-setting="diagnostics"><i>◇</i><span><strong>Diagnostics</strong><small>Run device checks and copy a repair receipt</small></span><b>CHECK</b></button>
-      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.8.0</b></button>
+      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.8.1</b></button>
     </div>`;
 }
 
@@ -3194,6 +3305,7 @@ authContinueStandalone.addEventListener("click", () => {
 });
 
 document.getElementById("aquaButton").addEventListener("click", startVoice);
+document.getElementById("aquaPresenceButton").addEventListener("click", startVoice);
 document.getElementById("previousApp").addEventListener("click", () => rotate(-1));
 document.getElementById("nextApp").addEventListener("click", () => rotate(1));
 document
@@ -3204,7 +3316,14 @@ document
   .addEventListener("click", () => openDetail("secondary"));
 
 document.querySelectorAll(".bottom-rail button").forEach((button) => {
-  button.addEventListener("click", () => openPanel(button.dataset.panel));
+  button.addEventListener("click", () => {
+    if (button.dataset.appName) {
+      const index = apps.findIndex((app) => app.name === button.dataset.appName);
+      if (index >= 0) launchAppByIndex(index);
+      return;
+    }
+    openPanel(button.dataset.panel);
+  });
 });
 
 function stopDeckInertia() {
@@ -3227,9 +3346,10 @@ function coastDeck(initialVelocity) {
   appDeck.classList.remove("is-settled");
   appDeck.classList.add("is-rotating");
   selectedAppLabel.classList.remove("is-visible");
-  let velocity = Math.max(-3.4, Math.min(3.4, initialVelocity));
+  let velocity = Math.max(-2.2, Math.min(2.2, initialVelocity));
   let position = 0;
   let lastTime = performance.now();
+  const startedAt = lastTime;
   const coast = (now) => {
     const stepPx = deckStepPx();
     const elapsed = Math.min(34, now - lastTime);
@@ -3242,7 +3362,7 @@ function coastDeck(initialVelocity) {
     }
     applyDeckPosition(position, false);
     velocity *= Math.pow(0.972, elapsed / 16.67);
-    if (Math.abs(velocity) > 0.012) {
+    if (Math.abs(velocity) > 0.02 && now - startedAt < 720) {
       inertiaFrame = requestAnimationFrame(coast);
       return;
     }
@@ -3375,7 +3495,9 @@ setInterval(() => {
   if (document.visibilityState === "visible") requestSnapshot(apps[active]);
 }, 60_000);
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") requestSnapshot(apps[active]);
+  const visible = document.visibilityState === "visible";
+  document.documentElement.classList.toggle("runtime-paused", !visible);
+  if (visible) requestSnapshot(apps[active]);
 });
 let neuralResizeFrame = null;
 window.addEventListener("resize", () => {

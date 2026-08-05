@@ -322,6 +322,38 @@
     "live_voice_test": "NOT_RUN",
     "truth_boundary": "The canonical rich interface and protected Realtime path are implemented. The exact application commit compiled, packaged, installed cleanly, and launched in GitHub Actions. The test APK does not contain a production Aqua gateway URL; local Android speech/TTS fallback remains available, while production Worker deployment and a real protected Realtime voice round trip are not yet claimed."
   },
+  "sentinel_field_test_recovery_2026_08_05": {
+    "status": "IMPLEMENTED_LOCALLY_NOT_YET_BUILT",
+    "version": "0.8.1-field-test-navigation-recovery",
+    "version_code": 2026080501,
+    "regression_source": "The v0.8.0 test APK omitted AquaPulse, the two reserved app cards, the direct side-A control, the physical card dock, and the production AQUA_GATEWAY_URL.",
+    "restored_surfaces": [
+      "direct side Aqua A",
+      "Aqua application card dock",
+      "AquaPulse carousel card with approved Pulse icon",
+      "AquaPulse bottom navigation control with NEW badge",
+      "two reserved future-application cards",
+      "truthful in-Sentinel test workspaces when a satellite APK is absent"
+    ],
+    "priority_launch_routes": {
+      "AquaDraw": "com.aquahomesdesigngroup.draw.v0189option1",
+      "AquaPulse": "com.aquasoftware.aquapulse",
+      "AquaCam": "com.aquahomesdesign.cam.obsidianpreview",
+      "Aqua Timesheet": "com.aquahomes.timesheet.engineering"
+    },
+    "installed_app_behavior": "Sentinel detects the registered Android package and launches it. If absent, Sentinel opens the corresponding local field-test workspace instead of a dead action.",
+    "performance_repair": "Android disables card reflections and expensive filters, pauses every non-centered card animation, hides dormant Neural portals, halves idle neural burst lanes, pauses the waveform outside active voice states, pauses all animation while hidden, and caps carousel coasting at 720 ms.",
+    "local_repository_tests": "55/55 passed",
+    "worker_dry_run": "passed",
+    "android_compile": "PENDING_GITHUB_ACTIONS",
+    "test_apk": "NOT_BUILT",
+    "gateway": {
+      "deployed": false,
+      "apk_url_injected": false,
+      "blocker": "Cloudflare OAuth reached a repeated dashboard human-verification loop in the controlled browser; no CLI credential was issued."
+    },
+    "truth_boundary": "Do not hand off v0.8.1 as Aqua-ready until the protected gateway is deployed, the exact URL is injected into the APK build, GitHub's visual/Java/package/emulator gates pass, and one protected Realtime voice/navigation round trip is proven."
+  },
   "aqua_ai_reference_candidate": {
     "candidate_id": "AQUA-REFERENCE-CANDIDATE-01",
     "status": "OWNER_TRIAL_NOT_CANONICAL",

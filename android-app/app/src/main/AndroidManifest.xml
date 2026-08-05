@@ -34,6 +34,7 @@
         <package android:name="com.aquasoftware.aquabooks" />
         <package android:name="com.aquasoftware.receipts.test" />
         <package android:name="com.aquasoftware.receipts" />
+        <package android:name="com.aquasoftware.aquapulse" />
     </queries>
 
     <application

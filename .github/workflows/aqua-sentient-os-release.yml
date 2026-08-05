@@ -1,4 +1,4 @@
-name: Build Aqua Sentinel OS v0.8.0 Complete Operating Surfaces Test
+name: Build Aqua Sentinel OS v0.8.1 Field-Test Navigation Recovery
 
 on:
   push:
@@ -610,8 +610,8 @@ jobs:
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/aqua-sentinel-certificate.txt
           "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/aqua-sentinel-badging.txt
           grep -q "package: name='com.aquahomes.sentinel'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionCode='2026080303'" /tmp/aqua-sentinel-badging.txt
-          grep -q "versionName='0.8.0-live-aqua-neural-command-test'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionCode='2026080501'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionName='0.8.1-field-test-navigation-recovery'" /tmp/aqua-sentinel-badging.txt
           grep -q "sdkVersion:'26'" /tmp/aqua-sentinel-badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/aqua-sentinel-badging.txt
           unzip -l "$APK" | grep -q "assets/public/index.html"
@@ -620,6 +620,7 @@ jobs:
           unzip -l "$APK" | grep -q "assets/public/assets/neuralink-rest-cyan-path-mask-v074.png"
           unzip -l "$APK" | grep -q "assets/public/assets/neuralink-materialized-gold-path-mask-v074.png"
           unzip -l "$APK" | grep -q "assets/public/assets/home-depot-receipt-owner-approved-v074.png"
+          unzip -l "$APK" | grep -q "assets/public/assets/carousel-v2/pulse.svg"
           unzip -l "$APK" | grep -q "assets/public/fidelity.css"
           unzip -t "$APK"
 
@@ -660,7 +661,7 @@ jobs:
       - name: Prepare release files and checksums
         run: |
           mkdir -p release
-          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.8.0-Live-Aqua-Neural-Command-Widget-Test.apk
+          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.8.1-Field-Test-Navigation-Recovery.apk
           test -s release/AquaSentinelOS-v0.8.0-launch-proof.png
           test -s /tmp/AquaSentinelOS-v0.8.0-Neuralink-Live-Widget-Launcher.png
           test -s /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Tap-Jolt.png
@@ -692,7 +693,7 @@ jobs:
             echo "commit=$GITHUB_SHA"
             echo "workflow_run=$GITHUB_RUN_ID"
             echo "package=com.aquahomes.sentinel"
-            echo "version=0.8.0-live-aqua-neural-command-test"
+            echo "version=0.8.1-field-test-navigation-recovery"
             echo "ai_gateway=server_owned_json_rpc_2.0"
             echo "projection_sync=authenticated_idempotent_tenant_scoped"
             echo "ecosystem_presentation_mode=true"
@@ -710,11 +711,11 @@ jobs:
             echo "target_sdk=35"
             echo "min_sdk=26"
           } > release/AquaSentinelOS-v0.8.0-provenance.txt
-          sha256sum release/AquaSentinelOS-v0.8.0-Live-Aqua-Neural-Command-Widget-Test.apk > release/AquaSentinelOS-v0.8.0-Live-Aqua-Neural-Command-Widget-Test.apk.sha256
+          sha256sum release/AquaSentinelOS-v0.8.1-Field-Test-Navigation-Recovery.apk > release/AquaSentinelOS-v0.8.1-Field-Test-Navigation-Recovery.apk.sha256
 
       - name: Upload verified installer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AquaSentinelOS-v0.8.0-Live-Aqua-Neural-Command-Widget-Test
+          name: AquaSentinelOS-v0.8.1-Field-Test-Navigation-Recovery
           path: release/*
           if-no-files-found: error

@@ -535,3 +535,24 @@ EXACT FIRST ACTION: re-fetch all heads, reconcile the canonical 1.1.0 schema, th
 ```text
 Continue the Aqua Sentinel OS backend ecosystem from the repository handoff at 00-START-HERE/AQUA-SENTINEL-BACKEND-ECOSYSTEM-TAKEOVER-2026-08-05.md on deyve55/aqua-homes-os branch agent/aqua-sentinel-command-center-integration-20260730, draft PR #194. Read that file, the current repository handoffs/state files, and the Golden Goose Sentinel-first owner directive before changing anything. You are the only chat authorized to change the shared backend, Traffic Cop, SDK routing, cross-app secrets, deployments, and ecosystem conformance. Preserve every app's approved design, navigation, workflow, product purpose, Android identity, standalone operation, and active application work. Do not merge PR #194 wholesale or replace the newer Sentinel v0.8.5 direction with the older v0.6 UI. Re-fetch all recorded heads, return the required takeover receipt, reconcile the canonical aqua-sentinel-sdk-v1 1.1.0 machine schema, clear CRM's restricted-package access gate, deploy/test Traffic Cop with protected secrets, prove accepted_and_saved then duplicate_ignored against AquaPulse, preserve AquaCam PR #12 while integrating only its dedicated backend, and leave Aqua Posts last until its exact repository is verified. Update CURRENT-STATE.json and MASTER-PROJECT-HANDOFF.md in every touched repository so the work cannot be lost. Never expose or commit a secret and never claim live status without real end-to-end evidence.
 ```
+
+## 17. Binding field-test recovery — 2026-08-05 15:21 EDT
+
+The current owner priority is Aqua Sentinel as the field-test control surface,
+not marketplace release of every satellite. Sentinel must let the owner talk
+to Aqua and open/navigate AquaDraw, AquaPulse, AquaCam, and Aqua Timesheet. An
+installed satellite package opens natively; a missing package must open its
+truthful Sentinel test workspace so the interaction remains testable.
+
+Version `0.8.1-field-test-navigation-recovery` restores the direct side A,
+Pulse card/icon/bottom NEW control, Aqua card dock, two reserved app cards, and
+the four priority Android routes. It also bounds Android animation/filter load.
+Local proof is 55/55 tests plus Worker dry-run success.
+
+This source is not Aqua-ready and must not be handed off as a new APK until the
+protected Traffic Cop is deployed and its real `AQUA_GATEWAY_URL` is injected.
+Cloudflare OAuth is currently blocked by a repeated dashboard human-verification
+loop. Preserve the repair on draft PR #194, connect Cloudflare through an
+authenticated integration, then run the exact v0.8.1 Android build and live
+Realtime voice/navigation proof. Never repeat the v0.8.0 mistake of calling a
+gateway-less APK a working Aqua build.

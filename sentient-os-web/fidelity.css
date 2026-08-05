@@ -2820,3 +2820,76 @@ html,body{overscroll-behavior:none}
   from{opacity:.28;filter:drop-shadow(0 0 5px rgba(47,224,248,.38))}
   to{opacity:.94;filter:drop-shadow(0 0 14px #40e7ff) drop-shadow(0 0 23px rgba(239,181,85,.46))}
 }
+
+/* v0.8.1 field-test recovery: restore Aqua's direct presence, the physical
+   card dock, AquaPulse, two reserved portals, and a bounded Android workload. */
+.aqua-presence-button{
+  position:absolute;
+  z-index:8;
+  right:3.4%;
+  top:4.2%;
+  display:grid;
+  place-items:center;
+  width:clamp(36px,7.4cqw,56px);
+  aspect-ratio:1;
+  padding:0;
+  border:1px solid rgba(107,235,255,.72);
+  border-radius:50%;
+  color:#effeff;
+  background:radial-gradient(circle at 50% 42%,rgba(41,215,244,.2),rgba(0,8,13,.96) 70%);
+  box-shadow:inset 0 0 12px rgba(42,220,248,.15),0 0 11px rgba(42,220,248,.22);
+}
+.aqua-presence-button span{font-family:Georgia,serif;font-size:clamp(18px,4cqw,31px);line-height:1;text-shadow:0 0 8px #44e6ff}
+.aqua-presence-button i{position:absolute;right:-1px;top:-1px;width:8px;aspect-ratio:1;border:1px solid #001014;border-radius:50%;background:#49e4a5;box-shadow:0 0 7px #49e4a5}
+.aqua-card-holder{
+  position:absolute;
+  z-index:2;
+  left:31.5%;
+  top:1.7%;
+  width:37%;
+  height:87%;
+  border:1px solid rgba(76,216,245,.28);
+  border-top-color:rgba(218,251,255,.54);
+  border-bottom-color:rgba(239,184,82,.46);
+  border-radius:16px 16px 31px 31px;
+  background:linear-gradient(180deg,rgba(29,182,222,.035),transparent 42%,rgba(224,164,67,.035));
+  box-shadow:inset 0 0 18px rgba(48,210,240,.055),0 8px 22px rgba(0,0,0,.58);
+  pointer-events:none;
+}
+.aqua-card-holder:before,.aqua-card-holder:after{content:"";position:absolute;top:17%;bottom:17%;width:2px;background:linear-gradient(transparent,#4ce7ff 28%,#fff 50%,#e7b057 72%,transparent);opacity:.45}
+.aqua-card-holder:before{left:-1px}.aqua-card-holder:after{right:-1px}
+.aqua-card-holder span{position:absolute;left:18%;right:18%;bottom:1.8%;color:#607f89;font-size:clamp(4px,.62cqw,6px);letter-spacing:.19em;text-align:center}
+.future-card-placeholder{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:7%;border:1px dashed rgba(120,168,184,.42);border-radius:11px;background:linear-gradient(160deg,#061016,#010507 72%)}
+.future-card-placeholder:before{content:"";position:absolute;inset:8%;border:1px solid rgba(97,143,159,.2);border-radius:8px}
+.future-card-placeholder i{display:grid;place-items:center;width:34%;aspect-ratio:1;border:1px solid rgba(105,208,228,.42);border-radius:50%;color:#8bb5c0;font-family:Georgia,serif;font-size:clamp(11px,5.5cqw,34px);font-style:normal}
+.future-card-placeholder strong{color:#bdd2d8;font-size:clamp(5px,1.45cqw,10px);letter-spacing:.16em}
+.future-card-placeholder small{color:#587580;font-size:clamp(3px,.72cqw,6px);letter-spacing:.1em}
+.future-card-placeholder span{width:42%;height:1px;background:linear-gradient(90deg,transparent,#6fa6b4,transparent)}
+.motion-pulse .pulse-line{position:absolute;left:3%;right:3%;top:55%;height:2px;background:linear-gradient(90deg,transparent,#36ddf2 16%,#fff 34%,#dfab56 49%,#fff 64%,#36ddf2 84%,transparent);box-shadow:0 0 9px rgba(56,217,239,.62);animation:pulse-line-travel 2.4s ease-in-out infinite}
+.motion-pulse .pulse-core{display:grid;place-items:center;width:25cqw;aspect-ratio:1;border:1px solid #9df5ff;border-radius:50%;color:#eaffff;background:rgba(2,15,22,.84);font-family:Georgia,serif;font-size:13cqw;box-shadow:0 0 13px rgba(56,217,239,.54);animation:pulse-core-breathe 2.4s ease-in-out infinite}
+.mini-pulse{position:relative;margin:5% 7%;padding:5%;border:1px solid rgba(56,217,239,.42);border-radius:6px;background:rgba(3,19,27,.86)}
+.mini-pulse small,.mini-pulse strong{display:block}.mini-pulse small{color:#79a9b4;font-size:3cqw}.mini-pulse strong{margin-top:3%;color:#eaffff;font-size:8cqw}.mini-pulse i{display:block;height:2px;margin-top:7%;background:linear-gradient(90deg,#38d9ef,#fff,#e1ad5e,#38d9ef)}
+@keyframes pulse-line-travel{0%,100%{opacity:.42;transform:scaleX(.72)}50%{opacity:1;transform:scaleX(1)}}
+@keyframes pulse-core-breathe{50%{transform:scale(1.06);filter:brightness(1.2)}}
+
+.bottom-rail{grid-template-columns:repeat(6,minmax(0,1fr))}
+.bottom-rail .pulse-nav-icon{display:grid;place-items:center;width:clamp(20px,3.2cqw,27px);height:clamp(20px,3.2cqw,27px)}
+.bottom-rail .pulse-nav-icon img{display:block;width:100%;height:100%;border-radius:24%;object-fit:cover;box-shadow:0 0 7px rgba(56,217,239,.34)}
+#aquaPulseNavButton{position:relative;color:#83dce9}
+#aquaPulseNavBadge{position:absolute;top:2px;left:calc(50% + 9px);padding:1px 3px;border:1px solid #f3c66f;border-radius:99px;color:#1b1102;background:#f0bd63;font-size:5px;font-weight:800;line-height:1.15;text-shadow:none}
+
+html.runtime-paused *,html.runtime-paused *:before,html.runtime-paused *:after{animation-play-state:paused!important}
+html.aqua-native-runtime .app-deck:before{backdrop-filter:none}
+html.aqua-native-runtime .carousel-cover{-webkit-box-reflect:none;contain:layout paint style}
+html.aqua-native-runtime .carousel-art{filter:none}
+html.aqua-native-runtime .app-card{contain:layout paint style}
+html.aqua-native-runtime .app-card:not(.pos-0) *,html.aqua-native-runtime .app-card:not(.pos-0):before,html.aqua-native-runtime .app-card:not(.pos-0):after{animation-play-state:paused!important}
+html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage:before,
+html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage:after{filter:none}
+html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-portal.is-dormant{display:none!important}
+html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-burst.burst-2,
+html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-burst.burst-3{display:none}
+html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-waveform i{animation-play-state:paused}
+html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="listening"] .neural-waveform i,
+html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="thinking"] .neural-waveform i,
+html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="speaking"] .neural-waveform i{animation-play-state:running}

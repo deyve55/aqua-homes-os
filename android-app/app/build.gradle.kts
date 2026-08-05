@@ -25,8 +25,8 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026080303
-        versionName = "0.8.0-live-aqua-neural-command-test"
+        versionCode = 2026080501
+        versionName = "0.8.1-field-test-navigation-recovery"
         buildConfigField(
             "String",
             "AQUA_GATEWAY_URL",

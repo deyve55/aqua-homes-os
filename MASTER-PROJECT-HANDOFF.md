@@ -591,3 +591,46 @@ repository must not be changed until Dave selects the winning Aqua. After that
 choice, the approved identity and each new capability must be promoted through
 one versioned shared contract and verified app by app rather than copied by
 hand.
+
+## 17. Aqua Sentinel field-test regression recovery — 2026-08-05 15:21 EDT
+
+The owner rejected the v0.8.0 test APK because it did not open Aqua correctly,
+did not include AquaPulse in the card stack or bottom navigation, omitted the
+physical Aqua card dock and two future-app placeholders, remained too expensive
+for the phone, and contained no working live AI connection. Those are accepted
+regressions; the v0.8.0 APK must not be presented as the current field-test
+answer.
+
+The canonical `sentient-os-web`/`android-app` source now carries a surgical
+v0.8.1 recovery:
+
+- a direct side Aqua A that opens the same voice/Neural Link surface as the
+  hero control;
+- the Aqua application dock, AquaPulse carousel card with the approved Pulse
+  icon, a bottom Pulse control with a NEW badge, and two truthful reserved app
+  cards;
+- registered Android launch routes for AquaDraw, AquaPulse, AquaCam, and Aqua
+  Timesheet;
+- installed-package detection before launch, with a navigable in-Sentinel test
+  workspace when an APK is not present instead of a dead action;
+- Pulse voice/deep-open routing and Neural Link presence; and
+- Android-specific workload bounds: no carousel reflection or expensive card
+  filters, paused non-centered card animations, hidden dormant neural portals,
+  fewer idle neural burst lanes, a voice-state-only waveform, hidden-page
+  animation pause, and a 720 ms maximum carousel coast.
+
+Version is `0.8.1-field-test-navigation-recovery`, version code `2026080501`.
+Local evidence is 55/55 repository tests plus a successful Wrangler production
+package dry-run. No approved Home/hero/card asset or product workflow was
+removed.
+
+This checkpoint is not yet an APK receipt. The same concrete gateway omission
+that broke v0.8.0 remains a hard build gate: Traffic Cop is not deployed and no
+`AQUA_GATEWAY_URL` is injected. A fresh Cloudflare OAuth attempt reached the
+dashboard's repeated human-verification loop and issued no CLI credential. Do
+not build or hand off another offline-AI APK as if Aqua were ready. The exact
+next action is to connect Cloudflare through an authenticated integration,
+deploy the protected Worker without exposing the existing OpenAI key, inject
+its verified `/gateway` URL into the v0.8.1 build, then require visual, Java,
+package, signature, clean-install/launch, and protected Realtime
+voice/navigation proof before delivery.

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Aqua Pulse financial intelligence">
+  <defs>
+    <linearGradient id="field" x1="52" y1="35" x2="461" y2="481" gradientUnits="userSpaceOnUse"><stop stop-color="#12364b"/><stop offset=".52" stop-color="#07151f"/><stop offset="1" stop-color="#050a11"/></linearGradient>
+    <linearGradient id="metal" x1="169" y1="104" x2="349" y2="404" gradientUnits="userSpaceOnUse"><stop stop-color="#f7ffff"/><stop offset=".28" stop-color="#6cecff"/><stop offset=".68" stop-color="#1b9cb7"/><stop offset="1" stop-color="#d7ffff"/></linearGradient>
+    <linearGradient id="gold" x1="89" y1="350" x2="420" y2="350" gradientUnits="userSpaceOnUse"><stop stop-color="#66572d"/><stop offset=".5" stop-color="#f0cd78"/><stop offset="1" stop-color="#7c6737"/></linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#field)"/>
+  <rect x="25" y="25" width="462" height="462" rx="96" fill="none" stroke="#48eaff" stroke-opacity=".4" stroke-width="5"/>
+  <path d="M109 372h55v-60h42v60h55V246h42v126h55V177h42v195h31" fill="none" stroke="#38d9ef" stroke-opacity=".3" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M113 393h286" stroke="url(#gold)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M256 98 151 382h64l20-61h42l20 61h64L256 98Zm0 90 28 85h-56l28-85Z" fill="url(#metal)" filter="url(#glow)"/>
+  <path d="M218 330h76" stroke="#08202d" stroke-width="15" stroke-linecap="round"/>
+  <circle cx="113" cy="393" r="8" fill="#f0cd78"/><circle cx="399" cy="393" r="8" fill="#f0cd78"/>
+</svg>
