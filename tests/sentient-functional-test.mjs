@@ -607,7 +607,7 @@ test("v0.8.1 preserves Home while the owner-reference Neural Link stays alive th
   );
   assert.doesNotMatch(script, /requestAnimationFrame\(\(\) => openPanel\(previewPanel\)\)/);
   assert.match(workflow, /data-aqua-preview-ready="home"/);
-  assert.match(workflow, /grep -q '8 open leads'/);
+  assert.match(workflow, /grep -q '\\\$186K active'/);
   assert.match(workflow, /grep -q 'PRESENTATION DATA'/);
   assert.match(workflow, /data-aqua-preview-ready="neural"/);
   assert.match(workflow, /data-aqua-neural-phase="rest"/);
