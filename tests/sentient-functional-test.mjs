@@ -609,6 +609,9 @@ test("v0.8.1 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(workflow, /data-aqua-preview-ready="home"/);
   assert.match(workflow, /grep -q '\\\$186K active'/);
   assert.match(workflow, /grep -q 'PRESENTATION DATA'/);
+  assert.match(workflow, /data-portal-index="\[0-9\]\*"[^\n]*wc -l\)" = "9"/);
+  assert.match(workflow, /data-neural-source-group="\[0-9\]\*"[^\n]*wc -l\)" = "9"/);
+  assert.match(workflow, /data-neural-burst="\[0-9\]\*"[^\n]*wc -l\)" = "36"/);
   assert.match(workflow, /data-aqua-preview-ready="neural"/);
   assert.match(workflow, /data-aqua-neural-phase="rest"/);
   assert.match(workflow, /data-aqua-neural-phase="selecting"/);
