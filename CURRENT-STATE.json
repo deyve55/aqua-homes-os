@@ -288,6 +288,7 @@
   },
   "sentinel_realtime_voice_checkpoint_2026_08_05": {
     "source_base": "5dd823a5055f207486fb00b8e0ddbe6f26502dc2",
+    "application_commit": "803546c4b9183a3cab78810d7ee9a8e5c23a3bda",
     "application_source": "sentient-os-web",
     "android_wrapper": "android-app",
     "approved_visuals_modified": false,
@@ -303,13 +304,23 @@
     "voice_transport": "authenticated Android-to-Sentinel SDP proxy; primary OpenAI API key remains server-side",
     "turn_detection": "semantic_vad, low eagerness, interruption enabled",
     "confirmation_boundary": "exact text confirmation required before destructive, external, financial, filing, publishing, employment, legal, or other sensitive action",
-    "local_repository_tests": "53/53 passed",
+    "local_repository_tests": "54/54 passed",
     "worker_dry_run": "passed",
-    "android_compile": "PENDING_GITHUB_ACTIONS",
-    "test_apk": "PENDING_GITHUB_ACTIONS",
+    "android_compile": "PASSED_GITHUB_ACTIONS_RUN_31032404671",
+    "test_apk": {
+      "status": "VERIFIED_TEST_RUNNABLE",
+      "workflow_run": 31032404671,
+      "artifact_id": 8941616687,
+      "artifact_name": "AquaSentinelOS-v0.8.0-Live-Aqua-Neural-Command-Widget-Test",
+      "sha256": "713a4152b1a654bab50b5822b1f3407c6e8ccee7af16c20d2a0018629465be41",
+      "package": "com.aquahomes.sentinel",
+      "version": "0.8.0-live-aqua-neural-command-test",
+      "clean_install_and_launch": "passed",
+      "test_runnable_count": "1/6"
+    },
     "deployed": false,
     "live_voice_test": "NOT_RUN",
-    "truth_boundary": "The canonical source and protected Realtime path are implemented and locally verified. Android compilation, APK installation, production Worker deployment, and a real device voice round trip are not yet claimed."
+    "truth_boundary": "The canonical rich interface and protected Realtime path are implemented. The exact application commit compiled, packaged, installed cleanly, and launched in GitHub Actions. The test APK does not contain a production Aqua gateway URL; local Android speech/TTS fallback remains available, while production Worker deployment and a real protected Realtime voice round trip are not yet claimed."
   },
   "aqua_ai_reference_candidate": {
     "candidate_id": "AQUA-REFERENCE-CANDIDATE-01",

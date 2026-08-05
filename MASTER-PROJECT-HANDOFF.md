@@ -556,17 +556,30 @@ seam:
 - destructive, external, financial, filing, publishing, employment, legal, and
   other sensitive actions require exact understood-text confirmation.
 
-Local validation is 53/53 repository tests plus a successful Wrangler dry-run.
+Local validation is 54/54 repository tests plus a successful Wrangler dry-run.
 The approved Home, Neural Link, hero, carousel, application cards, dashboard
-cards, operating surfaces, and launcher tests remain green. The restored
-workspace does not contain Gradle or an Android SDK, so Java compilation and APK
-packaging are pending the repository's protected GitHub Actions workflow. No
-production Worker deployment or real-device voice round trip is claimed yet.
+cards, operating surfaces, and launcher tests remain green.
 
-Exact next action: publish this checkpoint to the existing draft PR #194 with
-the `[build-test-apk]` marker, require the full CI/Android/visual workflow to
-pass, preserve the draft/unmerged state, and record the exact commit, workflow,
-and artifact before crediting Sentinel as test-runnable.
+The exact application checkpoint is
+`803546c4b9183a3cab78810d7ee9a8e5c23a3bda` on existing draft, unmerged PR
+#194. Aqua Regression run `31032404511` passed. Complete Android/visual run
+`31032404671` passed the full render, Java/resource compilation, release APK,
+package/signature/embedded-interface verification, clean Android installation,
+launcher proof, checksum generation, and artifact upload. Artifact
+`8941616687`, `AquaSentinelOS-v0.8.0-Live-Aqua-Neural-Command-Widget-Test`, has
+SHA-256
+`713a4152b1a654bab50b5822b1f3407c6e8ccee7af16c20d2a0018629465be41`.
+This credits Aqua Sentinel as 1/6 test-runnable.
+
+The installer intentionally contains no OpenAI secret and this test build did
+not inject a production `AQUA_GATEWAY_URL`. Its Android speech-recognition/TTS
+fallback remains usable for local navigation. The full
+`gpt-realtime-2.1`/`gpt-4o-transcribe` path is implemented behind the protected
+Sentinel Worker, but no production Worker deployment or real protected voice
+round trip is claimed. Exact next action for live AI is to deploy that Worker,
+bind the existing protected server key and owner/session configuration, build
+with the verified gateway URL, and prove a real device voice round trip without
+changing the approved interface.
 
 ### Aqua identity owner trial
 
