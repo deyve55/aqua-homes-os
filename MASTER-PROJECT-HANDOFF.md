@@ -505,8 +505,10 @@ AquaCam application PR #12 remains untouched at
 `4454612ec92141eecc692a2156e9fcf8ee5099bb`. The dedicated backend PR #1 now
 contains an additive server-only `@deyve55/aqua-integration-sdk@1.10.0` seam at
 implementation checkpoint `d04fb88cfc03934d4198a83ae232f9ded00faad2`, with
-continuity head `e2c764d95f13ad2f909e10fa3b3404168a3a027e`. Local adapter conformance is
-5/5. Authenticated restricted-package CI, adapter credentials, Cloudflare
+continuity head `dd490fd219530145af1e31bf95b83a0a651fa58e`. Preservation checkpoint
+`dc33c3def994c41d618f89390ce29082a923cfba` restored every untouched backend
+blob to its exact parent identity. Local adapter conformance is 5/5.
+Authenticated restricted-package CI, adapter credentials, Cloudflare
 deployment, and a live gateway replay proof remain pending.
 
 ### Still blocked or intentionally untouched
