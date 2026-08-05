@@ -7,6 +7,16 @@
 **Draft Sentinel PR:** `#194`  
 **State:** Backend takeover ready; do not restart, redesign, or claim production-live status
 
+> **Voice/model continuation:** Read
+> `00-START-HERE/AQUA-AI-REFERENCE-CANDIDATE-2026-08-05.md` before changing any
+> Aqua voice, personality, transcription, model routing, or cross-app handoff.
+> Satellite-local Aqua is strict `gpt-realtime-2.1-mini` by default and uses
+> full `gpt-realtime-2.1` only for genuinely hard or consequential work. Aqua
+> Sentinel voice remains full. A Sentinel-origin conversation retains full
+> capability inside a satellite so the user never experiences a model/persona
+> downgrade. Exact transcription is `gpt-4o-transcribe`. The reference
+> candidate is not canonical until Dave explicitly selects it.
+
 ## 0. New-chat directive
 
 You are taking over the shared backend and SDK rollout for Aqua Sentinel OS.

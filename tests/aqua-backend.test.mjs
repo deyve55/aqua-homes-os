@@ -60,6 +60,14 @@ test('Aqua model policy keeps satellites economical and Sentinel voice full capa
     'gpt-realtime-2.1',
   );
   assert.equal(
+    selectAquaRealtimeModel({
+      appId: 'aqua-draw',
+      capability: 'simple',
+      conversationOrigin: 'aqua-sentinel-os',
+    }),
+    'gpt-realtime-2.1',
+  );
+  assert.equal(
     selectAquaRealtimeModel({ appId: 'aqua-sentinel-os', capability: 'simple' }),
     'gpt-realtime-2.1',
   );
@@ -72,6 +80,7 @@ test('Aqua model policy keeps satellites economical and Sentinel voice full capa
     satellites: {
       default: 'gpt-realtime-2.1-mini',
       escalateTo: 'gpt-realtime-2.1',
+      sentinelHandoff: 'gpt-realtime-2.1',
     },
     transcription: 'gpt-4o-transcribe',
     confirmationRequiredFor: [

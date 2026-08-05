@@ -543,6 +543,9 @@ seam:
   `gpt-realtime-2.1-mini` without downgrading the active Sentinel voice session;
 - satellite apps default to `gpt-realtime-2.1-mini` and escalate to full
   `gpt-realtime-2.1` for complex, consequential, or tool-backed work;
+- an active Sentinel conversation retains full `gpt-realtime-2.1` when it
+  opens, navigates, or queries a satellite; the satellite remains a tool/data
+  source and cannot replace Sentinel Aqua with a new Mini persona;
 - every Aqua speech path uses exact `gpt-4o-transcribe` as the transcription
   contract;
 - the production OpenAI key remains server-side while the authenticated Android
@@ -564,3 +567,14 @@ Exact next action: publish this checkpoint to the existing draft PR #194 with
 the `[build-test-apk]` marker, require the full CI/Android/visual workflow to
 pass, preserve the draft/unmerged state, and record the exact commit, workflow,
 and artifact before crediting Sentinel as test-runnable.
+
+### Aqua identity owner trial
+
+`00-START-HERE/AQUA-AI-REFERENCE-CANDIDATE-2026-08-05.md` records
+`AQUA-REFERENCE-CANDIDATE-01`, distilled from the current preferred AquaDraw
+and AquaCam behavior. It is wired into Sentinel's Realtime instructions for an
+owner trial but is explicitly not canonical. The Aqua AI / Aqua Brain identity
+repository must not be changed until Dave selects the winning Aqua. After that
+choice, the approved identity and each new capability must be promoted through
+one versioned shared contract and verified app by app rather than copied by
+hand.

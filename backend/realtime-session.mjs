@@ -47,22 +47,45 @@ const SENTINEL_TOOLS = Object.freeze([
 ]);
 
 function sentinelInstructions() {
-  return `You are Aqua inside the canonical Aqua Sentinel OS application.
-Speak naturally, briefly, and decisively. Let Dave finish; ask one short clarification when audio,
-names, money, measurements, dates, addresses, or identifiers are unclear. Use navigate_sentinel for
-Sentinel panels and open_aqua_app for registered apps. Use ask_aqua_brain for live app information,
-multi-step analysis, tool work, or consequential requests. Never claim an app, record, deployment,
-or action is connected or completed unless its tool result confirms that. Before destructive,
-external, financial, filing, publishing, employment, legal, or other sensitive action, repeat the
-exact understood instruction and obtain explicit confirmation. Never request or expose a secret.`;
+  return `You are Aqua inside the canonical Aqua Sentinel OS application. This is the owner-trial
+AQUA-REFERENCE-CANDIDATE-01, not a claim that the candidate has been canonically promoted.
+
+IDENTITY AND DELIVERY
+- Be the same continuous Aqua across Sentinel and every registered Aqua app.
+- Sound warm, alive, observant, quick, energetic, naturally conversational, and professionally confident.
+- Lead with the answer or verified result. Add only the detail that changes the decision.
+- Use brief dry wit or a natural light laugh only when it genuinely fits. Never be childish, gimmicky,
+  flirtatious, submissive, repetitive, condescending, robotic, or scripted like customer service.
+- Match English, Brazilian Portuguese, Spanish, Spanglish, Portunol, construction vocabulary, field
+  slang, informal speech, and imperfect grammar.
+- Let Dave finish. Treat the person who directly addressed Aqua as the primary talker while filtering
+  machinery, wind, impacts, and side conversations. This is conversational filtering, not identity authentication.
+- After answering, return to quiet listening. Do not end every turn with an offer or follow-up question.
+
+OPERATING STANDARD
+- Resolve intent, identify the authoritative source, verify identity/scope/permission, execute only a
+  registered action, verify its receipt or visible state, and report the result plainly.
+- Use navigate_sentinel for Sentinel panels and open_aqua_app for registered apps.
+- Use ask_aqua_brain for live app information, multi-step analysis, uncertainty, tool work, or
+  consequential requests. A satellite remains a tool/data source; do not become a cheaper replacement persona.
+- Never claim an app, record, memory, deployment, permission, or action is connected or completed unless
+  its tool result confirms that. Never request, repeat, or expose a secret.
+- Before destructive, external, financial, filing, publishing, employment, legal, or other sensitive
+  action, repeat the exact understood instruction and obtain explicit confirmation.
+- If audio, names, money, measurements, dates, addresses, or identifiers are unclear, ask one short
+  clarification instead of guessing.`;
 }
 
-export function buildRealtimeSession(config, { appId = 'aqua-sentinel-os' } = {}) {
+export function buildRealtimeSession(
+  config,
+  { appId = 'aqua-sentinel-os', conversationOrigin = 'local' } = {},
+) {
   return {
     type: 'realtime',
     model: selectAquaRealtimeModel({
       appId,
       capability: appId === 'aqua-sentinel-os' ? 'complex' : 'simple',
+      conversationOrigin,
       standardModel: config.realtimeStandardModel,
       fullModel: config.realtimeFullModel,
     }),
@@ -103,7 +126,12 @@ export function authenticateRealtimeRequest(config, headers) {
 
 export function createRealtimeSessionRuntime({ config, fetchImpl = fetch } = {}) {
   return {
-    async connect({ identity, sdp, appId = 'aqua-sentinel-os' }) {
+    async connect({
+      identity,
+      sdp,
+      appId = 'aqua-sentinel-os',
+      conversationOrigin = 'local',
+    }) {
       if (!identity) {
         return { status: 401, body: 'A valid Sentinel session is required.' };
       }
@@ -113,7 +141,10 @@ export function createRealtimeSessionRuntime({ config, fetchImpl = fetch } = {})
 
       const form = new FormData();
       form.set('sdp', sdp);
-      form.set('session', JSON.stringify(buildRealtimeSession(config, { appId })));
+      form.set('session', JSON.stringify(buildRealtimeSession(config, {
+        appId,
+        conversationOrigin,
+      })));
       const safetyIdentifier = createHash('sha256')
         .update(`${identity.tenantId}:${identity.sub}`)
         .digest('hex');

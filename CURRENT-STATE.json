@@ -295,6 +295,7 @@
     "model_policy": {
       "satellite_default": "gpt-realtime-2.1-mini",
       "satellite_escalation": "gpt-realtime-2.1",
+      "satellite_sentinel_handoff": "gpt-realtime-2.1",
       "sentinel_voice_default": "gpt-realtime-2.1",
       "sentinel_isolated_simple_text_allowed": "gpt-realtime-2.1-mini",
       "transcription": "gpt-4o-transcribe"
@@ -309,6 +310,17 @@
     "deployed": false,
     "live_voice_test": "NOT_RUN",
     "truth_boundary": "The canonical source and protected Realtime path are implemented and locally verified. Android compilation, APK installation, production Worker deployment, and a real device voice round trip are not yet claimed."
+  },
+  "aqua_ai_reference_candidate": {
+    "candidate_id": "AQUA-REFERENCE-CANDIDATE-01",
+    "status": "OWNER_TRIAL_NOT_CANONICAL",
+    "startup_file": "00-START-HERE/AQUA-AI-REFERENCE-CANDIDATE-2026-08-05.md",
+    "source_references": {
+      "aqua_draw": "94c18e4c26a18886b228bbf8f4407e8c03863533",
+      "aqua_cam": "4454612ec92141eecc692a2156e9fcf8ee5099bb"
+    },
+    "canonical_aqua_ai_repository_modified": false,
+    "promotion_requires_owner_choice": true
   },
   "secrets": {
     "api_keys_committed": false,

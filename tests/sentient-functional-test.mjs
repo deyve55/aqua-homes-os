@@ -147,6 +147,22 @@ test("voice models are server-selected and the ecosystem routing contract is exa
   assert.match(realtime, /semantic_vad/);
   assert.match(realtime, /eagerness: 'low'/);
   assert.doesNotMatch(realtime, /gpt-4o-mini-transcribe/);
+  assert.match(realtime, /AQUA-REFERENCE-CANDIDATE-01/);
+  assert.match(realtime, /warm, alive, observant, quick, energetic/);
+});
+
+test("startup continuity records the owner-trial Aqua reference without promoting it", async () => {
+  const [candidate, takeover] = await Promise.all([
+    read("00-START-HERE/AQUA-AI-REFERENCE-CANDIDATE-2026-08-05.md"),
+    read("00-START-HERE/AQUA-SENTINEL-BACKEND-ECOSYSTEM-TAKEOVER-2026-08-05.md"),
+  ]);
+  assert.match(candidate, /OWNER TRIAL — NOT CANONICAL/);
+  assert.match(candidate, /resolve what Dave meant/);
+  assert.match(candidate, /gpt-realtime-2\.1-mini/);
+  assert.match(candidate, /gpt-4o-transcribe/);
+  assert.match(candidate, /Aqua AI \/ Aqua Brain/);
+  assert.match(takeover, /AQUA-AI-REFERENCE-CANDIDATE-2026-08-05\.md/);
+  assert.match(takeover, /not canonical/i);
 });
 
 test("an unavailable gateway cannot block truthful Standalone startup", async () => {
