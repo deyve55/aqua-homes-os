@@ -5,6 +5,10 @@ import { ProjectionStore } from './projection-store.mjs';
 import { createAquaAgentRuntime } from './aqua-agent.mjs';
 import { createReceiptIntelligenceRuntime } from './receipt-intelligence.mjs';
 import { createGateway } from './gateway.mjs';
+import {
+  relayFileCabinetDelivery,
+  SENTINEL_FILE_CABINET_PATH,
+} from './file-cabinet-relay.mjs';
 
 const STATE_KEY = 'aqua-gateway-state-v1';
 const AUTH_WINDOW_MS = 15 * 60 * 1_000;
@@ -196,10 +200,13 @@ export class AquaGatewayDurableObject {
   }
 }
 
-export function createWorkerHandler() {
+export function createWorkerHandler({ fetchImpl = fetch } = {}) {
   return {
     async fetch(request, env) {
       const url = new URL(request.url);
+      if (request.method === 'POST' && url.pathname === SENTINEL_FILE_CABINET_PATH) {
+        return relayFileCabinetDelivery(request, env, { fetchImpl });
+      }
       if (!['/health', '/gateway'].includes(url.pathname)) {
         return json({ error: 'Not found.' }, 404);
       }
