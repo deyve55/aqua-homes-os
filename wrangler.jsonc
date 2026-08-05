@@ -8,6 +8,9 @@
   "observability": {
     "enabled": true
   },
+  "vars": {
+    "AQUA_PULSE_COMMAND_ENDPOINT": "https://aqua-pulse.deyve-docarm-5626.chatgpt.site/api/sentinel/v1/commands"
+  },
   "durable_objects": {
     "bindings": [
       {
