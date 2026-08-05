@@ -9,6 +9,34 @@ widget_provider="$package/com.aquahomes.sentientos.AquaCommandWidget"
 
 resolve_home_launcher_package() {
   local component=""
+  local focused_package=""
+
+  adb shell input keyevent KEYCODE_HOME
+  for attempt in $(seq 1 20); do
+    focused_package="$(
+      {
+        adb shell dumpsys window 2>/dev/null || true
+        adb shell dumpsys activity activities 2>/dev/null || true
+      } | tr -d '\r' | python3 -c '
+import re
+import sys
+
+for line in sys.stdin:
+    if not re.search(r"mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity|ResumedActivity", line):
+        continue
+    match = re.search(r"([A-Za-z0-9_.]+)/[A-Za-z0-9_.$]+", line)
+    if match:
+        print(match.group(1))
+        break
+'
+    )"
+    if [[ -n "$focused_package" && "$focused_package" != "$package" ]]; then
+      printf '%s\n' "$focused_package"
+      return 0
+    fi
+    sleep 1
+  done
+
   component="$(
     adb shell cmd package resolve-activity --brief \
       -a android.intent.action.MAIN \
@@ -17,7 +45,7 @@ resolve_home_launcher_package() {
       | tail -n 1
   )"
   if [[ "$component" != */* ]]; then
-    echo "Android did not resolve an active HOME launcher component: $component" >&2
+    echo "Android did not resolve a focused or declared HOME launcher component: $component" >&2
     return 1
   fi
   printf '%s\n' "${component%%/*}"
