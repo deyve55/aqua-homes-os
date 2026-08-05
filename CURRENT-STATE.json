@@ -1,6 +1,6 @@
 {
   "schema_version": "2.1.0",
-  "updated_at": "2026-08-05T09:10:51-04:00",
+  "updated_at": "2026-08-05T10:13:16-04:00",
   "timezone": "America/New_York",
   "owner": "Dave (Deyve)",
   "company": "Aqua Software Inc.",
@@ -17,6 +17,7 @@
     },
     "observed_head_before_handoff_commit": "c1545cf3727adeb0815d11c571b72b3f235dc481",
     "observed_head_message": "Align Sentinel Home proof with presentation build",
+    "backend_integration_checkpoint": "7ef4a8096b3aaf172643fc64022382d982aa9665",
     "main_changed_by_this_handoff": false,
     "takeover_rule": "Fetch and verify the current PR head before editing; never overwrite later commits."
   },
@@ -94,7 +95,7 @@
     "package_name": "@deyve55/aqua-integration-sdk",
     "version": "1.10.0",
     "registry": "restricted GitHub Packages",
-    "validated_source_commit": "08e39b182c7459521f477955125882b692f5ca7b",
+    "validated_source_commit": "c63173eb55c61e894f831c2d5658a125fcc7879d",
     "workflow_run": {
       "number": 18,
       "id": 30709137707,
@@ -218,6 +219,7 @@
     },
     "traffic_cop": {
       "worker": "aqua-sentinel-traffic-cop",
+      "implementation_commit": "7ef4a8096b3aaf172643fc64022382d982aa9665",
       "wire_schema_reconciled": true,
       "strict_source_target_verification": true,
       "tenant_allowlist_required": true,
@@ -226,15 +228,59 @@
       "local_worker_tests": "8/8 passed",
       "full_repository_tests": "50/50 passed",
       "wrangler_dry_run": "passed",
+      "github_regression_run": {
+        "id": 31009160665,
+        "conclusion": "success"
+      },
+      "github_operating_surfaces_run": {
+        "id": 31009159290,
+        "conclusion": "success"
+      },
       "deployed": false,
       "live_external_two_delivery_test": "NOT_RUN",
       "deployment_blocker": "No Cloudflare credential is configured in the CLI environment and the Cloudflare dashboard held the cloud browser in a human-verification loop."
     },
     "aqua_pulse": {
-      "prepared_receiver_at_observed_pr_head": "NOT_WIRE_COMPATIBLE_WITH_CANONICAL_1_1_0",
-      "runtime_adoption": "PENDING"
+      "github_backend_checkpoint": "83f97981a5029bc1ec21f31e6e59ba51e6bd1c1a",
+      "github_ci_run": 31010476892,
+      "github_ci_conclusion": "success",
+      "github_branch_warning": "The PR branch is older v0.1.5 and must not overwrite the newer v0.1.6 Sites source.",
+      "active_sites_source_commit": "afa442f6ca88f9dfe016e57cf17637c673e1edaf",
+      "continuity_commit": "4fd9ee452c37ac650d853710f061f3961eb3b787",
+      "site_version": 24,
+      "deployment_id": "appgdep_6a733e34fce881918e9ebdfb199c0f39",
+      "deployment_environment_revision": 3,
+      "deployment_status": "succeeded",
+      "direct_authenticated_production_test": "health 200; first 201 accepted_and_saved; identical retry 200 duplicate_ignored; acknowledgement identity and time stable",
+      "traffic_cop_crossing": "NOT_RUN"
     },
-    "truth_boundary": "Local source conformance and dry-run do not prove a deployment or a real Traffic Cop-to-AquaPulse delivery."
+    "aqua_crm": {
+      "pull_request": 2,
+      "observed_head": "8733ccc1c3ee76da9306a365c387a2955797245c",
+      "projection_sdk": "@deyve55/aqua-integration-sdk@1.10.0",
+      "package_access_gate": "BLOCKED_403_READ_PACKAGE",
+      "live_provider_connectors": false
+    },
+    "aqua_cam": {
+      "application_repository": "deyve55/aqua-homes-cam",
+      "application_pull_request": 12,
+      "application_head": "4454612ec92141eecc692a2156e9fcf8ee5099bb",
+      "application_modified": false,
+      "backend_repository": "deyve55/aqua-homes-cam-backend",
+      "backend_pull_request": 1,
+      "backend_implementation_checkpoint": "d04fb88cfc03934d4198a83ae232f9ded00faad2",
+      "backend_continuity_head": "e2c764d95f13ad2f909e10fa3b3404168a3a027e",
+      "projection_sdk": "@deyve55/aqua-integration-sdk@1.10.0",
+      "adapter_id": "cam",
+      "local_adapter_conformance": "5/5 passed",
+      "authenticated_package_ci": "PENDING",
+      "deployed": false
+    },
+    "aqua_posts": {
+      "exact_repository": "UNRESOLVED",
+      "touched": false
+    },
+    "truth_boundary": "AquaPulse's direct production receiver proof does not prove a Traffic Cop crossing. Traffic Cop remains undeployed, CRM package access remains blocked, AquaCam authenticated package CI/deployment remain pending, and Posts remains untouched until its exact repository is verified."
   },
   "secrets": {
     "api_keys_committed": false,
