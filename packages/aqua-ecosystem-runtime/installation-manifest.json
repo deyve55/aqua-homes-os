@@ -7,6 +7,13 @@
     "requiredRuntime": "native_foreground_realtime_service",
     "installationState": "pending_signed_build"
   },
+  "currentWeekGate": [
+    "aqua-sentinel-os",
+    "aqua-pulse",
+    "aqua-draw",
+    "aqua-cam",
+    "aqua-timesheet"
+  ],
   "firstWave": [
     {
       "appId": "aqua-draw",
@@ -40,17 +47,20 @@
   "financialDependencies": [
     {
       "appId": "aqua-crm",
-      "requirement": "tenant-scoped client and job projection for name/address resolution",
+      "requirement": "later tenant-scoped enrichment of provisional AquaPulse project labels",
+      "integrationPhase": "after-first-wave",
       "installationState": "pending_app_build"
     },
     {
       "appId": "aqua-receipts",
-      "requirement": "idempotent captured/unreconciled receipt intake and acknowledgement",
+      "requirement": "later receipt-proof intake and acknowledgement",
+      "integrationPhase": "after-first-wave",
       "installationState": "pending_app_build"
     },
     {
       "appId": "aqua-books",
       "requirement": "later authoritative reconciliation; never implied by capture",
+      "integrationPhase": "after-first-wave",
       "installationState": "pending_app_build"
     }
   ],

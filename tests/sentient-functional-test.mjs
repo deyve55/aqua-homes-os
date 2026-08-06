@@ -27,7 +27,7 @@ test("every Aqua app has one pinned mandatory diagnostics installation target", 
   assert.ok(installation.apps.slice(1).every((app) => app.verification === "pending_app_build"));
 });
 
-test("the first-wave ecosystem gate requires real SDK acknowledgement and financial dependencies", async () => {
+test("the first-wave ecosystem gate keeps CRM out of the Widget to File Cabinet to Pulse path", async () => {
   const [manifest, scenarios, readme] = await Promise.all([
     read("packages/aqua-ecosystem-runtime/installation-manifest.json").then(JSON.parse),
     read("packages/aqua-ecosystem-runtime/acceptance-scenarios.json").then(JSON.parse),
@@ -40,14 +40,20 @@ test("the first-wave ecosystem gate requires real SDK acknowledgement and financ
     ["aqua-draw", "aqua-pulse", "aqua-cam", "aqua-timesheet"],
   );
   assert.ok(manifest.firstWave.every((app) => app.installationState === "pending_app_build"));
+  assert.deepEqual(manifest.currentWeekGate, [
+    "aqua-sentinel-os", "aqua-pulse", "aqua-draw", "aqua-cam", "aqua-timesheet",
+  ]);
   assert.deepEqual(
     manifest.financialDependencies.map((app) => app.appId),
     ["aqua-crm", "aqua-receipts", "aqua-books"],
   );
+  assert.ok(manifest.financialDependencies.every((app) => app.integrationPhase === "after-first-wave"));
   assert.match(readme, /Opening an APK is not integration/);
   assert.match(readme, /single Sentinel-owned session/);
+  assert.match(readme, /Widget → Sentinel File Cabinet → AquaPulse/);
   assert.ok(scenarios.scenarios.some((scenario) => scenario.id === "continuous-session-first-wave"));
-  assert.ok(scenarios.scenarios.some((scenario) => scenario.id === "quick-expense-single-customer"));
+  assert.ok(scenarios.scenarios.some((scenario) => scenario.id === "quick-expense-file-cabinet-to-pulse"));
+  assert.match(JSON.stringify(scenarios), /without calling CRM/);
   assert.match(JSON.stringify(scenarios), /no Books actual is claimed/);
 });
 

@@ -11,6 +11,6 @@ Opening an APK is not integration. An app is connected only after all of these a
 5. Every navigation, query, or action returns a correlated result with a truthful state.
 6. `return_to_sentinel` and `exit_app` are registered and device-tested.
 
-The first-wave APKs are AquaDraw, AquaPulse, AquaCam, and Aqua Timesheet. CRM projection and Receipts intake are required dependencies for fast expense capture. Aqua Books remains the accounting authority; a Sentinel capture is always `Unreconciled` until Books returns a verified downstream record.
+The first-wave APKs are AquaDraw, AquaPulse, AquaCam, and Aqua Timesheet, with Sentinel as the session owner. The immediate financial path is Widget → Sentinel File Cabinet → AquaPulse. CRM enrichment, Receipts proof intake, and Books reconciliation are later integrations and do not block the first-wave quick capture. A Sentinel capture is always `Unreconciled` until Books returns a verified downstream record.
 
 Installation states in the manifest are evidence states, not rollout choices. `pending_app_build` means mandatory work remains in that app repository.

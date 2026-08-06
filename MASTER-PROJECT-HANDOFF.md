@@ -634,3 +634,46 @@ deploy the protected Worker without exposing the existing OpenAI key, inject
 its verified `/gateway` URL into the v0.8.1 build, then require visual, Java,
 package, signature, clean-install/launch, and protected Realtime
 voice/navigation proof before delivery.
+
+## 18. Widget → Sentinel File Cabinet → AquaPulse checkpoint — 2026-08-06
+
+The owner removed Aqua CRM from the first-wave critical path. The required
+financial route is now exactly `Widget → Sentinel File Cabinet → AquaPulse`.
+CRM will enrich provisional project labels later, after Sentinel, AquaPulse,
+AquaDraw, AquaCam, and Aqua Timesheet are working. No CRM repository or CRM
+adapter was changed in this checkpoint.
+
+Sentinel now preserves a spoken money command in its encrypted on-device File
+Cabinet before any network work. The backend builds one stable,
+tenant-scoped `capture.provisional_financial_event` from that File Cabinet
+capture ID and sends it to AquaPulse using server-held credentials. AquaPulse
+must return an exact `accepted_and_saved` or replay `duplicate_ignored`
+acknowledgement before Sentinel may report `Confirmed`. Without that receipt,
+the truthful state remains `Queued` and the local File Cabinet record is
+retained.
+
+The owner example `$500 for Carly at Home Depot` is represented as a $500.00
+money-out event, vendor `Home Depot`, and provisional project label `Carly`.
+It does not call CRM, ask CRM for an address, or claim an AquaBooks actual.
+Later CRM integration may enrich or disambiguate the provisional label without
+changing the original event/idempotency identity.
+
+The Sentinel source also reconciles the stale owner-auth contract: Android and
+the backend both use `activationCode`; the backend no longer expects a field
+named `password`. No authorization code or credential value is committed.
+
+Local evidence at this checkpoint:
+
+- Sentinel's full repository suite passes 64/64 after the CRM-scope
+  correction;
+- the isolated AquaPulse D1 receiver tests pass 4/4, including first save,
+  stable duplicate acknowledgement, conflicting idempotency reuse, tenant,
+  route, and expiry rejection;
+- no UI redesign was introduced; and
+- neither repository change is published, deployed, or device-verified yet.
+
+Exact next action: rerun Sentinel's full suite, publish the scoped Sentinel and
+AquaPulse draft-PR commits, let repository CI rebuild both sources, deploy the
+AquaPulse backend only through its protected release workflow, run the exact
+two-delivery test, then build the matched Sentinel/AquaPulse APK set for Dave's
+physical test. CRM remains intentionally deferred.

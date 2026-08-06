@@ -13,6 +13,7 @@ import {
   relayFileCabinetDelivery,
   SENTINEL_FILE_CABINET_PATH,
 } from './file-cabinet-relay.mjs';
+import { createAquaPulseClient } from './aqua-pulse-client.mjs';
 
 const STATE_KEY = 'aqua-gateway-state-v1';
 const AUTH_WINDOW_MS = 15 * 60 * 1_000;
@@ -59,7 +60,8 @@ export function loadWorkerConfig(env) {
     sessionSecret: env.AQUA_SESSION_SECRET ?? '',
     sessionTtlSeconds: Number.parseInt(env.AQUA_SESSION_TTL_SECONDS ?? '900', 10),
     ownerEmail: env.AQUA_OWNER_EMAIL ?? '',
-    ownerPasswordHash: env.AQUA_OWNER_PASSWORD_HASH ?? '',
+    ownerActivationCodeHash:
+      env.AQUA_OWNER_ACTIVATION_CODE_HASH ?? env.AQUA_OWNER_PASSWORD_HASH ?? '',
     adapterCredentials: parseAdapterCredentials(env.AQUA_ADAPTER_CREDENTIALS_JSON),
     maxBodyBytes: Number.parseInt(env.AQUA_MAX_BODY_BYTES ?? '7500000', 10),
     receiptMaxImageBytes: Number.parseInt(
@@ -125,7 +127,12 @@ function createRuntime(env, snapshot = {}) {
       : undefined,
   );
   const store = new ProjectionStore(snapshot.store ?? []);
-  const agentRuntime = createAquaAgentRuntime({ config, registry, store });
+  const agentRuntime = createAquaAgentRuntime({
+    config,
+    registry,
+    store,
+    pulseClient: createAquaPulseClient(env),
+  });
   const receiptRuntime = createReceiptIntelligenceRuntime({ config });
   const realtimeRuntime = createRealtimeSessionRuntime({ config });
   return {

@@ -65,7 +65,13 @@ function recordToMaterialization(record) {
   };
 }
 
-export function createAquaAgentRuntime({ config, registry, store, runner = run }) {
+export function createAquaAgentRuntime({
+  config,
+  registry,
+  store,
+  runner = run,
+  pulseClient = null,
+}) {
   const routeCapability = tool({
     name: 'route_aqua_capability',
     description:
@@ -227,10 +233,30 @@ export function createAquaAgentRuntime({ config, registry, store, runner = run }
         ),
       });
       if (quickExpense) {
+        let pulseDelivery = {
+          status: 'not_attempted',
+          acknowledgementId: '',
+          acknowledgedAt: '',
+        };
+        if (['provisional', 'single'].includes(quickExpense.resolution) && pulseClient) {
+          pulseDelivery = await pulseClient.deliverQuickExpense({
+            identity,
+            capture: quickExpense,
+            uiContext: params.uiContext,
+          });
+        }
+        const pulseConfirmed = ['accepted_and_saved', 'duplicate_ignored']
+          .includes(pulseDelivery.status);
         const amount = formatQuickExpenseAmount(quickExpense);
         const selected = quickExpense.selected;
         const reply = quickExpense.resolution === 'single'
-          ? `${amount} at ${quickExpense.merchant} is captured for ${selected.name}${selected.address ? ` at ${selected.address}` : ''}. It is unreconciled, not a Books actual yet.`
+          ? pulseConfirmed
+            ? `${amount} at ${quickExpense.merchant} is confirmed in AquaPulse for ${selected.name}${selected.address ? ` at ${selected.address}` : ''}. It is unreconciled, not a Books actual yet.`
+            : `${amount} at ${quickExpense.merchant} is safely captured for ${selected.name}${selected.address ? ` at ${selected.address}` : ''} and queued for AquaPulse. It is unreconciled, not a Books actual yet.`
+          : quickExpense.resolution === 'provisional'
+            ? pulseConfirmed
+              ? `${amount} at ${quickExpense.merchant} is confirmed in AquaPulse for ${quickExpense.customerQuery}. The project label is provisional until CRM is connected later, and it is not a Books actual yet.`
+              : `${amount} at ${quickExpense.merchant} is safely captured in the Sentinel File Cabinet for ${quickExpense.customerQuery} and queued for AquaPulse.`
           : quickExpense.resolution === 'multiple'
             ? `I captured ${amount} at ${quickExpense.merchant}. I found more than one ${quickExpense.customerQuery}; which address: ${quickExpense.candidates.map((item) => item.address || item.subtitle || item.name).join(' or ')}?`
             : quickExpense.crmConnected
@@ -241,13 +267,22 @@ export function createAquaAgentRuntime({ config, registry, store, runner = run }
           action: { type: 'none', target: '', app: '' },
           materialization: { ...emptyMaterialization, fields: [], actions: [] },
           receipt: {
-            status: quickExpense.resolution === 'single' ? 'Queued' : 'Needs Attention',
-            correlationId,
-            sources: ['crm', 'receipts'],
+            status: pulseConfirmed
+              ? 'Confirmed'
+              : ['provisional', 'single'].includes(quickExpense.resolution)
+                ? 'Queued'
+                : 'Needs Attention',
+            correlationId: pulseDelivery.correlationId || correlationId,
+            sources: ['file-cabinet', 'pulse'],
             requiresConfirmation: false,
             intentId: '',
             confirmationToken: '',
             quickExpense,
+            pulseDelivery: {
+              status: pulseDelivery.status,
+              acknowledgementId: pulseDelivery.acknowledgementId || '',
+              acknowledgedAt: pulseDelivery.acknowledgedAt || '',
+            },
           },
         });
       }

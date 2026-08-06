@@ -21,20 +21,21 @@
       ]
     },
     {
-      "id": "quick-expense-single-customer",
+      "id": "quick-expense-file-cabinet-to-pulse",
       "command": "$500 for Carly at Home Depot",
       "expected": [
-        "durable local capture before network work",
+        "durable Sentinel File Cabinet capture before network work",
         "amountMinor equals 50000",
         "merchant equals Home Depot",
-        "one CRM job binds without an address question",
+        "Carly is preserved as a provisional project label without calling CRM",
         "state remains Unreconciled",
-        "idempotent Receipts delivery is queued or acknowledged",
+        "idempotent AquaPulse delivery is queued or acknowledged",
         "no Books actual is claimed"
       ]
     },
     {
-      "id": "quick-expense-ambiguous-customer",
+      "id": "later-crm-enrichment-ambiguous-customer",
+      "releasePhase": "after-first-wave",
       "command": "$500 for Carly at Home Depot",
       "fixture": "two tenant-scoped Carly jobs with different addresses",
       "expected": [
@@ -48,7 +49,7 @@
       "id": "quick-expense-offline",
       "expected": [
         "capture remains encrypted on device",
-        "CRM resolution is Needs Attention",
+        "Sentinel File Cabinet retains the provisional project label",
         "retry reuses the same capture and idempotency identifiers",
         "no duplicate ledger entry"
       ]

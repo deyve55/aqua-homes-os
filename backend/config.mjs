@@ -59,8 +59,12 @@ export function loadConfig(overrides = {}) {
     sessionTtlSeconds:
       overrides.sessionTtlSeconds ?? integer('AQUA_SESSION_TTL_SECONDS', 900),
     ownerEmail: overrides.ownerEmail ?? process.env.AQUA_OWNER_EMAIL ?? '',
-    ownerPasswordHash:
-      overrides.ownerPasswordHash ?? process.env.AQUA_OWNER_PASSWORD_HASH ?? '',
+    ownerActivationCodeHash:
+      overrides.ownerActivationCodeHash ??
+      overrides.ownerPasswordHash ??
+      process.env.AQUA_OWNER_ACTIVATION_CODE_HASH ??
+      process.env.AQUA_OWNER_PASSWORD_HASH ??
+      '',
     developmentAuth,
     adapterCredentials: Object.freeze({
       ...adapterCredentials(overrides.adapterCredentials),
@@ -77,8 +81,8 @@ export function validateRuntimeConfig(config) {
   if (!config.openAiApiKey) missing.push('OPENAI_API_KEY');
   if (!config.sessionSecret) missing.push('AQUA_SESSION_SECRET');
   if (!config.developmentAuth && !config.ownerEmail) missing.push('AQUA_OWNER_EMAIL');
-  if (!config.developmentAuth && !config.ownerPasswordHash) {
-    missing.push('AQUA_OWNER_PASSWORD_HASH');
+  if (!config.developmentAuth && !config.ownerActivationCodeHash) {
+    missing.push('AQUA_OWNER_ACTIVATION_CODE_HASH');
   }
   return missing;
 }

@@ -1317,13 +1317,14 @@ public class MainActivity extends Activity {
                 }
                 JSONObject params = new JSONObject()
                     .put("text", text)
-                    .put("selectedApp", "Aqua Receipts")
+                    .put("selectedApp", "AquaPulse")
                     .put(
                         "uiContext",
                         new JSONObject()
                             .put("surface", "direct-aqua")
                             .put("captureType", "quick-expense")
                             .put("localExpenseCaptureId", filingItemId)
+                            .put("localExpenseCapturedAt", localCapture.optLong("createdAt", 0L))
                             .put("localEvidenceRetained", true)
                     )
                     .put("conversationId", installationId() + "-primary")
@@ -1497,8 +1498,8 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
-        public void signIn(String email, String password) {
-            signInOwner(email, password);
+        public void signIn(String email, String activationCode) {
+            signInOwner(email, activationCode);
         }
 
         @JavascriptInterface

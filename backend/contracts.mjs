@@ -28,7 +28,7 @@ export const JsonRpcRequestSchema = z.object({
 
 export const SessionCreateParamsSchema = z.object({
   email: z.string().email().max(254),
-  password: z.string().min(1).max(1024),
+  activationCode: z.string().min(1).max(1024),
   deviceId: z.string().min(1).max(200),
 });
 
@@ -305,7 +305,7 @@ export const AquaAgentOutputSchema = z.object({
       currencyCode: z.literal('USD'),
       merchant: z.string(),
       customerQuery: z.string(),
-      resolution: z.enum(['single', 'multiple', 'unresolved']),
+      resolution: z.enum(['provisional', 'single', 'multiple', 'unresolved']),
       selected: z.object({
         sourceRecordId: z.string(),
         kind: z.enum(['job', 'client']),
@@ -322,6 +322,17 @@ export const AquaAgentOutputSchema = z.object({
       })),
       crmConnected: z.boolean(),
       reconciliationState: z.literal('Unreconciled'),
+    }).optional(),
+    pulseDelivery: z.object({
+      status: z.enum([
+        'accepted_and_saved',
+        'duplicate_ignored',
+        'queued',
+        'not_configured',
+        'not_attempted',
+      ]),
+      acknowledgementId: z.string(),
+      acknowledgedAt: z.string(),
     }).optional(),
   }),
 });

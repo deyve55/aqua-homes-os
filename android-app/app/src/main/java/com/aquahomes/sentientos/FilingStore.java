@@ -221,6 +221,14 @@ final class FilingStore {
             JSONObject quickExpense = receipt == null
                 ? null
                 : receipt.optJSONObject("quickExpense");
+            JSONObject pulseDelivery = receipt == null
+                ? null
+                : receipt.optJSONObject("pulseDelivery");
+            String pulseStatus = pulseDelivery == null
+                ? "not_attempted"
+                : pulseDelivery.optString("status", "not_attempted");
+            boolean pulseConfirmed = "accepted_and_saved".equals(pulseStatus)
+                || "duplicate_ignored".equals(pulseStatus);
             boolean requiresConfirmation = receipt != null
                 && receipt.optBoolean("requiresConfirmation", false);
             for (int index = 0; index < items.length(); index++) {
@@ -250,10 +258,25 @@ final class FilingStore {
                         .put("currencyCode", "USD")
                         .put("merchant", quickExpense.optString("merchant", ""))
                         .put("customerQuery", quickExpense.optString("customerQuery", ""))
-                        .put("crmResolution", resolution)
+                        .put("projectResolution", resolution)
                         .put("reconciliationState", "Unreconciled")
-                        .put("destination", "Aqua Receipts · Daily Ledger")
-                        .put("needsClarification", !"single".equals(resolution));
+                        .put(
+                            "destination",
+                            pulseConfirmed
+                                ? "AquaPulse · Confirmed"
+                                : "AquaPulse · Queued"
+                        )
+                        .put("pulseDeliveryStatus", pulseStatus)
+                        .put(
+                            "pulseAcknowledgementId",
+                            pulseDelivery == null
+                                ? ""
+                                : pulseDelivery.optString("acknowledgementId", "")
+                        )
+                        .put(
+                            "needsClarification",
+                            !("single".equals(resolution) || "provisional".equals(resolution))
+                        );
                     if (selected != null) {
                         item.put("project", selected.optString("name", ""))
                             .put("projectAddress", selected.optString("address", ""))
@@ -263,6 +286,8 @@ final class FilingStore {
                 }
                 if (requiresConfirmation) {
                     item.put("needsApproval", true).put("state", "Needs Attention");
+                } else if (pulseConfirmed) {
+                    item.put("state", "Confirmed");
                 } else if (
                     !"Confirmed".equals(item.optString("state", ""))
                         && !item.optBoolean("needsClarification", true)

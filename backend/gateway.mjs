@@ -100,7 +100,7 @@ export function createGateway({
           case 'session.create': {
             const params = SessionCreateParamsSchema.parse(request.params);
             const identity = authenticateOwner(config, params);
-            if (!identity) throw new RpcError(-32002, 'The owner credentials were not accepted.');
+            if (!identity) throw new RpcError(-32002, 'The activation code was not accepted.');
             return ok(request.id, {
               accessToken: issueSession(config, identity),
               expiresIn: config.sessionTtlSeconds,

@@ -63,7 +63,7 @@ export function authenticateOwner(config, params) {
     };
   }
   const emailMatches = params.email.toLocaleLowerCase('en-US') === config.ownerEmail.toLocaleLowerCase('en-US');
-  if (!emailMatches || !verifyPassword(params.password, config.ownerPasswordHash)) return null;
+  if (!emailMatches || !verifyPassword(params.activationCode, config.ownerActivationCodeHash)) return null;
   return {
     sub: 'owner',
     email: config.ownerEmail,

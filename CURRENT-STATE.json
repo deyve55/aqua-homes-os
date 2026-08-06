@@ -1,6 +1,6 @@
 {
-  "schema_version": "2.2.0",
-  "updated_at": "2026-08-05T13:34:39-04:00",
+  "schema_version": "2.3.0",
+  "updated_at": "2026-08-06T00:00:00-04:00",
   "timezone": "America/New_York",
   "owner": "Dave (Deyve)",
   "company": "Aqua Software Inc.",
@@ -364,6 +364,34 @@
     },
     "canonical_aqua_ai_repository_modified": false,
     "promotion_requires_owner_choice": true
+  },
+  "file_cabinet_to_aqua_pulse_checkpoint_2026_08_06": {
+    "status": "IMPLEMENTED_LOCALLY_NOT_PUBLISHED_OR_DEPLOYED",
+    "required_chain": "Widget → Sentinel File Cabinet → AquaPulse",
+    "crm_in_current_path": false,
+    "crm_phase": "later enrichment after the first-wave apps are working",
+    "current_week_gate": [
+      "Aqua Sentinel OS",
+      "AquaPulse",
+      "AquaDraw",
+      "AquaCam",
+      "Aqua Timesheet"
+    ],
+    "sentinel_changes": [
+      "owner sign-in source now validates activationCode, matching the Android request and deployed gateway behavior",
+      "quick money commands are durably captured in the encrypted Sentinel File Cabinet before network delivery",
+      "the backend sends a strict tenant-scoped capture.provisional_financial_event to AquaPulse",
+      "Sentinel reports Confirmed only after an exact AquaPulse acknowledgement",
+      "retry identity derives from the stable local File Cabinet capture ID",
+      "Carly remains a provisional project label until later CRM enrichment",
+      "Books actuals are never implied"
+    ],
+    "sentinel_local_tests": "64/64 passed",
+    "aqua_pulse_receiver_staging_tests": "4/4 passed",
+    "aqua_pulse_repository_change": "PREPARED_NOT_PUBLISHED",
+    "deployment": "NOT_RUN",
+    "device_test": "NOT_RUN",
+    "truth_boundary": "No CRM repository was touched. No live AquaPulse money event, signed APK, or physical-device result is claimed until both repository branches are published and their CI/deployment/device gates pass."
   },
   "secrets": {
     "api_keys_committed": false,

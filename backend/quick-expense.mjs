@@ -61,8 +61,29 @@ function candidate(record) {
   };
 }
 
-export function resolveQuickExpenseCapture({ parsed, store, registry, identity, captureId }) {
+export function resolveQuickExpenseCapture({
+  parsed,
+  store,
+  registry,
+  identity,
+  captureId,
+  useCrm = false,
+}) {
   if (!parsed || !captureId) return null;
+  if (!useCrm) {
+    return {
+      captureId,
+      amountMinor: parsed.amountMinor,
+      currencyCode: parsed.currencyCode,
+      merchant: parsed.merchant,
+      customerQuery: parsed.customerQuery,
+      resolution: 'provisional',
+      selected: null,
+      candidates: [],
+      crmConnected: false,
+      reconciliationState: 'Unreconciled',
+    };
+  }
   const jobs = store.search({
     tenantId: identity.tenantId,
     query: parsed.customerQuery,
