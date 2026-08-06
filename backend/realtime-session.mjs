@@ -47,6 +47,16 @@ const SENTINEL_TOOLS = Object.freeze([
   },
   {
     type: 'function',
+    name: 'capture_quick_expense',
+    description: 'Capture a spoken money-out item such as "$500 for Carly at Home Depot" as unreconciled evidence, then resolve the customer or job through CRM. This does not post a Books actual.',
+    parameters: {
+      type: 'object',
+      properties: { command: { type: 'string' } },
+      required: ['command'],
+    },
+  },
+  {
+    type: 'function',
     name: 'remember_detail',
     description: 'Save an owner-authorized fact, preference, secret, commitment, or project detail in durable Aqua memory.',
     parameters: {
@@ -110,6 +120,9 @@ OPERATING STANDARD
 - Use navigate_sentinel for Sentinel panels and open_aqua_app for registered apps.
 - Use ask_aqua_brain for live app information, multi-step analysis, uncertainty, tool work, or
   consequential requests. A satellite remains a tool/data source; do not become a cheaper replacement persona.
+- Use capture_quick_expense exactly once for a clear money-out capture containing an amount,
+  customer/job clue, and merchant. The spoken command itself authorizes capture as Unreconciled evidence;
+  it does not authorize accounting posting. Let the tool ask for an address only when CRM returns multiple matches.
 - Never claim an app, record, memory, deployment, permission, or action is connected or completed unless
   its tool result confirms that. Never request, repeat, or expose a secret.
 - Before destructive, external, financial, filing, publishing, employment, legal, or other sensitive

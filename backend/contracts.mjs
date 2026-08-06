@@ -299,6 +299,30 @@ export const AquaAgentOutputSchema = z.object({
     requiresConfirmation: z.boolean(),
     intentId: z.string(),
     confirmationToken: z.string(),
+    quickExpense: z.object({
+      captureId: z.string(),
+      amountMinor: z.number().int().nonnegative(),
+      currencyCode: z.literal('USD'),
+      merchant: z.string(),
+      customerQuery: z.string(),
+      resolution: z.enum(['single', 'multiple', 'unresolved']),
+      selected: z.object({
+        sourceRecordId: z.string(),
+        kind: z.enum(['job', 'client']),
+        name: z.string(),
+        address: z.string(),
+        subtitle: z.string(),
+      }).nullable(),
+      candidates: z.array(z.object({
+        sourceRecordId: z.string(),
+        kind: z.enum(['job', 'client']),
+        name: z.string(),
+        address: z.string(),
+        subtitle: z.string(),
+      })),
+      crmConnected: z.boolean(),
+      reconciliationState: z.literal('Unreconciled'),
+    }).optional(),
   }),
 });
 

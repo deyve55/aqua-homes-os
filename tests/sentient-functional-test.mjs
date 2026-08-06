@@ -27,6 +27,30 @@ test("every Aqua app has one pinned mandatory diagnostics installation target", 
   assert.ok(installation.apps.slice(1).every((app) => app.verification === "pending_app_build"));
 });
 
+test("the first-wave ecosystem gate requires real SDK acknowledgement and financial dependencies", async () => {
+  const [manifest, scenarios, readme] = await Promise.all([
+    read("packages/aqua-ecosystem-runtime/installation-manifest.json").then(JSON.parse),
+    read("packages/aqua-ecosystem-runtime/acceptance-scenarios.json").then(JSON.parse),
+    read("packages/aqua-ecosystem-runtime/README.md"),
+  ]);
+  assert.equal(manifest.contract, "com.aquahomes.ecosystem.runtime");
+  assert.equal(manifest.firstWave.length, 4);
+  assert.deepEqual(
+    manifest.firstWave.map((app) => app.appId),
+    ["aqua-draw", "aqua-pulse", "aqua-cam", "aqua-timesheet"],
+  );
+  assert.ok(manifest.firstWave.every((app) => app.installationState === "pending_app_build"));
+  assert.deepEqual(
+    manifest.financialDependencies.map((app) => app.appId),
+    ["aqua-crm", "aqua-receipts", "aqua-books"],
+  );
+  assert.match(readme, /Opening an APK is not integration/);
+  assert.match(readme, /single Sentinel-owned session/);
+  assert.ok(scenarios.scenarios.some((scenario) => scenario.id === "continuous-session-first-wave"));
+  assert.ok(scenarios.scenarios.some((scenario) => scenario.id === "quick-expense-single-customer"));
+  assert.match(JSON.stringify(scenarios), /no Books actual is claimed/);
+});
+
 test("APK bundles the approved Aqua hero, carousel, and two-card dashboard", async () => {
   const [html, css, fidelity] = await Promise.all([
     read("sentient-os-web/index.html"),
@@ -149,6 +173,8 @@ test("native voice uses protected Realtime without an Android voice impersonatio
   ]);
   assert.match(script, /AquaBridge\.askAqua/);
   assert.match(script, /window\.startAquaRealtime/);
+  assert.match(script, /capture_quick_expense/);
+  assert.match(script, /captureQuickExpenseRealtime/);
   assert.match(script, /RTCPeerConnection/);
   assert.match(script, /receiveRealtimeToolResult/);
   assert.match(script, /receiveAquaResponse/);
@@ -160,6 +186,8 @@ test("native voice uses protected Realtime without an Android voice impersonatio
   assert.match(activity, /"session\.create"/);
   assert.match(activity, /"aqua\.chat"/);
   assert.match(activity, /postRealtimeSdp/);
+  assert.match(activity, /captureQuickExpenseRealtime/);
+  assert.match(activity, /localExpenseCaptureId/);
   assert.match(activity, /"\/realtime"/);
   assert.match(activity, /PermissionRequest\.RESOURCE_AUDIO_CAPTURE/);
   assert.match(activity, /WebViewAssetLoader/);
@@ -324,6 +352,9 @@ test("the premium Neural Link keeps seven operational portals alive while Aqua m
   assert.match(script, /neuralAsset: "\.\/assets\/carousel-v2\/crm\.webp"/);
   assert.doesNotMatch(script, /class="neural-particles"/);
   assert.match(script, /class="neural-jolt"/);
+  assert.match(script, /\$\{aquaMarkMarkup\("neural-voice"\)\}/);
+  assert.match(script, /class="neural-voice-orb"/);
+  assert.doesNotMatch(script, /class="neural-home-a"/);
   assert.match(script, /neural-substrate-map neural-substrate-rest/);
   assert.match(script, /neural-substrate-map neural-substrate-result/);
   assert.match(script, /neural-substrate-fire neural-substrate-cyan/);
@@ -463,6 +494,11 @@ test("the premium Neural Link keeps seven operational portals alive while Aqua m
   assert.match(fidelity, /@keyframes neural-substrate-gold-return/);
   assert.match(fidelity, /@keyframes neural-path-fire/);
   assert.match(fidelity, /@keyframes neural-jolt-up/);
+  assert.match(fidelity, /width:clamp\(178px,46vw,260px\)!important/);
+  assert.match(fidelity, /\.neural-core-hit\{display:none!important\}/);
+  assert.match(fidelity, /@keyframes aqua-neural-voice-speak/);
+  assert.match(fidelity, /@keyframes aqua-neural-target-app-pulse/);
+  assert.match(fidelity, /\.neural-route-group\.is-active \.neural-signal,[\s\S]*\.neural-route-group\.is-active \.neural-burst/);
   const ownerReferenceNeuralink = fidelity.slice(fidelity.lastIndexOf("v0.7.7 owner-reference Neural Link"));
   assert.match(ownerReferenceNeuralink, /neural-link-reference-rest-owner-v077\.png/);
   assert.match(ownerReferenceNeuralink, /neural-link-reference-morph-owner-v077\.png/);
@@ -1558,9 +1594,10 @@ test("v0.8.4 repairs physical voice capture and restores the approved visual ide
   assert.match(script, /cardAsset: "\.\/assets\/card-site-intelligence-front-v11\.png"/);
   assert.match(script, /class="future-card-art"/);
   assert.match(script, /<strong>COMING SOON<\/strong>/);
-  assert.match(script, /class="neural-home-a"/);
-  assert.doesNotMatch(script, /\$\{aquaMarkMarkup\("neural"\)\}/);
-  assert.match(fidelity, /\.neural-home-a\{[^}]*ui-hero-front-v11\.png/);
+  assert.match(script, /\$\{aquaMarkMarkup\("neural-voice"\)\}/);
+  assert.match(script, /class="neural-voice-orb"/);
+  assert.doesNotMatch(script, /class="neural-home-a"/);
+  assert.match(fidelity, /\.neural-core-hit\{display:none!important\}/);
   assert.match(pulse, /aria-label="AquaPulse financial heart"/);
   assert.match(pulse, /M256 407C228 383/);
   assert.match(pulse, /M75 265h78l25-56/);

@@ -1,0 +1,57 @@
+{
+  "contractVersion": "1.0.0",
+  "releaseGate": "all_required_scenarios_must_pass_on_the_same_signed_apk_set",
+  "scenarios": [
+    {
+      "id": "continuous-session-first-wave",
+      "steps": [
+        "start Aqua in Sentinel",
+        "open each first-wave app by registered command",
+        "require destination SDK acknowledgement before saying connected",
+        "navigate one registered screen",
+        "read one authoritative record or truthful empty state",
+        "return to Sentinel",
+        "exit the destination app"
+      ],
+      "forbidden": [
+        "second Realtime session",
+        "second microphone owner",
+        "launch-request reported as connected",
+        "UI simulation reported as authoritative data"
+      ]
+    },
+    {
+      "id": "quick-expense-single-customer",
+      "command": "$500 for Carly at Home Depot",
+      "expected": [
+        "durable local capture before network work",
+        "amountMinor equals 50000",
+        "merchant equals Home Depot",
+        "one CRM job binds without an address question",
+        "state remains Unreconciled",
+        "idempotent Receipts delivery is queued or acknowledged",
+        "no Books actual is claimed"
+      ]
+    },
+    {
+      "id": "quick-expense-ambiguous-customer",
+      "command": "$500 for Carly at Home Depot",
+      "fixture": "two tenant-scoped Carly jobs with different addresses",
+      "expected": [
+        "durable local capture before clarification",
+        "one concise address question",
+        "no project is guessed",
+        "one capture ID is preserved across clarification"
+      ]
+    },
+    {
+      "id": "quick-expense-offline",
+      "expected": [
+        "capture remains encrypted on device",
+        "CRM resolution is Needs Attention",
+        "retry reuses the same capture and idempotency identifiers",
+        "no duplicate ledger entry"
+      ]
+    }
+  ]
+}

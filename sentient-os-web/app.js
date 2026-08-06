@@ -2187,7 +2187,9 @@ function neuralWorkspaceMarkup() {
         </svg>
         <div class="neural-core-field" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <button class="neural-core" type="button" data-neural-ask aria-label="Talk to Aqua">
-          <span class="neural-core-hit" aria-hidden="true"></span><span class="neural-home-a" aria-hidden="true"></span><b></b>
+          <span class="neural-core-hit" aria-hidden="true"></span>
+          ${aquaMarkMarkup("neural-voice")}
+          <span class="neural-voice-orb" aria-hidden="true"><i></i></span><b></b>
         </button>
         ${portals}
         <div class="neural-selected-chip" aria-live="polite"><i aria-hidden="true"></i><span><small>PRIMARY</small><strong data-neural-selected-name>Aqua CRM</strong></span></div>
@@ -2961,6 +2963,16 @@ function completeRealtimeToolCall(item) {
       selected.name,
       JSON.stringify(context),
     );
+    return;
+  }
+
+  if (item.name === "capture_quick_expense") {
+    const command = String(args.command || "").trim();
+    if (!command || !window.AquaBridge?.captureQuickExpenseRealtime) {
+      sendRealtimeToolOutput(callId, { status: "failed", error: "Quick expense capture is unavailable" });
+      return;
+    }
+    window.AquaBridge.captureQuickExpenseRealtime(callId, command);
     return;
   }
 

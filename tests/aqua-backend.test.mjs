@@ -22,6 +22,10 @@ import {
   RECEIPT_INTELLIGENCE_INSTRUCTIONS,
 } from '../backend/receipt-intelligence.mjs';
 import {
+  parseQuickExpenseCommand,
+  resolveQuickExpenseCapture,
+} from '../backend/quick-expense.mjs';
+import {
   AQUA_DIAGNOSTICS_CONTRACT_VERSION,
   createDiagnosticReceipt,
   RUN_APP_DIAGNOSTICS_TOOL,
@@ -157,6 +161,85 @@ test('shared diagnostics core produces the same bounded receipt for every Aqua a
   assert.equal(receipt.status, 'Needs Attention');
   assert.deepEqual(receipt.registeredRepairs, ['open_app_permissions']);
   assert.equal(receipt.truthBoundary, 'Read-only diagnostics; no repair was executed.');
+});
+
+test('quick expense capture parses money and resolves one CRM job without inventing an actual', async () => {
+  const parsed = parseQuickExpenseCommand('$500 for Carly at Home Depot');
+  assert.deepEqual(parsed, {
+    command: '$500 for Carly at Home Depot',
+    amountMinor: 50_000,
+    currencyCode: 'USD',
+    customerQuery: 'Carly',
+    merchant: 'Home Depot',
+  });
+  const registry = new CapabilityRegistry();
+  registry.markSynced('crm', {
+    syncId: 'crm-carly-1', checkpoint: 'crm:1', recordCount: 1, syncedAt: '2026-08-06T12:00:00.000Z',
+  });
+  const store = new ProjectionStore([{
+    tenantId: 'tenant-a',
+    kind: 'job',
+    sourceRecordId: 'job-carly-1',
+    title: 'Carly',
+    subtitle: 'Kitchen renovation',
+    sourceApp: 'Aqua CRM',
+    sourceState: 'Confirmed',
+    searchText: 'Carly kitchen',
+    fields: [{ label: 'Address', value: '10 Main Street' }],
+  }]);
+  const capture = resolveQuickExpenseCapture({
+    parsed, store, registry, identity, captureId: 'local-expense-1',
+  });
+  assert.equal(capture.resolution, 'single');
+  assert.equal(capture.selected.address, '10 Main Street');
+  assert.equal(capture.reconciliationState, 'Unreconciled');
+
+  const runtime = createAquaAgentRuntime({
+    config,
+    registry,
+    store,
+    runner: async () => { throw new Error('quick capture must be deterministic'); },
+  });
+  const result = await runtime.chat({
+    identity,
+    params: {
+      text: '$500 for Carly at Home Depot',
+      selectedApp: 'Aqua Receipts',
+      uiContext: { localExpenseCaptureId: 'local-expense-1' },
+      conversationId: 'test-conversation',
+      safetyIdentifier: 'test-safety-id',
+    },
+  });
+  assert.equal(result.receipt.status, 'Queued');
+  assert.equal(result.receipt.quickExpense.amountMinor, 50_000);
+  assert.equal(result.receipt.quickExpense.resolution, 'single');
+  assert.match(result.reply, /unreconciled, not a Books actual/i);
+});
+
+test('quick expense capture asks for address only when CRM returns multiple matching jobs', async () => {
+  const parsed = parseQuickExpenseCommand('USD 500 for Carly at Home Depot');
+  const registry = new CapabilityRegistry();
+  registry.markSynced('crm', {
+    syncId: 'crm-carly-2', checkpoint: 'crm:2', recordCount: 2, syncedAt: '2026-08-06T12:00:00.000Z',
+  });
+  const store = new ProjectionStore([
+    { tenantId: 'tenant-a', kind: 'job', sourceRecordId: 'job-1', title: 'Carly', subtitle: '', sourceApp: 'Aqua CRM', sourceState: 'Confirmed', searchText: 'Carly', fields: [{ label: 'Address', value: '10 Main Street' }] },
+    { tenantId: 'tenant-a', kind: 'job', sourceRecordId: 'job-2', title: 'Carly', subtitle: '', sourceApp: 'Aqua CRM', sourceState: 'Confirmed', searchText: 'Carly', fields: [{ label: 'Address', value: '20 Oak Avenue' }] },
+  ]);
+  const runtime = createAquaAgentRuntime({ config, registry, store });
+  const result = await runtime.chat({
+    identity,
+    params: {
+      text: 'USD 500 for Carly at Home Depot',
+      selectedApp: 'Aqua Receipts',
+      uiContext: { filingItemId: 'widget-expense-1' },
+      conversationId: 'test-conversation',
+      safetyIdentifier: 'test-safety-id',
+    },
+  });
+  assert.equal(result.receipt.status, 'Needs Attention');
+  assert.equal(result.receipt.quickExpense.resolution, 'multiple');
+  assert.match(result.reply, /10 Main Street or 20 Oak Avenue/);
 });
 
 function receiptAnalysisFixture() {

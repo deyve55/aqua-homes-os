@@ -218,6 +218,9 @@ final class FilingStore {
         try {
             JSONArray items = readItems(context);
             JSONObject receipt = brainResult.optJSONObject("receipt");
+            JSONObject quickExpense = receipt == null
+                ? null
+                : receipt.optJSONObject("quickExpense");
             boolean requiresConfirmation = receipt != null
                 && receipt.optBoolean("requiresConfirmation", false);
             for (int index = 0; index < items.length(); index++) {
@@ -239,6 +242,25 @@ final class FilingStore {
                         "gatewayCorrelationId",
                         receipt == null ? "" : receipt.optString("correlationId", "")
                     );
+                if (quickExpense != null) {
+                    JSONObject selected = quickExpense.optJSONObject("selected");
+                    String resolution = quickExpense.optString("resolution", "unresolved");
+                    item.put("ledgerEntry", true)
+                        .put("amountMinor", quickExpense.optLong("amountMinor"))
+                        .put("currencyCode", "USD")
+                        .put("merchant", quickExpense.optString("merchant", ""))
+                        .put("customerQuery", quickExpense.optString("customerQuery", ""))
+                        .put("crmResolution", resolution)
+                        .put("reconciliationState", "Unreconciled")
+                        .put("destination", "Aqua Receipts · Daily Ledger")
+                        .put("needsClarification", !"single".equals(resolution));
+                    if (selected != null) {
+                        item.put("project", selected.optString("name", ""))
+                            .put("projectAddress", selected.optString("address", ""))
+                            .put("projectRecordId", selected.optString("sourceRecordId", ""));
+                    }
+                    if (!"single".equals(resolution)) item.put("state", "Needs Attention");
+                }
                 if (requiresConfirmation) {
                     item.put("needsApproval", true).put("state", "Needs Attention");
                 } else if (
@@ -672,6 +694,7 @@ final class FilingStore {
     private static boolean isExpense(String type, String note) {
         String value = safe(note, "").toLowerCase(Locale.US);
         return "receipt".equalsIgnoreCase(safe(type, ""))
+            || MONEY.matcher(value).find() && (value.contains("$") || value.contains("usd") || value.contains("dollar"))
             || value.contains("receipt")
             || value.contains("expense")
             || value.contains("spent ")

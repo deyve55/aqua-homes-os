@@ -2,6 +2,11 @@ import { randomUUID } from 'node:crypto';
 import { Agent, run, tool, webSearchTool } from '@openai/agents';
 import { z } from 'zod';
 import { AquaAgentOutputSchema, emptyMaterialization } from './contracts.mjs';
+import {
+  formatQuickExpenseAmount,
+  parseQuickExpenseCommand,
+  resolveQuickExpenseCapture,
+} from './quick-expense.mjs';
 
 export const AQUA_SYSTEM_INSTRUCTIONS = `
 You are Aqua inside Aqua Sentinel OS, the conversational operating system for the Aqua ecosystem.
@@ -211,6 +216,41 @@ export function createAquaAgentRuntime({ config, registry, store, runner = run }
     agent,
     async chat({ identity, params }) {
       const correlationId = randomUUID();
+      const parsedExpense = parseQuickExpenseCommand(params.text);
+      const quickExpense = resolveQuickExpenseCapture({
+        parsed: parsedExpense,
+        store,
+        registry,
+        identity,
+        captureId: String(
+          params.uiContext.localExpenseCaptureId || params.uiContext.filingItemId || '',
+        ),
+      });
+      if (quickExpense) {
+        const amount = formatQuickExpenseAmount(quickExpense);
+        const selected = quickExpense.selected;
+        const reply = quickExpense.resolution === 'single'
+          ? `${amount} at ${quickExpense.merchant} is captured for ${selected.name}${selected.address ? ` at ${selected.address}` : ''}. It is unreconciled, not a Books actual yet.`
+          : quickExpense.resolution === 'multiple'
+            ? `I captured ${amount} at ${quickExpense.merchant}. I found more than one ${quickExpense.customerQuery}; which address: ${quickExpense.candidates.map((item) => item.address || item.subtitle || item.name).join(' or ')}?`
+            : quickExpense.crmConnected
+              ? `I captured ${amount} at ${quickExpense.merchant}, but CRM has no verified ${quickExpense.customerQuery} match. The project needs attention.`
+              : `I captured ${amount} at ${quickExpense.merchant}, but CRM is disconnected. The project remains unresolved.`;
+        return AquaAgentOutputSchema.parse({
+          reply,
+          action: { type: 'none', target: '', app: '' },
+          materialization: { ...emptyMaterialization, fields: [], actions: [] },
+          receipt: {
+            status: quickExpense.resolution === 'single' ? 'Queued' : 'Needs Attention',
+            correlationId,
+            sources: ['crm', 'receipts'],
+            requiresConfirmation: false,
+            intentId: '',
+            confirmationToken: '',
+            quickExpense,
+          },
+        });
+      }
       const context = {
         identity,
         correlationId,

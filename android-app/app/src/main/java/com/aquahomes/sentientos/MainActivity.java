@@ -1292,6 +1292,85 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void captureQuickExpenseRealtime(String callId, String text) {
+        JSONObject localCapture = FilingStore.enqueue(this, "action", text, "");
+        String filingItemId = localCapture.optString("id", "");
+        if (filingItemId.isEmpty()) {
+            try {
+                sendJsonCallback(
+                    "receiveRealtimeToolResult",
+                    new JSONObject()
+                        .put("callId", callId)
+                        .put("error", "Aqua could not preserve that expense on this phone.")
+                );
+            } catch (JSONException ignored) {}
+            return;
+        }
+        deliverFilingInbox();
+        networkExecutor.execute(() -> {
+            try {
+                String accessToken = readSecureValue(ACCESS_TOKEN);
+                if (accessToken.isEmpty() || !sessionIsCurrent()) {
+                    throw new SecurityException(
+                        "The expense is saved on this phone; owner sign-in is required for CRM resolution."
+                    );
+                }
+                JSONObject params = new JSONObject()
+                    .put("text", text)
+                    .put("selectedApp", "Aqua Receipts")
+                    .put(
+                        "uiContext",
+                        new JSONObject()
+                            .put("surface", "direct-aqua")
+                            .put("captureType", "quick-expense")
+                            .put("localExpenseCaptureId", filingItemId)
+                            .put("localEvidenceRetained", true)
+                    )
+                    .put("conversationId", installationId() + "-primary")
+                    .put("safetyIdentifier", safetyIdentifier());
+                HttpResult result = postJson(
+                    AQUA_GATEWAY_URL,
+                    rpcRequest("aqua.chat", params),
+                    accessToken
+                );
+                JSONObject payload = rpcResult(
+                    result,
+                    "The expense is saved, but Aqua could not resolve its CRM project."
+                );
+                FilingStore.markBrainReceipt(this, filingItemId, payload);
+                deliverFilingInbox();
+                sendJsonCallback(
+                    "receiveRealtimeToolResult",
+                    new JSONObject()
+                        .put("callId", callId)
+                        .put("result", payload)
+                );
+            } catch (Exception error) {
+                FilingStore.markHandoffResult(
+                    this,
+                    filingItemId,
+                    false,
+                    "",
+                    error.getMessage() == null ? "CRM resolution needs attention." : error.getMessage()
+                );
+                deliverFilingInbox();
+                try {
+                    sendJsonCallback(
+                        "receiveRealtimeToolResult",
+                        new JSONObject()
+                            .put("callId", callId)
+                            .put(
+                                "error",
+                                error.getMessage() == null
+                                    ? "The expense is saved; CRM resolution needs attention."
+                                    : error.getMessage()
+                            )
+                    );
+                } catch (JSONException ignored) {}
+            }
+        });
+    }
+
     private void runRealtimeMemoryTool(
         String callId,
         String method,
@@ -1454,6 +1533,11 @@ public class MainActivity extends Activity {
                 uiContext,
                 callId
             );
+        }
+
+        @JavascriptInterface
+        public void captureQuickExpenseRealtime(String callId, String command) {
+            MainActivity.this.captureQuickExpenseRealtime(callId, command);
         }
 
         @JavascriptInterface

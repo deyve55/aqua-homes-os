@@ -3018,3 +3018,111 @@ html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-a
   .sentinel.aqua-conversation-active .voice-core i,
   .sentinel.aqua-conversation-active .wave-energy:after{animation:none}
 }
+
+/* Owner correction: Aqua's Neural Link voice is the clean Home A plus one
+   compact internal orb. The A remains still; only the orb voices Aqua. */
+.system-panel[data-panel="neural"] .neural-core{
+  width:clamp(178px,46vw,260px)!important;
+  aspect-ratio:340/360;
+  overflow:visible;
+  background:transparent!important;
+  filter:none!important;
+}
+.system-panel[data-panel="neural"] .neural-core .aqua-mark{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  opacity:1!important;
+  filter:none!important;
+}
+.system-panel[data-panel="neural"] .neural-core .aqua-mark-orb,
+.system-panel[data-panel="neural"] .neural-core .aqua-mark-orb-core,
+.system-panel[data-panel="neural"] .neural-core-hit{display:none!important}
+.system-panel[data-panel="neural"] .neural-stage[data-aqua-state] .aqua-mark-outer,
+.system-panel[data-panel="neural"] .neural-stage[data-aqua-state] .aqua-mark-face,
+.sentinel.speech-beat .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="speaking"] .aqua-mark{
+  animation:none!important;
+  filter:none!important;
+}
+.system-panel[data-panel="neural"] .neural-voice-orb{
+  position:absolute;
+  z-index:5;
+  left:50%;
+  top:63.3%;
+  display:grid;
+  place-items:center;
+  width:clamp(10px,5.4%,16px);
+  aspect-ratio:1;
+  border-radius:50%;
+  background:#f8ffff;
+  box-shadow:none;
+  transform:translate(-50%,-50%);
+  transform-origin:center;
+}
+.system-panel[data-panel="neural"] .neural-voice-orb>i{
+  width:34%;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:#39e7fb;
+}
+.system-panel[data-panel="neural"] .neural-stage[data-aqua-state="listening"] .neural-voice-orb{
+  animation:aqua-neural-voice-listen 1.4s ease-in-out infinite;
+}
+.system-panel[data-panel="neural"] .neural-stage[data-aqua-state="thinking"] .neural-voice-orb{
+  animation:aqua-neural-voice-think .76s ease-in-out infinite;
+}
+.system-panel[data-panel="neural"] .neural-stage[data-aqua-state="speaking"] .neural-voice-orb{
+  animation:aqua-neural-voice-speak .62s ease-in-out infinite;
+}
+.system-panel[data-panel="neural"] .neural-route{
+  stroke:rgba(150,242,252,.48);
+  stroke-width:.62;
+  opacity:.92;
+}
+.system-panel[data-panel="neural"] .neural-signal{
+  stroke-width:1.18;
+  opacity:.94;
+  filter:drop-shadow(0 0 2px rgba(235,254,255,.92)) drop-shadow(0 0 6px rgba(44,226,249,.74));
+}
+.system-panel[data-panel="neural"] .neural-burst{
+  stroke-width:1.02;
+  opacity:.9;
+  filter:drop-shadow(0 0 2px rgba(238,254,255,.88)) drop-shadow(0 0 5px var(--portal-color));
+}
+.system-panel[data-panel="neural"] .neural-route-group.is-active .neural-signal,
+.system-panel[data-panel="neural"] .neural-route-group.is-active .neural-burst{
+  stroke:#fff;
+  stroke-width:2.2;
+  opacity:1;
+  filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 10px var(--portal-color));
+  animation-duration:.24s;
+}
+.system-panel[data-panel="neural"] .neural-stage:not([data-phase="result"])[data-aqua-state="listening"] .neural-portal.is-primary .portal-pull,
+.system-panel[data-panel="neural"] .neural-stage:not([data-phase="result"])[data-aqua-state="thinking"] .neural-portal.is-primary .portal-pull,
+.system-panel[data-panel="neural"] .neural-stage:not([data-phase="result"])[data-aqua-state="speaking"] .neural-portal.is-primary .portal-pull{
+  animation:aqua-neural-target-app-pulse .72s ease-in-out infinite alternate;
+}
+@keyframes aqua-neural-voice-listen{
+  0%,100%{transform:translate(-50%,-50%) scale(.9)}
+  50%{transform:translate(-50%,calc(-50% - 4px)) scale(1.08)}
+}
+@keyframes aqua-neural-voice-think{
+  0%,100%{transform:translate(calc(-50% - 4px),-50%) scale(.94)}
+  50%{transform:translate(calc(-50% + 4px),-50%) scale(1.06)}
+}
+@keyframes aqua-neural-voice-speak{
+  0%,100%{transform:translate(-50%,calc(-50% - 4px)) scale(.88)}
+  25%{transform:translate(calc(-50% + 4px),-50%) scale(1.12)}
+  50%{transform:translate(-50%,calc(-50% + 4px)) scale(.96)}
+  75%{transform:translate(calc(-50% - 4px),-50%) scale(1.08)}
+}
+@keyframes aqua-neural-target-app-pulse{
+  from{transform:scale(1.08);filter:brightness(1.08);box-shadow:0 0 8px rgba(255,255,255,.54),0 0 18px color-mix(in srgb,var(--portal-color) 60%,transparent)}
+  to{transform:scale(1.2);filter:brightness(1.32);box-shadow:0 0 12px #fff,0 0 34px color-mix(in srgb,var(--portal-color) 82%,transparent)}
+}
+@media(prefers-reduced-motion:reduce){
+  .system-panel[data-panel="neural"] .neural-voice-orb,
+  .system-panel[data-panel="neural"] .neural-portal.is-primary .portal-pull{animation:none!important}
+}
