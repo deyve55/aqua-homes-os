@@ -47,7 +47,7 @@ function request(id, method, params = {}) {
   return { jsonrpc: '2.0', id, method, params };
 }
 
-test('Aqua model policy keeps satellites economical and Sentinel voice full capability', () => {
+test('Aqua model policy defaults to Realtime 2.1 mini with explicit full escalation', () => {
   assert.equal(AQUA_MODEL_DEFAULTS.satelliteRealtime, 'gpt-realtime-2.1-mini');
   assert.equal(AQUA_MODEL_DEFAULTS.fullRealtime, 'gpt-realtime-2.1');
   assert.equal(AQUA_MODEL_DEFAULTS.transcription, 'gpt-4o-transcribe');
@@ -65,17 +65,17 @@ test('Aqua model policy keeps satellites economical and Sentinel voice full capa
       capability: 'simple',
       conversationOrigin: 'aqua-sentinel-os',
     }),
-    'gpt-realtime-2.1',
+    'gpt-realtime-2.1-mini',
   );
   assert.equal(
     selectAquaRealtimeModel({ appId: 'aqua-sentinel-os', capability: 'simple' }),
-    'gpt-realtime-2.1',
+    'gpt-realtime-2.1-mini',
   );
   assert.deepEqual(publicAquaModelPolicy(config), {
     version: '1.0.0',
     sentinel: {
-      default: 'gpt-realtime-2.1',
-      simpleTextMayUse: 'gpt-realtime-2.1-mini',
+      default: 'gpt-realtime-2.1-mini',
+      escalateTo: 'gpt-realtime-2.1',
     },
     satellites: {
       default: 'gpt-realtime-2.1-mini',
@@ -94,7 +94,7 @@ test('Aqua model policy keeps satellites economical and Sentinel voice full capa
   });
 });
 
-test('Sentinel Realtime SDP uses full 2.1, GPT-4o Transcribe, patient VAD, and no client API key', async () => {
+test('Sentinel Realtime SDP uses 2.1 mini, GPT-4o Transcribe, patient VAD, and no client API key', async () => {
   let upstream;
   const runtime = createRealtimeSessionRuntime({
     config,
@@ -115,7 +115,7 @@ test('Sentinel Realtime SDP uses full 2.1, GPT-4o Transcribe, patient VAD, and n
   assert.equal(upstream.url, 'https://api.openai.com/v1/realtime/calls');
   assert.equal(upstream.init.headers.authorization, 'Bearer test-only');
   const session = JSON.parse(upstream.init.body.get('session'));
-  assert.equal(session.model, 'gpt-realtime-2.1');
+  assert.equal(session.model, 'gpt-realtime-2.1-mini');
   assert.equal(session.reasoning.effort, 'xhigh');
   assert.equal(session.audio.input.transcription.model, 'gpt-4o-transcribe');
   assert.equal(session.audio.input.turn_detection.type, 'semantic_vad');

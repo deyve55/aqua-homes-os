@@ -121,7 +121,7 @@ test("carousel previews use reversible presentation data and verified refreshabl
   assert.match(contract, /compressed current home-screen thumbnail/);
 });
 
-test("native voice uses protected Realtime 2.1 and GPT-4o Transcribe with a truthful local fallback", async () => {
+test("native voice uses protected Realtime without an Android voice impersonation fallback", async () => {
   const [script, activity] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
@@ -141,13 +141,21 @@ test("native voice uses protected Realtime 2.1 and GPT-4o Transcribe with a trut
   assert.match(activity, /postRealtimeSdp/);
   assert.match(activity, /"\/realtime"/);
   assert.match(activity, /PermissionRequest\.RESOURCE_AUDIO_CAPTURE/);
+  assert.match(activity, /WebViewAssetLoader/);
+  assert.match(activity, /https:\/\/appassets\.androidplatform\.net\/assets\/public\/index\.html/);
+  assert.match(activity, /"https:\/\/appassets\.androidplatform\.net\/"\.equals\(origin\)/);
   assert.match(activity, /AndroidKeyStore/);
   assert.doesNotMatch(activity, /grant_type=password/);
   assert.doesNotMatch(activity, /grant_type=refresh_token/);
   assert.doesNotMatch(activity, /supabase/i);
-  assert.match(activity, /SpeechRecognizer/);
-  assert.match(activity, /TextToSpeech/);
-  assert.match(activity, /startLegacyListening/);
+  assert.doesNotMatch(activity, /SpeechRecognizer/);
+  assert.doesNotMatch(activity, /TextToSpeech/);
+  assert.doesNotMatch(activity, /startLegacyListening/);
+  assert.doesNotMatch(script, /startLegacyListening/);
+  assert.match(script, /rememberAquaRealtime/);
+  assert.match(script, /recallAquaRealtime/);
+  assert.match(activity, /aqua\.memory\.remember/);
+  assert.match(activity, /aqua\.memory\.recall/);
 });
 
 test("owner access uses a one-time activation page and keeps the session in Android Keystore", async () => {
@@ -205,8 +213,8 @@ test("an unavailable gateway cannot block truthful Standalone startup", async ()
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
   ]);
-  assert.match(gradle, /versionCode = 2026080501/);
-  assert.match(gradle, /versionName = "0\.8\.1-field-test-navigation-recovery"/);
+  assert.match(gradle, /versionCode = 2026080502/);
+  assert.match(gradle, /versionName = "0\.8\.2-live-aqua-memory"/);
   assert.match(gradle, /\.orElse\(providers\.environmentVariable\("AQUA_GATEWAY_URL"\)\)\s*\.orElse\(""\)/);
   assert.doesNotMatch(gradle, /\.orElse\("https:\/\/api\.aquahomesos\.com\/gateway"\)/);
   assert.match(html, /id="ownerAccessButton"[^>]*data-panel="connect"/);
@@ -491,11 +499,10 @@ test("Fold APK has protected top space, kinetic drag, and approved Sentinel OS l
   assert.equal(adaptiveForeground.readUInt32BE(20), 432);
 });
 
-test("Fold hero distinguishes inward listening energy from outward speaking bursts", async () => {
-  const [script, fidelity, activity] = await Promise.all([
+test("Fold hero distinguishes live Realtime listening from speaking energy", async () => {
+  const [script, fidelity] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("sentient-os-web/fidelity.css"),
-    read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
   ]);
   assert.match(fidelity, /v0\.4\.4 Fold voice-energy and hero-presence correction/);
   assert.match(fidelity, /background-size:100% 104%/);
@@ -507,8 +514,10 @@ test("Fold hero distinguishes inward listening energy from outward speaking burs
   assert.match(fidelity, /@keyframes speak-energy-up/);
   assert.match(script, /window\.pulseAquaSpeech/);
   assert.match(script, /classList\.add\("speech-beat"\)/);
-  assert.match(activity, /void onRangeStart\(/);
-  assert.match(activity, /window\.pulseAquaSpeech\?\.\(\)/);
+  assert.match(script, /response\.output_audio_transcript\.delta/);
+  assert.match(script, /audio\.onplay = \(\) => setAquaState\("speaking"\)/);
+  assert.match(fidelity, /@keyframes aqua-orb-shot-x/);
+  assert.match(fidelity, /@keyframes aqua-orb-shot-y/);
 });
 
 test("Fold card-presence correction enlarges the complete carousel stack together", async () => {
@@ -536,7 +545,7 @@ test("v0.4.9 preserves the v0.4.7 carousel geometry and silent Aqua activation",
   assert.match(activity, /webView\.setHapticFeedbackEnabled\(false\)/);
 });
 
-test("v0.8.1 preserves Home while the owner-reference Neural Link stays alive through its sub-second morph", async () => {
+test("v0.8.2 preserves Home while direct Aqua talk and Neural materialization stay distinct", async () => {
   const [gradle, workflow, script, html, fidelity, androidLaunch, neuralLiveProof, visualRenderer] = await Promise.all([
     read("android-app/app/build.gradle.kts"),
     read(".github/workflows/aqua-sentient-os-release.yml"),
@@ -547,16 +556,16 @@ test("v0.8.1 preserves Home while the owner-reference Neural Link stays alive th
     read("scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"),
     read("scripts/render-aqua-sentinel-visual-proof.mjs"),
   ]);
-  assert.match(gradle, /versionCode = 2026080501/);
-  assert.match(script, /versionName: "0\.8\.1-field-test-navigation-recovery"/);
-  assert.match(script, /versionCode: 2026080501/);
-  assert.match(script, /<b>0\.8\.1<\/b>/);
-  assert.match(gradle, /versionName = "0\.8\.1-field-test-navigation-recovery"/);
+  assert.match(gradle, /versionCode = 2026080502/);
+  assert.match(script, /versionName: "0\.8\.2-live-aqua-memory"/);
+  assert.match(script, /versionCode: 2026080502/);
+  assert.match(script, /<b>0\.8\.2<\/b>/);
+  assert.match(gradle, /versionName = "0\.8\.2-live-aqua-memory"/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.customerPreview"\)\.orElse\("false"\)/);
   assert.match(gradle, /providers\.gradleProperty\("aqua\.ecosystemPreview"\)\.orElse\("false"\)/);
   assert.doesNotMatch(gradle, /storeFile = file\(System\.getenv\("AQUA_RELEASE_KEYSTORE_PATH"\)\)/);
   assert.match(gradle, /\?\.let \{ storeFile = file\(it\) \}/);
-  assert.match(workflow, /AquaSentinelOS-v0\.8\.1-Field-Test-Navigation-Recovery\.apk/);
+  assert.match(workflow, /AquaSentinelOS-v0\.8\.2-Live-Aqua-Memory\.apk/);
   assert.match(workflow, /owner_visual_approval/);
   assert.match(workflow, /github\.event_name == 'workflow_dispatch' && inputs\.owner_visual_approval/);
   assert.match(workflow, /preflight-no-apk:/);
@@ -580,17 +589,30 @@ test("v0.8.1 preserves Home while the owner-reference Neural Link stays alive th
   assert.match(visualRenderer, /animation\.id === 'aqua-neural-materialization-box'/);
   assert.match(visualRenderer, /returnedDocumentWidth >= state\.materializationWidth \* \.7/);
   assert.match(visualRenderer, /openFileTextFits/);
+  assert.match(visualRenderer, /preview=conversation/);
+  assert.match(visualRenderer, /AquaSentinelOS-v0\.8\.2-Direct-Aqua-Conversation\.png/);
+  assert.match(visualRenderer, /state\.heroArtOpacity <= \.01/);
+  assert.match(visualRenderer, /state\.voiceCoreAnimation\.includes\("aqua-orb-axis-pulse"\)/);
+  const startVoice = script.match(/function startVoice\(\) \{[\s\S]*?\n\}/)?.[0] || "";
+  assert.match(startVoice, /setCompactAquaConversation\(!alreadyInNeural\)/);
+  assert.doesNotMatch(startVoice, /openPanel\("neural"\)/);
+  assert.match(script, /payload\.result\.materialization\?\.present[\s\S]*activateConfirmedNeuralRoute/);
+  assert.match(fidelity, /v0\.8\.2 owner-approved direct Aqua conversation/);
+  assert.match(fidelity, /\.sentinel\.aqua-conversation-active \.hero-art\{opacity:0/);
+  assert.match(fidelity, /@keyframes aqua-orb-axis-pulse/);
+  assert.match(fidelity, /@keyframes aqua-side-shot-left/);
   assert.match(workflow, /Neural-Link-Morph-closed-phone\.png/);
   assert.match(workflow, /data-aqua-neural-phase="transitioning"/);
   assert.match(workflow, /preview=command/);
   assert.match(script, /enableEcosystemPresentationMode/);
   assert.match(
     script,
-    /window\.location\.protocol === "file:" && \["home", "neural"\]\.includes\(previewPanel\)/,
+    /window\.location\.protocol === "file:" && \["home", "conversation", "neural"\]\.includes\(previewPanel\)/,
   );
   assert.match(script, /function activateDeterministicPreviewRoute\(\)/);
-  assert.match(script, /\["home", "neural", "command", "settings", "diagnostics", "data", "files", "messages", "about"\]\.includes\(previewPanel\)/);
-  assert.match(script, /previewPanel === "home"/);
+  assert.match(script, /\["home", "conversation", "neural", "command", "settings", "diagnostics", "data", "files", "messages", "about"\]\.includes\(previewPanel\)/);
+  assert.match(script, /\["home", "conversation"\]\.includes\(previewPanel\)/);
+  assert.match(script, /previewPanel === "conversation"[\s\S]*setCompactAquaConversation\(true\)[\s\S]*setAquaState\("listening"\)/);
   assert.match(script, /const demo = previewParameters\.get\("neuralDemo"\) \|\| "rest"/);
   assert.match(script, /if \(\["focus", "select", "rotate", "fire", "transition", "company", "receipt", "result"\]\.includes\(demo\)\)/);
   assert.match(script, /previewParameters\.get\("neuralDemo"\) === "sequence"/);
@@ -607,6 +629,7 @@ test("v0.8.1 preserves Home while the owner-reference Neural Link stays alive th
   );
   assert.doesNotMatch(script, /requestAnimationFrame\(\(\) => openPanel\(previewPanel\)\)/);
   assert.match(workflow, /data-aqua-preview-ready="home"/);
+  assert.match(workflow, /AquaSentinelOS-v0\.8\.2-Direct-Aqua-Conversation\.png/);
   assert.match(workflow, /grep -q '\\\$186K active'/);
   assert.match(workflow, /grep -q 'PRESENTATION DATA'/);
   assert.match(workflow, /data-portal-index="\[0-9\]\*"[^\n]*wc -l\)" = "9"/);
@@ -1378,7 +1401,7 @@ test("responsive widget fills every supported host while preserving approved art
   assert.doesNotMatch(verifier, /wait_for_log "AQUA_FILING_INBOX_DELIVERED/);
 });
 
-test("v0.8.1 secondary operating surfaces execute real Android boundaries", async () => {
+test("v0.8.2 secondary operating surfaces execute real Android boundaries", async () => {
   const [script, fidelity, activity, renderer, workflow, gradle, html] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("sentient-os-web/fidelity.css"),
@@ -1389,8 +1412,8 @@ test("v0.8.1 secondary operating surfaces execute real Android boundaries", asyn
     read("sentient-os-web/index.html"),
   ]);
 
-  assert.match(gradle, /versionCode = 2026080501/);
-  assert.match(gradle, /versionName = "0\.8\.1-field-test-navigation-recovery"/);
+  assert.match(gradle, /versionCode = 2026080502/);
+  assert.match(gradle, /versionName = "0\.8\.2-live-aqua-memory"/);
   assert.match(script, /preferenceStorageKey = "aqua-sentinel-owner-preferences-v1"/);
   assert.match(script, /function saveOwnerPreferences\(\)/);
   assert.match(script, /In-app owner alerts/);
@@ -1452,7 +1475,7 @@ test("v0.8.1 secondary operating surfaces execute real Android boundaries", asyn
   assert.match(html, /id="aquaButton"[\s\S]*id="appDeck"[\s\S]*id="appDashboard"[\s\S]*class="bottom-rail"/);
 });
 
-test("v0.8.1 field-test recovery preserves navigation and bounds Android visual load", async () => {
+test("v0.8.2 live-Aqua recovery preserves navigation and bounds Android visual load", async () => {
   const [html, script, fidelity, manifest, activity] = await Promise.all([
     read("sentient-os-web/index.html"),
     read("sentient-os-web/app.js"),

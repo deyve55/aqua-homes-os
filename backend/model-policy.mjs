@@ -17,17 +17,11 @@ const fullCapabilitySignals = new Set([
 ]);
 
 export function selectAquaRealtimeModel({
-  appId,
   capability = 'simple',
-  conversationOrigin = 'local',
   standardModel = AQUA_MODEL_DEFAULTS.satelliteRealtime,
   fullModel = AQUA_MODEL_DEFAULTS.fullRealtime,
 } = {}) {
-  if (
-    appId === 'aqua-sentinel-os' ||
-    conversationOrigin === 'aqua-sentinel-os' ||
-    fullCapabilitySignals.has(capability)
-  ) {
+  if (fullCapabilitySignals.has(capability)) {
     return fullModel;
   }
   return standardModel;
@@ -37,8 +31,8 @@ export function publicAquaModelPolicy(config) {
   return Object.freeze({
     version: AQUA_MODEL_POLICY_VERSION,
     sentinel: Object.freeze({
-      default: config.realtimeFullModel,
-      simpleTextMayUse: config.realtimeStandardModel,
+      default: config.realtimeStandardModel,
+      escalateTo: config.realtimeFullModel,
     }),
     satellites: Object.freeze({
       default: config.realtimeStandardModel,

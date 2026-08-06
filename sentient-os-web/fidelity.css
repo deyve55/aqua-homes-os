@@ -2893,3 +2893,118 @@ html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-waveform i{a
 html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="listening"] .neural-waveform i,
 html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="thinking"] .neural-waveform i,
 html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="speaking"] .neural-waveform i{animation-play-state:running}
+
+/* v0.8.2 owner-approved direct Aqua conversation.
+   Tapping the center A keeps the current surface in place. The hero plate and
+   haze drop away, leaving one physical orb with crisp axial motion and side
+   energy. Neural Link remains an explicit or source-materialization surface. */
+.sentinel.aqua-conversation-active .aqua-hero{background:#000}
+.sentinel.aqua-conversation-active .hero-art{opacity:0;filter:none;transition:opacity .18s ease-out}
+.sentinel.aqua-conversation-active .aqua-hero:before,
+.sentinel.aqua-conversation-active .aqua-hero:after{display:none}
+.sentinel.aqua-conversation-active .selected-app-label{opacity:0}
+.sentinel.aqua-conversation-active .aqua-state-label{
+  bottom:7.2%;
+  color:#bff8ff;
+  font-size:clamp(8px,1.45cqw,12px);
+  font-weight:500;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.sentinel.aqua-conversation-active .voice-core{
+  left:50%;
+  top:48%;
+  width:clamp(64px,14%,108px);
+  border:1px solid rgba(225,253,255,.92);
+  background:radial-gradient(circle at 38% 31%,#fff 0 7%,#bffaff 8% 17%,#27dff5 18% 42%,#0786a4 43% 68%,#012b38 69% 100%);
+  opacity:1;
+  box-shadow:0 0 2px #fff,0 0 8px rgba(40,226,250,.9);
+  animation:aqua-orb-axis-pulse .82s cubic-bezier(.45,0,.55,1) infinite;
+}
+.sentinel.aqua-conversation-active .voice-core i{
+  inset:-17%;
+  border:1px dashed rgba(112,239,255,.58);
+  box-shadow:none;
+  animation:aqua-orb-ring-turn 2.2s linear infinite;
+}
+.sentinel.aqua-conversation-active .voice-core:before{
+  left:50%;
+  top:50%;
+  width:clamp(230px,62vw,520px);
+  height:2px;
+  transform:translate(-50%,-50%) scaleX(.08);
+  background:linear-gradient(90deg,transparent 0,#48e8ff 34%,#fff 49% 51%,#48e8ff 66%,transparent 100%);
+  filter:none;
+  animation:aqua-orb-shot-x .92s ease-out infinite;
+}
+.sentinel.aqua-conversation-active .voice-core:after{
+  left:50%;
+  top:50%;
+  bottom:auto;
+  width:2px;
+  height:clamp(210px,38vw,350px);
+  transform:translate(-50%,-50%) scaleY(.08);
+  transform-origin:50% 50%;
+  background:linear-gradient(180deg,transparent 0,#48e8ff 34%,#fff 49% 51%,#48e8ff 66%,transparent 100%);
+  filter:none;
+  animation:aqua-orb-shot-y .78s ease-out infinite;
+}
+.sentinel.aqua-conversation-active .listening-waves{
+  left:0;
+  right:0;
+  top:43%;
+  height:10%;
+  opacity:1;
+  filter:none;
+}
+.sentinel.aqua-conversation-active .wave-energy:after{
+  top:50%;
+  width:31%;
+  height:2px;
+  border-radius:0;
+  background:linear-gradient(90deg,transparent,#5cecff 38%,#fff 75%,transparent);
+  box-shadow:0 0 3px rgba(93,238,255,.76);
+  opacity:1;
+}
+.sentinel.aqua-conversation-active .wave-left:after{animation:aqua-side-shot-left .68s ease-in infinite}
+.sentinel.aqua-conversation-active .wave-right:after{
+  background:linear-gradient(90deg,transparent,#fff 25%,#5cecff 62%,transparent);
+  animation:aqua-side-shot-right .68s ease-in infinite;
+}
+.sentinel.aqua-conversation-active.state-thinking .voice-core{animation-duration:.48s}
+.sentinel.aqua-conversation-active.state-speaking .voice-core{
+  animation-duration:.36s;
+  box-shadow:0 0 3px #fff,0 0 11px rgba(40,226,250,.96);
+}
+@keyframes aqua-orb-axis-pulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1,.88)}
+  25%{transform:translate(-50%,-50%) scale(.86,1.14)}
+  50%{transform:translate(-50%,-50%) scale(1.13,.9)}
+  75%{transform:translate(-50%,-50%) scale(.91,1.08)}
+}
+@keyframes aqua-orb-ring-turn{to{transform:rotate(360deg)}}
+@keyframes aqua-orb-shot-x{
+  0%{opacity:1;transform:translate(-50%,-50%) scaleX(.05)}
+  72%,100%{opacity:0;transform:translate(-50%,-50%) scaleX(1)}
+}
+@keyframes aqua-orb-shot-y{
+  0%{opacity:1;transform:translate(-50%,-50%) scaleY(.05)}
+  72%,100%{opacity:0;transform:translate(-50%,-50%) scaleY(1)}
+}
+@keyframes aqua-side-shot-left{
+  0%{right:100%;opacity:0}
+  22%{opacity:1}
+  100%{right:-31%;opacity:0}
+}
+@keyframes aqua-side-shot-right{
+  0%{left:100%;opacity:0}
+  22%{opacity:1}
+  100%{left:-31%;opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .sentinel.aqua-conversation-active .voice-core,
+  .sentinel.aqua-conversation-active .voice-core:before,
+  .sentinel.aqua-conversation-active .voice-core:after,
+  .sentinel.aqua-conversation-active .voice-core i,
+  .sentinel.aqua-conversation-active .wave-energy:after{animation:none}
+}

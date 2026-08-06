@@ -215,6 +215,13 @@ function captureDefinitions() {
       output: "AquaSentinelOS-v0.8.0-launch-proof.png",
     },
     {
+      name: "direct-aqua-conversation",
+      query: "preview=conversation",
+      ready: "conversation",
+      compactConversation: true,
+      output: "AquaSentinelOS-v0.8.2-Direct-Aqua-Conversation.png",
+    },
+    {
       name: "neural-rest",
       query: "preview=neural&neuralDemo=rest",
       ready: "neural",
@@ -329,6 +336,18 @@ function captureDefinitions() {
 
 const stateExpression = `(() => {
   const root = document.documentElement;
+  const sentinel = document.querySelector('.sentinel');
+  const heroArt = document.querySelector('.hero-art');
+  const aquaHero = document.querySelector('.aqua-hero');
+  const voiceCore = document.querySelector('.voice-core');
+  const aquaPresence = document.querySelector('.aqua-presence-button');
+  const heroArtStyle = heroArt ? getComputedStyle(heroArt) : null;
+  const heroBeforeStyle = aquaHero ? getComputedStyle(aquaHero, '::before') : null;
+  const heroAfterStyle = aquaHero ? getComputedStyle(aquaHero, '::after') : null;
+  const voiceCoreStyle = voiceCore ? getComputedStyle(voiceCore) : null;
+  const voiceBeforeStyle = voiceCore ? getComputedStyle(voiceCore, '::before') : null;
+  const voiceAfterStyle = voiceCore ? getComputedStyle(voiceCore, '::after') : null;
+  const aquaPresenceStyle = aquaPresence ? getComputedStyle(aquaPresence) : null;
   const stage = document.querySelector('.neural-stage');
   const materialized = document.querySelector('[data-neural-materialized]');
   const morphShell = document.querySelector('.neural-morph-shell');
@@ -369,6 +388,14 @@ const stateExpression = `(() => {
   return {
     documentReady: document.readyState,
     ready: root?.dataset?.aquaPreviewReady || '',
+    compactConversation: Boolean(sentinel?.classList.contains('aqua-conversation-active')),
+    heroArtOpacity: heroArtStyle ? Number(heroArtStyle.opacity) : 1,
+    heroBeforeDisplay: heroBeforeStyle?.display || '',
+    heroAfterDisplay: heroAfterStyle?.display || '',
+    voiceCoreAnimation: voiceCoreStyle?.animationName || '',
+    voiceHorizontalShotAnimation: voiceBeforeStyle?.animationName || '',
+    voiceVerticalShotAnimation: voiceAfterStyle?.animationName || '',
+    aquaPresenceVisible: Boolean(aquaPresenceStyle && aquaPresenceStyle.display !== 'none' && Number(aquaPresenceStyle.opacity) > .5),
     phase: root?.dataset?.aquaNeuralPhase || '',
     stagePhase: stage?.dataset?.phase || '',
     morphProgress: stage?.dataset?.morphProgress || '',
@@ -489,7 +516,17 @@ async function waitForExpectedState(connection, sessionId, definition) {
       && (!definition.materialized
         || (definition.materialized === "pending"
           ? state.afterOpacity > .1 && state.referenceState === "morphed"
-          : state.materializationOpacity >= .98 && state.materializationWidth > 0));
+          : state.materializationOpacity >= .98 && state.materializationWidth > 0))
+      && (!definition.compactConversation || (
+        state.compactConversation
+        && state.heroArtOpacity <= .01
+        && state.heroBeforeDisplay === "none"
+        && state.heroAfterDisplay === "none"
+        && state.voiceCoreAnimation.includes("aqua-orb-axis-pulse")
+        && state.voiceHorizontalShotAnimation.includes("aqua-orb-shot-x")
+        && state.voiceVerticalShotAnimation.includes("aqua-orb-shot-y")
+        && state.aquaPresenceVisible
+      ));
     const fullMaterializationReady = !definition.fullMaterialization || (
       state.materializationTransform === 'none'
         && state.returnedDocumentWidth >= state.materializationWidth * .7

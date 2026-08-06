@@ -242,6 +242,7 @@ let notifications = loadOwnerPreferences().notifications;
 const widgetMessageStorageKey = "aqua-sentinel-widget-messages-v1";
 let widgetMessages = loadWidgetMessages();
 let widgetCommandInFlight = null;
+let compactAquaConversation = false;
 const liveSnapshots = new Map();
 const customerPreviewSnapshots = new Map();
 const ecosystemPresentationSnapshots = new Map();
@@ -300,12 +301,12 @@ let commandWidgetState = {
 let deviceDiagnostics = {
   generatedAt: 0,
   platform: "Browser preview",
-  versionName: "0.8.1-field-test-navigation-recovery",
-  versionCode: 2026080501,
+  versionName: "0.8.2-live-aqua-memory",
+  versionCode: 2026080502,
   gatewayConfigured: false,
   authenticated: false,
   microphoneGranted: false,
-  speechRecognizerAvailable: false,
+  realtimeVoiceReady: false,
   calendarReadGranted: false,
   calendarWriteGranted: false,
   photoCaptureAvailable: false,
@@ -860,7 +861,7 @@ function enableEcosystemPresentationMode() {
   try {
     const previewPanel = new URLSearchParams(window.location.search).get("preview");
     deterministicPreviewProof =
-      window.location.protocol === "file:" && ["home", "neural"].includes(previewPanel);
+      window.location.protocol === "file:" && ["home", "conversation", "neural"].includes(previewPanel);
   } catch (_) {
     deterministicPreviewProof = false;
   }
@@ -1065,10 +1066,17 @@ function relative(index) {
 
 function setAquaState(state) {
   clearTimeout(speechBeatTimer);
-  sentinel.className = `sentinel state-${state}`;
+  Object.keys(stateLabels).forEach((name) => sentinel.classList.remove(`state-${name}`));
+  sentinel.classList.add(`state-${state}`);
+  sentinel.classList.toggle("aqua-conversation-active", compactAquaConversation);
   aquaStateLabel.textContent = stateLabels[state] || stateLabels.idle;
   const neuralStage = systemPanel.querySelector(".neural-stage");
   if (neuralStage) neuralStage.dataset.aquaState = state;
+}
+
+function setCompactAquaConversation(active) {
+  compactAquaConversation = Boolean(active);
+  sentinel.classList.toggle("aqua-conversation-active", compactAquaConversation);
 }
 
 function updateOwnerAccessControl() {
@@ -2140,7 +2148,7 @@ function diagnosticReceiptText() {
     `Platform: ${state.platform || "unknown"}`,
     `Surface: ${surface}; Neural phase: ${neuralPhase}; Aqua state: ${aquaStateLabel.textContent || "unknown"}`,
     `Aqua Brain: ${state.gatewayConfigured ? (state.authenticated ? "connected" : "configured, owner session needed") : "standalone; gateway not configured"}`,
-    `Voice: ${state.microphoneGranted && state.speechRecognizerAvailable ? "ready" : "needs attention"}`,
+    `Voice: ${state.microphoneGranted && state.realtimeVoiceReady ? "Realtime ready" : "needs attention"}`,
     `Calendar: ${state.calendarReadGranted && state.calendarWriteGranted ? "ready" : "permission needed"}`,
     `Capture: photo=${Boolean(state.photoCaptureAvailable)} video=${Boolean(state.videoCaptureAvailable)}`,
     `Widget: ${state.widgetInstalledCount || 0} installed`,
@@ -2153,7 +2161,7 @@ function diagnosticReceiptText() {
 function diagnosticsMarkup() {
   const state = deviceDiagnostics;
   const nativeReady = Boolean(window.AquaBridge);
-  const voiceReady = Boolean(state.microphoneGranted && state.speechRecognizerAvailable);
+  const voiceReady = Boolean(state.microphoneGranted && state.realtimeVoiceReady);
   const calendarReady = Boolean(state.calendarReadGranted && state.calendarWriteGranted);
   const captureReady = Boolean(state.photoCaptureAvailable && state.videoCaptureAvailable);
   const widgetReady = Number(state.widgetInstalledCount) > 0;
@@ -2170,7 +2178,7 @@ function diagnosticsMarkup() {
       <div class="diagnostic-orb ${confirmed ? "confirmed" : "attention"}"><i></i><strong>${confirmed ? "Sentinel device systems are ready" : "Aqua found actionable boundaries"}</strong><small>${nativeReady ? `Checked ${escapeHtml(state.platform || "Android")}` : "Live checks run inside the installed APK"}</small></div>
       <div class="diagnostic-list expanded">
         <article><i>◌</i><span><strong>Owner and Aqua Brain</strong><small>${state.gatewayConfigured ? "Server-owned gateway is configured" : "Standalone is active; gateway is not configured in this test build"}</small></span><b>${state.authenticated ? "Connected" : state.gatewayConfigured ? "Sign in" : "Standalone"}</b></article>
-        <article><i>≈</i><span><strong>Voice and microphone</strong><small>Permission plus Android speech recognition</small></span><b>${voiceReady ? "Ready" : nativeReady ? "Review" : "APK check"}</b></article>
+        <article><i>≈</i><span><strong>Voice and microphone</strong><small>Secure WebRTC audio plus owner session</small></span><b>${voiceReady ? "Ready" : nativeReady ? "Review" : "APK check"}</b></article>
         <article><i>◷</i><span><strong>Calendar action path</strong><small>Read-back verification and duplicate protection</small></span><b>${calendarReady ? "Ready" : nativeReady ? "Permission" : "APK check"}</b></article>
         <article><i>▧</i><span><strong>Photo and video handoff</strong><small>Protected evidence return to the File Cabinet</small></span><b>${captureReady ? "Ready" : nativeReady ? "Review" : "APK check"}</b></article>
         <article><i>A</i><span><strong>Command Center widget</strong><small>${state.filedTodayCount || 0} captured today · ${state.filingPendingCount || 0} pending</small></span><b>${widgetReady ? `${state.widgetInstalledCount} active` : nativeReady ? "Add" : "APK check"}</b></article>
@@ -2222,7 +2230,7 @@ function aboutMarkup() {
       <small>AQUA SOFTWARE COMPANY</small>
       <h1>Aqua Sentinel OS</h1>
       <p>Aqua is the owner command layer across the Aqua application ecosystem. Each satellite keeps its own authoritative records; Sentinel coordinates, explains, routes, and preserves receipts.</p>
-      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.8.1-field-test-navigation-recovery")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
+      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.8.2-live-aqua-memory")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
       <div class="about-boundaries">
         <article><i>✓</i><span><strong>Protected Home</strong><small>The approved first screen is unchanged by this repair.</small></span></article>
         <article><i>✓</i><span><strong>Server-owned intelligence</strong><small>API credentials and guarded actions do not live inside the APK.</small></span></article>
@@ -2234,7 +2242,7 @@ function aboutMarkup() {
 
 function settingsMarkup() {
   const state = deviceDiagnostics;
-  const voiceReady = Boolean(state.microphoneGranted && state.speechRecognizerAvailable);
+  const voiceReady = Boolean(state.microphoneGranted && state.realtimeVoiceReady);
   const calendarReady = Boolean(state.calendarReadGranted && state.calendarWriteGranted);
   return `${systemHeader("Settings")}
     <section class="settings-hero"><small>AQUA SENTINEL OS</small><h1>Make Aqua feel like yours.</h1><p>These controls change Sentinel’s operating behavior and open the real Android boundaries behind it. The approved Home artwork remains protected.</p></section>
@@ -2242,12 +2250,12 @@ function settingsMarkup() {
     <div class="settings-list enriched">
       <button type="button" data-setting="sound"><i>◉</i><span><strong>Aqua voice feedback</strong><small>Spoken responses and filing briefs</small></span><b>${sound ? "ON" : "OFF"}</b></button>
       <button type="button" data-setting="notifications"><i>◇</i><span><strong>In-app owner alerts</strong><small>Routine receipts and confirmations; critical failures remain visible</small></span><b>${notifications ? "ON" : "OFF"}</b></button>
-      <button type="button" data-setting="voice-test"><i>≈</i><span><strong>Voice and presence test</strong><small>Hear Aqua and verify the living center</small></span><b>TEST</b></button>
+      <button type="button" data-setting="voice-test"><i>≈</i><span><strong>Voice and presence test</strong><small>Open Aqua's live Realtime conversation</small></span><b>TEST</b></button>
       <button type="button" data-setting="permissions"><i>⌾</i><span><strong>Privacy and permissions</strong><small>Microphone and calendar access in Android settings</small></span><b>${voiceReady && calendarReady ? "READY" : "REVIEW"}</b></button>
       <button type="button" data-setting="integrations"><i>∞</i><span><strong>Ecosystem connections</strong><small>Installed applications, snapshots, and authoritative links</small></span><b>${state.installedAppCount || 0}/${state.registeredAppCount || apps.length}</b></button>
       <button type="button" data-setting="storage"><i>▤</i><span><strong>File Cabinet and synchronization</strong><small>Protected evidence, queues, cloud confirmation, and retention</small></span><b>${state.filingPendingCount || 0} PENDING</b></button>
       <button type="button" data-setting="diagnostics"><i>◇</i><span><strong>Diagnostics</strong><small>Run device checks and copy a repair receipt</small></span><b>CHECK</b></button>
-      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.8.1</b></button>
+      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.8.2</b></button>
     </div>`;
 }
 
@@ -2378,6 +2386,7 @@ function openPanel(kind) {
       const setting = button.dataset.setting;
       if (setting === "sound") {
         sound = !sound;
+        if (realtimeRemoteAudio) realtimeRemoteAudio.muted = !sound;
         saveOwnerPreferences();
         openPanel("settings");
       } else if (setting === "notifications") {
@@ -2386,12 +2395,7 @@ function openPanel(kind) {
         openPanel("settings");
       } else if (setting === "voice-test") {
         systemPanel.hidden = true;
-        setAquaState("speaking");
-        if (sound && window.AquaBridge?.speak) {
-          window.AquaBridge.speak("Aqua Sentinel voice systems are ready.");
-        } else {
-          setTimeout(() => setAquaState("idle"), 1800);
-        }
+        startVoice();
       } else if (setting === "diagnostics") {
         openPanel("diagnostics");
       } else if (setting === "integrations") {
@@ -2636,13 +2640,17 @@ function seekNeuralSequencePreview(elapsedMillis) {
 function activateDeterministicPreviewRoute() {
   const previewParameters = new URLSearchParams(window.location.search);
   const previewPanel = previewParameters.get("preview");
-  if (!["home", "neural", "command", "settings", "diagnostics", "data", "files", "messages", "about"].includes(previewPanel)) {
+  if (!["home", "conversation", "neural", "command", "settings", "diagnostics", "data", "files", "messages", "about"].includes(previewPanel)) {
     return false;
   }
   authenticated = true;
   authPanel.hidden = true;
-  if (previewPanel === "home") {
+  if (["home", "conversation"].includes(previewPanel)) {
     render();
+    if (previewPanel === "conversation") {
+      setCompactAquaConversation(true);
+      setAquaState("listening");
+    }
   } else {
     if (previewPanel === "neural") {
       const demo = previewParameters.get("neuralDemo") || "rest";
@@ -2780,6 +2788,7 @@ function completeRealtimeToolCall(item) {
       sendRealtimeToolOutput(callId, { status: "failed", error: "Unknown Sentinel destination" });
       return;
     }
+    setCompactAquaConversation(false);
     if (destination.refresh) window.refreshDeviceDiagnostics?.();
     if (destination.panel === "home") closeOverlays();
     else if (destination.panel === "neural") {
@@ -2800,8 +2809,16 @@ function completeRealtimeToolCall(item) {
       sendRealtimeToolOutput(callId, { status: "failed", error: "That app is not registered in Sentinel" });
       return;
     }
-    centerApp(index, true);
-    sendRealtimeToolOutput(callId, { status: "confirmed", app: apps[index].name });
+    setCompactAquaConversation(false);
+    if (!beginNeuralRequest(`Open ${apps[index].name}`)) {
+      openPanel("neural");
+      focusNeuralSource(index, [], `Open ${apps[index].name}`);
+    }
+    sendRealtimeToolOutput(callId, {
+      status: "confirmed",
+      app: apps[index].name,
+      destination: "Neural Link",
+    });
     return;
   }
 
@@ -2817,12 +2834,39 @@ function completeRealtimeToolCall(item) {
       selectedApp: selected.name,
       connected: selected.connected,
     };
+    const intent = identifyNeuralIntent(text);
+    if (intent) {
+      setCompactAquaConversation(false);
+      beginNeuralRequest(text);
+    }
     window.AquaBridge.askAquaRealtime(
       callId,
       text,
       selected.name,
       JSON.stringify(context),
     );
+    return;
+  }
+
+  if (item.name === "remember_detail") {
+    const content = String(args.content || "").trim();
+    const kind = String(args.kind || "fact");
+    const importance = Math.max(0, Math.min(100, Math.round(Number(args.importance) || 70)));
+    if (!content || !window.AquaBridge?.rememberAquaRealtime) {
+      sendRealtimeToolOutput(callId, { status: "failed", error: "Aqua durable memory is unavailable" });
+      return;
+    }
+    window.AquaBridge.rememberAquaRealtime(callId, content, kind, importance);
+    return;
+  }
+
+  if (item.name === "recall_memory") {
+    const query = String(args.query || "").trim();
+    if (!query || !window.AquaBridge?.recallAquaRealtime) {
+      sendRealtimeToolOutput(callId, { status: "failed", error: "Aqua durable memory is unavailable" });
+      return;
+    }
+    window.AquaBridge.recallAquaRealtime(callId, query);
     return;
   }
 
@@ -2867,6 +2911,8 @@ function handleAquaRealtimeEvent(event) {
     return;
   }
   if (event.type === "error") {
+    stopAquaRealtime();
+    setCompactAquaConversation(false);
     window.receiveAquaError(event.error?.message || "Aqua live voice encountered an error.");
   }
 }
@@ -2874,10 +2920,11 @@ function handleAquaRealtimeEvent(event) {
 window.startAquaRealtime = async () => {
   if (realtimePeerConnection) {
     stopAquaRealtime();
+    setCompactAquaConversation(false);
     setAquaState("idle");
     return;
   }
-  setAquaState("thinking");
+  setAquaState("connecting");
   try {
     if (!navigator.mediaDevices?.getUserMedia) {
       throw new Error("This Android voice surface does not support secure live audio.");
@@ -2888,6 +2935,7 @@ window.startAquaRealtime = async () => {
     const connection = new RTCPeerConnection();
     const audio = new Audio();
     audio.autoplay = true;
+    audio.muted = !sound;
     audio.onplay = () => setAquaState("speaking");
     connection.ontrack = (event) => {
       audio.srcObject = event.streams[0];
@@ -2895,6 +2943,7 @@ window.startAquaRealtime = async () => {
     connection.onconnectionstatechange = () => {
       if (["failed", "closed"].includes(connection.connectionState)) {
         stopAquaRealtime();
+        setCompactAquaConversation(false);
         setAquaState(connection.connectionState === "failed" ? "error" : "idle");
       }
     };
@@ -2917,8 +2966,8 @@ window.startAquaRealtime = async () => {
     window.AquaBridge.connectRealtime(offer.sdp || "");
   } catch (error) {
     stopAquaRealtime();
+    setCompactAquaConversation(false);
     window.receiveAquaError(error?.message || "Aqua could not start live voice.");
-    window.AquaBridge?.startLegacyListening?.();
   }
 };
 
@@ -2933,8 +2982,8 @@ window.receiveRealtimeAnswer = async (raw) => {
     setAquaState("listening");
   } catch (error) {
     stopAquaRealtime();
+    setCompactAquaConversation(false);
     window.receiveAquaError(error?.message || "Aqua live voice could not connect.");
-    window.AquaBridge?.startLegacyListening?.();
   }
 };
 
@@ -2947,6 +2996,10 @@ window.receiveRealtimeToolResult = (raw) => {
   }
   if (!payload?.callId) return;
   if (payload.result) {
+    if (payload.result.materialization?.present) {
+      setCompactAquaConversation(false);
+      activateConfirmedNeuralRoute(payload.result);
+    }
     applyAquaAction(payload.result.action);
     if (payload.result.materialization?.present) showMaterialization(payload.result.materialization, true);
   }
@@ -2959,23 +3012,23 @@ window.receiveRealtimeToolResult = (raw) => {
 };
 
 function startVoice() {
-  if (systemPanel.hidden || systemPanel.dataset.panel !== "neural") {
-    returnNeuralToRest();
-    openPanel("neural");
-  } else if (neuralPhase !== "rest") {
+  const alreadyInNeural = !systemPanel.hidden && systemPanel.dataset.panel === "neural";
+  if (alreadyInNeural && neuralPhase !== "rest") {
     returnNeuralToRest();
   }
-  neuralThought = "Aqua is listening.";
-  neuralThoughtDetail = "Tell her what to find, show, search, or open.";
-  layoutNeuralStage();
+  setCompactAquaConversation(!alreadyInNeural);
   if (!window.AquaBridge?.startListening) {
     notify("Native voice is available in the installed Android APK.");
+    setCompactAquaConversation(false);
     return;
   }
-  setAquaState("listening");
   if (!authenticated) {
-    notify("Aqua is listening in Standalone mode. Live company answers require a connected Aqua Brain.");
+    notify("Connect the owner session before Aqua live voice can listen.");
+    setCompactAquaConversation(false);
+    openOwnerAccess();
+    return;
   }
+  setAquaState("connecting");
   window.AquaBridge.startListening();
 }
 
@@ -3119,6 +3172,7 @@ window.receiveAquaError = (message) => {
     widgetCommandInFlight = null;
     saveWidgetMessages();
   }
+  setCompactAquaConversation(false);
   setAquaState("error");
   if (!systemPanel.hidden && systemPanel.dataset.panel === "neural") {
     setNeuralPhase(

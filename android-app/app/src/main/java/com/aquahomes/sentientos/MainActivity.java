@@ -18,11 +18,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -31,10 +26,13 @@ import android.view.WindowInsetsController;
 import android.webkit.WebChromeClient;
 import android.webkit.PermissionRequest;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.webkit.JavascriptInterface;
+
+import androidx.webkit.WebViewAssetLoader;
+import androidx.webkit.WebViewClientCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +49,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.MessageDigest;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -66,12 +63,12 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.net.ssl.SSLHandshakeException;
 
-public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
+public class MainActivity extends Activity {
     private static final int RECORD_AUDIO_REQUEST = 11;
     private static final String LOCAL_APP_URL =
-        "file:///android_asset/public/index.html";
+        "https://appassets.androidplatform.net/assets/public/index.html";
     private static final String LOCAL_APP_PREFIX =
-        "file:///android_asset/public/";
+        "https://appassets.androidplatform.net/assets/public/";
     private static final String AQUA_GATEWAY_URL = BuildConfig.AQUA_GATEWAY_URL;
     private static final String KEYSTORE_PROVIDER = "AndroidKeyStore";
     private static final String KEY_ALIAS = "aqua_sentinel_owner_session_v1";
@@ -109,10 +106,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private WebView webView;
-    private SpeechRecognizer speechRecognizer;
-    private TextToSpeech textToSpeech;
     private boolean listenAfterPermission;
-    private boolean legacyVoiceRequested;
     private final Map<String, SnapshotRequest> pendingSnapshots = new HashMap<>();
     private boolean snapshotReceiverRegistered;
     private boolean filingReceiverRegistered;
@@ -187,7 +181,13 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         webView.setSoundEffectsEnabled(false);
         webView.setHapticFeedbackEnabled(false);
         configureWebView(webView.getSettings());
-        webView.setWebViewClient(new LockedWebViewClient());
+        WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
+            .addPathHandler(
+                "/assets/",
+                new WebViewAssetLoader.AssetsPathHandler(this)
+            )
+            .build();
+        webView.setWebViewClient(new LockedWebViewClient(assetLoader));
         webView.setWebChromeClient(new LockedWebChromeClient());
         webView.addJavascriptInterface(new AquaBridge(), "AquaBridge");
         setContentView(webView);
@@ -210,13 +210,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
         filingReceiverRegistered = true;
 
-        textToSpeech = new TextToSpeech(this, this);
     }
 
     private void configureWebView(WebSettings settings) {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
-        settings.setAllowFileAccess(true);
+        settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setBuiltInZoomControls(false);
@@ -232,7 +231,21 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
     }
 
-    private class LockedWebViewClient extends WebViewClient {
+    private class LockedWebViewClient extends WebViewClientCompat {
+        private final WebViewAssetLoader assetLoader;
+
+        LockedWebViewClient(WebViewAssetLoader assetLoader) {
+            this.assetLoader = assetLoader;
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(
+            WebView view,
+            WebResourceRequest request
+        ) {
+            return assetLoader.shouldInterceptRequest(request.getUrl());
+        }
+
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
@@ -282,7 +295,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     ? ""
                     : request.getOrigin().toString();
                 boolean trustedLocalOrigin =
-                    origin.startsWith("file://")
+                    "https://appassets.androidplatform.net/".equals(origin)
                         && webView.getUrl() != null
                         && webView.getUrl().startsWith(LOCAL_APP_PREFIX);
                 boolean microphoneGranted =
@@ -392,9 +405,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     @Override
     protected void onPause() {
-        if (speechRecognizer != null) {
-            speechRecognizer.cancel();
-        }
         super.onPause();
     }
 
@@ -411,109 +421,15 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             return;
         }
 
-        if (
-            !legacyVoiceRequested
-                && !AQUA_GATEWAY_URL.trim().isEmpty()
-                && sessionIsCurrent()
-        ) {
-            evaluateJavascript("window.startAquaRealtime?.();");
+        if (AQUA_GATEWAY_URL.trim().isEmpty()) {
+            sendError("Aqua live voice is not configured in this build.");
             return;
         }
-        legacyVoiceRequested = false;
-
-        if (!SpeechRecognizer.isRecognitionAvailable(this)) {
-            sendError("Speech recognition is not available on this device.");
+        if (!sessionIsCurrent()) {
+            sendError("Connect the owner session before Aqua live voice can listen.");
             return;
         }
-
-        if (speechRecognizer != null) {
-            speechRecognizer.destroy();
-        }
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        speechRecognizer.setRecognitionListener(new RecognitionListener() {
-            @Override
-            public void onReadyForSpeech(Bundle params) {}
-
-            @Override
-            public void onBeginningOfSpeech() {}
-
-            @Override
-            public void onRmsChanged(float rmsDb) {
-                double normalized = Math.max(0.08, Math.min(1.0, (rmsDb + 2.0) / 12.0));
-                runOnUiThread(() ->
-                    webView.evaluateJavascript(
-                        "document.documentElement.style.setProperty('--voice-level','"
-                            + normalized
-                            + "');",
-                        null
-                    )
-                );
-            }
-
-            @Override
-            public void onBufferReceived(byte[] buffer) {}
-
-            @Override
-            public void onEndOfSpeech() {
-                evaluateJavascript("window.setAquaThinking?.();");
-            }
-
-            @Override
-            public void onEvent(int eventType, Bundle params) {}
-
-            @Override
-            public void onError(int error) {
-                if (error == SpeechRecognizer.ERROR_NO_MATCH) {
-                    sendError("I did not catch that. Tap the A and try again.");
-                } else if (error == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS) {
-                    sendError("Microphone permission is required for Aqua voice control.");
-                } else {
-                    sendError("Voice capture paused. Tap the A to try again.");
-                }
-            }
-
-            @Override
-            public void onResults(Bundle results) {
-                ArrayList<String> matches =
-                    results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                if (matches != null && !matches.isEmpty()) {
-                    sendText(matches.get(0), false);
-                } else {
-                    sendError("I did not catch that. Tap the A and try again.");
-                }
-            }
-
-            @Override
-            public void onPartialResults(Bundle partialResults) {
-                ArrayList<String> matches =
-                    partialResults.getStringArrayList(
-                        SpeechRecognizer.RESULTS_RECOGNITION
-                    );
-                if (matches != null && !matches.isEmpty()) {
-                    sendText(matches.get(0), true);
-                }
-            }
-        });
-
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        );
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE,
-            Locale.US.toLanguageTag()
-        );
-        intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
-        speechRecognizer.startListening(intent);
-    }
-
-    private void sendText(String text, boolean partial) {
-        String method = partial ? "receiveAquaPartial" : "receiveAquaText";
-        evaluateJavascript(
-            "window." + method + "(" + JSONObject.quote(text) + ");"
-        );
+        evaluateJavascript("window.startAquaRealtime?.();");
     }
 
     private void sendError(String text) {
@@ -534,20 +450,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 + JSONObject.quote(payload.toString())
                 + ");"
         );
-    }
-
-    private void speakText(String text) {
-        runOnUiThread(() -> {
-            if (textToSpeech != null) {
-                Bundle params = new Bundle();
-                textToSpeech.speak(
-                    text,
-                    TextToSpeech.QUEUE_FLUSH,
-                    params,
-                    "aqua-response"
-                );
-            }
-        });
     }
 
     private void launchRegisteredApp(String appName, String packageJson) {
@@ -748,7 +650,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     checkSelfPermission(Manifest.permission.RECORD_AUDIO)
                         == PackageManager.PERMISSION_GRANTED
                 )
-                .put("speechRecognizerAvailable", SpeechRecognizer.isRecognitionAvailable(this))
+                .put(
+                    "realtimeVoiceReady",
+                    !AQUA_GATEWAY_URL.trim().isEmpty() && sessionIsCurrent()
+                )
                 .put(
                     "calendarReadGranted",
                     checkSelfPermission(Manifest.permission.READ_CALENDAR)
@@ -815,43 +720,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
     @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            textToSpeech.setLanguage(Locale.US);
-            textToSpeech.setPitch(1.0f);
-            textToSpeech.setSpeechRate(0.97f);
-            textToSpeech.setOnUtteranceProgressListener(
-                new UtteranceProgressListener() {
-                    @Override
-                    public void onStart(String utteranceId) {
-                        evaluateJavascript("window.setAquaSpeaking(true);");
-                    }
-
-                    @Override
-                    public void onRangeStart(
-                        String utteranceId,
-                        int start,
-                        int end,
-                        int frame
-                    ) {
-                        evaluateJavascript("window.pulseAquaSpeech?.();");
-                    }
-
-                    @Override
-                    public void onDone(String utteranceId) {
-                        evaluateJavascript("window.setAquaSpeaking(false);");
-                    }
-
-                    @Override
-                    public void onError(String utteranceId) {
-                        onDone(utteranceId);
-                    }
-                }
-            );
-        }
-    }
-
-    @Override
     public void onRequestPermissionsResult(
         int requestCode,
         String[] permissions,
@@ -887,13 +755,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         if (filingReceiverRegistered) {
             unregisterReceiver(filingReceiver);
             filingReceiverRegistered = false;
-        }
-        if (speechRecognizer != null) {
-            speechRecognizer.destroy();
-        }
-        if (textToSpeech != null) {
-            textToSpeech.stop();
-            textToSpeech.shutdown();
         }
         if (webView != null) {
             webView.removeJavascriptInterface("AquaBridge");
@@ -1326,6 +1187,48 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         });
     }
 
+    private void runRealtimeMemoryTool(
+        String callId,
+        String method,
+        JSONObject params,
+        String fallback
+    ) {
+        networkExecutor.execute(() -> {
+            try {
+                String accessToken = readSecureValue(ACCESS_TOKEN);
+                if (accessToken.isEmpty() || !sessionIsCurrent()) {
+                    throw new SecurityException(
+                        "Owner sign-in is required before Aqua can use durable memory."
+                    );
+                }
+                HttpResult result = postJson(
+                    AQUA_GATEWAY_URL,
+                    rpcRequest(method, params),
+                    accessToken
+                );
+                JSONObject payload = rpcResult(result, fallback);
+                sendJsonCallback(
+                    "receiveRealtimeToolResult",
+                    new JSONObject()
+                        .put("callId", callId)
+                        .put("result", payload)
+                );
+            } catch (Exception error) {
+                try {
+                    sendJsonCallback(
+                        "receiveRealtimeToolResult",
+                        new JSONObject()
+                            .put("callId", callId)
+                            .put(
+                                "error",
+                                error.getMessage() == null ? fallback : error.getMessage()
+                            )
+                    );
+                } catch (JSONException ignored) {}
+            }
+        });
+    }
+
     private void connectRealtime(String sdp) {
         networkExecutor.execute(() -> {
             JSONObject callback = new JSONObject();
@@ -1410,19 +1313,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         }
 
         @JavascriptInterface
-        public void startLegacyListening() {
-            runOnUiThread(() -> {
-                legacyVoiceRequested = true;
-                MainActivity.this.startListening();
-            });
-        }
-
-        @JavascriptInterface
-        public void speak(String text) {
-            speakText(text);
-        }
-
-        @JavascriptInterface
         public void signIn(String email, String password) {
             signInOwner(email, password);
         }
@@ -1459,6 +1349,42 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                 uiContext,
                 callId
             );
+        }
+
+        @JavascriptInterface
+        public void rememberAquaRealtime(
+            String callId,
+            String content,
+            String kind,
+            int importance
+        ) {
+            try {
+                runRealtimeMemoryTool(
+                    callId,
+                    "aqua.memory.remember",
+                    new JSONObject()
+                        .put("content", content)
+                        .put("kind", kind)
+                        .put("importance", importance),
+                    "Aqua could not save that memory."
+                );
+            } catch (JSONException error) {
+                sendError("Aqua could not prepare that memory.");
+            }
+        }
+
+        @JavascriptInterface
+        public void recallAquaRealtime(String callId, String query) {
+            try {
+                runRealtimeMemoryTool(
+                    callId,
+                    "aqua.memory.recall",
+                    new JSONObject().put("query", query),
+                    "Aqua could not retrieve memory."
+                );
+            } catch (JSONException error) {
+                sendError("Aqua could not prepare that memory search.");
+            }
         }
 
         @JavascriptInterface

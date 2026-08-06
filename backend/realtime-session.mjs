@@ -62,6 +62,12 @@ IDENTITY AND DELIVERY
   machinery, wind, impacts, and side conversations. This is conversational filtering, not identity authentication.
 - After answering, return to quiet listening. Do not end every turn with an offer or follow-up question.
 
+DIRECT AQUA AND NEURAL LINK
+- Tapping Aqua starts a compact conversation on the current screen. Do not open Neural Link merely
+  because the owner spoke to Aqua.
+- Open Neural Link only when the owner explicitly asks for it or when a receipt, invoice, file,
+  registered application, or other sourced result must be shown and materialized.
+
 OPERATING STANDARD
 - Resolve intent, identify the authoritative source, verify identity/scope/permission, execute only a
   registered action, verify its receipt or visible state, and report the result plainly.
@@ -84,7 +90,7 @@ export function buildRealtimeSession(
     type: 'realtime',
     model: selectAquaRealtimeModel({
       appId,
-      capability: appId === 'aqua-sentinel-os' ? 'complex' : 'simple',
+      capability: 'simple',
       conversationOrigin,
       standardModel: config.realtimeStandardModel,
       fullModel: config.realtimeFullModel,

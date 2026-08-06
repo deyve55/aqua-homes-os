@@ -25,8 +25,8 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026080501
-        versionName = "0.8.1-field-test-navigation-recovery"
+        versionCode = 2026080502
+        versionName = "0.8.2-live-aqua-memory"
         buildConfigField(
             "String",
             "AQUA_GATEWAY_URL",
@@ -63,4 +63,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+dependencies {
+    implementation("androidx.webkit:webkit:1.16.0")
 }
