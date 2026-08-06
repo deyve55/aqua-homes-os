@@ -1106,6 +1106,11 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(widgetVerifier, /Process: \$\{package_pattern\}/);
   assert.doesNotMatch(widgetVerifier, /if grep -Eq "FATAL EXCEPTION\|/);
   assert.match(widgetVerifier, /AQUA_WIDGET_CAPTURE_CANCEL_STAYED_ON_LAUNCHER/);
+  assert.match(widgetVerifier, /top_resumed_component\(\)/);
+  assert.match(widgetVerifier, /for marker in \("mResumedActivity:", "topResumedActivity="\)/);
+  assert.match(widgetVerifier, /resumed_component="\$\(top_resumed_component "\$focus_path" \|\| true\)"/);
+  assert.match(widgetVerifier, /if \[\[ "\$resumed_component" == "\$launcher_package\/"\* \]\]/);
+  assert.doesNotMatch(widgetVerifier, /mCurrentFocus\|mFocusedApp\|mResumedActivity\|topResumedActivity\)\.\*\$\{launcher_package\}/);
   assert.match(widgetVerifier, /local stable_launcher_samples=0/);
   assert.match(widgetVerifier, /stable_launcher_samples=\$\(\(stable_launcher_samples \+ 1\)\)/);
   assert.match(widgetVerifier, /if \[\[ "\$stable_launcher_samples" -ge 2 \]\]/);

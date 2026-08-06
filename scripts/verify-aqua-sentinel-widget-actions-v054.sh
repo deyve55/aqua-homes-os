@@ -362,21 +362,45 @@ assert_widget_send_returned_to_launcher() {
   return 1
 }
 
+top_resumed_component() {
+  local activity_path="$1"
+
+  python3 - "$activity_path" <<'PY'
+import re
+import sys
+
+lines = open(sys.argv[1], encoding="utf-8", errors="replace").read().splitlines()
+component_pattern = re.compile(r"([A-Za-z0-9_.]+/[A-Za-z0-9_.$]+)")
+
+# mResumedActivity is the authoritative ActivityTaskManager state on the
+# release emulator. Newer Android versions may expose topResumedActivity
+# instead, so retain that as a compatibility fallback. Do not inspect task
+# history or window snapshots: stopped/hidden activities remain there.
+for marker in ("mResumedActivity:", "topResumedActivity="):
+    for line in lines:
+        if marker not in line:
+            continue
+        match = component_pattern.search(line)
+        if match:
+            print(match.group(1))
+            raise SystemExit(0)
+
+raise SystemExit(1)
+PY
+}
+
 assert_transient_capture_returned_to_launcher() {
   local mode="$1"
   local focus_path="/tmp/aqua-sentinel-v0.8.0-widget-${mode}-return-focus.txt"
-  local package_pattern="${package//./\\.}"
+  local resumed_component=""
   local stable_launcher_samples=0
   for attempt in $(seq 1 20); do
-    {
-      adb shell dumpsys window 2>/dev/null || true
-      adb shell dumpsys activity activities 2>/dev/null || true
-    } > "$focus_path"
-    if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${launcher_package}" "$focus_path" \
-      && ! grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${package_pattern}/" "$focus_path"; then
+    adb shell dumpsys activity activities > "$focus_path" 2>/dev/null || true
+    resumed_component="$(top_resumed_component "$focus_path" || true)"
+    if [[ "$resumed_component" == "$launcher_package/"* ]]; then
       stable_launcher_samples=$((stable_launcher_samples + 1))
       if [[ "$stable_launcher_samples" -ge 2 ]]; then
-        echo "AQUA_WIDGET_CAPTURE_CANCEL_STAYED_ON_LAUNCHER mode=$mode stable_samples=$stable_launcher_samples"
+        echo "AQUA_WIDGET_CAPTURE_CANCEL_STAYED_ON_LAUNCHER mode=$mode stable_samples=$stable_launcher_samples resumed=$resumed_component"
         return 0
       fi
     else
@@ -387,12 +411,12 @@ assert_transient_capture_returned_to_launcher() {
     fi
     sleep 1
   done
-  if grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${package_pattern}/.*QuickCaptureActivity" "$focus_path"; then
+  if [[ "$resumed_component" == "$capture_activity" ]]; then
     echo "Widget $mode left QuickCaptureActivity resumed after the bounded launcher transition" >&2
-  elif grep -Eq "(mCurrentFocus|mFocusedApp|mResumedActivity|topResumedActivity).*${package_pattern}/" "$focus_path"; then
+  elif [[ "$resumed_component" == "$package/"* ]]; then
     echo "Widget $mode left a Sentinel activity resumed after the bounded launcher transition" >&2
   else
-    echo "Widget $mode did not reach two stable Launcher snapshots after cancellation" >&2
+    echo "Widget $mode did not reach two stable Launcher resume states after cancellation: resumed=${resumed_component:-unknown}" >&2
   fi
   tail -n 80 "$focus_path" >&2 || true
   return 1
