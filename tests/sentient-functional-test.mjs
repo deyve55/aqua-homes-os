@@ -1073,7 +1073,8 @@ test("Aqua's widget is a universal executive handoff and confirms direct calenda
   assert.match(activity, /widget_launcher_pin_probe/);
   assert.match(activity, /installOrRepairCommandWidget\(\)/);
   assert.doesNotMatch(activity, /widget_contract_probe/);
-  assert.match(widgetVerifier, /for mode in home action file photo video/);
+  assert.match(widgetVerifier, /for mode in home action file receipt video/);
+  assert.match(widgetVerifier, /receipt\) tap_launcher_control "\$mode" "widget_photo" "RECEIPT"/);
   assert.match(widgetVerifier, /--ez widget_launcher_pin_probe true/);
   assert.match(widgetVerifier, /window_animation_scale transition_animation_scale animator_duration_scale/);
   assert.match(widgetVerifier, /am force-stop "\$launcher_package"/);

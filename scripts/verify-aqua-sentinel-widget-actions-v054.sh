@@ -1077,7 +1077,7 @@ prove_widget_resize "small" "vertical"
 terminate_sentinel_background_process "before-five-action-sequence"
 adb shell pm grant "$package" android.permission.RECORD_AUDIO
 
-for mode in home action file photo video; do
+for mode in home action file receipt video; do
   evidence="/tmp/aqua-sentinel-v0.8.0-widget-${mode}.logcat.txt"
   expected_route="$mode"
   [[ "$mode" == "file" ]] && expected_route="voice"
@@ -1086,7 +1086,7 @@ for mode in home action file photo video; do
     home) tap_launcher_control "$mode" "widget_logo" "Open Aqua Sentinel OS" ;;
     action) tap_launcher_control "$mode" "widget_action" "AQUA ACTION" ;;
     file) tap_launcher_control "$mode" "widget_file" "FILE" ;;
-    photo) tap_launcher_control "$mode" "widget_photo" "PHOTO" ;;
+    receipt) tap_launcher_control "$mode" "widget_photo" "RECEIPT" ;;
     video) tap_launcher_control "$mode" "widget_video" "VIDEO" ;;
   esac
 
@@ -1145,7 +1145,7 @@ for mode in home action file photo video; do
     echo "AQUA_WIDGET_ACTION_MICROPHONE_VERIFIED handler=SpeechRecognizer"
   fi
 
-  if [[ "$mode" == "file" || "$mode" == "photo" || "$mode" == "video" ]]; then
+  if [[ "$mode" == "file" || "$mode" == "receipt" || "$mode" == "video" ]]; then
     adb shell input keyevent KEYCODE_BACK
     assert_transient_capture_returned_to_launcher "$mode"
   fi
