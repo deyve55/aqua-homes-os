@@ -5,6 +5,8 @@ import {
   ConfirmActionParamsSchema,
   JsonRpcRequestSchema,
   ReceiptAnalyzeParamsSchema,
+  RecallMemoryParamsSchema,
+  RememberMemoryParamsSchema,
   SessionCreateParamsSchema,
 } from './contracts.mjs';
 import {
@@ -146,6 +148,24 @@ export function createGateway({
             const identity = requireIdentity(config, headers);
             const params = ReceiptAnalyzeParamsSchema.parse(request.params);
             return ok(request.id, await receiptRuntime.analyze({ identity, params }));
+          }
+          case 'aqua.memory.remember': {
+            const identity = requireIdentity(config, headers);
+            const params = RememberMemoryParamsSchema.parse(request.params);
+            return ok(request.id, store.remember({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+            }));
+          }
+          case 'aqua.memory.recall': {
+            const identity = requireIdentity(config, headers);
+            const params = RecallMemoryParamsSchema.parse(request.params);
+            return ok(request.id, store.recall({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+            }));
           }
           case 'aqua.action.confirm': {
             const identity = requireIdentity(config, headers);

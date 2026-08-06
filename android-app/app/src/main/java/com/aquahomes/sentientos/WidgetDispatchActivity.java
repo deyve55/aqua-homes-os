@@ -56,6 +56,7 @@ public final class WidgetDispatchActivity extends Activity {
         return "home".equals(mode)
             || "action".equals(mode)
             || "video".equals(mode)
+            || "receipt".equals(mode)
             || "photo".equals(mode)
             || "file".equals(mode);
     }

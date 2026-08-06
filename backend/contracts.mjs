@@ -40,6 +40,17 @@ export const AquaChatParamsSchema = z.object({
   safetyIdentifier: z.string().min(8).max(200),
 });
 
+export const RememberMemoryParamsSchema = z.object({
+  content: z.string().min(1).max(4_000),
+  kind: z.enum(['fact', 'preference', 'secret', 'commitment', 'project']).default('fact'),
+  importance: z.number().int().min(0).max(100).default(70),
+});
+
+export const RecallMemoryParamsSchema = z.object({
+  query: z.string().min(1).max(1_000),
+  limit: z.number().int().min(1).max(10).default(5),
+});
+
 const ReceiptEvidenceReferenceSchema = z.object({
   page: z.number().int().min(1).max(50),
   quote: z.string().max(240),

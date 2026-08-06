@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.provider.Settings;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,6 +14,9 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -20,6 +25,9 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.crypto.Cipher;
@@ -35,7 +43,7 @@ public final class WidgetMessageService extends IntentService {
     private static final String EXTRA_FILING_ITEM_ID = "filing_item_id";
     private static final String EXTRA_CAPTURE_TYPE = "capture_type";
     private static final String EXTRA_DESTINATION = "destination";
-    private static final String EXTRA_LOCAL_EVIDENCE = "local_evidence";
+    private static final String EXTRA_EVIDENCE_PATH = "evidence_path";
     private static final String SESSION_STORE = "aqua_sentinel_secure_session";
     private static final String ACCESS_TOKEN = "access_token";
     private static final String KEYSTORE_PROVIDER = "AndroidKeyStore";
@@ -52,7 +60,7 @@ public final class WidgetMessageService extends IntentService {
         String filingItemId,
         String captureType,
         String destination,
-        boolean hasLocalEvidence
+        String evidencePath
     ) {
         try {
             context.startService(
@@ -63,7 +71,7 @@ public final class WidgetMessageService extends IntentService {
                     .putExtra(EXTRA_FILING_ITEM_ID, filingItemId)
                     .putExtra(EXTRA_CAPTURE_TYPE, captureType)
                     .putExtra(EXTRA_DESTINATION, destination)
-                    .putExtra(EXTRA_LOCAL_EVIDENCE, hasLocalEvidence)
+                    .putExtra(EXTRA_EVIDENCE_PATH, safe(evidencePath))
             );
             return true;
         } catch (RuntimeException error) {
@@ -84,7 +92,8 @@ public final class WidgetMessageService extends IntentService {
         String filingItemId = safe(intent.getStringExtra(EXTRA_FILING_ITEM_ID));
         String captureType = safe(intent.getStringExtra(EXTRA_CAPTURE_TYPE));
         String destination = safe(intent.getStringExtra(EXTRA_DESTINATION));
-        boolean hasLocalEvidence = intent.getBooleanExtra(EXTRA_LOCAL_EVIDENCE, false);
+        String evidencePath = safe(intent.getStringExtra(EXTRA_EVIDENCE_PATH));
+        boolean hasLocalEvidence = !evidencePath.isEmpty();
         if (text == null || text.trim().isEmpty()) return;
         if (messageId == null || messageId.isEmpty()) messageId = UUID.randomUUID().toString();
         FilingStore.markHandoffInFlight(this, filingItemId, messageId);
@@ -123,8 +132,23 @@ public final class WidgetMessageService extends IntentService {
             if (accessToken.isEmpty()) {
                 throw new SecurityException("Open Sentinel once and sign in, then try again.");
             }
+            JSONObject receiptAnalysis = null;
+            if ("receipt".equals(captureType) && hasLocalEvidence) {
+                receiptAnalysis = analyzeReceipt(
+                    filingItemId,
+                    evidencePath,
+                    text.trim(),
+                    accessToken
+                );
+                FilingStore.markReceiptAnalysis(this, filingItemId, receiptAnalysis);
+            }
             JSONObject params = new JSONObject()
-                .put("text", text.trim())
+                .put(
+                    "text",
+                    receiptAnalysis == null
+                        ? text.trim()
+                        : text.trim() + " Receipt analysis: " + receiptAnalysis.toString()
+                )
                 .put("selectedApp", "Aqua Sentinel OS")
                 .put(
                     "uiContext",
@@ -194,6 +218,93 @@ public final class WidgetMessageService extends IntentService {
 
     private static String safe(String value) {
         return value == null ? "" : value.trim();
+    }
+
+    private JSONObject analyzeReceipt(
+        String evidenceId,
+        String evidencePath,
+        String context,
+        String accessToken
+    ) throws Exception {
+        File evidence = new File(evidencePath).getCanonicalFile();
+        File evidenceRoot = new File(getFilesDir(), "filing-evidence").getCanonicalFile();
+        if (!evidence.getPath().startsWith(evidenceRoot.getPath() + File.separator)) {
+            throw new SecurityException("Receipt evidence path was rejected.");
+        }
+        if (!evidence.isFile() || evidence.length() == 0 || evidence.length() > 25_000_000L) {
+            throw new IllegalStateException("Receipt image is missing or too large.");
+        }
+        byte[] original = readBounded(evidence, 25_000_000);
+        BitmapFactory.Options bounds = new BitmapFactory.Options();
+        bounds.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(original, 0, original.length, bounds);
+        int sample = 1;
+        while (Math.max(bounds.outWidth / sample, bounds.outHeight / sample) > 2048) sample *= 2;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = sample;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(original, 0, original.length, options);
+        if (bitmap == null) throw new IllegalStateException("Receipt image could not be decoded.");
+        ByteArrayOutputStream compressed = new ByteArrayOutputStream();
+        int quality = 88;
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, compressed);
+        while (compressed.size() > 4_500_000 && quality > 58) {
+            compressed.reset();
+            quality -= 10;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, compressed);
+        }
+        bitmap.recycle();
+        byte[] analysis = compressed.toByteArray();
+        if (analysis.length > 5_000_000) {
+            throw new IllegalStateException("Receipt image could not be reduced for secure analysis.");
+        }
+        JSONObject params = new JSONObject()
+            .put("evidenceId", evidenceId)
+            .put("originalSha256", sha256(original))
+            .put("analysisImageSha256", sha256(analysis))
+            .put("mimeType", "image/jpeg")
+            .put("imageDataUrl", "data:image/jpeg;base64," + Base64.encodeToString(analysis, Base64.NO_WRAP))
+            .put(
+                "capturedAt",
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.US).format(new Date())
+            )
+            .put("source", "SENTINEL_WIDGET")
+            .put("conversationContext", context)
+            .put("knownJobs", new org.json.JSONArray())
+            .put("knownCostCodes", new org.json.JSONArray());
+        JSONObject envelope = postJson(
+            BuildConfig.AQUA_GATEWAY_URL.trim(),
+            new JSONObject()
+                .put("jsonrpc", "2.0")
+                .put("id", UUID.randomUUID().toString())
+                .put("method", "aqua.receipt.analyze")
+                .put("params", params),
+            accessToken
+        );
+        JSONObject error = envelope.optJSONObject("error");
+        JSONObject result = envelope.optJSONObject("result");
+        if (error != null || result == null) {
+            throw new IllegalStateException("Aqua could not analyze that receipt.");
+        }
+        return result;
+    }
+
+    private static byte[] readBounded(File file, int limit) throws Exception {
+        try (InputStream input = new FileInputStream(file); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[16 * 1024];
+            int read;
+            while ((read = input.read(buffer)) != -1) {
+                if (output.size() + read > limit) throw new IllegalStateException("Receipt image is too large.");
+                output.write(buffer, 0, read);
+            }
+            return output.toByteArray();
+        }
+    }
+
+    private static String sha256(byte[] bytes) throws Exception {
+        byte[] digest = MessageDigest.getInstance("SHA-256").digest(bytes);
+        StringBuilder value = new StringBuilder(digest.length * 2);
+        for (byte next : digest) value.append(String.format(Locale.US, "%02x", next & 0xff));
+        return value.toString();
     }
 
     private String readSecureValue(String name) {

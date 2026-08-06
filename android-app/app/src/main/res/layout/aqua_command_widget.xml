@@ -76,7 +76,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:contentDescription="File a photo with Aqua"
+                    android:contentDescription="Capture a receipt for today's ledger"
                     android:src="@android:color/transparent" />
                 <ImageView
                     android:id="@+id/widget_file"

@@ -1,3 +1,6 @@
+const AQUA_DIAGNOSTICS_CONTRACT = "com.aquahomes.diagnostics";
+const AQUA_DIAGNOSTICS_CONTRACT_VERSION = "1.0.0";
+
 const apps = [
   {
     name: "Aqua CRM",
@@ -301,10 +304,15 @@ let commandWidgetState = {
   state: "Checking",
 };
 let deviceDiagnostics = {
+  contract: AQUA_DIAGNOSTICS_CONTRACT,
+  contractVersion: AQUA_DIAGNOSTICS_CONTRACT_VERSION,
+  appId: "aqua-sentinel-os",
+  appName: "Aqua Sentinel OS",
+  correlationId: "browser-preview",
   generatedAt: 0,
   platform: "Browser preview",
-  versionName: "0.8.3-audio-visual-repair",
-  versionCode: 2026080503,
+  versionName: "0.8.4-live-aqua-daily-ledger",
+  versionCode: 2026080504,
   gatewayConfigured: false,
   authenticated: false,
   microphoneGranted: false,
@@ -320,6 +328,80 @@ let deviceDiagnostics = {
   registeredAppCount: apps.length,
   apps: [],
 };
+
+function buildUniversalDiagnosticReceipt(symptom, state = deviceDiagnostics) {
+  const nativeReady = Boolean(window.AquaBridge);
+  const checks = [
+    {
+      id: "application.bridge",
+      layer: "application",
+      label: "Installed app bridge",
+      status: nativeReady ? "Confirmed" : "Needs Attention",
+      summary: nativeReady ? "The Android application bridge answered." : "Live device checks require the installed Android app.",
+    },
+    {
+      id: "audio.microphone",
+      layer: "audio",
+      label: "Voice and microphone",
+      status: state.microphoneGranted && state.realtimeVoiceReady ? "Confirmed" : "Needs Attention",
+      summary: state.microphoneGranted && state.realtimeVoiceReady ? "Microphone permission and the Realtime route are ready." : "Microphone permission or the Realtime route needs attention.",
+      repairId: "open_app_permissions",
+    },
+    {
+      id: "session.gateway",
+      layer: state.gatewayConfigured ? "session" : "gateway",
+      label: "Owner session and gateway",
+      status: state.gatewayConfigured && state.authenticated ? "Confirmed" : "Needs Attention",
+      summary: state.gatewayConfigured ? (state.authenticated ? "The owner session is current." : "The gateway is configured but owner activation is required.") : "This build is running without a configured gateway.",
+      repairId: state.gatewayConfigured ? "refresh_owner_session" : undefined,
+    },
+    {
+      id: "widget.command",
+      layer: "widget",
+      label: "Command widget",
+      status: Number(state.widgetInstalledCount) > 0 ? "Confirmed" : "Needs Attention",
+      summary: Number(state.widgetInstalledCount) > 0 ? `${state.widgetInstalledCount} widget instance is installed.` : "No Aqua Command widget is installed on this launcher.",
+      repairId: "install_or_repair_widget",
+    },
+    {
+      id: "storage.filing",
+      layer: "storage",
+      label: "Local filing queue",
+      status: state.diagnosticError ? "Failed with Report" : "Confirmed",
+      summary: state.diagnosticError || `${state.filingPendingCount || 0} item(s) need filing direction.`,
+    },
+    {
+      id: "satellite.installation",
+      layer: "satellite-sdk",
+      label: "Aqua app installations",
+      status: Number(state.installedAppCount) > 0 ? "Confirmed" : "Needs Attention",
+      summary: `${state.installedAppCount || 0} of ${state.registeredAppCount || apps.length} registered Aqua apps were found on this phone.`,
+    },
+  ];
+  const status = checks.some((check) => check.status === "Failed with Report")
+    ? "Failed with Report"
+    : checks.some((check) => check.status === "Needs Attention")
+      ? "Needs Attention"
+      : "Confirmed";
+  return {
+    contract: AQUA_DIAGNOSTICS_CONTRACT,
+    contractVersion: AQUA_DIAGNOSTICS_CONTRACT_VERSION,
+    app: {
+      id: state.appId || "aqua-sentinel-os",
+      name: state.appName || "Aqua Sentinel OS",
+      version: state.versionName || "unknown",
+      platform: state.platform || "unknown",
+    },
+    correlationId: state.correlationId || "unavailable",
+    generatedAt: state.generatedAt ? new Date(state.generatedAt).toISOString() : new Date().toISOString(),
+    symptom: String(symptom || "Owner requested an application health check."),
+    status,
+    checks,
+    registeredRepairs: [...new Set(checks.map((check) => check.repairId).filter(Boolean))],
+    ...(lastAquaDiagnosticError ? { lastError: lastAquaDiagnosticError } : {}),
+    truthBoundary: "Read-only diagnostics; no repair was executed.",
+  };
+}
 
 function neuralSourceAt(index) {
   if (index >= 0 && index < apps.length) return apps[index];
@@ -1977,12 +2059,36 @@ function systemHeader(title) {
 }
 
 function filingTypeIcon(type) {
+  if (type === "receipt") return "$";
   if (type === "photo") return "▧";
   if (type === "video") return "▶";
   return "▤";
 }
 
+function dailyLedgerSnapshot() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const entries = filingInbox.filter((item) =>
+    item.ledgerEntry && Number(item.createdAt || 0) >= start,
+  );
+  const totalMinor = entries.reduce(
+    (sum, item) => sum + (Number.isFinite(Number(item.amountMinor)) ? Number(item.amountMinor) : 0),
+    0,
+  );
+  return {
+    entries,
+    totalMinor,
+    needsAmount: entries.filter((item) => !Number.isFinite(Number(item.amountMinor))).length,
+  };
+}
+
+function formatLedgerMoney(amountMinor) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" })
+    .format(Number(amountMinor || 0) / 100);
+}
+
 function filingCabinetMarkup(includeHeader = true) {
+  const ledger = dailyLedgerSnapshot();
   const pending = filingInbox.filter((item) => item.needsClarification || item.needsApproval).length;
   const routed = filingInbox.filter((item) => item.destination).length;
   const items = filingInbox.length
@@ -1994,6 +2100,7 @@ function filingCabinetMarkup(includeHeader = true) {
             <b>${escapeHtml(item.state || "Saved Locally")}</b>
           </header>
           <p>${escapeHtml(item.note || "Evidence captured and protected.")}</p>
+          ${item.ledgerEntry ? `<p class="filing-brain-reply"><b>Daily ledger</b>${item.amountMinor === undefined ? "Amount needs review" : escapeHtml(formatLedgerMoney(item.amountMinor))} · ${escapeHtml(item.project || "Project not assigned")} · ${escapeHtml(item.reconciliationState || "Unreconciled")}</p>` : ""}
           ${item.brainReply ? `<p class="filing-brain-reply"><b>Aqua</b>${escapeHtml(item.brainReply)}</p>` : ""}
           <small>${escapeHtml(item.handoffState || "Captured")} · ${escapeHtml(item.createdLabel || "Captured just now")}</small>
           ${item.needsApproval ? `<p class="filing-owner-gate">Owner confirmation is required before Aqua can execute this external action.</p>` : ""}
@@ -2006,12 +2113,16 @@ function filingCabinetMarkup(includeHeader = true) {
     : `<div class="filing-empty">The filing tray is clear. Voice, photo, and video captures from the Command Center will appear here.</div>`;
   return `${includeHeader ? systemHeader("Aqua File Cabinet") : ""}
     <div class="filing-summary">
+      <article><small>Captured spend today</small><strong>${escapeHtml(formatLedgerMoney(ledger.totalMinor))}</strong></article>
+      <article><small>Ledger entries</small><strong>${ledger.entries.length}</strong></article>
+      <article><small>Needs amount / project</small><strong>${ledger.needsAmount}</strong></article>
+      <article><small>Accounting actuals</small><strong>PENDING</strong></article>
       <article><small>Pending clarification</small><strong>${pending}</strong></article>
       <article><small>Auto-routed</small><strong>${routed}</strong></article>
     </div>
     <div class="filing-actions">
       <button type="button" data-filing-action="voice">File by voice</button>
-      <button type="button" data-filing-action="photo">Add photo</button>
+      <button type="button" data-filing-action="receipt">Capture receipt</button>
       <button type="button" data-filing-action="video">Add video</button>
       <button type="button" data-filing-refresh>Refresh cabinet</button>
     </div>
@@ -2114,7 +2225,7 @@ function commandCenterMarkup() {
       <div class="command-capture" aria-label="Quick filing actions">
         <button type="button" data-command-ask><i>A</i><span>Aqua Action</span></button>
         <button type="button" data-filing-action="voice"><i>≈</i><span>File by voice</span></button>
-        <button type="button" data-filing-action="photo"><i>▧</i><span>Add photo</span></button>
+        <button type="button" data-filing-action="receipt"><i>$</i><span>Capture receipt</span></button>
         <button type="button" data-filing-action="video"><i>▶</i><span>Add video</span></button>
       </div>
       <button class="command-widget-health ${widgetInstalled ? "is-installed" : ""}" type="button" data-command-widget>
@@ -2141,12 +2252,14 @@ function commandCenterMarkup() {
 
 function diagnosticReceiptText() {
   const state = deviceDiagnostics;
+  const receipt = buildUniversalDiagnosticReceipt("Owner requested a diagnostic receipt.", state);
   const surface = systemPanel.hidden ? "Home" : systemPanel.dataset.panel || "Home";
   const appStates = Array.isArray(state.apps)
     ? state.apps.map((app) => `${app.name}=${app.installed ? "installed" : "not found"}`).join("; ")
     : "unavailable";
   return [
     "Aqua Sentinel OS diagnostic receipt",
+    `Contract: ${receipt.contract} v${receipt.contractVersion}; Correlation: ${receipt.correlationId}`,
     `Generated: ${state.generatedAt ? new Date(state.generatedAt).toISOString() : new Date().toISOString()}`,
     `Version: ${state.versionName || "unknown"} (${state.versionCode || "unknown"})`,
     `Platform: ${state.platform || "unknown"}`,
@@ -2234,7 +2347,7 @@ function aboutMarkup() {
       <small>AQUA SOFTWARE COMPANY</small>
       <h1>Aqua Sentinel OS</h1>
       <p>Aqua is the owner command layer across the Aqua application ecosystem. Each satellite keeps its own authoritative records; Sentinel coordinates, explains, routes, and preserves receipts.</p>
-      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.8.3-audio-visual-repair")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
+      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.8.4-live-aqua-daily-ledger")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
       <div class="about-boundaries">
         <article><i>✓</i><span><strong>Protected Home</strong><small>The approved first screen is unchanged by this repair.</small></span></article>
         <article><i>✓</i><span><strong>Server-owned intelligence</strong><small>API credentials and guarded actions do not live inside the APK.</small></span></article>
@@ -2259,7 +2372,7 @@ function settingsMarkup() {
       <button type="button" data-setting="integrations"><i>∞</i><span><strong>Ecosystem connections</strong><small>Installed applications, snapshots, and authoritative links</small></span><b>${state.installedAppCount || 0}/${state.registeredAppCount || apps.length}</b></button>
       <button type="button" data-setting="storage"><i>▤</i><span><strong>File Cabinet and synchronization</strong><small>Protected evidence, queues, cloud confirmation, and retention</small></span><b>${state.filingPendingCount || 0} PENDING</b></button>
       <button type="button" data-setting="diagnostics"><i>◇</i><span><strong>Diagnostics</strong><small>Run device checks and copy a repair receipt</small></span><b>CHECK</b></button>
-      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.8.3</b></button>
+      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.8.4</b></button>
     </div>`;
 }
 
@@ -2724,6 +2837,7 @@ let realtimePeerConnection = null;
 let realtimeDataChannel = null;
 let realtimeMicrophoneStream = null;
 let realtimeRemoteAudio = null;
+let lastAquaDiagnosticError = "";
 const completedRealtimeToolCalls = new Set();
 
 function sendRealtimeEvent(event) {
@@ -2744,6 +2858,7 @@ function stopAquaRealtime() {
   realtimePeerConnection = null;
   realtimeMicrophoneStream = null;
   realtimeRemoteAudio = null;
+  sentinel.classList.remove("aqua-follow-active");
   document.documentElement.style.setProperty("--voice-level", "0.08");
 }
 
@@ -2814,14 +2929,11 @@ function completeRealtimeToolCall(item) {
       return;
     }
     setCompactAquaConversation(false);
-    if (!beginNeuralRequest(`Open ${apps[index].name}`)) {
-      openPanel("neural");
-      focusNeuralSource(index, [], `Open ${apps[index].name}`);
-    }
+    launchAppByIndex(index);
     sendRealtimeToolOutput(callId, {
       status: "confirmed",
       app: apps[index].name,
-      destination: "Neural Link",
+      destination: apps[index].name,
     });
     return;
   }
@@ -2871,6 +2983,44 @@ function completeRealtimeToolCall(item) {
       return;
     }
     window.AquaBridge.recallAquaRealtime(callId, query);
+    return;
+  }
+
+  if (item.name === "create_reminder") {
+    const request = String(args.request || "").trim();
+    if (!request || !window.AquaBridge?.createReminderRealtime) {
+      sendRealtimeToolOutput(callId, { status: "failed", error: "Aqua reminders are unavailable" });
+      return;
+    }
+    window.AquaBridge.createReminderRealtime(callId, request);
+    return;
+  }
+
+  if (item.name === "run_app_diagnostics") {
+    const symptom = String(args.symptom || "").trim();
+    if (!symptom || !window.AquaBridge?.getDeviceDiagnostics) {
+      sendRealtimeToolOutput(callId, { status: "failed", error: "Sentinel diagnostics are unavailable" });
+      return;
+    }
+    try {
+      const raw = window.AquaBridge.getDeviceDiagnostics();
+      const device = typeof raw === "string" ? JSON.parse(raw) : raw;
+      const receipt = buildUniversalDiagnosticReceipt(symptom, {
+        ...deviceDiagnostics,
+        ...device,
+        diagnosticError: device.diagnosticError || "",
+      });
+      receipt.runtime = {
+          peerState: realtimePeerConnection?.connectionState || "not-connected",
+          dataChannelState: realtimeDataChannel?.readyState || "not-connected",
+          microphoneTrackState: realtimeMicrophoneStream?.getAudioTracks?.()[0]?.readyState || "not-open",
+          lastError: lastAquaDiagnosticError,
+      };
+      receipt.dailyLedger = dailyLedgerSnapshot();
+      sendRealtimeToolOutput(callId, receipt);
+    } catch {
+      sendRealtimeToolOutput(callId, { status: "failed", error: "Sentinel could not read its diagnostic state" });
+    }
     return;
   }
 
@@ -3005,6 +3155,7 @@ window.receiveRealtimeAnswer = async (raw) => {
       throw new Error(answer?.error || "Aqua live voice could not connect.");
     }
     await realtimePeerConnection.setRemoteDescription({ type: "answer", sdp: answer.sdp });
+    sentinel.classList.add("aqua-follow-active");
     setAquaState("listening");
   } catch (error) {
     stopAquaRealtime();
@@ -3192,6 +3343,7 @@ window.receiveAquaResponse = (raw) => {
 };
 
 window.receiveAquaError = (message) => {
+  lastAquaDiagnosticError = String(message || "Aqua could not complete that request.");
   if (widgetCommandInFlight) {
     const failed = widgetMessages.find((item) => item.id === widgetCommandInFlight);
     if (failed) failed.state = "Needs attention · retained locally";

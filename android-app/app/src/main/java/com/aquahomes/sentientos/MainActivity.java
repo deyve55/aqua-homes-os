@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -65,6 +66,7 @@ import javax.net.ssl.SSLHandshakeException;
 
 public class MainActivity extends Activity {
     private static final int RECORD_AUDIO_REQUEST = 11;
+    private static final int REALTIME_CALENDAR_REQUEST = 12;
     private static final String LOCAL_APP_URL =
         "https://appassets.androidplatform.net/assets/public/index.html";
     private static final String LOCAL_APP_PREFIX =
@@ -82,6 +84,8 @@ public class MainActivity extends Activity {
     private static final String SNAPSHOT_RESPONSE_ACTION =
         "com.aquasoftware.sentinel.HOME_SNAPSHOT_RESPONSE";
     private static final String SNAPSHOT_CONTRACT_VERSION = "1.0";
+    private static final String DIAGNOSTICS_CONTRACT = "com.aquahomes.diagnostics";
+    private static final String DIAGNOSTICS_CONTRACT_VERSION = "1.0.0";
     private static final int MAX_SNAPSHOT_BYTES = 384 * 1024;
     private static final String[] DIAGNOSTIC_APP_NAMES = {
         "Aqua CRM",
@@ -107,6 +111,8 @@ public class MainActivity extends Activity {
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private WebView webView;
     private boolean listenAfterPermission;
+    private String pendingRealtimeReminderCallId = "";
+    private String pendingRealtimeReminderText = "";
     private final Map<String, SnapshotRequest> pendingSnapshots = new HashMap<>();
     private boolean snapshotReceiverRegistered;
     private boolean filingReceiverRegistered;
@@ -461,6 +467,9 @@ public class MainActivity extends Activity {
                     if (packageName.isEmpty()) continue;
                     Intent launch = getPackageManager().getLaunchIntentForPackage(packageName);
                     if (launch == null) continue;
+                    launch.putExtra("aqua_assistant_follow_active", true);
+                    launch.putExtra("aqua_assistant_contract_version", "1.1.0");
+                    launch.putExtra("aqua_assistant_source", getPackageName());
                     launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                     startActivity(launch);
                     return;
@@ -639,6 +648,11 @@ public class MainActivity extends Activity {
                 );
             }
             payload
+                .put("contract", DIAGNOSTICS_CONTRACT)
+                .put("contractVersion", DIAGNOSTICS_CONTRACT_VERSION)
+                .put("appId", "aqua-sentinel-os")
+                .put("appName", "Aqua Sentinel OS")
+                .put("correlationId", UUID.randomUUID().toString())
                 .put("generatedAt", System.currentTimeMillis())
                 .put("platform", "Android " + Build.VERSION.RELEASE)
                 .put("versionName", BuildConfig.VERSION_NAME)
@@ -669,6 +683,7 @@ public class MainActivity extends Activity {
                 .put("widgetInstalledCount", AquaCommandWidget.installedCount(this))
                 .put("filingPendingCount", FilingStore.pendingCount(this))
                 .put("filedTodayCount", FilingStore.filedTodayCount(this))
+                .put("dailyLedger", new JSONObject(FilingStore.dailyLedgerJson(this)))
                 .put("installedAppCount", installedApps)
                 .put("registeredAppCount", DIAGNOSTIC_APP_NAMES.length)
                 .put("apps", appStates);
@@ -738,7 +753,97 @@ public class MainActivity extends Activity {
                     "Microphone permission is required. You can enable it in Android settings."
                 );
             }
+            return;
         }
+        if (requestCode == REALTIME_CALENDAR_REQUEST) {
+            boolean granted = grantResults.length >= 2;
+            for (int result : grantResults) {
+                granted = granted && result == PackageManager.PERMISSION_GRANTED;
+            }
+            String callId = pendingRealtimeReminderCallId;
+            String text = pendingRealtimeReminderText;
+            pendingRealtimeReminderCallId = "";
+            pendingRealtimeReminderText = "";
+            if (granted) completeRealtimeReminder(callId, text);
+            else sendRealtimeReminderResult(
+                callId,
+                false,
+                "Calendar permission is required before Aqua can create and verify that reminder.",
+                ""
+            );
+        }
+    }
+
+    private void createRealtimeReminder(String callId, String text) {
+        runOnUiThread(() -> {
+            CalendarQuickAction.Parsed action = CalendarQuickAction.parse(text);
+            if (action == null) {
+                sendRealtimeReminderResult(
+                    callId,
+                    false,
+                    "Give Aqua a clear task, date, and time for that reminder.",
+                    ""
+                );
+                return;
+            }
+            boolean canRead = checkSelfPermission(Manifest.permission.READ_CALENDAR)
+                == PackageManager.PERMISSION_GRANTED;
+            boolean canWrite = checkSelfPermission(Manifest.permission.WRITE_CALENDAR)
+                == PackageManager.PERMISSION_GRANTED;
+            if (!canRead || !canWrite) {
+                pendingRealtimeReminderCallId = callId;
+                pendingRealtimeReminderText = text;
+                requestPermissions(
+                    new String[] {
+                        Manifest.permission.READ_CALENDAR,
+                        Manifest.permission.WRITE_CALENDAR,
+                    },
+                    REALTIME_CALENDAR_REQUEST
+                );
+                return;
+            }
+            completeRealtimeReminder(callId, text);
+        });
+    }
+
+    private void completeRealtimeReminder(String callId, String text) {
+        CalendarQuickAction.Parsed action = CalendarQuickAction.parse(text);
+        if (action == null) {
+            sendRealtimeReminderResult(callId, false, "The reminder date or time was unclear.", "");
+            return;
+        }
+        CalendarQuickAction.Result result = CalendarQuickAction.execute(this, action);
+        FilingStore.enqueueCalendarReceipt(this, action, result);
+        sendRealtimeReminderResult(
+            callId,
+            result.success,
+            result.success ? "Reminder confirmed in the device calendar." : result.error,
+            result.eventId
+        );
+    }
+
+    private void sendRealtimeReminderResult(
+        String callId,
+        boolean success,
+        String message,
+        String eventId
+    ) {
+        try {
+            sendJsonCallback(
+                "receiveRealtimeToolResult",
+                new JSONObject()
+                    .put("callId", callId)
+                    .put(
+                        success ? "result" : "error",
+                        success
+                            ? new JSONObject()
+                                .put("status", "Confirmed")
+                                .put("eventId", eventId)
+                                .put("message", message)
+                            : message
+                    )
+            );
+        } catch (JSONException ignored) {}
     }
 
     @Override
@@ -934,19 +1039,19 @@ public class MainActivity extends Activity {
         InputStream stream = status >= 200 && status < 400
             ? connection.getInputStream()
             : connection.getErrorStream();
-        StringBuilder response = new StringBuilder();
+        byte[] responseBytes = new byte[0];
         if (stream != null) {
-            try (
-                BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(stream, StandardCharsets.UTF_8)
-                )
-            ) {
-                String line;
-                while ((line = reader.readLine()) != null) response.append(line).append('\n');
+            try (InputStream input = stream; ByteArrayOutputStream response = new ByteArrayOutputStream()) {
+                byte[] buffer = new byte[16 * 1024];
+                int read;
+                while ((read = input.read(buffer)) != -1) response.write(buffer, 0, read);
+                responseBytes = response.toByteArray();
             }
         }
         connection.disconnect();
-        return new HttpResult(status, response.toString().trim());
+        // SDP is a CRLF-delimited wire format. Rebuilding it with readLine()
+        // corrupts the answer returned by the Realtime API on physical WebView.
+        return new HttpResult(status, new String(responseBytes, StandardCharsets.UTF_8));
     }
 
     private JSONObject rpcRequest(String method, JSONObject params) throws JSONException {
@@ -1385,6 +1490,11 @@ public class MainActivity extends Activity {
             } catch (JSONException error) {
                 sendError("Aqua could not prepare that memory search.");
             }
+        }
+
+        @JavascriptInterface
+        public void createReminderRealtime(String callId, String request) {
+            MainActivity.this.createRealtimeReminder(callId, request);
         }
 
         @JavascriptInterface

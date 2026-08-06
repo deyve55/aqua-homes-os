@@ -150,7 +150,7 @@
   width:48%;
   aspect-ratio:1;
   transform:translateX(-50%);
-  display:grid;
+  display:none;
   place-items:center;
   border:1px solid color-mix(in srgb,var(--app-color) 72%,#a9f5ff);
   border-radius:50%;
@@ -159,6 +159,12 @@
     0 0 6px color-mix(in srgb,var(--app-color) 42%,transparent),
     0 0 19px color-mix(in srgb,var(--app-color) 22%,transparent),
     inset 0 0 14px color-mix(in srgb,var(--app-color) 21%,transparent);
+}
+.sentinel.aqua-follow-active .aqua-presence-button{display:grid}
+.aqua-native-runtime .sentinel.state-idle:not(.aqua-conversation-active) .aqua-hero *,
+.aqua-native-runtime .sentinel.state-idle:not(.aqua-conversation-active) .app-deck *,
+.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="idle"] *{
+  animation-play-state:paused!important;
 }
 .card-placeholder-orbit:before,.card-placeholder-orbit:after{
   content:"";
@@ -2898,7 +2904,7 @@ html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-a
 html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="thinking"] .neural-waveform i,
 html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="speaking"] .neural-waveform i{animation-play-state:running}
 
-/* v0.8.3 owner-approved direct Aqua conversation.
+/* v0.8.4 owner-approved direct Aqua conversation.
    Tapping the center A keeps the current surface in place. The hero plate and
    haze drop away, leaving one physical orb with crisp axial motion and side
    energy. Neural Link remains an explicit or source-materialization surface. */

@@ -8,6 +8,7 @@ export class ProjectionStore {
   #records = [];
   #intents = new Map();
   #syncReceipts = new Map();
+  #memories = [];
 
   constructor(seed = []) {
     if (Array.isArray(seed)) {
@@ -27,6 +28,9 @@ export class ProjectionStore {
         ? seed.syncReceipts.map(([key, receipt]) => [key, { ...receipt }])
         : [],
     );
+    this.#memories = Array.isArray(seed?.memories)
+      ? seed.memories.map((memory) => ({ ...memory }))
+      : [];
   }
 
   snapshot() {
@@ -37,7 +41,51 @@ export class ProjectionStore {
         this.#syncReceipts.entries(),
         ([key, receipt]) => [key, { ...receipt }],
       ),
+      memories: this.#memories.map((memory) => ({ ...memory })),
     };
+  }
+
+  remember({ tenantId, userId, content, kind, importance }) {
+    const normalized = content.trim();
+    const prior = this.#memories.find((memory) =>
+      memory.tenantId === tenantId &&
+      memory.userId === userId &&
+      normalize(memory.content) === normalize(normalized),
+    );
+    if (prior) {
+      prior.importance = Math.max(prior.importance, importance);
+      prior.updatedAt = new Date().toISOString();
+      return { status: 'Confirmed', duplicate: true, memory: { ...prior } };
+    }
+    const memory = {
+      memoryId: randomUUID(),
+      tenantId,
+      userId,
+      content: normalized,
+      kind,
+      importance,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    this.#memories.push(memory);
+    return { status: 'Confirmed', duplicate: false, memory: { ...memory } };
+  }
+
+  recall({ tenantId, userId, query, limit = 5 }) {
+    const terms = normalize(query).split(/\s+/).filter((term) => term.length > 1);
+    const memories = this.#memories
+      .filter((memory) => memory.tenantId === tenantId && memory.userId === userId)
+      .map((memory) => {
+        const haystack = normalize(`${memory.kind} ${memory.content}`);
+        const matches = terms.filter((term) => haystack.includes(term)).length;
+        const score = terms.length ? matches / terms.length : 0;
+        return { memory, score: score + memory.importance / 10_000 };
+      })
+      .filter(({ score }) => score > 0)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, limit)
+      .map(({ memory }) => ({ ...memory }));
+    return { status: 'Confirmed', query, memories };
   }
 
   search({ query, kinds = [], limit = 5, tenantId }) {

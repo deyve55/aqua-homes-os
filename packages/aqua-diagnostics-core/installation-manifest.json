@@ -1,0 +1,16 @@
+{
+  "contract": "com.aquahomes.diagnostics",
+  "contractVersion": "1.0.0",
+  "referenceApp": "aqua-sentinel-os",
+  "apps": [
+    { "id": "aqua-sentinel-os", "name": "Aqua Sentinel OS", "priority": 0, "status": "installed_reference", "verification": "source_verified" },
+    { "id": "cam", "name": "AquaCam", "priority": 1, "status": "mandatory_installation", "verification": "pending_app_build" },
+    { "id": "draw", "name": "AquaDraw", "priority": 2, "status": "mandatory_installation", "verification": "pending_app_build" },
+    { "id": "timesheet", "name": "Aqua Timesheet", "priority": 3, "status": "mandatory_installation", "verification": "pending_app_build" },
+    { "id": "pulse", "name": "AquaPulse", "priority": 4, "status": "mandatory_installation", "verification": "pending_app_build" },
+    { "id": "receipts", "name": "Aqua Receipts", "priority": 5, "status": "mandatory_installation", "verification": "pending_app_build" },
+    { "id": "books", "name": "Aqua Books", "priority": 6, "status": "mandatory_installation", "verification": "pending_app_build" },
+    { "id": "crm", "name": "Aqua CRM", "priority": 7, "status": "mandatory_installation", "verification": "pending_app_build" },
+    { "id": "knowledge-vault", "name": "Aqua Knowledge Vault", "priority": 8, "status": "mandatory_installation", "verification": "pending_app_build" }
+  ]
+}

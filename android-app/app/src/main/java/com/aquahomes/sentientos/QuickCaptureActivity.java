@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -70,7 +72,9 @@ public class QuickCaptureActivity extends Activity {
     private String pendingCalendarCommand = "";
     private final Handler captureHandler = new Handler(Looper.getMainLooper());
     private boolean recognitionCompleted;
-    private static final long SPEECH_TIMEOUT_MILLIS = 18_000L;
+    private boolean speechStarted;
+    private static final long SPEECH_START_TIMEOUT_MILLIS = 45_000L;
+    private static final long SPEECH_ACTIVE_TIMEOUT_MILLIS = 120_000L;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -158,7 +162,8 @@ public class QuickCaptureActivity extends Activity {
         statusBackground.setStroke(2, Color.rgb(65, 224, 247));
         statusBackground.setCornerRadius(48f);
         status.setBackground(statusBackground);
-        if ("photo".equals(mode)) status.setText("Aqua is opening the camera…");
+        if ("receipt".equals(mode)) status.setText("Aqua is opening the receipt camera…");
+        else if ("photo".equals(mode)) status.setText("Aqua is opening the camera…");
         else if ("video".equals(mode)) status.setText("Aqua is opening video capture…");
         else if ("action".equals(mode)) status.setText("Aqua Action is listening…");
         else if ("ask".equals(mode)) status.setText("Aqua is ready for your message…");
@@ -181,7 +186,7 @@ public class QuickCaptureActivity extends Activity {
             // test builds injected a presentation sentence here, which made the
             // widget claim RECEIVED without ever opening the microphone.
             captureRapidAction();
-        } else if ("photo".equals(mode)) {
+        } else if ("receipt".equals(mode) || "photo".equals(mode)) {
             captureMedia(false);
         } else if ("video".equals(mode)) {
             captureMedia(true);
@@ -369,7 +374,7 @@ public class QuickCaptureActivity extends Activity {
             itemId,
             captureType,
             destination,
-            evidencePath != null && !evidencePath.isEmpty()
+            evidencePath
         );
         if (!dispatchStarted) {
             Log.w(
@@ -398,7 +403,7 @@ public class QuickCaptureActivity extends Activity {
     }
 
     private static String widgetMode(String captureType) {
-        if ("photo".equals(captureType)) return "photo";
+        if ("photo".equals(captureType) || "receipt".equals(captureType)) return "photo";
         if ("video".equals(captureType)) return "video";
         if ("voice".equals(captureType)) return "file";
         return "action";
@@ -477,6 +482,7 @@ public class QuickCaptureActivity extends Activity {
         }
         stopSpeechRecognition();
         recognitionCompleted = false;
+        speechStarted = false;
         recognizingCommand = commandMode;
         status.setText(commandMode ? "Listening… Tell Aqua your message." : "Listening…\nTell Aqua what to file.");
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
@@ -487,10 +493,17 @@ public class QuickCaptureActivity extends Activity {
                     "AQUA_CAPTURE_ROUTE mode=" + recognitionRoute() + " handler=SpeechRecognizer"
                 );
             }
-            @Override public void onBeginningOfSpeech() { setStatusSafely("Listening…"); }
+            @Override public void onBeginningOfSpeech() {
+                speechStarted = true;
+                setStatusSafely("Listening… Take your time.");
+                scheduleSpeechTimeout(SPEECH_ACTIVE_TIMEOUT_MILLIS);
+            }
             @Override public void onRmsChanged(float rmsdB) {}
             @Override public void onBufferReceived(byte[] buffer) {}
-            @Override public void onEndOfSpeech() { setStatusSafely("Aqua is saving your instruction…"); }
+            @Override public void onEndOfSpeech() {
+                if (speechStarted) playCaptureCompleteTone();
+                setStatusSafely("Aqua is saving your instruction…");
+            }
             @Override public void onError(int error) {
                 if (!completeRecognitionOnce()) return;
                 String failedMode = recognitionRoute();
@@ -531,14 +544,19 @@ public class QuickCaptureActivity extends Activity {
             .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault().toLanguageTag())
             .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
-            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 450L)
-            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 650L)
-            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 900L);
+            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 1_200L)
+            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 2_200L)
+            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3_200L);
         speechRecognizer.startListening(intent);
         Log.i(
             "AquaCommandWidget",
             "AQUA_CAPTURE_MIC_ARMED mode=" + recognitionRoute() + " handler=SpeechRecognizer"
         );
+        scheduleSpeechTimeout(SPEECH_START_TIMEOUT_MILLIS);
+    }
+
+    private void scheduleSpeechTimeout(long delayMillis) {
+        captureHandler.removeCallbacksAndMessages(null);
         captureHandler.postDelayed(() -> {
             if (!completeRecognitionOnce()) return;
             Log.w("AquaCommandWidget", "AQUA_CAPTURE_FAILED mode=" + recognitionRoute() + " reason=timeout");
@@ -550,7 +568,15 @@ public class QuickCaptureActivity extends Activity {
                 Toast.makeText(this, "Voice capture timed out. Please try again.", Toast.LENGTH_SHORT).show();
                 finish();
             }
-        }, SPEECH_TIMEOUT_MILLIS);
+        }, delayMillis);
+    }
+
+    private void playCaptureCompleteTone() {
+        try {
+            ToneGenerator tone = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 38);
+            tone.startTone(ToneGenerator.TONE_PROP_BEEP2, 110);
+            new Handler(Looper.getMainLooper()).postDelayed(tone::release, 180L);
+        } catch (RuntimeException ignored) {}
     }
 
     private boolean completeRecognitionOnce() {
@@ -630,7 +656,7 @@ public class QuickCaptureActivity extends Activity {
     }
 
     private void captureMedia(boolean video) {
-        String captureMode = video ? "video" : "photo";
+        String captureMode = video ? "video" : ("receipt".equals(mode) ? "receipt" : "photo");
         try {
             File folder = new File(getFilesDir(), "filing-evidence");
             if (!folder.exists() && !folder.mkdirs()) throw new IllegalStateException("Evidence folder unavailable");
@@ -738,7 +764,9 @@ public class QuickCaptureActivity extends Activity {
             finish();
             return;
         }
-        saveMediaCapture(requestCode == VIDEO_REQUEST ? "video" : "photo");
+        saveMediaCapture(
+            requestCode == VIDEO_REQUEST ? "video" : ("receipt".equals(mode) ? "receipt" : "photo")
+        );
     }
 
     private boolean hasEvidenceBytes() {
@@ -817,7 +845,11 @@ public class QuickCaptureActivity extends Activity {
         JSONObject item = FilingStore.enqueue(
             this,
             type,
-            type.equals("video") ? "Quick video reference" : "Quick photo reference",
+            type.equals("video")
+                ? "Quick video reference"
+                : type.equals("receipt")
+                    ? "Receipt captured from the Aqua widget"
+                    : "Quick photo reference",
             evidenceFile.getAbsolutePath()
         );
         revokeEvidenceAccess();

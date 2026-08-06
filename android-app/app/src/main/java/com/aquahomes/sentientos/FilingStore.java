@@ -11,13 +11,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -31,6 +35,9 @@ final class FilingStore {
     private static final String STORE_KEY = "encrypted_items";
     private static final String KEY_ALIAS = "aqua_sentinel_filing_queue_key_v1";
     private static final int MAX_ITEMS = 250;
+    private static final Pattern MONEY = Pattern.compile(
+        "(?i)(?:\\$|usd\\s*)?(\\d{1,6}(?:,\\d{3})*(?:\\.\\d{1,2})?)"
+    );
 
     private FilingStore() {}
 
@@ -43,6 +50,8 @@ final class FilingStore {
         try {
             JSONArray items = readItems(context);
             JSONObject routing = classify(note, type);
+            boolean expense = isExpense(type, note);
+            Long amountMinor = expense ? amountMinor(note) : null;
             JSONObject item = new JSONObject()
                 .put("id", UUID.randomUUID().toString())
                 .put("contractVersion", "1.2")
@@ -57,6 +66,10 @@ final class FilingStore {
                 .put("handoffState", "Captured")
                 .put("gatewayCorrelationId", "")
                 .put("dispatchError", "")
+                .put("ledgerEntry", expense)
+                .put("currencyCode", "USD")
+                .put("reconciliationState", expense ? "Unreconciled" : "Not Applicable")
+                .put("amountSource", amountMinor == null ? "" : "owner-spoken")
                 .put("createdAt", System.currentTimeMillis())
                 .put(
                     "createdLabel",
@@ -66,6 +79,7 @@ final class FilingStore {
                         Locale.getDefault()
                     ).format(new Date())
                 );
+            if (amountMinor != null) item.put("amountMinor", amountMinor);
             JSONArray next = new JSONArray().put(item);
             for (int index = 0; index < items.length() && next.length() < MAX_ITEMS; index++) {
                 next.put(items.get(index));
@@ -350,6 +364,104 @@ final class FilingStore {
         }
     }
 
+    static synchronized String dailyLedgerLabel(Context context) {
+        try {
+            JSONObject ledger = new JSONObject(dailyLedgerJson(context));
+            long totalMinor = ledger.optLong("capturedTotalMinor", 0L);
+            int needsAmount = ledger.optInt("needsAmountCount", 0);
+            String total = NumberFormat.getCurrencyInstance(Locale.US).format(totalMinor / 100.0);
+            return needsAmount > 0 ? total + " · " + needsAmount + " REVIEW" : total + " TODAY";
+        } catch (Exception ignored) {
+            return "$0.00 TODAY";
+        }
+    }
+
+    static synchronized String dailyLedgerJson(Context context) {
+        try {
+            Calendar start = Calendar.getInstance();
+            start.set(Calendar.HOUR_OF_DAY, 0);
+            start.set(Calendar.MINUTE, 0);
+            start.set(Calendar.SECOND, 0);
+            start.set(Calendar.MILLISECOND, 0);
+            long startOfToday = start.getTimeInMillis();
+            start.add(Calendar.DAY_OF_YEAR, 1);
+            long startOfTomorrow = start.getTimeInMillis();
+            long totalMinor = 0L;
+            int entryCount = 0;
+            int needsAmount = 0;
+            JSONArray entries = new JSONArray();
+            JSONArray items = readItems(context);
+            for (int index = 0; index < items.length(); index++) {
+                JSONObject item = items.optJSONObject(index);
+                if (item == null || !item.optBoolean("ledgerEntry", false)) continue;
+                long createdAt = item.optLong("createdAt", 0L);
+                if (createdAt < startOfToday || createdAt >= startOfTomorrow) continue;
+                entryCount++;
+                if (item.has("amountMinor")) totalMinor += item.optLong("amountMinor", 0L);
+                else needsAmount++;
+                entries.put(item);
+            }
+            return new JSONObject()
+                .put("contractVersion", "1.0")
+                .put("date", new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date()))
+                .put("currencyCode", "USD")
+                .put("capturedTotalMinor", totalMinor)
+                .put("entryCount", entryCount)
+                .put("needsAmountCount", needsAmount)
+                .put("actualsState", "Pending satellite reconciliation")
+                .put("entries", entries)
+                .toString();
+        } catch (Exception ignored) {
+            return "{\"contractVersion\":\"1.0\",\"currencyCode\":\"USD\",\"capturedTotalMinor\":0,\"entryCount\":0,\"needsAmountCount\":0,\"actualsState\":\"Pending satellite reconciliation\",\"entries\":[]}";
+        }
+    }
+
+    static synchronized boolean markReceiptAnalysis(
+        Context context,
+        String itemId,
+        JSONObject envelope
+    ) {
+        if (itemId == null || itemId.isEmpty() || envelope == null) return false;
+        try {
+            JSONObject analysis = envelope.optJSONObject("analysis");
+            if (analysis == null) return false;
+            JSONObject amounts = analysis.optJSONObject("amounts");
+            JSONObject total = amounts == null ? null : amounts.optJSONObject("total");
+            JSONObject merchant = analysis.optJSONObject("merchant");
+            JSONObject displayName = merchant == null ? null : merchant.optJSONObject("displayName");
+            JSONObject purchase = analysis.optJSONObject("purchase");
+            JSONObject currency = purchase == null ? null : purchase.optJSONObject("currencyCode");
+            JSONObject job = analysis.optJSONObject("job");
+            JSONArray items = readItems(context);
+            for (int index = 0; index < items.length(); index++) {
+                JSONObject item = items.optJSONObject(index);
+                if (item == null || !itemId.equals(item.optString("id", ""))) continue;
+                item.put("ledgerEntry", true)
+                    .put("receiptAnalysisId", envelope.optString("analysisId", ""))
+                    .put("amountSource", "receipt-analysis")
+                    .put("reconciliationState", "Unreconciled")
+                    .put("merchant", displayName == null ? "" : displayName.optString("value", ""))
+                    .put("currencyCode", currency == null ? "USD" : safe(currency.optString("value", ""), "USD"))
+                    .put("project", job == null ? "" : safe(job.optString("name", ""), ""))
+                    .put("needsClarification", envelope.optJSONObject("nextQuestion") != null
+                        && envelope.optJSONObject("nextQuestion").optBoolean("needed", false))
+                    .put("state", envelope.optString("status", "Needs Attention"));
+                if (total != null && !total.isNull("valueMinor")) {
+                    item.put("amountMinor", total.optLong("valueMinor"));
+                }
+                writeItems(context, items);
+                AquaCommandWidget.updateAll(context);
+                context.sendBroadcast(
+                    new Intent(ACTION_INBOX_CHANGED)
+                        .setPackage(context.getPackageName())
+                        .putExtra("filing_item_id", itemId)
+                );
+                return true;
+            }
+        } catch (Exception ignored) {}
+        return false;
+    }
+
     static synchronized boolean clarify(Context context, String itemId, String ownerDirection) {
         if (itemId == null || itemId.isEmpty() || ownerDirection == null || ownerDirection.trim().isEmpty()) return false;
         try {
@@ -455,6 +567,13 @@ final class FilingStore {
         String note = safe(input, "").toLowerCase(Locale.US);
         String captureType = safe(type, "voice").toLowerCase(Locale.US);
         JSONObject routing = new JSONObject();
+        if (isExpense(type, input)) {
+            return routing
+                .put("destination", "Aqua Receipts · Daily Ledger")
+                .put("confidence", 0.95)
+                .put("needsClarification", amountMinor(input) == null)
+                .put("state", amountMinor(input) == null ? "Needs Attention" : "Queued");
+        }
         if (
             note.contains("remind me")
                 || note.contains("appointment")
@@ -544,9 +663,39 @@ final class FilingStore {
 
     private static String titleFor(String type) {
         if ("action".equals(type)) return "Aqua Executive Handoff";
+        if ("receipt".equals(type)) return "Daily expense receipt";
         if ("photo".equals(type)) return "Photo reference";
         if ("video".equals(type)) return "Video reference";
         return "Quick filing instruction";
+    }
+
+    private static boolean isExpense(String type, String note) {
+        String value = safe(note, "").toLowerCase(Locale.US);
+        return "receipt".equalsIgnoreCase(safe(type, ""))
+            || value.contains("receipt")
+            || value.contains("expense")
+            || value.contains("spent ")
+            || value.contains("paid ")
+            || value.contains("bought ")
+            || value.contains("purchase");
+    }
+
+    private static Long amountMinor(String note) {
+        if (note == null) return null;
+        Matcher matcher = MONEY.matcher(note);
+        while (matcher.find()) {
+            String before = note.substring(0, matcher.start()).toLowerCase(Locale.US);
+            boolean moneyContext = matcher.group().contains("$")
+                || before.endsWith("usd ")
+                || before.matches("(?s).*(spent|paid|cost|total|expense|receipt|bought)\\s*$");
+            if (!moneyContext) continue;
+            try {
+                return new BigDecimal(matcher.group(1).replace(",", ""))
+                    .movePointRight(2)
+                    .longValueExact();
+            } catch (ArithmeticException ignored) {}
+        }
+        return null;
     }
 
     private static String safe(String value, String fallback) {

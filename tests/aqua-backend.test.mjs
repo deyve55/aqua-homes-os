@@ -21,6 +21,11 @@ import {
   createReceiptIntelligenceRuntime,
   RECEIPT_INTELLIGENCE_INSTRUCTIONS,
 } from '../backend/receipt-intelligence.mjs';
+import {
+  AQUA_DIAGNOSTICS_CONTRACT_VERSION,
+  createDiagnosticReceipt,
+  RUN_APP_DIAGNOSTICS_TOOL,
+} from '../packages/aqua-diagnostics-core/index.mjs';
 
 const config = loadConfig({
   host: '127.0.0.1',
@@ -69,12 +74,12 @@ test('Aqua model policy defaults to Realtime 2.1 mini with explicit full escalat
   );
   assert.equal(
     selectAquaRealtimeModel({ appId: 'aqua-sentinel-os', capability: 'simple' }),
-    'gpt-realtime-2.1-mini',
+    'gpt-realtime-2.1',
   );
   assert.deepEqual(publicAquaModelPolicy(config), {
     version: '1.0.0',
     sentinel: {
-      default: 'gpt-realtime-2.1-mini',
+      default: 'gpt-realtime-2.1',
       escalateTo: 'gpt-realtime-2.1',
     },
     satellites: {
@@ -94,7 +99,7 @@ test('Aqua model policy defaults to Realtime 2.1 mini with explicit full escalat
   });
 });
 
-test('Sentinel Realtime SDP uses 2.1 mini, GPT-4o Transcribe, patient VAD, and no client API key', async () => {
+test('Sentinel Realtime SDP uses full 2.1, GPT-4o Transcribe, patient VAD, and no client API key', async () => {
   let upstream;
   const runtime = createRealtimeSessionRuntime({
     config,
@@ -115,7 +120,7 @@ test('Sentinel Realtime SDP uses 2.1 mini, GPT-4o Transcribe, patient VAD, and n
   assert.equal(upstream.url, 'https://api.openai.com/v1/realtime/calls');
   assert.equal(upstream.init.headers.authorization, 'Bearer test-only');
   const session = JSON.parse(upstream.init.body.get('session'));
-  assert.equal(session.model, 'gpt-realtime-2.1-mini');
+  assert.equal(session.model, 'gpt-realtime-2.1');
   assert.equal(session.reasoning.effort, 'xhigh');
   assert.equal(session.audio.input.transcription.model, 'gpt-4o-transcribe');
   assert.equal(session.audio.input.turn_detection.type, 'semantic_vad');
@@ -123,6 +128,35 @@ test('Sentinel Realtime SDP uses 2.1 mini, GPT-4o Transcribe, patient VAD, and n
   assert.equal(session.audio.input.turn_detection.interrupt_response, true);
   assert.equal(upstream.init.body.get('sdp'), 'v=0\r\no=aqua-offer');
   assert.doesNotMatch(JSON.stringify(buildRealtimeSession(config)), /test-only/);
+  assert.deepEqual(
+    session.tools.find((tool) => tool.name === 'run_app_diagnostics'),
+    RUN_APP_DIAGNOSTICS_TOOL,
+  );
+});
+
+test('shared diagnostics core produces the same bounded receipt for every Aqua app', () => {
+  const receipt = createDiagnosticReceipt({
+    appId: 'aqua-cam',
+    appName: 'AquaCam',
+    appVersion: 'test',
+    platform: 'Android test',
+    symptom: 'Camera upload stopped.',
+    correlationId: 'diag-test-1',
+    checks: [
+      {
+        id: 'permission.camera',
+        layer: 'permission',
+        label: 'Camera permission',
+        status: 'Needs Attention',
+        summary: 'Android reports the camera permission is denied.',
+        repairId: 'open_app_permissions',
+      },
+    ],
+  });
+  assert.equal(receipt.contractVersion, AQUA_DIAGNOSTICS_CONTRACT_VERSION);
+  assert.equal(receipt.status, 'Needs Attention');
+  assert.deepEqual(receipt.registeredRepairs, ['open_app_permissions']);
+  assert.equal(receipt.truthBoundary, 'Read-only diagnostics; no repair was executed.');
 });
 
 function receiptAnalysisFixture() {
@@ -345,6 +379,44 @@ test('gateway exposes health publicly but protects ecosystem capabilities', asyn
     authorization: `Bearer ${token}`,
   });
   assert.equal(allowedPolicy.result.transcription, 'gpt-4o-transcribe');
+});
+
+test('durable Aqua memory is owner scoped, recallable, and survives store snapshots', async () => {
+  const token = issueSession(config, identity);
+  const headers = { authorization: `Bearer ${token}` };
+  const store = new ProjectionStore();
+  const gateway = createGateway({
+    config,
+    registry: new CapabilityRegistry(),
+    store,
+    agentRuntime: { chat: async () => ({}) },
+  });
+  const saved = await gateway.dispatch(request(40, 'aqua.memory.remember', {
+    content: 'The private permit folder is in the blue job box.',
+    kind: 'secret',
+    importance: 95,
+  }), headers);
+  assert.equal(saved.result.status, 'Confirmed');
+
+  const restoredStore = new ProjectionStore(store.snapshot());
+  const restoredGateway = createGateway({
+    config,
+    registry: new CapabilityRegistry(),
+    store: restoredStore,
+    agentRuntime: { chat: async () => ({}) },
+  });
+  const recalled = await restoredGateway.dispatch(request(41, 'aqua.memory.recall', {
+    query: 'Where is the permit folder?',
+  }), headers);
+  assert.equal(recalled.result.status, 'Confirmed');
+  assert.equal(recalled.result.memories.length, 1);
+  assert.match(recalled.result.memories[0].content, /blue job box/);
+
+  const other = issueSession(config, { ...identity, sub: 'other-owner' });
+  const isolated = await restoredGateway.dispatch(request(42, 'aqua.memory.recall', {
+    query: 'permit folder',
+  }), { authorization: `Bearer ${other}` });
+  assert.deepEqual(isolated.result.memories, []);
 });
 
 test('satellite projection sync is authenticated, tenant scoped, and idempotent', async () => {

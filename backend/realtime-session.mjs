@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { verifySession } from './auth.mjs';
 import { selectAquaRealtimeModel } from './model-policy.mjs';
+import { RUN_APP_DIAGNOSTICS_TOOL } from '../packages/aqua-diagnostics-core/index.mjs';
 
 export const SENTINEL_TRANSCRIPTION_PROMPT =
   'Aqua Sentinel OS for Aqua Homes & Design Group. Expect construction terminology, ' +
@@ -44,6 +45,41 @@ const SENTINEL_TOOLS = Object.freeze([
       required: ['text'],
     },
   },
+  {
+    type: 'function',
+    name: 'remember_detail',
+    description: 'Save an owner-authorized fact, preference, secret, commitment, or project detail in durable Aqua memory.',
+    parameters: {
+      type: 'object',
+      properties: {
+        content: { type: 'string' },
+        kind: { type: 'string', enum: ['fact', 'preference', 'secret', 'commitment', 'project'] },
+        importance: { type: 'integer', minimum: 0, maximum: 100 },
+      },
+      required: ['content'],
+    },
+  },
+  {
+    type: 'function',
+    name: 'recall_memory',
+    description: 'Search the signed-in owner\'s durable Aqua memory for details they previously asked Aqua to retain.',
+    parameters: {
+      type: 'object',
+      properties: { query: { type: 'string' } },
+      required: ['query'],
+    },
+  },
+  {
+    type: 'function',
+    name: 'create_reminder',
+    description: 'Create and verify an owner reminder in the Android device calendar after the owner gives a clear task, date, and time.',
+    parameters: {
+      type: 'object',
+      properties: { request: { type: 'string' } },
+      required: ['request'],
+    },
+  },
+  RUN_APP_DIAGNOSTICS_TOOL,
 ]);
 
 function sentinelInstructions() {

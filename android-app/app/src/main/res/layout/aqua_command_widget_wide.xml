@@ -49,9 +49,9 @@
             <ImageView android:layout_width="48dp" android:layout_height="48dp" android:layout_gravity="center" android:src="@drawable/aqua_widget_icon_ask" />
         </FrameLayout>
 
-        <FrameLayout android:id="@+id/widget_photo" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="4dp" android:layout_weight="1" android:background="@drawable/aqua_widget_action" android:contentDescription="File a photo with Aqua">
+        <FrameLayout android:id="@+id/widget_photo" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="4dp" android:layout_weight="1" android:background="@drawable/aqua_widget_action" android:contentDescription="Capture a receipt for today's ledger">
             <ImageView android:layout_width="29dp" android:layout_height="29dp" android:layout_gravity="center" android:src="@drawable/aqua_widget_icon_photo" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="7dp" android:text="PHOTO" android:textColor="#8CEFFD" android:textSize="7sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="7dp" android:text="RECEIPT" android:textColor="#8CEFFD" android:textSize="7sp" />
         </FrameLayout>
 
         <FrameLayout android:id="@+id/widget_file" android:layout_width="0dp" android:layout_height="match_parent" android:layout_margin="4dp" android:layout_weight="1" android:background="@drawable/aqua_widget_action" android:contentDescription="File with Aqua">

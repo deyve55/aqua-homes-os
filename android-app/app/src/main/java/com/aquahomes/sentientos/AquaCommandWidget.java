@@ -144,6 +144,7 @@ public class AquaCommandWidget extends AppWidgetProvider {
                 return returning
                     ? R.id.widget_selected_return_video
                     : R.id.widget_selected_outbound_video;
+            case "receipt":
             case "photo":
                 return returning
                     ? R.id.widget_selected_return_photo
@@ -175,15 +176,16 @@ public class AquaCommandWidget extends AppWidgetProvider {
             );
         }
         String statusText = statusText(neuralState.phase);
+        if (statusText.isEmpty()) statusText = FilingStore.dailyLedgerLabel(context);
         views.setViewVisibility(
             R.id.widget_status,
-            statusText.isEmpty() ? View.INVISIBLE : View.VISIBLE
+            View.VISIBLE
         );
         views.setTextViewText(R.id.widget_status, statusText);
         views.setOnClickPendingIntent(R.id.widget_logo, openSentinel(context));
         views.setOnClickPendingIntent(R.id.widget_action, action(context, "action", 101));
         views.setOnClickPendingIntent(R.id.widget_video, action(context, "video", 102));
-        views.setOnClickPendingIntent(R.id.widget_photo, action(context, "photo", 103));
+        views.setOnClickPendingIntent(R.id.widget_photo, action(context, "receipt", 103));
         views.setOnClickPendingIntent(R.id.widget_file, action(context, "file", 104));
         return views;
     }
