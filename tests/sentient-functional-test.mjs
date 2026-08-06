@@ -559,6 +559,7 @@ test("v0.8.2 preserves Home while direct Aqua talk and Neural materialization st
     read("scripts/render-aqua-sentinel-visual-proof.mjs"),
   ]);
   assert.match(gradle, /versionCode = 2026080502/);
+  assert.match(androidLaunch, /versionCode=2026080502/);
   assert.match(script, /versionName: "0\.8\.2-live-aqua-memory"/);
   assert.match(script, /versionCode: 2026080502/);
   assert.match(script, /<b>0\.8\.2<\/b>/);
