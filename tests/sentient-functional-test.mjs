@@ -122,9 +122,10 @@ test("carousel previews use reversible presentation data and verified refreshabl
 });
 
 test("native voice uses protected Realtime without an Android voice impersonation fallback", async () => {
-  const [script, activity] = await Promise.all([
+  const [script, activity, gradleProperties] = await Promise.all([
     read("sentient-os-web/app.js"),
     read("android-app/app/src/main/java/com/aquahomes/sentientos/MainActivity.java"),
+    read("android-app/gradle.properties"),
   ]);
   assert.match(script, /AquaBridge\.askAqua/);
   assert.match(script, /window\.startAquaRealtime/);
@@ -142,6 +143,7 @@ test("native voice uses protected Realtime without an Android voice impersonatio
   assert.match(activity, /"\/realtime"/);
   assert.match(activity, /PermissionRequest\.RESOURCE_AUDIO_CAPTURE/);
   assert.match(activity, /WebViewAssetLoader/);
+  assert.match(gradleProperties, /^android\.useAndroidX=true$/m);
   assert.match(activity, /https:\/\/appassets\.androidplatform\.net\/assets\/public\/index\.html/);
   assert.match(activity, /"https:\/\/appassets\.androidplatform\.net\/"\.equals\(origin\)/);
   assert.match(activity, /AndroidKeyStore/);
