@@ -25,8 +25,8 @@ android {
         applicationId = "com.aquahomes.sentinel"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2026080502
-        versionName = "0.8.2-live-aqua-memory"
+        versionCode = 2026080503
+        versionName = "0.8.3-audio-visual-repair"
         buildConfigField(
             "String",
             "AQUA_GATEWAY_URL",

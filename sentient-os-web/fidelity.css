@@ -2859,12 +2859,16 @@ html,body{overscroll-behavior:none}
 .aqua-card-holder:before,.aqua-card-holder:after{content:"";position:absolute;top:17%;bottom:17%;width:2px;background:linear-gradient(transparent,#4ce7ff 28%,#fff 50%,#e7b057 72%,transparent);opacity:.45}
 .aqua-card-holder:before{left:-1px}.aqua-card-holder:after{right:-1px}
 .aqua-card-holder span{position:absolute;left:18%;right:18%;bottom:1.8%;color:#607f89;font-size:clamp(4px,.62cqw,6px);letter-spacing:.19em;text-align:center}
-.future-card-placeholder{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:7%;border:1px dashed rgba(120,168,184,.42);border-radius:11px;background:linear-gradient(160deg,#061016,#010507 72%)}
-.future-card-placeholder:before{content:"";position:absolute;inset:8%;border:1px solid rgba(97,143,159,.2);border-radius:8px}
-.future-card-placeholder i{display:grid;place-items:center;width:34%;aspect-ratio:1;border:1px solid rgba(105,208,228,.42);border-radius:50%;color:#8bb5c0;font-family:Georgia,serif;font-size:clamp(11px,5.5cqw,34px);font-style:normal}
-.future-card-placeholder strong{color:#bdd2d8;font-size:clamp(5px,1.45cqw,10px);letter-spacing:.16em}
-.future-card-placeholder small{color:#587580;font-size:clamp(3px,.72cqw,6px);letter-spacing:.1em}
-.future-card-placeholder span{width:42%;height:1px;background:linear-gradient(90deg,transparent,#6fa6b4,transparent)}
+.future-card-placeholder{position:absolute;inset:0;overflow:hidden;border:1px solid rgba(112,221,241,.42);border-radius:11px;background:#01070a}
+.future-card-placeholder:before{content:"";position:absolute;z-index:3;inset:6%;border:1px solid rgba(128,230,248,.18);border-radius:8px;pointer-events:none}
+.future-card-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:.72;filter:saturate(.82) brightness(.72) contrast(1.1)}
+.future-card-shade{position:absolute;z-index:1;inset:0;background:linear-gradient(180deg,rgba(0,5,8,.06) 0 47%,rgba(0,6,10,.72) 67%,#010507 100%)}
+.future-card-placeholder>div{position:absolute;z-index:2;left:8%;right:8%;bottom:8%;display:grid;gap:4px;padding:7% 5%;border-top:1px solid rgba(99,226,247,.42);text-align:center;background:linear-gradient(90deg,transparent,rgba(1,15,21,.88) 16% 84%,transparent)}
+.future-card-placeholder strong{color:#e8fcff;font-size:clamp(6px,1.65cqw,11px);letter-spacing:.19em;text-shadow:0 0 9px rgba(65,225,250,.65)}
+.future-card-placeholder small{color:#6f9ca7;font-size:clamp(3px,.72cqw,6px);letter-spacing:.12em}
+.neural-home-a{position:relative;z-index:3;display:block;width:100%;height:100%;background:url("./assets/ui-hero-front-v11.png") 50% 39.5%/171% auto no-repeat;filter:brightness(1.08) contrast(1.08) drop-shadow(0 0 8px rgba(87,232,255,.52));-webkit-mask-image:radial-gradient(ellipse at center,#000 48%,rgba(0,0,0,.92) 61%,transparent 78%);mask-image:radial-gradient(ellipse at center,#000 48%,rgba(0,0,0,.92) 61%,transparent 78%)}
+.system-panel[data-panel="neural"] .neural-stage[data-aqua-state="listening"] .neural-home-a,.system-panel[data-panel="neural"] .neural-stage[data-aqua-state="thinking"] .neural-home-a,.system-panel[data-panel="neural"] .neural-stage[data-aqua-state="speaking"] .neural-home-a{animation:aqua-home-mark-breathe .82s ease-in-out infinite alternate}
+@keyframes aqua-home-mark-breathe{to{filter:brightness(1.28) contrast(1.1) drop-shadow(0 0 13px rgba(87,232,255,.82));transform:scale(1.025)}}
 .motion-pulse .pulse-line{position:absolute;left:3%;right:3%;top:55%;height:2px;background:linear-gradient(90deg,transparent,#36ddf2 16%,#fff 34%,#dfab56 49%,#fff 64%,#36ddf2 84%,transparent);box-shadow:0 0 9px rgba(56,217,239,.62);animation:pulse-line-travel 2.4s ease-in-out infinite}
 .motion-pulse .pulse-core{display:grid;place-items:center;width:25cqw;aspect-ratio:1;border:1px solid #9df5ff;border-radius:50%;color:#eaffff;background:rgba(2,15,22,.84);font-family:Georgia,serif;font-size:13cqw;box-shadow:0 0 13px rgba(56,217,239,.54);animation:pulse-core-breathe 2.4s ease-in-out infinite}
 .mini-pulse{position:relative;margin:5% 7%;padding:5%;border:1px solid rgba(56,217,239,.42);border-radius:6px;background:rgba(3,19,27,.86)}
@@ -2894,7 +2898,7 @@ html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-a
 html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="thinking"] .neural-waveform i,
 html.aqua-native-runtime .system-panel[data-panel="neural"] .neural-stage[data-aqua-state="speaking"] .neural-waveform i{animation-play-state:running}
 
-/* v0.8.2 owner-approved direct Aqua conversation.
+/* v0.8.3 owner-approved direct Aqua conversation.
    Tapping the center A keeps the current surface in place. The hero plate and
    haze drop away, leaving one physical orb with crisp axial motion and side
    energy. Neural Link remains an explicit or source-materialization surface. */

@@ -219,7 +219,7 @@ function captureDefinitions() {
       query: "preview=conversation",
       ready: "conversation",
       compactConversation: true,
-      output: "AquaSentinelOS-v0.8.2-Direct-Aqua-Conversation.png",
+      output: "AquaSentinelOS-v0.8.3-Direct-Aqua-Conversation.png",
     },
     {
       name: "neural-rest",

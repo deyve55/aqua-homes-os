@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Aqua Pulse financial intelligence">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="AquaPulse financial heart">
   <defs>
-    <linearGradient id="field" x1="52" y1="35" x2="461" y2="481" gradientUnits="userSpaceOnUse"><stop stop-color="#12364b"/><stop offset=".52" stop-color="#07151f"/><stop offset="1" stop-color="#050a11"/></linearGradient>
-    <linearGradient id="metal" x1="169" y1="104" x2="349" y2="404" gradientUnits="userSpaceOnUse"><stop stop-color="#f7ffff"/><stop offset=".28" stop-color="#6cecff"/><stop offset=".68" stop-color="#1b9cb7"/><stop offset="1" stop-color="#d7ffff"/></linearGradient>
-    <linearGradient id="gold" x1="89" y1="350" x2="420" y2="350" gradientUnits="userSpaceOnUse"><stop stop-color="#66572d"/><stop offset=".5" stop-color="#f0cd78"/><stop offset="1" stop-color="#7c6737"/></linearGradient>
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="field" cx="50%" cy="38%" r="72%"><stop stop-color="#12384a"/><stop offset=".48" stop-color="#06151d"/><stop offset="1" stop-color="#010609"/></radialGradient>
+    <linearGradient id="heart" x1="128" y1="112" x2="386" y2="410" gradientUnits="userSpaceOnUse"><stop stop-color="#efffff"/><stop offset=".2" stop-color="#56eaff"/><stop offset=".54" stop-color="#139fbd"/><stop offset=".78" stop-color="#e9bd65"/><stop offset="1" stop-color="#fff0be"/></linearGradient>
+    <linearGradient id="pulse" x1="75" y1="256" x2="437" y2="256" gradientUnits="userSpaceOnUse"><stop stop-color="#20d8ef" stop-opacity="0"/><stop offset=".18" stop-color="#2ce8ff"/><stop offset=".5" stop-color="#fff"/><stop offset=".72" stop-color="#f0be66"/><stop offset="1" stop-color="#2ce8ff" stop-opacity="0"/></linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
   <rect width="512" height="512" rx="116" fill="url(#field)"/>
-  <rect x="25" y="25" width="462" height="462" rx="96" fill="none" stroke="#48eaff" stroke-opacity=".4" stroke-width="5"/>
-  <path d="M109 372h55v-60h42v60h55V246h42v126h55V177h42v195h31" fill="none" stroke="#38d9ef" stroke-opacity=".3" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M113 393h286" stroke="url(#gold)" stroke-width="8" stroke-linecap="round"/>
-  <path d="M256 98 151 382h64l20-61h42l20 61h64L256 98Zm0 90 28 85h-56l28-85Z" fill="url(#metal)" filter="url(#glow)"/>
-  <path d="M218 330h76" stroke="#08202d" stroke-width="15" stroke-linecap="round"/>
-  <circle cx="113" cy="393" r="8" fill="#f0cd78"/><circle cx="399" cy="393" r="8" fill="#f0cd78"/>
+  <rect x="25" y="25" width="462" height="462" rx="96" fill="none" stroke="#4aeaff" stroke-opacity=".38" stroke-width="5"/>
+  <circle cx="256" cy="255" r="184" fill="none" stroke="#3ee7ff" stroke-opacity=".12" stroke-width="3" stroke-dasharray="8 13"/>
+  <path d="M256 407C228 383 132 316 113 230 96 154 139 108 198 108c31 0 51 14 58 39 8-25 28-39 59-39 59 0 102 46 85 122-19 86-115 153-144 177Z" fill="#041017" stroke="url(#heart)" stroke-width="18" stroke-linejoin="round" filter="url(#glow)"/>
+  <path d="M75 265h78l25-56 39 119 43-165 43 129 25-57 25 30h84" fill="none" stroke="url(#pulse)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+  <circle cx="75" cy="265" r="7" fill="#34e5fb"/><circle cx="437" cy="265" r="7" fill="#eec06b"/>
+  <path d="M256 184v145M224 213h48c18 0 31 12 31 28s-13 28-31 28h-32c-18 0-31 12-31 28s13 28 31 28h48" fill="none" stroke="#dffcff" stroke-opacity=".2" stroke-width="5" stroke-linecap="round"/>
 </svg>

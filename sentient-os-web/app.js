@@ -178,6 +178,7 @@ const apps = [
     motion: "future",
     short: "RESERVED PORTAL",
     icon: "+",
+    cardAsset: "./assets/card-overview-front-v11.png",
     color: "#557786",
     preview: { eyebrow: "AQUA ECOSYSTEM", title: "New application portal", metric: "Status", value: "Reserved", tiles: ["Identity", "Workflow", "Data"] },
     packages: [],
@@ -199,6 +200,7 @@ const apps = [
     motion: "future",
     short: "RESERVED PORTAL",
     icon: "+",
+    cardAsset: "./assets/card-site-intelligence-front-v11.png",
     color: "#6b7185",
     preview: { eyebrow: "AQUA ECOSYSTEM", title: "New application portal", metric: "Status", value: "Reserved", tiles: ["Identity", "Workflow", "Data"] },
     packages: [],
@@ -301,8 +303,8 @@ let commandWidgetState = {
 let deviceDiagnostics = {
   generatedAt: 0,
   platform: "Browser preview",
-  versionName: "0.8.2-live-aqua-memory",
-  versionCode: 2026080502,
+  versionName: "0.8.3-audio-visual-repair",
+  versionCode: 2026080503,
   gatewayConfigured: false,
   authenticated: false,
   microphoneGranted: false,
@@ -1210,7 +1212,9 @@ function renderFallbackPreview(app, view) {
 function renderCarouselCover(app) {
   if (app.placeholder) {
     return `<div class="future-card-placeholder" aria-hidden="true">
-      <i>A</i><strong>COMING NEXT</strong><small>RESERVED AQUA APP PORTAL</small><span></span>
+      <img class="future-card-art" src="${escapeHtml(app.cardAsset)}" alt="">
+      <span class="future-card-shade"></span>
+      <div><strong>COMING SOON</strong><small>FUTURE AQUA APP</small></div>
     </div>`;
   }
   const motionMarkup = {
@@ -2072,7 +2076,7 @@ function neuralWorkspaceMarkup() {
         </svg>
         <div class="neural-core-field" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
         <button class="neural-core" type="button" data-neural-ask aria-label="Talk to Aqua">
-          <span class="neural-core-hit" aria-hidden="true"></span>${aquaMarkMarkup("neural")}<b></b>
+          <span class="neural-core-hit" aria-hidden="true"></span><span class="neural-home-a" aria-hidden="true"></span><b></b>
         </button>
         ${portals}
         <div class="neural-selected-chip" aria-live="polite"><i aria-hidden="true"></i><span><small>PRIMARY</small><strong data-neural-selected-name>Aqua CRM</strong></span></div>
@@ -2230,7 +2234,7 @@ function aboutMarkup() {
       <small>AQUA SOFTWARE COMPANY</small>
       <h1>Aqua Sentinel OS</h1>
       <p>Aqua is the owner command layer across the Aqua application ecosystem. Each satellite keeps its own authoritative records; Sentinel coordinates, explains, routes, and preserves receipts.</p>
-      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.8.2-live-aqua-memory")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
+      <div class="about-version"><span><small>TEST VERSION</small><strong>${escapeHtml(deviceDiagnostics.versionName || "0.8.3-audio-visual-repair")}</strong></span><b>${escapeHtml(deviceDiagnostics.platform || "Android")}</b></div>
       <div class="about-boundaries">
         <article><i>✓</i><span><strong>Protected Home</strong><small>The approved first screen is unchanged by this repair.</small></span></article>
         <article><i>✓</i><span><strong>Server-owned intelligence</strong><small>API credentials and guarded actions do not live inside the APK.</small></span></article>
@@ -2255,7 +2259,7 @@ function settingsMarkup() {
       <button type="button" data-setting="integrations"><i>∞</i><span><strong>Ecosystem connections</strong><small>Installed applications, snapshots, and authoritative links</small></span><b>${state.installedAppCount || 0}/${state.registeredAppCount || apps.length}</b></button>
       <button type="button" data-setting="storage"><i>▤</i><span><strong>File Cabinet and synchronization</strong><small>Protected evidence, queues, cloud confirmation, and retention</small></span><b>${state.filingPendingCount || 0} PENDING</b></button>
       <button type="button" data-setting="diagnostics"><i>◇</i><span><strong>Diagnostics</strong><small>Run device checks and copy a repair receipt</small></span><b>CHECK</b></button>
-      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.8.2</b></button>
+      <button type="button" data-setting="about"><i>A</i><span><strong>About Aqua Sentinel OS</strong><small>Version, security boundary, and connected contracts</small></span><b>0.8.3</b></button>
     </div>`;
 }
 
@@ -2917,6 +2921,30 @@ function handleAquaRealtimeEvent(event) {
   }
 }
 
+async function openAquaMicrophone() {
+  const attempts = [
+    { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+    true,
+  ];
+  let lastError = null;
+  for (let index = 0; index < attempts.length; index += 1) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: attempts[index] });
+      if (stream.getAudioTracks().length) return stream;
+      stream.getTracks().forEach((track) => track.stop());
+      throw new Error("Android returned no microphone track.");
+    } catch (error) {
+      lastError = error;
+      if (index === 0 && ["NotReadableError", "AbortError", "OverconstrainedError"].includes(error?.name)) {
+        await new Promise((resolve) => setTimeout(resolve, 180));
+        continue;
+      }
+      break;
+    }
+  }
+  throw lastError || new Error("Aqua could not open the phone microphone.");
+}
+
 window.startAquaRealtime = async () => {
   if (realtimePeerConnection) {
     stopAquaRealtime();
@@ -2929,9 +2957,7 @@ window.startAquaRealtime = async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
       throw new Error("This Android voice surface does not support secure live audio.");
     }
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-    });
+    const stream = await openAquaMicrophone();
     const connection = new RTCPeerConnection();
     const audio = new Audio();
     audio.autoplay = true;
