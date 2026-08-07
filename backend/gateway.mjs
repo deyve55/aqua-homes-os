@@ -2,10 +2,24 @@ import { randomUUID } from 'node:crypto';
 import {
   AdapterSyncParamsSchema,
   AquaChatParamsSchema,
+  CanvasArchiveParamsSchema,
+  CanvasCaptureParamsSchema,
+  CanvasListParamsSchema,
+  CanvasNoteParamsSchema,
+  CanvasRouteParamsSchema,
+  CompanySignalBatchParamsSchema,
   ConfirmActionParamsSchema,
+  DelegateWorkParamsSchema,
+  EmployeeWorkListParamsSchema,
+  EmployeeWorkReportParamsSchema,
+  ExecutiveBriefParamsSchema,
   JsonRpcRequestSchema,
+  NeuralAcknowledgeParamsSchema,
+  NeuralInboxParamsSchema,
+  OfficeEnterParamsSchema,
   ReceiptAnalyzeParamsSchema,
   RecallMemoryParamsSchema,
+  RecommendationTransitionParamsSchema,
   RememberMemoryParamsSchema,
   SessionCreateParamsSchema,
 } from './contracts.mjs';
@@ -19,7 +33,25 @@ import {
   ReceiptEvidenceConflictError,
   ReceiptImageValidationError,
 } from './receipt-intelligence.mjs';
+import {
+  ExecutiveOfficeConflictError,
+  ExecutiveOfficeNotFoundError,
+  ExecutiveOfficePermissionError,
+} from './executive-office.mjs';
+import {
+  IntelligenceConflictError,
+  IntelligenceNotFoundError,
+  IntelligenceTransitionError,
+} from './executive-intelligence.mjs';
+import {
+  PollyCanvasConflictError,
+  PollyCanvasNotFoundError,
+  PollyCanvasPermissionError,
+} from './polly-canvas.mjs';
 import { publicAquaModelPolicy } from './model-policy.mjs';
+import { STANDARD_EMPLOYEE_OPERATIONS } from './capability-registry.mjs';
+
+const standardEmployeeOperations = new Set(STANDARD_EMPLOYEE_OPERATIONS);
 
 export class RpcError extends Error {
   constructor(code, message, data = undefined) {
@@ -56,6 +88,14 @@ function requireIdentity(config, headers) {
   return identity;
 }
 
+function requireOwnerIdentity(config, headers) {
+  const identity = requireIdentity(config, headers);
+  if (!identity.roles?.includes('owner')) {
+    throw new RpcError(-32030, 'Owner authority is required for this executive operation.');
+  }
+  return identity;
+}
+
 function requireAdapter(config, headers, params) {
   const adapterId = String(headers['x-aqua-adapter-id'] ?? '');
   const key = String(headers['x-aqua-adapter-key'] ?? '');
@@ -72,6 +112,9 @@ export function createGateway({
   config,
   registry,
   store,
+  office,
+  intelligence,
+  canvas,
   agentRuntime,
   receiptRuntime = {
     analyze: async () => {
@@ -118,6 +161,174 @@ export function createGateway({
           case 'aqua.models.policy': {
             requireIdentity(config, headers);
             return ok(request.id, publicAquaModelPolicy(config));
+          }
+          case 'aqua.office.enter': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = OfficeEnterParamsSchema.parse(request.params);
+            const manifest = registry.get(params.capabilityId);
+            if (!manifest) {
+              throw new RpcError(-32031, 'The requested employee office is not registered.');
+            }
+            return ok(request.id, office.createNavigationTicket({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+              manifest,
+            }));
+          }
+          case 'aqua.canvas.capture': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = CanvasCaptureParamsSchema.parse(request.params);
+            return ok(request.id, canvas.capture({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+            }));
+          }
+          case 'aqua.canvas.list': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = CanvasListParamsSchema.parse(request.params);
+            return ok(request.id, {
+              status: 'Confirmed',
+              items: canvas.list({
+                ...params,
+                tenantId: identity.tenantId,
+                userId: identity.sub,
+              }),
+            });
+          }
+          case 'aqua.canvas.note': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = CanvasNoteParamsSchema.parse(request.params);
+            return ok(request.id, canvas.addNote({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+            }));
+          }
+          case 'aqua.canvas.route.prepare': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = CanvasRouteParamsSchema.parse(request.params);
+            const manifest = registry.get(params.capabilityId);
+            if (!manifest) {
+              throw new RpcError(-32031, 'The requested employee office is not registered.');
+            }
+            if (
+              !standardEmployeeOperations.has(params.operation) &&
+              !manifest.actions.includes(params.operation)
+            ) {
+              throw new RpcError(
+                -32032,
+                'The employee application has not published this operation.',
+              );
+            }
+            return ok(request.id, canvas.prepareRoute({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+              manifest,
+            }));
+          }
+          case 'aqua.canvas.archive': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = CanvasArchiveParamsSchema.parse(request.params);
+            return ok(request.id, canvas.archive({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+            }));
+          }
+          case 'aqua.work.delegate': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = DelegateWorkParamsSchema.parse(request.params);
+            const manifest = registry.get(params.capabilityId);
+            if (!manifest) {
+              throw new RpcError(-32031, 'The requested employee office is not registered.');
+            }
+            if (
+              !standardEmployeeOperations.has(params.operation) &&
+              !manifest.actions.includes(params.operation)
+            ) {
+              throw new RpcError(
+                -32032,
+                'The employee application has not published this operation.',
+              );
+            }
+            return ok(request.id, office.delegate({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+              manifest,
+            }));
+          }
+          case 'aqua.employee.work.list': {
+            const params = EmployeeWorkListParamsSchema.parse(request.params);
+            requireAdapter(config, headers, params);
+            return ok(request.id, {
+              status: 'Confirmed',
+              work: office.listEmployeeWork(params),
+            });
+          }
+          case 'aqua.employee.work.report': {
+            const params = EmployeeWorkReportParamsSchema.parse(request.params);
+            requireAdapter(config, headers, params);
+            return ok(request.id, office.reportEmployeeWork(params));
+          }
+          case 'aqua.neural.inbox': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = NeuralInboxParamsSchema.parse(request.params);
+            return ok(request.id, {
+              status: 'Confirmed',
+              deliveries: office.listNeuralDeliveries({
+                ...params,
+                tenantId: identity.tenantId,
+              }),
+            });
+          }
+          case 'aqua.neural.acknowledge': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = NeuralAcknowledgeParamsSchema.parse(request.params);
+            return ok(request.id, office.acknowledgeNeuralDelivery({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+            }));
+          }
+          case 'aqua.executive.brief': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = ExecutiveBriefParamsSchema.parse(request.params);
+            const brief = office.buildExecutiveBrief({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+              registry: registry.list(),
+            });
+            return ok(request.id, {
+              ...brief,
+              companyHealth: intelligence.getCompanyHealth({
+                tenantId: identity.tenantId,
+              }),
+            });
+          }
+          case 'aqua.company.signals.ingest': {
+            const params = CompanySignalBatchParamsSchema.parse(request.params);
+            requireAdapter(config, headers, params);
+            return ok(request.id, intelligence.ingestSignals(params));
+          }
+          case 'aqua.company.health': {
+            const identity = requireOwnerIdentity(config, headers);
+            return ok(request.id, intelligence.getCompanyHealth({
+              tenantId: identity.tenantId,
+            }));
+          }
+          case 'aqua.recommendation.transition': {
+            const identity = requireOwnerIdentity(config, headers);
+            const params = RecommendationTransitionParamsSchema.parse(request.params);
+            return ok(request.id, intelligence.transitionRecommendation({
+              ...params,
+              tenantId: identity.tenantId,
+              userId: identity.sub,
+            }));
           }
           case 'aqua.adapter.sync': {
             const params = AdapterSyncParamsSchema.parse(request.params);
@@ -190,6 +401,33 @@ export function createGateway({
         }
         if (error instanceof ReceiptImageValidationError) {
           return fail(request.id, new RpcError(-32021, error.message));
+        }
+        if (error instanceof ExecutiveOfficeConflictError) {
+          return fail(request.id, new RpcError(-32033, error.message));
+        }
+        if (error instanceof ExecutiveOfficeNotFoundError) {
+          return fail(request.id, new RpcError(-32034, error.message));
+        }
+        if (error instanceof ExecutiveOfficePermissionError) {
+          return fail(request.id, new RpcError(-32035, error.message));
+        }
+        if (error instanceof IntelligenceConflictError) {
+          return fail(request.id, new RpcError(-32036, error.message));
+        }
+        if (error instanceof IntelligenceNotFoundError) {
+          return fail(request.id, new RpcError(-32037, error.message));
+        }
+        if (error instanceof IntelligenceTransitionError) {
+          return fail(request.id, new RpcError(-32038, error.message));
+        }
+        if (error instanceof PollyCanvasConflictError) {
+          return fail(request.id, new RpcError(-32039, error.message));
+        }
+        if (error instanceof PollyCanvasNotFoundError) {
+          return fail(request.id, new RpcError(-32040, error.message));
+        }
+        if (error instanceof PollyCanvasPermissionError) {
+          return fail(request.id, new RpcError(-32041, error.message));
         }
         return fail(request.id, error);
       }

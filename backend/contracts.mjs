@@ -258,6 +258,248 @@ export const AdapterSyncParamsSchema = z.object({
   }
 });
 
+const ExecutiveCorrelationIdSchema = z.string().min(8).max(200);
+
+export const OfficeEnterParamsSchema = z.object({
+  capabilityId: z.string().min(1).max(100),
+  purpose: z.string().min(1).max(1_000),
+  correlationId: ExecutiveCorrelationIdSchema,
+});
+
+export const DelegateWorkParamsSchema = z.object({
+  capabilityId: z.string().min(1).max(100),
+  operation: z.string().min(1).max(200),
+  instruction: z.string().min(1).max(4_000),
+  payload: z.record(z.string(), z.unknown()).default({}),
+  safetyClass: z.enum([
+    'read',
+    'write',
+    'destructive',
+    'external',
+    'financial',
+    'sensitive',
+  ]).default('read'),
+  ownerConfirmed: z.boolean().default(false),
+  correlationId: ExecutiveCorrelationIdSchema,
+  idempotencyKey: z.string().min(8).max(200),
+  dueAt: z.union([
+    z.literal(''),
+    z.string().datetime({ offset: true }),
+  ]).default(''),
+});
+
+export const EmployeeWorkListParamsSchema = z.object({
+  capabilityId: z.string().min(1).max(100),
+  tenantId: z.string().min(1).max(200),
+  statuses: z.array(z.enum([
+    'queued',
+    'accepted',
+    'in_progress',
+    'verified',
+    'needs_attention',
+    'failed',
+    'cancelled',
+  ])).max(7).default(['queued', 'accepted', 'in_progress', 'needs_attention']),
+  limit: z.number().int().min(1).max(100).default(50),
+});
+
+export const EmployeeEvidenceSchema = z.object({
+  evidenceId: z.string().min(1).max(300),
+  kind: z.enum(['record', 'artifact', 'metric', 'receipt', 'diagnostic']),
+  sourceRecordId: z.string().max(300).default(''),
+  summary: z.string().min(1).max(1_000),
+  referenceUri: z.union([
+    z.literal(''),
+    z.string().url().max(4_000).refine((value) => value.startsWith('https://'), {
+      message: 'Employee evidence references must use HTTPS.',
+    }),
+  ]).default(''),
+  verifiedAt: z.string().datetime({ offset: true }),
+});
+
+export const EmployeeWorkReportParamsSchema = z.object({
+  capabilityId: z.string().min(1).max(100),
+  tenantId: z.string().min(1).max(200),
+  workId: z.string().uuid(),
+  status: z.enum(['accepted', 'in_progress', 'verified', 'needs_attention', 'failed']),
+  summary: z.string().min(1).max(2_000),
+  evidence: z.array(EmployeeEvidenceSchema).max(50).default([]),
+  correlationId: ExecutiveCorrelationIdSchema,
+  idempotencyKey: z.string().min(8).max(200),
+});
+
+export const NeuralInboxParamsSchema = z.object({
+  reviewState: z.enum(['all', 'unread', 'reviewed', 'accepted', 'sent_back'])
+    .default('unread'),
+  limit: z.number().int().min(1).max(100).default(50),
+});
+
+export const NeuralAcknowledgeParamsSchema = z.object({
+  deliveryId: z.string().uuid(),
+  disposition: z.enum(['reviewed', 'accepted', 'sent_back']),
+  ownerNote: z.string().max(2_000).default(''),
+  correlationId: ExecutiveCorrelationIdSchema,
+}).superRefine((value, context) => {
+  if (value.disposition === 'sent_back' && !value.ownerNote.trim()) {
+    context.addIssue({
+      code: 'custom',
+      message: 'Sending work back requires an owner note.',
+      path: ['ownerNote'],
+    });
+  }
+});
+
+export const ExecutiveBriefParamsSchema = z.object({
+  phase: z.enum(['morning', 'check_in', 'shift_close']),
+  workdayId: z.union([z.literal(''), z.string().uuid()]).default(''),
+});
+
+export const CompanySignalSchema = z.object({
+  signalId: z.string().min(8).max(300),
+  metricId: z.string().regex(/^[a-z0-9][a-z0-9._-]{1,119}$/),
+  metricName: z.string().min(1).max(200),
+  entityType: z.enum(['company', 'portfolio', 'project', 'crew', 'material', 'customer']),
+  entityId: z.string().min(1).max(300),
+  periodStart: z.string().datetime({ offset: true }),
+  periodEnd: z.string().datetime({ offset: true }),
+  value: z.number().finite(),
+  unit: z.enum(['percent', 'currency_minor', 'hours', 'days', 'count', 'ratio', 'quantity']),
+  direction: z.enum(['higher_is_better', 'lower_is_better']),
+  target: z.number().finite().nullable(),
+  varianceTolerance: z.number().finite().nonnegative().default(0),
+  confidence: z.number().min(0).max(1),
+  evidence: z.array(EmployeeEvidenceSchema).min(1).max(50),
+  context: z.record(z.string(), z.unknown()).default({}),
+}).superRefine((value, context) => {
+  if (value.periodEnd < value.periodStart) {
+    context.addIssue({
+      code: 'custom',
+      message: 'Company signal periodEnd must not precede periodStart.',
+      path: ['periodEnd'],
+    });
+  }
+});
+
+export const CompanySignalBatchParamsSchema = z.object({
+  capabilityId: z.string().min(1).max(100),
+  tenantId: z.string().min(1).max(200),
+  batchId: z.string().min(8).max(200),
+  checkpoint: z.string().max(500).default(''),
+  signals: z.array(CompanySignalSchema).min(1).max(100),
+});
+
+export const RecommendationTransitionParamsSchema = z.object({
+  recommendationId: z.string().uuid(),
+  nextStatus: z.enum([
+    'proposed',
+    'reviewed',
+    'accepted',
+    'rejected',
+    'assigned',
+    'in_progress',
+    'verified',
+    'measured',
+    'closed',
+  ]),
+  ownerNote: z.string().max(2_000).default(''),
+  assignee: z.string().max(300).default(''),
+  dueAt: z.union([z.literal(''), z.string().datetime({ offset: true })]).default(''),
+  measuredOutcome: z.string().max(2_000).default(''),
+  correlationId: ExecutiveCorrelationIdSchema,
+}).superRefine((value, context) => {
+  if (value.nextStatus === 'assigned' && (!value.assignee || !value.dueAt)) {
+    context.addIssue({
+      code: 'custom',
+      message: 'Assigned recommendations require an assignee and due date.',
+      path: ['assignee'],
+    });
+  }
+  if (value.nextStatus === 'measured' && !value.measuredOutcome.trim()) {
+    context.addIssue({
+      code: 'custom',
+      message: 'Measured recommendations require an outcome statement.',
+      path: ['measuredOutcome'],
+    });
+  }
+});
+
+export const CanvasAttachmentReferenceSchema = z.object({
+  fileCabinetItemId: z.string().min(1).max(300),
+  evidenceId: z.string().min(1).max(300),
+  mimeType: z.string().min(1).max(200),
+  sha256: z.string().regex(/^[a-f0-9]{64}$/),
+  capturedAt: z.string().datetime({ offset: true }),
+});
+
+export const CanvasCaptureParamsSchema = z.object({
+  localCaptureId: z.string().min(1).max(300),
+  source: z.enum(['sentinel_widget', 'sentinel_app', 'android_share']),
+  kind: z.enum([
+    'idea',
+    'note',
+    'receipt',
+    'photo',
+    'video',
+    'quick_command',
+    'schedule_command',
+  ]),
+  title: z.string().max(500).default(''),
+  text: z.string().max(8_000).default(''),
+  attachmentRefs: z.array(CanvasAttachmentReferenceSchema).max(20).default([]),
+  capturedAt: z.string().datetime({ offset: true }),
+  correlationId: ExecutiveCorrelationIdSchema,
+  idempotencyKey: z.string().min(8).max(200),
+}).superRefine((value, context) => {
+  if (!value.text.trim() && value.attachmentRefs.length === 0) {
+    context.addIssue({
+      code: 'custom',
+      message: 'A Canvas capture requires text or at least one File Cabinet attachment reference.',
+      path: ['text'],
+    });
+  }
+});
+
+export const CanvasListParamsSchema = z.object({
+  statuses: z.array(z.enum([
+    'inbox',
+    'developing',
+    'routing_prepared',
+    'archived',
+  ])).max(4).default(['inbox', 'developing', 'routing_prepared']),
+  limit: z.number().int().min(1).max(100).default(50),
+});
+
+export const CanvasNoteParamsSchema = z.object({
+  canvasId: z.string().uuid(),
+  noteKind: z.enum(['owner_context', 'aqua_expansion', 'question', 'answer', 'decision']),
+  content: z.string().min(1).max(8_000),
+  correlationId: ExecutiveCorrelationIdSchema,
+});
+
+export const CanvasRouteParamsSchema = z.object({
+  canvasId: z.string().uuid(),
+  capabilityId: z.string().min(1).max(100),
+  operation: z.string().min(1).max(200),
+  purpose: z.string().min(1).max(2_000),
+  safetyClass: z.enum([
+    'read',
+    'write',
+    'destructive',
+    'external',
+    'financial',
+    'sensitive',
+  ]).default('read'),
+  ownerConfirmed: z.boolean().default(false),
+  correlationId: ExecutiveCorrelationIdSchema,
+  idempotencyKey: z.string().min(8).max(200),
+});
+
+export const CanvasArchiveParamsSchema = z.object({
+  canvasId: z.string().uuid(),
+  reason: z.string().min(1).max(1_000),
+  correlationId: ExecutiveCorrelationIdSchema,
+});
+
 export const MaterializationFieldSchema = z.object({
   label: z.string(),
   value: z.string(),

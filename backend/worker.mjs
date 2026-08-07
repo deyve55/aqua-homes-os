@@ -2,6 +2,9 @@ import { createHmac } from 'node:crypto';
 import { loadConfig, validateRuntimeConfig } from './config.mjs';
 import { CapabilityRegistry } from './capability-registry.mjs';
 import { ProjectionStore } from './projection-store.mjs';
+import { ExecutiveOfficeStore } from './executive-office.mjs';
+import { ExecutiveIntelligenceStore } from './executive-intelligence.mjs';
+import { PollyCanvasStore } from './polly-canvas.mjs';
 import { createAquaAgentRuntime } from './aqua-agent.mjs';
 import { createReceiptIntelligenceRuntime } from './receipt-intelligence.mjs';
 import { createGateway } from './gateway.mjs';
@@ -127,6 +130,9 @@ function createRuntime(env, snapshot = {}) {
       : undefined,
   );
   const store = new ProjectionStore(snapshot.store ?? []);
+  const office = new ExecutiveOfficeStore(snapshot.office ?? {});
+  const intelligence = new ExecutiveIntelligenceStore(snapshot.intelligence ?? {});
+  const canvas = new PollyCanvasStore(snapshot.canvas ?? {});
   const agentRuntime = createAquaAgentRuntime({
     config,
     registry,
@@ -139,8 +145,20 @@ function createRuntime(env, snapshot = {}) {
     config,
     registry,
     store,
+    office,
+    intelligence,
+    canvas,
     realtimeRuntime,
-    gateway: createGateway({ config, registry, store, agentRuntime, receiptRuntime }),
+    gateway: createGateway({
+      config,
+      registry,
+      store,
+      office,
+      intelligence,
+      canvas,
+      agentRuntime,
+      receiptRuntime,
+    }),
   };
 }
 
@@ -237,6 +255,9 @@ export class AquaGatewayDurableObject {
     await this.state.storage.put(STATE_KEY, {
       registry: this.runtime.registry.snapshot(),
       store: this.runtime.store.snapshot(),
+      office: this.runtime.office.snapshot(),
+      intelligence: this.runtime.intelligence.snapshot(),
+      canvas: this.runtime.canvas.snapshot(),
     });
     return json(result);
   }

@@ -2,6 +2,9 @@ import http from 'node:http';
 import { loadConfig, validateRuntimeConfig } from './config.mjs';
 import { CapabilityRegistry } from './capability-registry.mjs';
 import { ProjectionStore } from './projection-store.mjs';
+import { ExecutiveOfficeStore } from './executive-office.mjs';
+import { ExecutiveIntelligenceStore } from './executive-intelligence.mjs';
+import { PollyCanvasStore } from './polly-canvas.mjs';
 import { createAquaAgentRuntime } from './aqua-agent.mjs';
 import { createReceiptIntelligenceRuntime } from './receipt-intelligence.mjs';
 import { createGateway } from './gateway.mjs';
@@ -13,6 +16,9 @@ import {
 export function createServer(config = loadConfig()) {
   const registry = new CapabilityRegistry();
   const store = new ProjectionStore();
+  const office = new ExecutiveOfficeStore();
+  const intelligence = new ExecutiveIntelligenceStore();
+  const canvas = new PollyCanvasStore();
   const agentRuntime = createAquaAgentRuntime({ config, registry, store });
   const receiptRuntime = createReceiptIntelligenceRuntime({ config });
   const realtimeRuntime = createRealtimeSessionRuntime({ config });
@@ -20,6 +26,9 @@ export function createServer(config = loadConfig()) {
     config,
     registry,
     store,
+    office,
+    intelligence,
+    canvas,
     agentRuntime,
     receiptRuntime,
   });

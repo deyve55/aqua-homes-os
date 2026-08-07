@@ -73,11 +73,21 @@ const capabilities = [
   },
 ];
 
+export const STANDARD_EMPLOYEE_OPERATIONS = Object.freeze([
+  'employee.locate',
+  'employee.retrieve',
+  'employee.progress_report',
+]);
+
 export class CapabilityRegistry {
   #capabilities;
 
   constructor(entries = capabilities) {
-    this.#capabilities = entries.map((entry) => ({ ...entry }));
+    this.#capabilities = entries.map((entry) => ({
+      contractVersion: 'aqua-executive-office/1.0.0',
+      employeeOperations: [...STANDARD_EMPLOYEE_OPERATIONS],
+      ...entry,
+    }));
   }
 
   list() {
