@@ -572,9 +572,13 @@ export const AquaAgentOutputSchema = z.object({
         'queued',
         'not_configured',
         'not_attempted',
+        'evidence_delivery_failed',
       ]),
       acknowledgementId: z.string(),
       acknowledgedAt: z.string(),
+      workId: z.string(),
+      neuralDeliveryId: z.string(),
+      auditId: z.string(),
     }).optional(),
   }),
 });

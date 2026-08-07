@@ -9,7 +9,8 @@
     "enabled": true
   },
   "vars": {
-    "AQUA_PULSE_COMMAND_ENDPOINT": "https://aqua-pulse.deyve-docarm-5626.chatgpt.site/api/sentinel/v1/commands"
+    "AQUA_PULSE_COMMAND_ENDPOINT": "https://aqua-pulse.deyve-docarm-5626.chatgpt.site/api/sentinel/v1/commands",
+    "AQUA_PULSE_FINANCIAL_ENDPOINT": "https://aqua-pulse.deyve-docarm-5626.chatgpt.site/api/sentinel/v1/financial-events"
   },
   "durable_objects": {
     "bindings": [

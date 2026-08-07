@@ -45,6 +45,15 @@ const capabilities = [
     status: 'adapter_required',
   },
   {
+    id: 'pulse',
+    name: 'AquaPulse',
+    authority: 'operational cash position and provisional financial events',
+    recordKinds: [],
+    actions: ['capture.provisional_financial_event'],
+    route: 'aqua://pulse',
+    status: 'adapter_prepared',
+  },
+  {
     id: 'cam',
     name: 'Aqua Cam',
     authority: 'site photographs, video, visual evidence',
@@ -117,6 +126,16 @@ export class CapabilityRegistry {
     entry.lastCheckpoint = checkpoint;
     entry.lastRecordCount = recordCount;
     entry.lastSyncedAt = syncedAt;
+    return { ...entry };
+  }
+
+  markAdapterVerified(id, { correlationId, evidenceId, verifiedAt }) {
+    const entry = this.#capabilities.find((candidate) => candidate.id === id);
+    if (!entry) return null;
+    entry.status = 'adapter_execution_verified';
+    entry.lastCorrelationId = correlationId;
+    entry.lastEvidenceId = evidenceId;
+    entry.lastVerifiedAt = verifiedAt;
     return { ...entry };
   }
 }

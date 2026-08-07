@@ -17,6 +17,7 @@ import {
   SENTINEL_FILE_CABINET_PATH,
 } from './file-cabinet-relay.mjs';
 import { createAquaPulseClient } from './aqua-pulse-client.mjs';
+import { createAquaPulseAdapter } from './aqua-pulse-adapter.mjs';
 
 const STATE_KEY = 'aqua-gateway-state-v1';
 const AUTH_WINDOW_MS = 15 * 60 * 1_000;
@@ -133,11 +134,16 @@ function createRuntime(env, snapshot = {}) {
   const office = new ExecutiveOfficeStore(snapshot.office ?? {});
   const intelligence = new ExecutiveIntelligenceStore(snapshot.intelligence ?? {});
   const canvas = new PollyCanvasStore(snapshot.canvas ?? {});
+  const pulseAdapter = createAquaPulseAdapter({
+    client: createAquaPulseClient(env),
+    registry,
+    office,
+  });
   const agentRuntime = createAquaAgentRuntime({
     config,
     registry,
     store,
-    pulseClient: createAquaPulseClient(env),
+    pulseAdapter,
   });
   const receiptRuntime = createReceiptIntelligenceRuntime({ config });
   const realtimeRuntime = createRealtimeSessionRuntime({ config });

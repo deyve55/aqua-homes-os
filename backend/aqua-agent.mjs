@@ -70,7 +70,7 @@ export function createAquaAgentRuntime({
   registry,
   store,
   runner = run,
-  pulseClient = null,
+  pulseAdapter = null,
 }) {
   const routeCapability = tool({
     name: 'route_aqua_capability',
@@ -238,15 +238,17 @@ export function createAquaAgentRuntime({
           acknowledgementId: '',
           acknowledgedAt: '',
         };
-        if (['provisional', 'single'].includes(quickExpense.resolution) && pulseClient) {
-          pulseDelivery = await pulseClient.deliverQuickExpense({
+        if (['provisional', 'single'].includes(quickExpense.resolution) && pulseAdapter) {
+          pulseDelivery = await pulseAdapter.captureQuickExpense({
             identity,
             capture: quickExpense,
             uiContext: params.uiContext,
           });
         }
         const pulseConfirmed = ['accepted_and_saved', 'duplicate_ignored']
-          .includes(pulseDelivery.status);
+          .includes(pulseDelivery.status)
+          && Boolean(pulseDelivery.neuralDeliveryId)
+          && Boolean(pulseDelivery.auditId);
         const amount = formatQuickExpenseAmount(quickExpense);
         const selected = quickExpense.selected;
         const reply = quickExpense.resolution === 'single'
@@ -273,7 +275,9 @@ export function createAquaAgentRuntime({
                 ? 'Queued'
                 : 'Needs Attention',
             correlationId: pulseDelivery.correlationId || correlationId,
-            sources: ['file-cabinet', 'pulse'],
+            sources: pulseConfirmed
+              ? ['file-cabinet', 'pulse', 'neural']
+              : ['file-cabinet', 'pulse'],
             requiresConfirmation: false,
             intentId: '',
             confirmationToken: '',
@@ -282,6 +286,9 @@ export function createAquaAgentRuntime({
               status: pulseDelivery.status,
               acknowledgementId: pulseDelivery.acknowledgementId || '',
               acknowledgedAt: pulseDelivery.acknowledgedAt || '',
+              workId: pulseDelivery.workId || '',
+              neuralDeliveryId: pulseDelivery.neuralDeliveryId || '',
+              auditId: pulseDelivery.auditId || '',
             },
           },
         });

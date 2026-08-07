@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { CapabilityRegistry } from '../backend/capability-registry.mjs';
 import { loadConfig } from '../backend/config.mjs';
 import {
@@ -16,6 +17,8 @@ import { ProjectionStore } from '../backend/projection-store.mjs';
 import { issueSession, verifySession } from '../backend/auth.mjs';
 import { createGateway } from '../backend/gateway.mjs';
 import { createAquaAgentRuntime } from '../backend/aqua-agent.mjs';
+import { createAquaPulseAdapter } from '../backend/aqua-pulse-adapter.mjs';
+import { ExecutiveOfficeStore } from '../backend/executive-office.mjs';
 import { AquaAgentOutputSchema, emptyMaterialization } from '../backend/contracts.mjs';
 import {
   createReceiptIntelligenceRuntime,
@@ -51,6 +54,27 @@ const identity = {
   roles: ['owner'],
   deviceId: 'device-a',
 };
+
+test('AquaPulse wiring package publishes only verified capability scope and pending gates', () => {
+  const packageManifest = JSON.parse(readFileSync(new URL(
+    '../docs/integration/aqua-pulse-adapter-package.json',
+    import.meta.url,
+  )));
+  assert.equal(packageManifest.contractVersion, 'aqua-app-wiring-package/1.0.0');
+  assert.equal(packageManifest.app.capabilityId, 'pulse');
+  assert.deepEqual(
+    packageManifest.implementedOperations.map((operation) => operation.operation),
+    ['capture.provisional_financial_event'],
+  );
+  assert.equal(packageManifest.implementationState.integrationComplete, false);
+  assert.equal(packageManifest.implementationState.productionCrossing, 'not_run');
+  assert.ok(packageManifest.plannedNotPublishedOperations.includes('cash_position.retrieve'));
+  assert.ok(packageManifest.protectedNotPublishedOperations.includes('money.move'));
+  assert.deepEqual(
+    new CapabilityRegistry().get('pulse').actions,
+    ['capture.provisional_financial_event'],
+  );
+});
 
 function request(id, method, params = {}) {
   return { jsonrpc: '2.0', id, method, params };
@@ -242,7 +266,7 @@ test('quick expense capture asks for address only when CRM returns multiple matc
   ]);
 });
 
-test('quick expense becomes Confirmed only after AquaPulse returns an exact saved acknowledgement', async () => {
+test('authenticated quick expense executes in AquaPulse and returns audited evidence through Neural', async () => {
   const registry = new CapabilityRegistry();
   registry.markSynced('crm', {
     syncId: 'crm-carly-confirmed', checkpoint: 'crm:3', recordCount: 1,
@@ -260,15 +284,15 @@ test('quick expense becomes Confirmed only after AquaPulse returns an exact save
     fields: [{ label: 'Address', value: '10 Main Street' }],
   }]);
   const calls = [];
-  const runtime = createAquaAgentRuntime({
-    config,
+  const office = new ExecutiveOfficeStore();
+  const pulseAdapter = createAquaPulseAdapter({
     registry,
-    store,
-    pulseClient: {
+    office,
+    client: {
       async deliverQuickExpense(input) {
         calls.push(input);
         return {
-          status: 'accepted_and_saved',
+          status: calls.length === 1 ? 'accepted_and_saved' : 'duplicate_ignored',
           correlationId: 'cor-pulse-confirmed-0001',
           acknowledgementId: 'ack-pulse-confirmed-0001',
           acknowledgedAt: '2026-08-06T12:00:01.000Z',
@@ -276,27 +300,124 @@ test('quick expense becomes Confirmed only after AquaPulse returns an exact save
       },
     },
   });
+  const runtime = createAquaAgentRuntime({
+    config,
+    registry,
+    store,
+    pulseAdapter,
+  });
+  const gateway = createGateway({
+    config,
+    registry,
+    store,
+    office,
+    agentRuntime: runtime,
+  });
+  const params = {
+    text: '$500 for Carly at Home Depot',
+    selectedApp: 'AquaPulse',
+    uiContext: {
+      localExpenseCaptureId: 'local-expense-confirmed-1',
+      localExpenseCapturedAt: Date.parse('2026-08-06T11:59:58.000Z'),
+    },
+    conversationId: 'test-conversation',
+    safetyIdentifier: 'test-safety-id',
+  };
+  const denied = await gateway.dispatch(request(100, 'aqua.chat', params));
+  assert.equal(denied.error.code, -32001);
+
+  const ownerHeaders = {
+    authorization: `Bearer ${issueSession(config, identity)}`,
+  };
+  const response = await gateway.dispatch(request(101, 'aqua.chat', params), ownerHeaders);
+  const result = response.result;
+  assert.equal(calls.length, 1);
+  assert.equal(result.receipt.status, 'Confirmed');
+  assert.equal(result.receipt.pulseDelivery.status, 'accepted_and_saved');
+  assert.equal(result.receipt.pulseDelivery.acknowledgementId, 'ack-pulse-confirmed-0001');
+  assert.ok(result.receipt.pulseDelivery.workId);
+  assert.ok(result.receipt.pulseDelivery.neuralDeliveryId);
+  assert.ok(result.receipt.pulseDelivery.auditId);
+  assert.match(result.reply, /confirmed in AquaPulse/i);
+  assert.match(result.reply, /project label is provisional until CRM is connected later/i);
+  assert.match(result.reply, /not a Books actual/i);
+
+  const inbox = await gateway.dispatch(
+    request(102, 'aqua.neural.inbox', { reviewState: 'unread', limit: 10 }),
+    ownerHeaders,
+  );
+  assert.equal(inbox.result.deliveries.length, 1);
+  assert.equal(
+    inbox.result.deliveries[0].deliveryId,
+    result.receipt.pulseDelivery.neuralDeliveryId,
+  );
+  assert.equal(inbox.result.deliveries[0].evidence[0].evidenceId, 'ack-pulse-confirmed-0001');
+  assert.equal(inbox.result.deliveries[0].auditReference.auditId, result.receipt.pulseDelivery.auditId);
+  assert.deepEqual(
+    office.snapshot().auditEvents.map((event) => event.eventType),
+    ['employee.work.delegated', 'employee.work.verified'],
+  );
+  assert.equal(registry.get('pulse').status, 'adapter_execution_verified');
+
+  const replayResponse = await gateway.dispatch(
+    request(103, 'aqua.chat', params),
+    ownerHeaders,
+  );
+  assert.equal(calls.length, 2);
+  assert.equal(replayResponse.result.receipt.status, 'Confirmed');
+  assert.equal(replayResponse.result.receipt.pulseDelivery.status, 'duplicate_ignored');
+  assert.equal(
+    replayResponse.result.receipt.pulseDelivery.workId,
+    result.receipt.pulseDelivery.workId,
+  );
+  assert.equal(
+    replayResponse.result.receipt.pulseDelivery.neuralDeliveryId,
+    result.receipt.pulseDelivery.neuralDeliveryId,
+  );
+  assert.equal(
+    replayResponse.result.receipt.pulseDelivery.auditId,
+    result.receipt.pulseDelivery.auditId,
+  );
+  assert.equal(office.snapshot().neuralDeliveries.length, 1);
+  assert.equal(office.snapshot().auditEvents.length, 2);
+});
+
+test('AquaPulse delivery failure remains queued and never creates verified Neural evidence', async () => {
+  const registry = new CapabilityRegistry();
+  const store = new ProjectionStore();
+  const office = new ExecutiveOfficeStore();
+  const pulseAdapter = createAquaPulseAdapter({
+    registry,
+    office,
+    client: {
+      async deliverQuickExpense() {
+        return {
+          status: 'queued',
+          acknowledgementId: '',
+          acknowledgedAt: '',
+        };
+      },
+    },
+  });
+  const runtime = createAquaAgentRuntime({ config, registry, store, pulseAdapter });
   const result = await runtime.chat({
     identity,
     params: {
       text: '$500 for Carly at Home Depot',
       selectedApp: 'AquaPulse',
-      uiContext: {
-        localExpenseCaptureId: 'local-expense-confirmed-1',
-        localExpenseCapturedAt: Date.parse('2026-08-06T11:59:58.000Z'),
-      },
-      conversationId: 'test-conversation',
-      safetyIdentifier: 'test-safety-id',
+      uiContext: { localExpenseCaptureId: 'local-expense-queued-1' },
+      conversationId: 'queued-test-conversation',
+      safetyIdentifier: 'queued-test-safety-id',
     },
   });
-  assert.equal(calls.length, 1);
-  assert.equal(result.receipt.status, 'Confirmed');
-  assert.equal(result.receipt.pulseDelivery.status, 'accepted_and_saved');
-  assert.equal(result.receipt.pulseDelivery.acknowledgementId, 'ack-pulse-confirmed-0001');
-  assert.equal(result.receipt.correlationId, 'cor-pulse-confirmed-0001');
-  assert.match(result.reply, /confirmed in AquaPulse/i);
-  assert.match(result.reply, /project label is provisional until CRM is connected later/i);
-  assert.match(result.reply, /not a Books actual/i);
+  assert.equal(result.receipt.status, 'Queued');
+  assert.equal(result.receipt.pulseDelivery.status, 'queued');
+  assert.ok(result.receipt.pulseDelivery.workId);
+  assert.equal(result.receipt.pulseDelivery.neuralDeliveryId, '');
+  assert.equal(result.receipt.pulseDelivery.auditId, '');
+  assert.equal(office.snapshot().neuralDeliveries.length, 0);
+  assert.equal(office.snapshot().workOrders[0].status, 'queued');
+  assert.match(result.reply, /queued for AquaPulse/i);
 });
 
 function receiptAnalysisFixture() {

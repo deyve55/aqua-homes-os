@@ -117,7 +117,7 @@ export class ExecutiveOfficeStore {
       truthBoundary:
         'The authenticated navigation route is prepared; the destination app must confirm launch and every resulting action separately.',
     };
-    this.#audit({
+    const auditEvent = this.#audit({
       tenantId,
       actorId: userId,
       actorType: 'owner',
@@ -126,6 +126,11 @@ export class ExecutiveOfficeStore {
       subjectId: ticket.navigationTicketId,
       details: { capabilityId: manifest.id, purpose },
     });
+    ticket.auditReference = {
+      auditId: auditEvent.auditId,
+      eventType: auditEvent.eventType,
+      occurredAt: auditEvent.occurredAt,
+    };
     return clone(ticket);
   }
 
@@ -183,7 +188,7 @@ export class ExecutiveOfficeStore {
       correlationId,
       idempotencyKey,
       status: 'queued',
-      deliveryState: manifest.status === 'adapter_required'
+      deliveryState: ['adapter_required', 'adapter_prepared'].includes(manifest.status)
         ? 'awaiting_adapter'
         : 'available_to_employee',
       dueAt,
@@ -194,7 +199,7 @@ export class ExecutiveOfficeStore {
     };
     this.#workOrders.set(workOrder.workId, workOrder);
     this.#delegateReceipts.set(key, { workId: workOrder.workId, payloadHash: hash });
-    this.#audit({
+    const auditEvent = this.#audit({
       tenantId,
       actorId: userId,
       actorType: 'owner',
@@ -208,6 +213,11 @@ export class ExecutiveOfficeStore {
         deliveryState: workOrder.deliveryState,
       },
     });
+    workOrder.auditReference = {
+      auditId: auditEvent.auditId,
+      eventType: auditEvent.eventType,
+      occurredAt: auditEvent.occurredAt,
+    };
     return clone(workOrder);
   }
 
@@ -296,11 +306,33 @@ export class ExecutiveOfficeStore {
       workOrder.deliveryState = 'delivered_to_neural';
     }
 
+    const auditEvent = this.#audit({
+      tenantId,
+      actorId: capabilityId,
+      actorType: 'employee_app',
+      eventType: `employee.work.${status}`,
+      correlationId,
+      subjectId: workId,
+      details: {
+        reportId: report.reportId,
+        evidenceCount: evidence.length,
+        evidenceIds: evidence.map((item) => item.evidenceId),
+      },
+    });
+    const auditReference = {
+      auditId: auditEvent.auditId,
+      eventType: auditEvent.eventType,
+      occurredAt: auditEvent.occurredAt,
+    };
+    report.auditReference = auditReference;
+    if (delivery) delivery.auditReference = auditReference;
+
     const receipt = {
       status: 'Confirmed',
       workId,
       report: clone(report),
       neuralDelivery: delivery ? clone(delivery) : null,
+      auditReference: clone(auditReference),
       duplicate: false,
       truthBoundary:
         status === 'verified'
@@ -308,15 +340,6 @@ export class ExecutiveOfficeStore {
           : 'Sentinel preserved the employee status report without representing it as verified completion.',
     };
     this.#reportReceipts.set(key, { payloadHash: hash, receipt: clone(receipt) });
-    this.#audit({
-      tenantId,
-      actorId: capabilityId,
-      actorType: 'employee_app',
-      eventType: `employee.work.${status}`,
-      correlationId,
-      subjectId: workId,
-      details: { reportId: report.reportId, evidenceCount: evidence.length },
-    });
     return receipt;
   }
 

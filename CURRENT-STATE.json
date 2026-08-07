@@ -1,6 +1,6 @@
 {
-  "schema_version": "2.3.0",
-  "updated_at": "2026-08-06T00:00:00-04:00",
+  "schema_version": "2.4.0",
+  "updated_at": "2026-08-07T00:00:00-04:00",
   "timezone": "America/New_York",
   "owner": "Dave (Deyve)",
   "company": "Aqua Software Inc.",
@@ -392,6 +392,33 @@
     "deployment": "NOT_RUN",
     "device_test": "NOT_RUN",
     "truth_boundary": "No CRM repository was touched. No live AquaPulse money event, signed APK, or physical-device result is claimed until both repository branches are published and their CI/deployment/device gates pass."
+  },
+  "aqua_pulse_neural_adapter_package_2026_08_07": {
+    "status": "IMPLEMENTED_LOCALLY_PUBLICATION_PENDING",
+    "package_id": "aqua-pulse-sentinel-adapter-2026-08-07",
+    "manifest": "docs/integration/aqua-pulse-adapter-package.json",
+    "app_handoff": "00-START-HERE/AQUA-PULSE-DAI-WIRING-HANDOFF-2026-08-07.md",
+    "capability_id": "pulse",
+    "implemented_operation": "capture.provisional_financial_event",
+    "verified_chain": [
+      "valid Sentinel owner session",
+      "durable executive work order before outbound execution",
+      "server-authenticated AquaPulse receiver call",
+      "exact saved-event acknowledgement verification",
+      "correlated Sentinel employee audit reference",
+      "verified AquaPulse acknowledgement evidence delivered to Neural Link"
+    ],
+    "idempotent_replay": "reuses the same work order, Neural delivery, and Sentinel audit receipt",
+    "failure_boundary": "missing or invalid delivery remains queued; missing audit or Neural evidence cannot produce Confirmed",
+    "local_repository_tests": "77/77 passed",
+    "worker_dry_run": "passed",
+    "approved_ui_changed": false,
+    "aqua_personality_changed": false,
+    "aqua_pulse_receiver_deployed": false,
+    "live_external_crossing": "NOT_RUN",
+    "physical_device": "NOT_RUN",
+    "integration_complete": false,
+    "truth_boundary": "The Sentinel package is implemented and locally verified. AquaPulse must still adopt the handoff, deploy and verify its authoritative receiver and audit row, prove the live two-delivery crossing, return the evidence through Neural, and pass its app-specific and physical gates."
   },
   "secrets": {
     "api_keys_committed": false,

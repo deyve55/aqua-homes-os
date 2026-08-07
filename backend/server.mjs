@@ -8,18 +8,30 @@ import { PollyCanvasStore } from './polly-canvas.mjs';
 import { createAquaAgentRuntime } from './aqua-agent.mjs';
 import { createReceiptIntelligenceRuntime } from './receipt-intelligence.mjs';
 import { createGateway } from './gateway.mjs';
+import { createAquaPulseClient } from './aqua-pulse-client.mjs';
+import { createAquaPulseAdapter } from './aqua-pulse-adapter.mjs';
 import {
   authenticateRealtimeRequest,
   createRealtimeSessionRuntime,
 } from './realtime-session.mjs';
 
-export function createServer(config = loadConfig()) {
+export function createServer(config = loadConfig(), env = process.env) {
   const registry = new CapabilityRegistry();
   const store = new ProjectionStore();
   const office = new ExecutiveOfficeStore();
   const intelligence = new ExecutiveIntelligenceStore();
   const canvas = new PollyCanvasStore();
-  const agentRuntime = createAquaAgentRuntime({ config, registry, store });
+  const pulseAdapter = createAquaPulseAdapter({
+    client: createAquaPulseClient(env),
+    registry,
+    office,
+  });
+  const agentRuntime = createAquaAgentRuntime({
+    config,
+    registry,
+    store,
+    pulseAdapter,
+  });
   const receiptRuntime = createReceiptIntelligenceRuntime({ config });
   const realtimeRuntime = createRealtimeSessionRuntime({ config });
   const gateway = createGateway({

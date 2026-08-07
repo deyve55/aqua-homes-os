@@ -677,3 +677,48 @@ AquaPulse draft-PR commits, let repository CI rebuild both sources, deploy the
 AquaPulse backend only through its protected release workflow, run the exact
 two-delivery test, then build the matched Sentinel/AquaPulse APK set for Dave's
 physical test. CRM remains intentionally deferred.
+
+## 19. AquaPulse audited Neural adapter package — 2026-08-07
+
+The first ordered application package is now implemented locally in Sentinel.
+AquaPulse is registered as capability `pulse`, and Sentinel publishes only the
+operation that already has a real AquaPulse receiver contract:
+`capture.provisional_financial_event`.
+
+The new `backend/aqua-pulse-adapter.mjs` places a durable executive work order
+ahead of outbound execution. It accepts completion only after the strict
+AquaPulse client validates the saved-event acknowledgement. Sentinel then
+preserves a correlated `employee.work.verified` audit reference and creates one
+Neural delivery whose evidence ID is AquaPulse's acknowledgement ID and whose
+source record is AquaPulse's event ID. An exact replay reuses the work order,
+Neural delivery, and audit receipt. A missing or invalid receiver response stays
+queued, and a failure to create audit/Neural evidence cannot produce
+`Confirmed`.
+
+The package is defined in
+`docs/integration/aqua-pulse-adapter-package.json`. The self-contained handoff
+for the AquaPulse application/backend and DAI wiring chat is
+`00-START-HERE/AQUA-PULSE-DAI-WIRING-HANDOFF-2026-08-07.md`. That handoff
+requires the app chat to preserve the current AquaPulse UI, personality,
+Android/mobile voice, and standalone workflow; deploy the already
+source-validated D1 financial receiver; run the real first-save and exact-retry
+crossing; verify the authoritative event and AquaPulse audit row; verify the
+matching Sentinel audit and Neural evidence; and return the exact receipt to
+Dave before the sequence advances to AquaDraw.
+
+Local evidence for this Sentinel package:
+
+- full repository suite: 77/77 passed;
+- Cloudflare Worker production-package dry-run: passed;
+- authenticated success path: verified in contract tests;
+- wrong/missing session: rejected;
+- identical replay: same work, Neural delivery, and audit receipt;
+- failed AquaPulse delivery: queued, with no verified Neural evidence;
+- approved UI files changed: none;
+- Aqua personality files changed: none.
+
+Truth boundary: this is a locally implemented and verified Sentinel package,
+not a production-live AquaPulse integration. AquaPulse's financial receiver and
+D1 migration remain recorded as source validated but not deployed. No live
+external crossing or physical-device result is claimed. The rollout must stop
+at AquaPulse until Dave returns the app-team receipt and authorizes AquaDraw.
