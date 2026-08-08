@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Aqua Sentinel OS — secure owner command intelligence for the Aqua ecosystem."
+    />
+    <title>Aqua Sentinel OS</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./fidelity.css" />
+  </head>
+  <body>
+    <main id="sentinel" class="sentinel state-idle">
+      <div class="os-surface">
+        <section class="aqua-hero" aria-label="Aqua voice assistant">
+          <div class="hero-art" aria-hidden="true"></div>
+          <span class="listening-waves" aria-hidden="true">
+            <i class="wave-energy wave-left"></i>
+            <i class="wave-energy wave-right"></i>
+          </span>
+          <button
+            id="aquaButton"
+            class="aqua-button"
+            type="button"
+            aria-label="Talk to Aqua"
+          >
+            <span class="voice-core" aria-hidden="true"><i></i></span>
+          </button>
+          <div id="aquaStateLabel" class="aqua-state-label" aria-live="polite">
+            Tap here to speak to Aqua
+          </div>
+          <div id="selectedAppLabel" class="selected-app-label" aria-live="polite">
+            AquaDraw
+          </div>
+          <button
+            id="aquaPresenceButton"
+            class="aqua-presence-button"
+            type="button"
+            aria-label="Open Aqua"
+          >
+            <span>A</span><i aria-hidden="true"></i>
+          </button>
+        </section>
+
+        <section
+          id="appDeck"
+          class="app-deck is-settled"
+          aria-label="Aqua ecosystem applications"
+        >
+          <div class="deck-label">
+            <span>CONNECTED ECOSYSTEM</span>
+            <strong>Swipe to rotate · Tap center to open</strong>
+          </div>
+          <button
+            id="previousApp"
+            class="deck-arrow previous"
+            type="button"
+            aria-label="Previous app"
+          >
+            ‹
+          </button>
+          <div class="aqua-card-holder" aria-hidden="true">
+            <span>AQUA APP DOCK</span>
+          </div>
+          <div id="cardsTrack" class="cards-track"></div>
+          <button
+            id="nextApp"
+            class="deck-arrow next"
+            type="button"
+            aria-label="Next app"
+          >
+            ›
+          </button>
+          <div id="deckDots" class="deck-dots"></div>
+        </section>
+
+        <section
+          id="appDashboard"
+          class="app-dashboard"
+          aria-live="polite"
+        >
+          <button id="primaryDashboard" class="dashboard-card" type="button">
+            <header>
+              <span>01</span>
+              <div><small>HOME SCREEN</small><strong id="primaryTitle"></strong></div>
+              <b id="primaryBadge" class="preview">Local preview</b>
+            </header>
+            <div id="primaryScreen" class="dashboard-screen-crop screen-upper" aria-hidden="true"></div>
+            <div class="dashboard-accessible-data">
+              <h3 id="primaryDetail"></h3>
+              <span id="primaryValue"></span>
+              <span id="primarySource"></span>
+              <span id="primaryStatus">Local preview</span>
+            </div>
+            <footer>
+              <i>✓</i>
+              <span>App intelligence preview<br /><small id="primaryUpdated">No confirmed refresh yet</small></span>
+              <b>›</b>
+            </footer>
+          </button>
+
+          <button
+            id="secondaryDashboard"
+            class="dashboard-card attention"
+            type="button"
+          >
+            <header>
+              <span>02</span>
+              <div><small>HOME SCREEN</small><strong id="secondaryTitle"></strong></div>
+              <b id="secondaryBadge" class="preview">Local preview</b>
+            </header>
+            <div id="secondaryScreen" class="dashboard-screen-crop screen-lower" aria-hidden="true"></div>
+            <div class="dashboard-accessible-data">
+              <h3 id="secondaryDetail"></h3>
+              <span id="secondaryValue"></span>
+              <span id="secondarySource"></span>
+              <span id="secondaryStatus">Local preview</span>
+            </div>
+            <footer>
+              <i>!</i>
+              <span>Operational preview<br /><small id="secondaryUpdated">No confirmed refresh yet</small></span>
+              <b>›</b>
+            </footer>
+          </button>
+        </section>
+
+        <nav class="bottom-rail" aria-label="Primary navigation">
+          <button class="active" type="button" data-panel="home">
+            <span>⌂</span><small>Home</small>
+          </button>
+          <button type="button" data-panel="neural">
+            <span>◉</span><small>Neural Link</small>
+          </button>
+          <button id="aquaPulseNavButton" type="button" data-app-name="AquaPulse">
+            <span class="pulse-nav-icon" aria-hidden="true"><img src="./assets/carousel-v2/pulse.svg" alt="" /></span><small>Pulse</small>
+            <b id="aquaPulseNavBadge" aria-label="New AquaPulse field-test portal">NEW</b>
+          </button>
+          <button id="filingCabinetButton" type="button" data-panel="command">
+            <span class="file-cabinet-icon" aria-hidden="true"><i></i><i></i></span><small>Command</small>
+            <b id="filingPendingBadge" hidden>0</b>
+          </button>
+          <button type="button" data-panel="settings">
+            <span>☷</span><small>Settings</small>
+          </button>
+          <button id="ownerAccessButton" type="button" data-panel="connect">
+            <span>↪</span><small id="ownerAccessLabel">Connect</small>
+          </button>
+        </nav>
+      </div>
+
+      <section id="workspace" class="app-workspace" hidden></section>
+      <section id="detailSheet" class="detail-sheet" hidden></section>
+      <section id="systemPanel" class="system-panel" hidden></section>
+
+      <section id="authPanel" class="auth-panel" aria-modal="true" hidden>
+        <div class="auth-mark">A</div>
+        <small>AQUA SENTINEL OS</small>
+        <h1>Owner access</h1>
+        <p>
+          Connect this phone to Aqua’s secure intelligence and persistent
+          business memory with a one-time owner activation code.
+        </p>
+        <button id="authActivation" class="auth-standalone" type="button">
+          Get One-Time Activation Code
+        </button>
+        <form id="authForm">
+          <label>
+            Email
+            <input
+              id="authEmail"
+              type="email"
+              autocomplete="username"
+              spellcheck="false"
+              required
+            />
+          </label>
+          <label>
+            One-time activation code
+            <input
+              id="authPassword"
+              type="text"
+              inputmode="text"
+              autocomplete="one-time-code"
+              autocapitalize="characters"
+              spellcheck="false"
+              required
+            />
+          </label>
+          <button id="authSubmit" type="submit">Connect Aqua Brain</button>
+        </form>
+        <div id="authMessage" class="auth-message" aria-live="polite"></div>
+        <button id="authContinueStandalone" class="auth-standalone" type="button">
+          Continue in Standalone
+        </button>
+        <small class="auth-security">
+          Session tokens are encrypted with Android Keystore and stay on this
+          device.
+        </small>
+      </section>
+
+      <div id="sentinelToast" class="sentinel-toast" hidden></div>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

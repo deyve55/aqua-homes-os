@@ -1,0 +1,109 @@
+{
+  "contractVersion": "aqua-app-wiring-package/1.0.0",
+  "packageId": "aqua-pulse-sentinel-adapter-2026-08-07",
+  "app": {
+    "capabilityId": "pulse",
+    "appId": "aqua-pulse",
+    "name": "AquaPulse",
+    "androidPackage": "com.aquasoftware.aquapulse",
+    "route": "aqua://pulse"
+  },
+  "authority": {
+    "aquaPulse": "Operational cash position and provisional financial events.",
+    "sentinel": "Authenticated orchestration, durable work, audit references, and Neural delivery.",
+    "aquaBooks": "Authoritative accounting ledger and reconciled actuals.",
+    "aquaCrm": "Authoritative customer and job identity when connected later."
+  },
+  "implementationState": {
+    "sentinelBackend": "implemented_and_locally_verified",
+    "aquaPulseReceiver": "source_validated_not_deployed",
+    "productionCrossing": "not_run",
+    "physicalDevice": "not_run",
+    "integrationComplete": false
+  },
+  "implementedOperations": [
+    {
+      "operation": "capture.provisional_financial_event",
+      "sourceSurfaces": ["voice", "widget", "in_app"],
+      "sourceRecord": "A durable Sentinel File Cabinet capture.",
+      "authentication": [
+        "A valid Sentinel owner session is required before Aqua chat executes.",
+        "Sentinel uses its server-held client token for AquaPulse.",
+        "AquaPulse requires its protected site credential and tenant allowlist."
+      ],
+      "execution": {
+        "method": "POST",
+        "endpoint": "/api/sentinel/v1/financial-events",
+        "contract": "aqua-sentinel-sdk-v1",
+        "version": "1.1.0",
+        "command": "capture.provisional_financial_event"
+      },
+      "verification": {
+        "acceptedStatuses": ["accepted_and_saved", "duplicate_ignored"],
+        "exactFields": [
+          "eventId",
+          "correlationId",
+          "idempotencyKey",
+          "acknowledgementToken"
+        ],
+        "stableEvidence": ["acknowledgementId", "acknowledgedAt"]
+      },
+      "audit": {
+        "sentinelEvents": [
+          "employee.work.delegated",
+          "employee.work.verified"
+        ],
+        "aquaPulseAuditRequired": true,
+        "correlationRequired": true
+      },
+      "neuralReturn": {
+        "status": "verified",
+        "evidenceKind": "receipt",
+        "sourceRecord": "AquaPulse eventId",
+        "evidenceId": "AquaPulse acknowledgementId"
+      },
+      "confirmation": "The authenticated owner's explicit capture command authorizes this provisional record capture. It does not authorize money movement or an accounting posting."
+    }
+  ],
+  "employeeAdapterContract": {
+    "workListMethod": "aqua.employee.work.list",
+    "workReportMethod": "aqua.employee.work.report",
+    "companySignalMethod": "aqua.company.signals.ingest",
+    "adapterAuthentication": [
+      "x-aqua-adapter-id: pulse",
+      "x-aqua-adapter-key: server-held secret",
+      "tenantId must be allowlisted by the Sentinel credential"
+    ],
+    "standardOperations": [
+      "employee.locate",
+      "employee.retrieve",
+      "employee.progress_report"
+    ],
+    "verifiedReportsRequireEvidence": true
+  },
+  "plannedNotPublishedOperations": [
+    "cash_position.retrieve",
+    "cash_forecast.retrieve",
+    "financial_exception.retrieve",
+    "provisional_event.retrieve",
+    "file_cabinet_reference.retrieve"
+  ],
+  "protectedNotPublishedOperations": [
+    "money.move",
+    "banking_instruction.change",
+    "ledger.post",
+    "reconciliation.confirm"
+  ],
+  "requiredAppGates": [
+    "Validate the app capability manifest.",
+    "Authenticate the server-side adapter and derive tenant scope from verified credentials.",
+    "Deploy the provisional financial receiver and D1 migration through the protected release path.",
+    "Prove accepted_and_saved followed by duplicate_ignored for one identical event.",
+    "Verify the authoritative AquaPulse row and correlated AquaPulse audit row.",
+    "Return the acknowledgement evidence through Sentinel Neural Link.",
+    "Prove cross-tenant denial, idempotency conflict denial, and truthful degraded behavior.",
+    "Prove the registered AquaPulse office-entry destination.",
+    "Preserve standalone AquaPulse behavior, approved UI, mobile voice, and current Aqua personality.",
+    "Complete relevant CI, deployment, and physical-device gates."
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "aqua-sentinel-os-mobile-surface",
+  "private": true,
+  "version": "0.4.7",
+  "type": "module",
+  "scripts": {
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "vite": "7.0.6"
+  }
+}

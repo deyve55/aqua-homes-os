@@ -1,0 +1,141 @@
+const capabilities = [
+  {
+    id: 'crm',
+    name: 'Aqua CRM',
+    authority: 'clients, contacts, jobs, contracts, communications',
+    recordKinds: ['client', 'job', 'contract'],
+    actions: ['client.prepare_create', 'job.prepare_create', 'communication.prepare_draft'],
+    route: 'aqua://crm',
+    status: 'adapter_required',
+  },
+  {
+    id: 'timesheet',
+    name: 'Aqua Timesheet',
+    authority: 'timecards, shifts, travel, approvals',
+    recordKinds: ['timecard'],
+    actions: ['timecard.prepare_approval'],
+    route: 'aqua://timesheet',
+    status: 'adapter_required',
+  },
+  {
+    id: 'receipts',
+    name: 'Aqua Receipts',
+    authority: 'receipts, OCR, cost coding, filing status',
+    recordKinds: ['receipt'],
+    actions: ['receipt.prepare_file', 'receipt.prepare_correct'],
+    route: 'aqua://receipts',
+    status: 'adapter_required',
+  },
+  {
+    id: 'knowledge-vault',
+    name: 'Aqua Knowledge Vault',
+    authority: 'documents, policies, evidence, semantic index',
+    recordKinds: ['contract', 'file'],
+    actions: ['file.prepare_share'],
+    route: 'aqua://knowledge-vault',
+    status: 'adapter_required',
+  },
+  {
+    id: 'books',
+    name: 'Aqua Books',
+    authority: 'ledger, invoices, job costs, financial reports',
+    recordKinds: [],
+    actions: [],
+    route: 'aqua://books',
+    status: 'adapter_required',
+  },
+  {
+    id: 'pulse',
+    name: 'AquaPulse',
+    authority: 'operational cash position and provisional financial events',
+    recordKinds: [],
+    actions: ['capture.provisional_financial_event'],
+    route: 'aqua://pulse',
+    status: 'adapter_prepared',
+  },
+  {
+    id: 'cam',
+    name: 'Aqua Cam',
+    authority: 'site photographs, video, visual evidence',
+    recordKinds: ['file'],
+    actions: ['capture.prepare_file'],
+    route: 'aqua://cam',
+    status: 'adapter_required',
+  },
+  {
+    id: 'draw',
+    name: 'Aqua Draw',
+    authority: 'drawings, markups, field plans',
+    recordKinds: ['file'],
+    actions: [],
+    route: 'aqua://draw',
+    status: 'adapter_required',
+  },
+  {
+    id: 'sentinel-files',
+    name: 'Sentinel File Cabinet',
+    authority: 'local captures, inbound filing queue, materialized projections',
+    recordKinds: ['file', 'collection'],
+    actions: ['file.prepare_route'],
+    route: 'sentinel://command/files',
+    status: 'local_ready',
+  },
+];
+
+export const STANDARD_EMPLOYEE_OPERATIONS = Object.freeze([
+  'employee.locate',
+  'employee.retrieve',
+  'employee.progress_report',
+]);
+
+export class CapabilityRegistry {
+  #capabilities;
+
+  constructor(entries = capabilities) {
+    this.#capabilities = entries.map((entry) => ({
+      contractVersion: 'aqua-executive-office/1.0.0',
+      employeeOperations: [...STANDARD_EMPLOYEE_OPERATIONS],
+      ...entry,
+    }));
+  }
+
+  list() {
+    return this.#capabilities.map((entry) => ({ ...entry }));
+  }
+
+  snapshot() {
+    return this.list();
+  }
+
+  get(id) {
+    const entry = this.#capabilities.find((candidate) => candidate.id === id);
+    return entry ? { ...entry } : null;
+  }
+
+  findByRecordKind(kind) {
+    return this.#capabilities
+      .filter((entry) => entry.recordKinds.includes(kind))
+      .map((entry) => ({ ...entry }));
+  }
+
+  markSynced(id, { syncId, checkpoint, recordCount, syncedAt }) {
+    const entry = this.#capabilities.find((candidate) => candidate.id === id);
+    if (!entry) return null;
+    entry.status = 'projection_connected';
+    entry.lastSyncId = syncId;
+    entry.lastCheckpoint = checkpoint;
+    entry.lastRecordCount = recordCount;
+    entry.lastSyncedAt = syncedAt;
+    return { ...entry };
+  }
+
+  markAdapterVerified(id, { correlationId, evidenceId, verifiedAt }) {
+    const entry = this.#capabilities.find((candidate) => candidate.id === id);
+    if (!entry) return null;
+    entry.status = 'adapter_execution_verified';
+    entry.lastCorrelationId = correlationId;
+    entry.lastEvidenceId = evidenceId;
+    entry.lastVerifiedAt = verifiedAt;
+    return { ...entry };
+  }
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" android:drawable="@drawable/aqua_widget_neural_paths_2x2">
+    <target android:name="outbound_action" android:animation="@animator/aqua_widget_neural_outbound" />
+    <target android:name="outbound_video" android:animation="@animator/aqua_widget_neural_outbound_slow" />
+    <target android:name="outbound_photo" android:animation="@animator/aqua_widget_neural_outbound_slow" />
+    <target android:name="outbound_file" android:animation="@animator/aqua_widget_neural_outbound" />
+    <target android:name="return_action" android:animation="@animator/aqua_widget_neural_return_slow" />
+    <target android:name="return_video" android:animation="@animator/aqua_widget_neural_return" />
+    <target android:name="return_photo" android:animation="@animator/aqua_widget_neural_return" />
+    <target android:name="return_file" android:animation="@animator/aqua_widget_neural_return_slow" />
+</animated-vector>

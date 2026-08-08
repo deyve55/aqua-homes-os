@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.media.action.VIDEO_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
+        </intent>
+        <package android:name="com.aquasoftware.crm.fieldtest" />
+        <package android:name="com.aquasoftware.crm.test" />
+        <package android:name="com.aquasoftware.crm" />
+        <package android:name="com.aquahomesdesigngroup.draw.v0189option1" />
+        <package android:name="com.aquahomesdesigngroup.draw.v0187fresh" />
+        <package android:name="com.aquahomesdesigngroup.draw.beta" />
+        <package android:name="com.aquahomesdesigngroup.draw" />
+        <package android:name="com.aquahomesdesign.cam.obsidianpreview" />
+        <package android:name="com.aquahomesdesign.cam" />
+        <package android:name="com.aquahomes.knowledgevault" />
+        <package android:name="com.aquahomes.timesheet.engineering" />
+        <package android:name="com.aquahomes.timesheet" />
+        <package android:name="com.aquasoftware.aquabooks" />
+        <package android:name="com.aquasoftware.receipts.test" />
+        <package android:name="com.aquasoftware.receipts" />
+        <package android:name="com.aquasoftware.aquapulse" />
+    </queries>
+
+    <application
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:icon="@mipmap/aqua_sentinel_launcher"
+        android:roundIcon="@mipmap/aqua_sentinel_launcher"
+        android:label="Aqua Sentinel OS"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="false"
+        android:theme="@style/AquaSentinelImmersiveTheme">
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|uiMode"
+            android:exported="true"
+            android:screenOrientation="unspecified">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".QuickCaptureActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:taskAffinity="${applicationId}.widget"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AquaQuickCaptureTheme">
+            <intent-filter>
+                <action android:name="com.aquasoftware.sentinel.action.ASK" />
+                <action android:name="com.aquasoftware.sentinel.action.VOICE" />
+                <action android:name="com.aquasoftware.sentinel.action.FILE" />
+                <action android:name="com.aquasoftware.sentinel.action.PHOTO" />
+                <action android:name="com.aquasoftware.sentinel.action.VIDEO" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="aquasentinel" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".WidgetDispatchActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:noHistory="true"
+            android:taskAffinity="${applicationId}.widget"
+            android:theme="@style/AquaWidgetDispatchTheme" />
+        <service
+            android:name=".WidgetMessageService"
+            android:exported="false" />
+        <provider
+            android:name=".EvidenceProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+        <receiver
+            android:name=".AquaCommandWidget"
+            android:exported="true"
+            android:label="Aqua Command Center">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="com.aquasoftware.sentinel.action.WIDGET_PINNED" />
+                <action android:name="com.aquasoftware.sentinel.action.WIDGET_REFRESH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/aqua_command_widget_info" />
+        </receiver>
+    </application>
+</manifest>

@@ -1,0 +1,11 @@
+{
+  "name": "@aqua-homes/diagnostics-core",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs",
+    "./diagnostic-receipt.schema.json": "./diagnostic-receipt.schema.json",
+    "./installation-manifest.json": "./installation-manifest.json"
+  }
+}

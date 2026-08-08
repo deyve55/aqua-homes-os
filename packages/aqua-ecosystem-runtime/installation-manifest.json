@@ -1,0 +1,79 @@
+{
+  "contract": "com.aquahomes.ecosystem.runtime",
+  "contractVersion": "1.0.0",
+  "sessionOwner": {
+    "appId": "aqua-sentinel-os",
+    "package": "com.aquahomes.sentinel",
+    "requiredRuntime": "native_foreground_realtime_service",
+    "installationState": "pending_signed_build"
+  },
+  "currentWeekGate": [
+    "aqua-sentinel-os",
+    "aqua-pulse",
+    "aqua-draw",
+    "aqua-cam",
+    "aqua-timesheet"
+  ],
+  "firstWave": [
+    {
+      "appId": "aqua-draw",
+      "repository": "deyve55/aqua-homes-os-draw",
+      "package": "com.aquahomesdesigngroup.draw",
+      "requiredAdapter": "capacitor_android_client",
+      "installationState": "pending_app_build"
+    },
+    {
+      "appId": "aqua-pulse",
+      "repository": "deyve55/Aqua-pulse",
+      "package": "com.aquasoftware.aquapulse",
+      "requiredAdapter": "android_webview_client",
+      "installationState": "pending_app_build"
+    },
+    {
+      "appId": "aqua-cam",
+      "repository": "deyve55/aqua-homes-cam",
+      "package": "com.aquahomesdesign.cam",
+      "requiredAdapter": "expo_react_native_client",
+      "installationState": "pending_app_build"
+    },
+    {
+      "appId": "aqua-timesheet",
+      "repository": "deyve55/Aqua-timesheets",
+      "package": "com.aquahomes.timesheet",
+      "requiredAdapter": "native_webview_client",
+      "installationState": "pending_app_build"
+    }
+  ],
+  "financialDependencies": [
+    {
+      "appId": "aqua-crm",
+      "requirement": "later tenant-scoped enrichment of provisional AquaPulse project labels",
+      "integrationPhase": "after-first-wave",
+      "installationState": "pending_app_build"
+    },
+    {
+      "appId": "aqua-receipts",
+      "requirement": "later receipt-proof intake and acknowledgement",
+      "integrationPhase": "after-first-wave",
+      "installationState": "pending_app_build"
+    },
+    {
+      "appId": "aqua-books",
+      "requirement": "later authoritative reconciliation; never implied by capture",
+      "integrationPhase": "after-first-wave",
+      "installationState": "pending_app_build"
+    }
+  ],
+  "verificationRequired": [
+    "contract_tests",
+    "signed_apk_build",
+    "clean_device_install",
+    "session_handoff_acknowledgement",
+    "registered_navigation",
+    "authoritative_read",
+    "return_to_sentinel",
+    "exit_app",
+    "single_microphone_proof",
+    "process_recreation"
+  ]
+}

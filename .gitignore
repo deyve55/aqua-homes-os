@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+
+android/.gradle/
+android/local.properties
+android/**/build/
+
+node_modules/
+.wrangler/
+.wrangler-dry-run/
+*.log
+*.apk
+*.aab

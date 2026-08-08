@@ -1,0 +1,741 @@
+name: Build Aqua Sentinel OS v0.8.4 Live Aqua Daily Ledger
+
+on:
+  push:
+    branches:
+      - "agent/aqua-sentinel-production-apk-v0.4.1-20260725"
+      - "agent/aqua-sentinel-v047-fold-voice-repair"
+      - "agent/aqua-sentinel-command-center-integration-20260730"
+    paths:
+      - "android-app/**"
+      - "encoded-assets/aqua-sentinel-launcher-v045/**"
+      - "scripts/restore-aqua-sentinel-launcher-v045.sh"
+      - "scripts/verify-aqua-sentinel-android-launch-v060.sh"
+      - "scripts/render-aqua-sentinel-visual-proof.mjs"
+      - "scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"
+      - "scripts/verify-aqua-sentinel-widget-actions-v054.sh"
+      - "sentient-os-web/**"
+      - "backend/**"
+      - "docs/ai-backend/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tests/aqua-backend.test.mjs"
+      - "tests/sentient-functional-test.mjs"
+      - ".github/workflows/aqua-sentient-os-release.yml"
+  pull_request:
+    branches:
+      - "main"
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "android-app/**"
+      - "encoded-assets/aqua-sentinel-launcher-v045/**"
+      - "scripts/restore-aqua-sentinel-launcher-v045.sh"
+      - "scripts/verify-aqua-sentinel-android-launch-v060.sh"
+      - "scripts/render-aqua-sentinel-visual-proof.mjs"
+      - "scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs"
+      - "scripts/verify-aqua-sentinel-widget-actions-v054.sh"
+      - "sentient-os-web/**"
+      - "backend/**"
+      - "docs/ai-backend/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tests/aqua-backend.test.mjs"
+      - "tests/sentient-functional-test.mjs"
+      - ".github/workflows/aqua-sentient-os-release.yml"
+  workflow_dispatch:
+    inputs:
+      owner_visual_approval:
+        description: "Dave approved building the current Neuralink, widget, and completed operating surfaces test APK"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  preflight-no-apk:
+    name: Verify repair without building an APK
+    if: github.event_name == 'workflow_dispatch' || github.ref_name == 'agent/aqua-sentinel-command-center-integration-20260730' || github.head_ref == 'agent/aqua-sentinel-command-center-integration-20260730'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      build_test_apk: ${{ steps.build_intent.outputs.requested }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Read one-time test build intent
+        id: build_intent
+        shell: bash
+        run: |
+          if git log -1 --pretty=%B | grep -Fq '[build-test-apk]'; then
+            echo 'requested=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'requested=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run production contracts
+        run: |
+          npm ci
+          npm test
+
+      - name: Render and inspect Home, direct Aqua, Neuralink, and every secondary surface without an APK
+        run: |
+          set -Eeuo pipefail
+          mkdir -p preflight/proofs preflight/evidence
+          CHROME_BIN="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$CHROME_BIN"
+          node scripts/render-aqua-sentinel-visual-proof.mjs \
+            --chrome "$CHROME_BIN" \
+            --page "${GITHUB_WORKSPACE}/sentient-os-web/index.html" \
+            --output-dir preflight/proofs \
+            --evidence-dir preflight/evidence/deterministic
+          neural_timing_verified=false
+          for neural_attempt in 1 2 3; do
+            if node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
+              --chrome "$CHROME_BIN" \
+              --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
+              --evidence-dir preflight/evidence/live; then
+              neural_timing_verified=true
+              break
+            fi
+            echo "::warning title=Aqua Neural timing retry::Strict wall-clock attempt ${neural_attempt} missed on the hosted runner"
+          done
+          test "$neural_timing_verified" = "true"
+          test -s preflight/proofs/AquaSentinelOS-v0.8.4-Direct-Aqua-Conversation.png
+          test -s preflight/proofs/AquaSentinelOS-v0.8.0-Neural-Link-Fire-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.8.0-Neural-Link-Result-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.8.0-Settings-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.8.0-Diagnostics-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.8.0-Connections-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.8.0-File-Cabinet-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.8.0-Conversation-Receipts-closed-phone.png
+          test -s preflight/proofs/AquaSentinelOS-v0.8.0-About-closed-phone.png
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+
+      - name: Compile Java and merge Android resources without packaging
+        working-directory: android-app
+        run: gradle --no-daemon :app:compileDebugJavaWithJavac :app:mergeDebugResources
+
+      - name: Retain preflight visual evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: AquaSentinelOS-v0.8.0-preflight-no-apk-${{ github.run_attempt }}
+          path: preflight/**
+          if-no-files-found: error
+          retention-days: 14
+
+  build-apk:
+    needs: preflight-no-apk
+    if: (github.event_name == 'workflow_dispatch' && inputs.owner_visual_approval) || (github.event_name == 'pull_request' && github.head_ref == 'agent/aqua-sentinel-command-center-integration-20260730' && needs.preflight-no-apk.outputs.build_test_apk == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Restore checksum-locked Aqua Sentinel OS launcher
+        run: |
+          missing_packages=()
+          command -v convert >/dev/null || missing_packages+=(imagemagick)
+          command -v ffmpeg >/dev/null || missing_packages+=(ffmpeg)
+          if (( ${#missing_packages[@]} )); then
+            sudo apt-get update
+            sudo apt-get install -y "${missing_packages[@]}"
+          fi
+          bash scripts/restore-aqua-sentinel-launcher-v045.sh
+
+      - name: Run Sentinel production contract tests
+        run: |
+          npm ci
+          npm test
+
+      - name: Render closed-phone Home, Neuralink, widget command, and completed operating-surface proofs
+        run: |
+          set -Eeuo pipefail
+          mkdir -p release/visual-proof-diagnostics
+          visual_proof_failure() {
+            local exit_code="$1"
+            local source_line="$2"
+            local failed_command="$3"
+            trap - ERR
+            {
+              printf 'commit=%s\n' "$GITHUB_SHA"
+              printf 'workflow_run=%s\n' "$GITHUB_RUN_ID"
+              printf 'workflow_attempt=%s\n' "$GITHUB_RUN_ATTEMPT"
+              printf 'exit_code=%s\n' "$exit_code"
+              printf 'shell_line=%s\n' "$source_line"
+              printf 'failed_command=%s\n' "$failed_command"
+            } > release/visual-proof-diagnostics/assertion-failure.txt
+            printf '::error title=Aqua v0.8.0 visual proof assertion failed::Shell line %s exited %s: %s\n' \
+              "$source_line" "$exit_code" "$failed_command" >&2
+            printf 'AQUA_VISUAL_PROOF_ASSERTION_FAILED line=%s exit=%s command=%q\n' \
+              "$source_line" "$exit_code" "$failed_command" >&2
+            exit "$exit_code"
+          }
+          trap 'visual_proof_failure "$?" "$LINENO" "$BASH_COMMAND"' ERR
+          CHROME_BIN="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$CHROME_BIN"
+          {
+            printf 'commit=%s\n' "$GITHUB_SHA"
+            printf 'workflow_run=%s\n' "$GITHUB_RUN_ID"
+            printf 'workflow_attempt=%s\n' "$GITHUB_RUN_ATTEMPT"
+            printf 'chrome_binary=%s\n' "$CHROME_BIN"
+            "$CHROME_BIN" --version
+          } > release/visual-proof-diagnostics/environment.txt
+          node scripts/render-aqua-sentinel-visual-proof.mjs \
+            --chrome "$CHROME_BIN" \
+            --page "${GITHUB_WORKSPACE}/sentient-os-web/index.html" \
+            --output-dir release \
+            --evidence-dir release/visual-proof-diagnostics/deterministic-captures
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=home" \
+            > /tmp/aqua-sentinel-home-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
+            > /tmp/aqua-sentinel-neural-rest-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=100" \
+            > /tmp/aqua-sentinel-neural-select-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=300" \
+            > /tmp/aqua-sentinel-neural-fire-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=720" \
+            > /tmp/aqua-sentinel-neural-morph-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=sequence&neuralAt=980" \
+            > /tmp/aqua-sentinel-neural-result-proof.html
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=company" \
+            > /tmp/aqua-sentinel-neural-company-proof.html
+          neural_timing_verified=false
+          for neural_attempt in 1 2 3; do
+            if node scripts/verify-aqua-sentinel-neural-live-wall-clock.mjs \
+              --chrome "$CHROME_BIN" \
+              --url "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=neural&neuralDemo=rest" \
+              --evidence-dir release/visual-proof-diagnostics/neural-live-wall-clock; then
+              neural_timing_verified=true
+              break
+            fi
+            echo "::warning title=Aqua Neural timing retry::Strict wall-clock attempt ${neural_attempt} missed on the hosted runner"
+          done
+          test "$neural_timing_verified" = "true"
+          "$CHROME_BIN" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --run-all-compositor-stages-before-draw \
+            --virtual-time-budget=1800 \
+            --dump-dom \
+            "file://${GITHUB_WORKSPACE}/sentient-os-web/index.html?preview=command" \
+            > /tmp/aqua-sentinel-command-proof.html
+          test -s release/AquaSentinelOS-v0.8.0-launch-proof.png
+          test -s release/AquaSentinelOS-v0.8.4-Direct-Aqua-Conversation.png
+          test -s release/AquaSentinelOS-v0.8.0-Neural-Link-Rest-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Neural-Link-Select-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Neural-Link-Fire-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Neural-Link-Morph-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Neural-Link-Result-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Neural-Link-Company-Morph-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Command-Center-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Settings-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Diagnostics-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Connections-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-File-Cabinet-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-Conversation-Receipts-closed-phone.png
+          test -s release/AquaSentinelOS-v0.8.0-About-closed-phone.png
+          for checkpoint in 00 01 02 03 04 05 06; do
+            test -s "release/AquaSentinelOS-v0.8.0-Neural-Link-Morph-${checkpoint}.png"
+            test "$(identify -format '%wx%h' "release/AquaSentinelOS-v0.8.0-Neural-Link-Morph-${checkpoint}.png")" = "430x932"
+          done
+          grep -q 'data-aqua-preview-ready="home"' /tmp/aqua-sentinel-home-proof.html
+          grep -q 'id="sentinel"' /tmp/aqua-sentinel-home-proof.html
+          grep -q 'class="hero-art"' /tmp/aqua-sentinel-home-proof.html
+          grep -q 'id="appDeck"' /tmp/aqua-sentinel-home-proof.html
+          grep -q 'id="primaryDashboard"' /tmp/aqua-sentinel-home-proof.html
+          grep -q '\$186K active' /tmp/aqua-sentinel-home-proof.html
+          grep -q 'PRESENTATION DATA' /tmp/aqua-sentinel-home-proof.html
+          grep -q 'data-aqua-preview-ready="neural"' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'data-aqua-neural-phase="rest"' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'data-aqua-neural-phase="selecting"' /tmp/aqua-sentinel-neural-select-proof.html
+          grep -q 'data-aqua-neural-phase="firing"' /tmp/aqua-sentinel-neural-fire-proof.html
+          grep -q 'data-aqua-neural-phase="transitioning"' /tmp/aqua-sentinel-neural-morph-proof.html
+          grep -q 'data-aqua-neural-phase="result"' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'data-aqua-neural-phase="result"' /tmp/aqua-sentinel-neural-company-proof.html
+          grep -q 'data-morph-progress="0.429"' /tmp/aqua-sentinel-neural-morph-proof.html
+          grep -q 'data-morph-progress="1.000"' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'data-reference-composition="live-neural-substrate-v080"' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'data-reference-state="morphed"' /tmp/aqua-sentinel-neural-company-proof.html
+          grep -q 'data-selected-app="Aqua CRM"' /tmp/aqua-sentinel-neural-company-proof.html
+          grep -q 'data-panel="neural"' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'AQUA SENTINEL NEURAL LINK' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'AQUA SENTINEL' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'data-neural-visible-portals="7"' /tmp/aqua-sentinel-neural-rest-proof.html
+          test "$(grep -o 'data-portal-index="[0-9]*"' /tmp/aqua-sentinel-neural-rest-proof.html | sort -u | wc -l)" = "9"
+          test "$(grep -o 'data-neural-source-group="[0-9]*"' /tmp/aqua-sentinel-neural-rest-proof.html | sort -u | wc -l)" = "9"
+          test "$(grep -o 'class="neural-burst burst-[0-3]"[^>]*pathLength="100"[^>]*data-neural-burst="[0-9]*"[^>]*data-neural-lane="[0-3]"' /tmp/aqua-sentinel-neural-rest-proof.html | wc -l)" = "36"
+          ! grep -q 'class="neural-traveler' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'class="neural-selected-chip"' /tmp/aqua-sentinel-neural-company-proof.html
+          grep -q 'class="neural-continuation"' /tmp/aqua-sentinel-neural-company-proof.html
+          grep -q 'neural-substrate-map neural-substrate-rest' /tmp/aqua-sentinel-neural-rest-proof.html
+          grep -q 'neural-substrate-map neural-substrate-result' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-select-proof.html
+          grep -q 'class="neural-jolt"' /tmp/aqua-sentinel-neural-fire-proof.html
+          test "$(grep -o 'class=\"neural-route-group is-active\" data-neural-source-group=\"6\"' /tmp/aqua-sentinel-neural-select-proof.html | wc -l)" = "1"
+          test "$(grep -o 'class=\"neural-burst burst-[0-3] is-active\"[^>]*pathLength=\"100\"[^>]*data-neural-burst=\"6\"[^>]*data-neural-lane=\"[0-3]\"' /tmp/aqua-sentinel-neural-fire-proof.html | wc -l)" = "4"
+          grep -q 'class="neural-materialization-approved is-receipt"' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'data-neural-materialized="true"' /tmp/aqua-sentinel-neural-result-proof.html
+          grep -q 'data-aqua-preview-ready="command"' /tmp/aqua-sentinel-command-proof.html
+          grep -q 'data-panel="command"' /tmp/aqua-sentinel-command-proof.html
+          grep -q 'AQUA FILE CABINET' /tmp/aqua-sentinel-command-proof.html
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-launch-proof.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Neural-Link-Rest-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Neural-Link-Select-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Neural-Link-Fire-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Neural-Link-Morph-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Neural-Link-Result-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Neural-Link-Company-Morph-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Command-Center-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Settings-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Diagnostics-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Connections-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-File-Cabinet-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-Conversation-Receipts-closed-phone.png)" = "430x932"
+          test "$(identify -format '%wx%h' release/AquaSentinelOS-v0.8.0-About-closed-phone.png)" = "430x932"
+          ! cmp -s \
+            release/AquaSentinelOS-v0.8.0-launch-proof.png \
+            release/AquaSentinelOS-v0.8.0-Neural-Link-Rest-closed-phone.png
+          ! cmp -s \
+            release/AquaSentinelOS-v0.8.0-launch-proof.png \
+            release/AquaSentinelOS-v0.8.0-Command-Center-closed-phone.png
+          ! cmp -s \
+            release/AquaSentinelOS-v0.8.0-Command-Center-closed-phone.png \
+            release/AquaSentinelOS-v0.8.0-Settings-closed-phone.png
+          ! cmp -s \
+            release/AquaSentinelOS-v0.8.0-Neural-Link-Rest-closed-phone.png \
+            release/AquaSentinelOS-v0.8.0-Neural-Link-Select-closed-phone.png
+          ! cmp -s \
+            release/AquaSentinelOS-v0.8.0-Neural-Link-Select-closed-phone.png \
+            release/AquaSentinelOS-v0.8.0-Neural-Link-Fire-closed-phone.png
+          ! cmp -s \
+            release/AquaSentinelOS-v0.8.0-Neural-Link-Fire-closed-phone.png \
+            release/AquaSentinelOS-v0.8.0-Neural-Link-Morph-closed-phone.png
+          ! cmp -s \
+            release/AquaSentinelOS-v0.8.0-Neural-Link-Morph-closed-phone.png \
+            release/AquaSentinelOS-v0.8.0-Neural-Link-Result-closed-phone.png
+          for motion_pair in \
+            "Rest Select" \
+            "Select Fire" \
+            "Fire Morph" \
+            "Morph Result"; do
+            read -r before after <<< "$motion_pair"
+            changed_pixels="$(compare -metric AE \
+              "release/AquaSentinelOS-v0.8.0-Neural-Link-${before}-closed-phone.png" \
+              "release/AquaSentinelOS-v0.8.0-Neural-Link-${after}-closed-phone.png" \
+              null: 2>&1 || true)"
+            [[ "$changed_pixels" =~ ^[0-9]+$ ]]
+            ((changed_pixels > 500))
+            echo "AQUA_NEURAL_MORPH_STAGE_VERIFIED transition=${before}_to_${after} changed_pixels=$changed_pixels"
+          done
+          rest_mean="$(convert release/AquaSentinelOS-v0.8.0-Neural-Link-Rest-closed-phone.png -colorspace gray -format '%[fx:mean]' info:)"
+          awk -v value="$rest_mean" 'BEGIN { exit !(value > 0.01 && value < 0.35) }'
+          echo "AQUA_OWNER_REFERENCE_VISUAL_VERIFIED fixed_portals=7 owner_rest=exact owner_morph=exact neural_motion=continuous request_dispatch_delay_ms=0"
+          previous=""
+          for checkpoint in 00 01 02 03 04 05 06; do
+            frame="release/AquaSentinelOS-v0.8.0-Neural-Link-Morph-${checkpoint}.png"
+            frame_mean="$(convert "$frame" -colorspace gray -format '%[fx:mean]' info:)"
+            awk -v frame_mean="$frame_mean" -v rest_mean="$rest_mean" 'BEGIN { exit !(frame_mean >= rest_mean * 0.55 && frame_mean > 0.02) }'
+            if [[ -n "$previous" ]]; then
+              rmse="$(compare -metric RMSE "$previous" "$frame" null: 2>&1 || true)"
+              normalized="$(sed -n 's/.*(\([^)]*\)).*/\1/p' <<< "$rmse")"
+              awk -v value="$normalized" 'BEGIN { exit !(value > 0.0005 && value < 0.32) }'
+              echo "AQUA_NEURAL_CONTINUITY_FRAME_VERIFIED frame=$checkpoint normalized_rmse=$normalized luminance=$frame_mean"
+            fi
+            previous="$frame"
+          done
+
+      - name: Collect failed v0.8.0 visual-proof DOM evidence
+        if: ${{ failure() }}
+        run: |
+          mkdir -p release/visual-proof-diagnostics
+          shopt -s nullglob
+          dom_proofs=(/tmp/aqua-sentinel-*-proof.html)
+          if ((${#dom_proofs[@]} > 0)); then
+            cp "${dom_proofs[@]}" release/visual-proof-diagnostics/
+          fi
+
+      - name: Retain failed v0.8.0 visual-proof evidence
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: AquaSentinelOS-v0.8.0-visual-proof-failure-${{ github.run_attempt }}
+          path: |
+            release/*.png
+            release/visual-proof-diagnostics/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android verification tools
+        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+
+      - name: Verify approved visual source
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import struct
+          from pathlib import Path
+
+          expected = {
+              "ui-hero-front-v11.png": "d78335f4ccf77cebad9dba7d985bce979aff3e31272c4c6a85bc3f211f482df7",
+              "card-financial-command-front-v11.png": "3b7bf631b4a6180d1ab2bf47ce5ec4c82dad65b0dab2e4b9f4c6247da4bc5ff1",
+              "card-operations-front-v11.png": "3f8f4ebf8a500d1d74ce4b728955bed1ceea25066eb2c5754f3db1f7ff67d249",
+              "card-overview-front-v11.png": "d74b1b74e62e310d89d6f900f7e9d468a7bae19aa3c84a16751af68bfd31114a",
+              "card-risk-monitor-front-v11.png": "1447febbbf1245e73ee177a6bb0ae91ad3e09612e6edd57de0c1a90166940d8c",
+              "card-site-intelligence-front-v11.png": "3bba50e8dc2f55f534a39e5b60de928dffcf52486b1f40cd8935455455c70055",
+              "neuralink-rest-v071.png": "451eee658db139df5bb924ecf69856ecdd477df89689cb6b6fd759e83a38cec3",
+              "neuralink-materialized-v071.png": "0f59fa24c599c2ab7ae7e089427619d607c942dff3d9652efd7c624ed0dc0276",
+              "neuralink-materialization-five-portal-approved-v073.png": "ae86da13c7a9b138edaf295174aff9959eab5c20538def06d6dc2f78d310e7a5",
+              "neuralink-rest-cyan-path-mask-v074.png": "18960ae0002da3bbaa422220b26f6276c5c51c8960d981947a1f0da7a1c3b8d9",
+              "neuralink-rest-gold-path-mask-v074.png": "22604a0b7199866db55ec8fc2a1ba7f979317763059a437781bd237345c30696",
+              "neuralink-materialized-cyan-path-mask-v074.png": "2f6373d88071baaa6e2656df264b9ecb4dd5aab9db66a61a2eae4d2b896ee41f",
+              "neuralink-materialized-gold-path-mask-v074.png": "b240a114581a5ef461f7b238eb62e481cc69b1997f12c7419354783e3f6c4f0f",
+              "home-depot-receipt-owner-approved-v074.png": "a8524b6be8c0eb2c678dd21823ae1d28eeaf48c15ec70e4152c41d205ff4ae62",
+              "neural-link-reference-rest-owner-v077.png": "5eebb4206d432bb531e0800a30bd42f29d418f2a9547e65e8c078b55010ffdfd",
+              "neural-link-reference-morph-owner-v077.png": "1557fc6cffec09d7648490666274f1d75ab660f5c819415a233410d28b354417",
+              "neural-link-live-substrate-v080.png": "c9fd7a7d85dfa75e0b6a7d3754618047919e8a9efca58353f1afc2ce8e293b45",
+          }
+          assets = Path("sentient-os-web/assets")
+          for name, digest in expected.items():
+              path = assets / name
+              assert path.is_file() and path.stat().st_size > 0, name
+              actual = hashlib.sha256(path.read_bytes()).hexdigest()
+              assert actual == digest, (name, actual)
+
+          owner_rest = Path("tests/visual-baselines/Aqua-Neuralink-Rest-Owner-Approved-v074.jpg")
+          assert owner_rest.is_file() and owner_rest.stat().st_size > 0
+          assert hashlib.sha256(owner_rest.read_bytes()).hexdigest() == "3b8a3bf6133ba5726ef0b274b159c8003b17116cf7bcaadba0734be19fb56f08"
+
+          owner_reference_frames = {
+              "Aqua-Neural-Link-Rest-Owner-Reference-v077.jpg": "ae42f1473d802b9cfad030cd0ee2b1b58de17cb0fef79d3f4d152e07a16f36fe",
+              "Aqua-Neural-Link-Morph-Owner-Reference-v077.jpg": "917bd458884e72a17d116fc0508a1d9ffa5d4ed348c190a014f7c394572115a8",
+          }
+          for name, digest in owner_reference_frames.items():
+              reference = Path("tests/visual-baselines") / name
+              assert reference.is_file() and reference.stat().st_size > 0, name
+              assert hashlib.sha256(reference.read_bytes()).hexdigest() == digest, name
+
+          for name in ("neural-link-reference-rest-owner-v077.png", "neural-link-reference-morph-owner-v077.png"):
+              reference = (assets / name).read_bytes()
+              assert reference[:8] == b"\x89PNG\r\n\x1a\n"
+              width, height = struct.unpack(">II", reference[16:24])
+              assert (width, height) == (660, 1390), (name, width, height)
+
+          receipt_object = (assets / "home-depot-receipt-owner-approved-v074.png").read_bytes()
+          receipt_width, receipt_height = struct.unpack(">II", receipt_object[16:24])
+          assert (receipt_width, receipt_height) == (493, 1008), (receipt_width, receipt_height)
+
+          hero = (assets / "ui-hero-front-v11.png").read_bytes()
+          assert hero[:8] == b"\x89PNG\r\n\x1a\n"
+          width, height = struct.unpack(">II", hero[16:24])
+          assert width > 500 and height > 500, (width, height)
+          for name in (
+              "neuralink-rest-v071.png",
+              "neuralink-materialized-v071.png",
+              "neuralink-materialization-five-portal-approved-v073.png",
+              "neuralink-rest-cyan-path-mask-v074.png",
+              "neuralink-rest-gold-path-mask-v074.png",
+              "neuralink-materialized-cyan-path-mask-v074.png",
+              "neuralink-materialized-gold-path-mask-v074.png",
+          ):
+              neural = (assets / name).read_bytes()
+              assert neural[:8] == b"\x89PNG\r\n\x1a\n"
+              width, height = struct.unpack(">II", neural[16:24])
+              assert (width, height) == (852, 1846), (name, width, height)
+
+          widget_neural = Path("android-app/app/src/main/res/drawable-nodpi/aqua_widget_neuralink_v071.png")
+          assert widget_neural.is_file() and widget_neural.stat().st_size > 0
+          assert hashlib.sha256(widget_neural.read_bytes()).hexdigest() == "0ea55046128465e0b009bc1d65f86801bb4688bae1fa80ec77d2bcd28d84e99f"
+          width, height = struct.unpack(">II", widget_neural.read_bytes()[16:24])
+          assert (width, height) == (900, 900), (width, height)
+
+          widget_neural_compact = Path("android-app/app/src/main/res/drawable-nodpi/aqua_neuralink_widget_v071.webp")
+          assert widget_neural_compact.is_file() and widget_neural_compact.stat().st_size > 0
+          assert hashlib.sha256(widget_neural_compact.read_bytes()).hexdigest() == "d908951e61b7715d5324321e03071c4d85b1b110e84ed87e4cb97f87a39565e8"
+
+          exact_widgets = {
+              "aqua_widget_4x6_approved_v073.png": (
+                  "5c4f5b4f6af264e8ccc9378885a4821c4ff5b9895dac5e984d76dffbfef8b4ca",
+                  (660, 930),
+              ),
+              "aqua_widget_2x2_approved_v073.png": (
+                  "78fd39ad0fd80cfff1707fb49e2cec0d6b3937a913823f79cc1b86951452dbd6",
+                  (470, 470),
+              ),
+          }
+          drawable_assets = Path("android-app/app/src/main/res/drawable-nodpi")
+          for name, (digest, dimensions) in exact_widgets.items():
+              widget = (drawable_assets / name).read_bytes()
+              assert hashlib.sha256(widget).hexdigest() == digest, name
+              assert struct.unpack(">II", widget[16:24]) == dimensions, name
+
+          launcher = Path("android-app/icon-source/AquaSentinel-BrainCircuit-approved-v045.png")
+          assert launcher.is_file() and launcher.stat().st_size > 0
+          assert hashlib.sha256(launcher.read_bytes()).hexdigest() == "bc1e014886d19f10ee1b8afdca2f5bc99d6d9c9ff103c2b359cc9457da80f6c5"
+          width, height = struct.unpack(">II", launcher.read_bytes()[16:24])
+          assert (width, height) == (512, 512)
+          for density in ("mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"):
+              icon = Path(f"android-app/app/src/main/res/mipmap-{density}/aqua_sentinel_launcher.png")
+              foreground = Path(f"android-app/app/src/main/res/mipmap-{density}/aqua_sentinel_launcher_foreground.png")
+              assert icon.is_file() and icon.stat().st_size > 0, density
+              assert foreground.is_file() and foreground.stat().st_size > 0, density
+          PY
+
+      - name: Install approved interface into APK
+        run: |
+          mkdir -p android-app/app/src/main/assets/public
+          cp -R sentient-os-web/. android-app/app/src/main/assets/public/
+
+      - name: Create release candidate certificate
+        run: |
+          KEY_PASSWORD="$(openssl rand -hex 24)"
+          echo "::add-mask::$KEY_PASSWORD"
+          keytool -genkeypair \
+            -keystore "$RUNNER_TEMP/aqua-sentinel-v0.8.0.keystore" \
+            -storepass "$KEY_PASSWORD" \
+            -keypass "$KEY_PASSWORD" \
+            -alias "aqua-sentinel-v0.8.0" \
+            -keyalg RSA \
+            -keysize 3072 \
+            -validity 3650 \
+            -dname "CN=Aqua Sentinel OS v0.8.0 Live Aqua Neural Command Test, OU=Aqua Sentinel OS, O=Aqua Software Inc., L=Hudson, ST=Massachusetts, C=US"
+          {
+            echo "AQUA_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/aqua-sentinel-v0.8.0.keystore"
+            echo "AQUA_RELEASE_KEYSTORE_PASSWORD=$KEY_PASSWORD"
+            echo "AQUA_RELEASE_KEY_ALIAS=aqua-sentinel-v0.8.0"
+            echo "AQUA_RELEASE_KEY_PASSWORD=$KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: Build release APK
+        working-directory: android-app
+        env:
+          AQUA_GATEWAY_URL: https://aqua-sentinel-os.deyve-docarm-5626.chatgpt.site/api/gateway
+        run: gradle --no-daemon --stacktrace :app:assembleRelease -Paqua.ecosystemPreview=true
+
+      - name: Verify APK package, signing, and embedded interface
+        run: |
+          BUILD_TOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          APK="android-app/app/build/outputs/apk/release/app-release.apk"
+          "$BUILD_TOOLS/zipalign" -c -P 16 -v 4 "$APK"
+          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/aqua-sentinel-certificate.txt
+          "$BUILD_TOOLS/aapt" dump badging "$APK" | tee /tmp/aqua-sentinel-badging.txt
+          grep -q "package: name='com.aquahomes.sentinel'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionCode='2026080504'" /tmp/aqua-sentinel-badging.txt
+          grep -q "versionName='0.8.4-live-aqua-daily-ledger'" /tmp/aqua-sentinel-badging.txt
+          grep -q "sdkVersion:'26'" /tmp/aqua-sentinel-badging.txt
+          grep -q "targetSdkVersion:'35'" /tmp/aqua-sentinel-badging.txt
+          unzip -l "$APK" | grep -q "assets/public/index.html"
+          unzip -l "$APK" | grep -q "assets/public/assets/ui-hero-front-v11.png"
+          unzip -l "$APK" | grep -q "assets/public/assets/neuralink-materialization-five-portal-approved-v073.png"
+          unzip -l "$APK" | grep -q "assets/public/assets/neuralink-rest-cyan-path-mask-v074.png"
+          unzip -l "$APK" | grep -q "assets/public/assets/neuralink-materialized-gold-path-mask-v074.png"
+          unzip -l "$APK" | grep -q "assets/public/assets/home-depot-receipt-owner-approved-v074.png"
+          unzip -l "$APK" | grep -q "assets/public/assets/carousel-v2/pulse.svg"
+          unzip -l "$APK" | grep -q "assets/public/fidelity.css"
+          unzip -t "$APK"
+
+      - name: Enable KVM for the Android launcher proof
+        run: |
+          test -e /dev/kvm
+          sudo chmod 0666 /dev/kvm
+          test -r /dev/kvm
+          test -w /dev/kvm
+
+      - name: Prove clean install and launch on Android
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          emulator-boot-timeout: 600
+          disable-linux-hw-accel: false
+          disable-animations: false
+          emulator-options: -no-window -gpu software -no-snapshot -noaudio -no-boot-anim -camera-back none
+          script: bash scripts/verify-aqua-sentinel-android-launch-v060.sh
+
+      - name: Retain failed Android launcher evidence
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: AquaSentinelOS-v0.8.0-android-launcher-failure-${{ github.run_attempt }}
+          path: |
+            /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-*.png
+            /tmp/aqua-widget-resize-*-selected.xml
+            /tmp/aqua-sentinel-v0.8.0-widget-resize-handle-*.txt
+            /tmp/aqua-sentinel-v0.8.0-widget-resize-*.logcat.txt
+            /tmp/aqua-sentinel-v0.8.0-widget-*-jolt.mp4
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Prepare release files and checksums
+        run: |
+          mkdir -p release
+          cp android-app/app/build/outputs/apk/release/app-release.apk release/AquaSentinelOS-v0.8.4-Live-Aqua-Daily-Ledger.apk
+          test -s release/AquaSentinelOS-v0.8.0-launch-proof.png
+          test -s /tmp/AquaSentinelOS-v0.8.0-Neuralink-Live-Widget-Launcher.png
+          test -s /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Tap-Jolt.png
+          test -s /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-3x2.png
+          test -s /tmp/AquaSentinelOS-v0.8.0-Widget-Action-Microphone-Armed.png
+          test -s /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-compact.png
+          test -s /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-small.png
+          test -s /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-compact.png
+          test -s /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-small.png
+          test -s /tmp/aqua-widget-resize-compact-selected.xml
+          test -s /tmp/aqua-widget-resize-small-selected.xml
+          test -s /tmp/aqua-sentinel-v0.8.0-widget-resize-handle-compact.txt
+          test -s /tmp/aqua-sentinel-v0.8.0-widget-resize-handle-small.txt
+          cp /tmp/AquaSentinelOS-v0.8.0-Neuralink-Live-Widget-Launcher.png release/AquaSentinelOS-v0.8.0-Neuralink-Live-Widget-Launcher.png
+          cp /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Tap-Jolt.png release/AquaSentinelOS-v0.8.0-Neuralink-Widget-Tap-Jolt.png
+          cp /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-3x2.png release/AquaSentinelOS-v0.8.0-Neuralink-Widget-3x2.png
+          cp /tmp/AquaSentinelOS-v0.8.0-Widget-Action-Microphone-Armed.png release/AquaSentinelOS-v0.8.0-Widget-Action-Microphone-Armed.png
+          cp /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-compact.png release/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-compact.png
+          cp /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-small.png release/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-small.png
+          cp /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-compact.png release/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-compact.png
+          cp /tmp/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-small.png release/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-small.png
+          cp /tmp/aqua-widget-resize-compact-selected.xml release/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-compact.xml
+          cp /tmp/aqua-widget-resize-small-selected.xml release/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-small.xml
+          cp /tmp/aqua-sentinel-v0.8.0-widget-resize-handle-compact.txt release/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-compact.txt
+          cp /tmp/aqua-sentinel-v0.8.0-widget-resize-handle-small.txt release/AquaSentinelOS-v0.8.0-Neuralink-Widget-Resize-Handle-small.txt
+          cp /tmp/aqua-sentinel-certificate.txt release/AquaSentinelOS-v0.8.0-certificate.txt
+          cp /tmp/aqua-sentinel-badging.txt release/AquaSentinelOS-v0.8.0-package.txt
+          {
+            echo "commit=$GITHUB_SHA"
+            echo "workflow_run=$GITHUB_RUN_ID"
+            echo "package=com.aquahomes.sentinel"
+            echo "version=0.8.4-live-aqua-daily-ledger"
+            echo "ai_gateway=server_owned_json_rpc_2.0"
+            echo "projection_sync=authenticated_idempotent_tenant_scoped"
+            echo "ecosystem_presentation_mode=true"
+            echo "customer_preview_snapshots=false"
+            echo "launch_visual=deterministic_bundled_home_430x932"
+            echo "neural_visual=rest_rotate_fire_morph_materialized_430x932"
+            echo "widget_dispatch=launcher_hosted_remote_views_taps_verified"
+            echo "widget_motion=launcher_hosted_path_bound_cyan_outbound_gold_return_verified"
+            echo "widget_tap_energy=selected_neural_path_and_endpoint_pixel_change_verified"
+            echo "widget_filing=background_save_and_daily_count_verified"
+            echo "widget_message=background_gateway_send_without_app_open_verified"
+            echo "widget_resize=launcher_hosted_3x2_and_responsive_control_geometry_verified"
+            echo "widget_action_microphone=launcher_tap_armed_android_speech_recognizer_verified"
+            echo "android_launch=activity_and_ui_hierarchy_verified"
+            echo "target_sdk=35"
+            echo "min_sdk=26"
+          } > release/AquaSentinelOS-v0.8.0-provenance.txt
+          sha256sum release/AquaSentinelOS-v0.8.4-Live-Aqua-Daily-Ledger.apk > release/AquaSentinelOS-v0.8.4-Live-Aqua-Daily-Ledger.apk.sha256
+
+      - name: Upload verified installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AquaSentinelOS-v0.8.4-Live-Aqua-Daily-Ledger
+          path: release/*
+          if-no-files-found: error

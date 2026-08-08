@@ -1,0 +1,6 @@
+commit=fb97e77b04a7df7b8016c47dc62d6797e68d1279
+workflow_run=30171083473
+package=com.aquahomes.sentinel
+version=0.4.3-production-candidate
+target_sdk=35
+min_sdk=26

@@ -1,0 +1,88 @@
+import { randomBytes } from 'node:crypto';
+
+const loopbackHosts = new Set(['127.0.0.1', '::1', 'localhost']);
+
+function integer(name, fallback) {
+  const value = Number.parseInt(process.env[name] ?? '', 10);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function adapterCredentials(overrides) {
+  if (overrides !== undefined) return overrides;
+  const raw = process.env.AQUA_ADAPTER_CREDENTIALS_JSON ?? '';
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    throw new Error('AQUA_ADAPTER_CREDENTIALS_JSON must be valid JSON.');
+  }
+}
+
+export function loadConfig(overrides = {}) {
+  const host = overrides.host ?? process.env.AQUA_GATEWAY_HOST ?? '127.0.0.1';
+  const developmentAuth =
+    overrides.developmentAuth ?? process.env.AQUA_DEVELOPMENT_AUTH === '1';
+  const sessionSecret =
+    overrides.sessionSecret ??
+    process.env.AQUA_SESSION_SECRET ??
+    (developmentAuth && loopbackHosts.has(host) ? randomBytes(32).toString('hex') : '');
+
+  if (developmentAuth && !loopbackHosts.has(host)) {
+    throw new Error('AQUA_DEVELOPMENT_AUTH may only bind to a loopback host.');
+  }
+
+  return Object.freeze({
+    host,
+    port: overrides.port ?? integer('AQUA_GATEWAY_PORT', 8787),
+    model: overrides.model ?? process.env.OPENAI_MODEL ?? 'gpt-5.6',
+    receiptVisionModel:
+      overrides.receiptVisionModel ??
+      process.env.OPENAI_RECEIPT_VISION_MODEL ??
+      'gpt-5.6',
+    realtimeStandardModel:
+      overrides.realtimeStandardModel ??
+      process.env.OPENAI_REALTIME_STANDARD_MODEL ??
+      'gpt-realtime-2.1-mini',
+    realtimeFullModel:
+      overrides.realtimeFullModel ??
+      overrides.realtimeModel ??
+      process.env.OPENAI_REALTIME_FULL_MODEL ??
+      process.env.OPENAI_REALTIME_MODEL ??
+      'gpt-realtime-2.1',
+    transcriptionModel:
+      overrides.transcriptionModel ??
+      process.env.OPENAI_TRANSCRIPTION_MODEL ??
+      'gpt-4o-transcribe',
+    openAiApiKey: overrides.openAiApiKey ?? process.env.OPENAI_API_KEY ?? '',
+    sessionSecret,
+    sessionTtlSeconds:
+      overrides.sessionTtlSeconds ?? integer('AQUA_SESSION_TTL_SECONDS', 900),
+    ownerEmail: overrides.ownerEmail ?? process.env.AQUA_OWNER_EMAIL ?? '',
+    ownerActivationCodeHash:
+      overrides.ownerActivationCodeHash ??
+      overrides.ownerPasswordHash ??
+      process.env.AQUA_OWNER_ACTIVATION_CODE_HASH ??
+      process.env.AQUA_OWNER_PASSWORD_HASH ??
+      '',
+    developmentAuth,
+    adapterCredentials: Object.freeze({
+      ...adapterCredentials(overrides.adapterCredentials),
+    }),
+    maxBodyBytes: overrides.maxBodyBytes ?? integer('AQUA_MAX_BODY_BYTES', 7_500_000),
+    receiptMaxImageBytes:
+      overrides.receiptMaxImageBytes ??
+      integer('AQUA_RECEIPT_MAX_IMAGE_BYTES', 5_000_000),
+  });
+}
+
+export function validateRuntimeConfig(config) {
+  const missing = [];
+  if (!config.openAiApiKey) missing.push('OPENAI_API_KEY');
+  if (!config.sessionSecret) missing.push('AQUA_SESSION_SECRET');
+  if (!config.developmentAuth && !config.ownerEmail) missing.push('AQUA_OWNER_EMAIL');
+  if (!config.developmentAuth && !config.ownerActivationCodeHash) {
+    missing.push('AQUA_OWNER_ACTIVATION_CODE_HASH');
+  }
+  return missing;
+}

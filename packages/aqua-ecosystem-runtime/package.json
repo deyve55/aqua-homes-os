@@ -1,0 +1,10 @@
+{
+  "name": "@aqua-homes/ecosystem-runtime-contract",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./installation-manifest.json": "./installation-manifest.json",
+    "./acceptance-scenarios.json": "./acceptance-scenarios.json"
+  }
+}

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aqua Sentinel OS</string>
+    <string name="aqua_widget_description">Ask Aqua or capture video, photo, and filing instructions.</string>
+</resources>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="AquaPulse financial heart">
+  <defs>
+    <radialGradient id="field" cx="50%" cy="38%" r="72%"><stop stop-color="#12384a"/><stop offset=".48" stop-color="#06151d"/><stop offset="1" stop-color="#010609"/></radialGradient>
+    <linearGradient id="heart" x1="128" y1="112" x2="386" y2="410" gradientUnits="userSpaceOnUse"><stop stop-color="#efffff"/><stop offset=".2" stop-color="#56eaff"/><stop offset=".54" stop-color="#139fbd"/><stop offset=".78" stop-color="#e9bd65"/><stop offset="1" stop-color="#fff0be"/></linearGradient>
+    <linearGradient id="pulse" x1="75" y1="256" x2="437" y2="256" gradientUnits="userSpaceOnUse"><stop stop-color="#20d8ef" stop-opacity="0"/><stop offset=".18" stop-color="#2ce8ff"/><stop offset=".5" stop-color="#fff"/><stop offset=".72" stop-color="#f0be66"/><stop offset="1" stop-color="#2ce8ff" stop-opacity="0"/></linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#field)"/>
+  <rect x="25" y="25" width="462" height="462" rx="96" fill="none" stroke="#4aeaff" stroke-opacity=".38" stroke-width="5"/>
+  <circle cx="256" cy="255" r="184" fill="none" stroke="#3ee7ff" stroke-opacity=".12" stroke-width="3" stroke-dasharray="8 13"/>
+  <path d="M256 407C228 383 132 316 113 230 96 154 139 108 198 108c31 0 51 14 58 39 8-25 28-39 59-39 59 0 102 46 85 122-19 86-115 153-144 177Z" fill="#041017" stroke="url(#heart)" stroke-width="18" stroke-linejoin="round" filter="url(#glow)"/>
+  <path d="M75 265h78l25-56 39 119 43-165 43 129 25-57 25 30h84" fill="none" stroke="url(#pulse)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+  <circle cx="75" cy="265" r="7" fill="#34e5fb"/><circle cx="437" cy="265" r="7" fill="#eec06b"/>
+  <path d="M256 184v145M224 213h48c18 0 31 12 31 28s-13 28-31 28h-32c-18 0-31 12-31 28s13 28 31 28h48" fill="none" stroke="#dffcff" stroke-opacity=".2" stroke-width="5" stroke-linecap="round"/>
+</svg>
