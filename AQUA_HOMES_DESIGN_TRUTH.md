@@ -8,6 +8,8 @@ The v51 visual lock above remains the legacy Aqua Homes reference. It does not r
 
 The owner explicitly directed the consolidated Aqua operating experience into Design Truth and Golden Goose. Read the [owner-approved consolidated Aqua operating standard](https://github.com/deyve55/Golden-goose-engineering-manual-/blob/f2aa50d7ba1e0d184d51cf418a36db2480f6f867/standards/AQUA-OPERATING-AND-EXPERIENCE-STANDARD.md), then resolve the [live Golden Goose startup](https://github.com/deyve55/Golden-goose-engineering-manual-/blob/main/Golden-Goose-Engineering-Manual.md).
 
+The [all-app control scope clarification](https://github.com/deyve55/Golden-goose-engineering-manual-/blob/706d3e3140b90e37030dafc1f613e409ca1868f0/standards/AQUA-ALL-APP-CONTROL-SCOPE.md) explicitly includes every current and future Aqua product. Delivery priorities do not exclude an app; each advertised operation still needs authenticated execution and verified results.
+
 The standard covers one continuous Aqua executive identity, the existing shared Brain and nervous system, cross-app memory and learning, proactive management, actual working Neuralink offices, complete captures, immediate filing, email/research roles, satellite header behavior and the distinct Sentinel interface. It includes the adoption map and acceptance scenarios.
 
 Active Sentinel implementation authority: [deyve55/Aqua-sentient-os](https://github.com/deyve55/Aqua-sentient-os). This legacy repository must not become a competing Sentinel implementation or be used to overwrite newer qualified work.
