@@ -1,9 +1,6 @@
 name: Aqua startup contract qualification
 "on":
   pull_request:
-    paths:
-      - AGENTS.md
-      - .github/workflows/aqua-context-guard-20261111.yml
   workflow_dispatch:
 permissions:
   contents: read
